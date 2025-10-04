@@ -31,7 +31,14 @@
         "items": {
           "mainStreet": "Calle Principal y Avenida 1",
           "oakwoodPlaza": "Plaza Oakwood",
-          "cityLibrary": "Biblioteca Municipal"
+          "cityLibrary": "Biblioteca Municipal",
+          "centralStation": "Estación Central",
+          "riverPark": "Parque del Río",
+          "harborPier": "Muelle del Puerto",
+          "universityGate": "Puerta de la Universidad",
+          "historicCenter": "Centro Histórico",
+          "northTerminal": "Terminal Norte",
+          "marketSquare": "Plaza del Mercado"
         }
       },
       "findNearby": {

@@ -14,7 +14,11 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { APP_CONFIG } from '../../core/config';
 import { MaterialSymbolName } from '../../shared/ui/types/material-symbol-name';
-import { CardListItemComponent, CardListLayout, IconVariant } from '../../shared/ui/card-list-item/card-list-item.component';
+import {
+  CardListItemComponent,
+  CardListLayout,
+  IconVariant
+} from '../../shared/ui/card-list-item/card-list-item.component';
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import { HomeNearbyStopsDialogComponent } from './home-nearby-stops-dialog.component';
 
@@ -32,11 +36,6 @@ interface BottomNavigationItem {
   labelKey: string;
   icon: MaterialSymbolName;
   commands: readonly string[];
-}
-
-interface RecentStopCard {
-  titleKey: string;
-  imageUrl: string;
 }
 
 @Component({
@@ -73,6 +72,8 @@ export class HomeComponent {
   private readonly originIcon: MaterialSymbolName = 'my_location';
   private readonly destinationIcon: MaterialSymbolName = 'flag';
   private readonly dateIcon: MaterialSymbolName = 'calendar_today';
+  private readonly recentStopIcon: MaterialSymbolName = APP_CONFIG.homeData.recentStops.icon;
+  private readonly recentStopsLimit = APP_CONFIG.homeData.recentStops.maxItems;
 
   protected readonly headerTitleKey = this.translation.header.title;
   protected readonly headerInfoLabelKey = this.translation.header.infoLabel;
@@ -90,7 +91,8 @@ export class HomeComponent {
   protected readonly findNearbyActionKey = this.translation.sections.findNearby.action;
   protected readonly favoritesTitleKey = this.translation.sections.favorites.title;
 
-  protected readonly recentStopCards: RecentStopCard[] = APP_CONFIG.homeData.recentStops.slice();
+  protected readonly trailingIcon: MaterialSymbolName = 'chevron_right';
+  protected readonly recentStops: HomeListItem[] = this.buildRecentStops();
 
   protected readonly locationAction: HomeListItem = {
     titleKey: this.findNearbyActionKey,
@@ -127,7 +129,6 @@ export class HomeComponent {
     }
   ];
 
-  protected readonly trailingIcon: MaterialSymbolName = 'chevron_right';
   protected readonly originFieldId = this.searchIds.originFieldId;
   protected readonly destinationFieldId = this.searchIds.destinationFieldId;
   protected readonly dateFieldId = this.searchIds.dateFieldId;
@@ -193,5 +194,15 @@ export class HomeComponent {
 
       return value < minimum ? { minDate: { min: minimum } } : null;
     };
+  }
+
+  private buildRecentStops(): HomeListItem[] {
+    return APP_CONFIG.homeData.recentStops.items
+      .slice(0, this.recentStopsLimit)
+      .map((titleKey) => ({
+        titleKey,
+        leadingIcon: this.recentStopIcon,
+        iconVariant: 'soft'
+      }));
   }
 }

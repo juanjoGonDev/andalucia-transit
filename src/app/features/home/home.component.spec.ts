@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 
 import { APP_CONFIG } from '../../core/config';
+import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-item.component';
 import { HomeComponent } from './home.component';
 
 class FakeTranslateLoader implements TranslateLoader {
@@ -28,6 +29,8 @@ describe('HomeComponent', () => {
   const dialogStub = { open: jasmine.createSpy('open') };
 
   beforeEach(async () => {
+    dialogStub.open.calls.reset();
+
     await TestBed.configureTestingModule({
       imports: [
         HomeComponent,
@@ -87,5 +90,23 @@ describe('HomeComponent', () => {
     expect(form.invalid).toBeTrue();
     expect(form.get('date')?.hasError('minDate')).toBeTrue();
     expect(navigateSpy).not.toHaveBeenCalled();
+  });
+
+  it('renders the configured recent stops with a scrollable list', () => {
+    const expectedStops = APP_CONFIG.homeData.recentStops.items.slice(
+      0,
+      APP_CONFIG.homeData.recentStops.maxItems
+    );
+
+    const recentList = fixture.debugElement.query(By.css('.home__recent-list'));
+    const recentItems = recentList.queryAll(By.directive(CardListItemComponent));
+
+    expect(recentItems.length).toBe(expectedStops.length);
+    expect(recentList.nativeElement.classList.contains('home__list--scroll')).toBeTrue();
+
+    for (const item of recentItems) {
+      const instance = item.componentInstance as CardListItemComponent;
+      expect(instance.leadingIcon).toBe(APP_CONFIG.homeData.recentStops.icon);
+    }
   });
 });

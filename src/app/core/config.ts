@@ -54,7 +54,14 @@ export const APP_CONFIG = {
           items: [
             'home.sections.recentStops.items.mainStreet',
             'home.sections.recentStops.items.oakwoodPlaza',
-            'home.sections.recentStops.items.cityLibrary'
+            'home.sections.recentStops.items.cityLibrary',
+            'home.sections.recentStops.items.centralStation',
+            'home.sections.recentStops.items.riverPark',
+            'home.sections.recentStops.items.harborPier',
+            'home.sections.recentStops.items.universityGate',
+            'home.sections.recentStops.items.historicCenter',
+            'home.sections.recentStops.items.northTerminal',
+            'home.sections.recentStops.items.marketSquare'
           ] as const
         },
         findNearby: {
@@ -131,23 +138,22 @@ export const APP_CONFIG = {
       destinationFieldId: 'home-search-destination',
       dateFieldId: 'home-search-date'
     },
-    recentStops: [
-      {
-        titleKey: 'home.sections.recentStops.items.mainStreet',
-        imageUrl:
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuCKH4B7MR-C7r8NwbViwBMhN3ALOf4e7az-ZKOGEZ3uhDS-olIWOt0UFF5VRFqKmn2rfKCGwPV7sbRBWEBF3AoUIItT8RS3oxA-KVQe6gFpzWiHDYii5VkpAmFXrGp1AAZhf4SA0wixY6dGSm9Bb6OibIA0m0IFQQj01akvm4Gp3JleDm7-MI0Z288mE4i-y8wdLgCU8kz7M9dQyawcgU0JsJpsgTQnCzv4rJZuTaUedE--AA6PEysVvqMySAb68GvFDQJb5XsynJcO'
-      },
-      {
-        titleKey: 'home.sections.recentStops.items.oakwoodPlaza',
-        imageUrl:
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuD4uyAfwVMEJ622qE8sa5jwfCZfdmJ5HdGhVqImKILKLFI-ZgP93aiktvaQNlIjAIFMGLTxZBqJIuRF0LzSq20ceDZLC-MpVHb0VV-aZNnbGDbYeIZt-5mfle4054nYAjpY8hRcRWujKzJ3yu87VxSupCqZV6Bz_cv4Cb-_INF6jm-V-PRPrqtCdjG5OAFj2dLYI6W5BDiAF5p8RkE1Km9j7vpr65rWlIzOYTb4bzrHqwXUW3Vd-gzTCnK3DMMdUGOZso2M-EO5p8jm'
-      },
-      {
-        titleKey: 'home.sections.recentStops.items.cityLibrary',
-        imageUrl:
-          'https://lh3.googleusercontent.com/aida-public/AB6AXuB_QMxQ_R2lULRvksQDizwK3dVfKIs6ZQ4KxI-d9Ch6musQNmpIDk1HcuthpGZ0D0khQibM6imJqbQ24SAraBI3axtQBbSaKcVdFDk4lepXxXqnjPJzuZs28XNfnK71dDPz6Q-38aOjEgvHOSWqtQUh9vZ_QB7tD8DuQxHT9-HergNRVD3aqK3OQB810xaVGfT9QrfESQjfjPBjs0BJT1MoZ1c-wKxUelrVe1N8RYHFiOquahzC490uSK0fNaLyuTuBtQJ6E2_7q38P'
-      }
-    ] as const,
+    recentStops: {
+      icon: 'pin_drop',
+      maxItems: 10,
+      items: [
+        'home.sections.recentStops.items.mainStreet',
+        'home.sections.recentStops.items.oakwoodPlaza',
+        'home.sections.recentStops.items.cityLibrary',
+        'home.sections.recentStops.items.centralStation',
+        'home.sections.recentStops.items.riverPark',
+        'home.sections.recentStops.items.harborPier',
+        'home.sections.recentStops.items.universityGate',
+        'home.sections.recentStops.items.historicCenter',
+        'home.sections.recentStops.items.northTerminal',
+        'home.sections.recentStops.items.marketSquare'
+      ] as const
+    },
     nearbyStops: {
       maxResults: 3,
       stops: [

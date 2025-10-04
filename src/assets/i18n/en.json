@@ -31,7 +31,14 @@
         "items": {
           "mainStreet": "Main St & 1st Ave",
           "oakwoodPlaza": "Oakwood Plaza",
-          "cityLibrary": "City Library"
+          "cityLibrary": "City Library",
+          "centralStation": "Central Station",
+          "riverPark": "River Park",
+          "harborPier": "Harbor Pier",
+          "universityGate": "University Gate",
+          "historicCenter": "Historic Center",
+          "northTerminal": "North Terminal",
+          "marketSquare": "Market Square"
         }
       },
       "findNearby": {

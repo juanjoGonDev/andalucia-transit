@@ -1,5 +1,7 @@
 :host {
   display: block;
+  --nearby-dialog-max-content-height: min(70vh, 24rem);
+  --nearby-dialog-scrollbar-width: 0.4rem;
 }
 
 .nearby-dialog__title {
@@ -14,6 +16,25 @@
   flex-direction: column;
   gap: 1.5rem;
   padding-top: 0.5rem;
+  max-height: var(--nearby-dialog-max-content-height);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+  padding-right: calc(var(--nearby-dialog-scrollbar-width) / 2);
+}
+
+.nearby-dialog__content::-webkit-scrollbar {
+  width: var(--nearby-dialog-scrollbar-width);
+}
+
+.nearby-dialog__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nearby-dialog__content::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-subtle);
+  border-radius: var(--radius-lg);
 }
 
 .nearby-dialog__description {
@@ -173,4 +194,8 @@
 
 .dark .nearby-dialog__button--ghost:hover {
   background-color: var(--color-primary-soft-dark);
+}
+
+.dark .nearby-dialog__content::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-subtle-dark);
 }

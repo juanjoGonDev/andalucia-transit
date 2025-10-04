@@ -54,16 +54,18 @@
         </form>
       </app-section>
       <app-section [titleKey]="recentStopsTitleKey">
-        <div class="home__recent-scroll">
-          <article *ngFor="let stop of recentStopCards" class="home__recent-card">
-            <div
-              class="home__recent-image"
-              role="img"
-              [attr.aria-label]="stop.titleKey | translate"
-              [style.background-image]="'url(' + stop.imageUrl + ')'"
-            ></div>
-            <p class="home__recent-title">{{ stop.titleKey | translate }}</p>
-          </article>
+        <div class="home__list home__list--scroll home__recent-list">
+          <app-card-list-item
+            *ngFor="let stop of recentStops"
+            [leadingIcon]="stop.leadingIcon"
+            [titleKey]="stop.titleKey"
+            [subtitleKey]="stop.subtitleKey"
+            [layout]="stop.layout ?? 'list'"
+            [iconVariant]="stop.iconVariant ?? 'plain'"
+            [trailingIcon]="trailingIcon"
+            [commands]="stop.commands"
+            [ariaLabelKey]="stop.ariaLabelKey"
+          ></app-card-list-item>
         </div>
       </app-section>
       <app-section [titleKey]="findNearbyTitleKey">
