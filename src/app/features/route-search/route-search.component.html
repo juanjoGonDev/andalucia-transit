@@ -1,0 +1,28 @@
+<section class="route-search">
+  <mat-card appearance="outlined">
+    <h1>{{ translationKeys.title | translate }}</h1>
+    <p>{{ translationKeys.description | translate }}</p>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ translationKeys.originLabel | translate }}</mat-label>
+        <input matInput formControlName="origin" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ translationKeys.destinationLabel | translate }}</mat-label>
+        <input matInput formControlName="destination" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ translationKeys.dateLabel | translate }}</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date" />
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit">
+        {{ translationKeys.action | translate }}
+      </button>
+    </form>
+    <mat-card appearance="outlined" *ngIf="submitted()" class="results">
+      <h2>{{ translationKeys.results | translate }}</h2>
+      <p>{{ translationKeys.sampleResult | translate }}</p>
+    </mat-card>
+  </mat-card>
+</section>

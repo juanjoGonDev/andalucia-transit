@@ -462,3 +462,12 @@ Integrate a fare calculator if the API tarifas is useful.
 
 Incorporate user accounts to sync favorites across devices (would require a backend).
 These are beyond the current scope but the architecture we set (particularly the clean separation of data logic) would accommodate many of these additions with minimal impact on existing code.
+
+Current Implementation Snapshot (Keep Updated)
+- Angular 20 standalone workspace named `andalucia-transit` with Angular Material theme defined in `src/styles.scss`.
+- Clean architecture folders: `src/app/core` (config, tokens, services), `src/app/domain` (pure utilities), `src/app/data` (API service stubs), `src/app/features` (standalone feature components), and `src/app/shared` (reusable UI components like the navbar and language switcher).
+- All magic strings and numbers live in `src/app/core/config.ts`; components consume translation keys and routes from that file.
+- Runtime i18n handled through `@ngx-translate/core` with JSON dictionaries stored under `src/assets/i18n`. `LanguageService` performs detection with fallback to Spanish and persists the choice in local storage.
+- PWA support enabled via `@angular/pwa` with manifest metadata describing the Andalucia Transit app, using inline base64 icons generated from a vector template to avoid binary assets in the repository.
+- Quality toolchain: ESLint + Prettier flat config (`eslint.config.js`) and scripts in `package.json` (`lint`, `format`, `format:check`). Cypress e2e test runs through `npm run e2e`.
+- No source comments should be added unless explicitly required for compliance or documentation artifacts like this file.

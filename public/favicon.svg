@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Andalucia Transit icon">
+  <rect width="64" height="64" fill="#3f51b5" rx="8"/>
+  <rect x="14" y="12" width="36" height="40" fill="#ffffff" rx="6"/>
+  <rect x="18" y="18" width="28" height="14" fill="#3f51b5" rx="2"/>
+  <circle cx="24" cy="44" r="4" fill="#3f51b5"/>
+  <circle cx="40" cy="44" r="4" fill="#3f51b5"/>
+</svg>

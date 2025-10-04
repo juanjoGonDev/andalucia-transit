@@ -1,0 +1,20 @@
+.navbar {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: auto 1fr auto;
+  padding: 0 1.5rem;
+}
+
+.brand {
+  font-weight: 600;
+}
+
+.links {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.active {
+  font-weight: 600;
+}

@@ -1,0 +1,22 @@
+<section class="stop-detail">
+  <mat-card appearance="outlined">
+    <h1>{{ translationKeys.title | translate }}</h1>
+    <p>{{ translationKeys.description | translate }}</p>
+    <mat-card appearance="outlined" class="list-card">
+      <h2>{{ translationKeys.upcoming | translate }}</h2>
+      <mat-nav-list>
+        <mat-list-item *ngFor="let item of translationKeys.upcomingItems">
+          {{ item | translate }}
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-card>
+    <mat-card appearance="outlined" class="list-card">
+      <h2>{{ translationKeys.history | translate }}</h2>
+      <mat-nav-list>
+        <mat-list-item *ngFor="let item of translationKeys.historyItems">
+          {{ item | translate }}
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-card>
+  </mat-card>
+</section>
