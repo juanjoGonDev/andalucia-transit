@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { formatDate } from '@angular/common';
+import { formatDate, registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
@@ -19,6 +20,10 @@ describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
   let component: HomeComponent;
   let router: Router;
+
+  beforeAll(() => {
+    registerLocaleData(localeEs);
+  });
 
   const dialogStub = { open: jasmine.createSpy('open') };
 
