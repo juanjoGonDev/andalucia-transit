@@ -3,6 +3,8 @@ export type MaterialSymbolName =
   | 'pin_drop'
   | 'chevron_right'
   | 'my_location'
+  | 'flag'
+  | 'calendar_today'
   | 'directions_bus'
   | 'mail'
   | 'home'

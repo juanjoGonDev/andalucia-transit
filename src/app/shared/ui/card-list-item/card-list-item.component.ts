@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -25,6 +25,7 @@ export class CardListItemComponent {
   @Input() layout: CardListLayout = 'list';
   @Input() iconVariant: IconVariant = 'plain';
   @Input() ariaLabelKey?: string;
+  @Output() action = new EventEmitter<void>();
 
   protected get hostClassMap(): Record<string, boolean> {
     return {
@@ -38,5 +39,9 @@ export class CardListItemComponent {
       'card-list-item__leading--soft': this.iconVariant === 'soft',
       'card-list-item__leading--action': this.layout === 'action'
     };
+  }
+
+  protected handleClick(): void {
+    this.action.emit();
   }
 }

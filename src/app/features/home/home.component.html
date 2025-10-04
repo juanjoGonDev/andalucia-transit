@@ -11,15 +11,58 @@
       </button>
     </header>
     <main class="home__main">
+      <app-section [titleKey]="searchTitleKey" appearance="card">
+        <form class="home__search" [formGroup]="searchForm" (ngSubmit)="onSearch()">
+          <div class="home__search-group">
+            <label class="home__sr-only" [for]="originFieldId">{{ searchOriginLabelKey | translate }}</label>
+            <span class="material-symbols-outlined home__search-icon">{{ originIconName }}</span>
+            <input
+              class="home__search-input"
+              type="text"
+              [id]="originFieldId"
+              formControlName="origin"
+              [placeholder]="searchOriginPlaceholderKey | translate"
+              autocomplete="off"
+            />
+          </div>
+          <div class="home__search-group">
+            <label class="home__sr-only" [for]="destinationFieldId">
+              {{ searchDestinationLabelKey | translate }}
+            </label>
+            <span class="material-symbols-outlined home__search-icon">{{ destinationIconName }}</span>
+            <input
+              class="home__search-input"
+              type="text"
+              [id]="destinationFieldId"
+              formControlName="destination"
+              [placeholder]="searchDestinationPlaceholderKey | translate"
+              autocomplete="off"
+            />
+          </div>
+          <div class="home__search-group">
+            <label class="home__sr-only" [for]="dateFieldId">{{ searchDateLabelKey | translate }}</label>
+            <span class="material-symbols-outlined home__search-icon">{{ dateIconName }}</span>
+            <input
+              class="home__search-input"
+              type="date"
+              [id]="dateFieldId"
+              formControlName="date"
+            />
+          </div>
+          <button class="home__search-submit" type="submit">{{ searchSubmitKey | translate }}</button>
+        </form>
+      </app-section>
       <app-section [titleKey]="recentStopsTitleKey">
-        <div class="home__list">
-          <app-card-list-item
-            *ngFor="let stop of recentStops"
-            [leadingIcon]="stop.leadingIcon"
-            [titleKey]="stop.titleKey"
-            [trailingIcon]="trailingIcon"
-            [commands]="stop.commands"
-          ></app-card-list-item>
+        <div class="home__recent-scroll">
+          <article *ngFor="let stop of recentStopCards" class="home__recent-card">
+            <div
+              class="home__recent-image"
+              role="img"
+              [attr.aria-label]="stop.titleKey | translate"
+              [style.background-image]="'url(' + stop.imageUrl + ')'"
+            ></div>
+            <p class="home__recent-title">{{ stop.titleKey | translate }}</p>
+          </article>
         </div>
       </app-section>
       <app-section [titleKey]="findNearbyTitleKey">
@@ -29,8 +72,8 @@
           [layout]="locationAction.layout ?? 'list'"
           [iconVariant]="locationAction.iconVariant ?? 'plain'"
           [trailingIcon]="trailingIcon"
-          [commands]="locationAction.commands"
           [ariaLabelKey]="locationAction.ariaLabelKey"
+          (action)="openNearbyStopsDialog()"
         ></app-card-list-item>
       </app-section>
       <app-section [titleKey]="favoritesTitleKey">

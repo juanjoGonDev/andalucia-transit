@@ -12,4 +12,11 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class SectionComponent {
   @Input({ required: true }) titleKey!: string;
+  @Input() appearance: 'default' | 'card' = 'default';
+
+  protected get hostClassMap(): Record<string, boolean> {
+    return {
+      'section--card': this.appearance === 'card'
+    };
+  }
 }

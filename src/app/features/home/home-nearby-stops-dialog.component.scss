@@ -1,0 +1,176 @@
+:host {
+  display: block;
+}
+
+.nearby-dialog__title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.nearby-dialog__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 0.5rem;
+}
+
+.nearby-dialog__description {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.nearby-dialog__loading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nearby-dialog__spinner {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  border: 3px solid var(--color-border-subtle);
+  border-top-color: var(--color-primary);
+  animation: nearby-dialog-spin 0.8s linear infinite;
+}
+
+.nearby-dialog__loading-text {
+  margin: 0;
+  color: var(--color-text-strong);
+  font-weight: 600;
+}
+
+.nearby-dialog__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nearby-dialog__item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-surface-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.nearby-dialog__item-icon {
+  color: var(--color-primary);
+}
+
+.nearby-dialog__item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.nearby-dialog__item-title {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-text-strong);
+}
+
+.nearby-dialog__item-distance {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.nearby-dialog__message {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.nearby-dialog__message--error {
+  color: var(--color-text-strong);
+}
+
+.nearby-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 0 0;
+}
+
+.nearby-dialog__button {
+  min-width: 6.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nearby-dialog__button--primary {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.nearby-dialog__button--primary:hover {
+  background-color: var(--color-primary-light);
+}
+
+.nearby-dialog__button--ghost {
+  background-color: transparent;
+  color: var(--color-primary);
+}
+
+.nearby-dialog__button--ghost:hover {
+  background-color: var(--color-primary-soft);
+}
+
+@keyframes nearby-dialog-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dark .nearby-dialog__title {
+  color: var(--color-text-strong-dark);
+}
+
+.dark .nearby-dialog__description {
+  color: var(--color-text-muted-dark);
+}
+
+.dark .nearby-dialog__spinner {
+  border-color: var(--color-border-subtle-dark);
+  border-top-color: var(--color-primary-light);
+}
+
+.dark .nearby-dialog__loading-text {
+  color: var(--color-text-strong-dark);
+}
+
+.dark .nearby-dialog__item {
+  background-color: var(--color-surface-dark);
+  box-shadow: var(--shadow-dark);
+}
+
+.dark .nearby-dialog__item-title {
+  color: var(--color-text-strong-dark);
+}
+
+.dark .nearby-dialog__item-distance {
+  color: var(--color-text-muted-dark);
+}
+
+.dark .nearby-dialog__message {
+  color: var(--color-text-muted-dark);
+}
+
+.dark .nearby-dialog__message--error {
+  color: var(--color-text-strong-dark);
+}
+
+.dark .nearby-dialog__button--ghost:hover {
+  background-color: var(--color-primary-soft-dark);
+}

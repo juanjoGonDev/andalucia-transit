@@ -18,6 +18,7 @@
     [ngClass]="hostClassMap"
     [routerLink]="commands"
     [attr.aria-label]="ariaLabelKey ? (ariaLabelKey | translate) : null"
+    (click)="handleClick()"
   >
     <ng-container *ngTemplateOutlet="content"></ng-container>
   </button>
@@ -29,6 +30,7 @@
     class="card-list-item"
     [ngClass]="hostClassMap"
     [attr.aria-label]="ariaLabelKey ? (ariaLabelKey | translate) : null"
+    (click)="handleClick()"
   >
     <ng-container *ngTemplateOutlet="content"></ng-container>
   </button>

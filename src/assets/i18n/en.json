@@ -13,10 +13,19 @@
   },
   "home": {
     "header": {
-      "title": "Transit",
+      "title": "Bus Timetables",
       "infoLabel": "View application information"
     },
     "sections": {
+      "search": {
+        "title": "Search Stops",
+        "originLabel": "Origin",
+        "originPlaceholder": "Where are you starting?",
+        "destinationLabel": "Destination",
+        "destinationPlaceholder": "Where do you want to go?",
+        "dateLabel": "Date",
+        "submit": "Search schedules"
+      },
       "recentStops": {
         "title": "Recent Stops",
         "items": {
@@ -40,6 +49,23 @@
             "title": "East Market",
             "subtitle": "Stop ID: 3455"
           }
+        }
+      }
+    },
+    "dialogs": {
+      "nearbyStops": {
+        "title": "Nearby stops",
+        "description": "Enable your location to discover the closest stops to you.",
+        "loading": "Locating your position...",
+        "permissionDenied": "We were unable to access your location. Please allow location permissions to continue.",
+        "notSupported": "Geolocation is not supported on this device.",
+        "unknownError": "We could not determine your location. Try again in a moment.",
+        "empty": "No nearby stops were found.",
+        "retry": "Try again",
+        "close": "Close",
+        "distance": {
+          "meters": "{{value}} m",
+          "kilometers": "{{value}} km"
         }
       }
     }
@@ -74,5 +100,10 @@
     "description": "Explore the network map and inspect each stop.",
     "openList": "View list",
     "hint": "Map preview loading"
+  },
+  "errors": {
+    "geolocation": {
+      "notSupported": "Geolocation is not supported on this device."
+    }
   }
 }

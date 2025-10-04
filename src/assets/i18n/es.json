@@ -13,10 +13,19 @@
   },
   "home": {
     "header": {
-      "title": "Transit",
+      "title": "Horarios de Autobuses",
       "infoLabel": "Ver información de la aplicación"
     },
     "sections": {
+      "search": {
+        "title": "Buscar paradas",
+        "originLabel": "Origen",
+        "originPlaceholder": "¿Dónde empiezas?",
+        "destinationLabel": "Destino",
+        "destinationPlaceholder": "¿A dónde vas?",
+        "dateLabel": "Fecha",
+        "submit": "Buscar horarios"
+      },
       "recentStops": {
         "title": "Paradas recientes",
         "items": {
@@ -40,6 +49,23 @@
             "title": "Mercado del Este",
             "subtitle": "Parada: 3455"
           }
+        }
+      }
+    },
+    "dialogs": {
+      "nearbyStops": {
+        "title": "Paradas cercanas",
+        "description": "Activa tu ubicación para ver las paradas más próximas.",
+        "loading": "Buscando tu ubicación...",
+        "permissionDenied": "No pudimos acceder a tu ubicación. Permite el acceso para continuar.",
+        "notSupported": "La geolocalización no es compatible con este dispositivo.",
+        "unknownError": "No pudimos determinar tu ubicación. Inténtalo de nuevo en unos instantes.",
+        "empty": "No se encontraron paradas cercanas.",
+        "retry": "Intentar de nuevo",
+        "close": "Cerrar",
+        "distance": {
+          "meters": "{{value}} m",
+          "kilometers": "{{value}} km"
         }
       }
     }
@@ -74,5 +100,10 @@
     "description": "Explora el mapa y revisa cada parada.",
     "openList": "Ver lista",
     "hint": "Vista previa del mapa"
+  },
+  "errors": {
+    "geolocation": {
+      "notSupported": "La geolocalización no es compatible con este dispositivo."
+    }
   }
 }

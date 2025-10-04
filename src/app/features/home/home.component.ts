@@ -1,12 +1,15 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { CommonModule, formatDate } from '@angular/common';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { APP_CONFIG } from '../../core/config';
 import { MaterialSymbolName } from '../../shared/ui/types/material-symbol-name';
 import { CardListItemComponent, CardListLayout, IconVariant } from '../../shared/ui/card-list-item/card-list-item.component';
 import { SectionComponent } from '../../shared/ui/section/section.component';
+import { HomeNearbyStopsDialogComponent } from './home-nearby-stops-dialog.component';
 
 interface HomeListItem {
   titleKey: string;
@@ -24,6 +27,11 @@ interface BottomNavigationItem {
   commands: readonly string[];
 }
 
+interface RecentStopCard {
+  titleKey: string;
+  imageUrl: string;
+}
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -32,6 +40,8 @@ interface BottomNavigationItem {
     RouterLink,
     RouterLinkActive,
     TranslateModule,
+    ReactiveFormsModule,
+    MatDialogModule,
     CardListItemComponent,
     SectionComponent
   ],
@@ -42,33 +52,44 @@ interface BottomNavigationItem {
 export class HomeComponent {
   private static readonly ROOT_COMMAND = '/' as const;
 
+  private readonly router = inject(Router);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly dialog = inject(MatDialog);
+
   private readonly translation = APP_CONFIG.translationKeys.home;
   private readonly navigation = APP_CONFIG.translationKeys.navigation;
-  private readonly pinIcon: MaterialSymbolName = 'pin_drop';
+  private readonly searchIds = APP_CONFIG.homeData.search;
+  private readonly defaultLocale = APP_CONFIG.locales.default;
+  private readonly isoDateFormat = APP_CONFIG.formats.isoDate;
   private readonly locationIcon: MaterialSymbolName = 'my_location';
   private readonly favoriteIcons: readonly MaterialSymbolName[] = ['directions_bus', 'mail'] as const;
+  private readonly originIcon: MaterialSymbolName = 'my_location';
+  private readonly destinationIcon: MaterialSymbolName = 'flag';
+  private readonly dateIcon: MaterialSymbolName = 'calendar_today';
 
   protected readonly headerTitleKey = this.translation.header.title;
   protected readonly headerInfoLabelKey = this.translation.header.infoLabel;
   protected readonly infoIcon: MaterialSymbolName = 'info';
+  protected readonly searchTitleKey = this.translation.sections.search.title;
+  protected readonly searchOriginLabelKey = this.translation.sections.search.originLabel;
+  protected readonly searchOriginPlaceholderKey = this.translation.sections.search.originPlaceholder;
+  protected readonly searchDestinationLabelKey = this.translation.sections.search.destinationLabel;
+  protected readonly searchDestinationPlaceholderKey =
+    this.translation.sections.search.destinationPlaceholder;
+  protected readonly searchDateLabelKey = this.translation.sections.search.dateLabel;
+  protected readonly searchSubmitKey = this.translation.sections.search.submit;
   protected readonly recentStopsTitleKey = this.translation.sections.recentStops.title;
   protected readonly findNearbyTitleKey = this.translation.sections.findNearby.title;
   protected readonly findNearbyActionKey = this.translation.sections.findNearby.action;
   protected readonly favoritesTitleKey = this.translation.sections.favorites.title;
 
-  protected readonly recentStops: HomeListItem[] =
-    APP_CONFIG.translationKeys.home.sections.recentStops.items.map((titleKey) => ({
-      titleKey,
-      leadingIcon: this.pinIcon,
-      commands: this.buildCommands(APP_CONFIG.routes.stopDetail)
-    }));
+  protected readonly recentStopCards: RecentStopCard[] = APP_CONFIG.homeData.recentStops.slice();
 
   protected readonly locationAction: HomeListItem = {
     titleKey: this.findNearbyActionKey,
     leadingIcon: this.locationIcon,
     layout: 'action',
     iconVariant: 'soft',
-    commands: this.buildCommands(APP_CONFIG.routes.map),
     ariaLabelKey: this.findNearbyActionKey
   };
 
@@ -100,6 +121,15 @@ export class HomeComponent {
   ];
 
   protected readonly trailingIcon: MaterialSymbolName = 'chevron_right';
+  protected readonly originFieldId = this.searchIds.originFieldId;
+  protected readonly destinationFieldId = this.searchIds.destinationFieldId;
+  protected readonly dateFieldId = this.searchIds.dateFieldId;
+
+  protected readonly searchForm = this.formBuilder.nonNullable.group({
+    origin: ['', Validators.required],
+    destination: ['', Validators.required],
+    date: [this.buildDefaultDate(), Validators.required]
+  });
 
   private buildCommands(path: string): readonly string[] {
     if (!path) {
@@ -107,5 +137,35 @@ export class HomeComponent {
     }
 
     return [HomeComponent.ROOT_COMMAND, path] as readonly string[];
+  }
+
+  protected onSearch(): void {
+    if (this.searchForm.invalid) {
+      this.searchForm.markAllAsTouched();
+      return;
+    }
+
+    const commands = this.buildCommands(APP_CONFIG.routes.routeSearch);
+    void this.router.navigate([...commands]);
+  }
+
+  protected openNearbyStopsDialog(): void {
+    this.dialog.open(HomeNearbyStopsDialogComponent);
+  }
+
+  protected get originIconName(): MaterialSymbolName {
+    return this.originIcon;
+  }
+
+  protected get destinationIconName(): MaterialSymbolName {
+    return this.destinationIcon;
+  }
+
+  protected get dateIconName(): MaterialSymbolName {
+    return this.dateIcon;
+  }
+
+  private buildDefaultDate(): string {
+    return formatDate(new Date(), this.isoDateFormat, this.defaultLocale);
   }
 }
