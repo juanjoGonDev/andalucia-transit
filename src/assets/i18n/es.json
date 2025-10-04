@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "stopDetail": "Detalle de parada",
+    "routeSearch": "Buscar ruta",
+    "map": "Mapa",
+    "language": "Idioma"
+  },
+  "languages": {
+    "es": "Español",
+    "en": "Inglés"
+  },
+  "home": {
+    "title": "Planifica tu próximo viaje",
+    "description": "Consulta paradas recientes, lugares cercanos y tus favoritas en un mismo lugar.",
+    "action": "Iniciar búsqueda",
+    "recent": "Paradas recientes",
+    "nearby": "Buscar cercanas",
+    "favorites": "Favoritas",
+    "recentDescription": "Abre de nuevo las paradas visitadas recientemente.",
+    "nearbyDescription": "Usa tu ubicación para descubrir paradas cercanas.",
+    "favoritesDescription": "Guarda las paradas que usas cada día para acceder rápido."
+  },
+  "stopDetail": {
+    "title": "Resumen de la parada",
+    "description": "Próximas salidas y llegadas recientes de la parada seleccionada.",
+    "upcoming": "Próximas salidas",
+    "history": "Historial reciente",
+    "upcomingItems": {
+      "first": "Línea C2 hacia Centro — llega en 2 min",
+      "second": "Línea A1 hacia Puerto — llega en 6 min",
+      "third": "Línea B3 hacia Universidad — llega en 12 min"
+    },
+    "historyItems": {
+      "first": "Línea A1 hacia Puerto — salió hace 3 min",
+      "second": "Línea D5 hacia Estación — salió hace 7 min"
+    }
+  },
+  "routeSearch": {
+    "title": "Buscar una ruta",
+    "description": "Selecciona origen, destino y fecha para ver rutas directas.",
+    "action": "Mostrar opciones",
+    "results": "Rutas sugeridas",
+    "originLabel": "Parada de origen",
+    "destinationLabel": "Parada de destino",
+    "dateLabel": "Fecha de viaje",
+    "sampleResult": "Toma la línea C2 desde Plaza Nueva hasta Parque María Luisa a las 08:15."
+  },
+  "map": {
+    "title": "Mapa de la red",
+    "description": "Explora el mapa y revisa cada parada.",
+    "openList": "Ver lista",
+    "hint": "Vista previa del mapa"
+  }
+}

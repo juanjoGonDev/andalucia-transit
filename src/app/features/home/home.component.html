@@ -1,0 +1,23 @@
+<section class="home">
+  <mat-card appearance="outlined" class="hero">
+    <h1>{{ translationKeys.title | translate }}</h1>
+    <p>{{ translationKeys.description | translate }}</p>
+    <button mat-flat-button color="primary" [routerLink]="routes.routeSearch">
+      {{ translationKeys.action | translate }}
+    </button>
+  </mat-card>
+  <div class="summary">
+    <mat-card appearance="outlined">
+      <h2>{{ translationKeys.recent | translate }}</h2>
+      <p>{{ translationKeys.recentDescription | translate }}</p>
+    </mat-card>
+    <mat-card appearance="outlined">
+      <h2>{{ translationKeys.nearby | translate }}</h2>
+      <p>{{ translationKeys.nearbyDescription | translate }}</p>
+    </mat-card>
+    <mat-card appearance="outlined">
+      <h2>{{ translationKeys.favorites | translate }}</h2>
+      <p>{{ translationKeys.favoritesDescription | translate }}</p>
+    </mat-card>
+  </div>
+</section>

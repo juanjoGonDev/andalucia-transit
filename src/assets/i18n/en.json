@@ -1,0 +1,55 @@
+{
+  "navigation": {
+    "home": "Home",
+    "stopDetail": "Stop detail",
+    "routeSearch": "Route search",
+    "map": "Map",
+    "language": "Language"
+  },
+  "languages": {
+    "es": "Spanish",
+    "en": "English"
+  },
+  "home": {
+    "title": "Plan your next ride",
+    "description": "Review recent stops, nearby locations, and your favorites in one place.",
+    "action": "Start a search",
+    "recent": "Recent stops",
+    "nearby": "Find nearby",
+    "favorites": "Favorites",
+    "recentDescription": "Quickly reopen stops you visited recently.",
+    "nearbyDescription": "Use your location to discover stops close to you.",
+    "favoritesDescription": "Pin the stops you use every day for fast access."
+  },
+  "stopDetail": {
+    "title": "Stop overview",
+    "description": "Upcoming departures and recent arrivals for the selected stop.",
+    "upcoming": "Next departures",
+    "history": "Recent history",
+    "upcomingItems": {
+      "first": "Line C2 to Downtown — arriving in 2 min",
+      "second": "Line A1 to Harbor — arriving in 6 min",
+      "third": "Line B3 to University — arriving in 12 min"
+    },
+    "historyItems": {
+      "first": "Line A1 to Harbor — departed 3 min ago",
+      "second": "Line D5 to Station — departed 7 min ago"
+    }
+  },
+  "routeSearch": {
+    "title": "Search a route",
+    "description": "Select origin, destination, and date to preview direct routes.",
+    "action": "Show options",
+    "results": "Suggested routes",
+    "originLabel": "Origin stop",
+    "destinationLabel": "Destination stop",
+    "dateLabel": "Travel date",
+    "sampleResult": "Take line C2 from Plaza Nueva to Parque María Luisa at 08:15."
+  },
+  "map": {
+    "title": "Network map",
+    "description": "Explore the network map and inspect each stop.",
+    "openList": "View list",
+    "hint": "Map preview loading"
+  }
+}

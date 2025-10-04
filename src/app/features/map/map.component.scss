@@ -1,0 +1,19 @@
+.map {
+  padding: 1.5rem;
+}
+
+.map-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+.map-placeholder {
+  align-items: center;
+  border: 1px dashed rgba(0, 0, 0, 0.2);
+  border-radius: 0.75rem;
+  display: flex;
+  height: 16rem;
+  justify-content: center;
+}
