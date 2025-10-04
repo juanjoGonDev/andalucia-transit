@@ -24,7 +24,8 @@
         "destinationLabel": "Destino",
         "destinationPlaceholder": "¿A dónde vas?",
         "dateLabel": "Fecha",
-        "submit": "Buscar horarios"
+        "submit": "Buscar horarios",
+        "swapLabel": "Intercambiar origen y destino"
       },
       "recentStops": {
         "title": "Paradas recientes",

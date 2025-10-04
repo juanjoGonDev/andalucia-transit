@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { formatDate, registerLocaleData } from '@angular/common';
@@ -6,14 +6,64 @@ import localeEs from '@angular/common/locales/es';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
+import { FormControl } from '@angular/forms';
 
 import { APP_CONFIG } from '../../core/config';
 import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-item.component';
 import { HomeComponent } from './home.component';
+import {
+  MockTransitNetworkService,
+  StopOption,
+  StopSearchRequest
+} from '../../data/stops/mock-transit-network.service';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
     return of({});
+  }
+}
+
+const STUB_STOPS: readonly StopOption[] = [
+  { id: 'alpha', name: 'Alpha Station', lineIds: ['line-a', 'line-b'] },
+  { id: 'beta', name: 'Beta Terminal', lineIds: ['line-a'] },
+  { id: 'gamma', name: 'Gamma Center', lineIds: ['line-b'] },
+  { id: 'delta', name: 'Delta Park', lineIds: ['line-c'] }
+] as const;
+
+class TransitNetworkStub {
+  private readonly stops = STUB_STOPS;
+  private readonly reachability = new Map<string, readonly string[]>([
+    ['alpha', ['beta', 'gamma']],
+    ['beta', ['alpha']],
+    ['gamma', ['alpha']],
+    ['delta', []]
+  ]);
+
+  searchStops(request: StopSearchRequest) {
+    const normalizedQuery = request.query.trim().toLocaleLowerCase();
+    let results = this.stops.filter((stop) =>
+      request.includeStopIds ? request.includeStopIds.includes(stop.id) : true
+    );
+
+    if (normalizedQuery) {
+      results = results.filter((stop) =>
+        stop.name.toLocaleLowerCase().includes(normalizedQuery)
+      );
+    }
+
+    if (request.excludeStopId) {
+      results = results.filter((stop) => stop.id !== request.excludeStopId);
+    }
+
+    return of(results.slice(0, request.limit));
+  }
+
+  getReachableStopIds(stopId: string): readonly string[] {
+    return this.reachability.get(stopId) ?? [];
+  }
+
+  getStopById(stopId: string): StopOption | null {
+    return this.stops.find((stop) => stop.id === stopId) ?? null;
   }
 }
 
@@ -40,7 +90,8 @@ describe('HomeComponent', () => {
       ],
       providers: [
         provideRouter([]),
-        { provide: MatDialog, useValue: dialogStub }
+        { provide: MatDialog, useValue: dialogStub },
+        { provide: MockTransitNetworkService, useClass: TransitNetworkStub }
       ]
     }).compileComponents();
 
@@ -79,8 +130,8 @@ describe('HomeComponent', () => {
     );
 
     form.setValue({
-      origin: 'Origin stop',
-      destination: 'Destination stop',
+      origin: STUB_STOPS[0],
+      destination: STUB_STOPS[1],
       date: yesterdayValue
     });
     form.updateValueAndValidity();
@@ -108,5 +159,59 @@ describe('HomeComponent', () => {
       const instance = item.componentInstance as CardListItemComponent;
       expect(instance.leadingIcon).toBe(APP_CONFIG.homeData.recentStops.icon);
     }
+  });
+
+  it('filters destination options to those reachable from the selected origin', fakeAsync(() => {
+    const originControl = component['searchForm'].controls
+      .origin as FormControl<StopOption | string | null>;
+    const destinationOptions$ = component['destinationOptions$'];
+    const debounce = APP_CONFIG.homeData.search.debounceMs;
+    let results: readonly StopOption[] = [];
+
+    const subscription = destinationOptions$.subscribe((value) => {
+      results = value;
+    });
+
+    originControl.setValue(STUB_STOPS[0]);
+    tick(debounce);
+    fixture.detectChanges();
+    tick();
+
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.every((stop) => ['beta', 'gamma'].includes(stop.id))).toBeTrue();
+
+    subscription.unsubscribe();
+  }));
+
+  it('clears an incompatible destination when the origin changes', fakeAsync(() => {
+    const originControl = component['searchForm'].controls
+      .origin as FormControl<StopOption | string | null>;
+    const destinationControl = component['searchForm'].controls
+      .destination as FormControl<StopOption | string | null>;
+    const debounce = APP_CONFIG.homeData.search.debounceMs;
+
+    originControl.setValue(STUB_STOPS[0]);
+    destinationControl.setValue(STUB_STOPS[1]);
+    tick(debounce);
+
+    originControl.setValue(STUB_STOPS[3]);
+    tick(debounce);
+
+    expect(destinationControl.value).toBeNull();
+  }));
+
+  it('swaps selected stops when the swap action is triggered', () => {
+    const originControl = component['searchForm'].controls
+      .origin as FormControl<StopOption | string | null>;
+    const destinationControl = component['searchForm'].controls
+      .destination as FormControl<StopOption | string | null>;
+
+    originControl.setValue(STUB_STOPS[0]);
+    destinationControl.setValue(STUB_STOPS[2]);
+
+    component['swapStops']();
+
+    expect(originControl.value).toEqual(STUB_STOPS[2]);
+    expect(destinationControl.value).toEqual(STUB_STOPS[0]);
   });
 });

@@ -47,7 +47,8 @@ export const APP_CONFIG = {
           destinationLabel: 'home.sections.search.destinationLabel',
           destinationPlaceholder: 'home.sections.search.destinationPlaceholder',
           dateLabel: 'home.sections.search.dateLabel',
-          submit: 'home.sections.search.submit'
+          submit: 'home.sections.search.submit',
+          swapLabel: 'home.sections.search.swapLabel'
         },
         recentStops: {
           title: 'home.sections.recentStops.title',
@@ -136,7 +137,9 @@ export const APP_CONFIG = {
     search: {
       originFieldId: 'home-search-origin',
       destinationFieldId: 'home-search-destination',
-      dateFieldId: 'home-search-date'
+      dateFieldId: 'home-search-date',
+      maxAutocompleteOptions: 50,
+      debounceMs: 150
     },
     recentStops: {
       icon: 'pin_drop',

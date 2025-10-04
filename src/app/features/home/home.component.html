@@ -13,44 +13,78 @@
     <main class="home__main">
       <app-section [titleKey]="searchTitleKey" appearance="card">
         <form class="home__search" [formGroup]="searchForm" (ngSubmit)="onSearch()">
-          <div class="home__search-group">
-            <label class="home__sr-only" [for]="originFieldId">{{ searchOriginLabelKey | translate }}</label>
-            <span class="material-symbols-outlined home__search-icon">{{ originIconName }}</span>
-            <input
-              class="home__search-input"
-              type="text"
-              [id]="originFieldId"
-              formControlName="origin"
-              [placeholder]="searchOriginPlaceholderKey | translate"
-              autocomplete="off"
-            />
+          <div class="home__search-grid">
+            <mat-form-field appearance="fill" class="home__field">
+              <mat-label>{{ searchOriginLabelKey | translate }}</mat-label>
+              <span matPrefix class="material-symbols-outlined home__search-icon">{{ originIconName }}</span>
+              <input
+                matInput
+                type="text"
+                [id]="originFieldId"
+                formControlName="origin"
+                [matAutocomplete]="originAutocomplete"
+                [attr.autocomplete]="'off'"
+                [placeholder]="searchOriginPlaceholderKey | translate"
+              />
+              <mat-autocomplete
+                #originAutocomplete="matAutocomplete"
+                [displayWith]="displayStopFn"
+              >
+                <mat-option
+                  *ngFor="let option of originOptions$ | async; trackBy: trackStopOption"
+                  [value]="option"
+                >
+                  {{ option.name }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <button
+              type="button"
+              class="home__swap-button"
+              (click)="swapStops()"
+              [attr.aria-label]="swapButtonLabelKey | translate"
+            >
+              <span class="material-symbols-outlined">{{ swapIcon }}</span>
+            </button>
+            <mat-form-field appearance="fill" class="home__field">
+              <mat-label>{{ searchDestinationLabelKey | translate }}</mat-label>
+              <span matPrefix class="material-symbols-outlined home__search-icon">{{ destinationIconName }}</span>
+              <input
+                matInput
+                type="text"
+                [id]="destinationFieldId"
+                formControlName="destination"
+                [matAutocomplete]="destinationAutocomplete"
+                [attr.autocomplete]="'off'"
+                [placeholder]="searchDestinationPlaceholderKey | translate"
+              />
+              <mat-autocomplete
+                #destinationAutocomplete="matAutocomplete"
+                [displayWith]="displayStopFn"
+              >
+                <mat-option
+                  *ngFor="let option of destinationOptions$ | async; trackBy: trackStopOption"
+                  [value]="option"
+                >
+                  {{ option.name }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
           </div>
-          <div class="home__search-group">
-            <label class="home__sr-only" [for]="destinationFieldId">
-              {{ searchDestinationLabelKey | translate }}
-            </label>
-            <span class="material-symbols-outlined home__search-icon">{{ destinationIconName }}</span>
+          <mat-form-field appearance="fill" class="home__field home__field--date">
+            <mat-label>{{ searchDateLabelKey | translate }}</mat-label>
+            <span matPrefix class="material-symbols-outlined home__search-icon">{{ dateIconName }}</span>
             <input
-              class="home__search-input"
-              type="text"
-              [id]="destinationFieldId"
-              formControlName="destination"
-              [placeholder]="searchDestinationPlaceholderKey | translate"
-              autocomplete="off"
-            />
-          </div>
-          <div class="home__search-group">
-            <label class="home__sr-only" [for]="dateFieldId">{{ searchDateLabelKey | translate }}</label>
-            <span class="material-symbols-outlined home__search-icon">{{ dateIconName }}</span>
-            <input
-              class="home__search-input"
+              matInput
               type="date"
               [id]="dateFieldId"
               formControlName="date"
               [attr.min]="minSearchDate"
             />
-          </div>
-          <button class="home__search-submit" type="submit">{{ searchSubmitKey | translate }}</button>
+          </mat-form-field>
+          <button class="home__search-submit" type="submit" [disabled]="searchForm.invalid">
+            {{ searchSubmitKey | translate }}
+          </button>
         </form>
       </app-section>
       <app-section [titleKey]="recentStopsTitleKey">

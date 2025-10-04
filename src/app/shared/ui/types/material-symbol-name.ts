@@ -9,4 +9,5 @@ export type MaterialSymbolName =
   | 'mail'
   | 'home'
   | 'map'
-  | 'route';
+  | 'route'
+  | 'swap_vert';
