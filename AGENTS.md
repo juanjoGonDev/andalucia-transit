@@ -1,3 +1,6 @@
+### Change Management – Living Document
+AGENTS.md is a living, single source of truth. Whenever the implementation, stack, directory layout, workflows, or conventions change, update this document in the same pull request. If a decision deviates from what is written here, either align the code with AGENTS.md or revise AGENTS.md to reflect the new agreed direction before merging.
+
 Project Overview
 
 This project is a Progressive Web App (PWA) for browsing public bus schedules and stops in the Andalusia transport network. It allows users to find upcoming bus times at a given stop, locate nearby bus stops via GPS, search for routes between an origin and destination, and view all stops on an interactive map. The application is built with a focus on clean architecture and code quality: we will apply TDD (Test-Driven Development), SOLID principles, and clean code practices throughout. The app will support multiple languages (Spanish and English initially), defaulting to Spanish if the user’s language is not recognized. It will directly consume the open data API of the Red de Consorcios de Transporte de Andalucía (CTAN) for transit data
