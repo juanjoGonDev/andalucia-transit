@@ -2,7 +2,14 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule, formatDate } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { APP_CONFIG } from '../../core/config';
@@ -125,10 +132,17 @@ export class HomeComponent {
   protected readonly destinationFieldId = this.searchIds.destinationFieldId;
   protected readonly dateFieldId = this.searchIds.dateFieldId;
 
+  private readonly minimumSearchDate = this.buildDefaultDate();
+  private readonly minimumDateValidator: ValidatorFn = this.createMinimumDateValidator(
+    this.minimumSearchDate
+  );
+
+  protected readonly minSearchDate = this.minimumSearchDate;
+
   protected readonly searchForm = this.formBuilder.nonNullable.group({
     origin: ['', Validators.required],
     destination: ['', Validators.required],
-    date: [this.buildDefaultDate(), Validators.required]
+    date: [this.minimumSearchDate, [Validators.required, this.minimumDateValidator]]
   });
 
   private buildCommands(path: string): readonly string[] {
@@ -167,5 +181,17 @@ export class HomeComponent {
 
   private buildDefaultDate(): string {
     return formatDate(new Date(), this.isoDateFormat, this.defaultLocale);
+  }
+
+  private createMinimumDateValidator(minimum: string): ValidatorFn {
+    return (control: AbstractControl<string | null>): ValidationErrors | null => {
+      const value = control.value;
+
+      if (!value) {
+        return null;
+      }
+
+      return value < minimum ? { minDate: { min: minimum } } : null;
+    };
   }
 }

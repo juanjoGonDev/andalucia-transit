@@ -1,0 +1,86 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
+import { By } from '@angular/platform-browser';
+import { formatDate } from '@angular/common';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { MatDialog } from '@angular/material/dialog';
+import { of } from 'rxjs';
+
+import { APP_CONFIG } from '../../core/config';
+import { HomeComponent } from './home.component';
+
+class FakeTranslateLoader implements TranslateLoader {
+  getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
+    return of({});
+  }
+}
+
+describe('HomeComponent', () => {
+  let fixture: ComponentFixture<HomeComponent>;
+  let component: HomeComponent;
+  let router: Router;
+
+  const dialogStub = { open: jasmine.createSpy('open') };
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        HomeComponent,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
+      providers: [
+        provideRouter([]),
+        { provide: MatDialog, useValue: dialogStub }
+      ]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(HomeComponent);
+    component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    fixture.detectChanges();
+  });
+
+  it('initializes the date field with today and enforces the minimum date attribute', async () => {
+    const expectedToday = formatDate(
+      new Date(),
+      APP_CONFIG.formats.isoDate,
+      APP_CONFIG.locales.default
+    );
+
+    await fixture.whenStable();
+
+    const dateInput = fixture.debugElement.query(
+      By.css(`#${APP_CONFIG.homeData.search.dateFieldId}`)
+    ).nativeElement as HTMLInputElement;
+
+    expect(dateInput.value).toBe(expectedToday);
+    expect(dateInput.min).toBe(expectedToday);
+  });
+
+  it('prevents searching with a date earlier than today', async () => {
+    const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
+    const form = component['searchForm'];
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayValue = formatDate(
+      yesterday,
+      APP_CONFIG.formats.isoDate,
+      APP_CONFIG.locales.default
+    );
+
+    form.setValue({
+      origin: 'Origin stop',
+      destination: 'Destination stop',
+      date: yesterdayValue
+    });
+    form.updateValueAndValidity();
+
+    component['onSearch']();
+
+    expect(form.invalid).toBeTrue();
+    expect(form.get('date')?.hasError('minDate')).toBeTrue();
+    expect(navigateSpy).not.toHaveBeenCalled();
+  });
+});

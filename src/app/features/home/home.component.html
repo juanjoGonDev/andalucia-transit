@@ -47,6 +47,7 @@
               type="date"
               [id]="dateFieldId"
               formControlName="date"
+              [attr.min]="minSearchDate"
             />
           </div>
           <button class="home__search-submit" type="submit">{{ searchSubmitKey | translate }}</button>
