@@ -4,22 +4,45 @@
     "stopDetail": "Detalle de parada",
     "routeSearch": "Buscar ruta",
     "map": "Mapa",
-    "language": "Idioma"
+    "language": "Idioma",
+    "lines": "Líneas"
   },
   "languages": {
     "es": "Español",
     "en": "Inglés"
   },
   "home": {
-    "title": "Planifica tu próximo viaje",
-    "description": "Consulta paradas recientes, lugares cercanos y tus favoritas en un mismo lugar.",
-    "action": "Iniciar búsqueda",
-    "recent": "Paradas recientes",
-    "nearby": "Buscar cercanas",
-    "favorites": "Favoritas",
-    "recentDescription": "Abre de nuevo las paradas visitadas recientemente.",
-    "nearbyDescription": "Usa tu ubicación para descubrir paradas cercanas.",
-    "favoritesDescription": "Guarda las paradas que usas cada día para acceder rápido."
+    "header": {
+      "title": "Transit",
+      "infoLabel": "Ver información de la aplicación"
+    },
+    "sections": {
+      "recentStops": {
+        "title": "Paradas recientes",
+        "items": {
+          "mainStreet": "Calle Principal y Avenida 1",
+          "oakwoodPlaza": "Plaza Oakwood",
+          "cityLibrary": "Biblioteca Municipal"
+        }
+      },
+      "findNearby": {
+        "title": "Buscar cercanas",
+        "action": "Usar mi ubicación"
+      },
+      "favorites": {
+        "title": "Favoritas",
+        "items": {
+          "uptown": {
+            "title": "Centro de Transporte Uptown",
+            "subtitle": "Parada: 7821"
+          },
+          "eastMarket": {
+            "title": "Mercado del Este",
+            "subtitle": "Parada: 3455"
+          }
+        }
+      }
+    }
   },
   "stopDetail": {
     "title": "Resumen de la parada",

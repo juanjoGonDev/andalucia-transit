@@ -165,6 +165,7 @@
       "@cypress/schematic",
       "angular-eslint",
       "@schematics/angular"
-    ]
+    ],
+    "analytics": false
   }
 }

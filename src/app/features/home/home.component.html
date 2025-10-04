@@ -1,23 +1,67 @@
-<section class="home">
-  <mat-card appearance="outlined" class="hero">
-    <h1>{{ translationKeys.title | translate }}</h1>
-    <p>{{ translationKeys.description | translate }}</p>
-    <button mat-flat-button color="primary" [routerLink]="routes.routeSearch">
-      {{ translationKeys.action | translate }}
-    </button>
-  </mat-card>
-  <div class="summary">
-    <mat-card appearance="outlined">
-      <h2>{{ translationKeys.recent | translate }}</h2>
-      <p>{{ translationKeys.recentDescription | translate }}</p>
-    </mat-card>
-    <mat-card appearance="outlined">
-      <h2>{{ translationKeys.nearby | translate }}</h2>
-      <p>{{ translationKeys.nearbyDescription | translate }}</p>
-    </mat-card>
-    <mat-card appearance="outlined">
-      <h2>{{ translationKeys.favorites | translate }}</h2>
-      <p>{{ translationKeys.favoritesDescription | translate }}</p>
-    </mat-card>
+<div class="home">
+  <div class="home__content">
+    <header class="home__header">
+      <h1 class="home__title">{{ headerTitleKey | translate }}</h1>
+      <button
+        type="button"
+        class="home__info-button"
+        [attr.aria-label]="headerInfoLabelKey | translate"
+      >
+        <span class="material-symbols-outlined">{{ infoIcon }}</span>
+      </button>
+    </header>
+    <main class="home__main">
+      <app-section [titleKey]="recentStopsTitleKey">
+        <div class="home__list">
+          <app-card-list-item
+            *ngFor="let stop of recentStops"
+            [leadingIcon]="stop.leadingIcon"
+            [titleKey]="stop.titleKey"
+            [trailingIcon]="trailingIcon"
+            [commands]="stop.commands"
+          ></app-card-list-item>
+        </div>
+      </app-section>
+      <app-section [titleKey]="findNearbyTitleKey">
+        <app-card-list-item
+          [leadingIcon]="locationAction.leadingIcon"
+          [titleKey]="locationAction.titleKey"
+          [layout]="locationAction.layout ?? 'list'"
+          [iconVariant]="locationAction.iconVariant ?? 'plain'"
+          [trailingIcon]="trailingIcon"
+          [commands]="locationAction.commands"
+          [ariaLabelKey]="locationAction.ariaLabelKey"
+        ></app-card-list-item>
+      </app-section>
+      <app-section [titleKey]="favoritesTitleKey">
+        <div class="home__list">
+          <app-card-list-item
+            *ngFor="let stop of favoriteStops"
+            [leadingIcon]="stop.leadingIcon"
+            [titleKey]="stop.titleKey"
+            [subtitleKey]="stop.subtitleKey"
+            [iconVariant]="stop.iconVariant ?? 'plain'"
+            [trailingIcon]="trailingIcon"
+            [commands]="stop.commands"
+          ></app-card-list-item>
+        </div>
+      </app-section>
+    </main>
   </div>
-</section>
+  <footer class="home__footer">
+    <nav class="home__bottom-nav">
+      <a
+        *ngFor="let item of bottomNavigationItems"
+        class="home__bottom-nav-item"
+        [routerLink]="item.commands"
+        routerLinkActive="home__bottom-nav-item--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        #link="routerLinkActive"
+        [attr.aria-current]="link.isActive ? 'page' : null"
+      >
+        <span class="material-symbols-outlined">{{ item.icon }}</span>
+        <span class="home__bottom-nav-label">{{ item.labelKey | translate }}</span>
+      </a>
+    </nav>
+  </footer>
+</div>

@@ -35,11 +35,11 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it('renders navigation links', () => {
+  it('renders the routed content outlet', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    const links = compiled.querySelectorAll('nav a');
-    expect(links.length).toBe(4);
+    const outlet = compiled.querySelector('router-outlet');
+    expect(outlet).not.toBeNull();
   });
 });

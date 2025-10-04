@@ -21,22 +21,45 @@ export const APP_CONFIG = {
       stopDetail: 'navigation.stopDetail',
       routeSearch: 'navigation.routeSearch',
       map: 'navigation.map',
-      language: 'navigation.language'
+      language: 'navigation.language',
+      lines: 'navigation.lines'
     },
     languages: {
       es: 'languages.es',
       en: 'languages.en'
     },
     home: {
-      title: 'home.title',
-      description: 'home.description',
-      action: 'home.action',
-      recent: 'home.recent',
-      nearby: 'home.nearby',
-      favorites: 'home.favorites',
-      recentDescription: 'home.recentDescription',
-      nearbyDescription: 'home.nearbyDescription',
-      favoritesDescription: 'home.favoritesDescription'
+      header: {
+        title: 'home.header.title',
+        infoLabel: 'home.header.infoLabel'
+      },
+      sections: {
+        recentStops: {
+          title: 'home.sections.recentStops.title',
+          items: [
+            'home.sections.recentStops.items.mainStreet',
+            'home.sections.recentStops.items.oakwoodPlaza',
+            'home.sections.recentStops.items.cityLibrary'
+          ] as const
+        },
+        findNearby: {
+          title: 'home.sections.findNearby.title',
+          action: 'home.sections.findNearby.action'
+        },
+        favorites: {
+          title: 'home.sections.favorites.title',
+          items: [
+            {
+              title: 'home.sections.favorites.items.uptown.title',
+              subtitle: 'home.sections.favorites.items.uptown.subtitle'
+            },
+            {
+              title: 'home.sections.favorites.items.eastMarket.title',
+              subtitle: 'home.sections.favorites.items.eastMarket.subtitle'
+            }
+          ] as const
+        }
+      }
     },
     stopDetail: {
       title: 'stopDetail.title',
