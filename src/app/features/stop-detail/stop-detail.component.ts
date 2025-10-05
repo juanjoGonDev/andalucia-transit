@@ -74,7 +74,8 @@ export class StopDetailComponent {
         new Date(),
         destination === ALL_DESTINATIONS_OPTION ? null : destination
       )
-    )
+    ),
+    shareReplay({ bufferSize: 1, refCount: false })
   );
 
   protected readonly allDestinationsOption = ALL_DESTINATIONS_OPTION;
@@ -88,6 +89,10 @@ export class StopDetailComponent {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => this.redirectToHome());
+
+    this.viewModel$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 
   private redirectToHome(): void {

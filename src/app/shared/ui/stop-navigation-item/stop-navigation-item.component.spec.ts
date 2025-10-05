@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 
@@ -20,6 +21,7 @@ describe('StopNavigationItemComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        RouterTestingModule,
         StopNavigationItemComponent,
         TranslateModule.forRoot({
           loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }

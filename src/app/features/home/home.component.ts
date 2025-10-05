@@ -251,7 +251,7 @@ export class HomeComponent {
         limit: this.maxAutocompleteOptions
       })
     ),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: false })
   );
 
   protected readonly destinationOptions$: Observable<readonly StopOption[]> = combineLatest([
@@ -267,7 +267,7 @@ export class HomeComponent {
         limit: this.maxAutocompleteOptions
       })
     ),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: false })
   );
 
   protected readonly displayStopFn = (value: StopAutocompleteValue): string =>
