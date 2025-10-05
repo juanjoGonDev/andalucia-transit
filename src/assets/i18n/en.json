@@ -80,17 +80,33 @@
   },
   "stopDetail": {
     "title": "Stop overview",
-    "description": "Upcoming departures and recent arrivals for the selected stop.",
-    "upcoming": "Next departures",
-    "history": "Recent history",
-    "upcomingItems": {
-      "first": "Line C2 to Downtown — arriving in 2 min",
-      "second": "Line A1 to Harbor — arriving in 6 min",
-      "third": "Line B3 to University — arriving in 12 min"
+    "subtitle": "Live departures with accessibility and university indicators.",
+    "loading": "Loading schedule…",
+    "header": {
+      "stopCodeLabel": "Stop code",
+      "scheduleDateLabel": "Schedule date",
+      "lastUpdatedLabel": "Last updated"
     },
-    "historyItems": {
-      "first": "Line A1 to Harbor — departed 3 min ago",
-      "second": "Line D5 to Station — departed 7 min ago"
+    "filters": {
+      "destinationLabel": "Destination",
+      "allDestinations": "All destinations"
+    },
+    "schedule": {
+      "upcomingTitle": "Upcoming departures",
+      "upcomingSubtitle": "Showing {{count}} departures",
+      "pastTitle": "Recent departures",
+      "pastSubtitle": "Showing {{count}} departures",
+      "emptyUpcoming": "No upcoming departures match the selected destination.",
+      "emptyPast": "No recent departures for this stop."
+    },
+    "status": {
+      "arrivesIn": "Arrives in {{minutes}} min",
+      "arrivingNow": "Arriving now",
+      "departedAgo": "Departed {{minutes}} min ago"
+    },
+    "badges": {
+      "accessible": "Accessible bus",
+      "universityOnly": "University service"
     }
   },
   "routeSearch": {

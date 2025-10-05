@@ -80,17 +80,33 @@
   },
   "stopDetail": {
     "title": "Resumen de la parada",
-    "description": "Próximas salidas y llegadas recientes de la parada seleccionada.",
-    "upcoming": "Próximas salidas",
-    "history": "Historial reciente",
-    "upcomingItems": {
-      "first": "Línea C2 hacia Centro — llega en 2 min",
-      "second": "Línea A1 hacia Puerto — llega en 6 min",
-      "third": "Línea B3 hacia Universidad — llega en 12 min"
+    "subtitle": "Horarios en vivo con información de accesibilidad y servicios universitarios.",
+    "loading": "Cargando horarios…",
+    "header": {
+      "stopCodeLabel": "Código de parada",
+      "scheduleDateLabel": "Fecha del horario",
+      "lastUpdatedLabel": "Última actualización"
     },
-    "historyItems": {
-      "first": "Línea A1 hacia Puerto — salió hace 3 min",
-      "second": "Línea D5 hacia Estación — salió hace 7 min"
+    "filters": {
+      "destinationLabel": "Destino",
+      "allDestinations": "Todos los destinos"
+    },
+    "schedule": {
+      "upcomingTitle": "Próximas salidas",
+      "upcomingSubtitle": "{{count}} salidas programadas",
+      "pastTitle": "Salidas recientes",
+      "pastSubtitle": "{{count}} salidas registradas",
+      "emptyUpcoming": "No hay salidas próximas para esta selección.",
+      "emptyPast": "No hay salidas recientes para esta parada."
+    },
+    "status": {
+      "arrivesIn": "Llega en {{minutes}} min",
+      "arrivingNow": "Llegando ahora",
+      "departedAgo": "Salió hace {{minutes}} min"
+    },
+    "badges": {
+      "accessible": "Servicio accesible",
+      "universityOnly": "Servicio universitario"
     }
   },
   "routeSearch": {

@@ -103,18 +103,34 @@ export const APP_CONFIG = {
     },
     stopDetail: {
       title: 'stopDetail.title',
-      description: 'stopDetail.description',
-      upcoming: 'stopDetail.upcoming',
-      history: 'stopDetail.history',
-      upcomingItems: [
-        'stopDetail.upcomingItems.first',
-        'stopDetail.upcomingItems.second',
-        'stopDetail.upcomingItems.third'
-      ] as const,
-      historyItems: [
-        'stopDetail.historyItems.first',
-        'stopDetail.historyItems.second'
-      ] as const
+      subtitle: 'stopDetail.subtitle',
+      loading: 'stopDetail.loading',
+      header: {
+        stopCodeLabel: 'stopDetail.header.stopCodeLabel',
+        scheduleDateLabel: 'stopDetail.header.scheduleDateLabel',
+        lastUpdatedLabel: 'stopDetail.header.lastUpdatedLabel'
+      },
+      filters: {
+        destinationLabel: 'stopDetail.filters.destinationLabel',
+        allDestinations: 'stopDetail.filters.allDestinations'
+      },
+      schedule: {
+        upcomingTitle: 'stopDetail.schedule.upcomingTitle',
+        upcomingSubtitle: 'stopDetail.schedule.upcomingSubtitle',
+        pastTitle: 'stopDetail.schedule.pastTitle',
+        pastSubtitle: 'stopDetail.schedule.pastSubtitle',
+        emptyUpcoming: 'stopDetail.schedule.emptyUpcoming',
+        emptyPast: 'stopDetail.schedule.emptyPast'
+      },
+      status: {
+        arrivesIn: 'stopDetail.status.arrivesIn',
+        arrivingNow: 'stopDetail.status.arrivingNow',
+        departedAgo: 'stopDetail.status.departedAgo'
+      },
+      badges: {
+        accessible: 'stopDetail.badges.accessible',
+        universityOnly: 'stopDetail.badges.universityOnly'
+      }
     },
     routeSearch: {
       title: 'routeSearch.title',
