@@ -6,7 +6,7 @@ import localeEs from '@angular/common/locales/es';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDatepicker, MatDatepickerInput } from '@angular/material/datepicker';
-import { filter, of } from 'rxjs';
+import { of } from 'rxjs';
 import { FormControl } from '@angular/forms';
 
 import { APP_CONFIG } from '../../core/config';
@@ -192,6 +192,10 @@ describe('HomeComponent', () => {
     const debounce = APP_CONFIG.homeData.search.debounceMs;
     const network = TestBed.inject(MockTransitNetworkService) as unknown as TransitNetworkStub;
     const getReachableSpy = spyOn(network, 'getReachableStopIds').and.callThrough();
+    let latestOptions: readonly StopOption[] = [];
+    const subscription = destinationOptions$.subscribe((options) => {
+      latestOptions = options;
+    });
 
     tick(debounce + 1);
     originControl.setValue(STUB_STOPS[0]);
@@ -200,7 +204,9 @@ describe('HomeComponent', () => {
     flush();
     tick();
 
+    expect(latestOptions.map((option) => option.id)).toEqual(ALPHA_REACHABLE_STOP_IDS);
     expect(getReachableSpy).toHaveBeenCalledWith(STUB_STOPS[0].id);
+    subscription.unsubscribe();
   }));
 
   it('clears an incompatible destination when the origin changes', fakeAsync(() => {
