@@ -14,7 +14,7 @@
       <app-section [titleKey]="searchTitleKey" appearance="card">
         <form class="home__search" [formGroup]="searchForm" (ngSubmit)="onSearch()">
           <div class="home__search-grid">
-            <mat-form-field appearance="fill" class="home__field">
+            <mat-form-field appearance="fill" class="home__field home__field--origin">
               <mat-label>{{ searchOriginLabelKey | translate }}</mat-label>
               <span matPrefix class="material-symbols-outlined home__search-icon">{{ originIconName }}</span>
               <input
@@ -46,7 +46,7 @@
             >
               <span class="material-symbols-outlined">{{ swapIcon }}</span>
             </button>
-            <mat-form-field appearance="fill" class="home__field">
+            <mat-form-field appearance="fill" class="home__field home__field--destination">
               <mat-label>{{ searchDestinationLabelKey | translate }}</mat-label>
               <span matPrefix class="material-symbols-outlined home__search-icon">{{ destinationIconName }}</span>
               <input
@@ -70,22 +70,22 @@
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
+            <mat-form-field appearance="fill" class="home__field home__field--date">
+              <mat-label>{{ searchDateLabelKey | translate }}</mat-label>
+              <span matPrefix class="material-symbols-outlined home__search-icon">{{ dateIconName }}</span>
+              <input
+                matInput
+                [id]="dateFieldId"
+                formControlName="date"
+                [matDatepicker]="searchDatepicker"
+                [min]="minSearchDate"
+                readonly
+                (focus)="openSearchDatePicker(searchDatepicker)"
+                (click)="openSearchDatePicker(searchDatepicker)"
+              />
+              <mat-datepicker #searchDatepicker></mat-datepicker>
+            </mat-form-field>
           </div>
-          <mat-form-field appearance="fill" class="home__field home__field--date">
-            <mat-label>{{ searchDateLabelKey | translate }}</mat-label>
-            <span matPrefix class="material-symbols-outlined home__search-icon">{{ dateIconName }}</span>
-            <input
-              matInput
-              [id]="dateFieldId"
-              formControlName="date"
-              [matDatepicker]="searchDatepicker"
-              [min]="minSearchDate"
-              readonly
-              (focus)="openSearchDatePicker(searchDatepicker)"
-              (click)="openSearchDatePicker(searchDatepicker)"
-            />
-            <mat-datepicker #searchDatepicker></mat-datepicker>
-          </mat-form-field>
           <button class="home__search-submit" type="submit" [disabled]="searchForm.invalid">
             {{ searchSubmitKey | translate }}
           </button>

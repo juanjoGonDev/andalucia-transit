@@ -6,7 +6,7 @@ import localeEs from '@angular/common/locales/es';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDatepicker, MatDatepickerInput } from '@angular/material/datepicker';
-import { of } from 'rxjs';
+import { filter, of, skip, take } from 'rxjs';
 import { FormControl } from '@angular/forms';
 
 import { APP_CONFIG } from '../../core/config';
@@ -180,29 +180,41 @@ describe('HomeComponent', () => {
       .origin as FormControl<StopOption | string | null>;
     const destinationOptions$ = component['destinationOptions$'];
     const debounce = APP_CONFIG.homeData.search.debounceMs;
-    let latestOptions: StopOption[] = [];
+    let initialOptionIds: readonly string[] = [];
+    let reachableOptions: readonly StopOption[] = [];
 
-    const subscription = destinationOptions$.subscribe((value) => {
-      latestOptions = [...value];
+    destinationOptions$.pipe(take(1)).subscribe((options) => {
+      initialOptionIds = options.map((option) => option.id);
     });
 
+    tick(debounce + 1);
+    fixture.detectChanges();
     tick();
-    const initialOptionIds = latestOptions.map((option) => option.id);
+
+    expect(initialOptionIds.length).toBeGreaterThan(0);
+
+    destinationOptions$
+      .pipe(
+        skip(1),
+        filter((options): options is readonly StopOption[] => options.length > 0),
+        take(1)
+      )
+      .subscribe((options) => {
+        reachableOptions = options;
+      });
 
     originControl.setValue(STUB_STOPS[0]);
     tick(debounce + 1);
     fixture.detectChanges();
     tick();
 
-    const reachableOptionIds = latestOptions.map((option) => option.id);
+    const reachableOptionIds = reachableOptions.map((option) => option.id);
 
     expect(reachableOptionIds.length).toBeGreaterThan(0);
     expect(reachableOptionIds).not.toEqual(initialOptionIds);
     expect(
       reachableOptionIds.every((stopId: string) => ALPHA_REACHABLE_STOP_IDS.includes(stopId))
     ).toBeTrue();
-
-    subscription.unsubscribe();
   }));
 
   it('clears an incompatible destination when the origin changes', fakeAsync(() => {
