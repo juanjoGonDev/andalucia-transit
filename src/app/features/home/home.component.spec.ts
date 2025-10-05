@@ -11,6 +11,7 @@ import { FormControl } from '@angular/forms';
 
 import { APP_CONFIG } from '../../core/config';
 import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-item.component';
+import { StopNavigationItemComponent } from '../../shared/ui/stop-navigation-item/stop-navigation-item.component';
 import { HomeComponent } from './home.component';
 import {
   MockTransitNetworkService,
@@ -164,15 +165,22 @@ describe('HomeComponent', () => {
     );
 
     const recentList = fixture.debugElement.query(By.css('.home__recent-list'));
-    const recentItems = recentList.queryAll(By.directive(CardListItemComponent));
+    const navigationItems = recentList.queryAll(By.directive(StopNavigationItemComponent));
+    const cardItems = recentList.queryAll(By.directive(CardListItemComponent));
 
-    expect(recentItems.length).toBe(expectedStops.length);
+    expect(navigationItems.length).toBe(expectedStops.length);
+    expect(cardItems.length).toBe(expectedStops.length);
     expect(recentList.nativeElement.classList.contains('home__list--scroll')).toBeTrue();
 
-    for (const item of recentItems) {
+    navigationItems.forEach((debugElement, index) => {
+      const navigationInstance = debugElement.componentInstance as StopNavigationItemComponent;
+      expect(navigationInstance.stopId).toBe(expectedStops[index].id);
+    });
+
+    cardItems.forEach((item) => {
       const instance = item.componentInstance as CardListItemComponent;
       expect(instance.leadingIcon).toBe(APP_CONFIG.homeData.recentStops.icon);
-    }
+    });
   });
 
   it('filters destination options to those reachable from the selected origin', fakeAsync(() => {

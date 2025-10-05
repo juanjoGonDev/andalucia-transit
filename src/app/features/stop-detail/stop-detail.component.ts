@@ -1,12 +1,23 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { TranslateModule } from '@ngx-translate/core';
-import { Observable, combineLatest, map, shareReplay, startWith } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  Observable,
+  combineLatest,
+  filter,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  distinctUntilChanged
+} from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { APP_CONFIG } from '../../core/config';
-import { MockStopScheduleService, MOCK_STOP_ID } from '../../data/services/mock-stop-schedule.service';
+import { MockStopScheduleService } from '../../data/services/mock-stop-schedule.service';
 import { buildStopScheduleUiModel, StopScheduleUiModel } from '../../domain/stop-schedule/stop-schedule.transform';
 
 const ALL_DESTINATIONS_OPTION = 'all';
@@ -22,6 +33,11 @@ type ScheduleItem = StopScheduleUiModel['upcoming'][number] | StopScheduleUiMode
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StopDetailComponent {
+  private static readonly ROOT_COMMAND = '/' as const;
+
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly stopScheduleService = inject(MockStopScheduleService);
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.stopDetail;
@@ -29,9 +45,22 @@ export class StopDetailComponent {
     nonNullable: true
   });
 
-  private readonly schedule$ = this.stopScheduleService
-    .getStopSchedule(MOCK_STOP_ID)
-    .pipe(shareReplay({ bufferSize: 1, refCount: false }));
+  private readonly stopIdParam$: Observable<string | null> = this.route.paramMap.pipe(
+    map((params) => params.get(APP_CONFIG.routeParams.stopId)),
+    map((stopId) => stopId?.trim() ?? ''),
+    map((stopId) => (stopId.length > 0 ? stopId : null)),
+    distinctUntilChanged(),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
+  private readonly stopId$: Observable<string> = this.stopIdParam$.pipe(
+    filter((stopId): stopId is string => stopId !== null)
+  );
+
+  private readonly schedule$ = this.stopId$.pipe(
+    switchMap((stopId) => this.stopScheduleService.getStopSchedule(stopId)),
+    shareReplay({ bufferSize: 1, refCount: false })
+  );
 
   protected readonly isLoading$ = this.schedule$.pipe(map(() => false), startWith(true));
 
@@ -51,4 +80,17 @@ export class StopDetailComponent {
   protected readonly allDestinationsOption = ALL_DESTINATIONS_OPTION;
 
   protected readonly trackByServiceId = (_: number, item: ScheduleItem): string => item.serviceId;
+
+  constructor() {
+    this.stopIdParam$
+      .pipe(
+        filter((stopId): stopId is null => stopId === null),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => this.redirectToHome());
+  }
+
+  private redirectToHome(): void {
+    void this.router.navigate([StopDetailComponent.ROOT_COMMAND, APP_CONFIG.routes.home]);
+  }
 }

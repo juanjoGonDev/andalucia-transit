@@ -8,7 +8,11 @@ import { MapComponent } from './features/map/map.component';
 
 export const routes: Routes = [
   { path: APP_CONFIG.routes.home, component: HomeComponent, title: APP_CONFIG.translationKeys.navigation.home },
-  { path: APP_CONFIG.routes.stopDetail, component: StopDetailComponent, title: APP_CONFIG.translationKeys.navigation.stopDetail },
+  {
+    path: APP_CONFIG.routes.stopDetailPattern,
+    component: StopDetailComponent,
+    title: APP_CONFIG.translationKeys.navigation.stopDetail
+  },
   { path: APP_CONFIG.routes.routeSearch, component: RouteSearchComponent, title: APP_CONFIG.translationKeys.navigation.routeSearch },
   { path: APP_CONFIG.routes.map, component: MapComponent, title: APP_CONFIG.translationKeys.navigation.map },
   { path: '**', redirectTo: APP_CONFIG.routes.home, pathMatch: 'full' }
