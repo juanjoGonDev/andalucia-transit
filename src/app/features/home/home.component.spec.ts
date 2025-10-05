@@ -180,26 +180,26 @@ describe('HomeComponent', () => {
       .origin as FormControl<StopOption | string | null>;
     const destinationOptions$ = component['destinationOptions$'];
     const debounce = APP_CONFIG.homeData.search.debounceMs;
-    const emissions: StopOption[][] = [];
+    let latestOptions: StopOption[] = [];
 
     const subscription = destinationOptions$.subscribe((value) => {
-      emissions.push([...value]);
+      latestOptions = [...value];
     });
 
-    const initialEmissionCount = emissions.length;
+    tick();
+    const initialOptionIds = latestOptions.map((option) => option.id);
 
     originControl.setValue(STUB_STOPS[0]);
-    tick(debounce);
+    tick(debounce + 1);
     fixture.detectChanges();
     tick();
 
-    expect(emissions.length).toBeGreaterThan(initialEmissionCount);
+    const reachableOptionIds = latestOptions.map((option) => option.id);
 
-    const latestEmission = emissions[emissions.length - 1] ?? [];
-
-    expect(latestEmission.length).toBeGreaterThan(0);
+    expect(reachableOptionIds.length).toBeGreaterThan(0);
+    expect(reachableOptionIds).not.toEqual(initialOptionIds);
     expect(
-      latestEmission.every((stop: StopOption) => ALPHA_REACHABLE_STOP_IDS.includes(stop.id))
+      reachableOptionIds.every((stopId: string) => ALPHA_REACHABLE_STOP_IDS.includes(stopId))
     ).toBeTrue();
 
     subscription.unsubscribe();
