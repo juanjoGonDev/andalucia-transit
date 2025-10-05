@@ -1,5 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
@@ -28,6 +28,8 @@ describe('StopDetailComponent', () => {
     scheduleService.getStopSchedule.and.callFake((stopId: string) =>
       of(createSchedule(stopId))
     );
+    const routerStub = jasmine.createSpyObj<Router>('Router', ['navigate']);
+    routerStub.navigate.and.resolveTo(true);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -39,35 +41,36 @@ describe('StopDetailComponent', () => {
       providers: [
         { provide: MockStopScheduleService, useValue: scheduleService },
         { provide: ActivatedRoute, useValue: { paramMap: paramMapSubject.asObservable() } },
-        provideRouter([])
+        { provide: Router, useValue: routerStub }
       ]
     }).compileComponents();
 
     router = TestBed.inject(Router);
   });
 
-  it('requests the schedule for the routed stop identifier', () => {
+  it('requests the schedule for the routed stop identifier', fakeAsync(() => {
     fixture = TestBed.createComponent(StopDetailComponent);
     fixture.detectChanges();
+    tick();
 
     expect(scheduleService.getStopSchedule).toHaveBeenCalledWith('stop-main-street');
-  });
+  }));
 
-  it('redirects to home when the stop identifier is missing', async () => {
-    const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
+  it('redirects to home when the stop identifier is missing', fakeAsync(() => {
+    const navigateSpy = router.navigate as jasmine.Spy;
+    navigateSpy.calls.reset();
 
     paramMapSubject.next(convertToParamMap({}));
     fixture = TestBed.createComponent(StopDetailComponent);
     fixture.detectChanges();
-
-    await fixture.whenStable();
+    tick();
 
     expect(navigateSpy).toHaveBeenCalledWith([
       '/',
       APP_CONFIG.routes.home
     ]);
     expect(scheduleService.getStopSchedule).not.toHaveBeenCalled();
-  });
+  }));
 });
 
 function createSchedule(stopId: string): StopSchedule {

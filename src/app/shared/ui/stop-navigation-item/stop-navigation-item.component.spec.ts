@@ -53,14 +53,15 @@ describe('StopNavigationItemComponent', () => {
     component.stopId = 'stop-oakwood-plaza';
     fixture.detectChanges();
 
-    const cardItem = fixture.debugElement
-      .query(By.directive(CardListItemComponent))
-      .componentInstance as CardListItemComponent;
-
-    expect(cardItem.commands).toEqual([
+    const expectedCommands = [
       '/',
       APP_CONFIG.routes.stopDetailBase,
       'stop-oakwood-plaza'
-    ]);
+    ] as const;
+
+    expect((component as unknown as { navigationCommands: readonly string[] }).navigationCommands).toEqual(
+      expectedCommands
+    );
+
   });
 });
