@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { formatDate, registerLocaleData } from '@angular/common';
+import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDatepicker, MatDatepickerInput } from '@angular/material/datepicker';
 import { of } from 'rxjs';
 import { FormControl } from '@angular/forms';
 
@@ -102,20 +103,18 @@ describe('HomeComponent', () => {
   });
 
   it('initializes the date field with today and enforces the minimum date attribute', async () => {
-    const expectedToday = formatDate(
-      new Date(),
-      APP_CONFIG.formats.isoDate,
-      APP_CONFIG.locales.default
-    );
-
     await fixture.whenStable();
 
-    const dateInput = fixture.debugElement.query(
-      By.css(`#${APP_CONFIG.homeData.search.dateFieldId}`)
-    ).nativeElement as HTMLInputElement;
+    const dateControl = component['searchForm'].controls.date;
+    const expectedToday = new Date();
+    expectedToday.setHours(0, 0, 0, 0);
 
-    expect(dateInput.value).toBe(expectedToday);
-    expect(dateInput.min).toBe(expectedToday);
+    const datepickerInput = fixture.debugElement
+      .query(By.directive(MatDatepickerInput))
+      .injector.get(MatDatepickerInput<Date>);
+
+    expect(dateControl.value?.getTime()).toBe(expectedToday.getTime());
+    expect(datepickerInput.min?.getTime()).toBe(expectedToday.getTime());
   });
 
   it('prevents searching with a date earlier than today', async () => {
@@ -123,16 +122,12 @@ describe('HomeComponent', () => {
     const form = component['searchForm'];
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayValue = formatDate(
-      yesterday,
-      APP_CONFIG.formats.isoDate,
-      APP_CONFIG.locales.default
-    );
+    yesterday.setHours(0, 0, 0, 0);
 
     form.setValue({
       origin: STUB_STOPS[0],
       destination: STUB_STOPS[1],
-      date: yesterdayValue
+      date: yesterday
     });
     form.updateValueAndValidity();
 
@@ -141,6 +136,23 @@ describe('HomeComponent', () => {
     expect(form.invalid).toBeTrue();
     expect(form.get('date')?.hasError('minDate')).toBeTrue();
     expect(navigateSpy).not.toHaveBeenCalled();
+  });
+
+  it('opens the date picker when focusing the date field and blocks manual typing', async () => {
+    await fixture.whenStable();
+
+    const datepickerDebug = fixture.debugElement.query(By.directive(MatDatepicker));
+    const datepicker = datepickerDebug.componentInstance as MatDatepicker<Date>;
+    const openSpy = spyOn(datepicker, 'open');
+    const dateInput = fixture.debugElement.query(
+      By.css(`#${APP_CONFIG.homeData.search.dateFieldId}`)
+    ).nativeElement as HTMLInputElement;
+
+    dateInput.dispatchEvent(new Event('focus'));
+    fixture.detectChanges();
+
+    expect(openSpy).toHaveBeenCalled();
+    expect(dateInput.readOnly).toBeTrue();
   });
 
   it('renders the configured recent stops with a scrollable list', () => {

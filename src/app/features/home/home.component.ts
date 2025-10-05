@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
-import { CommonModule, formatDate } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -15,7 +15,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatOptionModule } from '@angular/material/core';
+import { MatOptionModule, MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   Observable,
@@ -74,6 +75,8 @@ interface BottomNavigationItem {
     MatInputModule,
     MatAutocompleteModule,
     MatOptionModule,
+    MatNativeDateModule,
+    MatDatepickerModule,
     CardListItemComponent,
     SectionComponent
   ],
@@ -83,6 +86,12 @@ interface BottomNavigationItem {
 })
 export class HomeComponent {
   private static readonly ROOT_COMMAND = '/' as const;
+  private static readonly START_OF_DAY = {
+    hour: 0,
+    minute: 0,
+    second: 0,
+    millisecond: 0
+  } as const;
 
   private readonly router = inject(Router);
   private readonly formBuilder = inject(FormBuilder);
@@ -93,8 +102,6 @@ export class HomeComponent {
   private readonly translation = APP_CONFIG.translationKeys.home;
   private readonly navigation = APP_CONFIG.translationKeys.navigation;
   private readonly searchIds = APP_CONFIG.homeData.search;
-  private readonly defaultLocale = APP_CONFIG.locales.default;
-  private readonly isoDateFormat = APP_CONFIG.formats.isoDate;
   private readonly locationIcon: MaterialSymbolName = 'my_location';
   private readonly favoriteIcons: readonly MaterialSymbolName[] = ['directions_bus', 'mail'] as const;
   private readonly originIcon: MaterialSymbolName = 'my_location';
@@ -180,7 +187,7 @@ export class HomeComponent {
     destination: this.formBuilder.control<StopAutocompleteValue>(null, {
       validators: [this.stopSelectionValidator]
     }),
-    date: this.formBuilder.nonNullable.control<string>(this.minimumSearchDate, [
+    date: this.formBuilder.nonNullable.control<Date>(this.minimumSearchDate, [
       Validators.required,
       this.minimumDateValidator
     ])
@@ -297,6 +304,10 @@ export class HomeComponent {
     this.dialog.open(HomeNearbyStopsDialogComponent);
   }
 
+  protected openSearchDatePicker(datepicker: MatDatepicker<Date>): void {
+    datepicker.open();
+  }
+
   protected get originIconName(): MaterialSymbolName {
     return this.originIcon;
   }
@@ -337,19 +348,25 @@ export class HomeComponent {
     this.destinationControl.setValue(origin ?? null);
   }
 
-  private buildDefaultDate(): string {
-    return formatDate(new Date(), this.isoDateFormat, this.defaultLocale);
+  private buildDefaultDate(): Date {
+    return this.toStartOfDay(new Date());
   }
 
-  private createMinimumDateValidator(minimum: string): ValidatorFn {
-    return (control: AbstractControl<string | null>): ValidationErrors | null => {
+  private createMinimumDateValidator(minimum: Date): ValidatorFn {
+    const normalizedMinimum = this.toStartOfDay(minimum);
+
+    return (control: AbstractControl<Date | null>): ValidationErrors | null => {
       const value = control.value;
 
       if (!value) {
         return null;
       }
 
-      return value < minimum ? { minDate: { min: minimum } } : null;
+      const normalizedValue = this.toStartOfDay(value);
+
+      return normalizedValue.getTime() < normalizedMinimum.getTime()
+        ? { minDate: { min: normalizedMinimum } }
+        : null;
     };
   }
 
@@ -452,6 +469,18 @@ export class HomeComponent {
         leadingIcon: this.recentStopIcon,
         iconVariant: 'soft'
       }));
+  }
+
+  private toStartOfDay(date: Date): Date {
+    const normalizedDate = new Date(date);
+    normalizedDate.setHours(
+      HomeComponent.START_OF_DAY.hour,
+      HomeComponent.START_OF_DAY.minute,
+      HomeComponent.START_OF_DAY.second,
+      HomeComponent.START_OF_DAY.millisecond
+    );
+
+    return normalizedDate;
   }
 }
 

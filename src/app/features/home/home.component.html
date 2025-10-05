@@ -76,11 +76,15 @@
             <span matPrefix class="material-symbols-outlined home__search-icon">{{ dateIconName }}</span>
             <input
               matInput
-              type="date"
               [id]="dateFieldId"
               formControlName="date"
-              [attr.min]="minSearchDate"
+              [matDatepicker]="searchDatepicker"
+              [min]="minSearchDate"
+              readonly
+              (focus)="openSearchDatePicker(searchDatepicker)"
+              (click)="openSearchDatePicker(searchDatepicker)"
             />
+            <mat-datepicker #searchDatepicker></mat-datepicker>
           </mat-form-field>
           <button class="home__search-submit" type="submit" [disabled]="searchForm.invalid">
             {{ searchSubmitKey | translate }}
