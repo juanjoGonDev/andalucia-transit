@@ -33,25 +33,19 @@ import {
 
 import { APP_CONFIG } from '../../core/config';
 import { MaterialSymbolName } from '../../shared/ui/types/material-symbol-name';
-import {
-  CardListItemComponent,
-  CardListLayout,
-  IconVariant
-} from '../../shared/ui/card-list-item/card-list-item.component';
+import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-item.component';
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import { HomeNearbyStopsDialogComponent } from './home-nearby-stops-dialog.component';
 import {
   MockTransitNetworkService,
   StopOption
 } from '../../data/stops/mock-transit-network.service';
+import { StopNavigationItemComponent } from '../../shared/ui/stop-navigation-item/stop-navigation-item.component';
 
-interface HomeListItem {
+interface ActionListItem {
   titleKey: string;
   subtitleKey?: string;
   leadingIcon: MaterialSymbolName;
-  iconVariant?: IconVariant;
-  layout?: CardListLayout;
-  commands?: readonly string[];
   ariaLabelKey?: string;
 }
 
@@ -59,6 +53,17 @@ interface BottomNavigationItem {
   labelKey: string;
   icon: MaterialSymbolName;
   commands: readonly string[];
+}
+
+interface StopNavigationItemViewModel {
+  id: string;
+  titleKey: string;
+  leadingIcon: MaterialSymbolName;
+  subtitleKey?: string;
+  iconVariant: 'plain' | 'soft';
+  layout: 'list' | 'action';
+  trailingIcon: MaterialSymbolName | null;
+  ariaLabelKey?: string;
 }
 
 @Component({
@@ -78,7 +83,8 @@ interface BottomNavigationItem {
     MatNativeDateModule,
     MatDatepickerModule,
     CardListItemComponent,
-    SectionComponent
+    SectionComponent,
+    StopNavigationItemComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -103,7 +109,6 @@ export class HomeComponent {
   private readonly navigation = APP_CONFIG.translationKeys.navigation;
   private readonly searchIds = APP_CONFIG.homeData.search;
   private readonly locationIcon: MaterialSymbolName = 'my_location';
-  private readonly favoriteIcons: readonly MaterialSymbolName[] = ['directions_bus', 'mail'] as const;
   private readonly originIcon: MaterialSymbolName = 'my_location';
   private readonly destinationIcon: MaterialSymbolName = 'flag';
   private readonly dateIcon: MaterialSymbolName = 'calendar_today';
@@ -130,25 +135,18 @@ export class HomeComponent {
   protected readonly favoritesTitleKey = this.translation.sections.favorites.title;
 
   protected readonly trailingIcon: MaterialSymbolName = 'chevron_right';
-  protected readonly recentStops: HomeListItem[] = this.buildRecentStops();
+  protected readonly recentStops: StopNavigationItemViewModel[] = this.buildRecentStops();
   protected readonly swapIcon: MaterialSymbolName = 'swap_vert';
 
-  protected readonly locationAction: HomeListItem = {
+  protected readonly locationAction: ActionListItem = {
     titleKey: this.findNearbyActionKey,
     leadingIcon: this.locationIcon,
-    layout: 'action',
-    iconVariant: 'soft',
     ariaLabelKey: this.findNearbyActionKey
   };
+  protected readonly locationActionLayout = 'action' as const;
+  protected readonly locationActionIconVariant = 'soft' as const;
 
-  protected readonly favoriteStops: HomeListItem[] =
-    APP_CONFIG.translationKeys.home.sections.favorites.items.map((item, index) => ({
-      titleKey: item.title,
-      subtitleKey: item.subtitle,
-      leadingIcon: this.favoriteIcons[index] ?? 'directions_bus',
-      iconVariant: 'soft',
-      commands: this.buildCommands(APP_CONFIG.routes.stopDetail)
-    }));
+  protected readonly favoriteStops: StopNavigationItemViewModel[] = this.buildFavoriteStops();
 
   protected readonly bottomNavigationItems: BottomNavigationItem[] = [
     {
@@ -253,7 +251,7 @@ export class HomeComponent {
         limit: this.maxAutocompleteOptions
       })
     ),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: false })
   );
 
   protected readonly destinationOptions$: Observable<readonly StopOption[]> = combineLatest([
@@ -269,7 +267,7 @@ export class HomeComponent {
         limit: this.maxAutocompleteOptions
       })
     ),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: false })
   );
 
   protected readonly displayStopFn = (value: StopAutocompleteValue): string =>
@@ -461,14 +459,29 @@ export class HomeComponent {
     return first.every((value, index) => value === second[index]);
   }
 
-  private buildRecentStops(): HomeListItem[] {
+  private buildRecentStops(): StopNavigationItemViewModel[] {
     return APP_CONFIG.homeData.recentStops.items
       .slice(0, this.recentStopsLimit)
-      .map((titleKey) => ({
-        titleKey,
+      .map((item) => ({
+        id: item.id,
+        titleKey: item.titleKey,
         leadingIcon: this.recentStopIcon,
-        iconVariant: 'soft'
+        iconVariant: 'soft',
+        layout: 'list',
+        trailingIcon: this.trailingIcon
       }));
+  }
+
+  private buildFavoriteStops(): StopNavigationItemViewModel[] {
+    return APP_CONFIG.homeData.favoriteStops.items.map((item) => ({
+      id: item.id,
+      titleKey: item.titleKey,
+      subtitleKey: item.subtitleKey,
+      leadingIcon: item.leadingIcon,
+      iconVariant: 'soft',
+      layout: 'list',
+      trailingIcon: this.trailingIcon
+    }));
   }
 
   private toStartOfDay(date: Date): Date {

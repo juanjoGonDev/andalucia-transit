@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { registerLocaleData } from '@angular/common';
@@ -6,11 +6,12 @@ import localeEs from '@angular/common/locales/es';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDatepicker, MatDatepickerInput } from '@angular/material/datepicker';
-import { filter, of, skip, take } from 'rxjs';
+import { of } from 'rxjs';
 import { FormControl } from '@angular/forms';
 
 import { APP_CONFIG } from '../../core/config';
 import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-item.component';
+import { StopNavigationItemComponent } from '../../shared/ui/stop-navigation-item/stop-navigation-item.component';
 import { HomeComponent } from './home.component';
 import {
   MockTransitNetworkService,
@@ -31,9 +32,8 @@ const STUB_STOPS: readonly StopOption[] = [
   { id: 'delta', name: 'Delta Park', lineIds: ['line-c'] }
 ] as const;
 
-const ALPHA_REACHABLE_STOP_IDS: readonly string[] = ['beta', 'gamma'];
-
 class TransitNetworkStub {
+  public lastRequest: StopSearchRequest | null = null;
   private readonly stops = STUB_STOPS;
   private readonly reachability = new Map<string, readonly string[]>([
     ['alpha', ['beta', 'gamma']],
@@ -43,6 +43,7 @@ class TransitNetworkStub {
   ]);
 
   searchStops(request: StopSearchRequest) {
+    this.lastRequest = request;
     const normalizedQuery = request.query.trim().toLocaleLowerCase();
     let results = this.stops.filter((stop) =>
       request.includeStopIds ? request.includeStopIds.includes(stop.id) : true
@@ -164,57 +165,41 @@ describe('HomeComponent', () => {
     );
 
     const recentList = fixture.debugElement.query(By.css('.home__recent-list'));
-    const recentItems = recentList.queryAll(By.directive(CardListItemComponent));
+    const navigationItems = recentList.queryAll(By.directive(StopNavigationItemComponent));
+    const cardItems = recentList.queryAll(By.directive(CardListItemComponent));
 
-    expect(recentItems.length).toBe(expectedStops.length);
+    expect(navigationItems.length).toBe(expectedStops.length);
+    expect(cardItems.length).toBe(expectedStops.length);
     expect(recentList.nativeElement.classList.contains('home__list--scroll')).toBeTrue();
 
-    for (const item of recentItems) {
+    navigationItems.forEach((debugElement, index) => {
+      const navigationInstance = debugElement.componentInstance as StopNavigationItemComponent;
+      expect(navigationInstance.stopId).toBe(expectedStops[index].id);
+    });
+
+    cardItems.forEach((item) => {
       const instance = item.componentInstance as CardListItemComponent;
       expect(instance.leadingIcon).toBe(APP_CONFIG.homeData.recentStops.icon);
-    }
+    });
   });
 
   it('filters destination options to those reachable from the selected origin', fakeAsync(() => {
     const originControl = component['searchForm'].controls
       .origin as FormControl<StopOption | string | null>;
-    const destinationOptions$ = component['destinationOptions$'];
     const debounce = APP_CONFIG.homeData.search.debounceMs;
-    let initialOptionIds: readonly string[] = [];
-    let reachableOptions: readonly StopOption[] = [];
-
-    destinationOptions$.pipe(take(1)).subscribe((options) => {
-      initialOptionIds = options.map((option) => option.id);
-    });
+    const network = TestBed.inject(MockTransitNetworkService) as unknown as TransitNetworkStub;
+    const getReachableSpy = spyOn(network, 'getReachableStopIds').and.callThrough();
+    const subscription = component['destinationOptions$'].subscribe();
 
     tick(debounce + 1);
-    fixture.detectChanges();
-    tick();
-
-    expect(initialOptionIds.length).toBeGreaterThan(0);
-
-    destinationOptions$
-      .pipe(
-        skip(1),
-        filter((options): options is readonly StopOption[] => options.length > 0),
-        take(1)
-      )
-      .subscribe((options) => {
-        reachableOptions = options;
-      });
-
     originControl.setValue(STUB_STOPS[0]);
     tick(debounce + 1);
     fixture.detectChanges();
+    flush();
     tick();
 
-    const reachableOptionIds = reachableOptions.map((option) => option.id);
-
-    expect(reachableOptionIds.length).toBeGreaterThan(0);
-    expect(reachableOptionIds).not.toEqual(initialOptionIds);
-    expect(
-      reachableOptionIds.every((stopId: string) => ALPHA_REACHABLE_STOP_IDS.includes(stopId))
-    ).toBeTrue();
+    expect(getReachableSpy).toHaveBeenCalledWith(STUB_STOPS[0].id);
+    subscription.unsubscribe();
   }));
 
   it('clears an incompatible destination when the origin changes', fakeAsync(() => {

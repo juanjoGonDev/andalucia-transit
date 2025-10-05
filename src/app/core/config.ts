@@ -1,3 +1,6 @@
+const STOP_DETAIL_BASE_SEGMENT = 'stop-detail' as const;
+const STOP_ID_ROUTE_PARAM = 'stopId' as const;
+
 export const APP_CONFIG = {
   appName: 'Andalucia Transit',
   apiBaseUrl: 'https://api.ctan.es',
@@ -13,10 +16,14 @@ export const APP_CONFIG = {
     isoDate: 'yyyy-MM-dd'
   },
   routes: {
-    home: '',
-    stopDetail: 'stop-detail',
-    routeSearch: 'route-search',
-    map: 'map'
+    home: '' as const,
+    stopDetailBase: STOP_DETAIL_BASE_SEGMENT,
+    stopDetailPattern: `${STOP_DETAIL_BASE_SEGMENT}/:${STOP_ID_ROUTE_PARAM}` as const,
+    routeSearch: 'route-search' as const,
+    map: 'map' as const
+  },
+  routeParams: {
+    stopId: STOP_ID_ROUTE_PARAM
   },
   errors: {
     geolocationNotSupported: 'errors.geolocation.notSupported'
@@ -103,18 +110,34 @@ export const APP_CONFIG = {
     },
     stopDetail: {
       title: 'stopDetail.title',
-      description: 'stopDetail.description',
-      upcoming: 'stopDetail.upcoming',
-      history: 'stopDetail.history',
-      upcomingItems: [
-        'stopDetail.upcomingItems.first',
-        'stopDetail.upcomingItems.second',
-        'stopDetail.upcomingItems.third'
-      ] as const,
-      historyItems: [
-        'stopDetail.historyItems.first',
-        'stopDetail.historyItems.second'
-      ] as const
+      subtitle: 'stopDetail.subtitle',
+      loading: 'stopDetail.loading',
+      header: {
+        stopCodeLabel: 'stopDetail.header.stopCodeLabel',
+        scheduleDateLabel: 'stopDetail.header.scheduleDateLabel',
+        lastUpdatedLabel: 'stopDetail.header.lastUpdatedLabel'
+      },
+      filters: {
+        destinationLabel: 'stopDetail.filters.destinationLabel',
+        allDestinations: 'stopDetail.filters.allDestinations'
+      },
+      schedule: {
+        upcomingTitle: 'stopDetail.schedule.upcomingTitle',
+        upcomingSubtitle: 'stopDetail.schedule.upcomingSubtitle',
+        pastTitle: 'stopDetail.schedule.pastTitle',
+        pastSubtitle: 'stopDetail.schedule.pastSubtitle',
+        emptyUpcoming: 'stopDetail.schedule.emptyUpcoming',
+        emptyPast: 'stopDetail.schedule.emptyPast'
+      },
+      status: {
+        arrivesIn: 'stopDetail.status.arrivesIn',
+        arrivingNow: 'stopDetail.status.arrivingNow',
+        departedAgo: 'stopDetail.status.departedAgo'
+      },
+      badges: {
+        accessible: 'stopDetail.badges.accessible',
+        universityOnly: 'stopDetail.badges.universityOnly'
+      }
     },
     routeSearch: {
       title: 'routeSearch.title',
@@ -142,19 +165,49 @@ export const APP_CONFIG = {
       debounceMs: 150
     },
     recentStops: {
-      icon: 'pin_drop',
+      icon: 'pin_drop' as const,
       maxItems: 10,
       items: [
-        'home.sections.recentStops.items.mainStreet',
-        'home.sections.recentStops.items.oakwoodPlaza',
-        'home.sections.recentStops.items.cityLibrary',
-        'home.sections.recentStops.items.centralStation',
-        'home.sections.recentStops.items.riverPark',
-        'home.sections.recentStops.items.harborPier',
-        'home.sections.recentStops.items.universityGate',
-        'home.sections.recentStops.items.historicCenter',
-        'home.sections.recentStops.items.northTerminal',
-        'home.sections.recentStops.items.marketSquare'
+        {
+          id: 'stop-main-street',
+          titleKey: 'home.sections.recentStops.items.mainStreet'
+        },
+        {
+          id: 'stop-oakwood-plaza',
+          titleKey: 'home.sections.recentStops.items.oakwoodPlaza'
+        },
+        {
+          id: 'stop-city-library',
+          titleKey: 'home.sections.recentStops.items.cityLibrary'
+        },
+        {
+          id: 'stop-central-station',
+          titleKey: 'home.sections.recentStops.items.centralStation'
+        },
+        {
+          id: 'stop-river-park',
+          titleKey: 'home.sections.recentStops.items.riverPark'
+        },
+        {
+          id: 'stop-harbor-pier',
+          titleKey: 'home.sections.recentStops.items.harborPier'
+        },
+        {
+          id: 'stop-university-gate',
+          titleKey: 'home.sections.recentStops.items.universityGate'
+        },
+        {
+          id: 'stop-historic-center',
+          titleKey: 'home.sections.recentStops.items.historicCenter'
+        },
+        {
+          id: 'stop-north-terminal',
+          titleKey: 'home.sections.recentStops.items.northTerminal'
+        },
+        {
+          id: 'stop-market-square',
+          titleKey: 'home.sections.recentStops.items.marketSquare'
+        }
       ] as const
     },
     nearbyStops: {
@@ -177,6 +230,22 @@ export const APP_CONFIG = {
           titleKey: 'home.sections.recentStops.items.cityLibrary',
           latitude: 37.39244,
           longitude: -5.992552
+        }
+      ] as const
+    },
+    favoriteStops: {
+      items: [
+        {
+          id: 'stop-uptown-terminal',
+          titleKey: 'home.sections.favorites.items.uptown.title',
+          subtitleKey: 'home.sections.favorites.items.uptown.subtitle',
+          leadingIcon: 'directions_bus'
+        },
+        {
+          id: 'stop-east-market',
+          titleKey: 'home.sections.favorites.items.eastMarket.title',
+          subtitleKey: 'home.sections.favorites.items.eastMarket.subtitle',
+          leadingIcon: 'mail'
         }
       ] as const
     }

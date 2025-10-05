@@ -93,25 +93,25 @@
       </app-section>
       <app-section [titleKey]="recentStopsTitleKey">
         <div class="home__list home__list--scroll home__recent-list">
-          <app-card-list-item
+          <app-stop-navigation-item
             *ngFor="let stop of recentStops"
+            [stopId]="stop.id"
             [leadingIcon]="stop.leadingIcon"
             [titleKey]="stop.titleKey"
             [subtitleKey]="stop.subtitleKey"
-            [layout]="stop.layout ?? 'list'"
-            [iconVariant]="stop.iconVariant ?? 'plain'"
-            [trailingIcon]="trailingIcon"
-            [commands]="stop.commands"
+            [layout]="stop.layout"
+            [iconVariant]="stop.iconVariant"
+            [trailingIcon]="stop.trailingIcon"
             [ariaLabelKey]="stop.ariaLabelKey"
-          ></app-card-list-item>
+          ></app-stop-navigation-item>
         </div>
       </app-section>
       <app-section [titleKey]="findNearbyTitleKey">
         <app-card-list-item
           [leadingIcon]="locationAction.leadingIcon"
           [titleKey]="locationAction.titleKey"
-          [layout]="locationAction.layout ?? 'list'"
-          [iconVariant]="locationAction.iconVariant ?? 'plain'"
+          [layout]="locationActionLayout"
+          [iconVariant]="locationActionIconVariant"
           [trailingIcon]="trailingIcon"
           [ariaLabelKey]="locationAction.ariaLabelKey"
           (action)="openNearbyStopsDialog()"
@@ -119,15 +119,17 @@
       </app-section>
       <app-section [titleKey]="favoritesTitleKey">
         <div class="home__list">
-          <app-card-list-item
+          <app-stop-navigation-item
             *ngFor="let stop of favoriteStops"
+            [stopId]="stop.id"
             [leadingIcon]="stop.leadingIcon"
             [titleKey]="stop.titleKey"
             [subtitleKey]="stop.subtitleKey"
-            [iconVariant]="stop.iconVariant ?? 'plain'"
-            [trailingIcon]="trailingIcon"
-            [commands]="stop.commands"
-          ></app-card-list-item>
+            [layout]="stop.layout"
+            [iconVariant]="stop.iconVariant"
+            [trailingIcon]="stop.trailingIcon"
+            [ariaLabelKey]="stop.ariaLabelKey"
+          ></app-stop-navigation-item>
         </div>
       </app-section>
     </main>
