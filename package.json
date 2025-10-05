@@ -66,5 +66,8 @@
     "puppeteer": "^24.23.0",
     "typescript": "~5.9.2",
     "typescript-eslint": "8.40.0"
+  },
+  "volta": {
+    "node": "20.19.0"
   }
 }
