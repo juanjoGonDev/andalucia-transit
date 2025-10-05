@@ -7,7 +7,6 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDatepicker, MatDatepickerInput } from '@angular/material/datepicker';
 import { of } from 'rxjs';
-import { skipWhile, take } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 
 import { APP_CONFIG } from '../../core/config';
@@ -31,6 +30,8 @@ const STUB_STOPS: readonly StopOption[] = [
   { id: 'gamma', name: 'Gamma Center', lineIds: ['line-b'] },
   { id: 'delta', name: 'Delta Park', lineIds: ['line-c'] }
 ] as const;
+
+const ALPHA_REACHABLE_STOP_IDS: readonly string[] = ['beta', 'gamma'];
 
 class TransitNetworkStub {
   private readonly stops = STUB_STOPS;
@@ -179,25 +180,27 @@ describe('HomeComponent', () => {
       .origin as FormControl<StopOption | string | null>;
     const destinationOptions$ = component['destinationOptions$'];
     const debounce = APP_CONFIG.homeData.search.debounceMs;
-    let results: readonly StopOption[] | null = null;
+    const emissions: StopOption[][] = [];
 
-    const subscription = destinationOptions$
-      .pipe(skipWhile((value) => value.length === 0), take(1))
-      .subscribe((value) => {
-        results = value;
-      });
+    const subscription = destinationOptions$.subscribe((value) => {
+      emissions.push([...value]);
+    });
+
+    const initialEmissionCount = emissions.length;
 
     originControl.setValue(STUB_STOPS[0]);
     tick(debounce);
     fixture.detectChanges();
     tick();
 
-    expect(results).not.toBeNull();
+    expect(emissions.length).toBeGreaterThan(initialEmissionCount);
 
-    const resolvedResults = results ?? [];
+    const latestEmission = emissions[emissions.length - 1] ?? [];
 
-    expect(resolvedResults.length).toBeGreaterThan(0);
-    expect(resolvedResults.every((stop: StopOption) => ['beta', 'gamma'].includes(stop.id))).toBeTrue();
+    expect(latestEmission.length).toBeGreaterThan(0);
+    expect(
+      latestEmission.every((stop: StopOption) => ALPHA_REACHABLE_STOP_IDS.includes(stop.id))
+    ).toBeTrue();
 
     subscription.unsubscribe();
   }));
