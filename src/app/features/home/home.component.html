@@ -1,23 +1,151 @@
-<section class="home">
-  <mat-card appearance="outlined" class="hero">
-    <h1>{{ translationKeys.title | translate }}</h1>
-    <p>{{ translationKeys.description | translate }}</p>
-    <button mat-flat-button color="primary" [routerLink]="routes.routeSearch">
-      {{ translationKeys.action | translate }}
-    </button>
-  </mat-card>
-  <div class="summary">
-    <mat-card appearance="outlined">
-      <h2>{{ translationKeys.recent | translate }}</h2>
-      <p>{{ translationKeys.recentDescription | translate }}</p>
-    </mat-card>
-    <mat-card appearance="outlined">
-      <h2>{{ translationKeys.nearby | translate }}</h2>
-      <p>{{ translationKeys.nearbyDescription | translate }}</p>
-    </mat-card>
-    <mat-card appearance="outlined">
-      <h2>{{ translationKeys.favorites | translate }}</h2>
-      <p>{{ translationKeys.favoritesDescription | translate }}</p>
-    </mat-card>
+<div class="home">
+  <div class="home__content">
+    <header class="home__header">
+      <h1 class="home__title">{{ headerTitleKey | translate }}</h1>
+      <button
+        type="button"
+        class="home__info-button"
+        [attr.aria-label]="headerInfoLabelKey | translate"
+      >
+        <span class="material-symbols-outlined">{{ infoIcon }}</span>
+      </button>
+    </header>
+    <main class="home__main">
+      <app-section [titleKey]="searchTitleKey" appearance="card">
+        <form class="home__search" [formGroup]="searchForm" (ngSubmit)="onSearch()">
+          <div class="home__search-grid">
+            <mat-form-field appearance="fill" class="home__field home__field--origin">
+              <mat-label>{{ searchOriginLabelKey | translate }}</mat-label>
+              <span matPrefix class="material-symbols-outlined home__search-icon">{{ originIconName }}</span>
+              <input
+                matInput
+                type="text"
+                [id]="originFieldId"
+                formControlName="origin"
+                [matAutocomplete]="originAutocomplete"
+                [attr.autocomplete]="'off'"
+                [placeholder]="searchOriginPlaceholderKey | translate"
+              />
+              <mat-autocomplete
+                #originAutocomplete="matAutocomplete"
+                [displayWith]="displayStopFn"
+              >
+                <mat-option
+                  *ngFor="let option of originOptions$ | async; trackBy: trackStopOption"
+                  [value]="option"
+                >
+                  {{ option.name }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <button
+              type="button"
+              class="home__swap-button"
+              (click)="swapStops()"
+              [attr.aria-label]="swapButtonLabelKey | translate"
+            >
+              <span class="material-symbols-outlined">{{ swapIcon }}</span>
+            </button>
+            <mat-form-field appearance="fill" class="home__field home__field--destination">
+              <mat-label>{{ searchDestinationLabelKey | translate }}</mat-label>
+              <span matPrefix class="material-symbols-outlined home__search-icon">{{ destinationIconName }}</span>
+              <input
+                matInput
+                type="text"
+                [id]="destinationFieldId"
+                formControlName="destination"
+                [matAutocomplete]="destinationAutocomplete"
+                [attr.autocomplete]="'off'"
+                [placeholder]="searchDestinationPlaceholderKey | translate"
+              />
+              <mat-autocomplete
+                #destinationAutocomplete="matAutocomplete"
+                [displayWith]="displayStopFn"
+              >
+                <mat-option
+                  *ngFor="let option of destinationOptions$ | async; trackBy: trackStopOption"
+                  [value]="option"
+                >
+                  {{ option.name }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="home__field home__field--date">
+              <mat-label>{{ searchDateLabelKey | translate }}</mat-label>
+              <span matPrefix class="material-symbols-outlined home__search-icon">{{ dateIconName }}</span>
+              <input
+                matInput
+                [id]="dateFieldId"
+                formControlName="date"
+                [matDatepicker]="searchDatepicker"
+                [min]="minSearchDate"
+                readonly
+                (focus)="openSearchDatePicker(searchDatepicker)"
+                (click)="openSearchDatePicker(searchDatepicker)"
+              />
+              <mat-datepicker #searchDatepicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <button class="home__search-submit" type="submit" [disabled]="searchForm.invalid">
+            {{ searchSubmitKey | translate }}
+          </button>
+        </form>
+      </app-section>
+      <app-section [titleKey]="recentStopsTitleKey">
+        <div class="home__list home__list--scroll home__recent-list">
+          <app-card-list-item
+            *ngFor="let stop of recentStops"
+            [leadingIcon]="stop.leadingIcon"
+            [titleKey]="stop.titleKey"
+            [subtitleKey]="stop.subtitleKey"
+            [layout]="stop.layout ?? 'list'"
+            [iconVariant]="stop.iconVariant ?? 'plain'"
+            [trailingIcon]="trailingIcon"
+            [commands]="stop.commands"
+            [ariaLabelKey]="stop.ariaLabelKey"
+          ></app-card-list-item>
+        </div>
+      </app-section>
+      <app-section [titleKey]="findNearbyTitleKey">
+        <app-card-list-item
+          [leadingIcon]="locationAction.leadingIcon"
+          [titleKey]="locationAction.titleKey"
+          [layout]="locationAction.layout ?? 'list'"
+          [iconVariant]="locationAction.iconVariant ?? 'plain'"
+          [trailingIcon]="trailingIcon"
+          [ariaLabelKey]="locationAction.ariaLabelKey"
+          (action)="openNearbyStopsDialog()"
+        ></app-card-list-item>
+      </app-section>
+      <app-section [titleKey]="favoritesTitleKey">
+        <div class="home__list">
+          <app-card-list-item
+            *ngFor="let stop of favoriteStops"
+            [leadingIcon]="stop.leadingIcon"
+            [titleKey]="stop.titleKey"
+            [subtitleKey]="stop.subtitleKey"
+            [iconVariant]="stop.iconVariant ?? 'plain'"
+            [trailingIcon]="trailingIcon"
+            [commands]="stop.commands"
+          ></app-card-list-item>
+        </div>
+      </app-section>
+    </main>
   </div>
-</section>
+  <footer class="home__footer">
+    <nav class="home__bottom-nav">
+      <a
+        *ngFor="let item of bottomNavigationItems"
+        class="home__bottom-nav-item"
+        [routerLink]="item.commands"
+        routerLinkActive="home__bottom-nav-item--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        #link="routerLinkActive"
+        [attr.aria-current]="link.isActive ? 'page' : null"
+      >
+        <span class="material-symbols-outlined">{{ item.icon }}</span>
+        <span class="home__bottom-nav-label">{{ item.labelKey | translate }}</span>
+      </a>
+    </nav>
+  </footer>
+</div>

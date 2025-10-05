@@ -4,22 +4,79 @@
     "stopDetail": "Stop detail",
     "routeSearch": "Route search",
     "map": "Map",
-    "language": "Language"
+    "language": "Language",
+    "lines": "Lines"
   },
   "languages": {
     "es": "Spanish",
     "en": "English"
   },
   "home": {
-    "title": "Plan your next ride",
-    "description": "Review recent stops, nearby locations, and your favorites in one place.",
-    "action": "Start a search",
-    "recent": "Recent stops",
-    "nearby": "Find nearby",
-    "favorites": "Favorites",
-    "recentDescription": "Quickly reopen stops you visited recently.",
-    "nearbyDescription": "Use your location to discover stops close to you.",
-    "favoritesDescription": "Pin the stops you use every day for fast access."
+    "header": {
+      "title": "Bus Timetables",
+      "infoLabel": "View application information"
+    },
+    "sections": {
+      "search": {
+        "title": "Search Stops",
+        "originLabel": "Origin",
+        "originPlaceholder": "Where are you starting?",
+        "destinationLabel": "Destination",
+        "destinationPlaceholder": "Where do you want to go?",
+        "dateLabel": "Date",
+        "submit": "Search schedules",
+        "swapLabel": "Swap origin and destination"
+      },
+      "recentStops": {
+        "title": "Recent Stops",
+        "items": {
+          "mainStreet": "Main St & 1st Ave",
+          "oakwoodPlaza": "Oakwood Plaza",
+          "cityLibrary": "City Library",
+          "centralStation": "Central Station",
+          "riverPark": "River Park",
+          "harborPier": "Harbor Pier",
+          "universityGate": "University Gate",
+          "historicCenter": "Historic Center",
+          "northTerminal": "North Terminal",
+          "marketSquare": "Market Square"
+        }
+      },
+      "findNearby": {
+        "title": "Find Nearby",
+        "action": "Use My Location"
+      },
+      "favorites": {
+        "title": "Favorites",
+        "items": {
+          "uptown": {
+            "title": "Uptown Transit Center",
+            "subtitle": "Stop ID: 7821"
+          },
+          "eastMarket": {
+            "title": "East Market",
+            "subtitle": "Stop ID: 3455"
+          }
+        }
+      }
+    },
+    "dialogs": {
+      "nearbyStops": {
+        "title": "Nearby stops",
+        "description": "Enable your location to discover the closest stops to you.",
+        "loading": "Locating your position...",
+        "permissionDenied": "We were unable to access your location. Please allow location permissions to continue.",
+        "notSupported": "Geolocation is not supported on this device.",
+        "unknownError": "We could not determine your location. Try again in a moment.",
+        "empty": "No nearby stops were found.",
+        "retry": "Try again",
+        "close": "Close",
+        "distance": {
+          "meters": "{{value}} m",
+          "kilometers": "{{value}} km"
+        }
+      }
+    }
   },
   "stopDetail": {
     "title": "Stop overview",
@@ -51,5 +108,10 @@
     "description": "Explore the network map and inspect each stop.",
     "openList": "View list",
     "hint": "Map preview loading"
+  },
+  "errors": {
+    "geolocation": {
+      "notSupported": "Geolocation is not supported on this device."
+    }
   }
 }
