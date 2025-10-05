@@ -7,6 +7,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDatepicker, MatDatepickerInput } from '@angular/material/datepicker';
 import { of } from 'rxjs';
+import { skipWhile, take } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 
 import { APP_CONFIG } from '../../core/config';
@@ -178,19 +179,25 @@ describe('HomeComponent', () => {
       .origin as FormControl<StopOption | string | null>;
     const destinationOptions$ = component['destinationOptions$'];
     const debounce = APP_CONFIG.homeData.search.debounceMs;
-    let results: readonly StopOption[] = [];
+    let results: readonly StopOption[] | null = null;
 
-    const subscription = destinationOptions$.subscribe((value) => {
-      results = value;
-    });
+    const subscription = destinationOptions$
+      .pipe(skipWhile((value) => value.length === 0), take(1))
+      .subscribe((value) => {
+        results = value;
+      });
 
     originControl.setValue(STUB_STOPS[0]);
     tick(debounce);
     fixture.detectChanges();
     tick();
 
-    expect(results.length).toBeGreaterThan(0);
-    expect(results.every((stop) => ['beta', 'gamma'].includes(stop.id))).toBeTrue();
+    expect(results).not.toBeNull();
+
+    const resolvedResults = results ?? [];
+
+    expect(resolvedResults.length).toBeGreaterThan(0);
+    expect(resolvedResults.every((stop: StopOption) => ['beta', 'gamma'].includes(stop.id))).toBeTrue();
 
     subscription.unsubscribe();
   }));
