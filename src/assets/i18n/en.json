@@ -107,6 +107,10 @@
     "badges": {
       "accessible": "Accessible bus",
       "universityOnly": "University service"
+    },
+    "source": {
+      "live": "This information comes right now from the {{provider}}.",
+      "snapshot": "This information comes from a copy saved on {{date}} at {{time}} by the {{provider}}."
     }
   },
   "routeSearch": {

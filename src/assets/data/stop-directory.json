@@ -1,0 +1,974 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-06T22:06:15.228Z",
+    "timezone": "Europe/Madrid",
+    "consortiums": [
+      {
+        "id": 7,
+        "name": "Consorcio de Transporte Metropolitano del Área de Jaén"
+      }
+    ]
+  },
+  "stops": [
+    {
+      "consortiumId": 7,
+      "stopId": "1",
+      "stopCode": "1",
+      "name": "Estación De Autobuses De Jaén",
+      "municipality": "Jaén",
+      "municipalityId": "1",
+      "nucleus": "Jaén",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 37.771548,
+        "longitude": -3.787237
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "10",
+      "stopCode": "10",
+      "name": "La Imora I",
+      "municipality": "Jaén",
+      "municipalityId": "1",
+      "nucleus": "Jaén",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 37.782691,
+        "longitude": -3.823899
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "102",
+      "stopCode": "102",
+      "name": "Estación autobuses de Martos (Solape)",
+      "municipality": "Martos",
+      "municipalityId": "2",
+      "nucleus": "Poligono Ind. Martos. G",
+      "nucleusId": "61",
+      "zone": "G",
+      "location": {
+        "latitude": 37.716791,
+        "longitude": -3.971479
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "103",
+      "stopCode": "103",
+      "name": "Estación de Autobuses de Andújar",
+      "municipality": "Andújar",
+      "municipalityId": "24",
+      "nucleus": "Andújar",
+      "nucleusId": "54",
+      "zone": "E",
+      "location": {
+        "latitude": 38.03977,
+        "longitude": -4.045377
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "104",
+      "stopCode": "104",
+      "name": "Parada de Arjona",
+      "municipality": "Arjona",
+      "municipalityId": "25",
+      "nucleus": "Arjona",
+      "nucleusId": "55",
+      "zone": "E",
+      "location": {
+        "latitude": 37.937887,
+        "longitude": -4.062705
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "105",
+      "stopCode": "105",
+      "name": "Parada de Arjonilla",
+      "municipality": "Arjonilla",
+      "municipalityId": "26",
+      "nucleus": "Arjonilla",
+      "nucleusId": "56",
+      "zone": "E",
+      "location": {
+        "latitude": 37.973252,
+        "longitude": -4.105878
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "107",
+      "stopCode": "107",
+      "name": "Centro Sociocultural (Plaza Primero de Mayo, 2)",
+      "municipality": "Escañuela",
+      "municipalityId": "27",
+      "nucleus": "Escañuela",
+      "nucleusId": "57",
+      "zone": "D",
+      "location": {
+        "latitude": 37.878909,
+        "longitude": -4.031637
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "108",
+      "stopCode": "108",
+      "name": "Parada Lahiguera",
+      "municipality": "Lahiguera",
+      "municipalityId": "28",
+      "nucleus": "Lahiguera",
+      "nucleusId": "58",
+      "zone": "D",
+      "location": {
+        "latitude": 37.971191,
+        "longitude": -3.988895
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "114",
+      "stopCode": "114",
+      "name": "La Plazoleta (Cazalilla)",
+      "municipality": "Cazalilla",
+      "municipalityId": "29",
+      "nucleus": "Cazalilla",
+      "nucleusId": "59",
+      "zone": "D",
+      "location": {
+        "latitude": 37.98616,
+        "longitude": -3.88251
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "115",
+      "stopCode": "115",
+      "name": "Parque",
+      "municipality": "Villanueva de la Reina",
+      "municipalityId": "30",
+      "nucleus": "Villanueva de la Reina",
+      "nucleusId": "60",
+      "zone": "D",
+      "location": {
+        "latitude": 38.006211,
+        "longitude": -3.912287
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "119",
+      "stopCode": "119",
+      "name": "Aeropuerto",
+      "municipality": "Los Villares",
+      "municipalityId": "4",
+      "nucleus": "Los Villares",
+      "nucleusId": "22",
+      "zone": "B",
+      "location": {
+        "latitude": 37.68911,
+        "longitude": -3.82394
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "126",
+      "stopCode": "126",
+      "name": "Electrodomésticos \"El Pilar\"",
+      "municipality": "Pegalajar",
+      "municipalityId": "7",
+      "nucleus": "Pegalajar",
+      "nucleusId": "25",
+      "zone": "B",
+      "location": {
+        "latitude": 37.739927,
+        "longitude": -3.647014
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "14",
+      "stopCode": "14",
+      "name": "Jabalcuz V",
+      "municipality": "Jaén",
+      "municipalityId": "1",
+      "nucleus": "Jaén",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 37.74232,
+        "longitude": -3.81453
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "18",
+      "stopCode": "18",
+      "name": "Ciudad Jardin",
+      "municipality": "La Guardia de Jaén",
+      "municipalityId": "3",
+      "nucleus": "La Guardia de Jaén",
+      "nucleusId": "5",
+      "zone": "B",
+      "location": {
+        "latitude": 37.763064,
+        "longitude": -3.736292
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "22",
+      "stopCode": "22",
+      "name": "C/ Mesones",
+      "municipality": "La Guardia de Jaén",
+      "municipalityId": "3",
+      "nucleus": "La Guardia de Jaén",
+      "nucleusId": "5",
+      "zone": "B",
+      "location": {
+        "latitude": 37.743,
+        "longitude": -3.691835
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "23",
+      "stopCode": "23",
+      "name": "Campo Olivo",
+      "municipality": "La Guardia de Jaén",
+      "municipalityId": "3",
+      "nucleus": "La Guardia de Jaén",
+      "nucleusId": "5",
+      "zone": "B",
+      "location": {
+        "latitude": 37.769941,
+        "longitude": -3.707001
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "26",
+      "stopCode": "26",
+      "name": "La Yuca.G-I",
+      "municipality": "Jaén",
+      "municipalityId": "1",
+      "nucleus": "Jaén",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 37.776491,
+        "longitude": -3.72985
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "27",
+      "stopCode": "27",
+      "name": "Curvín-I",
+      "municipality": "La Guardia de Jaén",
+      "municipalityId": "3",
+      "nucleus": "La Guardia de Jaén",
+      "nucleusId": "5",
+      "zone": "B",
+      "location": {
+        "latitude": 37.766111,
+        "longitude": -3.697222
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "29",
+      "stopCode": "29",
+      "name": "Venta Matías-I",
+      "municipality": "La Guardia de Jaén",
+      "municipalityId": "3",
+      "nucleus": "La Guardia de Jaén",
+      "nucleusId": "5",
+      "zone": "B",
+      "location": {
+        "latitude": 37.760556,
+        "longitude": -3.691667
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "31",
+      "stopCode": "31",
+      "name": "Plaza De La Fuente",
+      "municipality": "Los Villares",
+      "municipalityId": "4",
+      "nucleus": "Los Villares",
+      "nucleusId": "22",
+      "zone": "B",
+      "location": {
+        "latitude": 37.688314,
+        "longitude": -3.817892
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "32",
+      "stopCode": "32",
+      "name": "Avd. Juana I-V",
+      "municipality": "Los Villares",
+      "municipalityId": "4",
+      "nucleus": "Los Villares",
+      "nucleusId": "22",
+      "zone": "B",
+      "location": {
+        "latitude": 37.68594,
+        "longitude": -3.82322
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "33",
+      "stopCode": "33",
+      "name": "Puente Del Nogueral",
+      "municipality": "Los Villares",
+      "municipalityId": "4",
+      "nucleus": "Los Villares",
+      "nucleusId": "22",
+      "zone": "B",
+      "location": {
+        "latitude": 37.691795,
+        "longitude": -3.817493
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "34",
+      "stopCode": "34",
+      "name": "Meson De Los Caballeros(Crta.A-6050)",
+      "municipality": "Los Villares",
+      "municipalityId": "4",
+      "nucleus": "Los Villares",
+      "nucleusId": "22",
+      "zone": "B",
+      "location": {
+        "latitude": 37.688611,
+        "longitude": -3.813611
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "35",
+      "stopCode": "35",
+      "name": "Urb. Los Llanos-I/V",
+      "municipality": "Los Villares",
+      "municipalityId": "4",
+      "nucleus": "Los Villares",
+      "nucleusId": "22",
+      "zone": "B",
+      "location": {
+        "latitude": 37.698247,
+        "longitude": -3.810142
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "36",
+      "stopCode": "36",
+      "name": "C/ San Bartolome, 64(Vuelta)",
+      "municipality": "Torredelcampo",
+      "municipalityId": "5",
+      "nucleus": "Torredelcampo",
+      "nucleusId": "23",
+      "zone": "B",
+      "location": {
+        "latitude": 37.77373,
+        "longitude": -3.89986
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "37",
+      "stopCode": "37",
+      "name": "C/ San Bartolome, 43(Ida)",
+      "municipality": "Torredelcampo",
+      "municipalityId": "5",
+      "nucleus": "Torredelcampo",
+      "nucleusId": "23",
+      "zone": "B",
+      "location": {
+        "latitude": 37.77388,
+        "longitude": -3.89985
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "38",
+      "stopCode": "38",
+      "name": "Mª Auxiliadora-I/V",
+      "municipality": "Jamilena",
+      "municipalityId": "6",
+      "nucleus": "Jamilena",
+      "nucleusId": "24",
+      "zone": "B",
+      "location": {
+        "latitude": 37.746795,
+        "longitude": -3.914441
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "4",
+      "stopCode": "4",
+      "name": "Puente Nuevo",
+      "municipality": "Jaén",
+      "municipalityId": "1",
+      "nucleus": "Jaén",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 37.778522,
+        "longitude": -3.746984
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "40",
+      "stopCode": "40",
+      "name": "Virgen De Las Nieves",
+      "municipality": "Pegalajar",
+      "municipalityId": "7",
+      "nucleus": "Pegalajar",
+      "nucleusId": "25",
+      "zone": "B",
+      "location": {
+        "latitude": 37.740485,
+        "longitude": -3.644079
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "41",
+      "stopCode": "41",
+      "name": "La Cerradura",
+      "municipality": "Pegalajar",
+      "municipalityId": "7",
+      "nucleus": "La Cerradura",
+      "nucleusId": "26",
+      "zone": "B",
+      "location": {
+        "latitude": 37.699099,
+        "longitude": -3.638852
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "42",
+      "stopCode": "42",
+      "name": "Avd. De Jaén Nº 43",
+      "municipality": "Fuerte del Rey",
+      "municipalityId": "9",
+      "nucleus": "Fuerte del Rey",
+      "nucleusId": "28",
+      "zone": "B",
+      "location": {
+        "latitude": 37.873824,
+        "longitude": -3.883123
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "45",
+      "stopCode": "45",
+      "name": "Plaza De La Constitución",
+      "municipality": "Mancha Real",
+      "municipalityId": "10",
+      "nucleus": "Sotogordo",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 37.95184,
+        "longitude": -3.59811
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "46",
+      "stopCode": "46",
+      "name": "Plaza Manuel Carrasco-I/V",
+      "municipality": "Martos",
+      "municipalityId": "2",
+      "nucleus": "La Carrasca",
+      "nucleusId": "16",
+      "zone": "C",
+      "location": {
+        "latitude": 37.644051,
+        "longitude": -3.984906
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "47",
+      "stopCode": "47",
+      "name": "C/ Nueva nº 6-I/V",
+      "municipality": "Martos",
+      "municipalityId": "2",
+      "nucleus": "Las Casillas",
+      "nucleusId": "17",
+      "zone": "C",
+      "location": {
+        "latitude": 37.642783,
+        "longitude": -4.001606
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "49",
+      "stopCode": "49",
+      "name": "Avd. Doctor Sagaz 5-V",
+      "municipality": "Villatorres",
+      "municipalityId": "11",
+      "nucleus": "Villargordo",
+      "nucleusId": "32",
+      "zone": "C",
+      "location": {
+        "latitude": 37.938687,
+        "longitude": -3.735377
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "5",
+      "stopCode": "5",
+      "name": "Grañena",
+      "municipality": "Jaén",
+      "municipalityId": "1",
+      "nucleus": "Grañena",
+      "nucleusId": "8",
+      "zone": "AB",
+      "location": {
+        "latitude": 37.863333,
+        "longitude": -3.768559
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "50",
+      "stopCode": "50",
+      "name": "C/ La Parra-V",
+      "municipality": "Villatorres",
+      "municipalityId": "11",
+      "nucleus": "Torrequebradilla",
+      "nucleusId": "30",
+      "zone": "C",
+      "location": {
+        "latitude": 37.909979,
+        "longitude": -3.661691
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "51",
+      "stopCode": "51",
+      "name": "Avd. de Andalucia Nº 20",
+      "municipality": "Villatorres",
+      "municipalityId": "11",
+      "nucleus": "Vados de Torralba",
+      "nucleusId": "31",
+      "zone": "C",
+      "location": {
+        "latitude": 37.943056,
+        "longitude": -3.639167
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "53",
+      "stopCode": "53",
+      "name": "Estación De Autobuses De Martos",
+      "municipality": "Martos",
+      "municipalityId": "2",
+      "nucleus": "Martos",
+      "nucleusId": "15",
+      "zone": "C",
+      "location": {
+        "latitude": 37.716944,
+        "longitude": -3.971667
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "54",
+      "stopCode": "54",
+      "name": "Apeadero Torredelcampo",
+      "municipality": "Torredelcampo",
+      "municipalityId": "5",
+      "nucleus": "Torredelcampo",
+      "nucleusId": "23",
+      "zone": "B",
+      "location": {
+        "latitude": 37.775396,
+        "longitude": -3.892896
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "55",
+      "stopCode": "55",
+      "name": "Apeadero Torredonjimeno",
+      "municipality": "Torredonjimeno",
+      "municipalityId": "8",
+      "nucleus": "Torredonjimeno",
+      "nucleusId": "27",
+      "zone": "B",
+      "location": {
+        "latitude": 37.76464,
+        "longitude": -3.94937
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "56",
+      "stopCode": "56",
+      "name": "Campus Universitario-I",
+      "municipality": "Jaén",
+      "municipalityId": "1",
+      "nucleus": "Jaén",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 37.78574,
+        "longitude": -3.77469
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "58",
+      "stopCode": "58",
+      "name": "Apeadero Mengibar",
+      "municipality": "Mengibar",
+      "municipalityId": "12",
+      "nucleus": "Mengíbar",
+      "nucleusId": "33",
+      "zone": "C",
+      "location": {
+        "latitude": 37.970267,
+        "longitude": -3.802664
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "61",
+      "stopCode": "61",
+      "name": "Plaza De La Constitución",
+      "municipality": "Fuensanta de Martos",
+      "municipalityId": "13",
+      "nucleus": "Fuensanta de Martos",
+      "nucleusId": "35",
+      "zone": "C",
+      "location": {
+        "latitude": 37.647156,
+        "longitude": -3.905485
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "62",
+      "stopCode": "62",
+      "name": "Ctra. Martos (Cooperativa)",
+      "municipality": "Fuensanta de Martos",
+      "municipalityId": "13",
+      "nucleus": "Fuensanta de Martos",
+      "nucleusId": "35",
+      "zone": "C",
+      "location": {
+        "latitude": 37.64552,
+        "longitude": -3.91551
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "68",
+      "stopCode": "68",
+      "name": "Parque Científico Tecnológico (Geolit)",
+      "municipality": "Mengibar",
+      "municipalityId": "12",
+      "nucleus": "Mengíbar",
+      "nucleusId": "33",
+      "zone": "C",
+      "location": {
+        "latitude": 37.941064,
+        "longitude": -3.78998
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "69",
+      "stopCode": "69",
+      "name": "Plaza De La Constitución",
+      "municipality": "Valdepeñas de Jaén",
+      "municipalityId": "15",
+      "nucleus": "Valdepeñas de Jaén",
+      "nucleusId": "37",
+      "zone": "D",
+      "location": {
+        "latitude": 37.59041,
+        "longitude": -3.8196
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "7",
+      "stopCode": "7",
+      "name": "Las Infantas",
+      "municipality": "Jaén",
+      "municipalityId": "1",
+      "nucleus": "Las Infantas",
+      "nucleusId": "7",
+      "zone": "AB",
+      "location": {
+        "latitude": 37.914717,
+        "longitude": -3.783777
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "70",
+      "stopCode": "70",
+      "name": "Calle Santísimo ",
+      "municipality": "Valdepeñas de Jaén",
+      "municipalityId": "15",
+      "nucleus": "Valdepeñas de Jaén",
+      "nucleusId": "37",
+      "zone": "D",
+      "location": {
+        "latitude": 37.591389,
+        "longitude": -3.817222
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "71",
+      "stopCode": "71",
+      "name": "Crta. Torrequebradilla Esq. Benjumea",
+      "municipality": "Villatorres",
+      "municipalityId": "11",
+      "nucleus": "Villargordo",
+      "nucleusId": "32",
+      "zone": "C",
+      "location": {
+        "latitude": 37.938108,
+        "longitude": -3.730298
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "78",
+      "stopCode": "78",
+      "name": "Avd. La Paz",
+      "municipality": "Los Villares",
+      "municipalityId": "4",
+      "nucleus": "Los Villares",
+      "nucleusId": "22",
+      "zone": "B",
+      "location": {
+        "latitude": 37.68964,
+        "longitude": -3.8235
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "8",
+      "stopCode": "8",
+      "name": "La Yuca I",
+      "municipality": "Jaén",
+      "municipalityId": "1",
+      "nucleus": "Jaén",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 37.778288,
+        "longitude": -3.73359
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "83",
+      "stopCode": "83",
+      "name": "Jardines",
+      "municipality": "Torreblascopedro",
+      "municipalityId": "17",
+      "nucleus": "Campillo del Rio",
+      "nucleusId": "45",
+      "zone": "E",
+      "location": {
+        "latitude": 37.958894,
+        "longitude": -3.66444
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "84",
+      "stopCode": "84",
+      "name": "Plaza",
+      "municipality": "Torreblascopedro",
+      "municipalityId": "17",
+      "nucleus": "Torreblascopedro",
+      "nucleusId": "44",
+      "zone": "F",
+      "location": {
+        "latitude": 37.996398,
+        "longitude": -3.63724
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "85",
+      "stopCode": "85",
+      "name": "Plaza De La Fuente",
+      "municipality": "Carcheles",
+      "municipalityId": "18",
+      "nucleus": "Carchel",
+      "nucleusId": "46",
+      "zone": "D",
+      "location": {
+        "latitude": 37.65218,
+        "longitude": -3.636409
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "86",
+      "stopCode": "86",
+      "name": "C/ Belen",
+      "municipality": "Carcheles",
+      "municipalityId": "18",
+      "nucleus": "Carchelejo",
+      "nucleusId": "47",
+      "zone": "D",
+      "location": {
+        "latitude": 37.63557,
+        "longitude": -3.63837
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "87",
+      "stopCode": "87",
+      "name": "Avd. de España",
+      "municipality": "Carcheles",
+      "municipalityId": "18",
+      "nucleus": "Carchelejo",
+      "nucleusId": "47",
+      "zone": "D",
+      "location": {
+        "latitude": 37.637188,
+        "longitude": -3.639852
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "88",
+      "stopCode": "88",
+      "name": "C/ Baltasar Garzon Real",
+      "municipality": "Torres",
+      "municipalityId": "19",
+      "nucleus": "Torres",
+      "nucleusId": "48",
+      "zone": "D",
+      "location": {
+        "latitude": 37.784034,
+        "longitude": -3.504691
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "89",
+      "stopCode": "89",
+      "name": "Piscina",
+      "municipality": "Villardompardo",
+      "municipalityId": "14",
+      "nucleus": "Villardompardo",
+      "nucleusId": "49",
+      "zone": "C",
+      "location": {
+        "latitude": 37.835991,
+        "longitude": -4.001322
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "90",
+      "stopCode": "90",
+      "name": "Calle Antonio Machado (Espeluy)",
+      "municipality": "Espeluy",
+      "municipalityId": "20",
+      "nucleus": "Espeluy",
+      "nucleusId": "50",
+      "zone": "D",
+      "location": {
+        "latitude": 38.03169,
+        "longitude": -3.863429
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "91",
+      "stopCode": "91",
+      "name": "Avda. de Hutar",
+      "municipality": "Albanchez de Mágina",
+      "municipalityId": "21",
+      "nucleus": "Albanchez de Mágina",
+      "nucleusId": "51",
+      "zone": "E",
+      "location": {
+        "latitude": 37.793722,
+        "longitude": -3.466066
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "92",
+      "stopCode": "92",
+      "name": "Plaza De La Constitución",
+      "municipality": "Albanchez de Mágina",
+      "municipalityId": "21",
+      "nucleus": "Albanchez de Mágina",
+      "nucleusId": "51",
+      "zone": "E",
+      "location": {
+        "latitude": 37.792054,
+        "longitude": -3.468228
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "94",
+      "stopCode": "94",
+      "name": "Espeluy Estación(Poblado de Lara)",
+      "municipality": "Espeluy",
+      "municipalityId": "20",
+      "nucleus": "Espeluy",
+      "nucleusId": "50",
+      "zone": "D",
+      "location": {
+        "latitude": 38.01155,
+        "longitude": -3.838934
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "96",
+      "stopCode": "96",
+      "name": "Apeadero Mancha Real",
+      "municipality": "Mancha Real",
+      "municipalityId": "10",
+      "nucleus": "Mancha Real",
+      "nucleusId": "4",
+      "zone": "BC",
+      "location": {
+        "latitude": 37.788432,
+        "longitude": -3.608815
+      }
+    }
+  ]
+}

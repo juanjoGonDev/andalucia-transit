@@ -1,4 +1,10 @@
-import { StopSchedule, StopService } from './stop-schedule.model';
+import {
+  StopSchedule,
+  StopScheduleDataSource,
+  StopScheduleResult,
+  StopScheduleDataSourceType,
+  StopService
+} from './stop-schedule.model';
 import { differenceInMinutes } from '../utils/time.util';
 
 const MAX_PERCENTAGE = 100;
@@ -35,13 +41,22 @@ export interface StopScheduleUiModel {
   readonly availableDestinations: readonly string[];
   readonly upcoming: readonly StopScheduleUpcomingItem[];
   readonly past: readonly StopSchedulePastItem[];
+  readonly dataSource: StopScheduleSourceUiModel;
+}
+
+export interface StopScheduleSourceUiModel {
+  readonly type: StopScheduleDataSourceType;
+  readonly providerName: string;
+  readonly queryTime: Date;
+  readonly snapshotTime: Date | null;
 }
 
 export function buildStopScheduleUiModel(
-  schedule: StopSchedule,
+  result: StopScheduleResult,
   currentTime: Date,
   destinationFilter: string | null
 ): StopScheduleUiModel {
+  const schedule = result.schedule;
   const availableDestinations = buildDestinationList(schedule.services);
   const filteredServices = destinationFilter
     ? schedule.services.filter((service) => service.destination === destinationFilter)
@@ -96,8 +111,18 @@ export function buildStopScheduleUiModel(
     generatedAt: schedule.generatedAt,
     availableDestinations,
     upcoming,
-    past: orderedPast
+    past: orderedPast,
+    dataSource: mapDataSource(result.dataSource)
   } satisfies StopScheduleUiModel;
+}
+
+function mapDataSource(source: StopScheduleDataSource): StopScheduleSourceUiModel {
+  return {
+    type: source.type,
+    providerName: source.providerName,
+    queryTime: source.queryTime,
+    snapshotTime: source.snapshotTime
+  } satisfies StopScheduleSourceUiModel;
 }
 
 function buildDestinationList(services: readonly StopService[]): readonly string[] {

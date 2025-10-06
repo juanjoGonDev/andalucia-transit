@@ -45,6 +45,8 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
   - Do not imply CTAN or Junta de Andalucia endorse or support this application.
 - Document any additional external services before integration and record their licensing or usage limits.
 - Cache CTAN responses sparingly, respect freshness windows, and provide manual refresh to correct stale data.
+- Home search and stop metadata now rely on `StopDirectoryService`, which loads the generated snapshot at `assets/data/stop-directory.json`; remove mock network usages in new code.
+- `.github/workflows/daily-snapshot.yml` generates transport snapshots every day at 05:00 Europe/Madrid, commits changes with the `PAT_FINE` token, and auto-merges refreshed data. Keep snapshot scripts green (`npm run snapshot`, `npm run test:scripts`).
 
 ## Legal & Regulatory Compliance
 - **GDPR / RGPD (Reglamento UE 2016/679 & LO 3/2018):** collect only necessary data; geolocation requires explicit browser consent and an in-app explanation; publish an accessible privacy notice covering controller identity, processing purposes, lawful basis, retention, third parties (none by default), and user rights (access, rectification, erasure, restriction, portability, objection). Document procedures for handling rights requests and reporting personal data breaches within 72 hours.

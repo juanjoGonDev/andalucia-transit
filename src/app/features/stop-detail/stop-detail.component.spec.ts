@@ -4,8 +4,8 @@ import { BehaviorSubject, of } from 'rxjs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { APP_CONFIG } from '../../core/config';
-import { StopSchedule } from '../../domain/stop-schedule/stop-schedule.model';
-import { MockStopScheduleService } from '../../data/services/mock-stop-schedule.service';
+import { StopSchedule, StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
+import { StopScheduleService } from '../../data/services/stop-schedule.service';
 import { StopDetailComponent } from './stop-detail.component';
 
 class FakeTranslateLoader implements TranslateLoader {
@@ -17,17 +17,15 @@ class FakeTranslateLoader implements TranslateLoader {
 describe('StopDetailComponent', () => {
   let fixture: ComponentFixture<StopDetailComponent>;
   let router: Router;
-  let scheduleService: jasmine.SpyObj<MockStopScheduleService>;
+  let scheduleService: jasmine.SpyObj<StopScheduleService>;
   let paramMapSubject: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
 
   beforeEach(async () => {
     paramMapSubject = new BehaviorSubject(convertToParamMap({ stopId: 'stop-main-street' }));
-    scheduleService = jasmine.createSpyObj<MockStopScheduleService>('MockStopScheduleService', [
+    scheduleService = jasmine.createSpyObj<StopScheduleService>('StopScheduleService', [
       'getStopSchedule'
     ]);
-    scheduleService.getStopSchedule.and.callFake((stopId: string) =>
-      of(createSchedule(stopId))
-    );
+    scheduleService.getStopSchedule.and.callFake((stopId: string) => of(createResult(stopId)));
     const routerStub = jasmine.createSpyObj<Router>('Router', ['navigate']);
     routerStub.navigate.and.resolveTo(true);
 
@@ -39,7 +37,7 @@ describe('StopDetailComponent', () => {
         })
       ],
       providers: [
-        { provide: MockStopScheduleService, useValue: scheduleService },
+        { provide: StopScheduleService, useValue: scheduleService },
         { provide: ActivatedRoute, useValue: { paramMap: paramMapSubject.asObservable() } },
         { provide: Router, useValue: routerStub }
       ]
@@ -73,14 +71,24 @@ describe('StopDetailComponent', () => {
   }));
 });
 
-function createSchedule(stopId: string): StopSchedule {
+function createResult(stopId: string): StopScheduleResult {
   const now = new Date();
-  return {
+  const schedule: StopSchedule = {
     stopId,
     stopCode: '1234',
     stopName: 'Test Stop',
     queryDate: now,
     generatedAt: now,
     services: []
+  } as const;
+
+  return {
+    schedule,
+    dataSource: {
+      type: 'api',
+      providerName: 'Test Provider',
+      queryTime: now,
+      snapshotTime: null
+    }
   } as const;
 }

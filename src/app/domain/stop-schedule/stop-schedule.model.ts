@@ -15,3 +15,17 @@ export interface StopSchedule {
   readonly generatedAt: Date;
   readonly services: readonly StopService[];
 }
+
+export type StopScheduleDataSourceType = 'api' | 'snapshot';
+
+export interface StopScheduleDataSource {
+  readonly type: StopScheduleDataSourceType;
+  readonly providerName: string;
+  readonly queryTime: Date;
+  readonly snapshotTime: Date | null;
+}
+
+export interface StopScheduleResult {
+  readonly schedule: StopSchedule;
+  readonly dataSource: StopScheduleDataSource;
+}

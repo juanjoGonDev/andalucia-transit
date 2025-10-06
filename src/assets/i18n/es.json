@@ -107,6 +107,10 @@
     "badges": {
       "accessible": "Servicio accesible",
       "universityOnly": "Servicio universitario"
+    },
+    "source": {
+      "live": "Estos datos vienen ahora mismo del {{provider}}.",
+      "snapshot": "Estos datos provienen de una copia guardada el {{date}} a las {{time}} del {{provider}}."
     }
   },
   "routeSearch": {

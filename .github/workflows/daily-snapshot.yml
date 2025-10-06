@@ -1,0 +1,82 @@
+name: Daily Snapshot Refresh
+
+on:
+  schedule:
+    - cron: '0 5 * * *'
+      timezone: 'Europe/Madrid'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  snapshot:
+    name: Refresh data snapshots
+    runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
+    env:
+      NODE_OPTIONS: --max_old_space_size=4096
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_FINE }}
+          fetch-depth: 0
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Generate snapshots
+        run: npm run snapshot
+      - name: Run snapshot tests
+        run: npm run test:scripts
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Configure git author
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "Andalucia Transit Bot"
+          git config user.email "bot@andaluciatransit.local"
+      - name: Prepare pull request body
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          SNAPSHOT_TIME="$(date -u '+%Y-%m-%d %H:%M UTC')"
+          cat <<'BODY' > pr-body.md
+## Summary
+- Refreshes transport data snapshots using the CTAN open data service.
+- Stores the generated files for offline access inside the repository.
+
+Data source: Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía (consultado automáticamente).
+BODY
+          sed -i "s/consultado automáticamente/consultado automáticamente el ${SNAPSHOT_TIME}/" pr-body.md
+      - name: Create pull request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.PAT_FINE }}
+          branch: automation/update-snapshots
+          base: main
+          commit-message: chore: refresh transport snapshots
+          title: chore: refresh transport snapshots
+          body-path: pr-body.md
+          author: Andalucia Transit Bot <bot@andaluciatransit.local>
+          committer: Andalucia Transit Bot <bot@andaluciatransit.local>
+          add-paths: |
+            src/assets/data/**
+            src/assets/runtime-flags.js
+          delete-branch: true
+          draft: false
+          signoff: false
+          labels: automation
+          auto-merge: true
+          merge-method: squash

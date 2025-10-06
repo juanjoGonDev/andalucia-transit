@@ -17,7 +17,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { APP_CONFIG } from '../../core/config';
-import { MockStopScheduleService } from '../../data/services/mock-stop-schedule.service';
+import { StopScheduleService } from '../../data/services/stop-schedule.service';
 import { buildStopScheduleUiModel, StopScheduleUiModel } from '../../domain/stop-schedule/stop-schedule.transform';
 
 const ALL_DESTINATIONS_OPTION = 'all';
@@ -38,7 +38,7 @@ export class StopDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly stopScheduleService = inject(MockStopScheduleService);
+  private readonly stopScheduleService = inject(StopScheduleService);
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.stopDetail;
   protected readonly destinationControl = new FormControl<string>(ALL_DESTINATIONS_OPTION, {
@@ -57,23 +57,19 @@ export class StopDetailComponent {
     filter((stopId): stopId is string => stopId !== null)
   );
 
-  private readonly schedule$ = this.stopId$.pipe(
+  private readonly scheduleResult$ = this.stopId$.pipe(
     switchMap((stopId) => this.stopScheduleService.getStopSchedule(stopId)),
     shareReplay({ bufferSize: 1, refCount: false })
   );
 
-  protected readonly isLoading$ = this.schedule$.pipe(map(() => false), startWith(true));
+  protected readonly isLoading$ = this.scheduleResult$.pipe(map(() => false), startWith(true));
 
   protected readonly viewModel$: Observable<StopScheduleUiModel> = combineLatest([
-    this.schedule$,
+    this.scheduleResult$,
     this.destinationControl.valueChanges.pipe(startWith(this.destinationControl.value))
   ]).pipe(
-    map(([schedule, destination]) =>
-      buildStopScheduleUiModel(
-        schedule,
-        new Date(),
-        destination === ALL_DESTINATIONS_OPTION ? null : destination
-      )
+    map(([result, destination]) =>
+      buildStopScheduleUiModel(result, new Date(), destination === ALL_DESTINATIONS_OPTION ? null : destination)
     ),
     shareReplay({ bufferSize: 1, refCount: false })
   );

@@ -1,5 +1,11 @@
 const STOP_DETAIL_BASE_SEGMENT = 'stop-detail' as const;
 const STOP_ID_ROUTE_PARAM = 'stopId' as const;
+const DATA_PROVIDER_NAME =
+  'Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía' as const;
+const DATA_TIMEZONE = 'Europe/Madrid' as const;
+const STOP_SERVICES_SNAPSHOT_PATH = 'assets/data/snapshots/stop-services/latest.json' as const;
+const STOP_DIRECTORY_SNAPSHOT_PATH = 'assets/data/stop-directory.json' as const;
+const RUNTIME_FLAGS_PROPERTY = '__ANDALUCIA_TRANSIT_FLAGS__' as const;
 
 export const APP_CONFIG = {
   appName: 'Andalucia Transit',
@@ -14,6 +20,17 @@ export const APP_CONFIG = {
   },
   formats: {
     isoDate: 'yyyy-MM-dd'
+  },
+  data: {
+    providerName: DATA_PROVIDER_NAME,
+    timezone: DATA_TIMEZONE,
+    snapshots: {
+      stopServicesPath: STOP_SERVICES_SNAPSHOT_PATH,
+      stopDirectoryPath: STOP_DIRECTORY_SNAPSHOT_PATH
+    }
+  },
+  runtime: {
+    flagsProperty: RUNTIME_FLAGS_PROPERTY
   },
   routes: {
     home: '' as const,
@@ -137,6 +154,10 @@ export const APP_CONFIG = {
       badges: {
         accessible: 'stopDetail.badges.accessible',
         universityOnly: 'stopDetail.badges.universityOnly'
+      },
+      source: {
+        live: 'stopDetail.source.live',
+        snapshot: 'stopDetail.source.snapshot'
       }
     },
     routeSearch: {

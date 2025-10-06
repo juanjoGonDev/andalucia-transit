@@ -31,6 +31,20 @@
               <span class="stop-detail__meta-value">{{ viewModel.generatedAt | date: 'shortTime' }}</span>
             </div>
           </div>
+          <p class="stop-detail__data-origin" *ngIf="viewModel.dataSource as source">
+            <ng-container [ngSwitch]="source.type">
+              <span *ngSwitchCase="'api'">
+                {{ translationKeys.source.live | translate:{ provider: source.providerName } }}
+              </span>
+              <span *ngSwitchCase="'snapshot'">
+                {{ translationKeys.source.snapshot | translate:{
+                  provider: source.providerName,
+                  date: source.snapshotTime | date: 'fullDate',
+                  time: source.snapshotTime | date: 'shortTime'
+                } }}
+              </span>
+            </ng-container>
+          </p>
         </div>
         <div class="stop-detail__controls">
           <label class="stop-detail__control">

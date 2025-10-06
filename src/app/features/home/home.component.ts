@@ -37,9 +37,9 @@ import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import { HomeNearbyStopsDialogComponent } from './home-nearby-stops-dialog.component';
 import {
-  MockTransitNetworkService,
-  StopOption
-} from '../../data/stops/mock-transit-network.service';
+  StopDirectoryOption,
+  StopDirectoryService
+} from '../../data/stops/stop-directory.service';
 import { StopNavigationItemComponent } from '../../shared/ui/stop-navigation-item/stop-navigation-item.component';
 
 interface ActionListItem {
@@ -103,7 +103,7 @@ export class HomeComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly transitNetwork = inject(MockTransitNetworkService);
+  private readonly stopDirectory = inject(StopDirectoryService);
 
   private readonly translation = APP_CONFIG.translationKeys.home;
   private readonly navigation = APP_CONFIG.translationKeys.navigation;
@@ -226,27 +226,13 @@ export class HomeComponent {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  private readonly allowedOriginIds$ = this.selectedDestination$.pipe(
-    map((destination) => (destination ? this.transitNetwork.getReachableStopIds(destination.id) : null)),
-    distinctUntilChanged((previous, current) => this.areSameIdSets(previous, current)),
-    shareReplay({ bufferSize: 1, refCount: true })
-  );
-
-  private readonly allowedDestinationIds$ = this.selectedOrigin$.pipe(
-    map((origin) => (origin ? this.transitNetwork.getReachableStopIds(origin.id) : null)),
-    distinctUntilChanged((previous, current) => this.areSameIdSets(previous, current)),
-    shareReplay({ bufferSize: 1, refCount: true })
-  );
-
-  protected readonly originOptions$: Observable<readonly StopOption[]> = combineLatest([
+  protected readonly originOptions$: Observable<readonly StopDirectoryOption[]> = combineLatest([
     this.originQuery$,
-    this.allowedOriginIds$,
     this.selectedDestination$
   ]).pipe(
-    switchMap(([query, allowedOriginIds, selectedDestination]) =>
-      this.transitNetwork.searchStops({
+    switchMap(([query, selectedDestination]) =>
+      this.stopDirectory.searchStops({
         query,
-        includeStopIds: allowedOriginIds ?? undefined,
         excludeStopId: selectedDestination?.id,
         limit: this.maxAutocompleteOptions
       })
@@ -254,15 +240,13 @@ export class HomeComponent {
     shareReplay({ bufferSize: 1, refCount: false })
   );
 
-  protected readonly destinationOptions$: Observable<readonly StopOption[]> = combineLatest([
+  protected readonly destinationOptions$: Observable<readonly StopDirectoryOption[]> = combineLatest([
     this.destinationQuery$,
-    this.allowedDestinationIds$,
     this.selectedOrigin$
   ]).pipe(
-    switchMap(([query, allowedDestinationIds, selectedOrigin]) =>
-      this.transitNetwork.searchStops({
+    switchMap(([query, selectedOrigin]) =>
+      this.stopDirectory.searchStops({
         query,
-        includeStopIds: allowedDestinationIds ?? undefined,
         excludeStopId: selectedOrigin?.id,
         limit: this.maxAutocompleteOptions
       })
@@ -330,7 +314,7 @@ export class HomeComponent {
     return option.name;
   }
 
-  protected trackStopOption(_: number, option: StopOption): string {
+  protected trackStopOption(_: number, option: StopDirectoryOption): string {
     return option.id;
   }
 
@@ -375,44 +359,27 @@ export class HomeComponent {
   }
 
   private observeSelections(): void {
-    this.selectedOrigin$
+    combineLatest([this.selectedOrigin$, this.selectedDestination$])
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((origin) => this.ensureDestinationCompatibility(origin));
-
-    this.selectedDestination$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((destination) => this.ensureOriginCompatibility(destination));
+      .subscribe(([origin, destination]) => this.ensureDistinctStops(origin, destination));
   }
 
-  private ensureDestinationCompatibility(origin: StopOption | null): void {
-    const destination = this.toStopOption(this.destinationControl.value);
-
+  private ensureDistinctStops(
+    origin: StopDirectoryOption | null,
+    destination: StopDirectoryOption | null
+  ): void {
     if (!origin || !destination) {
       return;
     }
 
-    const reachable = this.transitNetwork.getReachableStopIds(origin.id);
-
-    if (!reachable.includes(destination.id)) {
-      this.destinationControl.setValue(null);
-    }
-  }
-
-  private ensureOriginCompatibility(destination: StopOption | null): void {
-    const origin = this.toStopOption(this.originControl.value);
-
-    if (!destination || !origin) {
+    if (origin.id !== destination.id) {
       return;
     }
 
-    const reachable = this.transitNetwork.getReachableStopIds(destination.id);
-
-    if (!reachable.includes(origin.id)) {
-      this.originControl.setValue(null);
-    }
+    this.destinationControl.setValue(null);
   }
 
-  private toStopOption(value: StopAutocompleteValue): StopOption | null {
+  private toStopOption(value: StopAutocompleteValue): StopDirectoryOption | null {
     if (!value || typeof value === 'string') {
       return null;
     }
@@ -428,21 +395,9 @@ export class HomeComponent {
     return value;
   }
 
-  private areSameStop(first: StopOption | null, second: StopOption | null): boolean {
-    if (!first && !second) {
-      return true;
-    }
-
-    if (!first || !second) {
-      return false;
-    }
-
-    return first.id === second.id;
-  }
-
-  private areSameIdSets(
-    first: readonly string[] | null,
-    second: readonly string[] | null
+  private areSameStop(
+    first: StopDirectoryOption | null,
+    second: StopDirectoryOption | null
   ): boolean {
     if (!first && !second) {
       return true;
@@ -452,11 +407,7 @@ export class HomeComponent {
       return false;
     }
 
-    if (first.length !== second.length) {
-      return false;
-    }
-
-    return first.every((value, index) => value === second[index]);
+    return first.id === second.id;
   }
 
   private buildRecentStops(): StopNavigationItemViewModel[] {
@@ -497,4 +448,4 @@ export class HomeComponent {
   }
 }
 
-type StopAutocompleteValue = StopOption | string | null;
+type StopAutocompleteValue = StopDirectoryOption | string | null;

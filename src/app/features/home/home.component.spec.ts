@@ -14,10 +14,10 @@ import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-
 import { StopNavigationItemComponent } from '../../shared/ui/stop-navigation-item/stop-navigation-item.component';
 import { HomeComponent } from './home.component';
 import {
-  MockTransitNetworkService,
-  StopOption,
+  StopDirectoryOption,
+  StopDirectoryService,
   StopSearchRequest
-} from '../../data/stops/mock-transit-network.service';
+} from '../../data/stops/stop-directory.service';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
@@ -25,33 +25,30 @@ class FakeTranslateLoader implements TranslateLoader {
   }
 }
 
-const STUB_STOPS: readonly StopOption[] = [
-  { id: 'alpha', name: 'Alpha Station', lineIds: ['line-a', 'line-b'] },
-  { id: 'beta', name: 'Beta Terminal', lineIds: ['line-a'] },
-  { id: 'gamma', name: 'Gamma Center', lineIds: ['line-b'] },
-  { id: 'delta', name: 'Delta Park', lineIds: ['line-c'] }
-] as const;
+const STUB_STOPS: readonly StopDirectoryOption[] = [
+  buildStop('alpha', 'Alpha Station'),
+  buildStop('beta', 'Beta Terminal'),
+  buildStop('gamma', 'Gamma Center'),
+  buildStop('delta', 'Delta Park')
+];
 
-class TransitNetworkStub {
+class DirectoryStub {
   public lastRequest: StopSearchRequest | null = null;
   private readonly stops = STUB_STOPS;
-  private readonly reachability = new Map<string, readonly string[]>([
-    ['alpha', ['beta', 'gamma']],
-    ['beta', ['alpha']],
-    ['gamma', ['alpha']],
-    ['delta', []]
-  ]);
 
   searchStops(request: StopSearchRequest) {
     this.lastRequest = request;
-    const normalizedQuery = request.query.trim().toLocaleLowerCase();
+    const normalizedQuery = request.query.trim().toLocaleLowerCase('es-ES');
+    const includeSet = request.includeStopIds ? new Set(request.includeStopIds) : null;
+
     let results = this.stops.filter((stop) =>
-      request.includeStopIds ? request.includeStopIds.includes(stop.id) : true
+      includeSet ? includeSet.has(stop.id) : true
     );
 
     if (normalizedQuery) {
       results = results.filter((stop) =>
-        stop.name.toLocaleLowerCase().includes(normalizedQuery)
+        stop.name.toLocaleLowerCase('es-ES').includes(normalizedQuery) ||
+        stop.municipality.toLocaleLowerCase('es-ES').includes(normalizedQuery)
       );
     }
 
@@ -62,12 +59,8 @@ class TransitNetworkStub {
     return of(results.slice(0, request.limit));
   }
 
-  getReachableStopIds(stopId: string): readonly string[] {
-    return this.reachability.get(stopId) ?? [];
-  }
-
-  getStopById(stopId: string): StopOption | null {
-    return this.stops.find((stop) => stop.id === stopId) ?? null;
+  getStopById() {
+    return of(null);
   }
 }
 
@@ -95,7 +88,7 @@ describe('HomeComponent', () => {
       providers: [
         provideRouter([]),
         { provide: MatDialog, useValue: dialogStub },
-        { provide: MockTransitNetworkService, useClass: TransitNetworkStub }
+        { provide: StopDirectoryService, useClass: DirectoryStub }
       ]
     }).compileComponents();
 
@@ -183,47 +176,53 @@ describe('HomeComponent', () => {
     });
   });
 
-  it('filters destination options to those reachable from the selected origin', fakeAsync(() => {
+  it('excludes the selected destination from origin search requests', fakeAsync(() => {
     const originControl = component['searchForm'].controls
-      .origin as FormControl<StopOption | string | null>;
+      .origin as FormControl<StopDirectoryOption | string | null>;
+    const destinationControl = component['searchForm'].controls
+      .destination as FormControl<StopDirectoryOption | string | null>;
+    const directory = TestBed.inject(StopDirectoryService) as unknown as DirectoryStub;
     const debounce = APP_CONFIG.homeData.search.debounceMs;
-    const network = TestBed.inject(MockTransitNetworkService) as unknown as TransitNetworkStub;
-    const getReachableSpy = spyOn(network, 'getReachableStopIds').and.callThrough();
-    const subscription = component['destinationOptions$'].subscribe();
+    const subscription = component['originOptions$'].subscribe();
 
-    tick(debounce + 1);
-    originControl.setValue(STUB_STOPS[0]);
+    destinationControl.setValue(STUB_STOPS[0]);
     tick(debounce + 1);
     fixture.detectChanges();
     flush();
-    tick();
 
-    expect(getReachableSpy).toHaveBeenCalledWith(STUB_STOPS[0].id);
+    expect(directory.lastRequest?.excludeStopId).toBe(STUB_STOPS[0].id);
+
+    originControl.setValue(STUB_STOPS[1]);
+    tick(debounce + 1);
+    fixture.detectChanges();
+    flush();
+
+    expect(directory.lastRequest?.excludeStopId).toBe(STUB_STOPS[1].id);
+
     subscription.unsubscribe();
   }));
 
-  it('clears an incompatible destination when the origin changes', fakeAsync(() => {
+  it('clears a duplicated destination when the same stop is selected as the origin', fakeAsync(() => {
     const originControl = component['searchForm'].controls
-      .origin as FormControl<StopOption | string | null>;
+      .origin as FormControl<StopDirectoryOption | string | null>;
     const destinationControl = component['searchForm'].controls
-      .destination as FormControl<StopOption | string | null>;
+      .destination as FormControl<StopDirectoryOption | string | null>;
     const debounce = APP_CONFIG.homeData.search.debounceMs;
 
-    originControl.setValue(STUB_STOPS[0]);
-    destinationControl.setValue(STUB_STOPS[1]);
-    tick(debounce);
-
-    originControl.setValue(STUB_STOPS[3]);
-    tick(debounce);
+    destinationControl.setValue(STUB_STOPS[2]);
+    originControl.setValue(STUB_STOPS[2]);
+    tick(debounce + 1);
+    fixture.detectChanges();
+    flush();
 
     expect(destinationControl.value).toBeNull();
   }));
 
   it('swaps selected stops when the swap action is triggered', () => {
     const originControl = component['searchForm'].controls
-      .origin as FormControl<StopOption | string | null>;
+      .origin as FormControl<StopDirectoryOption | string | null>;
     const destinationControl = component['searchForm'].controls
-      .destination as FormControl<StopOption | string | null>;
+      .destination as FormControl<StopDirectoryOption | string | null>;
 
     originControl.setValue(STUB_STOPS[0]);
     destinationControl.setValue(STUB_STOPS[2]);
@@ -234,3 +233,14 @@ describe('HomeComponent', () => {
     expect(destinationControl.value).toEqual(STUB_STOPS[0]);
   });
 });
+
+function buildStop(id: string, name: string): StopDirectoryOption {
+  return {
+    id,
+    code: id,
+    name,
+    municipality: `${name} City`,
+    nucleus: name,
+    consortiumId: 7
+  } satisfies StopDirectoryOption;
+}

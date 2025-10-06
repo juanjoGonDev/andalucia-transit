@@ -1,0 +1,611 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-06T22:05:59.986Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "datasetName": "stop-services"
+  },
+  "stops": [
+    {
+      "consortiumId": 7,
+      "stopId": "119",
+      "stopCode": "119",
+      "stopName": "Aeropuerto",
+      "location": {
+        "latitude": 37.68911,
+        "longitude": -3.82394
+      },
+      "municipality": "Los Villares",
+      "nucleus": "Los Villares",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-06T22:05:59.986Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "96",
+      "stopCode": "96",
+      "stopName": "Apeadero Mancha Real",
+      "location": {
+        "latitude": 37.788432,
+        "longitude": -3.608815
+      },
+      "municipality": "Mancha Real",
+      "nucleus": "Mancha Real",
+      "services": [
+        {
+          "lineId": "17",
+          "lineCode": "M1-9",
+          "lineName": "Mancha Real - Jaén",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:45:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "35",
+          "lineCode": "M3-103",
+          "lineName": "Úbeda - Jaén",
+          "destination": "Mancha Real",
+          "scheduledTime": "2025-10-07T11:00:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "17",
+          "lineCode": "M1-9",
+          "lineName": "Mancha Real - Jaén",
+          "destination": "Mancha Real",
+          "scheduledTime": "2025-10-07T11:25:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "21",
+          "lineCode": "M1-20",
+          "lineName": "Pozo Alcón - Jaén",
+          "destination": "Mancha Real",
+          "scheduledTime": "2025-10-07T12:00:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "14",
+          "lineCode": "M1-5",
+          "lineName": "Quesada - Jaén",
+          "destination": "Mancha Real",
+          "scheduledTime": "2025-10-07T12:00:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-06T22:05:59.986Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "58",
+      "stopCode": "58",
+      "stopName": "Apeadero Mengibar",
+      "location": {
+        "latitude": 37.970267,
+        "longitude": -3.802664
+      },
+      "municipality": "Mengibar",
+      "nucleus": "Mengíbar",
+      "services": [
+        {
+          "lineId": "71",
+          "lineCode": "M16-1",
+          "lineName": "Santa Elena - Jaén",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:05:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "203",
+          "lineCode": "M04-8",
+          "lineName": "Linares - Jaén",
+          "destination": "Mengíbar",
+          "scheduledTime": "2025-10-07T10:10:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "71",
+          "lineCode": "M16-1",
+          "lineName": "Santa Elena - Jaén",
+          "destination": "Mengíbar",
+          "scheduledTime": "2025-10-07T10:15:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "203",
+          "lineCode": "M04-8",
+          "lineName": "Linares - Jaén",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:45:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "203",
+          "lineCode": "M04-8",
+          "lineName": "Linares - Jaén",
+          "destination": "Mengíbar",
+          "scheduledTime": "2025-10-07T11:00:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "71",
+          "lineCode": "M16-1",
+          "lineName": "Santa Elena - Jaén",
+          "destination": "Mengíbar",
+          "scheduledTime": "2025-10-07T11:25:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "203",
+          "lineCode": "M04-8",
+          "lineName": "Linares - Jaén",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T11:30:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "203",
+          "lineCode": "M04-8",
+          "lineName": "Linares - Jaén",
+          "destination": "Mengíbar",
+          "scheduledTime": "2025-10-07T11:55:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-06T22:05:59.986Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "54",
+      "stopCode": "54",
+      "stopName": "Apeadero Torredelcampo",
+      "location": {
+        "latitude": 37.775396,
+        "longitude": -3.892896
+      },
+      "municipality": "Torredelcampo",
+      "nucleus": "Torredelcampo",
+      "services": [
+        {
+          "lineId": "279",
+          "lineCode": "M20-02",
+          "lineName": "Jaén - Jamilena, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:13:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T10:20:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "286",
+          "lineCode": "M20-10",
+          "lineName": "Jaén - Torredelcampo, 2024",
+          "destination": "Torredelcampo",
+          "scheduledTime": "2025-10-07T10:25:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:28:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "286",
+          "lineCode": "M20-10",
+          "lineName": "Jaén - Torredelcampo, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:33:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "287",
+          "lineCode": "M20-11",
+          "lineName": "Fuensanta de Martos - Jaén, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:38:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "283",
+          "lineCode": "M20-06",
+          "lineName": "Jaén - Córdoba (Ruta), 2024",
+          "destination": "Torredonjimeno",
+          "scheduledTime": "2025-10-07T10:40:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T11:05:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T11:20:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "286",
+          "lineCode": "M20-10",
+          "lineName": "Jaén - Torredelcampo, 2024",
+          "destination": "Torredelcampo",
+          "scheduledTime": "2025-10-07T11:25:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T11:28:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "288",
+          "lineCode": "M20-12",
+          "lineName": "Jaén - Escañuela, 2024",
+          "destination": "Escañuela",
+          "scheduledTime": "2025-10-07T11:55:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "285",
+          "lineCode": "M20-08",
+          "lineName": "Jaén - Lopera, 2024",
+          "destination": "Torredonjimeno",
+          "scheduledTime": "2025-10-07T12:20:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T12:20:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "281",
+          "lineCode": "M20-04",
+          "lineName": "Jaén - Alcaudete, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T12:25:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T12:28:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-06T22:05:59.986Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "55",
+      "stopCode": "55",
+      "stopName": "Apeadero Torredonjimeno",
+      "location": {
+        "latitude": 37.76464,
+        "longitude": -3.94937
+      },
+      "municipality": "Torredonjimeno",
+      "nucleus": "Torredonjimeno",
+      "services": [
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:15:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "287",
+          "lineCode": "M20-11",
+          "lineName": "Fuensanta de Martos - Jaén, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:25:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T10:33:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "283",
+          "lineCode": "M20-06",
+          "lineName": "Jaén - Córdoba (Ruta), 2024",
+          "destination": "Torredonjimeno",
+          "scheduledTime": "2025-10-07T10:53:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T11:15:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T11:18:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T11:33:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "288",
+          "lineCode": "M20-12",
+          "lineName": "Jaén - Escañuela, 2024",
+          "destination": "Escañuela",
+          "scheduledTime": "2025-10-07T12:08:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T12:15:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-06T22:05:59.986Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "51",
+      "stopCode": "51",
+      "stopName": "Avd. de Andalucia Nº 20",
+      "location": {
+        "latitude": 37.943056,
+        "longitude": -3.639167
+      },
+      "municipality": "Villatorres",
+      "nucleus": "Vados de Torralba",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-06T22:05:59.986Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "87",
+      "stopCode": "87",
+      "stopName": "Avd. de España",
+      "location": {
+        "latitude": 37.637188,
+        "longitude": -3.639852
+      },
+      "municipality": "Carcheles",
+      "nucleus": "Carchelejo",
+      "services": [
+        {
+          "lineId": "294",
+          "lineCode": "M9-1",
+          "lineName": "Carcheles - Jaén (2024)",
+          "destination": "Carchel",
+          "scheduledTime": "2025-10-07T11:55:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-06T22:05:59.986Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "42",
+      "stopCode": "42",
+      "stopName": "Avd. De Jaén Nº 43",
+      "location": {
+        "latitude": 37.873824,
+        "longitude": -3.883123
+      },
+      "municipality": "Fuerte del Rey",
+      "nucleus": "Fuerte del Rey",
+      "services": [
+        {
+          "lineId": "62",
+          "lineCode": "M15-2",
+          "lineName": "Andújar - Jaén Por Fuerte Del Rey",
+          "destination": "Andújar",
+          "scheduledTime": "2025-10-07T10:55:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "62",
+          "lineCode": "M15-2",
+          "lineName": "Andújar - Jaén Por Fuerte Del Rey",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T11:15:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "254",
+          "lineCode": "M15-4",
+          "lineName": "Jaén-Lahiguera-Arjona-Andújar",
+          "destination": "Andújar",
+          "scheduledTime": "2025-10-07T11:30:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "62",
+          "lineCode": "M15-2",
+          "lineName": "Andújar - Jaén Por Fuerte Del Rey",
+          "destination": "Andújar",
+          "scheduledTime": "2025-10-07T12:25:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "62",
+          "lineCode": "M15-2",
+          "lineName": "Andújar - Jaén Por Fuerte Del Rey",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T12:30:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-06T22:05:59.986Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "49",
+      "stopCode": "49",
+      "stopName": "Avd. Doctor Sagaz 5-V",
+      "location": {
+        "latitude": 37.938687,
+        "longitude": -3.735377
+      },
+      "municipality": "Villatorres",
+      "nucleus": "Villargordo",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-06T22:05:59.986Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "32",
+      "stopCode": "32",
+      "stopName": "Avd. Juana I-V",
+      "location": {
+        "latitude": 37.68594,
+        "longitude": -3.82322
+      },
+      "municipality": "Los Villares",
+      "nucleus": "Los Villares",
+      "services": [
+        {
+          "lineId": "55",
+          "lineCode": "M17-1",
+          "lineName": "Jaén - Los Villares",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:05:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "55",
+          "lineCode": "M17-1",
+          "lineName": "Jaén - Los Villares",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T11:35:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-06T22:05:59.986Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    }
+  ]
+}
