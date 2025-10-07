@@ -1,10 +1,11 @@
 import { Injectable, inject } from '@angular/core';
-import { map, Observable, of, shareReplay } from 'rxjs';
+import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
+import { RouteLineStop, RouteLineSummary, RouteLinesApiService } from './route-lines-api.service';
 import {
-  StopScheduleSnapshot,
-  StopScheduleSnapshotRepository
-} from '../services/stop-schedule-snapshot.repository';
+  StopDirectoryRecord,
+  StopDirectoryService
+} from '../stops/stop-directory.service';
 
 export interface StopLineSignature {
   readonly lineId: string;
@@ -19,150 +20,281 @@ export interface StopConnection {
 
 @Injectable({ providedIn: 'root' })
 export class StopConnectionsService {
-  private readonly repository = inject(StopScheduleSnapshotRepository);
-
-  private readonly stops$ = this.repository
-    .getAllStops()
-    .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  private readonly directory = inject(StopDirectoryService);
+  private readonly api = inject(RouteLinesApiService);
 
   getConnections(stopIds: readonly string[]): Observable<ReadonlyMap<string, StopConnection>> {
     if (!stopIds.length) {
-      return of(new Map());
+      return of(EMPTY_CONNECTIONS);
     }
 
     const uniqueStopIds = Array.from(new Set(stopIds));
+    const originOrderMap = buildOriginOrderMap(uniqueStopIds);
 
-    return this.stops$.pipe(map((stops) => buildConnections(stops, uniqueStopIds)));
+    return this.loadDirectoryRecords(uniqueStopIds).pipe(
+      switchMap((records) => {
+        if (!records.length) {
+          return of(EMPTY_CONNECTIONS);
+        }
+
+        const groups = groupByConsortium(records);
+        const observables = groups.map((group) =>
+          this.resolveGroupConnections(group)
+        );
+
+        if (!observables.length) {
+          return of(EMPTY_CONNECTIONS);
+        }
+
+        return forkJoin(observables).pipe(
+          map((groupMaps) => mergeGroupConnections(groupMaps, originOrderMap))
+        );
+      })
+    );
+  }
+
+  private loadDirectoryRecords(stopIds: readonly string[]): Observable<readonly StopDirectoryRecord[]> {
+    const requests = stopIds.map((stopId) => this.directory.getStopById(stopId));
+
+    if (!requests.length) {
+      return of([]);
+    }
+
+    return forkJoin(requests).pipe(map((records) => records.filter(isRecord)));
+  }
+
+  private resolveGroupConnections(
+    group: ConsortiumGroup
+  ): Observable<ReadonlyMap<string, ConnectionAccumulator>> {
+    return this.api.getLinesForStops(group.consortiumId, group.stopIds).pipe(
+      switchMap((summaries) => {
+        if (!summaries.length) {
+          return of(EMPTY_ACCUMULATORS);
+        }
+
+        const lineObservables = summaries.map((summary) =>
+          this.api
+            .getLineStops(group.consortiumId, summary.lineId)
+            .pipe(map((stops) => buildLineAccumulator(summary, stops, group.stopIdSet)))
+        );
+
+        return forkJoin(lineObservables).pipe(map(mergeAccumulators));
+      })
+    );
   }
 }
 
-function buildConnections(
-  stops: ReadonlyMap<string, StopScheduleSnapshot>,
-  originStopIds: readonly string[]
-): ReadonlyMap<string, StopConnection> {
-  const originProfiles = originStopIds
-    .map((stopId) => stops.get(stopId))
-    .filter((profile): profile is StopScheduleSnapshot => Boolean(profile));
+interface ConsortiumGroup {
+  readonly consortiumId: number;
+  readonly stopIds: readonly string[];
+  readonly stopIdSet: ReadonlySet<string>;
+}
 
-  if (!originProfiles.length) {
-    return new Map();
+interface ConnectionAccumulator {
+  readonly stopId: string;
+  readonly originIds: Set<string>;
+  readonly signatureKeys: Set<string>;
+}
+
+const EMPTY_CONNECTIONS: ReadonlyMap<string, StopConnection> = new Map();
+const EMPTY_ACCUMULATORS: ReadonlyMap<string, ConnectionAccumulator> = new Map();
+const SIGNATURE_SEPARATOR = '|' as const;
+
+function isRecord(value: StopDirectoryRecord | null): value is StopDirectoryRecord {
+  return Boolean(value);
+}
+
+function groupByConsortium(records: readonly StopDirectoryRecord[]): readonly ConsortiumGroup[] {
+  const groups = new Map<number, StopDirectoryRecord[]>();
+
+  for (const record of records) {
+    const existing = groups.get(record.consortiumId);
+
+    if (existing) {
+      existing.push(record);
+    } else {
+      groups.set(record.consortiumId, [record]);
+    }
   }
 
-  const originSet = new Set(originProfiles.map((profile) => profile.stopId));
-  const consortiumSet = new Set(originProfiles.map((profile) => profile.consortiumId));
-  const signatureOrigins = buildSignatureOrigins(originProfiles);
+  return Array.from(groups.entries()).map(([consortiumId, members]) => {
+    const ids = members.map((record) => record.stopId);
+    return {
+      consortiumId,
+      stopIds: Object.freeze(ids),
+      stopIdSet: new Set(ids)
+    } satisfies ConsortiumGroup;
+  });
+}
 
-  if (!signatureOrigins.size) {
-    return new Map();
+function buildOriginOrderMap(stopIds: readonly string[]): ReadonlyMap<string, number> {
+  const entries = stopIds.map((stopId, index) => [stopId, index] as const);
+  return new Map(entries);
+}
+
+function buildLineAccumulator(
+  summary: RouteLineSummary,
+  stops: readonly RouteLineStop[],
+  originIds: ReadonlySet<string>
+): ReadonlyMap<string, ConnectionAccumulator> {
+  if (!stops.length) {
+    return EMPTY_ACCUMULATORS;
   }
 
-  const orderedOrigins = Array.from(new Set(originStopIds));
-  const connections = new Map<string, StopConnection>();
+  const byDirection = groupStopsByDirection(stops);
+  const accumulator = new Map<string, ConnectionAccumulator>();
 
-  stops.forEach((profile, stopId) => {
-    if (originSet.has(stopId)) {
+  byDirection.forEach((directionStops, direction) => {
+    const orderedStops = [...directionStops].sort((first, second) => first.order - second.order);
+    const originPositions = orderedStops.filter((stop) => originIds.has(stop.stopId));
+
+    if (!originPositions.length) {
       return;
     }
 
-    if (!consortiumSet.has(profile.consortiumId)) {
-      return;
-    }
+    for (const originStop of originPositions) {
+      for (const candidate of orderedStops) {
+        if (candidate.order <= originStop.order) {
+          continue;
+        }
 
-    const matchingOrigins = new Set<string>();
-    const signatureMatches = new Set<string>();
+        if (originIds.has(candidate.stopId)) {
+          continue;
+        }
 
-    for (const signature of extractSignatures(profile)) {
-      const key = toSignatureKey(signature);
-      const origins = signatureOrigins.get(key);
+        const signatureKey = buildSignatureKey(summary.lineId, direction);
+        const existing = accumulator.get(candidate.stopId);
 
-      if (!origins) {
-        continue;
+        if (existing) {
+          existing.originIds.add(originStop.stopId);
+          existing.signatureKeys.add(signatureKey);
+        } else {
+          accumulator.set(candidate.stopId, {
+            stopId: candidate.stopId,
+            originIds: new Set([originStop.stopId]),
+            signatureKeys: new Set([signatureKey])
+          });
+        }
       }
-
-      signatureMatches.add(key);
-      origins.forEach((origin) => matchingOrigins.add(origin));
     }
-
-    if (!matchingOrigins.size) {
-      return;
-    }
-
-    const orderedOriginIds = orderOrigins(orderedOrigins, matchingOrigins);
-    const signatures = Array.from(signatureMatches).map(fromSignatureKey);
-
-    connections.set(stopId, {
-      stopId,
-      originStopIds: Object.freeze(orderedOriginIds),
-      lineSignatures: Object.freeze(signatures)
-    });
   });
 
-  return connections;
+  return accumulator;
 }
 
-function buildSignatureOrigins(
-  profiles: readonly StopScheduleSnapshot[]
-): Map<string, Set<string>> {
-  const signatureOrigins = new Map<string, Set<string>>();
+function groupStopsByDirection(stops: readonly RouteLineStop[]): Map<number, RouteLineStop[]> {
+  const mapByDirection = new Map<number, RouteLineStop[]>();
 
-  for (const profile of profiles) {
-    for (const signature of extractSignatures(profile)) {
-      const key = toSignatureKey(signature);
-      const origins = signatureOrigins.get(key);
+  for (const stop of stops) {
+    const directionStops = mapByDirection.get(stop.direction);
 
-      if (origins) {
-        origins.add(profile.stopId);
+    if (directionStops) {
+      directionStops.push(stop);
+    } else {
+      mapByDirection.set(stop.direction, [stop]);
+    }
+  }
+
+  return mapByDirection;
+}
+
+function mergeAccumulators(
+  accumulators: readonly ReadonlyMap<string, ConnectionAccumulator>[]
+): ReadonlyMap<string, ConnectionAccumulator> {
+  if (!accumulators.length) {
+    return EMPTY_ACCUMULATORS;
+  }
+
+  const merged = new Map<string, ConnectionAccumulator>();
+
+  for (const mapEntry of accumulators) {
+    mapEntry.forEach((value, stopId) => {
+      const existing = merged.get(stopId);
+
+      if (existing) {
+        value.originIds.forEach((originId) => existing.originIds.add(originId));
+        value.signatureKeys.forEach((key) => existing.signatureKeys.add(key));
       } else {
-        signatureOrigins.set(key, new Set([profile.stopId]));
+        merged.set(stopId, {
+          stopId,
+          originIds: new Set(value.originIds),
+          signatureKeys: new Set(value.signatureKeys)
+        });
       }
-    }
+    });
   }
 
-  return signatureOrigins;
+  return merged;
 }
 
-function extractSignatures(profile: StopScheduleSnapshot): readonly StopLineSignature[] {
-  const seen = new Set<string>();
-  const signatures: StopLineSignature[] = [];
-
-  for (const service of profile.services) {
-    const signature = { lineId: service.lineId, direction: service.direction } as const;
-    const key = toSignatureKey(signature);
-
-    if (seen.has(key)) {
-      continue;
-    }
-
-    seen.add(key);
-    signatures.push({ lineId: signature.lineId, direction: signature.direction });
+function mergeGroupConnections(
+  groups: readonly ReadonlyMap<string, ConnectionAccumulator>[],
+  originOrderMap: ReadonlyMap<string, number>
+): ReadonlyMap<string, StopConnection> {
+  if (!groups.length) {
+    return EMPTY_CONNECTIONS;
   }
 
-  return signatures;
+  const merged = new Map<string, ConnectionAccumulator>();
+
+  for (const group of groups) {
+    group.forEach((value, stopId) => {
+      const existing = merged.get(stopId);
+
+      if (existing) {
+        value.originIds.forEach((originId) => existing.originIds.add(originId));
+        value.signatureKeys.forEach((key) => existing.signatureKeys.add(key));
+      } else {
+        merged.set(stopId, {
+          stopId,
+          originIds: new Set(value.originIds),
+          signatureKeys: new Set(value.signatureKeys)
+        });
+      }
+    });
+  }
+
+  const connections = Array.from(merged.values(), (value) =>
+    buildConnection(value, originOrderMap)
+  );
+
+  const entries = connections.map((connection) => [connection.stopId, connection] as const);
+  return new Map(entries);
 }
 
-function toSignatureKey(signature: StopLineSignature): string {
-  return `${signature.lineId}|${signature.direction}`;
-}
+function buildConnection(
+  accumulator: ConnectionAccumulator,
+  originOrderMap: ReadonlyMap<string, number>
+): StopConnection {
+  const orderedOrigins = orderOrigins(accumulator.originIds, originOrderMap);
+  const signatures = Array.from(accumulator.signatureKeys, parseSignatureKey);
 
-function fromSignatureKey(key: string): StopLineSignature {
-  const [lineId, direction] = key.split('|');
-  return { lineId, direction: Number(direction) };
+  return {
+    stopId: accumulator.stopId,
+    originStopIds: Object.freeze(orderedOrigins),
+    lineSignatures: Object.freeze(signatures)
+  } satisfies StopConnection;
 }
 
 function orderOrigins(
-  orderedOrigins: readonly string[],
-  matchingOrigins: Set<string>
-): string[] {
-  const result: string[] = [];
+  originIds: Set<string>,
+  originOrderMap: ReadonlyMap<string, number>
+): readonly string[] {
+  const referencedOrigins = Array.from(originIds);
+  const sorted = referencedOrigins.sort((first, second) => {
+    const firstOrder = originOrderMap.get(first) ?? Number.MAX_SAFE_INTEGER;
+    const secondOrder = originOrderMap.get(second) ?? Number.MAX_SAFE_INTEGER;
+    return firstOrder - secondOrder;
+  });
 
-  for (const originId of orderedOrigins) {
-    if (matchingOrigins.has(originId)) {
-      result.push(originId);
-      matchingOrigins.delete(originId);
-    }
-  }
+  return Object.freeze(sorted);
+}
 
-  matchingOrigins.forEach((originId) => result.push(originId));
+function buildSignatureKey(lineId: string, direction: number): string {
+  return `${lineId}${SIGNATURE_SEPARATOR}${direction}`;
+}
 
-  return result;
+function parseSignatureKey(key: string): StopLineSignature {
+  const [lineId, direction] = key.split(SIGNATURE_SEPARATOR);
+  return { lineId, direction: Number(direction) };
 }

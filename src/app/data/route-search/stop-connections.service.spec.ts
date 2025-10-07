@@ -1,117 +1,92 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { StopConnectionsService, StopConnection } from './stop-connections.service';
 import {
-  StopScheduleSnapshot,
-  StopScheduleSnapshotRecord,
-  StopScheduleSnapshotRepository
-} from '../services/stop-schedule-snapshot.repository';
+  RouteLineStop,
+  RouteLineSummary,
+  RouteLinesApiService
+} from './route-lines-api.service';
+import {
+  StopDirectoryRecord,
+  StopDirectoryService
+} from '../stops/stop-directory.service';
 
-class SnapshotRepositoryStub {
-  private readonly dataset = new Map<string, StopScheduleSnapshot>();
-  private readonly metadata = {
-    generatedAt: new Date('2025-02-01T05:00:00.000Z'),
-    timezone: 'Europe/Madrid'
-  } as const;
+class DirectoryStub {
+  private readonly records = new Map<string, StopDirectoryRecord>();
 
   constructor() {
-    this.addStop({
-      stopId: 'A1',
-      consortiumId: 7,
-      municipalityId: 'mun-a',
-      municipality: 'Town',
-      nucleusId: 'nuc-a',
-      nucleus: 'Town Center',
-      services: [
-        buildService('L1', 0),
-        buildService('L2', 1)
-      ]
-    });
-    this.addStop({
-      stopId: 'A2',
-      consortiumId: 7,
-      municipalityId: 'mun-a',
-      municipality: 'Town',
-      nucleusId: 'nuc-a',
-      nucleus: 'Town Center',
-      services: [buildService('L1', 0)]
-    });
-    this.addStop({
-      stopId: 'B1',
-      consortiumId: 7,
-      municipalityId: 'mun-a',
-      municipality: 'Town',
-      nucleusId: 'nuc-b',
-      nucleus: 'Town East',
-      services: [buildService('L1', 0)]
-    });
-    this.addStop({
-      stopId: 'B2',
-      consortiumId: 7,
-      municipalityId: 'mun-a',
-      municipality: 'Town',
-      nucleusId: 'nuc-b',
-      nucleus: 'Town East',
-      services: [buildService('L2', 1)]
-    });
-    this.addStop({
-      stopId: 'C1',
-      consortiumId: 9,
-      municipalityId: 'mun-c',
-      municipality: 'Other',
-      nucleusId: 'nuc-c',
-      nucleus: 'Other Center',
-      services: [buildService('L1', 0)]
-    });
+    this.addRecord(buildRecord('O1', 7));
+    this.addRecord(buildRecord('O2', 7));
+    this.addRecord(buildRecord('D1', 7));
+    this.addRecord(buildRecord('D2', 7));
+    this.addRecord(buildRecord('D3', 7));
   }
 
-  getSnapshotForStop(stopId: string) {
-    const stop = this.dataset.get(stopId);
-    if (!stop) {
-      return of(null);
+  getStopById(stopId: string): Observable<StopDirectoryRecord | null> {
+    return of(this.records.get(stopId) ?? null);
+  }
+
+  private addRecord(record: StopDirectoryRecord): void {
+    this.records.set(record.stopId, record);
+  }
+}
+
+class RouteLinesApiStub {
+  private readonly linesByConsortium = new Map<number, RouteLineSummary[]>();
+  private readonly lineStops = new Map<string, RouteLineStop[]>();
+
+  constructor() {
+    this.setLinesForStops(7, [
+      { lineId: 'L1', code: '001', name: 'Alpha Loop', mode: 'bus', priority: 1 }
+    ]);
+
+    this.setLineStops(7, 'L1', [
+      buildLineStop('O1', 'L1', 0, 1),
+      buildLineStop('O2', 'L1', 0, 2),
+      buildLineStop('D1', 'L1', 0, 3),
+      buildLineStop('D2', 'L1', 0, 4),
+      buildLineStop('D3', 'L1', 0, 5),
+      buildLineStop('D3', 'L1', 1, 1),
+      buildLineStop('D2', 'L1', 1, 2),
+      buildLineStop('O2', 'L1', 1, 3),
+      buildLineStop('O1', 'L1', 1, 4)
+    ]);
+  }
+
+  getLinesForStops(
+    consortiumId: number,
+    stopIds: readonly string[]
+  ): Observable<readonly RouteLineSummary[]> {
+    return of(this.linesByConsortium.get(consortiumId) ?? []);
+  }
+
+  getLineStops(
+    consortiumId: number,
+    lineId: string
+  ): Observable<readonly RouteLineStop[]> {
+    const key = this.buildKey(consortiumId, lineId);
+    return of(this.lineStops.get(key) ?? []);
+  }
+
+    private setLinesForStops(
+      consortiumId: number,
+      lines: readonly RouteLineSummary[]
+    ): void {
+      this.linesByConsortium.set(consortiumId, [...lines]);
     }
-    return of({ metadata: this.metadata, stop } satisfies StopScheduleSnapshotRecord);
+
+  private setLineStops(
+    consortiumId: number,
+    lineId: string,
+    stops: readonly RouteLineStop[]
+  ): void {
+    const key = this.buildKey(consortiumId, lineId);
+    this.lineStops.set(key, [...stops]);
   }
 
-  getAllStops() {
-    return of(new Map(this.dataset));
-  }
-
-  private addStop(entry: {
-    stopId: string;
-    consortiumId: number;
-    municipalityId: string;
-    municipality: string;
-    nucleusId: string;
-    nucleus: string;
-    services: readonly { lineId: string; direction: number }[];
-  }): void {
-    const stop: StopScheduleSnapshot = {
-      consortiumId: entry.consortiumId,
-      stopId: entry.stopId,
-      stopCode: entry.stopId,
-      stopName: entry.stopId,
-      municipality: entry.municipality,
-      nucleus: entry.nucleus,
-      location: { latitude: 0, longitude: 0 },
-      services: entry.services.map((service) => ({
-        lineId: service.lineId,
-        lineCode: service.lineId,
-        lineName: service.lineId,
-        destination: 'Destination',
-        scheduledTime: new Date('2025-02-01T06:00:00.000Z'),
-        direction: service.direction,
-        stopType: 0
-      })),
-      query: {
-        requestedAt: new Date('2025-02-01T04:00:00.000Z'),
-        startTime: new Date('2025-02-01T05:00:00.000Z'),
-        endTime: new Date('2025-02-01T07:00:00.000Z')
-      }
-    };
-
-    this.dataset.set(entry.stopId, stop);
+  private buildKey(consortiumId: number, lineId: string): string {
+    return `${consortiumId}|${lineId}`;
   }
 }
 
@@ -122,38 +97,79 @@ describe('StopConnectionsService', () => {
     TestBed.configureTestingModule({
       providers: [
         StopConnectionsService,
-        { provide: StopScheduleSnapshotRepository, useClass: SnapshotRepositoryStub }
+        { provide: StopDirectoryService, useClass: DirectoryStub },
+        { provide: RouteLinesApiService, useClass: RouteLinesApiStub }
       ]
     });
 
     service = TestBed.inject(StopConnectionsService);
   });
 
-  it('lists destination stops sharing any line direction with the origin group', (done) => {
-    service.getConnections(['A1', 'A2']).subscribe((connections) => {
+  it('returns destinations that appear after each origin in the same line direction', (done) => {
+    service.getConnections(['O1', 'O2']).subscribe((connections) => {
       const destinationIds = Array.from(connections.keys()).sort();
-      expect(destinationIds).toEqual(['B1', 'B2']);
+      expect(destinationIds).toEqual(['D1', 'D2', 'D3']);
 
-      const b1 = connections.get('B1') as StopConnection;
-      expect(b1.originStopIds.slice().sort()).toEqual(['A1', 'A2']);
-      expect(b1.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
+      const d2 = connections.get('D2') as StopConnection;
+      expect(d2.originStopIds).toEqual(['O1', 'O2']);
+      expect(d2.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
 
-      const b2 = connections.get('B2') as StopConnection;
-      expect(b2.originStopIds).toEqual(['A1']);
-      expect(b2.lineSignatures).toEqual([{ lineId: 'L2', direction: 1 }]);
+      const d3 = connections.get('D3') as StopConnection;
+      expect(d3.originStopIds).toEqual(['O1', 'O2']);
+      expect(d3.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
 
       done();
     });
   });
 
-  it('returns an empty map when no shared lines exist', (done) => {
-    service.getConnections(['C1']).subscribe((connections) => {
+  it('merges matching origins across shared lines while preserving the original order', (done) => {
+    service.getConnections(['O2', 'O1']).subscribe((connections) => {
+      const d2 = connections.get('D2') as StopConnection;
+      expect(d2.originStopIds).toEqual(['O2', 'O1']);
+      expect(d2.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
+
+      done();
+    });
+  });
+
+  it('returns an empty map when none of the stops resolve to directory entries', (done) => {
+    service.getConnections(['UNKNOWN']).subscribe((connections) => {
       expect(connections.size).toBe(0);
       done();
     });
   });
 });
 
-function buildService(lineId: string, direction: number) {
-  return { lineId, direction } as const;
+function buildRecord(stopId: string, consortiumId: number): StopDirectoryRecord {
+  return {
+    consortiumId,
+    stopId,
+    stopCode: stopId,
+    name: stopId,
+    municipality: 'Town',
+    municipalityId: 'mun-town',
+    nucleus: 'Center',
+    nucleusId: 'nuc-center',
+    zone: null,
+    location: { latitude: 0, longitude: 0 }
+  } satisfies StopDirectoryRecord;
+}
+
+function buildLineStop(
+  stopId: string,
+  lineId: string,
+  direction: number,
+  order: number
+): RouteLineStop {
+  return {
+    stopId,
+    lineId,
+    direction,
+    order,
+    nucleusId: 'nuc',
+    zoneId: null,
+    latitude: 0,
+    longitude: 0,
+    name: `${stopId} name`
+  } satisfies RouteLineStop;
 }
