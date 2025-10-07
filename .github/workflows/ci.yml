@@ -9,27 +9,36 @@ on:
     types: [opened, reopened, ready_for_review, synchronize]
 
 jobs:
-  build:
+  pipeline-steps:
+    name: ${{ matrix.job-name }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    env:
-      STEP_TIMEOUT_MINUTES: '5'
+    timeout-minutes: ${{ matrix.timeout-minutes }}
     strategy:
       matrix:
-        node-version: [20.x]
+        include:
+          - job-name: Install dependencies
+            command: ''
+            timeout-minutes: 5
+          - job-name: Lint
+            command: npm run lint
+            timeout-minutes: 5
+          - job-name: Unit tests
+            command: npm test -- --watch=false --browsers=ChromeHeadless
+            timeout-minutes: 5
+          - job-name: Build
+            command: npm run build:prod
+            timeout-minutes: 5
+      max-parallel: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix['node-version'] }}
-          cache: 'npm'
+          node-version: 20.x
+          cache: npm
       - name: Install dependencies
-        run: timeout --preserve-status "${STEP_TIMEOUT_MINUTES}m" npm ci
-      - name: Lint
-        run: timeout --preserve-status "${STEP_TIMEOUT_MINUTES}m" npm run lint
-      - name: Unit tests
-        run: timeout --preserve-status "${STEP_TIMEOUT_MINUTES}m" npm test -- --watch=false --browsers=ChromeHeadless
-      - name: Build
-        run: timeout --preserve-status "${STEP_TIMEOUT_MINUTES}m" npm run build:prod
+        run: npm ci
+      - name: Run command
+        if: matrix.command != ''
+        run: ${{ matrix.command }}
