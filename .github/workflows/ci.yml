@@ -44,9 +44,11 @@ jobs:
           - label: Lint
             command: |
               npm run lint
-          - label: Test
+          - label: Test scripts
             command: |
               npm run test:scripts
+          - label: Test angular
+            command: |
               npm run test:angular -- --watch=false --browsers=ChromeHeadlessNoSandbox
           - label: Build
             command: |
