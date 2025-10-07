@@ -110,6 +110,10 @@ export class StopScheduleSnapshotRepository {
       })
     );
   }
+
+  getAllStops(): Observable<ReadonlyMap<string, StopScheduleSnapshot>> {
+    return this.dataset$.pipe(map((dataset) => dataset.stopMap));
+  }
 }
 
 function normalizeDataset(file: StopScheduleSnapshotFile): SnapshotDataset {

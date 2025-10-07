@@ -1,56 +1,85 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatNativeDateModule } from '@angular/material/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { APP_CONFIG } from '../../core/config';
+import { MaterialSymbolName } from '../../shared/ui/types/material-symbol-name';
+import {
+  RouteSearchLineMatch,
+  RouteSearchSelection,
+  RouteSearchStateService
+} from '../../domain/route-search/route-search-state.service';
 
-interface RouteSearchForm {
-  origin: FormControl<string>;
-  destination: FormControl<string>;
-  date: FormControl<Date>;
+interface BottomNavigationItem {
+  readonly labelKey: string;
+  readonly icon: MaterialSymbolName;
+  readonly commands: readonly string[];
 }
 
 @Component({
   selector: 'app-route-search',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatCardModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatNativeDateModule,
-    TranslateModule
-  ],
+  imports: [CommonModule, RouterLink, RouterLinkActive, MatCardModule, TranslateModule],
   templateUrl: './route-search.component.html',
   styleUrl: './route-search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RouteSearchComponent {
-  private readonly formBuilder = inject(FormBuilder);
-  protected readonly translationKeys = APP_CONFIG.translationKeys.routeSearch;
-  protected readonly form: FormGroup<RouteSearchForm> = this.formBuilder.nonNullable.group({
-    origin: '',
-    destination: '',
-    date: new Date()
-  });
-  protected readonly submitted = signal(false);
+  private static readonly ROOT_COMMAND = '/' as const;
 
-  submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
+  private readonly state = inject(RouteSearchStateService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  protected readonly translationKeys = APP_CONFIG.translationKeys.routeSearch;
+  private readonly navigationKeys = APP_CONFIG.translationKeys.navigation;
+
+  protected readonly bottomNavigationItems: readonly BottomNavigationItem[] = [
+    {
+      labelKey: this.navigationKeys.home,
+      icon: 'home',
+      commands: this.buildCommands(APP_CONFIG.routes.home)
+    },
+    {
+      labelKey: this.navigationKeys.map,
+      icon: 'map',
+      commands: this.buildCommands(APP_CONFIG.routes.map)
+    },
+    {
+      labelKey: this.navigationKeys.lines,
+      icon: 'route',
+      commands: this.buildCommands(APP_CONFIG.routes.routeSearch)
+    }
+  ];
+
+  protected readonly selection = signal<RouteSearchSelection | null>(this.state.getSelection());
+  protected readonly hasSelection = computed(() => this.selection() !== null);
+
+  constructor() {
+    this.state
+      .selection$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => this.selection.set(value));
+  }
+
+  protected trackLineMatch(_: number, match: RouteSearchLineMatch): string {
+    return `${match.lineId}-${match.direction}`;
+  }
+
+  private buildCommands(path: string): readonly string[] {
+    if (!path) {
+      return [RouteSearchComponent.ROOT_COMMAND];
     }
 
-    this.submitted.set(true);
+    return [RouteSearchComponent.ROOT_COMMAND, path];
   }
 }

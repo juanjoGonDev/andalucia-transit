@@ -18,19 +18,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  Observable,
-  combineLatest,
-  merge
-} from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  shareReplay,
-  startWith,
-  switchMap
-} from 'rxjs/operators';
+import { Observable, combineLatest, firstValueFrom, of, timer } from 'rxjs';
+import { distinctUntilChanged, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 
 import { APP_CONFIG } from '../../core/config';
 import { MaterialSymbolName } from '../../shared/ui/types/material-symbol-name';
@@ -42,6 +31,16 @@ import {
   StopDirectoryService,
   StopSearchRequest
 } from '../../data/stops/stop-directory.service';
+import {
+  StopConnection,
+  StopLineSignature,
+  StopConnectionsService
+} from '../../data/route-search/stop-connections.service';
+import {
+  RouteSearchLineMatch,
+  RouteSearchSelection,
+  RouteSearchStateService
+} from '../../domain/route-search/route-search-state.service';
 import { StopNavigationItemComponent } from '../../shared/ui/stop-navigation-item/stop-navigation-item.component';
 
 interface ActionListItem {
@@ -100,12 +99,17 @@ export class HomeComponent {
     second: 0,
     millisecond: 0
   } as const;
+  private static readonly INCOMPATIBLE_STOP_ERROR = 'incompatibleStopPair' as const;
+  private static readonly EMPTY_STOP_IDS = Object.freeze([] as string[]);
 
   private readonly router = inject(Router);
   private readonly formBuilder = inject(FormBuilder);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
   private readonly stopDirectory = inject(StopDirectoryService);
+  private readonly stopConnections = inject(StopConnectionsService);
+  private readonly routeSearchState = inject(RouteSearchStateService);
+
 
   private readonly translation = APP_CONFIG.translationKeys.home;
   private readonly navigation = APP_CONFIG.translationKeys.navigation;
@@ -216,33 +220,59 @@ export class HomeComponent {
   );
 
   private readonly originQuery$ = this.originValue$.pipe(
-    map((value) => this.toQuery(value)),
-    debounceTime(this.searchDebounceMs),
+    switchMap((value) => this.buildQueryStream(value)),
     distinctUntilChanged(),
     shareReplay({ bufferSize: 1, refCount: true })
   );
   private readonly destinationQuery$ = this.destinationValue$.pipe(
-    map((value) => this.toQuery(value)),
-    debounceTime(this.searchDebounceMs),
+    switchMap((value) => this.buildQueryStream(value)),
     distinctUntilChanged(),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  protected readonly originOptions$: Observable<readonly StopDirectoryOption[]> = merge(
+  private readonly originStopIds$ = this.selectedOrigin$.pipe(
+    map((option) => option?.stopIds ?? HomeComponent.EMPTY_STOP_IDS),
+    distinctUntilChanged((previous, current) => this.areSameStopIdList(previous, current))
+  );
+
+  private readonly destinationStopIds$ = this.selectedDestination$.pipe(
+    map((option) => option?.stopIds ?? HomeComponent.EMPTY_STOP_IDS),
+    distinctUntilChanged((previous, current) => this.areSameStopIdList(previous, current))
+  );
+
+  private readonly originConnections$ = this.originStopIds$.pipe(
+    switchMap((stopIds) => this.stopConnections.getConnections(stopIds)),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
+  private readonly destinationConnections$ = this.destinationStopIds$.pipe(
+    switchMap((stopIds) => this.stopConnections.getConnections(stopIds)),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
+  protected readonly originOptions$: Observable<readonly StopDirectoryOption[]> = combineLatest([
     this.originQuery$,
-    this.selectedDestination$
-  ).pipe(
-    startWith(null),
-    switchMap(() => this.stopDirectory.searchStops(this.buildOriginSearchRequest())),
+    this.selectedDestination$,
+    this.destinationConnections$
+  ]).pipe(
+    switchMap(([query, destination, connections]) =>
+      this.stopDirectory
+        .searchStops(this.buildOriginSearchRequest(query, destination, connections))
+        .pipe(map((options) => this.filterOptionsByConnections(options, connections)))
+    ),
     shareReplay({ bufferSize: 1, refCount: false })
   );
 
-  protected readonly destinationOptions$: Observable<readonly StopDirectoryOption[]> = merge(
+  protected readonly destinationOptions$: Observable<readonly StopDirectoryOption[]> = combineLatest([
     this.destinationQuery$,
-    this.selectedOrigin$
-  ).pipe(
-    startWith(null),
-    switchMap(() => this.stopDirectory.searchStops(this.buildDestinationSearchRequest())),
+    this.selectedOrigin$,
+    this.originConnections$
+  ]).pipe(
+    switchMap(([query, origin, connections]) =>
+      this.stopDirectory
+        .searchStops(this.buildDestinationSearchRequest(query, origin, connections))
+        .pipe(map((options) => this.filterOptionsByConnections(options, connections)))
+    ),
     shareReplay({ bufferSize: 1, refCount: false })
   );
 
@@ -265,13 +295,37 @@ export class HomeComponent {
     const origin = this.toStopOption(this.originControl.value);
     const destination = this.toStopOption(this.destinationControl.value);
 
-    if (!origin || !destination || this.searchForm.invalid) {
+    if (!origin || !destination) {
       this.searchForm.markAllAsTouched();
       return;
     }
 
+    void this.executeSearch(origin, destination);
+  }
+
+  private async executeSearch(
+    origin: StopDirectoryOption,
+    destination: StopDirectoryOption
+  ): Promise<void> {
+    const connections = await firstValueFrom(this.originConnections$);
+    const lineMatches = this.collectLineMatches(origin, destination, connections);
+
+    if (!lineMatches.length) {
+      this.searchForm.markAllAsTouched();
+      return;
+    }
+
+    this.searchForm.updateValueAndValidity();
+
+    if (this.searchForm.invalid) {
+      this.searchForm.markAllAsTouched();
+      return;
+    }
+
+    const selection = this.createRouteSelection(origin, destination, lineMatches);
+    this.routeSearchState.setSelection(selection);
     const commands = this.buildCommands(APP_CONFIG.routes.routeSearch);
-    void this.router.navigate([...commands]);
+    await this.router.navigate([...commands]);
   }
 
   protected openNearbyStopsDialog(): void {
@@ -328,6 +382,7 @@ export class HomeComponent {
 
   private createMinimumDateValidator(minimum: Date): ValidatorFn {
     const normalizedMinimum = this.toStartOfDay(minimum);
+    const minimumDayKey = this.toUtcDayKey(normalizedMinimum);
 
     return (control: AbstractControl<Date | null>): ValidationErrors | null => {
       const value = control.value;
@@ -336,11 +391,9 @@ export class HomeComponent {
         return null;
       }
 
-      const normalizedValue = this.toStartOfDay(value);
+      const valueDayKey = this.toUtcDayKey(value);
 
-      return normalizedValue.getTime() < normalizedMinimum.getTime()
-        ? { minDate: { min: normalizedMinimum } }
-        : null;
+      return valueDayKey < minimumDayKey ? { minDate: { min: normalizedMinimum } } : null;
     };
   }
 
@@ -351,9 +404,22 @@ export class HomeComponent {
   }
 
   private observeSelections(): void {
-    combineLatest([this.selectedOrigin$, this.selectedDestination$])
+    combineLatest([
+      this.selectedOrigin$,
+      this.selectedDestination$,
+      this.originConnections$,
+      this.destinationConnections$
+    ])
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(([origin, destination]) => this.ensureDistinctStops(origin, destination));
+      .subscribe(([origin, destination, originConnections, destinationConnections]) => {
+        this.ensureDistinctStops(origin, destination);
+        this.updateCompatibilityErrors(
+          origin,
+          destination,
+          originConnections,
+          destinationConnections
+        );
+      });
   }
 
   private ensureDistinctStops(
@@ -364,11 +430,247 @@ export class HomeComponent {
       return;
     }
 
-    if (origin.id !== destination.id) {
+    if (!this.hasStopIdIntersection(origin.stopIds, destination.stopIds)) {
       return;
     }
 
     this.destinationControl.setValue(null);
+  }
+
+  private updateCompatibilityErrors(
+    origin: StopDirectoryOption | null,
+    destination: StopDirectoryOption | null,
+    originConnections: ReadonlyMap<string, StopConnection>,
+    destinationConnections: ReadonlyMap<string, StopConnection>
+  ): void {
+    this.applyCompatibilityState(
+      this.destinationControl,
+      destination,
+      originConnections,
+      Boolean(origin)
+    );
+    this.applyCompatibilityState(
+      this.originControl,
+      origin,
+      destinationConnections,
+      Boolean(destination)
+    );
+  }
+
+  private applyCompatibilityState(
+    control: FormControl<StopAutocompleteValue>,
+    option: StopDirectoryOption | null,
+    connections: ReadonlyMap<string, StopConnection>,
+    hasOppositeSelection: boolean
+  ): void {
+    if (!option) {
+      this.clearCompatibilityError(control);
+      return;
+    }
+
+    if (!hasOppositeSelection) {
+      this.clearCompatibilityError(control);
+      return;
+    }
+
+    if (connections.size && this.hasAnyStopInConnections(option.stopIds, connections)) {
+      this.clearCompatibilityError(control);
+      return;
+    }
+
+    this.applyCompatibilityError(control);
+  }
+
+  private applyCompatibilityError(control: FormControl<StopAutocompleteValue>): void {
+    const current = control.errors ?? {};
+
+    if (current[HomeComponent.INCOMPATIBLE_STOP_ERROR]) {
+      return;
+    }
+
+    control.setErrors({ ...current, [HomeComponent.INCOMPATIBLE_STOP_ERROR]: true });
+  }
+
+  private clearCompatibilityError(control: FormControl<StopAutocompleteValue>): void {
+    const current = control.errors;
+
+    if (!current || !current[HomeComponent.INCOMPATIBLE_STOP_ERROR]) {
+      return;
+    }
+
+    const { [HomeComponent.INCOMPATIBLE_STOP_ERROR]: _, ...remaining } = current;
+    control.setErrors(Object.keys(remaining).length ? remaining : null);
+  }
+
+  private createRouteSelection(
+    origin: StopDirectoryOption,
+    destination: StopDirectoryOption,
+    lineMatches: readonly RouteSearchLineMatch[]
+  ): RouteSearchSelection {
+    const queryDate = this.searchForm.controls.date.value ?? new Date();
+    const normalizedMatches = Object.freeze(
+      lineMatches.map((match) => ({
+        lineId: match.lineId,
+        direction: match.direction,
+        originStopIds: match.originStopIds,
+        destinationStopIds: match.destinationStopIds
+      }))
+    );
+
+    return {
+      origin,
+      destination,
+      queryDate,
+      lineMatches: normalizedMatches
+    } satisfies RouteSearchSelection;
+  }
+
+  private collectLineMatches(
+    origin: StopDirectoryOption,
+    destination: StopDirectoryOption,
+    connections: ReadonlyMap<string, StopConnection>
+  ): readonly RouteSearchLineMatch[] {
+    const aggregates = new Map<string, LineAggregate>();
+
+    for (const destinationStopId of destination.stopIds) {
+      const connection = connections.get(destinationStopId);
+
+      if (!connection) {
+        continue;
+      }
+
+      const matchingOrigins = connection.originStopIds.filter((stopId) =>
+        origin.stopIds.includes(stopId)
+      );
+
+      if (!matchingOrigins.length) {
+        continue;
+      }
+
+      for (const signature of connection.lineSignatures) {
+        const key = this.toLineKey(signature);
+        const aggregate = aggregates.get(key) ?? {
+          lineId: signature.lineId,
+          direction: signature.direction,
+          originIds: new Set<string>(),
+          destinationIds: new Set<string>()
+        };
+
+        matchingOrigins.forEach((originStopId) => aggregate.originIds.add(originStopId));
+        aggregate.destinationIds.add(destinationStopId);
+        aggregates.set(key, aggregate);
+      }
+    }
+
+    const matches: RouteSearchLineMatch[] = [];
+
+    aggregates.forEach((aggregate) => {
+      const orderedOrigins = this.orderStopIds(origin.stopIds, aggregate.originIds);
+      const orderedDestinations = this.orderStopIds(
+        destination.stopIds,
+        aggregate.destinationIds
+      );
+
+      matches.push({
+        lineId: aggregate.lineId,
+        direction: aggregate.direction,
+        originStopIds: orderedOrigins,
+        destinationStopIds: orderedDestinations
+      });
+    });
+
+    return Object.freeze(matches);
+  }
+
+  private filterOptionsByConnections(
+    options: readonly StopDirectoryOption[],
+    connections: ReadonlyMap<string, StopConnection>
+  ): readonly StopDirectoryOption[] {
+    if (!connections.size) {
+      return options;
+    }
+
+    return options.filter((option) => this.hasAnyStopInConnections(option.stopIds, connections));
+  }
+
+  private buildIncludeStopIds(
+    connections: ReadonlyMap<string, StopConnection>
+  ): readonly string[] | undefined {
+    if (!connections.size) {
+      return undefined;
+    }
+
+    const ids = Array.from(connections.keys());
+
+    return ids.slice(0, this.maxAutocompleteOptions);
+  }
+
+  private getOptionPrimaryStopId(option: StopDirectoryOption | null): string | null {
+    if (!option || option.stopIds.length === 0) {
+      return null;
+    }
+
+    return option.stopIds[0];
+  }
+
+  private toLineKey(signature: StopLineSignature): string {
+    return `${signature.lineId}|${signature.direction}`;
+  }
+
+  private orderStopIds(
+    reference: readonly string[],
+    values: Set<string>
+  ): readonly string[] {
+    const remaining = new Set(values);
+    const ordered: string[] = [];
+
+    for (const id of reference) {
+      if (remaining.has(id)) {
+        ordered.push(id);
+        remaining.delete(id);
+      }
+    }
+
+    remaining.forEach((id) => ordered.push(id));
+
+    return Object.freeze(ordered);
+  }
+
+  private hasAnyStopInConnections(
+    stopIds: readonly string[],
+    connections: ReadonlyMap<string, StopConnection>
+  ): boolean {
+    for (const stopId of stopIds) {
+      if (connections.has(stopId)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private hasStopIdIntersection(
+    first: readonly string[],
+    second: readonly string[]
+  ): boolean {
+    const reference = new Set(first);
+
+    return second.some((id) => reference.has(id));
+  }
+
+  private areSameStopIdList(
+    first: readonly string[],
+    second: readonly string[]
+  ): boolean {
+    if (first === second) {
+      return true;
+    }
+
+    if (first.length !== second.length) {
+      return false;
+    }
+
+    return first.every((value, index) => value === second[index]);
   }
 
   private toStopOption(value: StopAutocompleteValue): StopDirectoryOption | null {
@@ -387,22 +689,28 @@ export class HomeComponent {
     return value;
   }
 
-  private buildOriginSearchRequest(): StopSearchRequest {
-    const destination = this.toStopOption(this.destinationControl.value);
-
+  private buildOriginSearchRequest(
+    query: string,
+    destination: StopDirectoryOption | null,
+    connections: ReadonlyMap<string, StopConnection>
+  ): StopSearchRequest {
     return {
-      query: this.toQuery(this.originControl.value),
-      excludeStopId: destination?.id,
+      query,
+      excludeStopId: this.getOptionPrimaryStopId(destination) ?? undefined,
+      includeStopIds: this.buildIncludeStopIds(connections),
       limit: this.maxAutocompleteOptions
     } satisfies StopSearchRequest;
   }
 
-  private buildDestinationSearchRequest(): StopSearchRequest {
-    const origin = this.toStopOption(this.originControl.value);
-
+  private buildDestinationSearchRequest(
+    query: string,
+    origin: StopDirectoryOption | null,
+    connections: ReadonlyMap<string, StopConnection>
+  ): StopSearchRequest {
     return {
-      query: this.toQuery(this.destinationControl.value),
-      excludeStopId: origin?.id,
+      query,
+      excludeStopId: this.getOptionPrimaryStopId(origin) ?? undefined,
+      includeStopIds: this.buildIncludeStopIds(connections),
       limit: this.maxAutocompleteOptions
     } satisfies StopSearchRequest;
   }
@@ -458,6 +766,27 @@ export class HomeComponent {
 
     return normalizedDate;
   }
+
+  private toUtcDayKey(date: Date): number {
+    return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+  }
+
+  private buildQueryStream(value: StopAutocompleteValue): Observable<string> {
+    const query = this.toQuery(value);
+
+    if (!query) {
+      return of(query);
+    }
+
+    return timer(this.searchDebounceMs).pipe(map(() => query));
+  }
+}
+
+interface LineAggregate {
+  lineId: string;
+  direction: number;
+  originIds: Set<string>;
+  destinationIds: Set<string>;
 }
 
 type StopAutocompleteValue = StopDirectoryOption | string | null;

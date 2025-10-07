@@ -31,6 +31,7 @@ export interface StopDirectoryOption {
   readonly municipality: string;
   readonly nucleus: string;
   readonly consortiumId: number;
+  readonly stopIds: readonly string[];
 }
 
 export interface StopSearchRequest {
@@ -111,6 +112,7 @@ interface StopDirectoryIndex {
   readonly searchable: readonly SearchableStopRecord[];
   readonly entries: ReadonlyMap<string, StopDirectorySearchEntry>;
   readonly chunks: ReadonlyMap<string, StopDirectoryChunkDescriptor>;
+  readonly groups: ReadonlyMap<string, readonly StopDirectorySearchEntry[]>;
 }
 
 interface SearchableStopRecord {
@@ -192,9 +194,18 @@ function resolveChunkBasePath(indexPath: string): string {
 
 function buildDirectoryIndex(file: StopDirectoryIndexFile): StopDirectoryIndex {
   const entries = new Map<string, StopDirectorySearchEntry>();
+  const groups = new Map<string, StopDirectorySearchEntry[]>();
 
   for (const entry of file.searchIndex) {
     entries.set(entry.stopId, entry);
+    const key = buildGroupKey(entry);
+    const bucket = groups.get(key);
+
+    if (bucket) {
+      bucket.push(entry);
+    } else {
+      groups.set(key, [entry]);
+    }
   }
 
   const chunks = new Map<string, StopDirectoryChunkDescriptor>();
@@ -215,7 +226,8 @@ function buildDirectoryIndex(file: StopDirectoryIndexFile): StopDirectoryIndex {
   return {
     searchable: Object.freeze(searchable),
     entries,
-    chunks
+    chunks,
+    groups: freezeGroups(groups)
   } satisfies StopDirectoryIndex;
 }
 
@@ -243,7 +255,20 @@ function mapChunkEntryToRecord(entry: StopDirectoryChunkEntry): StopDirectoryRec
   } satisfies StopDirectoryRecord;
 }
 
-function searchDirectory(index: StopDirectoryIndex, request: StopSearchRequest): readonly StopDirectoryOption[] {
+function freezeGroups(
+  groups: Map<string, StopDirectorySearchEntry[]>
+): ReadonlyMap<string, readonly StopDirectorySearchEntry[]> {
+  const entries = Array.from(groups.entries(), ([key, value]) => {
+    return [key, Object.freeze([...value])] as const;
+  });
+
+  return new Map(entries);
+}
+
+function searchDirectory(
+  index: StopDirectoryIndex,
+  request: StopSearchRequest
+): readonly StopDirectoryOption[] {
   if (request.limit <= 0) {
     return EMPTY_OPTIONS;
   }
@@ -259,15 +284,23 @@ function searchDirectory(index: StopDirectoryIndex, request: StopSearchRequest):
   }
 
   const results: StopDirectoryOption[] = [];
+  const addedGroups = new Set<string>();
 
   for (const item of index.searchable) {
     const entry = item.entry;
+    const groupKey = buildGroupKey(entry);
+    const groupMembers = index.groups.get(groupKey) ?? [entry];
+    const groupIncludesExcludedStop = excludeStopId
+      ? groupMembers.some((member) => member.stopId === excludeStopId)
+      : false;
 
-    if (excludeStopId && entry.stopId === excludeStopId) {
+    if (groupIncludesExcludedStop) {
       continue;
     }
 
-    const isIncluded = includeSet?.has(entry.stopId) ?? false;
+    const isIncluded = includeSet
+      ? groupMembers.some((member) => includeSet.has(member.stopId))
+      : false;
     const matchesQuery = normalizedQuery ? matchesSearch(item, normalizedQuery) : false;
 
     if (!normalizedQuery && includeSet && !isIncluded) {
@@ -278,14 +311,23 @@ function searchDirectory(index: StopDirectoryIndex, request: StopSearchRequest):
       continue;
     }
 
-    results.push(toOption(entry));
+    if (addedGroups.has(groupKey)) {
+      continue;
+    }
 
     if (results.length >= request.limit) {
-      break;
+      continue;
     }
+
+    results.push(toOption(entry, groupMembers));
+    addedGroups.add(groupKey);
   }
 
   return Object.freeze(results);
+}
+
+function buildGroupKey(entry: StopDirectorySearchEntry): string {
+  return `${entry.consortiumId}|${normalize(entry.name)}|${normalize(entry.municipality)}`;
 }
 
 function matchesSearch(record: SearchableStopRecord, normalizedQuery: string): boolean {
@@ -296,14 +338,30 @@ function matchesSearch(record: SearchableStopRecord, normalizedQuery: string): b
   );
 }
 
-function toOption(entry: StopDirectorySearchEntry): StopDirectoryOption {
+function toOption(
+  entry: StopDirectorySearchEntry,
+  members: readonly StopDirectorySearchEntry[]
+): StopDirectoryOption {
+  const uniqueIds = new Set<string>();
+  const orderedIds: string[] = [];
+
+  for (const member of members) {
+    if (uniqueIds.has(member.stopId)) {
+      continue;
+    }
+
+    uniqueIds.add(member.stopId);
+    orderedIds.push(member.stopId);
+  }
+
   return {
     id: entry.stopId,
     code: entry.stopCode,
     name: entry.name,
     municipality: entry.municipality,
     nucleus: entry.nucleus,
-    consortiumId: entry.consortiumId
+    consortiumId: entry.consortiumId,
+    stopIds: Object.freeze(orderedIds)
   } satisfies StopDirectoryOption;
 }
 

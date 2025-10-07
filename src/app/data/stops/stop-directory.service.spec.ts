@@ -81,7 +81,7 @@ describe('StopDirectoryService', () => {
       timezone: 'Europe/Madrid',
       providerName: 'CTAN',
       consortiums: [{ id: 7, name: 'Jaén', shortName: 'CTJA' }],
-      totalStops: 3
+      totalStops: 4
     },
     chunks: [
       {
@@ -94,6 +94,7 @@ describe('StopDirectoryService', () => {
     searchIndex: [
       buildSearchEntry('01', 'Estación Central'),
       buildSearchEntry('02', 'Hospital Provincial'),
+      buildSearchEntry('02B', 'Hospital Provincial'),
       buildSearchEntry('03', 'Museo Íbero')
     ]
   } satisfies DirectoryIndexResponse;
@@ -110,6 +111,7 @@ describe('StopDirectoryService', () => {
     stops: [
       buildChunkStop('01', 'Estación Central'),
       buildChunkStop('02', 'Hospital Provincial'),
+      buildChunkStop('02B', 'Hospital Provincial'),
       buildChunkStop('03', 'Museo Íbero')
     ]
   } satisfies DirectoryChunkResponse;
@@ -154,7 +156,8 @@ describe('StopDirectoryService', () => {
         name: 'Hospital Provincial',
         municipality: 'Jaén',
         nucleus: 'Jaén',
-        consortiumId: 7
+        consortiumId: 7,
+        stopIds: ['02', '02B']
       }
     ] satisfies readonly StopDirectoryOption[]);
   });
@@ -168,7 +171,38 @@ describe('StopDirectoryService', () => {
 
     const options = await promise;
 
-    expect(options.map((item) => item.id)).toEqual(['01', '03']);
+    expect(options).toEqual([
+      {
+        id: '01',
+        code: '01',
+        name: 'Estación Central',
+        municipality: 'Jaén',
+        nucleus: 'Jaén',
+        consortiumId: 7,
+        stopIds: ['01']
+      },
+      {
+        id: '03',
+        code: '03',
+        name: 'Museo Íbero',
+        municipality: 'Jaén',
+        nucleus: 'Jaén',
+        consortiumId: 7,
+        stopIds: ['03']
+      }
+    ] satisfies readonly StopDirectoryOption[]);
+  });
+
+  it('collapses stops with identical names within the same municipality', async () => {
+    const promise = firstValueFrom(service.searchStops({ query: 'hospital', limit: 5 }));
+
+    expectIndexRequest();
+
+    const options = await promise;
+
+    expect(options.length).toBe(1);
+    expect(options[0].id).toBe('02');
+    expect(options[0].stopIds).toEqual(['02', '02B']);
   });
 
   it('loads full stop metadata on demand from chunk files', async () => {
