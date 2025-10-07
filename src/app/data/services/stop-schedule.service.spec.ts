@@ -139,6 +139,7 @@ describe('StopScheduleService', () => {
       snapshot?: StopScheduleSnapshotRecord | null;
     } = {}
   ): StopScheduleService {
+    const snapshot = options.snapshot === undefined ? snapshotRecord : options.snapshot;
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
@@ -146,7 +147,7 @@ describe('StopScheduleService', () => {
         { provide: StopDirectoryService, useValue: new StopDirectoryStub(metadata) },
         {
           provide: StopScheduleSnapshotRepository,
-          useValue: new SnapshotRepositoryStub(options.snapshot ?? snapshotRecord)
+          useValue: new SnapshotRepositoryStub(snapshot)
         },
         {
           provide: StopScheduleApiService,

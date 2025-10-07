@@ -20,7 +20,8 @@ import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   Observable,
-  combineLatest
+  combineLatest,
+  merge
 } from 'rxjs';
 import {
   debounceTime,
@@ -38,7 +39,8 @@ import { SectionComponent } from '../../shared/ui/section/section.component';
 import { HomeNearbyStopsDialogComponent } from './home-nearby-stops-dialog.component';
 import {
   StopDirectoryOption,
-  StopDirectoryService
+  StopDirectoryService,
+  StopSearchRequest
 } from '../../data/stops/stop-directory.service';
 import { StopNavigationItemComponent } from '../../shared/ui/stop-navigation-item/stop-navigation-item.component';
 
@@ -226,31 +228,21 @@ export class HomeComponent {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  protected readonly originOptions$: Observable<readonly StopDirectoryOption[]> = combineLatest([
+  protected readonly originOptions$: Observable<readonly StopDirectoryOption[]> = merge(
     this.originQuery$,
     this.selectedDestination$
-  ]).pipe(
-    switchMap(([query, selectedDestination]) =>
-      this.stopDirectory.searchStops({
-        query,
-        excludeStopId: selectedDestination?.id,
-        limit: this.maxAutocompleteOptions
-      })
-    ),
+  ).pipe(
+    startWith(null),
+    switchMap(() => this.stopDirectory.searchStops(this.buildOriginSearchRequest())),
     shareReplay({ bufferSize: 1, refCount: false })
   );
 
-  protected readonly destinationOptions$: Observable<readonly StopDirectoryOption[]> = combineLatest([
+  protected readonly destinationOptions$: Observable<readonly StopDirectoryOption[]> = merge(
     this.destinationQuery$,
     this.selectedOrigin$
-  ]).pipe(
-    switchMap(([query, selectedOrigin]) =>
-      this.stopDirectory.searchStops({
-        query,
-        excludeStopId: selectedOrigin?.id,
-        limit: this.maxAutocompleteOptions
-      })
-    ),
+  ).pipe(
+    startWith(null),
+    switchMap(() => this.stopDirectory.searchStops(this.buildDestinationSearchRequest())),
     shareReplay({ bufferSize: 1, refCount: false })
   );
 
@@ -393,6 +385,26 @@ export class HomeComponent {
     }
 
     return value;
+  }
+
+  private buildOriginSearchRequest(): StopSearchRequest {
+    const destination = this.toStopOption(this.destinationControl.value);
+
+    return {
+      query: this.toQuery(this.originControl.value),
+      excludeStopId: destination?.id,
+      limit: this.maxAutocompleteOptions
+    } satisfies StopSearchRequest;
+  }
+
+  private buildDestinationSearchRequest(): StopSearchRequest {
+    const origin = this.toStopOption(this.originControl.value);
+
+    return {
+      query: this.toQuery(this.destinationControl.value),
+      excludeStopId: origin?.id,
+      limit: this.maxAutocompleteOptions
+    } satisfies StopSearchRequest;
   }
 
   private areSameStop(
