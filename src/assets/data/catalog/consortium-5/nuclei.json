@@ -1,0 +1,162 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 5,
+    "consortiumName": "Campo de Gibraltar",
+    "itemCount": 25
+  },
+  "nuclei": [
+    {
+      "id": "19",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Alcaidesa"
+    },
+    {
+      "id": "2",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Algeciras"
+    },
+    {
+      "id": "16",
+      "municipalityId": "3",
+      "zone": "D",
+      "name": "Almoraima"
+    },
+    {
+      "id": "18",
+      "municipalityId": "4",
+      "zone": "F",
+      "name": "Atlanterra-Bolonia"
+    },
+    {
+      "id": "22",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "Campamento"
+    },
+    {
+      "id": "6",
+      "municipalityId": "3",
+      "zone": "D",
+      "name": "Castellar de la Frontera"
+    },
+    {
+      "id": "20",
+      "municipalityId": "6",
+      "zone": "G",
+      "name": "Estación de Jimena"
+    },
+    {
+      "id": "8",
+      "municipalityId": "4",
+      "zone": "F",
+      "name": "Facinas"
+    },
+    {
+      "id": "4",
+      "municipalityId": "2",
+      "zone": "A",
+      "name": "Guadacorte-Cortijillos"
+    },
+    {
+      "id": "24",
+      "municipalityId": "7",
+      "zone": "AB",
+      "name": "Guadarranque"
+    },
+    {
+      "id": "15",
+      "municipalityId": "7",
+      "zone": "E",
+      "name": "Guadiaro"
+    },
+    {
+      "id": "11",
+      "municipalityId": "6",
+      "zone": "G",
+      "name": "Jimena de la Frontera"
+    },
+    {
+      "id": "10",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "La Línea de la Concepción"
+    },
+    {
+      "id": "17",
+      "municipalityId": "4",
+      "zone": "F",
+      "name": "La Zarzuela-El Armanchal"
+    },
+    {
+      "id": "5",
+      "municipalityId": "2",
+      "zone": "A",
+      "name": "Los Barrios"
+    },
+    {
+      "id": "3",
+      "municipalityId": "2",
+      "zone": "A",
+      "name": "Palmones"
+    },
+    {
+      "id": "1",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Pelayo"
+    },
+    {
+      "id": "21",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "Puente Mayorga"
+    },
+    {
+      "id": "26",
+      "municipalityId": "8",
+      "zone": "E",
+      "name": "San Martín del Tesorillo"
+    },
+    {
+      "id": "12",
+      "municipalityId": "6",
+      "zone": "G",
+      "name": "San Pablo de Buceite"
+    },
+    {
+      "id": "13",
+      "municipalityId": "7",
+      "zone": "AB",
+      "name": "San Roque"
+    },
+    {
+      "id": "9",
+      "municipalityId": "4",
+      "zone": "F",
+      "name": "Tahivilla"
+    },
+    {
+      "id": "23",
+      "municipalityId": "7",
+      "zone": "AB",
+      "name": "Taraguilla-Estación de San Roque"
+    },
+    {
+      "id": "7",
+      "municipalityId": "4",
+      "zone": "C",
+      "name": "Tarifa"
+    },
+    {
+      "id": "25",
+      "municipalityId": "7",
+      "zone": "E",
+      "name": "Tesorillo"
+    }
+  ]
+}

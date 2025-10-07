@@ -4,7 +4,7 @@ const DATA_PROVIDER_NAME =
   'Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía' as const;
 const DATA_TIMEZONE = 'Europe/Madrid' as const;
 const STOP_SERVICES_SNAPSHOT_PATH = 'assets/data/snapshots/stop-services/latest.json' as const;
-const STOP_DIRECTORY_SNAPSHOT_PATH = 'assets/data/stop-directory.json' as const;
+const STOP_DIRECTORY_SNAPSHOT_PATH = 'assets/data/stop-directory/index.json' as const;
 const RUNTIME_FLAGS_PROPERTY = '__ANDALUCIA_TRANSIT_FLAGS__' as const;
 
 export const APP_CONFIG = {

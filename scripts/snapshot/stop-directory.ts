@@ -1,11 +1,13 @@
 export interface StopDirectoryConsortiumConfig {
   readonly id: number;
   readonly name: string;
+  readonly shortName: string;
 }
 
 export interface StopDirectoryConfig {
   readonly baseUrl: string;
   readonly timezone: string;
+  readonly providerName: string;
   readonly consortiums: readonly StopDirectoryConsortiumConfig[];
 }
 
@@ -17,7 +19,30 @@ export interface StopDirectoryDependencies {
 export interface StopDirectoryMetadata {
   readonly generatedAt: string;
   readonly timezone: string;
+  readonly providerName: string;
   readonly consortiums: readonly StopDirectoryConsortiumConfig[];
+  readonly totalStops: number;
+}
+
+export interface StopDirectorySearchIndexEntry {
+  readonly stopId: string;
+  readonly stopCode: string;
+  readonly name: string;
+  readonly municipality: string;
+  readonly municipalityId: string;
+  readonly nucleus: string;
+  readonly nucleusId: string;
+  readonly consortiumId: number;
+  readonly chunkId: string;
+}
+
+export interface StopDirectoryChunkMetadata {
+  readonly generatedAt: string;
+  readonly timezone: string;
+  readonly providerName: string;
+  readonly consortiumId: number;
+  readonly consortiumName: string;
+  readonly stopCount: number;
 }
 
 export interface StopDirectoryEntry {
@@ -36,9 +61,21 @@ export interface StopDirectoryEntry {
   };
 }
 
-export interface StopDirectoryFile {
-  readonly metadata: StopDirectoryMetadata;
+export interface StopDirectoryChunkFile {
+  readonly metadata: StopDirectoryChunkMetadata;
   readonly stops: readonly StopDirectoryEntry[];
+}
+
+export interface StopDirectoryChunkOutput {
+  readonly id: string;
+  readonly consortiumId: number;
+  readonly file: StopDirectoryChunkFile;
+}
+
+export interface StopDirectoryBuildResult {
+  readonly metadata: StopDirectoryMetadata;
+  readonly searchIndex: readonly StopDirectorySearchIndexEntry[];
+  readonly chunks: readonly StopDirectoryChunkOutput[];
 }
 
 interface ApiParadaEntry {
@@ -57,29 +94,66 @@ interface ApiParadasResponse {
   readonly paradas: readonly ApiParadaEntry[];
 }
 
+const CHUNK_ID_PREFIX = 'consortium-' as const;
+
 export async function buildStopDirectory(
   config: StopDirectoryConfig,
   dependencies: StopDirectoryDependencies
-): Promise<StopDirectoryFile> {
-  const now = dependencies.now?.() ?? new Date();
-  const stops: StopDirectoryEntry[] = [];
+): Promise<StopDirectoryBuildResult> {
+  const generationInstant = dependencies.now?.() ?? new Date();
+  const chunks: StopDirectoryChunkOutput[] = [];
+  const searchIndex: StopDirectorySearchIndexEntry[] = [];
 
   for (const consortium of config.consortiums) {
-    const apiStops = await loadConsortiumStops(config, dependencies, consortium);
-    const mapped = apiStops.map((entry) => mapStop(consortium.id, entry));
-    stops.push(...mapped);
+    const entries = await loadConsortiumStops(config, dependencies, consortium);
+    const mappedStops = entries
+      .map((entry) => mapStop(consortium.id, entry))
+      .filter((stop): stop is StopDirectoryEntry => stop !== null);
+    const sortedStops = mappedStops.sort((first, second) =>
+      first.name.localeCompare(second.name, 'es-ES')
+    );
+    const chunkId = buildChunkId(consortium.id);
+
+    searchIndex.push(
+      ...sortedStops.map((stop) =>
+        toSearchIndex(stop, chunkId)
+      )
+    );
+
+    const file: StopDirectoryChunkFile = {
+      metadata: {
+        generatedAt: generationInstant.toISOString(),
+        timezone: config.timezone,
+        providerName: config.providerName,
+        consortiumId: consortium.id,
+        consortiumName: consortium.name,
+        stopCount: sortedStops.length
+      },
+      stops: Object.freeze(sortedStops)
+    } satisfies StopDirectoryChunkFile;
+
+    chunks.push({
+      id: chunkId,
+      consortiumId: consortium.id,
+      file
+    });
   }
 
-  const sortedStops = stops.sort((first, second) => first.stopId.localeCompare(second.stopId));
+  const orderedSearchIndex = searchIndex.sort((first, second) =>
+    first.name.localeCompare(second.name, 'es-ES')
+  );
 
   return {
     metadata: {
-      generatedAt: now.toISOString(),
+      generatedAt: generationInstant.toISOString(),
       timezone: config.timezone,
-      consortiums: config.consortiums
+      providerName: config.providerName,
+      consortiums: config.consortiums,
+      totalStops: orderedSearchIndex.length
     },
-    stops: Object.freeze(sortedStops)
-  } satisfies StopDirectoryFile;
+    searchIndex: Object.freeze(orderedSearchIndex),
+    chunks: Object.freeze(chunks)
+  } satisfies StopDirectoryBuildResult;
 }
 
 async function loadConsortiumStops(
@@ -97,7 +171,15 @@ async function loadConsortiumStops(
   }
 }
 
-function mapStop(consortiumId: number, entry: ApiParadaEntry): StopDirectoryEntry {
+function mapStop(consortiumId: number, entry: ApiParadaEntry): StopDirectoryEntry | null {
+  const latitude = parseCoordinate(entry.latitud, entry.idParada, 'latitude');
+  const longitude = parseCoordinate(entry.longitud, entry.idParada, 'longitude');
+
+  if (latitude === null || longitude === null) {
+    console.warn(`Skipping stop ${entry.idParada} due to invalid coordinates.`);
+    return null;
+  }
+
   return {
     consortiumId,
     stopId: entry.idParada,
@@ -109,17 +191,39 @@ function mapStop(consortiumId: number, entry: ApiParadaEntry): StopDirectoryEntr
     nucleusId: entry.idNucleo,
     zone: entry.idZona ?? null,
     location: {
-      latitude: parseCoordinate(entry.latitud, entry.idParada, 'latitude'),
-      longitude: parseCoordinate(entry.longitud, entry.idParada, 'longitude')
+      latitude,
+      longitude
     }
   } satisfies StopDirectoryEntry;
 }
 
-function parseCoordinate(value: string, stopId: string, field: 'latitude' | 'longitude'): number {
+function toSearchIndex(
+  stop: StopDirectoryEntry,
+  chunkId: string
+): StopDirectorySearchIndexEntry {
+  return {
+    stopId: stop.stopId,
+    stopCode: stop.stopCode,
+    name: stop.name,
+    municipality: stop.municipality,
+    municipalityId: stop.municipalityId,
+    nucleus: stop.nucleus,
+    nucleusId: stop.nucleusId,
+    consortiumId: stop.consortiumId,
+    chunkId
+  } satisfies StopDirectorySearchIndexEntry;
+}
+
+function buildChunkId(consortiumId: number): string {
+  return `${CHUNK_ID_PREFIX}${consortiumId}`;
+}
+
+function parseCoordinate(value: string, stopId: string, field: 'latitude' | 'longitude'): number | null {
   const parsed = Number.parseFloat(value);
 
   if (Number.isNaN(parsed)) {
-    throw new Error(`Invalid ${field} value for stop ${stopId}: ${value}`);
+    console.warn(`Invalid ${field} value for stop ${stopId}: ${value}`);
+    return null;
   }
 
   return parsed;

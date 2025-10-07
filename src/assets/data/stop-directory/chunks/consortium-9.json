@@ -1,0 +1,1857 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:43.383Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 9,
+    "consortiumName": "Costa de Huelva",
+    "stopCount": 123
+  },
+  "stops": [
+    {
+      "consortiumId": 9,
+      "stopId": "272",
+      "stopCode": "272",
+      "name": "ANTIGUA CARCEL",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 37.260467971174926,
+        "longitude": -6.931017190217972
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "225",
+      "stopCode": "225",
+      "name": "APEADERO ALMONTE",
+      "municipality": "ALMONTE",
+      "municipalityId": "5",
+      "nucleus": "ALMONTE",
+      "nucleusId": "5",
+      "zone": "E",
+      "location": {
+        "latitude": 37.25715583824002,
+        "longitude": -6.520061865448952
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "292",
+      "stopCode": "292",
+      "name": "APEADERO EL ROCIO",
+      "municipality": "ALMONTE",
+      "municipalityId": "5",
+      "nucleus": "EL ROCIO",
+      "nucleusId": "14",
+      "zone": "E",
+      "location": {
+        "latitude": 37.132912695008514,
+        "longitude": -6.489242368241207
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "121",
+      "stopCode": "121",
+      "name": "APEADERO IC",
+      "municipality": "ISLA CRISTINA",
+      "municipalityId": "13",
+      "nucleus": "ISLA CRISTINA",
+      "nucleusId": "26",
+      "zone": "E",
+      "location": {
+        "latitude": 37.20338296811213,
+        "longitude": -7.323620170354843
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "120",
+      "stopCode": "120",
+      "name": "APEADERO LEPE",
+      "municipality": "LEPE",
+      "municipalityId": "14",
+      "nucleus": "LEPE",
+      "nucleusId": "30",
+      "zone": "D",
+      "location": {
+        "latitude": 37.253609250204256,
+        "longitude": -7.197045385837555
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "145",
+      "stopCode": "145",
+      "name": "APEADERO MATALASCAÑAS",
+      "municipality": "ALMONTE",
+      "municipalityId": "5",
+      "nucleus": "TORRE DE LA HIGUERA",
+      "nucleusId": "15",
+      "zone": "E",
+      "location": {
+        "latitude": 37.010151163142964,
+        "longitude": -6.564364582300186
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "54",
+      "stopCode": "54",
+      "name": "APEADERO PUNTA",
+      "municipality": "PUNTA UMBRIA",
+      "municipalityId": "18",
+      "nucleus": "PUNTA UMBRIA",
+      "nucleusId": "47",
+      "zone": "B",
+      "location": {
+        "latitude": 37.18089866218193,
+        "longitude": -6.968867182731628
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "191",
+      "stopCode": "191",
+      "name": "AV AMERICA",
+      "municipality": "PALOS DE LA FRONTERA",
+      "municipalityId": "17",
+      "nucleus": "PALOS DE LA FRONTERA",
+      "nucleusId": "40",
+      "zone": "B",
+      "location": {
+        "latitude": 37.22675864598048,
+        "longitude": -6.89767062664032
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "18",
+      "stopCode": "18",
+      "name": "AV ANDALUCIA",
+      "municipality": "BEAS",
+      "municipalityId": "7",
+      "nucleus": "BEAS",
+      "nucleusId": "16",
+      "zone": "C",
+      "location": {
+        "latitude": 37.4233865083614,
+        "longitude": -6.798144578933716
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "48",
+      "stopCode": "48",
+      "name": "AV DE HUELVA",
+      "municipality": "ALJARAQUE",
+      "municipalityId": "3",
+      "nucleus": "ALJARAQUE",
+      "nucleusId": "3",
+      "zone": "B",
+      "location": {
+        "latitude": 37.270214595670694,
+        "longitude": -7.019151896238327
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "207",
+      "stopCode": "207",
+      "name": "BAR BALBI",
+      "municipality": "LUCENA DEL PUERTO",
+      "municipalityId": "15",
+      "nucleus": "LUCENA DEL PUERTO",
+      "nucleusId": "35",
+      "zone": "B",
+      "location": {
+        "latitude": 37.30614783651278,
+        "longitude": -6.731942966580391
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "321",
+      "stopCode": "321",
+      "name": "BAR BATATOS CALLE NUEVA",
+      "municipality": "VILLARRASA",
+      "municipalityId": "26",
+      "nucleus": "VILLARRASA",
+      "nucleusId": "61",
+      "zone": "D",
+      "location": {
+        "latitude": 37.386434,
+        "longitude": -6.605428
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "71",
+      "stopCode": "71",
+      "name": "BAR CONSOLACION",
+      "municipality": "CARTAYA",
+      "municipalityId": "10",
+      "nucleus": "CARTAYA",
+      "nucleusId": "21",
+      "zone": "C",
+      "location": {
+        "latitude": 37.28856974600751,
+        "longitude": -7.151444743126931
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "11",
+      "stopCode": "11",
+      "name": "BAR LARA",
+      "municipality": "SAN JUAN DEL PUERTO",
+      "municipalityId": "4",
+      "nucleus": "SAN JUAN DEL PUERTO",
+      "nucleusId": "13",
+      "zone": "B",
+      "location": {
+        "latitude": 37.315017440087715,
+        "longitude": -6.838814717474398
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "317",
+      "stopCode": "317",
+      "name": "BAR PARADA AV PALOS DE LA FRONTERA",
+      "municipality": "NIEBLA",
+      "municipalityId": "25",
+      "nucleus": "NIEBLA",
+      "nucleusId": "60",
+      "zone": "C",
+      "location": {
+        "latitude": 37.359217,
+        "longitude": -6.684088
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "232",
+      "stopCode": "232",
+      "name": "BAR PEPILLO",
+      "municipality": "ROCIANA DEL CONDADO",
+      "municipalityId": "19",
+      "nucleus": "ROCIANA DEL CONDADO",
+      "nucleusId": "43",
+      "zone": "D",
+      "location": {
+        "latitude": 37.309637549190406,
+        "longitude": -6.59744493663311
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "33",
+      "stopCode": "33",
+      "name": "BAR RUSO",
+      "municipality": "BONARES",
+      "municipalityId": "9",
+      "nucleus": "BONARES",
+      "nucleusId": "20",
+      "zone": "C",
+      "location": {
+        "latitude": 37.319529788168744,
+        "longitude": -6.683653146028519
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "209",
+      "stopCode": "209",
+      "name": "BAR YEYE",
+      "municipality": "LUCENA DEL PUERTO",
+      "municipalityId": "15",
+      "nucleus": "LUCENA DEL PUERTO",
+      "nucleusId": "35",
+      "zone": "B",
+      "location": {
+        "latitude": 37.3032526867899,
+        "longitude": -6.725682020187378
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "127",
+      "stopCode": "127",
+      "name": "BDA CANELA",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "AYAMONTE",
+      "nucleusId": "18",
+      "zone": "F",
+      "location": {
+        "latitude": 37.198483058297995,
+        "longitude": -7.401338517665863
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "9",
+      "stopCode": "9",
+      "name": "BDA. CELULOSA",
+      "municipality": "SAN JUAN DEL PUERTO",
+      "municipalityId": "4",
+      "nucleus": "SAN JUAN DEL PUERTO",
+      "nucleusId": "13",
+      "zone": "B",
+      "location": {
+        "latitude": 37.31449243775653,
+        "longitude": -6.846243833079154
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "5",
+      "stopCode": "5",
+      "name": "BDA. LA ESTACION",
+      "municipality": "GIBRALEON",
+      "municipalityId": "11",
+      "nucleus": "GIBRALEON",
+      "nucleusId": "24",
+      "zone": "B",
+      "location": {
+        "latitude": 37.36924270737022,
+        "longitude": -6.963929235935211
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "35",
+      "stopCode": "35",
+      "name": "BELLAVISTA",
+      "municipality": "ALJARAQUE",
+      "municipalityId": "3",
+      "nucleus": "BELLAVISTA",
+      "nucleusId": "11",
+      "zone": "B",
+      "location": {
+        "latitude": 37.27994982120538,
+        "longitude": -6.999524831771851
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "15",
+      "stopCode": "15",
+      "name": "CALLE MOGUER",
+      "municipality": "TRIGUEROS",
+      "municipalityId": "21",
+      "nucleus": "TRIGUEROS",
+      "nucleusId": "45",
+      "zone": "B",
+      "location": {
+        "latitude": 37.37873492292946,
+        "longitude": -6.832608953118324
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "7",
+      "stopCode": "7",
+      "name": "CALLE SANTO DOMINGO",
+      "municipality": "GIBRALEON",
+      "municipalityId": "11",
+      "nucleus": "GIBRALEON",
+      "nucleusId": "24",
+      "zone": "B",
+      "location": {
+        "latitude": 37.376752676172,
+        "longitude": -6.972240352868162
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "146",
+      "stopCode": "146",
+      "name": "CAMPING DOÑANA",
+      "municipality": "LUCENA DEL PUERTO",
+      "municipalityId": "15",
+      "nucleus": "LUCENA DEL PUERTO",
+      "nucleusId": "35",
+      "zone": "B",
+      "location": {
+        "latitude": 37.10068442677348,
+        "longitude": -6.724786162376404
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "291",
+      "stopCode": "291",
+      "name": "CAMPING LA ALDEA",
+      "municipality": "ALMONTE",
+      "municipalityId": "5",
+      "nucleus": "EL ROCIO",
+      "nucleusId": "14",
+      "zone": "E",
+      "location": {
+        "latitude": 37.1418584075519,
+        "longitude": -6.490889489650726
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "152",
+      "stopCode": "152",
+      "name": "CAMPING MAZAGON",
+      "municipality": "MOGUER",
+      "municipalityId": "16",
+      "nucleus": "MAZAGON M",
+      "nucleusId": "37",
+      "zone": "B",
+      "location": {
+        "latitude": 37.124999715701726,
+        "longitude": -6.798744723200798
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "189",
+      "stopCode": "189",
+      "name": "CAMPUS EL CARMEN",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 37.266260918302514,
+        "longitude": -6.921421587467194
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "26",
+      "stopCode": "26",
+      "name": "CASA PARROQUIAL",
+      "municipality": "SAN BARTOLOME DE LA TORRE",
+      "municipalityId": "20",
+      "nucleus": "SAN BARTOLOME DE LA TORRE",
+      "nucleusId": "44",
+      "zone": "C",
+      "location": {
+        "latitude": 37.446808316024935,
+        "longitude": -7.107350304722786
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "258",
+      "stopCode": "258",
+      "name": "CCE CARDEÑAS",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 37.2826313892022,
+        "longitude": -6.946407034993172
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "187",
+      "stopCode": "187",
+      "name": "CCE LA RABIDA",
+      "municipality": "PALOS DE LA FRONTERA",
+      "municipalityId": "17",
+      "nucleus": "LA RABIDA",
+      "nucleusId": "42",
+      "zone": "B",
+      "location": {
+        "latitude": 37.21033380628486,
+        "longitude": -6.919309697656217
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "196",
+      "stopCode": "196",
+      "name": "CCE REFINERIA",
+      "municipality": "PALOS DE LA FRONTERA",
+      "municipalityId": "17",
+      "nucleus": "PALOS DE LA FRONTERA",
+      "nucleusId": "40",
+      "zone": "B",
+      "location": {
+        "latitude": 37.19390225761817,
+        "longitude": -6.871539205312729
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "67",
+      "stopCode": "67",
+      "name": "CCE. FERREIRA",
+      "municipality": "CARTAYA",
+      "municipalityId": "10",
+      "nucleus": "CARTAYA",
+      "nucleusId": "21",
+      "zone": "C",
+      "location": {
+        "latitude": 37.31989821831821,
+        "longitude": -7.072420242565115
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "123",
+      "stopCode": "123",
+      "name": "CCE. VILLABLANCA",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "AYAMONTE",
+      "nucleusId": "18",
+      "zone": "F",
+      "location": {
+        "latitude": 37.237917931664924,
+        "longitude": -7.342144846916199
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "231",
+      "stopCode": "231",
+      "name": "CENTRO CIVICO",
+      "municipality": "BOLLULLOS PAR DEL CONDADO",
+      "municipalityId": "8",
+      "nucleus": "BOLLULLOS PAR DEL CONDADO",
+      "nucleusId": "19",
+      "zone": "E",
+      "location": {
+        "latitude": 37.346785503906986,
+        "longitude": -6.5399544686079025
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "316",
+      "stopCode": "316",
+      "name": "CENTRO JUVENIL NIEBLA",
+      "municipality": "NIEBLA",
+      "municipalityId": "25",
+      "nucleus": "NIEBLA",
+      "nucleusId": "60",
+      "zone": "C",
+      "location": {
+        "latitude": 37.364501,
+        "longitude": -6.677063
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "213",
+      "stopCode": "213",
+      "name": "CENTRO SALUD",
+      "municipality": "BONARES",
+      "municipalityId": "9",
+      "nucleus": "BONARES",
+      "nucleusId": "20",
+      "zone": "C",
+      "location": {
+        "latitude": 37.32873449659858,
+        "longitude": -6.677370071411133
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "160",
+      "stopCode": "160",
+      "name": "CHICAGO",
+      "municipality": "PALOS DE LA FRONTERA",
+      "municipalityId": "17",
+      "nucleus": "MAZAGON P",
+      "nucleusId": "41",
+      "zone": "B",
+      "location": {
+        "latitude": 37.13019414985212,
+        "longitude": -6.820535659790039
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "168",
+      "stopCode": "168",
+      "name": "CLUB NAUTICO",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 37.216366101341286,
+        "longitude": -6.9461747031493815
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "73",
+      "stopCode": "73",
+      "name": "COBELLA",
+      "municipality": "LEPE",
+      "municipalityId": "14",
+      "nucleus": "LEPE",
+      "nucleusId": "30",
+      "zone": "D",
+      "location": {
+        "latitude": 37.25329343799064,
+        "longitude": -7.2124606820310495
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "134",
+      "stopCode": "134",
+      "name": "COMANDANCIA MARINA",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "AYAMONTE",
+      "nucleusId": "18",
+      "zone": "F",
+      "location": {
+        "latitude": 37.21029272105519,
+        "longitude": -7.40412063896656
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "3",
+      "stopCode": "3",
+      "name": "CORRALES",
+      "municipality": "ALJARAQUE",
+      "municipalityId": "3",
+      "nucleus": "CORRALES",
+      "nucleusId": "4",
+      "zone": "B",
+      "location": {
+        "latitude": 37.274352687243066,
+        "longitude": -6.9912609457969666
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "220",
+      "stopCode": "220",
+      "name": "CORREOS",
+      "municipality": "ROCIANA DEL CONDADO",
+      "municipalityId": "19",
+      "nucleus": "ROCIANA DEL CONDADO",
+      "nucleusId": "43",
+      "zone": "D",
+      "location": {
+        "latitude": 37.31067061814263,
+        "longitude": -6.5989818423986435
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "20",
+      "stopCode": "20",
+      "name": "CRUCE CLARINES",
+      "municipality": "BEAS",
+      "municipalityId": "7",
+      "nucleus": "BEAS",
+      "nucleusId": "16",
+      "zone": "C",
+      "location": {
+        "latitude": 37.42315752001202,
+        "longitude": -6.792353689670563
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "186",
+      "stopCode": "186",
+      "name": "CU LA RABIDA",
+      "municipality": "PALOS DE LA FRONTERA",
+      "municipalityId": "17",
+      "nucleus": "LA RABIDA",
+      "nucleusId": "42",
+      "zone": "B",
+      "location": {
+        "latitude": 37.203984886261566,
+        "longitude": -6.922146454453468
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "262",
+      "stopCode": "262",
+      "name": "EDIF TELEFONICA AV SANTA MARTA",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 37.280137060598754,
+        "longitude": -6.9362612586303385
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "94",
+      "stopCode": "94",
+      "name": "EL BOSQUE",
+      "municipality": "CARTAYA",
+      "municipalityId": "10",
+      "nucleus": "EL ROMPIDO",
+      "nucleusId": "22",
+      "zone": "C",
+      "location": {
+        "latitude": 37.21587752657366,
+        "longitude": -7.082924097776413
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "154",
+      "stopCode": "154",
+      "name": "EL CINE",
+      "municipality": "PALOS DE LA FRONTERA",
+      "municipalityId": "17",
+      "nucleus": "MAZAGON P",
+      "nucleusId": "41",
+      "zone": "B",
+      "location": {
+        "latitude": 37.12533921461907,
+        "longitude": -6.8040501326322556
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "75",
+      "stopCode": "75",
+      "name": "EL EMPALME",
+      "municipality": "ISLA CRISTINA",
+      "municipalityId": "13",
+      "nucleus": "ISLA CRISTINA",
+      "nucleusId": "26",
+      "zone": "E",
+      "location": {
+        "latitude": 37.24535885092551,
+        "longitude": -7.310933321714401
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "270",
+      "stopCode": "270",
+      "name": "EL PUNTO",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 37.25452242990414,
+        "longitude": -6.945681176690641
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "311",
+      "stopCode": "311",
+      "name": "EL PUNTO - ESTACION",
+      "municipality": "LA PALMA DEL CONDADO",
+      "municipalityId": "24",
+      "nucleus": "LA PALMA DEL CDO",
+      "nucleusId": "59",
+      "zone": "F",
+      "location": {
+        "latitude": 37.39066810349785,
+        "longitude": -6.555506328067832
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "158",
+      "stopCode": "158",
+      "name": "EL REMO",
+      "municipality": "PALOS DE LA FRONTERA",
+      "municipalityId": "17",
+      "nucleus": "MAZAGON P",
+      "nucleusId": "41",
+      "zone": "B",
+      "location": {
+        "latitude": 37.12835935134224,
+        "longitude": -6.815049201250076
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "102",
+      "stopCode": "102",
+      "name": "EL ROMPIDO CENTRO",
+      "municipality": "CARTAYA",
+      "municipalityId": "10",
+      "nucleus": "EL ROMPIDO",
+      "nucleusId": "22",
+      "zone": "C",
+      "location": {
+        "latitude": 37.21787787365932,
+        "longitude": -7.121751755475998
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "177",
+      "stopCode": "177",
+      "name": "EL TERRON",
+      "municipality": "LEPE",
+      "municipalityId": "14",
+      "nucleus": "EL TERRON",
+      "nucleusId": "33",
+      "zone": "D",
+      "location": {
+        "latitude": 37.22525189307174,
+        "longitude": -7.175593748688698
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "320",
+      "stopCode": "320",
+      "name": "ERMITA ANGUSTIAS CALLE NUEVA",
+      "municipality": "VILLARRASA",
+      "municipalityId": "26",
+      "nucleus": "VILLARRASA",
+      "nucleusId": "61",
+      "zone": "D",
+      "location": {
+        "latitude": 37.387175,
+        "longitude": -6.600588
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "113",
+      "stopCode": "113",
+      "name": "ESC HOSTELERIA",
+      "municipality": "LEPE",
+      "municipalityId": "14",
+      "nucleus": "LA ANTILLA",
+      "nucleusId": "31",
+      "zone": "D",
+      "location": {
+        "latitude": 37.206604536226514,
+        "longitude": -7.225786596536636
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "185",
+      "stopCode": "185",
+      "name": "ESPIGON ",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "BASE ESPIGON JUAN CARLOS I",
+      "nucleusId": "50",
+      "zone": "B",
+      "location": {
+        "latitude": 37.1494284852237,
+        "longitude": -6.895727715997282
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "222",
+      "stopCode": "222",
+      "name": "ESQ. ALAMEDA MORISCOS",
+      "municipality": "ROCIANA DEL CONDADO",
+      "municipalityId": "19",
+      "nucleus": "ROCIANA DEL CONDADO",
+      "nucleusId": "43",
+      "zone": "D",
+      "location": {
+        "latitude": 37.30907967538709,
+        "longitude": -6.601811572909355
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "139",
+      "stopCode": "139",
+      "name": "ESQ. CISNES  GAVIOTAS",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "ISLA CANELA",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 37.177359172613684,
+        "longitude": -7.361311912536621
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "138",
+      "stopCode": "138",
+      "name": "ESQ. CODORNICES ALCAUDON",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "ISLA CANELA",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 37.17466904962807,
+        "longitude": -7.369058132171631
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "248",
+      "stopCode": "248",
+      "name": "ESQ. DE LA FUENTE PROLONGACION",
+      "municipality": "HINOJOS",
+      "municipalityId": "12",
+      "nucleus": "HINOJOS",
+      "nucleusId": "25",
+      "zone": "F",
+      "location": {
+        "latitude": 37.29091605295962,
+        "longitude": -6.375588112164337
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "57",
+      "stopCode": "57",
+      "name": "ESTACION AYAMONTE",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "AYAMONTE",
+      "nucleusId": "18",
+      "zone": "F",
+      "location": {
+        "latitude": 37.214951560444256,
+        "longitude": -7.399770095944405
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "290",
+      "stopCode": "290",
+      "name": "ESTACION AYAMONTE",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "AYAMONTE",
+      "nucleusId": "18",
+      "zone": "F",
+      "location": {
+        "latitude": 37.214973988823914,
+        "longitude": -7.399672865867615
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "2",
+      "stopCode": "2",
+      "name": "ESTACION DE AUTOBUSES",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 37.256830808002064,
+        "longitude": -6.957414150238037
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "24",
+      "stopCode": "24",
+      "name": "ESTACION SERVICIO",
+      "municipality": "SAN BARTOLOME DE LA TORRE",
+      "municipalityId": "20",
+      "nucleus": "SAN BARTOLOME DE LA TORRE",
+      "nucleusId": "44",
+      "zone": "C",
+      "location": {
+        "latitude": 37.444105457166835,
+        "longitude": -7.100504636764526
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "6",
+      "stopCode": "6",
+      "name": "FRENTE IGLESIA DEL CARMEN",
+      "municipality": "GIBRALEON",
+      "municipalityId": "11",
+      "nucleus": "GIBRALEON",
+      "nucleusId": "24",
+      "zone": "B",
+      "location": {
+        "latitude": 37.37592563668398,
+        "longitude": -6.966068024574226
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "132",
+      "stopCode": "132",
+      "name": "GASOLINERA",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "POZO DEL CAMINO",
+      "nucleusId": "9",
+      "zone": "E",
+      "location": {
+        "latitude": 37.220107776278404,
+        "longitude": -7.319870442152023
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "283",
+      "stopCode": "283",
+      "name": "GASOLINERA",
+      "municipality": "ALMONTE",
+      "municipalityId": "5",
+      "nucleus": "ALMONTE",
+      "nucleusId": "5",
+      "zone": "E",
+      "location": {
+        "latitude": 37.263807175290125,
+        "longitude": -6.523481011390686
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "39",
+      "stopCode": "39",
+      "name": "GIAHSA",
+      "municipality": "ALJARAQUE",
+      "municipalityId": "3",
+      "nucleus": "ALJARAQUE",
+      "nucleusId": "3",
+      "zone": "B",
+      "location": {
+        "latitude": 37.27529147415954,
+        "longitude": -7.017253364191694
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "274",
+      "stopCode": "274",
+      "name": "HOSPITAL INFANTA ELENA",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 37.2807650792042,
+        "longitude": -6.913648545742035
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "275",
+      "stopCode": "275",
+      "name": "HOSPITAL VAZQUEZ DIAZ",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 37.279484565300635,
+        "longitude": -6.920603513717651
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "164",
+      "stopCode": "164",
+      "name": "HOSTAL HILARIA",
+      "municipality": "MOGUER",
+      "municipalityId": "16",
+      "nucleus": "MAZAGON M",
+      "nucleusId": "37",
+      "zone": "B",
+      "location": {
+        "latitude": 37.13786699618775,
+        "longitude": -6.828337535262108
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "194",
+      "stopCode": "194",
+      "name": "HOSTAL LA NIÑA",
+      "municipality": "PALOS DE LA FRONTERA",
+      "municipalityId": "17",
+      "nucleus": "PALOS DE LA FRONTERA",
+      "nucleusId": "40",
+      "zone": "B",
+      "location": {
+        "latitude": 37.22233120549511,
+        "longitude": -6.890740469098091
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "49",
+      "stopCode": "49",
+      "name": "HOTEL BARCELO",
+      "municipality": "PUNTA UMBRIA",
+      "municipalityId": "18",
+      "nucleus": "PUNTA UMBRIA",
+      "nucleusId": "47",
+      "zone": "B",
+      "location": {
+        "latitude": 37.18700168829231,
+        "longitude": -6.982070356607437
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "115",
+      "stopCode": "115",
+      "name": "HOTEL CONFORTEL",
+      "municipality": "LEPE",
+      "municipalityId": "14",
+      "nucleus": "ISLANTILLA",
+      "nucleusId": "32",
+      "zone": "D",
+      "location": {
+        "latitude": 37.207321252341536,
+        "longitude": -7.236747443675995
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "284",
+      "stopCode": "284",
+      "name": "HOTEL EL CORTIJO",
+      "municipality": "ALMONTE",
+      "municipalityId": "5",
+      "nucleus": "TORRE DE LA HIGUERA",
+      "nucleusId": "15",
+      "zone": "E",
+      "location": {
+        "latitude": 37.00682162894315,
+        "longitude": -6.553226709365845
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "104",
+      "stopCode": "104",
+      "name": "HOTEL FUERTE",
+      "municipality": "CARTAYA",
+      "municipalityId": "10",
+      "nucleus": "EL ROMPIDO",
+      "nucleusId": "22",
+      "zone": "C",
+      "location": {
+        "latitude": 37.220438838576015,
+        "longitude": -7.125910520553589
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "140",
+      "stopCode": "140",
+      "name": "HOTEL IBEROSTAR",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "PUNTA DEL MORAL",
+      "nucleusId": "7",
+      "zone": "F",
+      "location": {
+        "latitude": 37.183016399731855,
+        "longitude": -7.346605360507965
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "141",
+      "stopCode": "141",
+      "name": "HOTEL RIU",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "PUNTA DEL MORAL",
+      "nucleusId": "7",
+      "zone": "F",
+      "location": {
+        "latitude": 37.18648671109279,
+        "longitude": -7.337923049926758
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "129",
+      "stopCode": "129",
+      "name": "HOTEL VINCI",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "AYAMONTE",
+      "nucleusId": "18",
+      "zone": "F",
+      "location": {
+        "latitude": 37.19442679902597,
+        "longitude": -7.395919114351273
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "63",
+      "stopCode": "63",
+      "name": "IGLESIA",
+      "municipality": "VILLABLANCA",
+      "municipalityId": "22",
+      "nucleus": "VILLABLANCA",
+      "nucleusId": "46",
+      "zone": "E",
+      "location": {
+        "latitude": 37.30363060540827,
+        "longitude": -7.339598898986062
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "22",
+      "stopCode": "22",
+      "name": "INTERSECCION AV BELEN  SAN JOSE",
+      "municipality": "BEAS",
+      "municipalityId": "7",
+      "nucleus": "BEAS",
+      "nucleusId": "16",
+      "zone": "C",
+      "location": {
+        "latitude": 37.42485414729377,
+        "longitude": -6.7889150977134705
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "112",
+      "stopCode": "112",
+      "name": "KIOSCO",
+      "municipality": "LEPE",
+      "municipalityId": "14",
+      "nucleus": "LA ANTILLA",
+      "nucleusId": "31",
+      "zone": "D",
+      "location": {
+        "latitude": 37.207368783944545,
+        "longitude": -7.21798337996006
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "271",
+      "stopCode": "271",
+      "name": "KIOSCO ONCE",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 37.258388165105984,
+        "longitude": -6.9344256073236465
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "98",
+      "stopCode": "98",
+      "name": "LA GALERA",
+      "municipality": "CARTAYA",
+      "municipalityId": "10",
+      "nucleus": "EL ROMPIDO",
+      "nucleusId": "22",
+      "zone": "C",
+      "location": {
+        "latitude": 37.216804549329844,
+        "longitude": -7.103379964828491
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "108",
+      "stopCode": "108",
+      "name": "LA PILA",
+      "municipality": "CARTAYA",
+      "municipalityId": "10",
+      "nucleus": "CARTAYA",
+      "nucleusId": "21",
+      "zone": "C",
+      "location": {
+        "latitude": 37.280923007743155,
+        "longitude": -7.149116322398186
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "286",
+      "stopCode": "286",
+      "name": "LA PIÑA",
+      "municipality": "BOLLULLOS PAR DEL CONDADO",
+      "municipalityId": "8",
+      "nucleus": "BOLLULLOS PAR DEL CONDADO",
+      "nucleusId": "19",
+      "zone": "E",
+      "location": {
+        "latitude": 37.33751903034906,
+        "longitude": -6.541843414306641
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "136",
+      "stopCode": "136",
+      "name": "LA TORRE",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "PUNTA DEL MORAL",
+      "nucleusId": "7",
+      "zone": "F",
+      "location": {
+        "latitude": 37.18903805750798,
+        "longitude": -7.382179498672485
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "162",
+      "stopCode": "162",
+      "name": "LAS DUNAS",
+      "municipality": "PALOS DE LA FRONTERA",
+      "municipalityId": "17",
+      "nucleus": "MAZAGON P",
+      "nucleusId": "41",
+      "zone": "B",
+      "location": {
+        "latitude": 37.13193094785512,
+        "longitude": -6.8257661192268415
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "277",
+      "stopCode": "277",
+      "name": "LAS TORRETAS",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "AYAMONTE",
+      "nucleusId": "18",
+      "zone": "F",
+      "location": {
+        "latitude": 37.20687156985186,
+        "longitude": -7.404192388057709
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "92",
+      "stopCode": "92",
+      "name": "MIRADOR HOTELES",
+      "municipality": "CARTAYA",
+      "municipalityId": "10",
+      "nucleus": "NUEVO PORTIL",
+      "nucleusId": "23",
+      "zone": "B",
+      "location": {
+        "latitude": 37.21383654116467,
+        "longitude": -7.073323801159859
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "238",
+      "stopCode": "238",
+      "name": "MUÑOZ Y PAVON",
+      "municipality": "ALMONTE",
+      "municipalityId": "5",
+      "nucleus": "EL ROCIO",
+      "nucleusId": "14",
+      "zone": "E",
+      "location": {
+        "latitude": 37.134258134307444,
+        "longitude": -6.487629264593124
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "30",
+      "stopCode": "30",
+      "name": "N-435 SEMAFORO",
+      "municipality": "BEAS",
+      "municipalityId": "7",
+      "nucleus": "BEAS",
+      "nucleusId": "16",
+      "zone": "C",
+      "location": {
+        "latitude": 37.42360058520817,
+        "longitude": -6.798902302980423
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "125",
+      "stopCode": "125",
+      "name": "PALACIO JUSTICIA",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "AYAMONTE",
+      "nucleusId": "18",
+      "zone": "F",
+      "location": {
+        "latitude": 37.20784676862514,
+        "longitude": -7.4045055359601974
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "150",
+      "stopCode": "150",
+      "name": "PARADOR",
+      "municipality": "MOGUER",
+      "municipalityId": "16",
+      "nucleus": "MAZAGON M",
+      "nucleusId": "37",
+      "zone": "B",
+      "location": {
+        "latitude": 37.11699672385902,
+        "longitude": -6.766172647476196
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "56",
+      "stopCode": "56",
+      "name": "PARQUE",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "AYAMONTE",
+      "nucleusId": "18",
+      "zone": "F",
+      "location": {
+        "latitude": 37.21201018088179,
+        "longitude": -7.4041977524757385
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "181",
+      "stopCode": "181",
+      "name": "PI LA LUZ",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 37.27571119098797,
+        "longitude": -6.905964016914368
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "261",
+      "stopCode": "261",
+      "name": "PI PEGUERILLAS",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "PI PEGUERILLAS",
+      "nucleusId": "56",
+      "zone": "B",
+      "location": {
+        "latitude": 37.332622509940954,
+        "longitude": -6.949249505996704
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "88",
+      "stopCode": "88",
+      "name": "PISTAS DEPORTIVAS",
+      "municipality": "PUNTA UMBRIA",
+      "municipalityId": "18",
+      "nucleus": "LAGUNA DEL PORTIL",
+      "nucleusId": "10",
+      "zone": "B",
+      "location": {
+        "latitude": 37.210727430067095,
+        "longitude": -7.052420675754547
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "82",
+      "stopCode": "82",
+      "name": "PL DEL CONCEJO",
+      "municipality": "ISLA CRISTINA",
+      "municipalityId": "13",
+      "nucleus": "LA REDONDELA",
+      "nucleusId": "27",
+      "zone": "E",
+      "location": {
+        "latitude": 37.22231945844285,
+        "longitude": -7.2710321098566055
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "131",
+      "stopCode": "131",
+      "name": "PLAYA ICANELA",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "ISLA CANELA",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 37.172388340951116,
+        "longitude": -7.376489288360631
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "84",
+      "stopCode": "84",
+      "name": "PLAYA LA BOTA",
+      "municipality": "PUNTA UMBRIA",
+      "municipalityId": "18",
+      "nucleus": "PUNTA UMBRIA",
+      "nucleusId": "47",
+      "zone": "B",
+      "location": {
+        "latitude": 37.205297100161246,
+        "longitude": -7.029598372493751
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "96",
+      "stopCode": "96",
+      "name": "PLAYA SAN MIGUEL",
+      "municipality": "CARTAYA",
+      "municipalityId": "10",
+      "nucleus": "EL ROMPIDO",
+      "nucleusId": "22",
+      "zone": "C",
+      "location": {
+        "latitude": 37.21662672845141,
+        "longitude": -7.093597948551178
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "148",
+      "stopCode": "148",
+      "name": "POBLADO FORESTAL",
+      "municipality": "MOGUER",
+      "municipalityId": "16",
+      "nucleus": "MOGUER",
+      "nucleusId": "36",
+      "zone": "B",
+      "location": {
+        "latitude": 37.11362000740196,
+        "longitude": -6.760318726301193
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "40",
+      "stopCode": "40",
+      "name": "POLIDEPORTIVO",
+      "municipality": "ALJARAQUE",
+      "municipalityId": "3",
+      "nucleus": "ALJARAQUE",
+      "nucleusId": "3",
+      "zone": "B",
+      "location": {
+        "latitude": 37.27023860846354,
+        "longitude": -7.026352286338806
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "252",
+      "stopCode": "252",
+      "name": "POLIDEPORTIVO",
+      "municipality": "HINOJOS",
+      "municipalityId": "12",
+      "nucleus": "HINOJOS",
+      "nucleusId": "25",
+      "zone": "F",
+      "location": {
+        "latitude": 37.28735511282585,
+        "longitude": -6.384357511997223
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "250",
+      "stopCode": "250",
+      "name": "POZO MAQUINA",
+      "municipality": "HINOJOS",
+      "municipalityId": "12",
+      "nucleus": "HINOJOS",
+      "nucleusId": "25",
+      "zone": "F",
+      "location": {
+        "latitude": 37.28903394389755,
+        "longitude": -6.379530959416229
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "192",
+      "stopCode": "192",
+      "name": "POZO NUEVO",
+      "municipality": "PALOS DE LA FRONTERA",
+      "municipalityId": "17",
+      "nucleus": "PALOS DE LA FRONTERA",
+      "nucleusId": "40",
+      "zone": "B",
+      "location": {
+        "latitude": 37.22411032883278,
+        "longitude": -6.892565041780472
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "13",
+      "stopCode": "13",
+      "name": "PRADO DE SAN SEBASTIAN",
+      "municipality": "SAN JUAN DEL PUERTO",
+      "municipalityId": "4",
+      "nucleus": "SAN JUAN DEL PUERTO",
+      "nucleusId": "13",
+      "zone": "B",
+      "location": {
+        "latitude": 37.31512279048139,
+        "longitude": -6.832120063273477
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "223",
+      "stopCode": "223",
+      "name": "PRINCIPITO",
+      "municipality": "ROCIANA DEL CONDADO",
+      "municipalityId": "19",
+      "nucleus": "ROCIANA DEL CONDADO",
+      "nucleusId": "43",
+      "zone": "D",
+      "location": {
+        "latitude": 37.303795135818575,
+        "longitude": -6.597607210278511
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "142",
+      "stopCode": "142",
+      "name": "PUNTA MORAL",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "PUNTA DEL MORAL",
+      "nucleusId": "7",
+      "zone": "F",
+      "location": {
+        "latitude": 37.18791731335416,
+        "longitude": -7.344383150339127
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "166",
+      "stopCode": "166",
+      "name": "PUNTA SEBO",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 37.21398606577961,
+        "longitude": -6.940265446901321
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "180",
+      "stopCode": "180",
+      "name": "RECINTO FERIAL",
+      "municipality": "MOGUER",
+      "municipalityId": "16",
+      "nucleus": "MOGUER",
+      "nucleusId": "36",
+      "zone": "B",
+      "location": {
+        "latitude": 37.27730630113495,
+        "longitude": -6.833280166390108
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "47",
+      "stopCode": "47",
+      "name": "SEC. ANTONIO RDGUEZ GCIA",
+      "municipality": "ALJARAQUE",
+      "municipalityId": "3",
+      "nucleus": "ALJARAQUE",
+      "nucleusId": "3",
+      "zone": "B",
+      "location": {
+        "latitude": 37.27184211207756,
+        "longitude": -7.021411657333374
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "143",
+      "stopCode": "143",
+      "name": "SURFASAURUS CAÑO GUERRERO",
+      "municipality": "ALMONTE",
+      "municipalityId": "5",
+      "nucleus": "TORRE DE LA HIGUERA",
+      "nucleusId": "15",
+      "zone": "E",
+      "location": {
+        "latitude": 36.990836977790174,
+        "longitude": -6.539259105920792
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "53",
+      "stopCode": "53",
+      "name": "TRASERA PATO AMARILLO",
+      "municipality": "PUNTA UMBRIA",
+      "municipalityId": "18",
+      "nucleus": "PUNTA UMBRIA",
+      "nucleusId": "47",
+      "zone": "B",
+      "location": {
+        "latitude": 37.18287643001084,
+        "longitude": -6.972970962524414
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "51",
+      "stopCode": "51",
+      "name": "TRASERA PATO ROJO",
+      "municipality": "PUNTA UMBRIA",
+      "municipalityId": "18",
+      "nucleus": "PUNTA UMBRIA",
+      "nucleusId": "47",
+      "zone": "B",
+      "location": {
+        "latitude": 37.184890771395985,
+        "longitude": -6.97764815088251
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "156",
+      "stopCode": "156",
+      "name": "URB ALCOR",
+      "municipality": "PALOS DE LA FRONTERA",
+      "municipalityId": "17",
+      "nucleus": "MAZAGON P",
+      "nucleusId": "41",
+      "zone": "B",
+      "location": {
+        "latitude": 37.12739809590433,
+        "longitude": -6.810976266860962
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "90",
+      "stopCode": "90",
+      "name": "URB. MIGUEL ANGEL SOL",
+      "municipality": "CARTAYA",
+      "municipalityId": "10",
+      "nucleus": "NUEVO PORTIL",
+      "nucleusId": "23",
+      "zone": "B",
+      "location": {
+        "latitude": 37.211769867027016,
+        "longitude": -7.058511972427368
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "86",
+      "stopCode": "86",
+      "name": "URB. PLAYAS DEL SUR",
+      "municipality": "PUNTA UMBRIA",
+      "municipalityId": "18",
+      "nucleus": "LAGUNA DEL PORTIL",
+      "nucleusId": "10",
+      "zone": "B",
+      "location": {
+        "latitude": 37.211638495129506,
+        "longitude": -7.048815116286278
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "117",
+      "stopCode": "117",
+      "name": "URBASUR",
+      "municipality": "LEPE",
+      "municipalityId": "14",
+      "nucleus": "ISLANTILLA",
+      "nucleusId": "32",
+      "zone": "D",
+      "location": {
+        "latitude": 37.207765234329216,
+        "longitude": -7.251020982647674
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "100",
+      "stopCode": "100",
+      "name": "URVEROSA",
+      "municipality": "CARTAYA",
+      "municipalityId": "10",
+      "nucleus": "EL ROMPIDO",
+      "nucleusId": "22",
+      "zone": "C",
+      "location": {
+        "latitude": 37.217603403119874,
+        "longitude": -7.110242396593094
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "79",
+      "stopCode": "79",
+      "name": "VISTA ALEGRE",
+      "municipality": "AYAMONTE",
+      "municipalityId": "6",
+      "nucleus": "POZO DEL CAMINO",
+      "nucleusId": "9",
+      "zone": "E",
+      "location": {
+        "latitude": 37.22412446897927,
+        "longitude": -7.3158360461745815
+      }
+    }
+  ]
+}

@@ -1,0 +1,360 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 9,
+    "consortiumName": "Costa de Huelva",
+    "itemCount": 58
+  },
+  "nuclei": [
+    {
+      "id": "3",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "ALJARAQUE"
+    },
+    {
+      "id": "5",
+      "municipalityId": "5",
+      "zone": "E",
+      "name": "ALMONTE"
+    },
+    {
+      "id": "18",
+      "municipalityId": "6",
+      "zone": "F",
+      "name": "AYAMONTE"
+    },
+    {
+      "id": "50",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "BASE ESPIGON JUAN CARLOS I"
+    },
+    {
+      "id": "16",
+      "municipalityId": "7",
+      "zone": "C",
+      "name": "BEAS"
+    },
+    {
+      "id": "11",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "BELLAVISTA"
+    },
+    {
+      "id": "19",
+      "municipalityId": "8",
+      "zone": "E",
+      "name": "BOLLULLOS PAR DEL CONDADO"
+    },
+    {
+      "id": "20",
+      "municipalityId": "9",
+      "zone": "C",
+      "name": "BONARES"
+    },
+    {
+      "id": "17",
+      "municipalityId": "7",
+      "zone": "C",
+      "name": "CANDON"
+    },
+    {
+      "id": "21",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "CARTAYA"
+    },
+    {
+      "id": "53",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "CENTRO PENITENCIARIO"
+    },
+    {
+      "id": "4",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "CORRALES"
+    },
+    {
+      "id": "12",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "DEHESA GOLF"
+    },
+    {
+      "id": "14",
+      "municipalityId": "5",
+      "zone": "E",
+      "name": "EL ROCIO"
+    },
+    {
+      "id": "22",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "EL ROMPIDO"
+    },
+    {
+      "id": "33",
+      "municipalityId": "14",
+      "zone": "D",
+      "name": "EL TERRON"
+    },
+    {
+      "id": "24",
+      "municipalityId": "11",
+      "zone": "B",
+      "name": "GIBRALEON"
+    },
+    {
+      "id": "25",
+      "municipalityId": "12",
+      "zone": "F",
+      "name": "HINOJOS"
+    },
+    {
+      "id": "2",
+      "municipalityId": "2",
+      "zone": "A",
+      "name": "HUELVA"
+    },
+    {
+      "id": "6",
+      "municipalityId": "6",
+      "zone": "F",
+      "name": "ISLA CANELA"
+    },
+    {
+      "id": "26",
+      "municipalityId": "13",
+      "zone": "E",
+      "name": "ISLA CRISTINA"
+    },
+    {
+      "id": "32",
+      "municipalityId": "14",
+      "zone": "D",
+      "name": "ISLANTILLA"
+    },
+    {
+      "id": "51",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "LA ALQUERIA"
+    },
+    {
+      "id": "31",
+      "municipalityId": "14",
+      "zone": "D",
+      "name": "LA ANTILLA"
+    },
+    {
+      "id": "48",
+      "municipalityId": "14",
+      "zone": "D",
+      "name": "LA BARCA"
+    },
+    {
+      "id": "55",
+      "municipalityId": "11",
+      "zone": "C",
+      "name": "LA BASCULA A-495"
+    },
+    {
+      "id": "59",
+      "municipalityId": "24",
+      "zone": "F",
+      "name": "LA PALMA DEL CDO"
+    },
+    {
+      "id": "42",
+      "municipalityId": "17",
+      "zone": "B",
+      "name": "LA RABIDA"
+    },
+    {
+      "id": "27",
+      "municipalityId": "13",
+      "zone": "E",
+      "name": "LA REDONDELA"
+    },
+    {
+      "id": "52",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "LA RIVERA"
+    },
+    {
+      "id": "10",
+      "municipalityId": "18",
+      "zone": "B",
+      "name": "LAGUNA DEL PORTIL"
+    },
+    {
+      "id": "30",
+      "municipalityId": "14",
+      "zone": "D",
+      "name": "LEPE"
+    },
+    {
+      "id": "35",
+      "municipalityId": "15",
+      "zone": "B",
+      "name": "LUCENA DEL PUERTO"
+    },
+    {
+      "id": "38",
+      "municipalityId": "16",
+      "zone": "B",
+      "name": "MADRES DEL AVIATOR"
+    },
+    {
+      "id": "37",
+      "municipalityId": "16",
+      "zone": "B",
+      "name": "MAZAGON M"
+    },
+    {
+      "id": "41",
+      "municipalityId": "17",
+      "zone": "B",
+      "name": "MAZAGON P"
+    },
+    {
+      "id": "36",
+      "municipalityId": "16",
+      "zone": "B",
+      "name": "MOGUER"
+    },
+    {
+      "id": "60",
+      "municipalityId": "25",
+      "zone": "C",
+      "name": "NIEBLA"
+    },
+    {
+      "id": "23",
+      "municipalityId": "10",
+      "zone": "B",
+      "name": "NUEVO PORTIL"
+    },
+    {
+      "id": "40",
+      "municipalityId": "17",
+      "zone": "B",
+      "name": "PALOS DE LA FRONTERA"
+    },
+    {
+      "id": "56",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "PI PEGUERILLAS"
+    },
+    {
+      "id": "49",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "PI TARTESOS"
+    },
+    {
+      "id": "34",
+      "municipalityId": "14",
+      "zone": "D",
+      "name": "PINARES DE LEPE"
+    },
+    {
+      "id": "39",
+      "municipalityId": "16",
+      "zone": "B",
+      "name": "POBLADO FORESTAL"
+    },
+    {
+      "id": "9",
+      "municipalityId": "6",
+      "zone": "E",
+      "name": "POZO DEL CAMINO"
+    },
+    {
+      "id": "7",
+      "municipalityId": "6",
+      "zone": "F",
+      "name": "PUNTA DEL MORAL"
+    },
+    {
+      "id": "47",
+      "municipalityId": "18",
+      "zone": "B",
+      "name": "PUNTA UMBRIA"
+    },
+    {
+      "id": "43",
+      "municipalityId": "19",
+      "zone": "D",
+      "name": "ROCIANA DEL CONDADO"
+    },
+    {
+      "id": "44",
+      "municipalityId": "20",
+      "zone": "C",
+      "name": "SAN BARTOLOME DE LA TORRE"
+    },
+    {
+      "id": "13",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "SAN JUAN DEL PUERTO"
+    },
+    {
+      "id": "58",
+      "municipalityId": "23",
+      "zone": "R",
+      "name": "SE EL ROCIO"
+    },
+    {
+      "id": "15",
+      "municipalityId": "5",
+      "zone": "E",
+      "name": "TORRE DE LA HIGUERA"
+    },
+    {
+      "id": "45",
+      "municipalityId": "21",
+      "zone": "B",
+      "name": "TRIGUEROS"
+    },
+    {
+      "id": "28",
+      "municipalityId": "13",
+      "zone": "E",
+      "name": "URBASUR"
+    },
+    {
+      "id": "54",
+      "municipalityId": "11",
+      "zone": "C",
+      "name": "VENTA EL CANO A-495"
+    },
+    {
+      "id": "8",
+      "municipalityId": "6",
+      "zone": "E",
+      "name": "VILLA ANTONIA"
+    },
+    {
+      "id": "46",
+      "municipalityId": "22",
+      "zone": "E",
+      "name": "VILLABLANCA"
+    },
+    {
+      "id": "61",
+      "municipalityId": "26",
+      "zone": "D",
+      "name": "VILLARRASA"
+    }
+  ]
+}

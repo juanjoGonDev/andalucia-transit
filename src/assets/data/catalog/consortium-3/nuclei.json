@@ -1,0 +1,1368 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 3,
+    "consortiumName": "Área de Granada",
+    "itemCount": 226
+  },
+  "nuclei": [
+    {
+      "id": "154",
+      "municipalityId": "18185",
+      "zone": "C",
+      "name": "Ácula"
+    },
+    {
+      "id": "479",
+      "municipalityId": "18059",
+      "zone": "C",
+      "name": "Aeropuerto"
+    },
+    {
+      "id": "147",
+      "municipalityId": "18001",
+      "zone": "D",
+      "name": "Agrón"
+    },
+    {
+      "id": "203",
+      "municipalityId": "18070",
+      "zone": "C",
+      "name": "Aguas Blancas"
+    },
+    {
+      "id": "241",
+      "municipalityId": "18003",
+      "zone": "B",
+      "name": "Albolote"
+    },
+    {
+      "id": "248",
+      "municipalityId": "18011",
+      "zone": "B",
+      "name": "Alfacar"
+    },
+    {
+      "id": "161",
+      "municipalityId": "18014",
+      "zone": "B",
+      "name": "Alhendín"
+    },
+    {
+      "id": "266",
+      "municipalityId": "18102",
+      "zone": "D",
+      "name": "Alomartes"
+    },
+    {
+      "id": "222",
+      "municipalityId": "18087",
+      "zone": "A",
+      "name": "Alquería del Fargue"
+    },
+    {
+      "id": "190",
+      "municipalityId": "18911",
+      "zone": "B",
+      "name": "Ambroz"
+    },
+    {
+      "id": "176",
+      "municipalityId": "18021",
+      "zone": "B",
+      "name": "Armilla"
+    },
+    {
+      "id": "235",
+      "municipalityId": "18022",
+      "zone": "B",
+      "name": "Atarfe"
+    },
+    {
+      "id": "472",
+      "municipalityId": "18153",
+      "zone": "B",
+      "name": "Barrio Butano"
+    },
+    {
+      "id": "457",
+      "municipalityId": "18101",
+      "zone": "B",
+      "name": "Barrio Caicena"
+    },
+    {
+      "id": "173",
+      "municipalityId": "18134",
+      "zone": "B",
+      "name": "Barrio de la Vega"
+    },
+    {
+      "id": "519",
+      "municipalityId": "18134",
+      "zone": "B",
+      "name": "Barrio de Monachil"
+    },
+    {
+      "id": "475",
+      "municipalityId": "18036",
+      "zone": "B",
+      "name": "Barrio Genital"
+    },
+    {
+      "id": "473",
+      "municipalityId": "18153",
+      "zone": "B",
+      "name": "Barrio Terrontel"
+    },
+    {
+      "id": "228",
+      "municipalityId": "18024",
+      "zone": "C",
+      "name": "Beas de Granada"
+    },
+    {
+      "id": "193",
+      "municipalityId": "18911",
+      "zone": "B",
+      "name": "Belicena"
+    },
+    {
+      "id": "489",
+      "municipalityId": "18036",
+      "zone": "B",
+      "name": "Bellavista"
+    },
+    {
+      "id": "436",
+      "municipalityId": "18087",
+      "zone": "A",
+      "name": "Bobadilla"
+    },
+    {
+      "id": "237",
+      "municipalityId": "18102",
+      "zone": "D",
+      "name": "Brácana"
+    },
+    {
+      "id": "8",
+      "municipalityId": "18022",
+      "zone": "C",
+      "name": "Buena Vista"
+    },
+    {
+      "id": "148",
+      "municipalityId": "18034",
+      "zone": "EX",
+      "name": "Cacín"
+    },
+    {
+      "id": "171",
+      "municipalityId": "18036",
+      "zone": "B",
+      "name": "Cájar"
+    },
+    {
+      "id": "267",
+      "municipalityId": "18037",
+      "zone": "C",
+      "name": "Calicasas"
+    },
+    {
+      "id": "5",
+      "municipalityId": "18094",
+      "zone": "C",
+      "name": "Canales"
+    },
+    {
+      "id": "264",
+      "municipalityId": "18022",
+      "zone": "C",
+      "name": "Caparacena"
+    },
+    {
+      "id": "482",
+      "municipalityId": "18079",
+      "zone": "C",
+      "name": "Casa Real"
+    },
+    {
+      "id": "258",
+      "municipalityId": "18158",
+      "zone": "C",
+      "name": "Casanueva"
+    },
+    {
+      "id": "553",
+      "municipalityId": "18911",
+      "zone": "B",
+      "name": "Casas Bajas"
+    },
+    {
+      "id": "240",
+      "municipalityId": "18153",
+      "zone": "B",
+      "name": "Caserío de Fonseca"
+    },
+    {
+      "id": "493",
+      "municipalityId": "18099",
+      "zone": "C",
+      "name": "Caserío del Colmenar"
+    },
+    {
+      "id": "163",
+      "municipalityId": "18061",
+      "zone": "D",
+      "name": "Castillo De Tajarja"
+    },
+    {
+      "id": "188",
+      "municipalityId": "18047",
+      "zone": "B",
+      "name": "Cenes de la Vega"
+    },
+    {
+      "id": "452",
+      "municipalityId": "18003",
+      "zone": "D",
+      "name": "Centro Penitenciario de Albolote"
+    },
+    {
+      "id": "438",
+      "municipalityId": "18087",
+      "zone": "A",
+      "name": "Cerrillo de Maracena"
+    },
+    {
+      "id": "502",
+      "municipalityId": "18051",
+      "zone": "D",
+      "name": "Cerro Cauro"
+    },
+    {
+      "id": "219",
+      "municipalityId": "18059",
+      "zone": "C",
+      "name": "Chauchina"
+    },
+    {
+      "id": "170",
+      "municipalityId": "18061",
+      "zone": "C",
+      "name": "Chimeneas"
+    },
+    {
+      "id": "175",
+      "municipalityId": "18062",
+      "zone": "B",
+      "name": "Churriana de la Vega"
+    },
+    {
+      "id": "217",
+      "municipalityId": "18048",
+      "zone": "C",
+      "name": "Cijuela"
+    },
+    {
+      "id": "279",
+      "municipalityId": "18003",
+      "zone": "C",
+      "name": "Cjo. Arenales"
+    },
+    {
+      "id": "269",
+      "municipalityId": "18050",
+      "zone": "C",
+      "name": "Cogollos Vega"
+    },
+    {
+      "id": "476",
+      "municipalityId": "18134",
+      "zone": "B",
+      "name": "Colinas Bermejas"
+    },
+    {
+      "id": "300",
+      "municipalityId": "18051",
+      "zone": "D",
+      "name": "Colomera"
+    },
+    {
+      "id": "252",
+      "municipalityId": "18003",
+      "zone": "B",
+      "name": "Cortijo del Aire"
+    },
+    {
+      "id": "136",
+      "municipalityId": "18071",
+      "zone": "EX",
+      "name": "Cuesta de la Valdesa"
+    },
+    {
+      "id": "181",
+      "municipalityId": "18057",
+      "zone": "B",
+      "name": "Cúllar Vega"
+    },
+    {
+      "id": "156",
+      "municipalityId": "18193",
+      "zone": "C",
+      "name": "Cumbres Verdes"
+    },
+    {
+      "id": "286",
+      "municipalityId": "18066",
+      "zone": "C",
+      "name": "Deifontes"
+    },
+    {
+      "id": "0",
+      "municipalityId": "0",
+      "zone": "--",
+      "name": "Desconocido"
+    },
+    {
+      "id": "152",
+      "municipalityId": "18068",
+      "zone": "B",
+      "name": "Dílar"
+    },
+    {
+      "id": "528",
+      "municipalityId": "18022",
+      "zone": "B",
+      "name": "Diseminado"
+    },
+    {
+      "id": "529",
+      "municipalityId": "18157",
+      "zone": "B",
+      "name": "Diseminado"
+    },
+    {
+      "id": "530",
+      "municipalityId": "18143",
+      "zone": "EX",
+      "name": "Diseminado"
+    },
+    {
+      "id": "531",
+      "municipalityId": "18087",
+      "zone": "A",
+      "name": "Diseminado"
+    },
+    {
+      "id": "532",
+      "municipalityId": "18134",
+      "zone": "B",
+      "name": "Diseminado"
+    },
+    {
+      "id": "533",
+      "municipalityId": "18150",
+      "zone": "C",
+      "name": "Diseminado"
+    },
+    {
+      "id": "534",
+      "municipalityId": "18127",
+      "zone": "B",
+      "name": "Diseminado"
+    },
+    {
+      "id": "535",
+      "municipalityId": "18145",
+      "zone": "B",
+      "name": "Diseminado"
+    },
+    {
+      "id": "536",
+      "municipalityId": "18084",
+      "zone": "B",
+      "name": "Diseminado"
+    },
+    {
+      "id": "537",
+      "municipalityId": "18068",
+      "zone": "B",
+      "name": "Diseminado"
+    },
+    {
+      "id": "538",
+      "municipalityId": "18094",
+      "zone": "C",
+      "name": "Diseminado"
+    },
+    {
+      "id": "539",
+      "municipalityId": "18193",
+      "zone": "B",
+      "name": "Diseminado"
+    },
+    {
+      "id": "540",
+      "municipalityId": "18014",
+      "zone": "B",
+      "name": "Diseminado"
+    },
+    {
+      "id": "541",
+      "municipalityId": "18071",
+      "zone": "EX",
+      "name": "Diseminado"
+    },
+    {
+      "id": "542",
+      "municipalityId": "18149",
+      "zone": "B",
+      "name": "Diseminado"
+    },
+    {
+      "id": "554",
+      "municipalityId": "18003",
+      "zone": "B",
+      "name": "Diseminado"
+    },
+    {
+      "id": "549",
+      "municipalityId": "18144",
+      "zone": "C",
+      "name": "Diseminado"
+    },
+    {
+      "id": "550",
+      "municipalityId": "18911",
+      "zone": "B",
+      "name": "Diseminado"
+    },
+    {
+      "id": "552",
+      "municipalityId": "18070",
+      "zone": "C",
+      "name": "Diseminado"
+    },
+    {
+      "id": "544",
+      "municipalityId": "18175",
+      "zone": "B",
+      "name": "Diseminado"
+    },
+    {
+      "id": "545",
+      "municipalityId": "18066",
+      "zone": "C",
+      "name": "Diseminado"
+    },
+    {
+      "id": "546",
+      "municipalityId": "18050",
+      "zone": "C",
+      "name": "Diseminado"
+    },
+    {
+      "id": "350",
+      "municipalityId": "18105",
+      "zone": "EX",
+      "name": "Domingo Pérez"
+    },
+    {
+      "id": "207",
+      "municipalityId": "18070",
+      "zone": "C",
+      "name": "Dúdar"
+    },
+    {
+      "id": "132",
+      "municipalityId": "18071",
+      "zone": "EX",
+      "name": "Dúrcal"
+    },
+    {
+      "id": "448",
+      "municipalityId": "18003",
+      "zone": "B",
+      "name": "E. Albolote"
+    },
+    {
+      "id": "455",
+      "municipalityId": "18022",
+      "zone": "B",
+      "name": "E. Atarfe"
+    },
+    {
+      "id": "496",
+      "municipalityId": "18102",
+      "zone": "D",
+      "name": "E. Brácana"
+    },
+    {
+      "id": "478",
+      "municipalityId": "18059",
+      "zone": "C",
+      "name": "E. Chauchina"
+    },
+    {
+      "id": "491",
+      "municipalityId": "18048",
+      "zone": "C",
+      "name": "E. Cijuela"
+    },
+    {
+      "id": "454",
+      "municipalityId": "18175",
+      "zone": "B",
+      "name": "E. El Jau"
+    },
+    {
+      "id": "444",
+      "municipalityId": "18158",
+      "zone": "C",
+      "name": "E. Fuensanta"
+    },
+    {
+      "id": "440",
+      "municipalityId": "18127",
+      "zone": "B",
+      "name": "E. Maracena"
+    },
+    {
+      "id": "484",
+      "municipalityId": "18149",
+      "zone": "B",
+      "name": "E. Otura"
+    },
+    {
+      "id": "481",
+      "municipalityId": "18175",
+      "zone": "C",
+      "name": "E. Pedro Ruiz"
+    },
+    {
+      "id": "442",
+      "municipalityId": "18158",
+      "zone": "C",
+      "name": "E. Peñuelas"
+    },
+    {
+      "id": "437",
+      "municipalityId": "18087",
+      "zone": "A",
+      "name": "E. Rebites"
+    },
+    {
+      "id": "443",
+      "municipalityId": "18158",
+      "zone": "C",
+      "name": "E. Trasmulas"
+    },
+    {
+      "id": "492",
+      "municipalityId": "18157",
+      "zone": "B",
+      "name": "El Blanqueo"
+    },
+    {
+      "id": "256",
+      "municipalityId": "18003",
+      "zone": "B",
+      "name": "El Chaparral"
+    },
+    {
+      "id": "434",
+      "municipalityId": "18087",
+      "zone": "B",
+      "name": "El Fargue"
+    },
+    {
+      "id": "214",
+      "municipalityId": "18175",
+      "zone": "B",
+      "name": "El Jau"
+    },
+    {
+      "id": "249",
+      "municipalityId": "18003",
+      "zone": "B",
+      "name": "El Torreón"
+    },
+    {
+      "id": "172",
+      "municipalityId": "18034",
+      "zone": "D",
+      "name": "El Turro"
+    },
+    {
+      "id": "488",
+      "municipalityId": "18057",
+      "zone": "B",
+      "name": "El Ventorrillo"
+    },
+    {
+      "id": "302",
+      "municipalityId": null,
+      "zone": "A",
+      "name": "Eliminar metro"
+    },
+    {
+      "id": "303",
+      "municipalityId": null,
+      "zone": "A",
+      "name": "Eliminar metro"
+    },
+    {
+      "id": "305",
+      "municipalityId": null,
+      "zone": "A",
+      "name": "Eliminar metro"
+    },
+    {
+      "id": "306",
+      "municipalityId": null,
+      "zone": "A",
+      "name": "Eliminar metro"
+    },
+    {
+      "id": "307",
+      "municipalityId": null,
+      "zone": "A",
+      "name": "Eliminar metro"
+    },
+    {
+      "id": "308",
+      "municipalityId": null,
+      "zone": "A",
+      "name": "Eliminar metro"
+    },
+    {
+      "id": "309",
+      "municipalityId": null,
+      "zone": "A",
+      "name": "Eliminar metro"
+    },
+    {
+      "id": "310",
+      "municipalityId": null,
+      "zone": "A",
+      "name": "Eliminar metro"
+    },
+    {
+      "id": "311",
+      "municipalityId": null,
+      "zone": "A",
+      "name": "Eliminar metro"
+    },
+    {
+      "id": "312",
+      "municipalityId": null,
+      "zone": "A",
+      "name": "Eliminar metro"
+    },
+    {
+      "id": "313",
+      "municipalityId": null,
+      "zone": "A",
+      "name": "Eliminar metro"
+    },
+    {
+      "id": "314",
+      "municipalityId": null,
+      "zone": "A",
+      "name": "Eliminar metro"
+    },
+    {
+      "id": "315",
+      "municipalityId": null,
+      "zone": "A",
+      "name": "Eliminar metro"
+    },
+    {
+      "id": "245",
+      "municipalityId": "18102",
+      "zone": "C",
+      "name": "Escóznar"
+    },
+    {
+      "id": "149",
+      "municipalityId": "18072",
+      "zone": "C",
+      "name": "Escúzar"
+    },
+    {
+      "id": "547",
+      "municipalityId": "18021",
+      "zone": "B",
+      "name": "Fermasa"
+    },
+    {
+      "id": "204",
+      "municipalityId": "18158",
+      "zone": "C",
+      "name": "Fuensanta"
+    },
+    {
+      "id": "250",
+      "municipalityId": "18011",
+      "zone": "B",
+      "name": "Fuente Grande"
+    },
+    {
+      "id": "233",
+      "municipalityId": "18079",
+      "zone": "C",
+      "name": "Fuente Vaqueros"
+    },
+    {
+      "id": "165",
+      "municipalityId": "18905",
+      "zone": "B",
+      "name": "Gabia Chica"
+    },
+    {
+      "id": "174",
+      "municipalityId": "18905",
+      "zone": "B",
+      "name": "Gabia Grande"
+    },
+    {
+      "id": "159",
+      "municipalityId": "18084",
+      "zone": "B",
+      "name": "Gójar"
+    },
+    {
+      "id": "202",
+      "municipalityId": "18087",
+      "zone": "A",
+      "name": "Granada"
+    },
+    {
+      "id": "183",
+      "municipalityId": "18094",
+      "zone": "C",
+      "name": "Güéjar Sierra"
+    },
+    {
+      "id": "261",
+      "municipalityId": "18095",
+      "zone": "B",
+      "name": "Güevéjar"
+    },
+    {
+      "id": "179",
+      "municipalityId": "18905",
+      "zone": "B",
+      "name": "Híjar"
+    },
+    {
+      "id": "232",
+      "municipalityId": "18099",
+      "zone": "C",
+      "name": "Huétor Santillán"
+    },
+    {
+      "id": "178",
+      "municipalityId": "18101",
+      "zone": "B",
+      "name": "Huétor Vega"
+    },
+    {
+      "id": "504",
+      "municipalityId": "18050",
+      "zone": "C",
+      "name": "I.E.S. Emilio Muñoz"
+    },
+    {
+      "id": "273",
+      "municipalityId": "18102",
+      "zone": "D",
+      "name": "Íllora"
+    },
+    {
+      "id": "304",
+      "municipalityId": "18105",
+      "zone": "EX",
+      "name": "Iznalloz"
+    },
+    {
+      "id": "230",
+      "municipalityId": "18111",
+      "zone": "B",
+      "name": "Jun"
+    },
+    {
+      "id": "508",
+      "municipalityId": "18011",
+      "zone": "C",
+      "name": "La Alfaguara"
+    },
+    {
+      "id": "526",
+      "municipalityId": "18165",
+      "zone": "B",
+      "name": "La Colorá"
+    },
+    {
+      "id": "485",
+      "municipalityId": "18165",
+      "zone": "B",
+      "name": "La Joya"
+    },
+    {
+      "id": "158",
+      "municipalityId": "18126",
+      "zone": "C",
+      "name": "La Malahá"
+    },
+    {
+      "id": "525",
+      "municipalityId": "18157",
+      "zone": "C",
+      "name": "La Molaina"
+    },
+    {
+      "id": "221",
+      "municipalityId": "18079",
+      "zone": "C",
+      "name": "La Paz"
+    },
+    {
+      "id": "164",
+      "municipalityId": "18193",
+      "zone": "B",
+      "name": "La Zubia"
+    },
+    {
+      "id": "216",
+      "municipalityId": "18115",
+      "zone": "C",
+      "name": "Láchar"
+    },
+    {
+      "id": "439",
+      "municipalityId": "18087",
+      "zone": "A",
+      "name": "Lancha de Cenes"
+    },
+    {
+      "id": "187",
+      "municipalityId": "18087",
+      "zone": "A",
+      "name": "Lancha del Genil"
+    },
+    {
+      "id": "501",
+      "municipalityId": "18051",
+      "zone": "D",
+      "name": "Las Torres"
+    },
+    {
+      "id": "494",
+      "municipalityId": "18061",
+      "zone": "C",
+      "name": "Las Villas"
+    },
+    {
+      "id": "301",
+      "municipalityId": "18132",
+      "zone": "D",
+      "name": "Limones"
+    },
+    {
+      "id": "469",
+      "municipalityId": "18905",
+      "zone": "B",
+      "name": "Los Chopos"
+    },
+    {
+      "id": "477",
+      "municipalityId": "18134",
+      "zone": "B",
+      "name": "Los Llanos"
+    },
+    {
+      "id": "512",
+      "municipalityId": "18014",
+      "zone": "B",
+      "name": "Los Llanos"
+    },
+    {
+      "id": "524",
+      "municipalityId": "18157",
+      "zone": "B",
+      "name": "Los Pinillos"
+    },
+    {
+      "id": "456",
+      "municipalityId": "18101",
+      "zone": "B",
+      "name": "Los Rebites"
+    },
+    {
+      "id": "224",
+      "municipalityId": "18127",
+      "zone": "B",
+      "name": "Maracena"
+    },
+    {
+      "id": "141",
+      "municipalityId": "18071",
+      "zone": "EX",
+      "name": "Marchena"
+    },
+    {
+      "id": "292",
+      "municipalityId": "18132",
+      "zone": "D",
+      "name": "Moclín"
+    },
+    {
+      "id": "169",
+      "municipalityId": "18134",
+      "zone": "B",
+      "name": "Monachil"
+    },
+    {
+      "id": "247",
+      "municipalityId": "18153",
+      "zone": "B",
+      "name": "Monteluz"
+    },
+    {
+      "id": "556",
+      "municipalityId": "18138",
+      "zone": "EX",
+      "name": "Moraleda de Zafayona"
+    },
+    {
+      "id": "458",
+      "municipalityId": "18101",
+      "zone": "B",
+      "name": "Mundo Nuevo"
+    },
+    {
+      "id": "127",
+      "municipalityId": "18143",
+      "zone": "EX",
+      "name": "Nigüelas"
+    },
+    {
+      "id": "260",
+      "municipalityId": "18144",
+      "zone": "C",
+      "name": "Nívar"
+    },
+    {
+      "id": "254",
+      "municipalityId": "18102",
+      "zone": "C",
+      "name": "Obéilar"
+    },
+    {
+      "id": "166",
+      "municipalityId": "18145",
+      "zone": "B",
+      "name": "Ogíjares"
+    },
+    {
+      "id": "289",
+      "municipalityId": "18132",
+      "zone": "D",
+      "name": "Olivares"
+    },
+    {
+      "id": "155",
+      "municipalityId": "18149",
+      "zone": "B",
+      "name": "Otura"
+    },
+    {
+      "id": "445",
+      "municipalityId": "18021",
+      "zone": "B",
+      "name": "P.T. Ciencias de la Salud"
+    },
+    {
+      "id": "146",
+      "municipalityId": "18150",
+      "zone": "C",
+      "name": "Padul"
+    },
+    {
+      "id": "271",
+      "municipalityId": "18003",
+      "zone": "C",
+      "name": "Parque del Cubillas"
+    },
+    {
+      "id": "225",
+      "municipalityId": "18175",
+      "zone": "C",
+      "name": "Pedro Ruiz"
+    },
+    {
+      "id": "167",
+      "municipalityId": "18905",
+      "zone": "B",
+      "name": "Pedro Verde"
+    },
+    {
+      "id": "242",
+      "municipalityId": "18153",
+      "zone": "B",
+      "name": "Peligros"
+    },
+    {
+      "id": "196",
+      "municipalityId": "18115",
+      "zone": "C",
+      "name": "Peñuelas"
+    },
+    {
+      "id": "185",
+      "municipalityId": "18157",
+      "zone": "B",
+      "name": "Pinos Genil"
+    },
+    {
+      "id": "259",
+      "municipalityId": "18158",
+      "zone": "C",
+      "name": "Pinos Puente"
+    },
+    {
+      "id": "470",
+      "municipalityId": "18153",
+      "zone": "B",
+      "name": "Pol. Ind. Asegra"
+    },
+    {
+      "id": "543",
+      "municipalityId": "18150",
+      "zone": "C",
+      "name": "Pol. Ind. El Puntal"
+    },
+    {
+      "id": "513",
+      "municipalityId": "18022",
+      "zone": "B",
+      "name": "Pol. Ind. El Rey"
+    },
+    {
+      "id": "514",
+      "municipalityId": "18072",
+      "zone": "C",
+      "name": "Pol. Ind. Escúzar"
+    },
+    {
+      "id": "511",
+      "municipalityId": "18003",
+      "zone": "B",
+      "name": "Pol. Ind. Juncaril"
+    },
+    {
+      "id": "515",
+      "municipalityId": "18079",
+      "zone": "C",
+      "name": "Pol. Ind. La Fuente"
+    },
+    {
+      "id": "516",
+      "municipalityId": "18087",
+      "zone": "A",
+      "name": "Pol. Ind. Mercagranada"
+    },
+    {
+      "id": "471",
+      "municipalityId": "18165",
+      "zone": "B",
+      "name": "Pol. Ind. Olinda"
+    },
+    {
+      "id": "459",
+      "municipalityId": "18101",
+      "zone": "B",
+      "name": "Puente de Monachil"
+    },
+    {
+      "id": "503",
+      "municipalityId": "18051",
+      "zone": "D",
+      "name": "Puerto Guerra"
+    },
+    {
+      "id": "291",
+      "municipalityId": "18132",
+      "zone": "D",
+      "name": "Puerto Lope"
+    },
+    {
+      "id": "223",
+      "municipalityId": "18165",
+      "zone": "B",
+      "name": "Pulianas"
+    },
+    {
+      "id": "226",
+      "municipalityId": "18165",
+      "zone": "B",
+      "name": "Pulianillas"
+    },
+    {
+      "id": "194",
+      "municipalityId": "18911",
+      "zone": "B",
+      "name": "Purchil"
+    },
+    {
+      "id": "212",
+      "municipalityId": "18168",
+      "zone": "C",
+      "name": "Quéntar"
+    },
+    {
+      "id": "218",
+      "municipalityId": "18059",
+      "zone": "C",
+      "name": "Romilla"
+    },
+    {
+      "id": "189",
+      "municipalityId": "18059",
+      "zone": "C",
+      "name": "Romilla la Nueva"
+    },
+    {
+      "id": "186",
+      "municipalityId": "18905",
+      "zone": "B",
+      "name": "San Javier"
+    },
+    {
+      "id": "213",
+      "municipalityId": "18175",
+      "zone": "B",
+      "name": "Santa Fe"
+    },
+    {
+      "id": "177",
+      "municipalityId": "18021",
+      "zone": "B",
+      "name": "Santa Juliana"
+    },
+    {
+      "id": "238",
+      "municipalityId": "18022",
+      "zone": "B",
+      "name": "Sierra Elvira"
+    },
+    {
+      "id": "157",
+      "municipalityId": "18134",
+      "zone": "EX",
+      "name": "Sierra Nevada"
+    },
+    {
+      "id": "284",
+      "municipalityId": "18132",
+      "zone": "D",
+      "name": "Tiena"
+    },
+    {
+      "id": "246",
+      "municipalityId": "18102",
+      "zone": "D",
+      "name": "Tocón"
+    },
+    {
+      "id": "243",
+      "municipalityId": "18168",
+      "zone": "C",
+      "name": "Tocón de Quéntar"
+    },
+    {
+      "id": "480",
+      "municipalityId": "18158",
+      "zone": "C",
+      "name": "Torre Abeca"
+    },
+    {
+      "id": "298",
+      "municipalityId": "18132",
+      "zone": "D",
+      "name": "Tózar"
+    },
+    {
+      "id": "215",
+      "municipalityId": "18158",
+      "zone": "C",
+      "name": "Trasmulas"
+    },
+    {
+      "id": "490",
+      "municipalityId": "18111",
+      "zone": "B",
+      "name": "Urb. Abén Humeya"
+    },
+    {
+      "id": "461",
+      "municipalityId": "18145",
+      "zone": "B",
+      "name": "Urb. El Carmelo"
+    },
+    {
+      "id": "520",
+      "municipalityId": "18134",
+      "zone": "B",
+      "name": "Urb. El Laúd"
+    },
+    {
+      "id": "523",
+      "municipalityId": "18150",
+      "zone": "C",
+      "name": "Urb. El Puntal"
+    },
+    {
+      "id": "462",
+      "municipalityId": "18145",
+      "zone": "B",
+      "name": "Urb. Las Pedrizas"
+    },
+    {
+      "id": "450",
+      "municipalityId": "18003",
+      "zone": "C",
+      "name": "Urb. Llanos de Silva"
+    },
+    {
+      "id": "463",
+      "municipalityId": "18145",
+      "zone": "B",
+      "name": "Urb. Loma Linda"
+    },
+    {
+      "id": "446",
+      "municipalityId": "18003",
+      "zone": "B",
+      "name": "Urb. Loma Verde"
+    },
+    {
+      "id": "486",
+      "municipalityId": "18084",
+      "zone": "B",
+      "name": "Urb. Los Cerezos"
+    },
+    {
+      "id": "510",
+      "municipalityId": "18022",
+      "zone": "C",
+      "name": "Urb. Los Cortijos"
+    },
+    {
+      "id": "527",
+      "municipalityId": "18165",
+      "zone": "B",
+      "name": "Urb. Los Olivos"
+    },
+    {
+      "id": "509",
+      "municipalityId": "18022",
+      "zone": "C",
+      "name": "Urb. Medina Elvira"
+    },
+    {
+      "id": "483",
+      "municipalityId": "18149",
+      "zone": "B",
+      "name": "Urb. Molino Alto"
+    },
+    {
+      "id": "451",
+      "municipalityId": "18003",
+      "zone": "C",
+      "name": "Urb. Pantano Cubillas"
+    },
+    {
+      "id": "521",
+      "municipalityId": "18011",
+      "zone": "B",
+      "name": "Urb. Res. Alfaguara"
+    },
+    {
+      "id": "518",
+      "municipalityId": "18111",
+      "zone": "B",
+      "name": "Urb. San Jerónimo"
+    },
+    {
+      "id": "487",
+      "municipalityId": "18084",
+      "zone": "B",
+      "name": "Urb. Santa Marta"
+    },
+    {
+      "id": "555",
+      "municipalityId": "18003",
+      "zone": "C",
+      "name": "Urb. Señoría de Cubillas"
+    },
+    {
+      "id": "522",
+      "municipalityId": "18149",
+      "zone": "B",
+      "name": "Urb. Suspiro del Moro"
+    },
+    {
+      "id": "548",
+      "municipalityId": "18149",
+      "zone": "B",
+      "name": "Urb. Viña del Rey"
+    },
+    {
+      "id": "244",
+      "municipalityId": "18914",
+      "zone": "C",
+      "name": "Valderrubio"
+    },
+    {
+      "id": "499",
+      "municipalityId": "18102",
+      "zone": "D",
+      "name": "Venta Algarra"
+    },
+    {
+      "id": "151",
+      "municipalityId": "18185",
+      "zone": "C",
+      "name": "Ventas de Huelma"
+    },
+    {
+      "id": "517",
+      "municipalityId": "18087",
+      "zone": "A",
+      "name": "Villa Argaz"
+    },
+    {
+      "id": "447",
+      "municipalityId": "18003",
+      "zone": "B",
+      "name": "Villas Blancas"
+    },
+    {
+      "id": "239",
+      "municipalityId": "18189",
+      "zone": "B",
+      "name": "Víznar"
+    },
+    {
+      "id": "257",
+      "municipalityId": "18158",
+      "zone": "C",
+      "name": "Zujaira"
+    }
+  ]
+}

@@ -126,7 +126,7 @@ describe('snapshot generator', () => {
     assert.equal(secondService.scheduledTime, '2025-01-10T09:45:00.000Z');
   });
 
-  it('throws a descriptive error when a stop is missing', async () => {
+  it('skips stops that fail to load and keeps metadata intact', async () => {
     const config: SnapshotConfig = {
       baseUrl: 'https://api.example.test/v1',
       timezone: 'Europe/Madrid',
@@ -140,6 +140,9 @@ describe('snapshot generator', () => {
       ]
     } satisfies SnapshotConfig;
 
+    const warnings: string[] = [];
+    const originalWarn = console.warn;
+
     const dependencies: SnapshotDependencies = {
       now: () => new Date('2025-01-10T09:00:00.000Z'),
       fetchJson: async () => {
@@ -147,13 +150,20 @@ describe('snapshot generator', () => {
       }
     } satisfies SnapshotDependencies;
 
-    await assert.rejects(
-      () => buildSnapshotFile(config, dependencies),
-      (error: unknown) => {
-        assert.ok(error instanceof Error);
-        assert.match(error.message, /stop 999/i);
-        return true;
-      }
-    );
+    console.warn = (...message: unknown[]) => {
+      warnings.push(message.join(' '));
+    };
+
+    try {
+      const result = await buildSnapshotFile(config, dependencies);
+
+      assert.equal(result.metadata.generatedAt, '2025-01-10T09:00:00.000Z');
+      assert.equal(result.metadata.datasetName, 'stop-services');
+      assert.equal(result.stops.length, 0);
+      assert.equal(warnings.length, 1);
+      assert.match(warnings[0], /Skipping snapshot for stop 999/);
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 });

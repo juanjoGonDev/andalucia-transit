@@ -1,0 +1,774 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 1,
+    "consortiumName": "Área de Sevilla",
+    "itemCount": 127
+  },
+  "nuclei": [
+    {
+      "id": "3159",
+      "municipalityId": "15",
+      "zone": "E",
+      "name": " LOS FRUTALES DEL ALCOR (Carmona)"
+    },
+    {
+      "id": "3121",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "ALBAIDA DEL ALJARAFE"
+    },
+    {
+      "id": "3132",
+      "municipalityId": "3",
+      "zone": "C",
+      "name": "ALCALÁ DE GUADAÍRA"
+    },
+    {
+      "id": "3133",
+      "municipalityId": "4",
+      "zone": "C",
+      "name": "ALCALÁ DEL RÍO"
+    },
+    {
+      "id": "3292",
+      "municipalityId": "66",
+      "zone": "X",
+      "name": "ALCOLEA DEL RIO"
+    },
+    {
+      "id": "3136",
+      "municipalityId": "6",
+      "zone": "C",
+      "name": "ALMENSILLA"
+    },
+    {
+      "id": "3277",
+      "municipalityId": "55",
+      "zone": "X",
+      "name": "ARAHAL"
+    },
+    {
+      "id": "3138",
+      "municipalityId": "7",
+      "zone": "D",
+      "name": "AZNALCÁZAR"
+    },
+    {
+      "id": "3140",
+      "municipalityId": "8",
+      "zone": "E",
+      "name": "AZNALCOLLAR"
+    },
+    {
+      "id": "3127",
+      "municipalityId": "3",
+      "zone": "C",
+      "name": "BDA. LA LIEBRE (Alcalá de Gra.)"
+    },
+    {
+      "id": "3189",
+      "municipalityId": "28",
+      "zone": "E",
+      "name": "BDA. SAN JOSÉ (Huévar)"
+    },
+    {
+      "id": "3142",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "BENACAZON"
+    },
+    {
+      "id": "3144",
+      "municipalityId": "11",
+      "zone": "C",
+      "name": "BOLLULLOS"
+    },
+    {
+      "id": "3148",
+      "municipalityId": "12",
+      "zone": "B",
+      "name": "BORMUJOS"
+    },
+    {
+      "id": "3150",
+      "municipalityId": "13",
+      "zone": "D",
+      "name": "BRENES"
+    },
+    {
+      "id": "3151",
+      "municipalityId": "14",
+      "zone": "B",
+      "name": "CAMAS"
+    },
+    {
+      "id": "3266",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "CAMINO DE SANLÚCAR (Espartinas)"
+    },
+    {
+      "id": "3265",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "CAMINO DE UMBRETE (Espartinas)"
+    },
+    {
+      "id": "3161",
+      "municipalityId": "15",
+      "zone": "E",
+      "name": "CAMPOSOL (Carmona)"
+    },
+    {
+      "id": "3249",
+      "municipalityId": "54",
+      "zone": "X",
+      "name": "CANTILLANA"
+    },
+    {
+      "id": "3158",
+      "municipalityId": "15",
+      "zone": "E",
+      "name": "CARMONA"
+    },
+    {
+      "id": "3239",
+      "municipalityId": "16",
+      "zone": "E",
+      "name": "CARRIÓN DE LOS CÉSPEDES"
+    },
+    {
+      "id": "3163",
+      "municipalityId": "17",
+      "zone": "B",
+      "name": "CASTILLEJA DE GUZMAN"
+    },
+    {
+      "id": "3164",
+      "municipalityId": "18",
+      "zone": "B",
+      "name": "CASTILLEJA DE LA CUESTA"
+    },
+    {
+      "id": "3166",
+      "municipalityId": "19",
+      "zone": "E",
+      "name": "CASTILLEJA DEL CAMPO"
+    },
+    {
+      "id": "3259",
+      "municipalityId": "38",
+      "zone": "C",
+      "name": "CENTRO DE COMARCA NORTE (Salteras)"
+    },
+    {
+      "id": "3167",
+      "municipalityId": "20",
+      "zone": "C",
+      "name": "CORIA DEL RIO"
+    },
+    {
+      "id": "3169",
+      "municipalityId": "21",
+      "zone": "B",
+      "name": "DISEMINADO (Dos Hermanas)- zona B"
+    },
+    {
+      "id": "3209",
+      "municipalityId": "37",
+      "zone": "B",
+      "name": "DISEMINADO (La Rinconada, zona B)"
+    },
+    {
+      "id": "3171",
+      "municipalityId": "21",
+      "zone": "C",
+      "name": "DOS HERMANAS"
+    },
+    {
+      "id": "3135",
+      "municipalityId": "5",
+      "zone": "C",
+      "name": "EL ARAL (La Algaba)"
+    },
+    {
+      "id": "3278",
+      "municipalityId": "15",
+      "zone": "E",
+      "name": "EL CORZO (Carmona)"
+    },
+    {
+      "id": "3276",
+      "municipalityId": "3",
+      "zone": "C",
+      "name": "EL EUCALIPTAL (Alcalá de Gra.)"
+    },
+    {
+      "id": "3282",
+      "municipalityId": "57",
+      "zone": "X",
+      "name": "EL GARROBO"
+    },
+    {
+      "id": "3289",
+      "municipalityId": "63",
+      "zone": "X",
+      "name": "EL PEDROSO"
+    },
+    {
+      "id": "3280",
+      "municipalityId": "15",
+      "zone": "E",
+      "name": "EL PILAR (Carmona)"
+    },
+    {
+      "id": "3162",
+      "municipalityId": "15",
+      "zone": "D",
+      "name": "EL PINO (Carmona)"
+    },
+    {
+      "id": "3274",
+      "municipalityId": "3",
+      "zone": "C",
+      "name": "EL REGIDOR (Alcalá de Gra.)"
+    },
+    {
+      "id": "3177",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "EL RETIRO (Espatinas)"
+    },
+    {
+      "id": "3154",
+      "municipalityId": "15",
+      "zone": "E",
+      "name": "EL SOCORRO (Carmona)"
+    },
+    {
+      "id": "3155",
+      "municipalityId": "15",
+      "zone": "E",
+      "name": "EL SOLDADO (Carmona)"
+    },
+    {
+      "id": "3272",
+      "municipalityId": "3",
+      "zone": "C",
+      "name": "El TOMILLAR (Alcalá de Gra.)"
+    },
+    {
+      "id": "3193",
+      "municipalityId": "29",
+      "zone": "D",
+      "name": "EL TORREÓN (Mairena del Alcor)"
+    },
+    {
+      "id": "3252",
+      "municipalityId": "4",
+      "zone": "C",
+      "name": "EL VIAR (Alcalá del Río)"
+    },
+    {
+      "id": "3236",
+      "municipalityId": "49",
+      "zone": "D",
+      "name": "EL VISO DEL ALCOR"
+    },
+    {
+      "id": "3260",
+      "municipalityId": "40",
+      "zone": "C",
+      "name": "ENCINARES (Sanlúcar la Mayor)"
+    },
+    {
+      "id": "3160",
+      "municipalityId": "15",
+      "zone": "E",
+      "name": "ENTREARROYOS (Carmona)"
+    },
+    {
+      "id": "3179",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "ESPARTINAS"
+    },
+    {
+      "id": "3251",
+      "municipalityId": "4",
+      "zone": "C",
+      "name": "ESQUIVEL (Alcalá del Río)"
+    },
+    {
+      "id": "3174",
+      "municipalityId": "21",
+      "zone": "B",
+      "name": "FUENTE DEL REY (Dos Hermanas) zonaB"
+    },
+    {
+      "id": "3271",
+      "municipalityId": "21",
+      "zone": "C",
+      "name": "FUENTE DEL REY (Dos Hermanas) zonaC"
+    },
+    {
+      "id": "3180",
+      "municipalityId": "24",
+      "zone": "B",
+      "name": "GELVES"
+    },
+    {
+      "id": "3183",
+      "municipalityId": "25",
+      "zone": "D",
+      "name": "GERENA"
+    },
+    {
+      "id": "3184",
+      "municipalityId": "26",
+      "zone": "B",
+      "name": "GINES"
+    },
+    {
+      "id": "3273",
+      "municipalityId": "15",
+      "zone": "E",
+      "name": "GUADAJOZ (Carmona)"
+    },
+    {
+      "id": "3186",
+      "municipalityId": "27",
+      "zone": "C",
+      "name": "GUILLENA"
+    },
+    {
+      "id": "3245",
+      "municipalityId": "7",
+      "zone": "D",
+      "name": "HDA. GELO (Aznalcázar)"
+    },
+    {
+      "id": "3131",
+      "municipalityId": "3",
+      "zone": "C",
+      "name": "HTO. S. ANTONIO Y S. VICENTE (Alcalá de Gra.)"
+    },
+    {
+      "id": "3190",
+      "municipalityId": "28",
+      "zone": "E",
+      "name": "HUEVAR"
+    },
+    {
+      "id": "3238",
+      "municipalityId": "50",
+      "zone": "F",
+      "name": "ISLA MAYOR"
+    },
+    {
+      "id": "3275",
+      "municipalityId": "3",
+      "zone": "C",
+      "name": "LA ALEGRÍA (Alcalá de Gra.)"
+    },
+    {
+      "id": "3134",
+      "municipalityId": "5",
+      "zone": "C",
+      "name": "LA ALGABA"
+    },
+    {
+      "id": "3285",
+      "municipalityId": "60",
+      "zone": "X",
+      "name": "LA CAMPANA"
+    },
+    {
+      "id": "3257",
+      "municipalityId": "15",
+      "zone": "E",
+      "name": "LA CELADA (Carmona)"
+    },
+    {
+      "id": "3258",
+      "municipalityId": "38",
+      "zone": "C",
+      "name": "LA DEHESILLA (Salteras)"
+    },
+    {
+      "id": "3217",
+      "municipalityId": "38",
+      "zone": "C",
+      "name": "LA FUEMBLANCA (Salteras)"
+    },
+    {
+      "id": "3122",
+      "municipalityId": "3",
+      "zone": "C",
+      "name": "LA GALVANA (Alcalá de Gra.)"
+    },
+    {
+      "id": "3279",
+      "municipalityId": "20",
+      "zone": "C",
+      "name": "LA HERMANDAD (Coria del Río)"
+    },
+    {
+      "id": "3146",
+      "municipalityId": "11",
+      "zone": "C",
+      "name": "LA JULIANA (Bollullos)"
+    },
+    {
+      "id": "3208",
+      "municipalityId": "37",
+      "zone": "C",
+      "name": "LA RINCONADA"
+    },
+    {
+      "id": "3283",
+      "municipalityId": "58",
+      "zone": "X",
+      "name": "LAS CABEZAS DE SAN JUAN"
+    },
+    {
+      "id": "3205",
+      "municipalityId": "37",
+      "zone": "C",
+      "name": "LAS CORTILLAS (La Rinconada)"
+    },
+    {
+      "id": "3254",
+      "municipalityId": "3",
+      "zone": "D",
+      "name": "LAS ENCINAS (Alcalá de Gra.)"
+    },
+    {
+      "id": "3157",
+      "municipalityId": "15",
+      "zone": "E",
+      "name": "LAS MONJAS (Carmona)"
+    },
+    {
+      "id": "3185",
+      "municipalityId": "27",
+      "zone": "D",
+      "name": "LAS PAJANOSAS (Guillena)"
+    },
+    {
+      "id": "3287",
+      "municipalityId": "62",
+      "zone": "X",
+      "name": "LEBRIJA"
+    },
+    {
+      "id": "3290",
+      "municipalityId": "64",
+      "zone": "X",
+      "name": "LORA DEL RIO"
+    },
+    {
+      "id": "3194",
+      "municipalityId": "29",
+      "zone": "D",
+      "name": "LOS CLAVELES (Mairena del Alcor)"
+    },
+    {
+      "id": "3230",
+      "municipalityId": "45",
+      "zone": "B",
+      "name": "LOS GIRASOLES (Valencina)"
+    },
+    {
+      "id": "3156",
+      "municipalityId": "15",
+      "zone": "E",
+      "name": "LOS NIETOS (Carmona)"
+    },
+    {
+      "id": "3199",
+      "municipalityId": "32",
+      "zone": "E",
+      "name": "LOS PALACIOS"
+    },
+    {
+      "id": "3246",
+      "municipalityId": "32",
+      "zone": "D",
+      "name": "LOS PALACIOS (zona D)"
+    },
+    {
+      "id": "3286",
+      "municipalityId": "61",
+      "zone": "X",
+      "name": "LOS ROSALES"
+    },
+    {
+      "id": "3262",
+      "municipalityId": "40",
+      "zone": "C",
+      "name": "LOS SAJARDINES (Sanlúcar la Mayor)"
+    },
+    {
+      "id": "3191",
+      "municipalityId": "29",
+      "zone": "D",
+      "name": "MAIRENA DEL ALCOR"
+    },
+    {
+      "id": "3196",
+      "municipalityId": "30",
+      "zone": "B",
+      "name": "MAIRENA DEL ALJARAFE"
+    },
+    {
+      "id": "3206",
+      "municipalityId": "37",
+      "zone": "B",
+      "name": "MAJALOBA (La Rinconada)"
+    },
+    {
+      "id": "3264",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "MONTE ALTO (Espartinas)"
+    },
+    {
+      "id": "3253",
+      "municipalityId": "37",
+      "zone": "C",
+      "name": "NUEVA JARILLA (La Rinconada)"
+    },
+    {
+      "id": "3198",
+      "municipalityId": "31",
+      "zone": "C",
+      "name": "OLIVARES"
+    },
+    {
+      "id": "3200",
+      "municipalityId": "33",
+      "zone": "C",
+      "name": "PALOMARES DEL RIO"
+    },
+    {
+      "id": "3284",
+      "municipalityId": "59",
+      "zone": "X",
+      "name": "PARADAS"
+    },
+    {
+      "id": "3202",
+      "municipalityId": "34",
+      "zone": "E",
+      "name": "PILAS"
+    },
+    {
+      "id": "3237",
+      "municipalityId": "50",
+      "zone": "F",
+      "name": "POB.ALFONSO XIII (Isla Mayor)"
+    },
+    {
+      "id": "3210",
+      "municipalityId": "37",
+      "zone": "B",
+      "name": "POL. EL GORDILLO (La Rinconada)"
+    },
+    {
+      "id": "3207",
+      "municipalityId": "37",
+      "zone": "B",
+      "name": "POL. MAJARAVIQUE (La Rinconada)"
+    },
+    {
+      "id": "3204",
+      "municipalityId": "36",
+      "zone": "C",
+      "name": "PUEBLA DEL RIO"
+    },
+    {
+      "id": "3173",
+      "municipalityId": "21",
+      "zone": "B",
+      "name": "QUINTO (Dos Hermanas) zonaB"
+    },
+    {
+      "id": "3270",
+      "municipalityId": "21",
+      "zone": "C",
+      "name": "QUINTO (Dos Hermanas) zonaC"
+    },
+    {
+      "id": "3267",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "RAMAL DE VILLANUEVA (Espartinas)"
+    },
+    {
+      "id": "3261",
+      "municipalityId": "40",
+      "zone": "C",
+      "name": "RANCHOS DE GUADIAMAR (Sanlúcar la Mayor)"
+    },
+    {
+      "id": "3263",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "ROALCAO (Espartinas)"
+    },
+    {
+      "id": "3250",
+      "municipalityId": "4",
+      "zone": "C",
+      "name": "S. IGNACIO DEL VIAR (Alcalá del Río)"
+    },
+    {
+      "id": "3216",
+      "municipalityId": "38",
+      "zone": "C",
+      "name": "SALTERAS"
+    },
+    {
+      "id": "3255",
+      "municipalityId": "38",
+      "zone": "D",
+      "name": "SALTERAS (zona D)"
+    },
+    {
+      "id": "3247",
+      "municipalityId": "40",
+      "zone": "C",
+      "name": "SAN BARTOLOME (Sanlúcar la Mayor)"
+    },
+    {
+      "id": "3211",
+      "municipalityId": "37",
+      "zone": "C",
+      "name": "SAN JOSÉ DE LA RINCONADA (La Rinconada)"
+    },
+    {
+      "id": "3219",
+      "municipalityId": "39",
+      "zone": "B",
+      "name": "SAN JUAN DE AZNALFARACHE"
+    },
+    {
+      "id": "3129",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "SAN RAFAEL (Alcalá de Gra.)"
+    },
+    {
+      "id": "3220",
+      "municipalityId": "40",
+      "zone": "C",
+      "name": "SANLUCAR LA MAYOR"
+    },
+    {
+      "id": "3222",
+      "municipalityId": "41",
+      "zone": "B",
+      "name": "SANTIPONCE"
+    },
+    {
+      "id": "3225",
+      "municipalityId": "42",
+      "zone": "A",
+      "name": "SEVILLA"
+    },
+    {
+      "id": "3226",
+      "municipalityId": "42",
+      "zone": "B",
+      "name": "SEVILLA (zona B)"
+    },
+    {
+      "id": "3130",
+      "municipalityId": "3",
+      "zone": "C",
+      "name": "STA. GENOVEVA (Alcalá de Gra.)"
+    },
+    {
+      "id": "3214",
+      "municipalityId": "37",
+      "zone": "C",
+      "name": "TARAZONA (La Rinconada)"
+    },
+    {
+      "id": "3227",
+      "municipalityId": "43",
+      "zone": "B",
+      "name": "TOMARES"
+    },
+    {
+      "id": "3187",
+      "municipalityId": "27",
+      "zone": "C",
+      "name": "TORRE REINA (Guillena)"
+    },
+    {
+      "id": "3128",
+      "municipalityId": "3",
+      "zone": "C",
+      "name": "TORREQUINTO (Alcalá de Gra.)"
+    },
+    {
+      "id": "3229",
+      "municipalityId": "44",
+      "zone": "C",
+      "name": "UMBRETE"
+    },
+    {
+      "id": "3256",
+      "municipalityId": "28",
+      "zone": "E",
+      "name": "URB. GUADIAL (Huévar)"
+    },
+    {
+      "id": "3126",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "URB.SEVILLA-GOLF (Alcalá de Gra.)"
+    },
+    {
+      "id": "3281",
+      "municipalityId": "56",
+      "zone": "X",
+      "name": "UTRERA"
+    },
+    {
+      "id": "3231",
+      "municipalityId": "45",
+      "zone": "B",
+      "name": "VALENCINA"
+    },
+    {
+      "id": "3233",
+      "municipalityId": "46",
+      "zone": "F",
+      "name": "VILLAMANRIQUE"
+    },
+    {
+      "id": "3235",
+      "municipalityId": "48",
+      "zone": "C",
+      "name": "VILLANUEVA DEL ARISCAL"
+    },
+    {
+      "id": "3291",
+      "municipalityId": "65",
+      "zone": "X",
+      "name": "VILLANUEVA DEL RIO Y MINAS"
+    },
+    {
+      "id": "3248",
+      "municipalityId": "53",
+      "zone": "X",
+      "name": "VILLAVERDE DEL RIO"
+    }
+  ]
+}

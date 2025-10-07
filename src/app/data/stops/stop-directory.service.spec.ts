@@ -2,19 +2,60 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
 
-import { StopDirectoryService, StopDirectoryOption, StopSearchRequest } from './stop-directory.service';
+import { StopDirectoryService, StopDirectoryOption } from './stop-directory.service';
 import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
 import { APP_CONFIG } from '../../core/config';
 
-interface DirectoryResponse {
+interface DirectoryIndexResponse {
   readonly metadata: {
     readonly generatedAt: string;
     readonly timezone: string;
+    readonly providerName: string;
+    readonly consortiums: readonly DirectoryConsortiumSummary[];
+    readonly totalStops: number;
   };
-  readonly stops: readonly DirectoryEntry[];
+  readonly chunks: readonly DirectoryChunkDescriptor[];
+  readonly searchIndex: readonly DirectorySearchEntry[];
 }
 
-interface DirectoryEntry {
+interface DirectoryConsortiumSummary {
+  readonly id: number;
+  readonly name: string;
+  readonly shortName: string;
+}
+
+interface DirectoryChunkDescriptor {
+  readonly id: string;
+  readonly consortiumId: number;
+  readonly path: string;
+  readonly stopCount: number;
+}
+
+interface DirectorySearchEntry {
+  readonly stopId: string;
+  readonly stopCode: string;
+  readonly name: string;
+  readonly municipality: string;
+  readonly municipalityId: string;
+  readonly nucleus: string;
+  readonly nucleusId: string;
+  readonly consortiumId: number;
+  readonly chunkId: string;
+}
+
+interface DirectoryChunkResponse {
+  readonly metadata: {
+    readonly generatedAt: string;
+    readonly timezone: string;
+    readonly providerName: string;
+    readonly consortiumId: number;
+    readonly consortiumName: string;
+    readonly stopCount: number;
+  };
+  readonly stops: readonly DirectoryChunkStop[];
+}
+
+interface DirectoryChunkStop {
   readonly consortiumId: number;
   readonly stopId: string;
   readonly stopCode: string;
@@ -34,18 +75,44 @@ describe('StopDirectoryService', () => {
   let service: StopDirectoryService;
   let http: HttpTestingController;
 
-  const directoryResponse: DirectoryResponse = {
+  const indexResponse: DirectoryIndexResponse = {
     metadata: {
-      generatedAt: '2025-01-01T05:00:00.000Z',
-      timezone: 'Europe/Madrid'
+      generatedAt: '2025-02-01T05:00:00.000Z',
+      timezone: 'Europe/Madrid',
+      providerName: 'CTAN',
+      consortiums: [{ id: 7, name: 'Jaén', shortName: 'CTJA' }],
+      totalStops: 3
+    },
+    chunks: [
+      {
+        id: 'consortium-7',
+        consortiumId: 7,
+        path: 'chunks/consortium-7.json',
+        stopCount: 3
+      }
+    ],
+    searchIndex: [
+      buildSearchEntry('01', 'Estación Central'),
+      buildSearchEntry('02', 'Hospital Provincial'),
+      buildSearchEntry('03', 'Museo Íbero')
+    ]
+  } satisfies DirectoryIndexResponse;
+
+  const chunkResponse: DirectoryChunkResponse = {
+    metadata: {
+      generatedAt: '2025-02-01T05:00:00.000Z',
+      timezone: 'Europe/Madrid',
+      providerName: 'CTAN',
+      consortiumId: 7,
+      consortiumName: 'Jaén',
+      stopCount: 3
     },
     stops: [
-      buildEntry('01', 'Estación De Autobuses De Jaén', 'Jaén', 'Jaén'),
-      buildEntry('02', 'Plaza De La Constitución', 'Jaén', 'Jaén'),
-      buildEntry('03', 'Hospital Universitario', 'La Guardia de Jaén', 'Jaén'),
-      buildEntry('04', 'Museo Íbero', 'Jaén', 'Jaén')
+      buildChunkStop('01', 'Estación Central'),
+      buildChunkStop('02', 'Hospital Provincial'),
+      buildChunkStop('03', 'Museo Íbero')
     ]
-  };
+  } satisfies DirectoryChunkResponse;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -64,98 +131,101 @@ describe('StopDirectoryService', () => {
     http.verify();
   });
 
-  it('returns stops sorted by name when no query is provided', async () => {
-    const request: StopSearchRequest = { query: '', limit: 3 };
-    const promise = firstValueFrom(service.searchStops(request));
+  it('returns an empty result when the query is shorter than the minimum length', async () => {
+    const promise = firstValueFrom(service.searchStops({ query: 'a', limit: 5 }));
 
-    expectDirectoryRequest();
+    expectIndexRequest();
 
-    const results = await promise;
-
-    expect(results.map((stop) => stop.name)).toEqual([
-      'Estación De Autobuses De Jaén',
-      'Hospital Universitario',
-      'Museo Íbero'
-    ]);
+    const options = await promise;
+    expect(options).toEqual([]);
   });
 
-  it('filters stops using the provided query, include and exclude filters', async () => {
-    const request: StopSearchRequest = {
-      query: 'jaén',
-      limit: 5,
-      includeStopIds: ['01', '02', '03'],
-      excludeStopId: '02'
-    };
-    const promise = firstValueFrom(service.searchStops(request));
+  it('searches stops when the query meets the minimum length', async () => {
+    const promise = firstValueFrom(service.searchStops({ query: 'hos', limit: 5 }));
 
-    expectDirectoryRequest();
+    expectIndexRequest();
 
-    const results = await promise;
+    const options = await promise;
 
-    expect(results).toEqual([
-      toOption(directoryResponse.stops[0]),
-      toOption(directoryResponse.stops[2])
-    ]);
+    expect(options).toEqual([
+      {
+        id: '02',
+        code: '02',
+        name: 'Hospital Provincial',
+        municipality: 'Jaén',
+        nucleus: 'Jaén',
+        consortiumId: 7
+      }
+    ] satisfies readonly StopDirectoryOption[]);
   });
 
-  it('returns an empty array when limit is zero or fewer', async () => {
-    const promise = firstValueFrom(service.searchStops({ query: '', limit: 0 }));
+  it('returns include stop identifiers even without a long query', async () => {
+    const promise = firstValueFrom(
+      service.searchStops({ query: '', limit: 5, includeStopIds: ['01', '03'] })
+    );
 
-    expectDirectoryRequest();
+    expectIndexRequest();
 
-    const results = await promise;
+    const options = await promise;
 
-    expect(results).toEqual([]);
+    expect(options.map((item) => item.id)).toEqual(['01', '03']);
   });
 
-  it('returns stop metadata when searching by identifier', async () => {
+  it('loads full stop metadata on demand from chunk files', async () => {
     const promise = firstValueFrom(service.getStopById('03'));
 
-    expectDirectoryRequest();
+    expectIndexRequest();
+    expectChunkRequest('consortium-7');
 
-    const result = await promise;
+    const stop = await promise;
 
-    expect(result?.stopId).toBe('03');
-    expect(result?.name).toBe('Hospital Universitario');
+    expect(stop?.stopId).toBe('03');
+    expect(stop?.name).toBe('Museo Íbero');
+    expect(stop?.location.latitude).toBeCloseTo(37.7);
   });
 
-  function expectDirectoryRequest(): void {
+  function expectIndexRequest(): void {
     http
       .expectOne(APP_CONFIG.data.snapshots.stopDirectoryPath)
-      .flush(directoryResponse);
+      .flush(indexResponse);
+  }
+
+  function expectChunkRequest(chunkId: string): void {
+    const basePath = APP_CONFIG.data.snapshots.stopDirectoryPath.replace(/index\.json$/, '');
+    http
+      .expectOne(`${basePath}chunks/${chunkId}.json`)
+      .flush(chunkResponse);
   }
 });
 
-function buildEntry(
-  stopId: string,
-  name: string,
-  municipality: string,
-  nucleus: string
-): DirectoryEntry {
+function buildSearchEntry(stopId: string, name: string): DirectorySearchEntry {
+  return {
+    stopId,
+    stopCode: stopId,
+    name,
+    municipality: 'Jaén',
+    municipalityId: `mun-${stopId}`,
+    nucleus: 'Jaén',
+    nucleusId: `nuc-${stopId}`,
+    consortiumId: 7,
+    chunkId: 'consortium-7'
+  } satisfies DirectorySearchEntry;
+}
+
+function buildChunkStop(stopId: string, name: string): DirectoryChunkStop {
   return {
     consortiumId: 7,
     stopId,
     stopCode: stopId,
     name,
-    municipality,
+    municipality: 'Jaén',
     municipalityId: `mun-${stopId}`,
-    nucleus,
+    nucleus: 'Jaén',
     nucleusId: `nuc-${stopId}`,
     zone: null,
     location: {
       latitude: 37.7,
       longitude: -3.7
     }
-  } satisfies DirectoryEntry;
-}
-
-function toOption(entry: DirectoryEntry): StopDirectoryOption {
-  return {
-    id: entry.stopId,
-    code: entry.stopCode,
-    name: entry.name,
-    municipality: entry.municipality,
-    nucleus: entry.nucleus,
-    consortiumId: entry.consortiumId
-  } satisfies StopDirectoryOption;
+  } satisfies DirectoryChunkStop;
 }

@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable, shareReplay } from 'rxjs';
+import { map, Observable, of, shareReplay, switchMap } from 'rxjs';
 
 import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
 import { AppConfig } from '../../core/config';
 
 const SEARCH_LOCALE = 'es-ES' as const;
+const MIN_QUERY_LENGTH = 2;
 
 export interface StopDirectoryRecord {
   readonly consortiumId: number;
@@ -39,15 +40,58 @@ export interface StopSearchRequest {
   readonly excludeStopId?: string;
 }
 
-interface StopDirectoryFile {
+interface StopDirectoryIndexFile {
+  readonly metadata: StopDirectoryFileMetadata;
+  readonly chunks: readonly StopDirectoryChunkDescriptor[];
+  readonly searchIndex: readonly StopDirectorySearchEntry[];
+}
+
+interface StopDirectoryFileMetadata {
+  readonly generatedAt: string;
+  readonly timezone: string;
+  readonly providerName: string;
+  readonly consortiums: readonly StopDirectoryConsortiumSummary[];
+  readonly totalStops: number;
+}
+
+interface StopDirectoryConsortiumSummary {
+  readonly id: number;
+  readonly name: string;
+  readonly shortName: string;
+}
+
+interface StopDirectoryChunkDescriptor {
+  readonly id: string;
+  readonly consortiumId: number;
+  readonly path: string;
+  readonly stopCount: number;
+}
+
+interface StopDirectorySearchEntry {
+  readonly stopId: string;
+  readonly stopCode: string;
+  readonly name: string;
+  readonly municipality: string;
+  readonly municipalityId: string;
+  readonly nucleus: string;
+  readonly nucleusId: string;
+  readonly consortiumId: number;
+  readonly chunkId: string;
+}
+
+interface StopDirectoryChunkFile {
   readonly metadata: {
     readonly generatedAt: string;
     readonly timezone: string;
+    readonly providerName: string;
+    readonly consortiumId: number;
+    readonly consortiumName: string;
+    readonly stopCount: number;
   };
-  readonly stops: readonly StopDirectoryEntry[];
+  readonly stops: readonly StopDirectoryChunkEntry[];
 }
 
-interface StopDirectoryEntry {
+interface StopDirectoryChunkEntry {
   readonly consortiumId: number;
   readonly stopId: string;
   readonly stopCode: string;
@@ -64,16 +108,19 @@ interface StopDirectoryEntry {
 }
 
 interface StopDirectoryIndex {
-  readonly records: ReadonlyMap<string, StopDirectoryRecord>;
   readonly searchable: readonly SearchableStopRecord[];
+  readonly entries: ReadonlyMap<string, StopDirectorySearchEntry>;
+  readonly chunks: ReadonlyMap<string, StopDirectoryChunkDescriptor>;
 }
 
 interface SearchableStopRecord {
-  readonly record: StopDirectoryRecord;
+  readonly entry: StopDirectorySearchEntry;
   readonly normalizedName: string;
   readonly normalizedMunicipality: string;
   readonly normalizedCode: string;
 }
+
+type ChunkRecords = ReadonlyMap<string, StopDirectoryRecord>;
 
 @Injectable({ providedIn: 'root' })
 export class StopDirectoryService {
@@ -81,37 +128,104 @@ export class StopDirectoryService {
   private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
 
   private readonly index$: Observable<StopDirectoryIndex> = this.http
-    .get<StopDirectoryFile>(this.config.data.snapshots.stopDirectoryPath)
+    .get<StopDirectoryIndexFile>(this.config.data.snapshots.stopDirectoryPath)
     .pipe(map((file) => buildDirectoryIndex(file)), shareReplay({ bufferSize: 1, refCount: true }));
 
+  private readonly chunkBasePath = resolveChunkBasePath(
+    this.config.data.snapshots.stopDirectoryPath
+  );
+
+  private readonly chunkCache = new Map<string, Observable<ChunkRecords>>();
+
   getStopById(stopId: string): Observable<StopDirectoryRecord | null> {
-    return this.index$.pipe(map((index) => index.records.get(stopId) ?? null));
+    return this.index$.pipe(
+      switchMap((index) => {
+        const entry = index.entries.get(stopId);
+
+        if (!entry) {
+          return of(null);
+        }
+
+        const descriptor = index.chunks.get(entry.chunkId);
+
+        if (!descriptor) {
+          return of(null);
+        }
+
+        return this.loadChunkRecords(descriptor).pipe(
+          map((records) => records.get(stopId) ?? null)
+        );
+      })
+    );
   }
 
   searchStops(request: StopSearchRequest): Observable<readonly StopDirectoryOption[]> {
     return this.index$.pipe(map((index) => searchDirectory(index, request)));
   }
+
+  private loadChunkRecords(descriptor: StopDirectoryChunkDescriptor): Observable<ChunkRecords> {
+    const cached = this.chunkCache.get(descriptor.id);
+
+    if (cached) {
+      return cached;
+    }
+
+    const url = `${this.chunkBasePath}${descriptor.path}`;
+    const records$ = this.http
+      .get<StopDirectoryChunkFile>(url)
+      .pipe(map((file) => mapChunkToRecords(file)), shareReplay({ bufferSize: 1, refCount: true }));
+
+    this.chunkCache.set(descriptor.id, records$);
+    return records$;
+  }
 }
 
-function buildDirectoryIndex(file: StopDirectoryFile): StopDirectoryIndex {
-  const records = file.stops.map(mapEntryToRecord);
-  const orderedRecords = records.sort((first, second) =>
-    first.name.localeCompare(second.name, SEARCH_LOCALE)
-  );
-  const searchable = orderedRecords.map<SearchableStopRecord>((record) => ({
-    record,
-    normalizedName: normalize(record.name),
-    normalizedMunicipality: normalize(record.municipality),
-    normalizedCode: normalize(record.stopCode)
-  }));
+function resolveChunkBasePath(indexPath: string): string {
+  const lastSlash = indexPath.lastIndexOf('/');
+
+  if (lastSlash === -1) {
+    return '';
+  }
+
+  return `${indexPath.slice(0, lastSlash + 1)}`;
+}
+
+function buildDirectoryIndex(file: StopDirectoryIndexFile): StopDirectoryIndex {
+  const entries = new Map<string, StopDirectorySearchEntry>();
+
+  for (const entry of file.searchIndex) {
+    entries.set(entry.stopId, entry);
+  }
+
+  const chunks = new Map<string, StopDirectoryChunkDescriptor>();
+
+  for (const descriptor of file.chunks) {
+    chunks.set(descriptor.id, descriptor);
+  }
+
+  const searchable = file.searchIndex
+    .map<SearchableStopRecord>((entry) => ({
+      entry,
+      normalizedName: normalize(entry.name),
+      normalizedMunicipality: normalize(entry.municipality),
+      normalizedCode: normalize(entry.stopCode)
+    }))
+    .sort((first, second) => first.entry.name.localeCompare(second.entry.name, SEARCH_LOCALE));
 
   return {
-    records: new Map(orderedRecords.map((record) => [record.stopId, record] as const)),
-    searchable: Object.freeze(searchable)
+    searchable: Object.freeze(searchable),
+    entries,
+    chunks
   } satisfies StopDirectoryIndex;
 }
 
-function mapEntryToRecord(entry: StopDirectoryEntry): StopDirectoryRecord {
+function mapChunkToRecords(file: StopDirectoryChunkFile): ChunkRecords {
+  const records = file.stops.map(mapChunkEntryToRecord);
+
+  return new Map(records.map((record) => [record.stopId, record] as const));
+}
+
+function mapChunkEntryToRecord(entry: StopDirectoryChunkEntry): StopDirectoryRecord {
   return {
     consortiumId: entry.consortiumId,
     stopId: entry.stopId,
@@ -129,36 +243,42 @@ function mapEntryToRecord(entry: StopDirectoryEntry): StopDirectoryRecord {
   } satisfies StopDirectoryRecord;
 }
 
-function searchDirectory(
-  index: StopDirectoryIndex,
-  request: StopSearchRequest
-): readonly StopDirectoryOption[] {
+function searchDirectory(index: StopDirectoryIndex, request: StopSearchRequest): readonly StopDirectoryOption[] {
   if (request.limit <= 0) {
-    return Object.freeze([] as StopDirectoryOption[]);
+    return EMPTY_OPTIONS;
   }
 
   const trimmedQuery = request.query.trim();
-  const normalizedQuery = trimmedQuery ? normalize(trimmedQuery) : '';
   const includeSet = request.includeStopIds ? new Set(request.includeStopIds) : null;
   const excludeStopId = request.excludeStopId ?? null;
+  const hasSufficientQuery = trimmedQuery.length >= MIN_QUERY_LENGTH;
+  const normalizedQuery = hasSufficientQuery ? normalize(trimmedQuery) : null;
+
+  if (!normalizedQuery && !includeSet) {
+    return EMPTY_OPTIONS;
+  }
+
   const results: StopDirectoryOption[] = [];
 
   for (const item of index.searchable) {
-    const record = item.record;
+    const entry = item.entry;
 
-    if (excludeStopId && record.stopId === excludeStopId) {
+    if (excludeStopId && entry.stopId === excludeStopId) {
       continue;
     }
 
-    if (includeSet && !includeSet.has(record.stopId)) {
+    const isIncluded = includeSet?.has(entry.stopId) ?? false;
+    const matchesQuery = normalizedQuery ? matchesSearch(item, normalizedQuery) : false;
+
+    if (!normalizedQuery && includeSet && !isIncluded) {
       continue;
     }
 
-    if (normalizedQuery && !matchesSearch(item, normalizedQuery)) {
+    if (normalizedQuery && !matchesQuery && !isIncluded) {
       continue;
     }
 
-    results.push(toOption(record));
+    results.push(toOption(entry));
 
     if (results.length >= request.limit) {
       break;
@@ -176,17 +296,19 @@ function matchesSearch(record: SearchableStopRecord, normalizedQuery: string): b
   );
 }
 
-function toOption(record: StopDirectoryRecord): StopDirectoryOption {
+function toOption(entry: StopDirectorySearchEntry): StopDirectoryOption {
   return {
-    id: record.stopId,
-    code: record.stopCode,
-    name: record.name,
-    municipality: record.municipality,
-    nucleus: record.nucleus,
-    consortiumId: record.consortiumId
+    id: entry.stopId,
+    code: entry.stopCode,
+    name: entry.name,
+    municipality: entry.municipality,
+    nucleus: entry.nucleus,
+    consortiumId: entry.consortiumId
   } satisfies StopDirectoryOption;
 }
 
 function normalize(value: string): string {
   return value.toLocaleLowerCase(SEARCH_LOCALE);
 }
+
+const EMPTY_OPTIONS: readonly StopDirectoryOption[] = Object.freeze([] as StopDirectoryOption[]);

@@ -1,0 +1,96 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 8,
+    "consortiumName": "Área de Córdoba",
+    "itemCount": 21
+  },
+  "municipalities": [
+    {
+      "id": "19",
+      "name": "Almodóvar Del Río"
+    },
+    {
+      "id": "24",
+      "name": "Baena"
+    },
+    {
+      "id": "23",
+      "name": "Castro Del Río"
+    },
+    {
+      "id": "6",
+      "name": "Córdoba"
+    },
+    {
+      "id": "5",
+      "name": "El Carpio"
+    },
+    {
+      "id": "7",
+      "name": "Espejo"
+    },
+    {
+      "id": "8",
+      "name": "Fernán-Núñez"
+    },
+    {
+      "id": "9",
+      "name": "Guadalcázar"
+    },
+    {
+      "id": "4",
+      "name": "La Carlota"
+    },
+    {
+      "id": "21",
+      "name": "La Guijarrosa"
+    },
+    {
+      "id": "15",
+      "name": "La Victoria"
+    },
+    {
+      "id": "10",
+      "name": "Montemayor"
+    },
+    {
+      "id": "20",
+      "name": "Montoro"
+    },
+    {
+      "id": "11",
+      "name": "Obejo"
+    },
+    {
+      "id": "12",
+      "name": "Pedro Abad"
+    },
+    {
+      "id": "13",
+      "name": "Posadas"
+    },
+    {
+      "id": "14",
+      "name": "S Sebastián De Los Ballestero\u0000"
+    },
+    {
+      "id": "25",
+      "name": "Villa Del Río"
+    },
+    {
+      "id": "16",
+      "name": "Villafranca De Córdoba"
+    },
+    {
+      "id": "17",
+      "name": "Villaharta"
+    },
+    {
+      "id": "18",
+      "name": "Villaviciosa De Córdoba"
+    }
+  ]
+}

@@ -110,17 +110,21 @@ export async function buildSnapshotFile(
   const stops: StopSnapshot[] = [];
 
   for (const target of targets) {
-    const stopInfo = await loadStopInformation(config, dependencies, target);
-    const services = await loadStopServices(config, dependencies, target, queryInstant);
-    stops.push(
-      buildStopSnapshot(
-        config,
-        stopInfo,
-        services,
-        target,
-        generationInstant
-      )
-    );
+    try {
+      const stopInfo = await loadStopInformation(config, dependencies, target);
+      const services = await loadStopServices(config, dependencies, target, queryInstant);
+      stops.push(
+        buildStopSnapshot(
+          config,
+          stopInfo,
+          services,
+          target,
+          generationInstant
+        )
+      );
+    } catch (error) {
+      console.warn(`Skipping snapshot for stop ${target.stopId}: ${formatError(error)}`);
+    }
   }
 
   return {

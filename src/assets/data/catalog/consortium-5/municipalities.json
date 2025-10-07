@@ -1,0 +1,44 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 5,
+    "consortiumName": "Campo de Gibraltar",
+    "itemCount": 8
+  },
+  "municipalities": [
+    {
+      "id": "1",
+      "name": "Algeciras"
+    },
+    {
+      "id": "3",
+      "name": "Castellar de la Frontera"
+    },
+    {
+      "id": "6",
+      "name": "Jimena de la Frontera "
+    },
+    {
+      "id": "5",
+      "name": "La Línea de la Concepción "
+    },
+    {
+      "id": "2",
+      "name": "Los Barrios"
+    },
+    {
+      "id": "8",
+      "name": "San Martín del Tesorillo"
+    },
+    {
+      "id": "7",
+      "name": "San Roque"
+    },
+    {
+      "id": "4",
+      "name": "Tarifa "
+    }
+  ]
+}

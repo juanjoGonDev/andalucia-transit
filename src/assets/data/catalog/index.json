@@ -1,0 +1,146 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiums": [
+      {
+        "id": 1,
+        "name": "Área de Sevilla",
+        "shortName": "CTAS"
+      },
+      {
+        "id": 2,
+        "name": "Bahía de Cádiz",
+        "shortName": "CMTBC"
+      },
+      {
+        "id": 3,
+        "name": "Área de Granada",
+        "shortName": "CTMGR"
+      },
+      {
+        "id": 4,
+        "name": "Área de Málaga",
+        "shortName": "CTMAM"
+      },
+      {
+        "id": 5,
+        "name": "Campo de Gibraltar",
+        "shortName": "CTMCG"
+      },
+      {
+        "id": 6,
+        "name": "Área de Almería",
+        "shortName": "CTAL"
+      },
+      {
+        "id": 7,
+        "name": "Área de Jaén",
+        "shortName": "CTJA"
+      },
+      {
+        "id": 8,
+        "name": "Área de Córdoba",
+        "shortName": "CTCO"
+      },
+      {
+        "id": 9,
+        "name": "Costa de Huelva",
+        "shortName": "CTHU"
+      }
+    ]
+  },
+  "consortia": [
+    {
+      "id": 1,
+      "name": "Área de Sevilla",
+      "shortName": "CTAS",
+      "datasets": {
+        "municipalities": "consortium-1/municipalities.json",
+        "nuclei": "consortium-1/nuclei.json",
+        "lines": "consortium-1/lines.json"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Bahía de Cádiz",
+      "shortName": "CMTBC",
+      "datasets": {
+        "municipalities": "consortium-2/municipalities.json",
+        "nuclei": "consortium-2/nuclei.json",
+        "lines": "consortium-2/lines.json"
+      }
+    },
+    {
+      "id": 3,
+      "name": "Área de Granada",
+      "shortName": "CTMGR",
+      "datasets": {
+        "municipalities": "consortium-3/municipalities.json",
+        "nuclei": "consortium-3/nuclei.json",
+        "lines": "consortium-3/lines.json"
+      }
+    },
+    {
+      "id": 4,
+      "name": "Área de Málaga",
+      "shortName": "CTMAM",
+      "datasets": {
+        "municipalities": "consortium-4/municipalities.json",
+        "nuclei": "consortium-4/nuclei.json",
+        "lines": "consortium-4/lines.json"
+      }
+    },
+    {
+      "id": 5,
+      "name": "Campo de Gibraltar",
+      "shortName": "CTMCG",
+      "datasets": {
+        "municipalities": "consortium-5/municipalities.json",
+        "nuclei": "consortium-5/nuclei.json",
+        "lines": "consortium-5/lines.json"
+      }
+    },
+    {
+      "id": 6,
+      "name": "Área de Almería",
+      "shortName": "CTAL",
+      "datasets": {
+        "municipalities": "consortium-6/municipalities.json",
+        "nuclei": "consortium-6/nuclei.json",
+        "lines": "consortium-6/lines.json"
+      }
+    },
+    {
+      "id": 7,
+      "name": "Área de Jaén",
+      "shortName": "CTJA",
+      "datasets": {
+        "municipalities": "consortium-7/municipalities.json",
+        "nuclei": "consortium-7/nuclei.json",
+        "lines": "consortium-7/lines.json"
+      }
+    },
+    {
+      "id": 8,
+      "name": "Área de Córdoba",
+      "shortName": "CTCO",
+      "datasets": {
+        "municipalities": "consortium-8/municipalities.json",
+        "nuclei": "consortium-8/nuclei.json",
+        "lines": "consortium-8/lines.json"
+      }
+    },
+    {
+      "id": 9,
+      "name": "Costa de Huelva",
+      "shortName": "CTHU",
+      "datasets": {
+        "municipalities": "consortium-9/municipalities.json",
+        "nuclei": "consortium-9/nuclei.json",
+        "lines": "consortium-9/lines.json"
+      }
+    }
+  ]
+}

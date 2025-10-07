@@ -1,0 +1,248 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 1,
+    "consortiumName": "Área de Sevilla",
+    "itemCount": 59
+  },
+  "municipalities": [
+    {
+      "id": "2",
+      "name": "ALBAIDA DEL ALJARAFE"
+    },
+    {
+      "id": "3",
+      "name": "ALCALÁ DE GUADAÍRA"
+    },
+    {
+      "id": "4",
+      "name": "ALCALA DEL RIO"
+    },
+    {
+      "id": "66",
+      "name": "ALCOLEA DEL RIO"
+    },
+    {
+      "id": "6",
+      "name": "ALMENSILLA"
+    },
+    {
+      "id": "55",
+      "name": "ARAHAL"
+    },
+    {
+      "id": "7",
+      "name": "AZNALCAZAR"
+    },
+    {
+      "id": "8",
+      "name": "AZNALCOLLAR"
+    },
+    {
+      "id": "10",
+      "name": "BENACAZÓN"
+    },
+    {
+      "id": "11",
+      "name": "BOLLULLOS DE LA MITACIÓN"
+    },
+    {
+      "id": "12",
+      "name": "BORMUJOS"
+    },
+    {
+      "id": "13",
+      "name": "BRENES"
+    },
+    {
+      "id": "14",
+      "name": "CAMAS"
+    },
+    {
+      "id": "54",
+      "name": "CANTILLANA"
+    },
+    {
+      "id": "15",
+      "name": "CARMONA"
+    },
+    {
+      "id": "16",
+      "name": "CARRION DE LOS CESPEDES"
+    },
+    {
+      "id": "17",
+      "name": "CASTILLEJA DE GUZMAN"
+    },
+    {
+      "id": "18",
+      "name": "CASTILLEJA DE LA CUESTA"
+    },
+    {
+      "id": "19",
+      "name": "CASTILLEJA DEL CAMPO"
+    },
+    {
+      "id": "20",
+      "name": "CORIA DEL RIO"
+    },
+    {
+      "id": "21",
+      "name": "DOS HERMANAS"
+    },
+    {
+      "id": "57",
+      "name": "EL GARROBO"
+    },
+    {
+      "id": "63",
+      "name": "EL PEDROSO"
+    },
+    {
+      "id": "49",
+      "name": "EL VISO DEL ALCOR"
+    },
+    {
+      "id": "23",
+      "name": "ESPARTINAS"
+    },
+    {
+      "id": "24",
+      "name": "GELVES"
+    },
+    {
+      "id": "25",
+      "name": "GERENA"
+    },
+    {
+      "id": "26",
+      "name": "GINES"
+    },
+    {
+      "id": "27",
+      "name": "GUILLENA"
+    },
+    {
+      "id": "28",
+      "name": "HUÉVAR DEL ALJARAFE"
+    },
+    {
+      "id": "50",
+      "name": "ISLA MAYOR"
+    },
+    {
+      "id": "5",
+      "name": "LA ALGABA"
+    },
+    {
+      "id": "60",
+      "name": "LA CAMPANA"
+    },
+    {
+      "id": "37",
+      "name": "LA RINCONADA"
+    },
+    {
+      "id": "58",
+      "name": "LAS CABEZAS DE SAN JUAN"
+    },
+    {
+      "id": "62",
+      "name": "LEBRIJA"
+    },
+    {
+      "id": "64",
+      "name": "LORA DEL RIO"
+    },
+    {
+      "id": "32",
+      "name": "LOS PALACIOS Y VILLAFRANCA"
+    },
+    {
+      "id": "29",
+      "name": "MAIRENA DEL ALCOR"
+    },
+    {
+      "id": "30",
+      "name": "MAIRENA DEL ALJARAFE"
+    },
+    {
+      "id": "31",
+      "name": "OLIVARES"
+    },
+    {
+      "id": "33",
+      "name": "PALOMARES DEL RIO"
+    },
+    {
+      "id": "59",
+      "name": "PARADAS"
+    },
+    {
+      "id": "34",
+      "name": "PILAS"
+    },
+    {
+      "id": "36",
+      "name": "PUEBLA DEL RIO"
+    },
+    {
+      "id": "38",
+      "name": "SALTERAS"
+    },
+    {
+      "id": "39",
+      "name": "SAN JUAN DE AZNALFARACHE"
+    },
+    {
+      "id": "40",
+      "name": "SANLUCAR LA MAYOR"
+    },
+    {
+      "id": "41",
+      "name": "SANTIPONCE"
+    },
+    {
+      "id": "42",
+      "name": "SEVILLA"
+    },
+    {
+      "id": "61",
+      "name": "TOCINA"
+    },
+    {
+      "id": "43",
+      "name": "TOMARES"
+    },
+    {
+      "id": "44",
+      "name": "UMBRETE"
+    },
+    {
+      "id": "56",
+      "name": "UTRERA"
+    },
+    {
+      "id": "45",
+      "name": "VALENCINA DE LA CONCEPCIÓN"
+    },
+    {
+      "id": "46",
+      "name": "VILLAMANRIQUE DE LA CONDESA"
+    },
+    {
+      "id": "48",
+      "name": "VILLANUEVA DEL ARISCAL"
+    },
+    {
+      "id": "65",
+      "name": "VILLANUEVA DEL RIO Y MINAS"
+    },
+    {
+      "id": "53",
+      "name": "VILLAVERDE DEL RIO"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 9,
+    "consortiumName": "Costa de Huelva",
+    "itemCount": 25
+  },
+  "municipalities": [
+    {
+      "id": "3",
+      "name": "ALJARAQUE"
+    },
+    {
+      "id": "5",
+      "name": "ALMONTE"
+    },
+    {
+      "id": "6",
+      "name": "AYAMONTE"
+    },
+    {
+      "id": "7",
+      "name": "BEAS"
+    },
+    {
+      "id": "8",
+      "name": "BOLLULLOS PAR DEL CONDADO"
+    },
+    {
+      "id": "9",
+      "name": "BONARES"
+    },
+    {
+      "id": "10",
+      "name": "CARTAYA"
+    },
+    {
+      "id": "11",
+      "name": "GIBRALEON"
+    },
+    {
+      "id": "12",
+      "name": "HINOJOS"
+    },
+    {
+      "id": "2",
+      "name": "HUELVA"
+    },
+    {
+      "id": "13",
+      "name": "ISLA CRISTINA"
+    },
+    {
+      "id": "24",
+      "name": "LA PALMA DEL CONDADO"
+    },
+    {
+      "id": "14",
+      "name": "LEPE"
+    },
+    {
+      "id": "15",
+      "name": "LUCENA DEL PUERTO"
+    },
+    {
+      "id": "16",
+      "name": "MOGUER"
+    },
+    {
+      "id": "25",
+      "name": "NIEBLA"
+    },
+    {
+      "id": "17",
+      "name": "PALOS DE LA FRONTERA"
+    },
+    {
+      "id": "18",
+      "name": "PUNTA UMBRIA"
+    },
+    {
+      "id": "19",
+      "name": "ROCIANA DEL CONDADO"
+    },
+    {
+      "id": "20",
+      "name": "SAN BARTOLOME DE LA TORRE"
+    },
+    {
+      "id": "4",
+      "name": "SAN JUAN DEL PUERTO"
+    },
+    {
+      "id": "21",
+      "name": "TRIGUEROS"
+    },
+    {
+      "id": "22",
+      "name": "VILLABLANCA"
+    },
+    {
+      "id": "26",
+      "name": "VILLARRASA"
+    },
+    {
+      "id": "23",
+      "name": "ZONA ESPECIAL EL ROCIO"
+    }
+  ]
+}

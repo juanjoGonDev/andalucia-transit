@@ -1,5 +1,4 @@
 import {
-  StopSchedule,
   StopScheduleDataSource,
   StopScheduleResult,
   StopScheduleDataSourceType,

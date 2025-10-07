@@ -1,0 +1,318 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 8,
+    "consortiumName": "Área de Córdoba",
+    "itemCount": 51
+  },
+  "nuclei": [
+    {
+      "id": "73",
+      "municipalityId": "6",
+      "zone": "B",
+      "name": "Alcolea"
+    },
+    {
+      "id": "49",
+      "municipalityId": "4",
+      "zone": "C",
+      "name": "Aldea Quintana"
+    },
+    {
+      "id": "247",
+      "municipalityId": "19",
+      "zone": "C",
+      "name": "Almodóvar Del Río"
+    },
+    {
+      "id": "273",
+      "municipalityId": "24",
+      "zone": "G",
+      "name": "Baena"
+    },
+    {
+      "id": "251",
+      "municipalityId": "19",
+      "zone": "C",
+      "name": "Barriada De Los Llanos - Torrealba"
+    },
+    {
+      "id": "192",
+      "municipalityId": "9",
+      "zone": "C",
+      "name": "Barrio San Vicente"
+    },
+    {
+      "id": "92",
+      "municipalityId": "6",
+      "zone": "C",
+      "name": "BRIMZ"
+    },
+    {
+      "id": "271",
+      "municipalityId": "23",
+      "zone": "E",
+      "name": "Castro Del Río"
+    },
+    {
+      "id": "275",
+      "municipalityId": "11",
+      "zone": "C",
+      "name": "Cerro Muriano"
+    },
+    {
+      "id": "91",
+      "municipalityId": "6",
+      "zone": "B",
+      "name": "Cerro Muriano"
+    },
+    {
+      "id": "206",
+      "municipalityId": "11",
+      "zone": "C",
+      "name": "Cerro Muriano (Obejo)"
+    },
+    {
+      "id": "66",
+      "municipalityId": "6",
+      "zone": "A",
+      "name": "Córdoba"
+    },
+    {
+      "id": "266",
+      "municipalityId": "21",
+      "zone": "E",
+      "name": "Cordobesas"
+    },
+    {
+      "id": "234",
+      "municipalityId": "16",
+      "zone": "D",
+      "name": "Cruce De Villafranca De Córdoba"
+    },
+    {
+      "id": "239",
+      "municipalityId": "17",
+      "zone": "E",
+      "name": "Cruce De Villaharta"
+    },
+    {
+      "id": "23",
+      "municipalityId": "4",
+      "zone": "C",
+      "name": "El Arrecife"
+    },
+    {
+      "id": "56",
+      "municipalityId": "5",
+      "zone": "D",
+      "name": "El Carpio"
+    },
+    {
+      "id": "110",
+      "municipalityId": "6",
+      "zone": "A",
+      "name": "El Higuerón"
+    },
+    {
+      "id": "261",
+      "municipalityId": "18",
+      "zone": "D",
+      "name": "El Vacar"
+    },
+    {
+      "id": "184",
+      "municipalityId": "7",
+      "zone": "D",
+      "name": "Espejo"
+    },
+    {
+      "id": "209",
+      "municipalityId": "11",
+      "zone": "C",
+      "name": "Estación De Obejo"
+    },
+    {
+      "id": "187",
+      "municipalityId": "8",
+      "zone": "D",
+      "name": "Fernán-Núñez"
+    },
+    {
+      "id": "33",
+      "municipalityId": "4",
+      "zone": "D",
+      "name": "Fuencubierta"
+    },
+    {
+      "id": "191",
+      "municipalityId": "9",
+      "zone": "C",
+      "name": "Guadalcázar"
+    },
+    {
+      "id": "272",
+      "municipalityId": "24",
+      "zone": "F",
+      "name": "Izcar"
+    },
+    {
+      "id": "20",
+      "municipalityId": "4",
+      "zone": "D",
+      "name": "La Carlota"
+    },
+    {
+      "id": "265",
+      "municipalityId": "21",
+      "zone": "E",
+      "name": "La Guijarrosa"
+    },
+    {
+      "id": "43",
+      "municipalityId": "4",
+      "zone": "D",
+      "name": "La Paz"
+    },
+    {
+      "id": "229",
+      "municipalityId": "15",
+      "zone": "D",
+      "name": "La Victoria"
+    },
+    {
+      "id": "231",
+      "municipalityId": "15",
+      "zone": "C",
+      "name": "Las Platas"
+    },
+    {
+      "id": "253",
+      "municipalityId": "19",
+      "zone": "C",
+      "name": "Los Mochos"
+    },
+    {
+      "id": "270",
+      "municipalityId": "5",
+      "zone": "D",
+      "name": "Maruanas"
+    },
+    {
+      "id": "40",
+      "municipalityId": "4",
+      "zone": "D",
+      "name": "Montealto"
+    },
+    {
+      "id": "198",
+      "municipalityId": "10",
+      "zone": "D",
+      "name": "Montemayor"
+    },
+    {
+      "id": "263",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Montoro"
+    },
+    {
+      "id": "202",
+      "municipalityId": "11",
+      "zone": "E",
+      "name": "Obejo"
+    },
+    {
+      "id": "244",
+      "municipalityId": "18",
+      "zone": "E",
+      "name": "Pantano Puente Nuevo"
+    },
+    {
+      "id": "216",
+      "municipalityId": "12",
+      "zone": "D",
+      "name": "Pedro Abad"
+    },
+    {
+      "id": "220",
+      "municipalityId": "13",
+      "zone": "D",
+      "name": "Posadas"
+    },
+    {
+      "id": "224",
+      "municipalityId": "13",
+      "zone": "D",
+      "name": "Rivero De Posadas"
+    },
+    {
+      "id": "226",
+      "municipalityId": "14",
+      "zone": "D",
+      "name": "San Sebastián De Los Ballesteros"
+    },
+    {
+      "id": "181",
+      "municipalityId": "6",
+      "zone": "C",
+      "name": "Santa Cruz"
+    },
+    {
+      "id": "158",
+      "municipalityId": "6",
+      "zone": "A",
+      "name": "Santa María De Trassierra"
+    },
+    {
+      "id": "267",
+      "municipalityId": "21",
+      "zone": "E",
+      "name": "Siete Torres"
+    },
+    {
+      "id": "151",
+      "municipalityId": "6",
+      "zone": "A",
+      "name": "Universidad (Campus Rabanales)"
+    },
+    {
+      "id": "268",
+      "municipalityId": "6",
+      "zone": "A",
+      "name": "Universidad De Córdoba"
+    },
+    {
+      "id": "274",
+      "municipalityId": "25",
+      "zone": "F",
+      "name": "Villa Del Río"
+    },
+    {
+      "id": "233",
+      "municipalityId": "16",
+      "zone": "D",
+      "name": "Villafranca De Córdoba"
+    },
+    {
+      "id": "237",
+      "municipalityId": "17",
+      "zone": "E",
+      "name": "Villaharta"
+    },
+    {
+      "id": "176",
+      "municipalityId": "6",
+      "zone": "B",
+      "name": "Villarrubia"
+    },
+    {
+      "id": "241",
+      "municipalityId": "18",
+      "zone": "E",
+      "name": "Villaviciosa De Córdoba"
+    }
+  ]
+}

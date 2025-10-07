@@ -45,7 +45,9 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
   - Do not imply CTAN or Junta de Andalucia endorse or support this application.
 - Document any additional external services before integration and record their licensing or usage limits.
 - Cache CTAN responses sparingly, respect freshness windows, and provide manual refresh to correct stale data.
-- Home search and stop metadata now rely on `StopDirectoryService`, which loads the generated snapshot at `assets/data/stop-directory.json`; remove mock network usages in new code.
+- Home search and stop metadata now rely on `StopDirectoryService`, which loads the generated snapshot index at `assets/data/stop-directory/index.json`; remove mock network usages in new code.
+- Daily snapshots produce a stop directory index at `assets/data/stop-directory/index.json` with chunked stop files under `assets/data/stop-directory/chunks/` to keep the initial payload light; `StopDirectoryService` streams the index and only fetches chunk files when a stop record is needed.
+- `assets/data/catalog/` stores consortium datasets (municipalities, nuclei, lines) for the entire CTAN network so features can hydrate localized pickers without refetching the API.
 - `.github/workflows/daily-snapshot.yml` generates transport snapshots every day at 05:00 Europe/Madrid, commits changes with the `PAT_FINE` token, and auto-merges refreshed data. Keep snapshot scripts green (`npm run snapshot`, `npm run test:scripts`).
 
 ## Legal & Regulatory Compliance
