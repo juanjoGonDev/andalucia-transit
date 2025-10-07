@@ -12,6 +12,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      STEP_TIMEOUT_MINUTES: '5'
     strategy:
       matrix:
         node-version: [20.x]
@@ -24,10 +26,10 @@ jobs:
           node-version: ${{ matrix['node-version'] }}
           cache: 'npm'
       - name: Install dependencies
-        run: npm ci
+        run: timeout --preserve-status "${STEP_TIMEOUT_MINUTES}m" npm ci
       - name: Lint
-        run: npm run lint
+        run: timeout --preserve-status "${STEP_TIMEOUT_MINUTES}m" npm run lint
       - name: Unit tests
-        run: npm test -- --watch=false --browsers=ChromeHeadless
+        run: timeout --preserve-status "${STEP_TIMEOUT_MINUTES}m" npm test -- --watch=false --browsers=ChromeHeadless
       - name: Build
-        run: npm run build:prod
+        run: timeout --preserve-status "${STEP_TIMEOUT_MINUTES}m" npm run build:prod
