@@ -1,6 +1,14 @@
 import { spawnSync } from 'node:child_process';
 import puppeteer from 'puppeteer';
 
+const browserFlag = '--browsers';
+const browsersDelimiter = ',';
+const chromeHeadless = 'ChromeHeadless';
+const chromeHeadlessNoSandbox = 'ChromeHeadlessNoSandbox';
+const chromeIdentifier = 'chrome';
+const chromeAutoInstallDisabled = 'false';
+const defaultBrowsers = [chromeHeadlessNoSandbox];
+
 if (!process.env.CHROME_BIN) {
   process.env.CHROME_BIN = puppeteer.executablePath();
 }
@@ -11,30 +19,24 @@ const forwardedArgs = [];
 const explicitBrowsers = [];
 for (let index = 0; index < incomingArgs.length; index += 1) {
   const value = incomingArgs[index];
-  if (value === '--browsers' && incomingArgs[index + 1]) {
-    const mappedBrowsers = incomingArgs[index + 1].replace('ChromeHeadless', 'ChromeHeadlessNoSandbox');
-    forwardedArgs.push(value, mappedBrowsers);
-    explicitBrowsers.push(...mappedBrowsers.split(',').map((browser) => browser.trim()).filter(Boolean));
+  if (value === browserFlag && incomingArgs[index + 1]) {
+    const parsedBrowsers = normalizeBrowsers(incomingArgs[index + 1]);
+    forwardedArgs.push(value, formatBrowsers(parsedBrowsers));
+    explicitBrowsers.push(...parsedBrowsers);
     index += 1;
     continue;
   }
-  if (value.startsWith('--browsers=')) {
-    const mappedBrowsers = value.replace('ChromeHeadless', 'ChromeHeadlessNoSandbox');
-    forwardedArgs.push(mappedBrowsers);
-    explicitBrowsers.push(
-      ...mappedBrowsers
-        .slice('--browsers='.length)
-        .split(',')
-        .map((browser) => browser.trim())
-        .filter(Boolean),
-    );
+  if (value.startsWith(`${browserFlag}=`)) {
+    const parsedBrowsers = normalizeBrowsers(value.slice(`${browserFlag}=`.length));
+    forwardedArgs.push(`${browserFlag}=${formatBrowsers(parsedBrowsers)}`);
+    explicitBrowsers.push(...parsedBrowsers);
     continue;
   }
   forwardedArgs.push(value);
 }
 
-const desiredBrowsers = explicitBrowsers.length > 0 ? explicitBrowsers : ['ChromeHeadlessNoSandbox'];
-const shouldProbeChrome = desiredBrowsers.some((browser) => browser.toLowerCase().includes('chrome'));
+const desiredBrowsers = explicitBrowsers.length > 0 ? explicitBrowsers : defaultBrowsers;
+const shouldProbeChrome = desiredBrowsers.some((browser) => browser.toLowerCase().includes(chromeIdentifier));
 
 if (shouldProbeChrome && !ensureChromeCanLaunch()) {
   process.stderr.write(
@@ -60,7 +62,7 @@ function ensureChromeCanLaunch() {
     return true;
   }
 
-  if (process.env.CHROME_AUTO_INSTALL === 'false') {
+  if (process.env.CHROME_AUTO_INSTALL === chromeAutoInstallDisabled) {
     return false;
   }
 
@@ -140,4 +142,21 @@ function resolvePackageAlternatives(groups) {
     }
   }
   return resolved;
+}
+
+function normalizeBrowsers(input) {
+  return input
+    .split(browsersDelimiter)
+    .map((browser) => browser.trim())
+    .filter(Boolean)
+    .map((browser) => {
+      if (browser === chromeHeadless) {
+        return chromeHeadlessNoSandbox;
+      }
+      return browser;
+    });
+}
+
+function formatBrowsers(browsers) {
+  return browsers.join(browsersDelimiter);
 }
