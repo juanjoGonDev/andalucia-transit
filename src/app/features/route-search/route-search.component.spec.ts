@@ -23,7 +23,9 @@ describe('RouteSearchComponent', () => {
     code: 'alpha',
     name: 'Alpha Station',
     municipality: 'Alpha City',
+    municipalityId: 'mun-alpha',
     nucleus: 'Alpha',
+    nucleusId: 'nuc-alpha',
     consortiumId: 7,
     stopIds: ['alpha']
   };
@@ -33,7 +35,9 @@ describe('RouteSearchComponent', () => {
     code: 'beta',
     name: 'Beta Terminal',
     municipality: 'Beta City',
+    municipalityId: 'mun-beta',
     nucleus: 'Beta',
+    nucleusId: 'nuc-beta',
     consortiumId: 7,
     stopIds: ['beta']
   };

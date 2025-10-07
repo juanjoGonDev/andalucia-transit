@@ -67,6 +67,15 @@ interface StopNavigationItemViewModel {
   ariaLabelKey?: string;
 }
 
+interface StopAutocompleteGroup {
+  readonly id: string;
+  readonly label: string;
+  readonly municipality: string;
+  readonly options: readonly StopDirectoryOption[];
+}
+
+const EMPTY_STOP_GROUPS: readonly StopAutocompleteGroup[] = Object.freeze([]);
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -101,6 +110,7 @@ export class HomeComponent {
   } as const;
   private static readonly INCOMPATIBLE_STOP_ERROR = 'incompatibleStopPair' as const;
   private static readonly EMPTY_STOP_IDS = Object.freeze([] as string[]);
+  private static readonly SORT_LOCALE = 'es-ES' as const;
 
   private readonly router = inject(Router);
   private readonly formBuilder = inject(FormBuilder);
@@ -276,6 +286,12 @@ export class HomeComponent {
     shareReplay({ bufferSize: 1, refCount: false })
   );
 
+  protected readonly originOptionGroups$: Observable<readonly StopAutocompleteGroup[]> =
+    this.originOptions$.pipe(map((options) => this.groupOptionsByNucleus(options)));
+
+  protected readonly destinationOptionGroups$: Observable<readonly StopAutocompleteGroup[]> =
+    this.destinationOptions$.pipe(map((options) => this.groupOptionsByNucleus(options)));
+
   protected readonly displayStopFn = (value: StopAutocompleteValue): string =>
     this.displayStop(value);
 
@@ -364,6 +380,10 @@ export class HomeComponent {
     return option.id;
   }
 
+  protected trackStopGroup(_: number, group: StopAutocompleteGroup): string {
+    return group.id;
+  }
+
   protected swapStops(): void {
     const origin = this.toStopOption(this.originControl.value);
     const destination = this.toStopOption(this.destinationControl.value);
@@ -374,6 +394,46 @@ export class HomeComponent {
 
     this.originControl.setValue(destination ?? null);
     this.destinationControl.setValue(origin ?? null);
+  }
+
+  private groupOptionsByNucleus(
+    options: readonly StopDirectoryOption[]
+  ): readonly StopAutocompleteGroup[] {
+    if (!options.length) {
+      return EMPTY_STOP_GROUPS;
+    }
+
+    const groups = new Map<string, StopDirectoryOption[]>();
+
+    for (const option of options) {
+      const bucket = groups.get(option.nucleusId);
+
+      if (bucket) {
+        bucket.push(option);
+      } else {
+        groups.set(option.nucleusId, [option]);
+      }
+    }
+
+    const mapped = Array.from(groups.entries(), ([id, members]) => ({
+      id,
+      label: members[0]?.nucleus ?? '',
+      municipality: members[0]?.municipality ?? '',
+      options: members
+    }));
+
+    mapped.sort((first, second) =>
+      first.label.localeCompare(second.label, HomeComponent.SORT_LOCALE)
+    );
+
+    return Object.freeze(
+      mapped.map((group) => ({
+        id: group.id,
+        label: group.label,
+        municipality: group.municipality,
+        options: Object.freeze([...group.options])
+      }))
+    );
   }
 
   private buildDefaultDate(): Date {

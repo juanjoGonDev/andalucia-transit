@@ -481,6 +481,36 @@ describe('HomeComponent', () => {
     expect(originControl.value).toEqual(STUB_STOPS[2]);
     expect(destinationControl.value).toEqual(STUB_STOPS[0]);
   });
+
+  it('groups autocomplete options by nucleus for display', () => {
+    const alpha = buildStop('alpha', 'Alpha Station');
+    const sibling = {
+      ...buildStop('alpha-2', 'Alpha Station'),
+      nucleus: alpha.nucleus,
+      nucleusId: alpha.nucleusId,
+      municipality: alpha.municipality,
+      municipalityId: alpha.municipalityId
+    } satisfies StopDirectoryOption;
+    const beta = buildStop('beta', 'Beta Terminal');
+
+    const groups = (
+      component as unknown as {
+        groupOptionsByNucleus: (
+          options: readonly StopDirectoryOption[]
+        ) => ReadonlyArray<{
+          id: string;
+          label: string;
+          options: ReadonlyArray<StopDirectoryOption>;
+        }>;
+      }
+    ).groupOptionsByNucleus([alpha, sibling, beta]);
+
+    expect(groups.length).toBe(2);
+    expect(groups[0].options.length).toBe(2);
+    expect(groups[0].label).toBe(alpha.nucleus);
+    expect(groups[1].options.length).toBe(1);
+    expect(groups[1].label).toBe(beta.nucleus);
+  });
 });
 
 function buildStop(
@@ -493,7 +523,9 @@ function buildStop(
     code: id,
     name,
     municipality: `${name} City`,
+    municipalityId: `mun-${id}`,
     nucleus: name,
+    nucleusId: `nuc-${id}`,
     consortiumId: 7,
     stopIds: [...stopIds]
   } satisfies StopDirectoryOption;

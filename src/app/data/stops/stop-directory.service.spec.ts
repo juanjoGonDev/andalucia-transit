@@ -88,14 +88,15 @@ describe('StopDirectoryService', () => {
         id: 'consortium-7',
         consortiumId: 7,
         path: 'chunks/consortium-7.json',
-        stopCount: 3
+        stopCount: 5
       }
     ],
     searchIndex: [
-      buildSearchEntry('01', 'Estación Central'),
-      buildSearchEntry('02', 'Hospital Provincial'),
-      buildSearchEntry('02B', 'Hospital Provincial'),
-      buildSearchEntry('03', 'Museo Íbero')
+      buildSearchEntry('01', 'Estación Central', 'Jaén', 'Jaén', 'nuc-j-01'),
+      buildSearchEntry('02', 'Hospital Provincial', 'Jaén', 'Jaén Centro', 'nuc-j-02'),
+      buildSearchEntry('02B', 'Hospital Provincial', 'Jaén', 'Jaén Centro', 'nuc-j-02'),
+      buildSearchEntry('02C', 'Hospital Provincial', 'Martos', 'Martos', 'nuc-m-02'),
+      buildSearchEntry('03', 'Museo Íbero', 'Jaén', 'Jaén', 'nuc-j-03')
     ]
   } satisfies DirectoryIndexResponse;
 
@@ -106,13 +107,14 @@ describe('StopDirectoryService', () => {
       providerName: 'CTAN',
       consortiumId: 7,
       consortiumName: 'Jaén',
-      stopCount: 3
+    stopCount: 5
     },
     stops: [
-      buildChunkStop('01', 'Estación Central'),
-      buildChunkStop('02', 'Hospital Provincial'),
-      buildChunkStop('02B', 'Hospital Provincial'),
-      buildChunkStop('03', 'Museo Íbero')
+      buildChunkStop('01', 'Estación Central', 'Jaén', 'Jaén', 'nuc-j-01'),
+      buildChunkStop('02', 'Hospital Provincial', 'Jaén', 'Jaén Centro', 'nuc-j-02'),
+      buildChunkStop('02B', 'Hospital Provincial', 'Jaén', 'Jaén Centro', 'nuc-j-02'),
+      buildChunkStop('02C', 'Hospital Provincial', 'Martos', 'Martos', 'nuc-m-02'),
+      buildChunkStop('03', 'Museo Íbero', 'Jaén', 'Jaén', 'nuc-j-03')
     ]
   } satisfies DirectoryChunkResponse;
 
@@ -155,9 +157,22 @@ describe('StopDirectoryService', () => {
         code: '02',
         name: 'Hospital Provincial',
         municipality: 'Jaén',
-        nucleus: 'Jaén',
+        municipalityId: 'mun-02',
+        nucleus: 'Jaén Centro',
+        nucleusId: 'nuc-j-02',
         consortiumId: 7,
         stopIds: ['02', '02B']
+      },
+      {
+        id: '02C',
+        code: '02C',
+        name: 'Hospital Provincial',
+        municipality: 'Martos',
+        municipalityId: 'mun-02C',
+        nucleus: 'Martos',
+        nucleusId: 'nuc-m-02',
+        consortiumId: 7,
+        stopIds: ['02C']
       }
     ] satisfies readonly StopDirectoryOption[]);
   });
@@ -177,7 +192,9 @@ describe('StopDirectoryService', () => {
         code: '01',
         name: 'Estación Central',
         municipality: 'Jaén',
+        municipalityId: 'mun-01',
         nucleus: 'Jaén',
+        nucleusId: 'nuc-j-01',
         consortiumId: 7,
         stopIds: ['01']
       },
@@ -186,7 +203,9 @@ describe('StopDirectoryService', () => {
         code: '03',
         name: 'Museo Íbero',
         municipality: 'Jaén',
+        municipalityId: 'mun-03',
         nucleus: 'Jaén',
+        nucleusId: 'nuc-j-03',
         consortiumId: 7,
         stopIds: ['03']
       }
@@ -200,9 +219,43 @@ describe('StopDirectoryService', () => {
 
     const options = await promise;
 
-    expect(options.length).toBe(1);
-    expect(options[0].id).toBe('02');
+    expect(options.length).toBe(2);
     expect(options[0].stopIds).toEqual(['02', '02B']);
+    expect(options[1].stopIds).toEqual(['02C']);
+  });
+
+  it('matches queries regardless of diacritics', async () => {
+    const promise = firstValueFrom(service.searchStops({ query: 'ibero', limit: 5 }));
+
+    expectIndexRequest();
+
+    const options = await promise;
+
+    expect(options).toEqual([
+      {
+        id: '03',
+        code: '03',
+        name: 'Museo Íbero',
+        municipality: 'Jaén',
+        municipalityId: 'mun-03',
+        nucleus: 'Jaén',
+        nucleusId: 'nuc-j-03',
+        consortiumId: 7,
+        stopIds: ['03']
+      }
+    ] satisfies readonly StopDirectoryOption[]);
+  });
+
+  it('excludes include-only stops when the query filters results', async () => {
+    const promise = firstValueFrom(
+      service.searchStops({ query: 'hospital', limit: 5, includeStopIds: ['01'] })
+    );
+
+    expectIndexRequest();
+
+    const options = await promise;
+
+    expect(options.every((option) => option.id !== '01')).toBeTrue();
   });
 
   it('loads full stop metadata on demand from chunk files', async () => {
@@ -232,30 +285,42 @@ describe('StopDirectoryService', () => {
   }
 });
 
-function buildSearchEntry(stopId: string, name: string): DirectorySearchEntry {
+function buildSearchEntry(
+  stopId: string,
+  name: string,
+  municipality: string,
+  nucleus: string,
+  nucleusId: string
+): DirectorySearchEntry {
   return {
     stopId,
     stopCode: stopId,
     name,
-    municipality: 'Jaén',
+    municipality,
     municipalityId: `mun-${stopId}`,
-    nucleus: 'Jaén',
-    nucleusId: `nuc-${stopId}`,
+    nucleus,
+    nucleusId,
     consortiumId: 7,
     chunkId: 'consortium-7'
   } satisfies DirectorySearchEntry;
 }
 
-function buildChunkStop(stopId: string, name: string): DirectoryChunkStop {
+function buildChunkStop(
+  stopId: string,
+  name: string,
+  municipality: string,
+  nucleus: string,
+  nucleusId: string
+): DirectoryChunkStop {
   return {
     consortiumId: 7,
     stopId,
     stopCode: stopId,
     name,
-    municipality: 'Jaén',
+    municipality,
     municipalityId: `mun-${stopId}`,
-    nucleus: 'Jaén',
-    nucleusId: `nuc-${stopId}`,
+    nucleus,
+    nucleusId,
     zone: null,
     location: {
       latitude: 37.7,

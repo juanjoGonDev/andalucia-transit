@@ -7,6 +7,8 @@ import { AppConfig } from '../../core/config';
 
 const SEARCH_LOCALE = 'es-ES' as const;
 const MIN_QUERY_LENGTH = 2;
+const NORMALIZE_FORM = 'NFD' as const;
+const DIACRITIC_MATCHER = /\p{M}/gu;
 
 export interface StopDirectoryRecord {
   readonly consortiumId: number;
@@ -29,7 +31,9 @@ export interface StopDirectoryOption {
   readonly code: string;
   readonly name: string;
   readonly municipality: string;
+  readonly municipalityId: string;
   readonly nucleus: string;
+  readonly nucleusId: string;
   readonly consortiumId: number;
   readonly stopIds: readonly string[];
 }
@@ -119,6 +123,7 @@ interface SearchableStopRecord {
   readonly entry: StopDirectorySearchEntry;
   readonly normalizedName: string;
   readonly normalizedMunicipality: string;
+  readonly normalizedNucleus: string;
   readonly normalizedCode: string;
 }
 
@@ -219,6 +224,7 @@ function buildDirectoryIndex(file: StopDirectoryIndexFile): StopDirectoryIndex {
       entry,
       normalizedName: normalize(entry.name),
       normalizedMunicipality: normalize(entry.municipality),
+      normalizedNucleus: normalize(entry.nucleus),
       normalizedCode: normalize(entry.stopCode)
     }))
     .sort((first, second) => first.entry.name.localeCompare(second.entry.name, SEARCH_LOCALE));
@@ -307,7 +313,7 @@ function searchDirectory(
       continue;
     }
 
-    if (normalizedQuery && !matchesQuery && !isIncluded) {
+    if (normalizedQuery && !matchesQuery) {
       continue;
     }
 
@@ -327,13 +333,14 @@ function searchDirectory(
 }
 
 function buildGroupKey(entry: StopDirectorySearchEntry): string {
-  return `${entry.consortiumId}|${normalize(entry.name)}|${normalize(entry.municipality)}`;
+  return `${entry.consortiumId}|${entry.nucleusId}|${normalize(entry.name)}`;
 }
 
 function matchesSearch(record: SearchableStopRecord, normalizedQuery: string): boolean {
   return (
     record.normalizedName.includes(normalizedQuery) ||
     record.normalizedMunicipality.includes(normalizedQuery) ||
+    record.normalizedNucleus.includes(normalizedQuery) ||
     record.normalizedCode.includes(normalizedQuery)
   );
 }
@@ -359,14 +366,19 @@ function toOption(
     code: entry.stopCode,
     name: entry.name,
     municipality: entry.municipality,
+    municipalityId: entry.municipalityId,
     nucleus: entry.nucleus,
+    nucleusId: entry.nucleusId,
     consortiumId: entry.consortiumId,
     stopIds: Object.freeze(orderedIds)
   } satisfies StopDirectoryOption;
 }
 
 function normalize(value: string): string {
-  return value.toLocaleLowerCase(SEARCH_LOCALE);
+  return value
+    .normalize(NORMALIZE_FORM)
+    .replace(DIACRITIC_MATCHER, '')
+    .toLocaleLowerCase(SEARCH_LOCALE);
 }
 
 const EMPTY_OPTIONS: readonly StopDirectoryOption[] = Object.freeze([] as StopDirectoryOption[]);

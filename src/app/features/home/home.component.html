@@ -30,12 +30,18 @@
                 #originAutocomplete="matAutocomplete"
                 [displayWith]="displayStopFn"
               >
-                <mat-option
-                  *ngFor="let option of originOptions$ | async; trackBy: trackStopOption"
-                  [value]="option"
+                <ng-container
+                  *ngFor="let group of originOptionGroups$ | async; trackBy: trackStopGroup"
                 >
-                  {{ option.name }}
-                </mat-option>
+                  <mat-optgroup [label]="group.label" [attr.aria-label]="group.municipality">
+                    <mat-option
+                      *ngFor="let option of group.options; trackBy: trackStopOption"
+                      [value]="option"
+                    >
+                      {{ option.name }}
+                    </mat-option>
+                  </mat-optgroup>
+                </ng-container>
               </mat-autocomplete>
             </mat-form-field>
             <button
@@ -62,12 +68,20 @@
                 #destinationAutocomplete="matAutocomplete"
                 [displayWith]="displayStopFn"
               >
-                <mat-option
-                  *ngFor="let option of destinationOptions$ | async; trackBy: trackStopOption"
-                  [value]="option"
+                <ng-container
+                  *ngFor="
+                    let group of destinationOptionGroups$ | async; trackBy: trackStopGroup
+                  "
                 >
-                  {{ option.name }}
-                </mat-option>
+                  <mat-optgroup [label]="group.label" [attr.aria-label]="group.municipality">
+                    <mat-option
+                      *ngFor="let option of group.options; trackBy: trackStopOption"
+                      [value]="option"
+                    >
+                      {{ option.name }}
+                    </mat-option>
+                  </mat-optgroup>
+                </ng-container>
               </mat-autocomplete>
             </mat-form-field>
             <mat-form-field appearance="fill" class="home__field home__field--date">
