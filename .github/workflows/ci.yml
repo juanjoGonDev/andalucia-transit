@@ -33,11 +33,24 @@ jobs:
       - name: Install packages
         run: npm ci
 
-  lint:
-    name: Lint
+  quality:
+    name: ${{ matrix.label }}
     runs-on: ubuntu-latest
     needs: install
-    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: Lint
+            command: |
+              npm run lint
+          - label: Test
+            command: |
+              npm run test:scripts
+              npm run test:angular -- --watch=false --browsers=ChromeHeadlessNoSandbox
+          - label: Build
+            command: |
+              npm run build:prod
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -58,85 +71,19 @@ jobs:
       - name: Install packages
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
-      - name: Run lint
-        run: npm run lint
-
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    needs: install
-    timeout-minutes: 5
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-      - name: Restore npm cache
-        id: cache-node-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - name: Install packages
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci
-      - name: Run script tests
-        run: npm run test:scripts
-      - name: Run Angular tests
-        run: npm run test:angular -- --watch=false --browsers=ChromeHeadlessNoSandbox
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    needs: install
-    timeout-minutes: 5
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-      - name: Restore npm cache
-        id: cache-node-modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - name: Install packages
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci
-      - name: Run build
-        run: npm run build:prod
+      - name: Run ${{ matrix.label }}
+        run: ${{ matrix.command }}
 
   check:
     name: Check all ok
     runs-on: ubuntu-latest
-    needs: [lint, test, build]
+    needs: quality
     if: ${{ always() }}
     steps:
       - name: Verify status
         run: |
-          if [ "${{ needs.lint.result }}" != "success" ]; then
-            echo "Lint job did not succeed"
-            exit 1
-          fi
-          if [ "${{ needs.test.result }}" != "success" ]; then
-            echo "Test job did not succeed"
-            exit 1
-          fi
-          if [ "${{ needs.build.result }}" != "success" ]; then
-            echo "Build job did not succeed"
+          if [ "${{ needs.quality.result }}" != "success" ]; then
+            echo "Quality checks did not succeed"
             exit 1
           fi
           echo "All checks passed"
