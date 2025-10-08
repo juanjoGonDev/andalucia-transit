@@ -42,27 +42,16 @@
             </div>
           </header>
 
-          <section class="route-search__lines" *ngIf="hasResults(); else noLines">
-            <article
-              *ngFor="let line of lines(); trackBy: trackLine"
-              class="route-search__line"
-            >
-              <header class="route-search__line-header">
-                <div class="route-search__line-meta">
-                  <span class="route-search__line-code">{{ line.lineCode }}</span>
-                  <span class="route-search__line-direction">#{{ line.direction }}</span>
-                </div>
-                <span class="route-search__line-label">{{ translationKeys.results | translate }}</span>
-              </header>
-              <ul class="route-search__items">
-                <li
-                  *ngFor="let item of line.items; trackBy: trackLineItem"
-                  class="route-search__item"
-                  [class.route-search__item--past]="item.kind === 'past'"
-                  [class.route-search__item--next]="item.isNext"
-                  #itemElement
-                  [attr.data-next]="item.isNext ? 'true' : null"
-                >
+          <section class="route-search__timeline" *ngIf="hasResults(); else noLines">
+            <ul class="route-search__items">
+              <li
+                *ngFor="let item of departures(); trackBy: trackDeparture"
+                class="route-search__item"
+                [class.route-search__item--past]="item.kind === 'past'"
+                [class.route-search__item--next]="item.isNext"
+                #itemElement
+                [attr.data-next]="item.isNext ? 'true' : null"
+              >
                   <div class="route-search__item-time">
                     <span class="route-search__item-clock">{{ item.arrivalTime | date: 'HH:mm' }}</span>
                     <span class="route-search__item-relative" [attr.data-kind]="item.kind">
@@ -78,8 +67,11 @@
                     </span>
                   </div>
                   <div class="route-search__item-details">
-                    <span class="route-search__item-line">{{ line.lineCode }}</span>
-                    <span class="route-search__item-destination">{{ current.destination.name }}</span>
+                    <div class="route-search__item-line-info">
+                      <span class="route-search__item-line">{{ item.lineCode }}</span>
+                      <span class="route-search__item-direction">#{{ item.direction }}</span>
+                    </div>
+                    <span class="route-search__item-destination">{{ item.destination }}</span>
                     <div
                       class="route-search__item-arrival"
                       *ngIf="item.destinationArrivalTime as arrival"
@@ -131,15 +123,11 @@
                     ></div>
                   </div>
                 </li>
-          </ul>
-        </article>
-      </section>
+            </ul>
+          </section>
 
           <div class="route-search__no-upcoming" *ngIf="showNoUpcoming()">
             <p class="route-search__no-upcoming-text">{{ translationKeys.noUpcoming | translate }}</p>
-            <button type="button" class="route-search__no-upcoming-button" (click)="changeDate()">
-              {{ translationKeys.changeDate | translate }}
-            </button>
           </div>
         </section>
       </ng-container>

@@ -106,22 +106,23 @@ describe('RouteSearchResultsService', () => {
     };
 
     service.loadResults(selection, { currentTime: referenceTime }).subscribe((viewModel) => {
-      expect(viewModel.lines.length).toBe(1);
-      const line = viewModel.lines[0];
-      expect(line.hasUpcoming).toBeTrue();
-      expect(line.items.length).toBe(5);
-      expect(line.items[0].kind).toBe('past');
-      expect(line.items[0].relativeLabel).toBe('20m');
-      expect(line.items[1].kind).toBe('upcoming');
-      expect(line.items[1].relativeLabel).toBe('5m');
-      expect(line.items[1].isNext).toBeTrue();
-      expect(line.items[1].progressPercentage).toBe(Math.round((5 / 30) * 100));
-      expect(line.items[1].destinationArrivalTime).not.toBeNull();
-      expect(line.items[1].travelDurationLabel).toBe('15m');
-      expect(line.items[0].pastProgressPercentage).toBe(Math.round((20 / 30) * 100));
-      expect(line.items[2].relativeLabel).toBe('15m');
+      expect(viewModel.departures.length).toBe(5);
+      expect(viewModel.hasUpcoming).toBeTrue();
+      expect(viewModel.nextDepartureId).toBe('service-2');
+      const first = viewModel.departures[0];
+      const second = viewModel.departures[1];
+      expect(first.kind).toBe('past');
+      expect(first.relativeLabel).toBe('20m');
+      expect(first.pastProgressPercentage).toBe(Math.round((20 / 30) * 100));
+      expect(second.kind).toBe('upcoming');
+      expect(second.relativeLabel).toBe('5m');
+      expect(second.isNext).toBeTrue();
+      expect(second.progressPercentage).toBe(Math.round((5 / 30) * 100));
+      expect(second.destinationArrivalTime).not.toBeNull();
+      expect(second.travelDurationLabel).toBe('15m');
+      expect(viewModel.departures[2].relativeLabel).toBe('15m');
       const expectedArrival = new Date(referenceTime.getTime() + 20 * 60_000);
-      expect(line.items[1].destinationArrivalTime?.toISOString()).toBe(
+      expect(second.destinationArrivalTime?.toISOString()).toBe(
         expectedArrival.toISOString()
       );
       done();
@@ -190,12 +191,14 @@ describe('RouteSearchResultsService', () => {
     };
 
     service.loadResults(selection, { currentTime: referenceTime }).subscribe((viewModel) => {
-      expect(viewModel.lines[0].items.length).toBe(1);
-      expect(viewModel.lines[0].items[0].relativeLabel).toBe('10m');
-      expect(viewModel.lines[0].items[0].kind).toBe('past');
-      expect(viewModel.lines[0].items[0].pastProgressPercentage).toBe(Math.round((10 / 30) * 100));
-      expect(viewModel.lines[0].items[0].destinationArrivalTime).not.toBeNull();
-      expect(viewModel.lines[0].hasUpcoming).toBeFalse();
+      expect(viewModel.departures.length).toBe(1);
+      const departure = viewModel.departures[0];
+      expect(departure.relativeLabel).toBe('10m');
+      expect(departure.kind).toBe('past');
+      expect(departure.pastProgressPercentage).toBe(Math.round((10 / 30) * 100));
+      expect(departure.destinationArrivalTime).not.toBeNull();
+      expect(viewModel.hasUpcoming).toBeFalse();
+      expect(viewModel.nextDepartureId).toBeNull();
       done();
     });
   });
@@ -240,8 +243,53 @@ describe('RouteSearchResultsService', () => {
     };
 
     service.loadResults(selection, { currentTime: referenceTime }).subscribe((viewModel) => {
-      expect(viewModel.lines[0].items.length).toBe(1);
-      expect(viewModel.lines[0].items[0].originStopId).toBe('origin-a');
+      expect(viewModel.departures.length).toBe(1);
+      expect(viewModel.departures[0].originStopId).toBe('origin-a');
+      done();
+    });
+  });
+
+  it('returns the full schedule when requesting a future date', (done) => {
+    const futureReference = new Date('2025-06-02T00:00:00Z');
+    const { service } = setup({
+      'origin-a': buildResult(
+        'origin-a',
+        [
+          buildService(futureReference, 60, 'service-10', '010', 'L10', 1),
+          buildService(futureReference, 120, 'service-11', '010', 'L10', 1)
+        ]
+      ),
+      'destination-a': buildResult(
+        'destination-a',
+        [
+          buildService(futureReference, 90, 'service-10', '010', 'L10', 1),
+          buildService(futureReference, 150, 'service-11', '010', 'L10', 1)
+        ]
+      )
+    });
+
+    const selection: RouteSearchSelection = {
+      origin,
+      destination,
+      queryDate: futureReference,
+      lineMatches: [
+        {
+          lineId: 'L10',
+          lineCode: '010',
+          direction: 1,
+          originStopIds: ['origin-a'],
+          destinationStopIds: ['destination-a']
+        }
+      ]
+    };
+
+    const currentTime = new Date('2025-06-01T10:00:00Z');
+
+    service.loadResults(selection, { currentTime }).subscribe((viewModel) => {
+      expect(viewModel.departures.length).toBe(2);
+      expect(viewModel.departures[0].kind).toBe('upcoming');
+      expect(viewModel.departures[1].kind).toBe('upcoming');
+      expect(viewModel.nextDepartureId).toBe('service-10');
       done();
     });
   });

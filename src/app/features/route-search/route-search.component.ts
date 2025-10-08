@@ -21,8 +21,7 @@ import { RouteSearchSelection, RouteSearchStateService } from '../../domain/rout
 import {
   RouteSearchResultsService,
   RouteSearchResultsViewModel,
-  RouteSearchLineView,
-  RouteSearchLineItem
+  RouteSearchDepartureView
 } from '../../domain/route-search/route-search-results.service';
 import {
   BottomNavigationComponent,
@@ -89,12 +88,16 @@ export class RouteSearchComponent implements AfterViewInit {
   ];
 
   protected readonly selection = signal<RouteSearchSelection | null>(this.state.getSelection());
-  protected readonly results = signal<RouteSearchResultsViewModel>({ lines: [] });
+  protected readonly results = signal<RouteSearchResultsViewModel>({
+    departures: [],
+    hasUpcoming: false,
+    nextDepartureId: null
+  });
   protected readonly hasSelection = computed(() => this.selection() !== null);
-  protected readonly lines = computed(() => this.results().lines);
-  protected readonly hasResults = computed(() => this.lines().length > 0);
+  protected readonly departures = computed(() => this.results().departures);
+  protected readonly hasResults = computed(() => this.departures().length > 0);
   protected readonly showNoUpcoming = computed(() =>
-    this.hasResults() && !this.lines().some((line) => line.hasUpcoming)
+    this.hasResults() && !this.results().hasUpcoming
   );
 
   constructor() {
@@ -138,7 +141,11 @@ export class RouteSearchComponent implements AfterViewInit {
         takeUntilDestroyed(this.destroyRef),
         switchMap((value) => {
           if (!value) {
-            return of<RouteSearchResultsViewModel>({ lines: [] });
+            return of<RouteSearchResultsViewModel>({
+              departures: [],
+              hasUpcoming: false,
+              nextDepartureId: null
+            });
           }
 
           return this.resultsService.loadResults(value);
@@ -156,19 +163,11 @@ export class RouteSearchComponent implements AfterViewInit {
       .subscribe(() => this.scrollToNext());
   }
 
-  protected trackLine(_: number, line: RouteSearchLineView): string {
-    return `${line.lineId}-${line.direction}`;
-  }
-
-  protected trackLineItem(_: number, item: RouteSearchLineItem): string {
+  protected trackDeparture(_: number, item: RouteSearchDepartureView): string {
     return item.id;
   }
 
   protected navigateBack(): void {
-    void this.router.navigate(this.buildCommands(APP_CONFIG.routes.home));
-  }
-
-  protected changeDate(): void {
     void this.router.navigate(this.buildCommands(APP_CONFIG.routes.home));
   }
 

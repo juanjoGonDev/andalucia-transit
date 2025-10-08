@@ -133,47 +133,14 @@
   gap: 0.25rem;
 }
 
-.route-search__lines {
+.route-search__timeline {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-
-.route-search__line {
   padding: 1rem;
   border-radius: 1rem;
   background-color: var(--color-surface);
   box-shadow: var(--shadow-xs);
-}
-
-.route-search__line-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
-}
-
-.route-search__line-meta {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
-.route-search__line-code {
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-.route-search__line-direction {
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-}
-
-.route-search__line-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-text-muted);
 }
 
 .route-search__items {
@@ -246,8 +213,20 @@
   font-size: 0.875rem;
 }
 
-.route-search__item-line {
+.route-search__item-line-info {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
   font-weight: 600;
+}
+
+.route-search__item-line {
+  font-size: 1.1rem;
+}
+
+.route-search__item-direction {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
 }
 
 .route-search__item-destination {
@@ -325,16 +304,6 @@
   color: var(--color-text-strong);
 }
 
-.route-search__no-upcoming-button {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: var(--radius-lg);
-  background: var(--color-primary);
-  color: var(--color-button-text);
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-}
 
 .route-search__empty {
   display: flex;
@@ -362,7 +331,7 @@
   background-color: var(--color-footer-surface);
   backdrop-filter: blur(12px);
   border-top: 1px solid var(--color-border-subtle);
-  padding: 0.75rem clamp(1rem, 3vw, 2.5rem) clamp(1.25rem, 2vw, 1.75rem);
+  padding: 0.75rem clamp(1rem, 3vw, 2.5rem) 1.25rem;
 }
 
 .dark .route-search {

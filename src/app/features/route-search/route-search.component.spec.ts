@@ -7,8 +7,7 @@ import { ActivatedRoute, ParamMap, Router, convertToParamMap, provideRouter } fr
 
 import { RouteSearchComponent } from './route-search.component';
 import {
-  RouteSearchLineItem,
-  RouteSearchLineView,
+  RouteSearchDepartureView,
   RouteSearchResultsService,
   RouteSearchResultsViewModel
 } from '../../domain/route-search/route-search-results.service';
@@ -25,7 +24,11 @@ class TranslateTestingLoader implements TranslateLoader {
 }
 
 class RouteSearchResultsServiceStub {
-  public viewModel: RouteSearchResultsViewModel = { lines: [] };
+  public viewModel: RouteSearchResultsViewModel = {
+    departures: [],
+    hasUpcoming: false,
+    nextDepartureId: null
+  };
 
   loadResults(): ReturnType<RouteSearchResultsService['loadResults']> {
     return of(this.viewModel);
@@ -118,32 +121,32 @@ describe('RouteSearchComponent', () => {
     fixture = TestBed.createComponent(RouteSearchComponent);
   });
 
-  it('renders the selected route summary and timeline items', () => {
-    const line: RouteSearchLineView = {
+  it('renders the selected route summary and departures', () => {
+    const departure: RouteSearchDepartureView = {
+      id: 'service-1',
       lineId: 'L1',
       lineCode: '001',
       direction: 0,
-      hasUpcoming: true,
-      items: [
-        {
-          id: 'service-1',
-          originStopId: 'alpha',
-          arrivalTime: new Date('2025-02-02T08:05:00Z'),
-          relativeLabel: '5m',
-          waitTimeSeconds: 300,
-          kind: 'upcoming',
-          isNext: true,
-          isAccessible: true,
-          isUniversityOnly: false,
-          progressPercentage: 75,
-          pastProgressPercentage: 0,
-          destinationArrivalTime: new Date('2025-02-02T08:20:00Z'),
-          travelDurationLabel: '15m'
-        }
-      ] satisfies RouteSearchLineItem[]
-    } satisfies RouteSearchLineView;
+      destination: 'Beta Terminal',
+      originStopId: 'alpha',
+      arrivalTime: new Date('2025-02-02T08:05:00Z'),
+      relativeLabel: '5m',
+      waitTimeSeconds: 300,
+      kind: 'upcoming',
+      isNext: true,
+      isAccessible: true,
+      isUniversityOnly: false,
+      progressPercentage: 75,
+      pastProgressPercentage: 0,
+      destinationArrivalTime: new Date('2025-02-02T08:20:00Z'),
+      travelDurationLabel: '15m'
+    } satisfies RouteSearchDepartureView;
 
-    resultsService.viewModel = { lines: [line] } satisfies RouteSearchResultsViewModel;
+    resultsService.viewModel = {
+      departures: [departure],
+      hasUpcoming: true,
+      nextDepartureId: 'service-1'
+    } satisfies RouteSearchResultsViewModel;
 
     state.setSelection({
       origin,
@@ -161,12 +164,10 @@ describe('RouteSearchComponent', () => {
     expect(summaryValues.some((value) => value.includes('Alpha Station'))).toBeTrue();
     expect(summaryValues.some((value) => value.includes('Beta Terminal'))).toBeTrue();
 
-    const lineCard = fixture.debugElement.query(By.css('.route-search__line'));
-    expect(lineCard).not.toBeNull();
-    const lineLabel = lineCard?.query(By.css('.route-search__line-code'))?.nativeElement as HTMLElement;
-    expect(lineLabel.textContent).toContain('001');
-    const item = lineCard?.query(By.css('.route-search__item'));
+    const item = fixture.debugElement.query(By.css('.route-search__item'));
     expect(item).not.toBeNull();
+    const lineLabel = item?.query(By.css('.route-search__item-line'))?.nativeElement as HTMLElement;
+    expect(lineLabel.textContent).toContain('001');
     const arrival = item?.query(By.css('.route-search__item-arrival'));
     expect(arrival).not.toBeNull();
   });
@@ -209,31 +210,29 @@ describe('RouteSearchComponent', () => {
 
   it('shows the no upcoming message when all lines lack future services', () => {
     resultsService.viewModel = {
-      lines: [
+      departures: [
         {
+          id: 'past-1',
           lineId: 'L9',
           lineCode: '009',
           direction: 1,
-          hasUpcoming: false,
-          items: [
-            {
-              id: 'past-1',
-              originStopId: 'alpha',
-              arrivalTime: new Date('2025-02-02T07:30:00Z'),
-              relativeLabel: '10m',
-              waitTimeSeconds: 600,
-              kind: 'past',
-              isNext: false,
-              isAccessible: false,
-              isUniversityOnly: false,
-              progressPercentage: 0,
-              pastProgressPercentage: 33,
-              destinationArrivalTime: new Date('2025-02-02T07:45:00Z'),
-              travelDurationLabel: '15m'
-            }
-          ]
+          destination: 'Beta Terminal',
+          originStopId: 'alpha',
+          arrivalTime: new Date('2025-02-02T07:30:00Z'),
+          relativeLabel: '10m',
+          waitTimeSeconds: 600,
+          kind: 'past',
+          isNext: false,
+          isAccessible: false,
+          isUniversityOnly: false,
+          progressPercentage: 0,
+          pastProgressPercentage: 33,
+          destinationArrivalTime: new Date('2025-02-02T07:45:00Z'),
+          travelDurationLabel: '15m'
         }
-      ]
+      ],
+      hasUpcoming: false,
+      nextDepartureId: null
     } satisfies RouteSearchResultsViewModel;
 
     state.setSelection({
@@ -250,31 +249,31 @@ describe('RouteSearchComponent', () => {
   });
 
   it('restores the selection from route parameters when state is empty', () => {
-    const line: RouteSearchLineView = {
+    const departure: RouteSearchDepartureView = {
+      id: 'service-10',
       lineId: 'L2',
       lineCode: '040',
       direction: 1,
-      hasUpcoming: true,
-      items: [
-        {
-          id: 'service-10',
-          originStopId: 'alpha',
-          arrivalTime: new Date('2025-02-02T08:20:00Z'),
-          relativeLabel: '15m',
-          waitTimeSeconds: 900,
-          kind: 'upcoming',
-          isNext: true,
-          isAccessible: true,
-          isUniversityOnly: false,
-          progressPercentage: 50,
-          pastProgressPercentage: 0,
-          destinationArrivalTime: new Date('2025-02-02T08:35:00Z'),
-          travelDurationLabel: '15m'
-        }
-      ] satisfies RouteSearchLineItem[]
-    } satisfies RouteSearchLineView;
+      destination: 'Beta Terminal',
+      originStopId: 'alpha',
+      arrivalTime: new Date('2025-02-02T08:20:00Z'),
+      relativeLabel: '15m',
+      waitTimeSeconds: 900,
+      kind: 'upcoming',
+      isNext: true,
+      isAccessible: true,
+      isUniversityOnly: false,
+      progressPercentage: 50,
+      pastProgressPercentage: 0,
+      destinationArrivalTime: new Date('2025-02-02T08:35:00Z'),
+      travelDurationLabel: '15m'
+    } satisfies RouteSearchDepartureView;
 
-    resultsService.viewModel = { lines: [line] } satisfies RouteSearchResultsViewModel;
+    resultsService.viewModel = {
+      departures: [departure],
+      hasUpcoming: true,
+      nextDepartureId: 'service-10'
+    } satisfies RouteSearchResultsViewModel;
 
     resolver.resolveFromSlugs.and.returnValue(
       of({

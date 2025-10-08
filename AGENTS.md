@@ -29,6 +29,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.
 - `docs/api.html` contains a static snapshot of the CTAN open data portal describing all consumed API endpoints. Refresh it when the upstream site changes and note the update in this file.
 - Add new documentation artifacts in `docs/` alongside a short pointer in AGENTS.md for discoverability.
+- Track feature work using the checklist at `docs/features-checklist.md` and update entries as scope evolves.
 
 ## Security & Privacy Practices
 - Angular safety: rely on Angular template sanitization; do not use direct DOM APIs or `DomSanitizer.bypassSecurityTrust*` unless reviewed and documented; never evaluate dynamic scripts or HTML.
@@ -71,6 +72,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - E2E tests: Cypress scenarios for home load, stop detail, route search, map interaction, offline mode, and language switching.
 - Static analysis: run `npm run lint`, `npm run format:check`, and type-checking in CI; fail builds on lint, test, or coverage regressions.
 - Track Lighthouse scores for performance, accessibility, best practices, and SEO; gate releases on meeting agreed thresholds.
+- Break complex product goals into smaller verifiable tasks and validate each step before progressing to the next.
 
 ## Performance & UX Guardrails
 - Leverage lazy-loaded routes and code splitting; reuse API results with RxJS `shareReplay` or caching services; offload heavy computations (e.g., nearest stop calculations) to Web Workers if needed.

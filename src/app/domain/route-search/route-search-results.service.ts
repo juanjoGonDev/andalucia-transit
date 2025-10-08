@@ -13,19 +13,17 @@ const SECONDS_PER_MINUTE = 60;
 const PAST_WINDOW_MINUTES = 30;
 
 export interface RouteSearchResultsViewModel {
-  readonly lines: readonly RouteSearchLineView[];
+  readonly departures: readonly RouteSearchDepartureView[];
+  readonly hasUpcoming: boolean;
+  readonly nextDepartureId: string | null;
 }
 
-export interface RouteSearchLineView {
+export interface RouteSearchDepartureView {
+  readonly id: string;
   readonly lineId: string;
   readonly lineCode: string;
   readonly direction: number;
-  readonly items: readonly RouteSearchLineItem[];
-  readonly hasUpcoming: boolean;
-}
-
-export interface RouteSearchLineItem {
-  readonly id: string;
+  readonly destination: string;
   readonly originStopId: string;
   readonly arrivalTime: Date;
   readonly relativeLabel: string;
@@ -52,7 +50,7 @@ export class RouteSearchResultsService {
     const stopIds = collectUniqueStopIds(selection.lineMatches);
 
     if (!stopIds.length) {
-      return of({ lines: [] });
+      return of({ departures: [], hasUpcoming: false, nextDepartureId: null });
     }
 
     const scheduleRequests = stopIds.map((stopId) =>
@@ -73,27 +71,60 @@ function buildResults(
   scheduleMap: ReadonlyMap<string, StopScheduleResult>,
   currentTime: Date
 ): RouteSearchResultsViewModel {
-  const lines = selection.lineMatches.map((match) =>
-    buildLineView(match, scheduleMap, currentTime)
+  const candidateMap = new Map<string, RouteSearchDepartureCandidate>();
+
+  for (const match of selection.lineMatches) {
+    const matchCandidates = collectCandidatesForMatch(match, scheduleMap, currentTime);
+
+    for (const [key, candidate] of matchCandidates.entries()) {
+      const existing = candidateMap.get(key);
+
+      if (!existing || shouldReplace(existing, candidate)) {
+        candidateMap.set(key, candidate);
+      }
+    }
+  }
+
+  const sorted = Array.from(candidateMap.values()).sort((first, second) =>
+    first.arrivalTime.getTime() - second.arrivalTime.getTime()
   );
 
-  return { lines } satisfies RouteSearchResultsViewModel;
+  const upcomingIndex = sorted.findIndex((item) => item.kind === 'upcoming');
+
+  const departures = sorted.map((item, index) => ({
+    id: item.id,
+    lineId: item.lineId,
+    lineCode: item.lineCode,
+    direction: item.direction,
+    destination: item.destination,
+    originStopId: item.originStopId,
+    arrivalTime: item.arrivalTime,
+    relativeLabel: item.relativeLabel,
+    waitTimeSeconds: item.waitTimeSeconds,
+    kind: item.kind,
+    isNext: upcomingIndex === index,
+    isAccessible: item.isAccessible,
+    isUniversityOnly: item.isUniversityOnly,
+    progressPercentage: item.kind === 'upcoming' ? item.progressPercentage : 0,
+    pastProgressPercentage: item.kind === 'past' ? item.pastProgressPercentage : 0,
+    destinationArrivalTime: item.destinationArrivalTime,
+    travelDurationLabel: item.travelDurationLabel
+  } satisfies RouteSearchDepartureView));
+
+  return {
+    departures,
+    hasUpcoming: upcomingIndex !== -1,
+    nextDepartureId: upcomingIndex === -1 ? null : departures[upcomingIndex].id
+  } satisfies RouteSearchResultsViewModel;
 }
 
-function resolveReferenceTime(queryDate: Date, currentTime: Date): Date {
-  const queryStart = toStartOfDay(queryDate);
-  const currentStart = toStartOfDay(currentTime);
-
-  return queryStart.getTime() === currentStart.getTime() ? currentTime : queryStart;
-}
-
-function buildLineView(
+function collectCandidatesForMatch(
   match: RouteSearchLineMatch,
   scheduleMap: ReadonlyMap<string, StopScheduleResult>,
   currentTime: Date
-): RouteSearchLineView {
+): ReadonlyMap<string, RouteSearchDepartureCandidate> {
   const originOrder = buildOriginOrder(match.originStopIds);
-  const candidates = new Map<string, RouteSearchLineItemCandidate>();
+  const candidates = new Map<string, RouteSearchDepartureCandidate>();
 
   for (const originStopId of match.originStopIds) {
     const schedule = scheduleMap.get(originStopId);
@@ -107,7 +138,7 @@ function buildLineView(
     );
 
     for (const service of relevantServices) {
-      const candidate = createCandidate(service, originStopId, currentTime, match, scheduleMap);
+      const candidate = createCandidate(service, originStopId, currentTime, match, scheduleMap, originOrder);
 
       if (!candidate) {
         continue;
@@ -116,41 +147,20 @@ function buildLineView(
       const key = buildServiceKey(service);
       const existing = candidates.get(key);
 
-      if (!existing || shouldReplace(existing, candidate, originOrder)) {
+      if (!existing || shouldReplace(existing, candidate)) {
         candidates.set(key, candidate);
       }
     }
   }
 
-  const sorted = Array.from(candidates.values()).sort((first, second) =>
-    first.arrivalTime.getTime() - second.arrivalTime.getTime()
-  );
+  return candidates;
+}
 
-  const upcomingIndex = sorted.findIndex((item) => item.kind === 'upcoming');
+function resolveReferenceTime(queryDate: Date, currentTime: Date): Date {
+  const queryStart = toStartOfDay(queryDate);
+  const currentStart = toStartOfDay(currentTime);
 
-  const items = sorted.map((item, index) => ({
-    id: item.id,
-    originStopId: item.originStopId,
-    arrivalTime: item.arrivalTime,
-    relativeLabel: item.relativeLabel,
-    waitTimeSeconds: item.waitTimeSeconds,
-    kind: item.kind,
-    isNext: upcomingIndex === index,
-    isAccessible: item.isAccessible,
-    isUniversityOnly: item.isUniversityOnly,
-    progressPercentage: item.kind === 'upcoming' ? item.progressPercentage : 0,
-    pastProgressPercentage: item.kind === 'past' ? item.pastProgressPercentage : 0,
-    destinationArrivalTime: item.destinationArrivalTime,
-    travelDurationLabel: item.travelDurationLabel
-  }));
-
-  return {
-    lineId: match.lineId,
-    lineCode: match.lineCode,
-    direction: match.direction,
-    items,
-    hasUpcoming: items.some((item) => item.kind === 'upcoming')
-  } satisfies RouteSearchLineView;
+  return queryStart.getTime() === currentStart.getTime() ? currentTime : queryStart;
 }
 
 function collectUniqueStopIds(matches: readonly RouteSearchLineMatch[]): readonly string[] {
@@ -164,9 +174,14 @@ function collectUniqueStopIds(matches: readonly RouteSearchLineMatch[]): readonl
   return Array.from(set.values());
 }
 
-interface RouteSearchLineItemCandidate {
+interface RouteSearchDepartureCandidate {
   readonly id: string;
+  readonly lineId: string;
+  readonly lineCode: string;
+  readonly direction: number;
+  readonly destination: string;
   readonly originStopId: string;
+  readonly originPriority: number;
   readonly arrivalTime: Date;
   readonly relativeLabel: string;
   readonly waitTimeSeconds: number;
@@ -184,8 +199,9 @@ function createCandidate(
   originStopId: string,
   currentTime: Date,
   match: RouteSearchLineMatch,
-  scheduleMap: ReadonlyMap<string, StopScheduleResult>
-): RouteSearchLineItemCandidate | null {
+  scheduleMap: ReadonlyMap<string, StopScheduleResult>,
+  originOrder: ReadonlyMap<string, number>
+): RouteSearchDepartureCandidate | null {
   const differenceMs = service.arrivalTime.getTime() - currentTime.getTime();
   const kind: 'past' | 'upcoming' = differenceMs >= 0 ? 'upcoming' : 'past';
   const waitSeconds = Math.max(0, Math.round(Math.abs(differenceMs) / MILLISECONDS_PER_SECOND));
@@ -212,9 +228,16 @@ function createCandidate(
     ? formatDurationLabel(decomposeSeconds(destinationInfo.travelSeconds))
     : null;
 
+  const originPriority = originOrder.get(originStopId) ?? Number.MAX_SAFE_INTEGER;
+
   return {
     id: service.serviceId,
+    lineId: match.lineId,
+    lineCode: match.lineCode,
+    direction: match.direction,
+    destination: service.destination,
     originStopId,
+    originPriority,
     arrivalTime: service.arrivalTime,
     relativeLabel,
     waitTimeSeconds: waitSeconds,
@@ -225,7 +248,7 @@ function createCandidate(
     pastProgressPercentage: calculatePastProgress(minutesSinceDeparture),
     destinationArrivalTime: destinationInfo?.arrivalTime ?? null,
     travelDurationLabel
-  } satisfies RouteSearchLineItemCandidate;
+  } satisfies RouteSearchDepartureCandidate;
 }
 
 interface DestinationArrivalInfo {
@@ -272,18 +295,14 @@ function buildServiceKey(service: StopService): string {
 }
 
 function shouldReplace(
-  existing: RouteSearchLineItemCandidate,
-  candidate: RouteSearchLineItemCandidate,
-  originOrder: ReadonlyMap<string, number>
+  existing: RouteSearchDepartureCandidate,
+  candidate: RouteSearchDepartureCandidate
 ): boolean {
-  const existingOrder = originOrder.get(existing.originStopId) ?? Number.MAX_SAFE_INTEGER;
-  const candidateOrder = originOrder.get(candidate.originStopId) ?? Number.MAX_SAFE_INTEGER;
-
-  if (candidateOrder < existingOrder) {
+  if (candidate.originPriority < existing.originPriority) {
     return true;
   }
 
-  if (candidateOrder > existingOrder) {
+  if (candidate.originPriority > existing.originPriority) {
     return false;
   }
 
@@ -307,7 +326,7 @@ function decomposeSeconds(totalSeconds: number): DurationParts {
   const minutes = Math.floor(remainingAfterHours / SECONDS_PER_MINUTE);
   const seconds = remainingAfterHours - minutes * SECONDS_PER_MINUTE;
 
-  return { hours, minutes, seconds };
+  return { hours, minutes, seconds } satisfies DurationParts;
 }
 
 function formatDurationLabel(parts: DurationParts): string {
