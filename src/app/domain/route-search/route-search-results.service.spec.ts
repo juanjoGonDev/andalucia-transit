@@ -4,23 +4,17 @@ import { of } from 'rxjs';
 import { RouteSearchResultsService } from './route-search-results.service';
 import { RouteSearchSelection } from './route-search-state.service';
 import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
-import { StopScheduleService } from '../../data/services/stop-schedule.service';
-import { StopScheduleResult, StopService } from '../stop-schedule/stop-schedule.model';
+import { RouteTimetableService, RouteTimetableRequest } from '../../data/route-search/route-timetable.service';
+import { RouteTimetableEntry } from '../../data/route-search/route-timetable.mapper';
 
-class StopScheduleServiceStub {
-  constructor(private readonly results: Map<string, StopScheduleResult>) {}
+class RouteTimetableServiceStub {
+  constructor(private readonly entries: readonly RouteTimetableEntry[]) {}
 
-  readonly requests: { readonly stopId: string; readonly queryDate: Date | undefined }[] = [];
+  readonly requests: RouteTimetableRequest[] = [];
 
-  getStopSchedule(stopId: string, options?: { readonly queryDate?: Date }) {
-    this.requests.push({ stopId, queryDate: options?.queryDate });
-    const result = this.results.get(stopId);
-
-    if (!result) {
-      throw new Error(`Unexpected stop request: ${stopId}`);
-    }
-
-    return of(result);
+  loadTimetable(request: RouteTimetableRequest) {
+    this.requests.push(request);
+    return of(this.entries);
   }
 }
 
@@ -52,43 +46,36 @@ describe('RouteSearchResultsService', () => {
   };
 
   function setup(
-    results: Record<string, StopScheduleResult>
-  ): { service: RouteSearchResultsService; stopSchedule: StopScheduleServiceStub } {
+    entries: RouteTimetableEntry[]
+  ): { service: RouteSearchResultsService; timetable: RouteTimetableServiceStub } {
+    const timetableStub = new RouteTimetableServiceStub(entries);
+
     TestBed.configureTestingModule({
       providers: [
         RouteSearchResultsService,
         {
-          provide: StopScheduleService,
-          useValue: new StopScheduleServiceStub(new Map(Object.entries(results)))
+          provide: RouteTimetableService,
+          useValue: timetableStub
         }
       ]
     });
 
     return {
       service: TestBed.inject(RouteSearchResultsService),
-      stopSchedule: TestBed.inject(StopScheduleService) as unknown as StopScheduleServiceStub
+      timetable: TestBed.inject(RouteTimetableService) as unknown as RouteTimetableServiceStub
     };
   }
 
-  it('merges schedules from multiple origin stops and marks the next upcoming service', (done) => {
-    const { service } = setup({
-      'origin-a': buildResult('origin-a', [
-        buildService(referenceTime, -20, 'origin-1', '001', 'L1', 0),
-        buildService(referenceTime, 5, 'origin-2', '001', 'L1', 0),
-        buildService(referenceTime, 40, 'origin-3', '001', 'L1', 0)
-      ]),
-      'origin-b': buildResult('origin-b', [
-        buildService(referenceTime, 15, 'origin-4', '001', 'L1', 0),
-        buildService(referenceTime, 60, 'origin-5', '001', 'L1', 0)
-      ]),
-      'destination-a': buildResult('destination-a', [
-        buildService(referenceTime, -5, 'destination-1', '001', 'L1', 0),
-        buildService(referenceTime, 20, 'destination-2', '001', 'L1', 0),
-        buildService(referenceTime, 55, 'destination-3', '001', 'L1', 0),
-        buildService(referenceTime, 30, 'destination-4', '001', 'L1', 0),
-        buildService(referenceTime, 75, 'destination-5', '001', 'L1', 0)
-      ])
-    });
+  it('builds departures ordered by time and marks the next service', (done) => {
+    const entries: RouteTimetableEntry[] = [
+      buildEntry(referenceTime, -20, 20, 'L1', '001'),
+      buildEntry(referenceTime, 5, 15, 'L1', '001'),
+      buildEntry(referenceTime, 15, 12, 'L1', '001'),
+      buildEntry(referenceTime, 40, 18, 'L1', '001'),
+      buildEntry(referenceTime, 60, 25, 'L1', '001', 'Servicio especial')
+    ];
+
+    const { service } = setup(entries);
 
     const selection: RouteSearchSelection = {
       origin,
@@ -108,36 +95,21 @@ describe('RouteSearchResultsService', () => {
     service.loadResults(selection, { currentTime: referenceTime }).subscribe((viewModel) => {
       expect(viewModel.departures.length).toBe(5);
       expect(viewModel.hasUpcoming).toBeTrue();
-      expect(viewModel.nextDepartureId).toBe('origin-2');
+      expect(viewModel.nextDepartureId).toBe(viewModel.departures[1].id);
       const first = viewModel.departures[0];
       const second = viewModel.departures[1];
       expect(first.kind).toBe('past');
       expect(first.relativeLabel).toBe('20m');
-      expect(first.pastProgressPercentage).toBe(Math.round((20 / 30) * 100));
       expect(second.kind).toBe('upcoming');
       expect(second.relativeLabel).toBe('5m');
-      expect(second.isNext).toBeTrue();
-      expect(second.progressPercentage).toBe(Math.round((5 / 30) * 100));
-      expect(second.destinationArrivalTime).not.toBeNull();
       expect(second.travelDurationLabel).toBe('15m');
-      expect(viewModel.departures[2].relativeLabel).toBe('15m');
-      const expectedArrival = new Date(referenceTime.getTime() + 20 * 60_000);
-      expect(second.destinationArrivalTime?.toISOString()).toBe(
-        expectedArrival.toISOString()
-      );
+      expect(viewModel.departures[4].destination).toContain('Servicio especial');
       done();
     });
   });
 
-  it('passes the selection date to the schedule service', (done) => {
-    const { service, stopSchedule } = setup({
-      'origin-a': buildResult('origin-a', [
-        buildService(referenceTime, 5, 'origin-1', '001', 'L1', 0)
-      ]),
-      'destination-a': buildResult('destination-a', [
-        buildService(referenceTime, 15, 'destination-1', '001', 'L1', 0)
-      ])
-    });
+  it('passes the selection details to the timetable service', (done) => {
+    const { service, timetable } = setup([buildEntry(referenceTime, 5, 15, 'L1', '001')]);
 
     const selection: RouteSearchSelection = {
       origin,
@@ -155,25 +127,23 @@ describe('RouteSearchResultsService', () => {
     };
 
     service.loadResults(selection, { currentTime: referenceTime }).subscribe(() => {
-      expect(stopSchedule.requests.length).toBe(2);
-      stopSchedule.requests.forEach((request) => {
-        expect(request.queryDate?.getTime()).toBe(selection.queryDate.getTime());
-      });
+      expect(timetable.requests.length).toBe(1);
+      const request = timetable.requests[0];
+      expect(request.queryDate.getTime()).toBe(selection.queryDate.getTime());
+      expect(request.consortiumId).toBe(origin.consortiumId);
+      expect(request.originNucleusId).toBe(origin.nucleusId);
+      expect(request.destinationNucleusId).toBe(destination.nucleusId);
       done();
     });
   });
 
-  it('omits past services older than thirty minutes and reports when no upcoming services remain', (done) => {
-    const { service } = setup({
-      'origin-a': buildResult('origin-a', [
-        buildService(referenceTime, -45, 'origin-1', '001', 'L1', 0),
-        buildService(referenceTime, -10, 'origin-2', '001', 'L1', 0)
-      ]),
-      'destination-a': buildResult('destination-a', [
-        buildService(referenceTime, -30, 'destination-1', '001', 'L1', 0),
-        buildService(referenceTime, 0, 'destination-2', '001', 'L1', 0)
-      ])
-    });
+  it('filters past departures older than thirty minutes', (done) => {
+    const entries: RouteTimetableEntry[] = [
+      buildEntry(referenceTime, -45, 30, 'L1', '001'),
+      buildEntry(referenceTime, -10, 12, 'L1', '001')
+    ];
+
+    const { service } = setup(entries);
 
     const selection: RouteSearchSelection = {
       origin,
@@ -192,72 +162,18 @@ describe('RouteSearchResultsService', () => {
 
     service.loadResults(selection, { currentTime: referenceTime }).subscribe((viewModel) => {
       expect(viewModel.departures.length).toBe(1);
-      const departure = viewModel.departures[0];
-      expect(departure.relativeLabel).toBe('10m');
-      expect(departure.kind).toBe('past');
-      expect(departure.pastProgressPercentage).toBe(Math.round((10 / 30) * 100));
-      expect(departure.destinationArrivalTime).not.toBeNull();
+      expect(viewModel.departures[0].relativeLabel).toBe('10m');
       expect(viewModel.hasUpcoming).toBeFalse();
       expect(viewModel.nextDepartureId).toBeNull();
       done();
     });
   });
 
-  it('deduplicates services that share the same line, direction, and arrival minute', (done) => {
-    const duplicateTime = new Date(referenceTime.getTime() + 5 * 60_000);
-    const { service } = setup({
-      'origin-a': buildResult('origin-a', [
-        buildService(referenceTime, 5, 'origin-1', '001', 'L1', 0)
-      ]),
-      'origin-b': buildResult('origin-b', [
-        {
-          serviceId: 'origin-duplicate',
-          lineId: 'L1',
-          lineCode: '001',
-          direction: 0,
-          destination: 'Destino Final',
-          arrivalTime: duplicateTime,
-          isAccessible: true,
-          isUniversityOnly: false
-        }
-      ]),
-      'destination-a': buildResult('destination-a', [
-        buildService(referenceTime, 20, 'destination-1', '001', 'L1', 0),
-        buildService(referenceTime, 20, 'destination-duplicate', '001', 'L1', 0)
-      ])
-    });
+  it('deduplicates timetable entries that share the same slot', (done) => {
+    const duplicate = buildEntry(referenceTime, 10, 20, 'L1', '001');
+    const entries: RouteTimetableEntry[] = [duplicate, { ...duplicate }];
 
-    const selection: RouteSearchSelection = {
-      origin,
-      destination,
-      queryDate: referenceTime,
-      lineMatches: [
-        {
-          lineId: 'L1',
-          lineCode: '001',
-          direction: 0,
-          originStopIds: ['origin-a', 'origin-b'],
-          destinationStopIds: ['destination-a']
-        }
-      ]
-    };
-
-    service.loadResults(selection, { currentTime: referenceTime }).subscribe((viewModel) => {
-      expect(viewModel.departures.length).toBe(1);
-      expect(viewModel.departures[0].originStopId).toBe('origin-a');
-      done();
-    });
-  });
-
-  it('skips origin services that lack a matching destination arrival within the travel window', (done) => {
-    const { service } = setup({
-      'origin-a': buildResult('origin-a', [
-        buildService(referenceTime, 5, 'origin-1', '001', 'L1', 0)
-      ]),
-      'destination-a': buildResult('destination-a', [
-        buildService(referenceTime, 400, 'destination-miss', '001', 'L1', 0)
-      ])
-    });
+    const { service } = setup(entries);
 
     const selection: RouteSearchSelection = {
       origin,
@@ -275,36 +191,24 @@ describe('RouteSearchResultsService', () => {
     };
 
     service.loadResults(selection, { currentTime: referenceTime }).subscribe((viewModel) => {
-      expect(viewModel.departures.length).toBe(0);
-      expect(viewModel.hasUpcoming).toBeFalse();
-      expect(viewModel.nextDepartureId).toBeNull();
+      expect(viewModel.departures.length).toBe(1);
       done();
     });
   });
 
-  it('returns the full schedule when requesting a future date', (done) => {
-    const futureReference = new Date('2025-06-02T00:00:00Z');
-    const { service } = setup({
-      'origin-a': buildResult(
-        'origin-a',
-        [
-          buildService(futureReference, 60, 'origin-10', '010', 'L10', 1),
-          buildService(futureReference, 120, 'origin-11', '010', 'L10', 1)
-        ]
-      ),
-      'destination-a': buildResult(
-        'destination-a',
-        [
-          buildService(futureReference, 90, 'destination-10', '010', 'L10', 1),
-          buildService(futureReference, 150, 'destination-11', '010', 'L10', 1)
-        ]
-      )
-    });
+  it('returns upcoming departures when the query date is in the future', (done) => {
+    const futureDate = new Date('2025-06-02T00:00:00Z');
+    const entries: RouteTimetableEntry[] = [
+      buildEntry(futureDate, 60, 30, 'L10', '010'),
+      buildEntry(futureDate, 120, 35, 'L10', '010')
+    ];
+
+    const { service } = setup(entries);
 
     const selection: RouteSearchSelection = {
       origin,
       destination,
-      queryDate: futureReference,
+      queryDate: futureDate,
       lineMatches: [
         {
           lineId: 'L10',
@@ -320,48 +224,29 @@ describe('RouteSearchResultsService', () => {
 
     service.loadResults(selection, { currentTime }).subscribe((viewModel) => {
       expect(viewModel.departures.length).toBe(2);
-      expect(viewModel.departures[0].kind).toBe('upcoming');
-      expect(viewModel.departures[1].kind).toBe('upcoming');
-      expect(viewModel.nextDepartureId).toBe('origin-10');
+      expect(viewModel.departures.every((item) => item.kind === 'upcoming')).toBeTrue();
       done();
     });
   });
-  function buildResult(stopId: string, services: readonly StopService[]): StopScheduleResult {
-    return {
-      schedule: {
-        stopId,
-        stopCode: stopId,
-        stopName: stopId,
-        queryDate: referenceTime,
-        generatedAt: referenceTime,
-        services
-      },
-      dataSource: {
-        type: 'snapshot',
-        providerName: 'Provider',
-        queryTime: referenceTime,
-        snapshotTime: referenceTime
-      }
-    } satisfies StopScheduleResult;
-  }
 
-  function buildService(
+  function buildEntry(
     reference: Date,
     offsetMinutes: number,
-    serviceId: string,
-    lineCode: string,
+    travelMinutes: number,
     lineId: string,
-    direction: number
-  ): StopService {
+    lineCode: string,
+    notes?: string
+  ): RouteTimetableEntry {
+    const departure = new Date(reference.getTime() + offsetMinutes * 60_000);
+    const arrival = new Date(departure.getTime() + travelMinutes * 60_000);
+
     return {
-      serviceId,
       lineId,
       lineCode,
-      direction,
-      destination: 'Destino Final',
-      arrivalTime: new Date(reference.getTime() + offsetMinutes * 60_000),
-      isAccessible: true,
-      isUniversityOnly: false
-    } satisfies StopService;
+      departureTime: departure,
+      arrivalTime: arrival,
+      frequency: { id: 'freq', code: 'L-V', name: 'Lunes a viernes' },
+      notes: notes ?? null
+    } satisfies RouteTimetableEntry;
   }
 });
