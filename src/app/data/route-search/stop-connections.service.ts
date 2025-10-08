@@ -18,12 +18,23 @@ export interface StopConnection {
   readonly lineSignatures: readonly StopLineSignature[];
 }
 
+export const STOP_CONNECTION_DIRECTION = {
+  Forward: 'forward',
+  Backward: 'backward'
+} as const;
+
+export type StopConnectionDirection =
+  (typeof STOP_CONNECTION_DIRECTION)[keyof typeof STOP_CONNECTION_DIRECTION];
+
 @Injectable({ providedIn: 'root' })
 export class StopConnectionsService {
   private readonly directory = inject(StopDirectoryService);
   private readonly api = inject(RouteLinesApiService);
 
-  getConnections(stopIds: readonly string[]): Observable<ReadonlyMap<string, StopConnection>> {
+  getConnections(
+    stopIds: readonly string[],
+    direction: StopConnectionDirection = STOP_CONNECTION_DIRECTION.Forward
+  ): Observable<ReadonlyMap<string, StopConnection>> {
     if (!stopIds.length) {
       return of(EMPTY_CONNECTIONS);
     }
@@ -39,7 +50,7 @@ export class StopConnectionsService {
 
         const groups = groupByConsortium(records);
         const observables = groups.map((group) =>
-          this.resolveGroupConnections(group)
+          this.resolveGroupConnections(group, direction)
         );
 
         if (!observables.length) {
@@ -64,7 +75,8 @@ export class StopConnectionsService {
   }
 
   private resolveGroupConnections(
-    group: ConsortiumGroup
+    group: ConsortiumGroup,
+    direction: StopConnectionDirection
   ): Observable<ReadonlyMap<string, ConnectionAccumulator>> {
     return this.api.getLinesForStops(group.consortiumId, group.stopIds).pipe(
       switchMap((summaries) => {
@@ -75,7 +87,11 @@ export class StopConnectionsService {
         const lineObservables = summaries.map((summary) =>
           this.api
             .getLineStops(group.consortiumId, summary.lineId)
-            .pipe(map((stops) => buildLineAccumulator(summary, stops, group.stopIdSet)))
+            .pipe(
+              map((stops) =>
+                buildLineAccumulator(summary, stops, group.stopIdSet, direction)
+              )
+            )
         );
 
         return forkJoin(lineObservables).pipe(map(mergeAccumulators));
@@ -135,7 +151,8 @@ function buildOriginOrderMap(stopIds: readonly string[]): ReadonlyMap<string, nu
 function buildLineAccumulator(
   summary: RouteLineSummary,
   stops: readonly RouteLineStop[],
-  originIds: ReadonlySet<string>
+  originIds: ReadonlySet<string>,
+  connectionDirection: StopConnectionDirection
 ): ReadonlyMap<string, ConnectionAccumulator> {
   if (!stops.length) {
     return EMPTY_ACCUMULATORS;
@@ -144,7 +161,7 @@ function buildLineAccumulator(
   const byDirection = groupStopsByDirection(stops);
   const accumulator = new Map<string, ConnectionAccumulator>();
 
-  byDirection.forEach((directionStops, direction) => {
+  byDirection.forEach((directionStops, routeDirection) => {
     const orderedStops = [...directionStops].sort((first, second) => first.order - second.order);
     const originPositions = orderedStops.filter((stop) => originIds.has(stop.stopId));
 
@@ -154,7 +171,17 @@ function buildLineAccumulator(
 
     for (const originStop of originPositions) {
       for (const candidate of orderedStops) {
-        if (candidate.order <= originStop.order) {
+        if (
+          connectionDirection === STOP_CONNECTION_DIRECTION.Forward &&
+          candidate.order <= originStop.order
+        ) {
+          continue;
+        }
+
+        if (
+          connectionDirection === STOP_CONNECTION_DIRECTION.Backward &&
+          candidate.order >= originStop.order
+        ) {
           continue;
         }
 
@@ -162,7 +189,7 @@ function buildLineAccumulator(
           continue;
         }
 
-        const signatureKey = buildSignatureKey(summary.lineId, direction);
+        const signatureKey = buildSignatureKey(summary.lineId, routeDirection);
         const existing = accumulator.get(candidate.stopId);
 
         if (existing) {

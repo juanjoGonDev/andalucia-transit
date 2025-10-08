@@ -34,7 +34,8 @@ import {
 import {
   StopConnection,
   StopLineSignature,
-  StopConnectionsService
+  StopConnectionsService,
+  STOP_CONNECTION_DIRECTION
 } from '../../data/route-search/stop-connections.service';
 import {
   RouteSearchLineMatch,
@@ -251,12 +252,16 @@ export class HomeComponent {
   );
 
   private readonly originConnections$ = this.originStopIds$.pipe(
-    switchMap((stopIds) => this.stopConnections.getConnections(stopIds)),
+    switchMap((stopIds) =>
+      this.stopConnections.getConnections(stopIds, STOP_CONNECTION_DIRECTION.Forward)
+    ),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
   private readonly destinationConnections$ = this.destinationStopIds$.pipe(
-    switchMap((stopIds) => this.stopConnections.getConnections(stopIds)),
+    switchMap((stopIds) =>
+      this.stopConnections.getConnections(stopIds, STOP_CONNECTION_DIRECTION.Backward)
+    ),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 

@@ -20,7 +20,9 @@ import {
 } from '../../data/stops/stop-directory.service';
 import {
   StopConnection,
-  StopConnectionsService
+  StopConnectionsService,
+  STOP_CONNECTION_DIRECTION,
+  StopConnectionDirection
 } from '../../data/route-search/stop-connections.service';
 import {
   RouteSearchSelection,
@@ -86,18 +88,34 @@ class DirectoryStub {
 class ConnectionsStub {
   private readonly responses = new Map<string, Map<string, StopConnection>>();
 
-  setResponse(stopIds: readonly string[], connections: Map<string, StopConnection>): void {
-    this.responses.set(this.buildKey(stopIds), connections);
+  setResponse(
+    stopIds: readonly string[],
+    direction: StopConnectionDirection,
+    connections: Map<string, StopConnection>
+  ): void {
+    this.responses.set(this.buildKey(stopIds, direction), connections);
   }
 
-  getConnections(stopIds: readonly string[]) {
-    const key = this.buildKey(stopIds);
+  setBidirectionalResponse(
+    stopIds: readonly string[],
+    forward: Map<string, StopConnection>,
+    backward: Map<string, StopConnection> = forward
+  ): void {
+    this.setResponse(stopIds, STOP_CONNECTION_DIRECTION.Forward, forward);
+    this.setResponse(stopIds, STOP_CONNECTION_DIRECTION.Backward, backward);
+  }
+
+  getConnections(
+    stopIds: readonly string[],
+    direction: StopConnectionDirection = STOP_CONNECTION_DIRECTION.Forward
+  ) {
+    const key = this.buildKey(stopIds, direction);
     const response = this.responses.get(key) ?? new Map<string, StopConnection>();
     return of(response);
   }
 
-  private buildKey(stopIds: readonly string[]): string {
-    return [...stopIds].sort().join('|');
+  private buildKey(stopIds: readonly string[], direction: StopConnectionDirection): string {
+    return `${direction}|${[...stopIds].sort().join('|')}`;
   }
 }
 
@@ -236,15 +254,15 @@ describe('HomeComponent', () => {
     const debounce = APP_CONFIG.homeData.search.debounceMs;
     const subscription = component['originOptions$'].subscribe();
 
-    connections.setResponse(
+    connections.setBidirectionalResponse(
       STUB_STOPS[2].stopIds,
       new Map<string, StopConnection>()
     );
-    connections.setResponse(
+    connections.setBidirectionalResponse(
       STUB_STOPS[0].stopIds,
       new Map<string, StopConnection>()
     );
-    connections.setResponse(
+    connections.setBidirectionalResponse(
       STUB_STOPS[1].stopIds,
       new Map<string, StopConnection>()
     );
@@ -277,6 +295,7 @@ describe('HomeComponent', () => {
 
     connections.setResponse(
       STUB_STOPS[0].stopIds,
+      STOP_CONNECTION_DIRECTION.Forward,
       new Map<string, StopConnection>([
         ['beta', buildConnection('beta', ['alpha'], [['L1', 0]])],
         ['gamma', buildConnection('gamma', ['alpha'], [['L2', 1]])]
@@ -303,11 +322,12 @@ describe('HomeComponent', () => {
 
     connections.setResponse(
       STUB_STOPS[0].stopIds,
+      STOP_CONNECTION_DIRECTION.Forward,
       new Map<string, StopConnection>([
         ['beta', buildConnection('beta', ['alpha'], [['L1', 0]])]
       ])
     );
-    connections.setResponse(
+    connections.setBidirectionalResponse(
       STUB_STOPS[2].stopIds,
       new Map<string, StopConnection>()
     );
@@ -346,6 +366,7 @@ describe('HomeComponent', () => {
 
     connections.setResponse(
       STUB_STOPS[1].stopIds,
+      STOP_CONNECTION_DIRECTION.Backward,
       new Map<string, StopConnection>([
         ['alpha', buildConnection('alpha', ['beta'], [['L1', 0]])]
       ])
@@ -372,11 +393,12 @@ describe('HomeComponent', () => {
 
     connections.setResponse(
       STUB_STOPS[1].stopIds,
+      STOP_CONNECTION_DIRECTION.Backward,
       new Map<string, StopConnection>([
         ['alpha', buildConnection('alpha', ['beta'], [['L1', 0]])]
       ])
     );
-    connections.setResponse(
+    connections.setBidirectionalResponse(
       STUB_STOPS[3].stopIds,
       new Map<string, StopConnection>()
     );
@@ -413,12 +435,14 @@ describe('HomeComponent', () => {
 
     connections.setResponse(
       STUB_STOPS[0].stopIds,
+      STOP_CONNECTION_DIRECTION.Forward,
       new Map<string, StopConnection>([
         ['beta', buildConnection('beta', ['alpha'], [['L1', 0]])]
       ])
     );
     connections.setResponse(
       STUB_STOPS[1].stopIds,
+      STOP_CONNECTION_DIRECTION.Backward,
       new Map<string, StopConnection>([
         ['alpha', buildConnection('alpha', ['beta'], [['L1', 0]])]
       ])
@@ -497,11 +521,11 @@ describe('HomeComponent', () => {
       component as unknown as {
         groupOptionsByNucleus: (
           options: readonly StopDirectoryOption[]
-        ) => ReadonlyArray<{
+        ) => readonly {
           id: string;
           label: string;
-          options: ReadonlyArray<StopDirectoryOption>;
-        }>;
+          options: readonly StopDirectoryOption[];
+        }[];
       }
     ).groupOptionsByNucleus([alpha, sibling, beta]);
 

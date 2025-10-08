@@ -1,7 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 
-import { StopConnectionsService, StopConnection } from './stop-connections.service';
+import {
+  StopConnectionsService,
+  StopConnection,
+  STOP_CONNECTION_DIRECTION
+} from './stop-connections.service';
 import {
   RouteLineStop,
   RouteLineSummary,
@@ -56,7 +60,7 @@ class RouteLinesApiStub {
 
   getLinesForStops(
     consortiumId: number,
-    stopIds: readonly string[]
+    _stopIds: readonly string[]
   ): Observable<readonly RouteLineSummary[]> {
     return of(this.linesByConsortium.get(consortiumId) ?? []);
   }
@@ -106,37 +110,58 @@ describe('StopConnectionsService', () => {
   });
 
   it('returns destinations that appear after each origin in the same line direction', (done) => {
-    service.getConnections(['O1', 'O2']).subscribe((connections) => {
-      const destinationIds = Array.from(connections.keys()).sort();
-      expect(destinationIds).toEqual(['D1', 'D2', 'D3']);
+    service
+      .getConnections(['O1', 'O2'], STOP_CONNECTION_DIRECTION.Forward)
+      .subscribe((connections) => {
+        const destinationIds = Array.from(connections.keys()).sort();
+        expect(destinationIds).toEqual(['D1', 'D2', 'D3']);
 
-      const d2 = connections.get('D2') as StopConnection;
-      expect(d2.originStopIds).toEqual(['O1', 'O2']);
-      expect(d2.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
+        const d2 = connections.get('D2') as StopConnection;
+        expect(d2.originStopIds).toEqual(['O1', 'O2']);
+        expect(d2.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
 
-      const d3 = connections.get('D3') as StopConnection;
-      expect(d3.originStopIds).toEqual(['O1', 'O2']);
-      expect(d3.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
+        const d3 = connections.get('D3') as StopConnection;
+        expect(d3.originStopIds).toEqual(['O1', 'O2']);
+        expect(d3.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
 
-      done();
-    });
+        done();
+      });
   });
 
   it('merges matching origins across shared lines while preserving the original order', (done) => {
-    service.getConnections(['O2', 'O1']).subscribe((connections) => {
-      const d2 = connections.get('D2') as StopConnection;
-      expect(d2.originStopIds).toEqual(['O2', 'O1']);
-      expect(d2.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
+    service
+      .getConnections(['O2', 'O1'], STOP_CONNECTION_DIRECTION.Forward)
+      .subscribe((connections) => {
+        const d2 = connections.get('D2') as StopConnection;
+        expect(d2.originStopIds).toEqual(['O2', 'O1']);
+        expect(d2.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
 
-      done();
-    });
+        done();
+      });
+  });
+
+  it('returns upstream origins when requesting backward connections', (done) => {
+    service
+      .getConnections(['D2'], STOP_CONNECTION_DIRECTION.Backward)
+      .subscribe((connections) => {
+        expect(connections.has('O1')).toBeTrue();
+        expect(connections.has('O2')).toBeTrue();
+
+        const origin = connections.get('O2') as StopConnection;
+        expect(origin.originStopIds).toEqual(['D2']);
+        expect(origin.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
+
+        done();
+      });
   });
 
   it('returns an empty map when none of the stops resolve to directory entries', (done) => {
-    service.getConnections(['UNKNOWN']).subscribe((connections) => {
-      expect(connections.size).toBe(0);
-      done();
-    });
+    service
+      .getConnections(['UNKNOWN'], STOP_CONNECTION_DIRECTION.Forward)
+      .subscribe((connections) => {
+        expect(connections.size).toBe(0);
+        done();
+      });
   });
 });
 
