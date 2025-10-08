@@ -150,11 +150,13 @@ function mapApiService(
 
   return {
     serviceId: `${stopId}-${entry.idLinea}-${index}`,
+    lineId: entry.idLinea,
     lineCode: entry.linea,
+    direction: Number(entry.sentido),
     destination: entry.destino,
     arrivalTime: scheduledDateTime.toJSDate(),
-    isAccessible: false,
-    isUniversityOnly: false
+    isAccessible: hasFeature(entry.tipo, SERVICE_FEATURE_FLAG.Accessible),
+    isUniversityOnly: hasFeature(entry.tipo, SERVICE_FEATURE_FLAG.University)
   } satisfies StopService;
 }
 
@@ -165,11 +167,13 @@ function mapSnapshotService(
 ): StopService {
   return {
     serviceId: `${stopId}-${service.lineId}-${index}`,
+    lineId: service.lineId,
     lineCode: service.lineCode,
+    direction: service.direction,
     destination: service.destination,
     arrivalTime: new Date(service.scheduledTime),
-    isAccessible: false,
-    isUniversityOnly: false
+    isAccessible: hasFeature(service.stopType, SERVICE_FEATURE_FLAG.Accessible),
+    isUniversityOnly: hasFeature(service.stopType, SERVICE_FEATURE_FLAG.University)
   } satisfies StopService;
 }
 
@@ -198,6 +202,21 @@ function buildApiUnavailableError(
   const message = `Unable to retrieve live schedules for stop ${metadata.stopCode} (${metadata.name}) from ${providerName}. Last error: ${reason}`;
 
   return new Error(message);
+}
+
+const SERVICE_FEATURE_FLAG = {
+  Accessible: 1,
+  University: 2
+} as const;
+
+function hasFeature(value: string | number, flag: number): boolean {
+  const numeric = typeof value === 'string' ? Number(value) : value;
+
+  if (Number.isNaN(numeric)) {
+    return false;
+  }
+
+  return (numeric & flag) === flag;
 }
 
 function formatError(error: unknown): string {

@@ -5,10 +5,7 @@ import {
   StopService
 } from './stop-schedule.model';
 import { differenceInMinutes } from '../utils/time.util';
-
-const MAX_PERCENTAGE = 100;
-const MIN_PERCENTAGE = 0;
-const PROGRESS_WINDOW_MINUTES = 30;
+import { calculateArrivalProgress } from '../utils/progress.util';
 
 export interface StopScheduleUpcomingItem {
   readonly serviceId: string;
@@ -78,7 +75,7 @@ export function buildStopScheduleUiModel(
         isNext: false,
         isAccessible: service.isAccessible,
         isUniversityOnly: service.isUniversityOnly,
-        progressPercentage: calculateProgress(minutesDifference)
+        progressPercentage: calculateArrivalProgress(minutesDifference)
       });
       continue;
     }
@@ -132,19 +129,6 @@ function buildDestinationList(services: readonly StopService[]): readonly string
   }
 
   return [...destinationSet].sort((first, second) => first.localeCompare(second));
-}
-
-function calculateProgress(minutesUntilArrival: number): number {
-  if (minutesUntilArrival <= 0) {
-    return MAX_PERCENTAGE;
-  }
-
-  if (minutesUntilArrival >= PROGRESS_WINDOW_MINUTES) {
-    return MIN_PERCENTAGE;
-  }
-
-  const ratio = (PROGRESS_WINDOW_MINUTES - minutesUntilArrival) / PROGRESS_WINDOW_MINUTES;
-  return Math.round(ratio * MAX_PERCENTAGE);
 }
 
 function compareByArrivalTime(first: StopService, second: StopService): number {

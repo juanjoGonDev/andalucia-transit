@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   AbstractControl,
@@ -33,28 +33,28 @@ import {
 } from '../../data/stops/stop-directory.service';
 import {
   StopConnection,
-  StopLineSignature,
   StopConnectionsService,
   STOP_CONNECTION_DIRECTION
 } from '../../data/route-search/stop-connections.service';
 import {
-  RouteSearchLineMatch,
-  RouteSearchSelection,
   RouteSearchStateService
 } from '../../domain/route-search/route-search-state.service';
+import {
+  collectRouteLineMatches,
+  createRouteSearchSelection
+} from '../../domain/route-search/route-search-selection.util';
+import { buildRouteSearchPath } from '../../domain/route-search/route-search-url.util';
 import { StopNavigationItemComponent } from '../../shared/ui/stop-navigation-item/stop-navigation-item.component';
+import {
+  BottomNavigationComponent,
+  BottomNavigationItem
+} from '../../shared/ui/bottom-navigation/bottom-navigation.component';
 
 interface ActionListItem {
   titleKey: string;
   subtitleKey?: string;
   leadingIcon: MaterialSymbolName;
   ariaLabelKey?: string;
-}
-
-interface BottomNavigationItem {
-  labelKey: string;
-  icon: MaterialSymbolName;
-  commands: readonly string[];
 }
 
 interface StopNavigationItemViewModel {
@@ -82,8 +82,6 @@ const EMPTY_STOP_GROUPS: readonly StopAutocompleteGroup[] = Object.freeze([]);
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
-    RouterLinkActive,
     TranslateModule,
     ReactiveFormsModule,
     MatDialogModule,
@@ -95,7 +93,8 @@ const EMPTY_STOP_GROUPS: readonly StopAutocompleteGroup[] = Object.freeze([]);
     MatDatepickerModule,
     CardListItemComponent,
     SectionComponent,
-    StopNavigationItemComponent
+    StopNavigationItemComponent,
+    BottomNavigationComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -125,6 +124,7 @@ export class HomeComponent {
   private readonly translation = APP_CONFIG.translationKeys.home;
   private readonly navigation = APP_CONFIG.translationKeys.navigation;
   private readonly searchIds = APP_CONFIG.homeData.search;
+  private readonly routeSegments = APP_CONFIG.routeSegments.routeSearch;
   private readonly locationIcon: MaterialSymbolName = 'my_location';
   private readonly originIcon: MaterialSymbolName = 'my_location';
   private readonly destinationIcon: MaterialSymbolName = 'flag';
@@ -332,7 +332,7 @@ export class HomeComponent {
   ): Promise<void> {
     this.hideNoRoutesFeedback();
     const connections = await firstValueFrom(this.originConnections$);
-    const lineMatches = this.collectLineMatches(origin, destination, connections);
+    const lineMatches = collectRouteLineMatches(origin, destination, connections);
 
     if (!lineMatches.length) {
       this.showNoRoutesFeedback();
@@ -346,10 +346,20 @@ export class HomeComponent {
       return;
     }
 
-    const selection = this.createRouteSelection(origin, destination, lineMatches);
+    const queryDate = this.searchForm.controls.date.value ?? new Date();
+    const selection = createRouteSearchSelection(origin, destination, lineMatches, queryDate);
     this.routeSearchState.setSelection(selection);
-    const commands = this.buildCommands(APP_CONFIG.routes.routeSearch);
-    await this.router.navigate([...commands]);
+    const commands = buildRouteSearchPath(
+      selection.origin,
+      selection.destination,
+      selection.queryDate,
+      {
+        base: APP_CONFIG.routes.routeSearch,
+        connector: this.routeSegments.connector,
+        date: this.routeSegments.date
+      }
+    );
+    await this.router.navigate(commands);
   }
 
   protected openNearbyStopsDialog(): void {
@@ -507,86 +517,6 @@ export class HomeComponent {
     this.destinationControl.setValue(null);
   }
 
-  private createRouteSelection(
-    origin: StopDirectoryOption,
-    destination: StopDirectoryOption,
-    lineMatches: readonly RouteSearchLineMatch[]
-  ): RouteSearchSelection {
-    const queryDate = this.searchForm.controls.date.value ?? new Date();
-    const normalizedMatches = Object.freeze(
-      lineMatches.map((match) => ({
-        lineId: match.lineId,
-        direction: match.direction,
-        originStopIds: match.originStopIds,
-        destinationStopIds: match.destinationStopIds
-      }))
-    );
-
-    return {
-      origin,
-      destination,
-      queryDate,
-      lineMatches: normalizedMatches
-    } satisfies RouteSearchSelection;
-  }
-
-  private collectLineMatches(
-    origin: StopDirectoryOption,
-    destination: StopDirectoryOption,
-    connections: ReadonlyMap<string, StopConnection>
-  ): readonly RouteSearchLineMatch[] {
-    const aggregates = new Map<string, LineAggregate>();
-
-    for (const destinationStopId of destination.stopIds) {
-      const connection = connections.get(destinationStopId);
-
-      if (!connection) {
-        continue;
-      }
-
-      const matchingOrigins = connection.originStopIds.filter((stopId) =>
-        origin.stopIds.includes(stopId)
-      );
-
-      if (!matchingOrigins.length) {
-        continue;
-      }
-
-      for (const signature of connection.lineSignatures) {
-        const key = this.toLineKey(signature);
-        const aggregate = aggregates.get(key) ?? {
-          lineId: signature.lineId,
-          direction: signature.direction,
-          originIds: new Set<string>(),
-          destinationIds: new Set<string>()
-        };
-
-        matchingOrigins.forEach((originStopId) => aggregate.originIds.add(originStopId));
-        aggregate.destinationIds.add(destinationStopId);
-        aggregates.set(key, aggregate);
-      }
-    }
-
-    const matches: RouteSearchLineMatch[] = [];
-
-    aggregates.forEach((aggregate) => {
-      const orderedOrigins = this.orderStopIds(origin.stopIds, aggregate.originIds);
-      const orderedDestinations = this.orderStopIds(
-        destination.stopIds,
-        aggregate.destinationIds
-      );
-
-      matches.push({
-        lineId: aggregate.lineId,
-        direction: aggregate.direction,
-        originStopIds: orderedOrigins,
-        destinationStopIds: orderedDestinations
-      });
-    });
-
-    return Object.freeze(matches);
-  }
-
   private filterOptionsByConnections(
     options: readonly StopDirectoryOption[],
     connections: ReadonlyMap<string, StopConnection>
@@ -616,29 +546,6 @@ export class HomeComponent {
     }
 
     return option.stopIds[0];
-  }
-
-  private toLineKey(signature: StopLineSignature): string {
-    return `${signature.lineId}|${signature.direction}`;
-  }
-
-  private orderStopIds(
-    reference: readonly string[],
-    values: Set<string>
-  ): readonly string[] {
-    const remaining = new Set(values);
-    const ordered: string[] = [];
-
-    for (const id of reference) {
-      if (remaining.has(id)) {
-        ordered.push(id);
-        remaining.delete(id);
-      }
-    }
-
-    remaining.forEach((id) => ordered.push(id));
-
-    return Object.freeze(ordered);
   }
 
   private hasAnyStopInConnections(
@@ -785,13 +692,6 @@ export class HomeComponent {
 
     return timer(this.searchDebounceMs).pipe(map(() => query));
   }
-}
-
-interface LineAggregate {
-  lineId: string;
-  direction: number;
-  originIds: Set<string>;
-  destinationIds: Set<string>;
 }
 
 type StopAutocompleteValue = StopDirectoryOption | string | null;

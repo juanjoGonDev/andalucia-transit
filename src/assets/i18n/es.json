@@ -122,7 +122,14 @@
     "originLabel": "Parada de origen",
     "destinationLabel": "Parada de destino",
     "dateLabel": "Fecha de viaje",
-    "sampleResult": "Toma la línea C2 desde Plaza Nueva hasta Parque María Luisa a las 08:15."
+    "sampleResult": "Toma la línea C2 desde Plaza Nueva hasta Parque María Luisa a las 08:15.",
+    "backLabel": "Volver a la búsqueda",
+    "upcomingLabel": "En {{time}}",
+    "pastLabel": "Hace {{time}}",
+    "nextBadge": "Siguiente",
+    "noUpcoming": "No hay más salidas directas para esta fecha en las próximas horas.",
+    "changeDate": "Buscar otra fecha",
+    "emptyResults": "No se encontraron servicios para esta ruta."
   },
   "map": {
     "title": "Mapa de la red",

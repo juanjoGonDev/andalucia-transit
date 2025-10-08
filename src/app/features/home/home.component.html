@@ -157,19 +157,6 @@
     </main>
   </div>
   <footer class="home__footer">
-    <nav class="home__bottom-nav">
-      <a
-        *ngFor="let item of bottomNavigationItems"
-        class="home__bottom-nav-item"
-        [routerLink]="item.commands"
-        routerLinkActive="home__bottom-nav-item--active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        #link="routerLinkActive"
-        [attr.aria-current]="link.isActive ? 'page' : null"
-      >
-        <span class="material-symbols-outlined">{{ item.icon }}</span>
-        <span class="home__bottom-nav-label">{{ item.labelKey | translate }}</span>
-      </a>
-    </nav>
+    <app-bottom-navigation [items]="bottomNavigationItems"></app-bottom-navigation>
   </footer>
 </div>

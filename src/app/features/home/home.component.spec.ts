@@ -297,8 +297,8 @@ describe('HomeComponent', () => {
       STUB_STOPS[0].stopIds,
       STOP_CONNECTION_DIRECTION.Forward,
       new Map<string, StopConnection>([
-        ['beta', buildConnection('beta', ['alpha'], [['L1', 0]])],
-        ['gamma', buildConnection('gamma', ['alpha'], [['L2', 1]])]
+        ['beta', buildConnection('beta', ['alpha'], [['L1', 0, '001']])],
+        ['gamma', buildConnection('gamma', ['alpha'], [['L2', 1, '002']])]
       ])
     );
 
@@ -326,7 +326,7 @@ describe('HomeComponent', () => {
       STUB_STOPS[1].stopIds,
       STOP_CONNECTION_DIRECTION.Backward,
       new Map<string, StopConnection>([
-        ['alpha', buildConnection('alpha', ['beta'], [['L1', 0]])]
+        ['alpha', buildConnection('alpha', ['beta'], [['L1', 0, '001']])]
       ])
     );
 
@@ -354,14 +354,14 @@ describe('HomeComponent', () => {
       STUB_STOPS[0].stopIds,
       STOP_CONNECTION_DIRECTION.Forward,
       new Map<string, StopConnection>([
-        ['beta', buildConnection('beta', ['alpha'], [['L1', 0]])]
+        ['beta', buildConnection('beta', ['alpha'], [['L1', 0, '001']])]
       ])
     );
     connections.setResponse(
       STUB_STOPS[1].stopIds,
       STOP_CONNECTION_DIRECTION.Backward,
       new Map<string, StopConnection>([
-        ['alpha', buildConnection('alpha', ['beta'], [['L1', 0]])]
+        ['alpha', buildConnection('alpha', ['beta'], [['L1', 0, '001']])]
       ])
     );
 
@@ -384,12 +384,25 @@ describe('HomeComponent', () => {
     expect(routeSearchState.lastSelection?.lineMatches).toEqual([
       {
         lineId: 'L1',
+        lineCode: '001',
         direction: 0,
         originStopIds: ['alpha'],
         destinationStopIds: ['beta']
       }
     ]);
-    expect(navigateSpy).toHaveBeenCalled();
+    const expectedDate = `${validDate.getFullYear()}-${String(validDate.getMonth() + 1).padStart(2, '0')}-${String(
+      validDate.getDate()
+    ).padStart(2, '0')}`;
+
+    expect(navigateSpy).toHaveBeenCalledWith([
+      '',
+      APP_CONFIG.routes.routeSearch,
+      'alpha-station--alpha',
+      APP_CONFIG.routeSegments.routeSearch.connector,
+      'beta-terminal--beta',
+      APP_CONFIG.routeSegments.routeSearch.date,
+      expectedDate
+    ]);
   }));
 
   it('shows the no routes feedback when no shared lines are found', fakeAsync(() => {
@@ -562,14 +575,15 @@ function buildStop(
 function buildConnection(
   stopId: string,
   originStopIds: readonly string[],
-  signatures: readonly [string, number][]
+  signatures: readonly [string, number, string][]
 ): StopConnection {
   return {
     stopId,
     originStopIds: [...originStopIds],
-    lineSignatures: signatures.map(([lineId, direction]) => ({
+    lineSignatures: signatures.map(([lineId, direction, lineCode]) => ({
       lineId,
-      direction
+      direction,
+      lineCode
     }))
   } satisfies StopConnection;
 }

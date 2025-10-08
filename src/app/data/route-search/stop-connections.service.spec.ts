@@ -118,11 +118,11 @@ describe('StopConnectionsService', () => {
 
         const d2 = connections.get('D2') as StopConnection;
         expect(d2.originStopIds).toEqual(['O1', 'O2']);
-        expect(d2.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
+        expect(d2.lineSignatures).toEqual([{ lineId: 'L1', lineCode: '001', direction: 0 }]);
 
         const d3 = connections.get('D3') as StopConnection;
         expect(d3.originStopIds).toEqual(['O1', 'O2']);
-        expect(d3.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
+        expect(d3.lineSignatures).toEqual([{ lineId: 'L1', lineCode: '001', direction: 0 }]);
 
         done();
       });
@@ -134,7 +134,7 @@ describe('StopConnectionsService', () => {
       .subscribe((connections) => {
         const d2 = connections.get('D2') as StopConnection;
         expect(d2.originStopIds).toEqual(['O2', 'O1']);
-        expect(d2.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
+        expect(d2.lineSignatures).toEqual([{ lineId: 'L1', lineCode: '001', direction: 0 }]);
 
         done();
       });
@@ -149,7 +149,7 @@ describe('StopConnectionsService', () => {
 
         const origin = connections.get('O2') as StopConnection;
         expect(origin.originStopIds).toEqual(['D2']);
-        expect(origin.lineSignatures).toEqual([{ lineId: 'L1', direction: 0 }]);
+        expect(origin.lineSignatures).toEqual([{ lineId: 'L1', lineCode: '001', direction: 0 }]);
 
         done();
       });

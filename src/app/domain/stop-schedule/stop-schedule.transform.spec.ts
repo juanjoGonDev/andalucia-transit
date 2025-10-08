@@ -34,7 +34,9 @@ describe('buildStopScheduleUiModel', () => {
       services: [
         {
           serviceId: 'a',
+          lineId: 'line-a',
           lineCode: 'L1',
+          direction: 0,
           destination: 'North Campus',
           arrivalTime: addMinutesToDate(now, 5),
           isAccessible: true,
@@ -42,7 +44,9 @@ describe('buildStopScheduleUiModel', () => {
         },
         {
           serviceId: 'b',
+          lineId: 'line-b',
           lineCode: 'L2',
+          direction: 1,
           destination: 'City Center',
           arrivalTime: addMinutesToDate(now, 8),
           isAccessible: false,
@@ -86,7 +90,9 @@ function createService(reference: Date, offset: number, index: number): StopSche
 
   return {
     serviceId: `service-${index}`,
+    lineId: `line-${index}`,
     lineCode: `L${index + 1}`,
+    direction: index % 2,
     destination: `Destination ${index}`,
     arrivalTime: arrival,
     isAccessible: index % 2 === 0,

@@ -166,6 +166,24 @@ export class StopDirectoryService {
     );
   }
 
+  getOptionByStopId(stopId: string): Observable<StopDirectoryOption | null> {
+    return this.index$.pipe(
+      map((index) => {
+        const entry = index.entries.get(stopId);
+
+        if (!entry) {
+          return null;
+        }
+
+        const groupKey = buildGroupKey(entry);
+        const members = index.groups.get(groupKey) ?? [entry];
+        const primaryEntry = members[0] ?? entry;
+
+        return toOption(primaryEntry, members);
+      })
+    );
+  }
+
   searchStops(request: StopSearchRequest): Observable<readonly StopDirectoryOption[]> {
     return this.index$.pipe(map((index) => searchDirectory(index, request)));
   }

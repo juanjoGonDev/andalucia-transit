@@ -13,7 +13,16 @@ export const routes: Routes = [
     component: StopDetailComponent,
     title: APP_CONFIG.translationKeys.navigation.stopDetail
   },
-  { path: APP_CONFIG.routes.routeSearch, component: RouteSearchComponent, title: APP_CONFIG.translationKeys.navigation.routeSearch },
+  {
+    path: APP_CONFIG.routes.routeSearchResultPattern,
+    component: RouteSearchComponent,
+    title: APP_CONFIG.translationKeys.navigation.routeSearch
+  },
+  {
+    path: APP_CONFIG.routes.routeSearch,
+    component: RouteSearchComponent,
+    title: APP_CONFIG.translationKeys.navigation.routeSearch
+  },
   { path: APP_CONFIG.routes.map, component: MapComponent, title: APP_CONFIG.translationKeys.navigation.map },
   { path: '**', redirectTo: APP_CONFIG.routes.home, pathMatch: 'full' }
 ];

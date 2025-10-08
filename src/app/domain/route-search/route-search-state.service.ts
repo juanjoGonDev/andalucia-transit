@@ -5,6 +5,7 @@ import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
 
 export interface RouteSearchLineMatch {
   readonly lineId: string;
+  readonly lineCode: string;
   readonly direction: number;
   readonly originStopIds: readonly string[];
   readonly destinationStopIds: readonly string[];

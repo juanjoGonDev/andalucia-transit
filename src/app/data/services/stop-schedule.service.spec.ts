@@ -93,7 +93,7 @@ describe('StopScheduleService', () => {
         linea: 'M2-1',
         sentido: '2',
         destino: 'Jaén',
-        tipo: '0'
+        tipo: '3'
       }
     ],
     horaIni: '2025-01-10 12:00',
@@ -121,7 +121,7 @@ describe('StopScheduleService', () => {
           destination: 'Jaén',
           scheduledTime: new Date('2025-01-10T11:15:00.000Z'),
           direction: 2,
-          stopType: 0
+          stopType: 3
         }
       ],
       query: {
@@ -171,6 +171,10 @@ describe('StopScheduleService', () => {
         expect(result.dataSource.type).toBe('api');
         expect(result.schedule.services.length).toBe(1);
         expect(result.schedule.services[0].destination).toBe('Jaén');
+        expect(result.schedule.services[0].lineId).toBe('24');
+        expect(result.schedule.services[0].direction).toBe(2);
+        expect(result.schedule.services[0].isAccessible).toBeTrue();
+        expect(result.schedule.services[0].isUniversityOnly).toBeTrue();
         done();
       },
       error: done.fail
@@ -185,6 +189,10 @@ describe('StopScheduleService', () => {
         expect(result.dataSource.type).toBe('snapshot');
         expect(result.schedule.services.length).toBe(1);
         expect(result.schedule.services[0].lineCode).toBe('M2-1');
+        expect(result.schedule.services[0].lineId).toBe('24');
+        expect(result.schedule.services[0].direction).toBe(2);
+        expect(result.schedule.services[0].isAccessible).toBeTrue();
+        expect(result.schedule.services[0].isUniversityOnly).toBeTrue();
         done();
       },
       error: done.fail

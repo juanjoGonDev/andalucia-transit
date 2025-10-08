@@ -271,6 +271,26 @@ describe('StopDirectoryService', () => {
     expect(stop?.location.latitude).toBeCloseTo(37.7);
   });
 
+  it('returns the grouped option for a stop identifier', async () => {
+    const promise = firstValueFrom(service.getOptionByStopId('02B'));
+
+    expectIndexRequest();
+
+    const option = await promise;
+
+    expect(option).toEqual({
+      id: '02',
+      code: '02',
+      name: 'Hospital Provincial',
+      municipality: 'Jaén',
+      municipalityId: 'mun-02',
+      nucleus: 'Jaén Centro',
+      nucleusId: 'nuc-j-02',
+      consortiumId: 7,
+      stopIds: ['02', '02B']
+    } satisfies StopDirectoryOption);
+  });
+
   function expectIndexRequest(): void {
     http
       .expectOne(APP_CONFIG.data.snapshots.stopDirectoryPath)

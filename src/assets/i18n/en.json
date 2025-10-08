@@ -122,7 +122,14 @@
     "originLabel": "Origin stop",
     "destinationLabel": "Destination stop",
     "dateLabel": "Travel date",
-    "sampleResult": "Take line C2 from Plaza Nueva to Parque María Luisa at 08:15."
+    "sampleResult": "Take line C2 from Plaza Nueva to Parque María Luisa at 08:15.",
+    "backLabel": "Back to search",
+    "upcomingLabel": "In {{time}}",
+    "pastLabel": "{{time}} ago",
+    "nextBadge": "Next",
+    "noUpcoming": "No more direct departures for this date within the next hours.",
+    "changeDate": "Choose another date",
+    "emptyResults": "No services were found for this route."
   },
   "map": {
     "title": "Network map",

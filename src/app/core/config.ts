@@ -1,5 +1,11 @@
 const STOP_DETAIL_BASE_SEGMENT = 'stop-detail' as const;
 const STOP_ID_ROUTE_PARAM = 'stopId' as const;
+const ROUTE_SEARCH_BASE_SEGMENT = 'routes' as const;
+const ROUTE_SEARCH_CONNECTOR_SEGMENT = 'to' as const;
+const ROUTE_SEARCH_DATE_SEGMENT = 'on' as const;
+const ROUTE_SEARCH_ORIGIN_PARAM = 'originSlug' as const;
+const ROUTE_SEARCH_DESTINATION_PARAM = 'destinationSlug' as const;
+const ROUTE_SEARCH_DATE_PARAM = 'dateSlug' as const;
 const DATA_PROVIDER_NAME =
   'Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía' as const;
 const DATA_TIMEZONE = 'Europe/Madrid' as const;
@@ -36,11 +42,24 @@ export const APP_CONFIG = {
     home: '' as const,
     stopDetailBase: STOP_DETAIL_BASE_SEGMENT,
     stopDetailPattern: `${STOP_DETAIL_BASE_SEGMENT}/:${STOP_ID_ROUTE_PARAM}` as const,
-    routeSearch: 'route-search' as const,
+    routeSearch: ROUTE_SEARCH_BASE_SEGMENT,
+    routeSearchResultPattern:
+      `${ROUTE_SEARCH_BASE_SEGMENT}/:${ROUTE_SEARCH_ORIGIN_PARAM}/${ROUTE_SEARCH_CONNECTOR_SEGMENT}/:${ROUTE_SEARCH_DESTINATION_PARAM}/${ROUTE_SEARCH_DATE_SEGMENT}/:${ROUTE_SEARCH_DATE_PARAM}` as const,
     map: 'map' as const
   },
+  routeSegments: {
+    routeSearch: {
+      connector: ROUTE_SEARCH_CONNECTOR_SEGMENT,
+      date: ROUTE_SEARCH_DATE_SEGMENT
+    }
+  },
   routeParams: {
-    stopId: STOP_ID_ROUTE_PARAM
+    stopId: STOP_ID_ROUTE_PARAM,
+    routeSearch: {
+      origin: ROUTE_SEARCH_ORIGIN_PARAM,
+      destination: ROUTE_SEARCH_DESTINATION_PARAM,
+      date: ROUTE_SEARCH_DATE_PARAM
+    }
   },
   errors: {
     geolocationNotSupported: 'errors.geolocation.notSupported'
@@ -169,7 +188,14 @@ export const APP_CONFIG = {
       originLabel: 'routeSearch.originLabel',
       destinationLabel: 'routeSearch.destinationLabel',
       dateLabel: 'routeSearch.dateLabel',
-      sampleResult: 'routeSearch.sampleResult'
+      sampleResult: 'routeSearch.sampleResult',
+      backLabel: 'routeSearch.backLabel',
+      upcomingLabel: 'routeSearch.upcomingLabel',
+      pastLabel: 'routeSearch.pastLabel',
+      nextBadge: 'routeSearch.nextBadge',
+      noUpcoming: 'routeSearch.noUpcoming',
+      changeDate: 'routeSearch.changeDate',
+      emptyResults: 'routeSearch.emptyResults'
     },
     map: {
       title: 'map.title',

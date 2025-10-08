@@ -9,6 +9,7 @@ import {
 
 export interface StopLineSignature {
   readonly lineId: string;
+  readonly lineCode: string;
   readonly direction: number;
 }
 
@@ -189,7 +190,7 @@ function buildLineAccumulator(
           continue;
         }
 
-        const signatureKey = buildSignatureKey(summary.lineId, routeDirection);
+        const signatureKey = buildSignatureKey(summary.lineId, summary.code, routeDirection);
         const existing = accumulator.get(candidate.stopId);
 
         if (existing) {
@@ -317,11 +318,11 @@ function orderOrigins(
   return Object.freeze(sorted);
 }
 
-function buildSignatureKey(lineId: string, direction: number): string {
-  return `${lineId}${SIGNATURE_SEPARATOR}${direction}`;
+function buildSignatureKey(lineId: string, lineCode: string, direction: number): string {
+  return `${lineId}${SIGNATURE_SEPARATOR}${lineCode}${SIGNATURE_SEPARATOR}${direction}`;
 }
 
 function parseSignatureKey(key: string): StopLineSignature {
-  const [lineId, direction] = key.split(SIGNATURE_SEPARATOR);
-  return { lineId, direction: Number(direction) };
+  const [lineId, lineCode, direction] = key.split(SIGNATURE_SEPARATOR);
+  return { lineId, lineCode, direction: Number(direction) };
 }

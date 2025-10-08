@@ -1,6 +1,8 @@
 export interface StopService {
   readonly serviceId: string;
+  readonly lineId: string;
   readonly lineCode: string;
+  readonly direction: number;
   readonly destination: string;
   readonly arrivalTime: Date;
   readonly isAccessible: boolean;
