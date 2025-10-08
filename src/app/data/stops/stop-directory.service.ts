@@ -9,6 +9,7 @@ const SEARCH_LOCALE = 'es-ES' as const;
 const MIN_QUERY_LENGTH = 2;
 const NORMALIZE_FORM = 'NFD' as const;
 const DIACRITIC_MATCHER = /\p{M}/gu;
+const ENTRY_KEY_SEPARATOR = ':' as const;
 
 export interface StopDirectoryRecord {
   readonly consortiumId: number;
@@ -115,8 +116,10 @@ interface StopDirectoryChunkEntry {
 interface StopDirectoryIndex {
   readonly searchable: readonly SearchableStopRecord[];
   readonly entries: ReadonlyMap<string, StopDirectorySearchEntry>;
+  readonly compositeEntries: ReadonlyMap<string, StopDirectorySearchEntry>;
   readonly chunks: ReadonlyMap<string, StopDirectoryChunkDescriptor>;
   readonly groups: ReadonlyMap<string, readonly StopDirectorySearchEntry[]>;
+  readonly optionsByComposite: ReadonlyMap<string, StopDirectoryOption>;
 }
 
 interface SearchableStopRecord {
@@ -184,6 +187,34 @@ export class StopDirectoryService {
     );
   }
 
+  getOptionByStopSignature(
+    consortiumId: number,
+    stopId: string
+  ): Observable<StopDirectoryOption | null> {
+    return this.index$.pipe(
+      map((index) => {
+        const key = buildEntryKey(consortiumId, stopId);
+        const option = index.optionsByComposite.get(key);
+
+        if (option) {
+          return option;
+        }
+
+        const entry = index.compositeEntries.get(key);
+
+        if (!entry) {
+          return null;
+        }
+
+        const groupKey = buildGroupKey(entry);
+        const members = index.groups.get(groupKey) ?? [entry];
+        const primaryEntry = members[0] ?? entry;
+
+        return toOption(primaryEntry, members);
+      })
+    );
+  }
+
   searchStops(request: StopSearchRequest): Observable<readonly StopDirectoryOption[]> {
     return this.index$.pipe(map((index) => searchDirectory(index, request)));
   }
@@ -217,10 +248,12 @@ function resolveChunkBasePath(indexPath: string): string {
 
 function buildDirectoryIndex(file: StopDirectoryIndexFile): StopDirectoryIndex {
   const entries = new Map<string, StopDirectorySearchEntry>();
+  const compositeEntries = new Map<string, StopDirectorySearchEntry>();
   const groups = new Map<string, StopDirectorySearchEntry[]>();
 
   for (const entry of file.searchIndex) {
     entries.set(entry.stopId, entry);
+    compositeEntries.set(buildEntryKey(entry.consortiumId, entry.stopId), entry);
     const key = buildGroupKey(entry);
     const bucket = groups.get(key);
 
@@ -247,11 +280,16 @@ function buildDirectoryIndex(file: StopDirectoryIndexFile): StopDirectoryIndex {
     }))
     .sort((first, second) => first.entry.name.localeCompare(second.entry.name, SEARCH_LOCALE));
 
+  const frozenGroups = freezeGroups(groups);
+  const optionsByComposite = buildCompositeOptionMap(frozenGroups);
+
   return {
     searchable: Object.freeze(searchable),
     entries,
+    compositeEntries,
     chunks,
-    groups: freezeGroups(groups)
+    groups: frozenGroups,
+    optionsByComposite
   } satisfies StopDirectoryIndex;
 }
 
@@ -350,8 +388,36 @@ function searchDirectory(
   return Object.freeze(results);
 }
 
+function buildCompositeOptionMap(
+  groups: ReadonlyMap<string, readonly StopDirectorySearchEntry[]>
+): ReadonlyMap<string, StopDirectoryOption> {
+  const entries = new Map<string, StopDirectoryOption>();
+
+  groups.forEach((members) => {
+    const primary = members[0];
+
+    if (!primary) {
+      return;
+    }
+
+    const option = toOption(primary, members);
+    const primaryStopId = option.stopIds[0] ?? primary.stopId;
+    entries.set(buildEntryKey(primary.consortiumId, primaryStopId), option);
+
+    members.forEach((member) => {
+      entries.set(buildEntryKey(member.consortiumId, member.stopId), option);
+    });
+  });
+
+  return new Map(entries);
+}
+
 function buildGroupKey(entry: StopDirectorySearchEntry): string {
   return `${entry.consortiumId}|${entry.nucleusId}|${normalize(entry.name)}`;
+}
+
+function buildEntryKey(consortiumId: number, stopId: string): string {
+  return `${consortiumId}${ENTRY_KEY_SEPARATOR}${stopId}`;
 }
 
 function matchesSearch(record: SearchableStopRecord, normalizedQuery: string): boolean {

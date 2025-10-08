@@ -12,6 +12,10 @@ class StopDirectoryServiceStub {
   getOptionByStopId(stopId: string) {
     return of(this.options[stopId] ?? null);
   }
+
+  getOptionByStopSignature(_: number, stopId: string) {
+    return this.getOptionByStopId(stopId);
+  }
 }
 
 class StopConnectionsServiceStub {
@@ -74,7 +78,7 @@ describe('RouteSearchSelectionResolverService', () => {
     const service = setup(connections);
 
     service
-      .resolveFromSlugs('origin-stop--74', 'destination-stop--100', '2025-10-08')
+      .resolveFromSlugs('origin-stop--c7s74', 'destination-stop--c7s100', '2025-10-08')
       .subscribe((selection) => {
         expect(selection).not.toBeNull();
         const resolved = selection as RouteSearchSelection;
@@ -88,10 +92,12 @@ describe('RouteSearchSelectionResolverService', () => {
   it('returns null when slugs are invalid', (done) => {
     const service = setup(new Map());
 
-    service.resolveFromSlugs('invalid', 'destination-stop--100', '2025-10-08').subscribe((selection) => {
-      expect(selection).toBeNull();
-      done();
-    });
+    service
+      .resolveFromSlugs('invalid', 'destination-stop--c7s100', '2025-10-08')
+      .subscribe((selection) => {
+        expect(selection).toBeNull();
+        done();
+      });
   });
 
   it('returns a selection with no matches when connections are empty', (done) => {
@@ -99,7 +105,7 @@ describe('RouteSearchSelectionResolverService', () => {
     const service = setup(connections);
 
     service
-      .resolveFromSlugs('origin-stop--74', 'destination-stop--100', '2025-10-08')
+      .resolveFromSlugs('origin-stop--c7s74', 'destination-stop--c7s100', '2025-10-08')
       .subscribe((selection) => {
         expect(selection).not.toBeNull();
         const resolved = selection as RouteSearchSelection;

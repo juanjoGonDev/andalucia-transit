@@ -27,18 +27,23 @@ describe('route-search-url.util', () => {
     stopIds: ['74', '75']
   };
 
-  it('builds a slug removing diacritics and attaching the primary stop id', () => {
+  it('builds a slug removing diacritics and encoding consortium metadata', () => {
     const slug = buildStopSlug(option);
-    expect(slug).toBe('la-gangosa-av-del-prado--74');
+    expect(slug).toBe('la-gangosa-av-del-prado--c7s74');
   });
 
   it('extracts the stop identifier from a slug', () => {
-    const result = parseStopSlug('estacion-intermodal--100');
-    expect(result).toEqual({ stopId: '100' });
+    const result = parseStopSlug('estacion-intermodal--c7s100');
+    expect(result).toEqual({ consortiumId: 7, stopId: '100' });
   });
 
   it('returns null when the slug is malformed', () => {
     expect(parseStopSlug('invalid-slug')).toBeNull();
+  });
+
+  it('parses legacy slugs without consortium metadata', () => {
+    const result = parseStopSlug('legacy-stop--100');
+    expect(result).toEqual({ consortiumId: null, stopId: '100' });
   });
 
   it('builds route search navigation commands', () => {
@@ -54,9 +59,9 @@ describe('route-search-url.util', () => {
     expect(commands).toEqual([
       '',
       'routes',
-      'la-gangosa-av-del-prado--74',
+      'la-gangosa-av-del-prado--c7s74',
       'to',
-      'estacion-intermodal--100',
+      'estacion-intermodal--c7s100',
       'on',
       '2025-10-08'
     ]);

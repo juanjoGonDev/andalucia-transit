@@ -291,6 +291,57 @@ describe('StopDirectoryService', () => {
     } satisfies StopDirectoryOption);
   });
 
+  it('returns the grouped option for a composite stop signature', async () => {
+    const compositeIndex: DirectoryIndexResponse = {
+      metadata: {
+        ...indexResponse.metadata,
+        consortiums: [
+          ...indexResponse.metadata.consortiums,
+          { id: 8, name: 'Almería', shortName: 'CTAL' }
+        ],
+        totalStops: indexResponse.metadata.totalStops + 1
+      },
+      chunks: [
+        ...indexResponse.chunks,
+        { id: 'consortium-8', consortiumId: 8, path: 'chunks/consortium-8.json', stopCount: 1 }
+      ],
+      searchIndex: [
+        ...indexResponse.searchIndex,
+        {
+          stopId: '79',
+          stopCode: '79',
+          name: 'La Gangosa - Av. Prado',
+          municipality: 'Vícar',
+          municipalityId: 'mun-79',
+          nucleus: 'La Gangosa',
+          nucleusId: 'nuc-79',
+          consortiumId: 8,
+          chunkId: 'consortium-8'
+        }
+      ]
+    } satisfies DirectoryIndexResponse;
+
+    const promise = firstValueFrom(service.getOptionByStopSignature(8, '79'));
+
+    http
+      .expectOne(APP_CONFIG.data.snapshots.stopDirectoryPath)
+      .flush(compositeIndex);
+
+    const option = await promise;
+
+    expect(option).toEqual({
+      id: '79',
+      code: '79',
+      name: 'La Gangosa - Av. Prado',
+      municipality: 'Vícar',
+      municipalityId: 'mun-79',
+      nucleus: 'La Gangosa',
+      nucleusId: 'nuc-79',
+      consortiumId: 8,
+      stopIds: ['79']
+    } satisfies StopDirectoryOption);
+  });
+
   function expectIndexRequest(): void {
     http
       .expectOne(APP_CONFIG.data.snapshots.stopDirectoryPath)

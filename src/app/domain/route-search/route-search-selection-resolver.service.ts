@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
-import { StopDirectoryService } from '../../data/stops/stop-directory.service';
+import { StopDirectoryService, StopDirectoryOption } from '../../data/stops/stop-directory.service';
 import {
   StopConnectionsService,
   STOP_CONNECTION_DIRECTION
@@ -33,8 +33,8 @@ export class RouteSearchSelectionResolverService {
     }
 
     return forkJoin({
-      origin: this.directory.getOptionByStopId(originResult.stopId),
-      destination: this.directory.getOptionByStopId(destinationResult.stopId)
+      origin: this.loadOption(originResult),
+      destination: this.loadOption(destinationResult)
     }).pipe(
       switchMap(({ origin, destination }) => {
         if (!origin || !destination) {
@@ -52,5 +52,19 @@ export class RouteSearchSelectionResolverService {
       }),
       catchError(() => of(null))
     );
+  }
+
+  private loadOption({
+    consortiumId,
+    stopId
+  }: {
+    readonly consortiumId: number | null;
+    readonly stopId: string;
+  }): Observable<StopDirectoryOption | null> {
+    if (consortiumId !== null) {
+      return this.directory.getOptionByStopSignature(consortiumId, stopId);
+    }
+
+    return this.directory.getOptionByStopId(stopId);
   }
 }
