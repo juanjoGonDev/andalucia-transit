@@ -11,6 +11,7 @@ const MILLISECONDS_PER_MINUTE = 60_000;
 const SECONDS_PER_HOUR = 3_600;
 const SECONDS_PER_MINUTE = 60;
 const PAST_WINDOW_MINUTES = 30;
+const MAX_TRAVEL_DURATION_MINUTES = 360;
 
 export interface RouteSearchResultsViewModel {
   readonly departures: readonly RouteSearchDepartureView[];
@@ -138,7 +139,14 @@ function collectCandidatesForMatch(
     );
 
     for (const service of relevantServices) {
-      const candidate = createCandidate(service, originStopId, currentTime, match, scheduleMap, originOrder);
+      const candidate = createCandidate(
+        service,
+        originStopId,
+        currentTime,
+        match,
+        scheduleMap,
+        originOrder
+      );
 
       if (!candidate) {
         continue;
@@ -218,13 +226,13 @@ function createCandidate(
   const minutesSinceDeparture = Math.max(0, -differenceMs / MILLISECONDS_PER_MINUTE);
   const timeParts = decomposeSeconds(waitSeconds);
   const relativeLabel = formatDurationLabel(timeParts);
-  const destinationInfo = findDestinationArrival(
-    service.serviceId,
-    match.destinationStopIds,
-    scheduleMap,
-    service.arrivalTime
-  );
-  const travelDurationLabel = destinationInfo && destinationInfo.travelSeconds > 0
+  const destinationInfo = matchDestinationArrival(service, match, scheduleMap);
+
+  if (!destinationInfo) {
+    return null;
+  }
+
+  const travelDurationLabel = destinationInfo.travelSeconds > 0
     ? formatDurationLabel(decomposeSeconds(destinationInfo.travelSeconds))
     : null;
 
@@ -246,7 +254,7 @@ function createCandidate(
     isUniversityOnly: service.isUniversityOnly,
     progressPercentage: calculateUpcomingProgress(minutesUntilArrival),
     pastProgressPercentage: calculatePastProgress(minutesSinceDeparture),
-    destinationArrivalTime: destinationInfo?.arrivalTime ?? null,
+    destinationArrivalTime: destinationInfo.arrivalTime,
     travelDurationLabel
   } satisfies RouteSearchDepartureCandidate;
 }
@@ -256,37 +264,53 @@ interface DestinationArrivalInfo {
   readonly travelSeconds: number;
 }
 
-function findDestinationArrival(
-  serviceId: string,
-  destinationStopIds: readonly string[],
-  scheduleMap: ReadonlyMap<string, StopScheduleResult>,
-  originArrivalTime: Date
+function matchDestinationArrival(
+  service: StopService,
+  match: RouteSearchLineMatch,
+  scheduleMap: ReadonlyMap<string, StopScheduleResult>
 ): DestinationArrivalInfo | null {
-  for (const stopId of destinationStopIds) {
+  let bestArrival: DestinationArrivalInfo | null = null;
+  let bestDifferenceMinutes = Number.POSITIVE_INFINITY;
+
+  for (const stopId of match.destinationStopIds) {
     const schedule = scheduleMap.get(stopId);
 
     if (!schedule) {
       continue;
     }
 
-    const matchingService = schedule.schedule.services.find((entry) => entry.serviceId === serviceId);
+    for (const candidate of schedule.schedule.services) {
+      if (candidate.lineId !== service.lineId) {
+        continue;
+      }
 
-    if (!matchingService) {
-      continue;
+      if (candidate.direction !== service.direction) {
+        continue;
+      }
+
+      const differenceMs = candidate.arrivalTime.getTime() - service.arrivalTime.getTime();
+
+      if (differenceMs < 0) {
+        continue;
+      }
+
+      const differenceMinutes = differenceMs / MILLISECONDS_PER_MINUTE;
+
+      if (differenceMinutes > MAX_TRAVEL_DURATION_MINUTES) {
+        continue;
+      }
+
+      if (differenceMinutes < bestDifferenceMinutes) {
+        bestDifferenceMinutes = differenceMinutes;
+        bestArrival = {
+          arrivalTime: candidate.arrivalTime,
+          travelSeconds: Math.round(differenceMs / MILLISECONDS_PER_SECOND)
+        } satisfies DestinationArrivalInfo;
+      }
     }
-
-    const travelSeconds = Math.max(
-      0,
-      Math.round((matchingService.arrivalTime.getTime() - originArrivalTime.getTime()) / MILLISECONDS_PER_SECOND)
-    );
-
-    return {
-      arrivalTime: matchingService.arrivalTime,
-      travelSeconds
-    } satisfies DestinationArrivalInfo;
   }
 
-  return null;
+  return bestArrival;
 }
 
 function buildServiceKey(service: StopService): string {

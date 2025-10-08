@@ -73,20 +73,20 @@ describe('RouteSearchResultsService', () => {
   it('merges schedules from multiple origin stops and marks the next upcoming service', (done) => {
     const { service } = setup({
       'origin-a': buildResult('origin-a', [
-        buildService(referenceTime, -20, 'service-1', '001', 'L1', 0),
-        buildService(referenceTime, 5, 'service-2', '001', 'L1', 0),
-        buildService(referenceTime, 40, 'service-3', '001', 'L1', 0)
+        buildService(referenceTime, -20, 'origin-1', '001', 'L1', 0),
+        buildService(referenceTime, 5, 'origin-2', '001', 'L1', 0),
+        buildService(referenceTime, 40, 'origin-3', '001', 'L1', 0)
       ]),
       'origin-b': buildResult('origin-b', [
-        buildService(referenceTime, 15, 'service-4', '001', 'L1', 0),
-        buildService(referenceTime, 60, 'service-5', '001', 'L1', 0)
+        buildService(referenceTime, 15, 'origin-4', '001', 'L1', 0),
+        buildService(referenceTime, 60, 'origin-5', '001', 'L1', 0)
       ]),
       'destination-a': buildResult('destination-a', [
-        buildService(referenceTime, -5, 'service-1', '001', 'L1', 0),
-        buildService(referenceTime, 20, 'service-2', '001', 'L1', 0),
-        buildService(referenceTime, 55, 'service-3', '001', 'L1', 0),
-        buildService(referenceTime, 30, 'service-4', '001', 'L1', 0),
-        buildService(referenceTime, 75, 'service-5', '001', 'L1', 0)
+        buildService(referenceTime, -5, 'destination-1', '001', 'L1', 0),
+        buildService(referenceTime, 20, 'destination-2', '001', 'L1', 0),
+        buildService(referenceTime, 55, 'destination-3', '001', 'L1', 0),
+        buildService(referenceTime, 30, 'destination-4', '001', 'L1', 0),
+        buildService(referenceTime, 75, 'destination-5', '001', 'L1', 0)
       ])
     });
 
@@ -108,7 +108,7 @@ describe('RouteSearchResultsService', () => {
     service.loadResults(selection, { currentTime: referenceTime }).subscribe((viewModel) => {
       expect(viewModel.departures.length).toBe(5);
       expect(viewModel.hasUpcoming).toBeTrue();
-      expect(viewModel.nextDepartureId).toBe('service-2');
+      expect(viewModel.nextDepartureId).toBe('origin-2');
       const first = viewModel.departures[0];
       const second = viewModel.departures[1];
       expect(first.kind).toBe('past');
@@ -132,10 +132,10 @@ describe('RouteSearchResultsService', () => {
   it('passes the selection date to the schedule service', (done) => {
     const { service, stopSchedule } = setup({
       'origin-a': buildResult('origin-a', [
-        buildService(referenceTime, 5, 'service-1', '001', 'L1', 0)
+        buildService(referenceTime, 5, 'origin-1', '001', 'L1', 0)
       ]),
       'destination-a': buildResult('destination-a', [
-        buildService(referenceTime, 15, 'service-1', '001', 'L1', 0)
+        buildService(referenceTime, 15, 'destination-1', '001', 'L1', 0)
       ])
     });
 
@@ -166,12 +166,12 @@ describe('RouteSearchResultsService', () => {
   it('omits past services older than thirty minutes and reports when no upcoming services remain', (done) => {
     const { service } = setup({
       'origin-a': buildResult('origin-a', [
-        buildService(referenceTime, -45, 'service-1', '001', 'L1', 0),
-        buildService(referenceTime, -10, 'service-2', '001', 'L1', 0)
+        buildService(referenceTime, -45, 'origin-1', '001', 'L1', 0),
+        buildService(referenceTime, -10, 'origin-2', '001', 'L1', 0)
       ]),
       'destination-a': buildResult('destination-a', [
-        buildService(referenceTime, -30, 'service-1', '001', 'L1', 0),
-        buildService(referenceTime, 0, 'service-2', '001', 'L1', 0)
+        buildService(referenceTime, -30, 'destination-1', '001', 'L1', 0),
+        buildService(referenceTime, 0, 'destination-2', '001', 'L1', 0)
       ])
     });
 
@@ -207,11 +207,11 @@ describe('RouteSearchResultsService', () => {
     const duplicateTime = new Date(referenceTime.getTime() + 5 * 60_000);
     const { service } = setup({
       'origin-a': buildResult('origin-a', [
-        buildService(referenceTime, 5, 'service-1', '001', 'L1', 0)
+        buildService(referenceTime, 5, 'origin-1', '001', 'L1', 0)
       ]),
       'origin-b': buildResult('origin-b', [
         {
-          serviceId: 'service-duplicate',
+          serviceId: 'origin-duplicate',
           lineId: 'L1',
           lineCode: '001',
           direction: 0,
@@ -222,8 +222,8 @@ describe('RouteSearchResultsService', () => {
         }
       ]),
       'destination-a': buildResult('destination-a', [
-        buildService(referenceTime, 20, 'service-1', '001', 'L1', 0),
-        buildService(referenceTime, 20, 'service-duplicate', '001', 'L1', 0)
+        buildService(referenceTime, 20, 'destination-1', '001', 'L1', 0),
+        buildService(referenceTime, 20, 'destination-duplicate', '001', 'L1', 0)
       ])
     });
 
@@ -249,21 +249,54 @@ describe('RouteSearchResultsService', () => {
     });
   });
 
+  it('skips origin services that lack a matching destination arrival within the travel window', (done) => {
+    const { service } = setup({
+      'origin-a': buildResult('origin-a', [
+        buildService(referenceTime, 5, 'origin-1', '001', 'L1', 0)
+      ]),
+      'destination-a': buildResult('destination-a', [
+        buildService(referenceTime, 400, 'destination-miss', '001', 'L1', 0)
+      ])
+    });
+
+    const selection: RouteSearchSelection = {
+      origin,
+      destination,
+      queryDate: referenceTime,
+      lineMatches: [
+        {
+          lineId: 'L1',
+          lineCode: '001',
+          direction: 0,
+          originStopIds: ['origin-a'],
+          destinationStopIds: ['destination-a']
+        }
+      ]
+    };
+
+    service.loadResults(selection, { currentTime: referenceTime }).subscribe((viewModel) => {
+      expect(viewModel.departures.length).toBe(0);
+      expect(viewModel.hasUpcoming).toBeFalse();
+      expect(viewModel.nextDepartureId).toBeNull();
+      done();
+    });
+  });
+
   it('returns the full schedule when requesting a future date', (done) => {
     const futureReference = new Date('2025-06-02T00:00:00Z');
     const { service } = setup({
       'origin-a': buildResult(
         'origin-a',
         [
-          buildService(futureReference, 60, 'service-10', '010', 'L10', 1),
-          buildService(futureReference, 120, 'service-11', '010', 'L10', 1)
+          buildService(futureReference, 60, 'origin-10', '010', 'L10', 1),
+          buildService(futureReference, 120, 'origin-11', '010', 'L10', 1)
         ]
       ),
       'destination-a': buildResult(
         'destination-a',
         [
-          buildService(futureReference, 90, 'service-10', '010', 'L10', 1),
-          buildService(futureReference, 150, 'service-11', '010', 'L10', 1)
+          buildService(futureReference, 90, 'destination-10', '010', 'L10', 1),
+          buildService(futureReference, 150, 'destination-11', '010', 'L10', 1)
         ]
       )
     });
@@ -289,7 +322,7 @@ describe('RouteSearchResultsService', () => {
       expect(viewModel.departures.length).toBe(2);
       expect(viewModel.departures[0].kind).toBe('upcoming');
       expect(viewModel.departures[1].kind).toBe('upcoming');
-      expect(viewModel.nextDepartureId).toBe('service-10');
+      expect(viewModel.nextDepartureId).toBe('origin-10');
       done();
     });
   });
