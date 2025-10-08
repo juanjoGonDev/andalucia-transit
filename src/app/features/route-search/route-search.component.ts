@@ -13,7 +13,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { map, of, startWith, switchMap } from 'rxjs';
+import { distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
 import { APP_CONFIG } from '../../core/config';
@@ -104,7 +104,9 @@ export class RouteSearchComponent implements AfterViewInit {
     const initialSelection = this.state.getSelection();
     const selectionStream$ = this.state.selection$.pipe(startWith(initialSelection));
     const params$ = this.route.paramMap.pipe(
-      map((paramMap) => this.extractParams(paramMap))
+      startWith(this.route.snapshot.paramMap),
+      map((paramMap) => this.extractParams(paramMap)),
+      distinctUntilChanged((first, second) => this.paramsEqual(first, second))
     );
 
     params$
@@ -215,6 +217,17 @@ export class RouteSearchComponent implements AfterViewInit {
       destinationSlug: paramMap.get(APP_CONFIG.routeParams.routeSearch.destination),
       dateSlug: paramMap.get(APP_CONFIG.routeParams.routeSearch.date)
     } satisfies RouteSearchRouteParams;
+  }
+
+  private paramsEqual(
+    first: RouteSearchRouteParams,
+    second: RouteSearchRouteParams
+  ): boolean {
+    return (
+      first.originSlug === second.originSlug &&
+      first.destinationSlug === second.destinationSlug &&
+      first.dateSlug === second.dateSlug
+    );
   }
 
   private selectionMatchesParams(

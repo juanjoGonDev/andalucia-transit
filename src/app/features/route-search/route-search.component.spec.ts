@@ -53,12 +53,24 @@ class RouteSearchSelectionResolverServiceStub {
     .and.returnValue(of(null));
 }
 
+class ActivatedRouteStub {
+  private readonly subject = new BehaviorSubject<ParamMap>(convertToParamMap({}));
+  readonly paramMap = this.subject.asObservable();
+  snapshot = { paramMap: convertToParamMap({}) };
+
+  emit(params: Record<string, string>): void {
+    const map = convertToParamMap(params);
+    this.snapshot = { paramMap: map };
+    this.subject.next(map);
+  }
+}
+
 describe('RouteSearchComponent', () => {
   let fixture: ComponentFixture<RouteSearchComponent>;
   let state: RouteSearchStateService;
   let resultsService: RouteSearchResultsServiceStub;
   let resolver: RouteSearchSelectionResolverServiceStub;
-  let paramMapSubject: BehaviorSubject<ParamMap>;
+  let activatedRoute: ActivatedRouteStub;
 
   const origin: StopDirectoryOption = {
     id: 'alpha',
@@ -85,7 +97,7 @@ describe('RouteSearchComponent', () => {
   };
 
   beforeEach(async () => {
-    paramMapSubject = new BehaviorSubject<ParamMap>(convertToParamMap({}));
+    activatedRoute = new ActivatedRouteStub();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -102,7 +114,7 @@ describe('RouteSearchComponent', () => {
           provide: RouteSearchSelectionResolverService,
           useClass: RouteSearchSelectionResolverServiceStub
         },
-        { provide: ActivatedRoute, useValue: { paramMap: paramMapSubject.asObservable() } }
+        { provide: ActivatedRoute, useValue: activatedRoute }
       ]
     })
       .overrideComponent(RouteSearchComponent, {
@@ -292,13 +304,11 @@ describe('RouteSearchComponent', () => {
       })
     );
 
-    paramMapSubject.next(
-      convertToParamMap({
-        originSlug: 'alpha-station--alpha',
-        destinationSlug: 'beta-terminal--beta',
-        dateSlug: buildDateSlug(new Date('2025-02-02T00:00:00Z'))
-      })
-    );
+    activatedRoute.emit({
+      originSlug: 'alpha-station--alpha',
+      destinationSlug: 'beta-terminal--beta',
+      dateSlug: buildDateSlug(new Date('2025-02-02T00:00:00Z'))
+    });
 
     fixture.detectChanges();
 
