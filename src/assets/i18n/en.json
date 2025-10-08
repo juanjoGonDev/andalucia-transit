@@ -25,7 +25,8 @@
         "destinationPlaceholder": "Where do you want to go?",
         "dateLabel": "Date",
         "submit": "Search schedules",
-        "swapLabel": "Swap origin and destination"
+        "swapLabel": "Swap origin and destination",
+        "noRoutes": "No direct routes are available between these stops."
       },
       "recentStops": {
         "title": "Recent Stops",

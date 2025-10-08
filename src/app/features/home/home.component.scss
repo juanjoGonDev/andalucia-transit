@@ -119,6 +119,18 @@
   gap: clamp(1rem, 1.5vw + 0.75rem, 1.5rem);
 }
 
+.home__search-feedback {
+  margin: -0.25rem auto 0;
+  max-width: 32rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-primary);
+}
+
+.dark .home__search-feedback {
+  color: var(--color-primary-light);
+}
+
 .home__search-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);

@@ -103,6 +103,14 @@
           <button class="home__search-submit" type="submit" [disabled]="searchForm.invalid">
             {{ searchSubmitKey | translate }}
           </button>
+          <p
+            *ngIf="showNoRoutes$ | async"
+            class="home__search-feedback"
+            role="status"
+            aria-live="polite"
+          >
+            {{ noRoutesMessageKey | translate }}
+          </p>
         </form>
       </app-section>
       <app-section [titleKey]="recentStopsTitleKey">

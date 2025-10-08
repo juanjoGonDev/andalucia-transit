@@ -18,7 +18,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, combineLatest, firstValueFrom, of, timer } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, firstValueFrom, of, timer } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 
 import { APP_CONFIG } from '../../core/config';
@@ -109,7 +109,6 @@ export class HomeComponent {
     second: 0,
     millisecond: 0
   } as const;
-  private static readonly INCOMPATIBLE_STOP_ERROR = 'incompatibleStopPair' as const;
   private static readonly EMPTY_STOP_IDS = Object.freeze([] as string[]);
   private static readonly SORT_LOCALE = 'es-ES' as const;
 
@@ -120,6 +119,7 @@ export class HomeComponent {
   private readonly stopDirectory = inject(StopDirectoryService);
   private readonly stopConnections = inject(StopConnectionsService);
   private readonly routeSearchState = inject(RouteSearchStateService);
+  private readonly noRoutesFeedback = new BehaviorSubject<boolean>(false);
 
 
   private readonly translation = APP_CONFIG.translationKeys.home;
@@ -146,6 +146,7 @@ export class HomeComponent {
   protected readonly searchDateLabelKey = this.translation.sections.search.dateLabel;
   protected readonly searchSubmitKey = this.translation.sections.search.submit;
   protected readonly swapButtonLabelKey = this.translation.sections.search.swapLabel;
+  protected readonly noRoutesMessageKey = this.translation.sections.search.noRoutes;
   protected readonly recentStopsTitleKey = this.translation.sections.recentStops.title;
   protected readonly findNearbyTitleKey = this.translation.sections.findNearby.title;
   protected readonly findNearbyActionKey = this.translation.sections.findNearby.action;
@@ -299,6 +300,7 @@ export class HomeComponent {
 
   protected readonly displayStopFn = (value: StopAutocompleteValue): string =>
     this.displayStop(value);
+  protected readonly showNoRoutes$ = this.noRoutesFeedback.asObservable();
 
   constructor() {
     this.observeSelections();
@@ -328,11 +330,12 @@ export class HomeComponent {
     origin: StopDirectoryOption,
     destination: StopDirectoryOption
   ): Promise<void> {
+    this.hideNoRoutesFeedback();
     const connections = await firstValueFrom(this.originConnections$);
     const lineMatches = this.collectLineMatches(origin, destination, connections);
 
     if (!lineMatches.length) {
-      this.searchForm.markAllAsTouched();
+      this.showNoRoutesFeedback();
       return;
     }
 
@@ -469,22 +472,24 @@ export class HomeComponent {
   }
 
   private observeSelections(): void {
-    combineLatest([
-      this.selectedOrigin$,
-      this.selectedDestination$,
-      this.originConnections$,
-      this.destinationConnections$
-    ])
+    combineLatest([this.selectedOrigin$, this.selectedDestination$])
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(([origin, destination, originConnections, destinationConnections]) => {
+      .subscribe(([origin, destination]) => {
         this.ensureDistinctStops(origin, destination);
-        this.updateCompatibilityErrors(
-          origin,
-          destination,
-          originConnections,
-          destinationConnections
-        );
+        this.hideNoRoutesFeedback();
       });
+  }
+
+  private showNoRoutesFeedback(): void {
+    if (!this.noRoutesFeedback.getValue()) {
+      this.noRoutesFeedback.next(true);
+    }
+  }
+
+  private hideNoRoutesFeedback(): void {
+    if (this.noRoutesFeedback.getValue()) {
+      this.noRoutesFeedback.next(false);
+    }
   }
 
   private ensureDistinctStops(
@@ -500,71 +505,6 @@ export class HomeComponent {
     }
 
     this.destinationControl.setValue(null);
-  }
-
-  private updateCompatibilityErrors(
-    origin: StopDirectoryOption | null,
-    destination: StopDirectoryOption | null,
-    originConnections: ReadonlyMap<string, StopConnection>,
-    destinationConnections: ReadonlyMap<string, StopConnection>
-  ): void {
-    this.applyCompatibilityState(
-      this.destinationControl,
-      destination,
-      originConnections,
-      Boolean(origin)
-    );
-    this.applyCompatibilityState(
-      this.originControl,
-      origin,
-      destinationConnections,
-      Boolean(destination)
-    );
-  }
-
-  private applyCompatibilityState(
-    control: FormControl<StopAutocompleteValue>,
-    option: StopDirectoryOption | null,
-    connections: ReadonlyMap<string, StopConnection>,
-    hasOppositeSelection: boolean
-  ): void {
-    if (!option) {
-      this.clearCompatibilityError(control);
-      return;
-    }
-
-    if (!hasOppositeSelection) {
-      this.clearCompatibilityError(control);
-      return;
-    }
-
-    if (connections.size && this.hasAnyStopInConnections(option.stopIds, connections)) {
-      this.clearCompatibilityError(control);
-      return;
-    }
-
-    this.applyCompatibilityError(control);
-  }
-
-  private applyCompatibilityError(control: FormControl<StopAutocompleteValue>): void {
-    const current = control.errors ?? {};
-
-    if (current[HomeComponent.INCOMPATIBLE_STOP_ERROR]) {
-      return;
-    }
-
-    control.setErrors({ ...current, [HomeComponent.INCOMPATIBLE_STOP_ERROR]: true });
-  }
-
-  private clearCompatibilityError(control: FormControl<StopAutocompleteValue>): void {
-    const current = control.errors;
-
-    if (!current || !current[HomeComponent.INCOMPATIBLE_STOP_ERROR]) {
-      return;
-    }
-
-    const { [HomeComponent.INCOMPATIBLE_STOP_ERROR]: _, ...remaining } = current;
-    control.setErrors(Object.keys(remaining).length ? remaining : null);
   }
 
   private createRouteSelection(

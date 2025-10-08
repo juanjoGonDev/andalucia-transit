@@ -313,49 +313,7 @@ describe('HomeComponent', () => {
     subscription.unsubscribe();
   }));
 
-  it('marks the destination control as incompatible when the origin loses shared lines', fakeAsync(() => {
-    const originControl = component['searchForm'].controls
-      .origin as FormControl<StopDirectoryOption | string | null>;
-    const destinationControl = component['searchForm'].controls
-      .destination as FormControl<StopDirectoryOption | string | null>;
-    const debounce = APP_CONFIG.homeData.search.debounceMs;
-
-    connections.setResponse(
-      STUB_STOPS[0].stopIds,
-      STOP_CONNECTION_DIRECTION.Forward,
-      new Map<string, StopConnection>([
-        ['beta', buildConnection('beta', ['alpha'], [['L1', 0]])]
-      ])
-    );
-    connections.setBidirectionalResponse(
-      STUB_STOPS[2].stopIds,
-      new Map<string, StopConnection>()
-    );
-
-    originControl.setValue(STUB_STOPS[0]);
-    tick(debounce + 1);
-    fixture.detectChanges();
-    flush();
-
-    destinationControl.setValue(STUB_STOPS[1]);
-    tick(debounce + 1);
-    fixture.detectChanges();
-    flush();
-
-    expect(destinationControl.hasError('incompatibleStopPair')).toBeFalse();
-
-    originControl.setValue(STUB_STOPS[2]);
-    tick(debounce + 1);
-    fixture.detectChanges();
-    flush();
-
-    expect(destinationControl.hasError('incompatibleStopPair')).toBeTrue();
-    expect(destinationControl.invalid).toBeTrue();
-  }));
-
   it('filters origin options when the destination is selected first', fakeAsync(() => {
-    const originControl = component['searchForm'].controls
-      .origin as FormControl<StopDirectoryOption | string | null>;
     const destinationControl = component['searchForm'].controls
       .destination as FormControl<StopDirectoryOption | string | null>;
     const originOptions: StopDirectoryOption[][] = [];
@@ -381,47 +339,6 @@ describe('HomeComponent', () => {
     expect(latest.map((option) => option.id)).toEqual(['alpha']);
 
     subscription.unsubscribe();
-    expect(originControl.hasError('incompatibleStopPair')).toBeFalse();
-  }));
-
-  it('marks the origin control as incompatible when the destination loses shared lines', fakeAsync(() => {
-    const originControl = component['searchForm'].controls
-      .origin as FormControl<StopDirectoryOption | string | null>;
-    const destinationControl = component['searchForm'].controls
-      .destination as FormControl<StopDirectoryOption | string | null>;
-    const debounce = APP_CONFIG.homeData.search.debounceMs;
-
-    connections.setResponse(
-      STUB_STOPS[1].stopIds,
-      STOP_CONNECTION_DIRECTION.Backward,
-      new Map<string, StopConnection>([
-        ['alpha', buildConnection('alpha', ['beta'], [['L1', 0]])]
-      ])
-    );
-    connections.setBidirectionalResponse(
-      STUB_STOPS[3].stopIds,
-      new Map<string, StopConnection>()
-    );
-
-    destinationControl.setValue(STUB_STOPS[1]);
-    tick(debounce + 1);
-    fixture.detectChanges();
-    flush();
-
-    originControl.setValue(STUB_STOPS[0]);
-    tick(debounce + 1);
-    fixture.detectChanges();
-    flush();
-
-    expect(originControl.hasError('incompatibleStopPair')).toBeFalse();
-
-    destinationControl.setValue(STUB_STOPS[3]);
-    tick(debounce + 1);
-    fixture.detectChanges();
-    flush();
-
-    expect(originControl.hasError('incompatibleStopPair')).toBeTrue();
-    expect(originControl.invalid).toBeTrue();
   }));
 
   it('stores the selected stops and line matches before navigating to results', fakeAsync(() => {
@@ -473,6 +390,93 @@ describe('HomeComponent', () => {
       }
     ]);
     expect(navigateSpy).toHaveBeenCalled();
+  }));
+
+  it('shows the no routes feedback when no shared lines are found', fakeAsync(() => {
+    const originControl = component['searchForm'].controls
+      .origin as FormControl<StopDirectoryOption | string | null>;
+    const destinationControl = component['searchForm'].controls
+      .destination as FormControl<StopDirectoryOption | string | null>;
+    const dateControl = component['searchForm'].controls.date;
+    const debounce = APP_CONFIG.homeData.search.debounceMs;
+    const feedbackStates: boolean[] = [];
+    const subscription = component['showNoRoutes$'].subscribe((state) => {
+      feedbackStates.push(state);
+    });
+
+    connections.setResponse(
+      STUB_STOPS[0].stopIds,
+      STOP_CONNECTION_DIRECTION.Forward,
+      new Map<string, StopConnection>()
+    );
+    connections.setResponse(
+      STUB_STOPS[1].stopIds,
+      STOP_CONNECTION_DIRECTION.Backward,
+      new Map<string, StopConnection>()
+    );
+
+    originControl.setValue(STUB_STOPS[0]);
+    destinationControl.setValue(STUB_STOPS[1]);
+    const minimumDate = component['minSearchDate'];
+    const validDate = new Date(minimumDate.getTime());
+    validDate.setDate(validDate.getDate() + 1);
+    dateControl.setValue(validDate);
+    tick(debounce + 1);
+    fixture.detectChanges();
+    flush();
+
+    component['onSearch']();
+    flush();
+
+    expect(feedbackStates[feedbackStates.length - 1]).toBeTrue();
+
+    subscription.unsubscribe();
+  }));
+
+  it('clears the no routes feedback when selections change after a failed search', fakeAsync(() => {
+    const originControl = component['searchForm'].controls
+      .origin as FormControl<StopDirectoryOption | string | null>;
+    const destinationControl = component['searchForm'].controls
+      .destination as FormControl<StopDirectoryOption | string | null>;
+    const dateControl = component['searchForm'].controls.date;
+    const debounce = APP_CONFIG.homeData.search.debounceMs;
+    const feedbackStates: boolean[] = [];
+    const subscription = component['showNoRoutes$'].subscribe((state) => {
+      feedbackStates.push(state);
+    });
+
+    connections.setResponse(
+      STUB_STOPS[0].stopIds,
+      STOP_CONNECTION_DIRECTION.Forward,
+      new Map<string, StopConnection>()
+    );
+    connections.setResponse(
+      STUB_STOPS[1].stopIds,
+      STOP_CONNECTION_DIRECTION.Backward,
+      new Map<string, StopConnection>()
+    );
+
+    originControl.setValue(STUB_STOPS[0]);
+    destinationControl.setValue(STUB_STOPS[1]);
+    const minimumDate = component['minSearchDate'];
+    const validDate = new Date(minimumDate.getTime());
+    validDate.setDate(validDate.getDate() + 1);
+    dateControl.setValue(validDate);
+    tick(debounce + 1);
+    fixture.detectChanges();
+    flush();
+
+    component['onSearch']();
+    flush();
+
+    originControl.setValue(STUB_STOPS[2]);
+    tick(debounce + 1);
+    fixture.detectChanges();
+    flush();
+
+    expect(feedbackStates[feedbackStates.length - 1]).toBeFalse();
+
+    subscription.unsubscribe();
   }));
 
   it('clears a duplicated destination when the same stop is selected as the origin', fakeAsync(() => {

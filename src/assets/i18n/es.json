@@ -25,7 +25,8 @@
         "destinationPlaceholder": "¿A dónde vas?",
         "dateLabel": "Fecha",
         "submit": "Buscar horarios",
-        "swapLabel": "Intercambiar origen y destino"
+        "swapLabel": "Intercambiar origen y destino",
+        "noRoutes": "No hay rutas directas disponibles entre estas paradas."
       },
       "recentStops": {
         "title": "Paradas recientes",

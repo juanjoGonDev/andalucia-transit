@@ -72,7 +72,8 @@ export const APP_CONFIG = {
           destinationPlaceholder: 'home.sections.search.destinationPlaceholder',
           dateLabel: 'home.sections.search.dateLabel',
           submit: 'home.sections.search.submit',
-          swapLabel: 'home.sections.search.swapLabel'
+          swapLabel: 'home.sections.search.swapLabel',
+          noRoutes: 'home.sections.search.noRoutes'
         },
         recentStops: {
           title: 'home.sections.recentStops.title',
