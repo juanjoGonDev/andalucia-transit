@@ -28,6 +28,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.
 - `docs/api.html` contains a static snapshot of the CTAN open data portal describing all consumed API endpoints. Refresh it when the upstream site changes and note the update in this file.
+- `docs/api-reference.md` summarizes every CTAN REST endpoint and cross-references shared parameters for planning data combinations; keep it current when the upstream API evolves.
 - Add new documentation artifacts in `docs/` alongside a short pointer in AGENTS.md for discoverability.
 - Track feature work using the checklist at `docs/features-checklist.md` and update entries as scope evolves.
 
