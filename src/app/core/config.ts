@@ -195,7 +195,9 @@ export const APP_CONFIG = {
       nextBadge: 'routeSearch.nextBadge',
       noUpcoming: 'routeSearch.noUpcoming',
       changeDate: 'routeSearch.changeDate',
-      emptyResults: 'routeSearch.emptyResults'
+      emptyResults: 'routeSearch.emptyResults',
+      arrivalAt: 'routeSearch.arrivalAt',
+      travelDuration: 'routeSearch.travelDuration'
     },
     map: {
       title: 'map.title',

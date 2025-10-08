@@ -21,6 +21,10 @@ import {
 
 const API_RESPONSE_DATE_FORMAT = 'yyyy-LL-dd HH:mm' as const;
 
+interface StopScheduleRequestOptions {
+  readonly queryDate?: Date;
+}
+
 @Injectable({ providedIn: 'root' })
 export class StopScheduleService {
   private readonly directory = inject(StopDirectoryService);
@@ -29,19 +33,26 @@ export class StopScheduleService {
   private readonly runtimeFlags = inject(RuntimeFlagsService);
   private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
 
-  getStopSchedule(stopId: string): Observable<StopScheduleResult> {
+  private readonly timezone = this.config.data.timezone;
+
+  getStopSchedule(
+    stopId: string,
+    options?: StopScheduleRequestOptions
+  ): Observable<StopScheduleResult> {
+    const targetDate = options?.queryDate ?? new Date();
+
     return this.directory.getStopById(stopId).pipe(
       switchMap((metadata) => {
         if (!metadata) {
           return throwError(() => new Error(`Unknown stop identifier: ${stopId}`));
         }
 
-        if (this.runtimeFlags.shouldForceSnapshot()) {
-          return this.loadFromSnapshot(metadata, null);
+        if (this.runtimeFlags.shouldForceSnapshot() || !this.isSameDay(targetDate, new Date())) {
+          return this.loadFromSnapshot(metadata, null, { targetDate });
         }
 
         return this.loadFromApi(metadata).pipe(
-          catchError((error) => this.loadFromSnapshot(metadata, error))
+          catchError((error) => this.loadFromSnapshot(metadata, error, { targetDate }))
         );
       })
     );
@@ -58,7 +69,8 @@ export class StopScheduleService {
 
   private loadFromSnapshot(
     metadata: StopDirectoryRecord,
-    apiError: unknown
+    apiError: unknown,
+    options?: { readonly targetDate?: Date }
   ): Observable<StopScheduleResult> {
     return this.snapshotRepository.getSnapshotForStop(metadata.stopId).pipe(
       switchMap((record) => {
@@ -76,7 +88,7 @@ export class StopScheduleService {
           return throwError(() => new Error(`Snapshot not available for stop ${metadata.stopId}`));
         }
 
-        return of(this.buildSnapshotResult(record));
+        return of(this.buildSnapshotResult(record, options?.targetDate ?? null));
       })
     );
   }
@@ -114,16 +126,54 @@ export class StopScheduleService {
     } satisfies StopScheduleResult;
   }
 
-  private buildSnapshotResult(record: StopScheduleSnapshotRecord): StopScheduleResult {
-    const services = record.stop.services.map((service, index) =>
-      mapSnapshotService(service, record.stop.stopId, index)
+  private buildSnapshotResult(
+    record: StopScheduleSnapshotRecord,
+    targetDate: Date | null
+  ): StopScheduleResult {
+    const baseStart = toStartOfDayInZone(record.stop.query.startTime, this.timezone);
+    const targetStart = targetDate ? toStartOfDayInZone(targetDate, this.timezone) : null;
+
+    const normalizedServices = record.stop.services
+      .map((service) => {
+        const scheduledDateTime = DateTime.fromJSDate(service.scheduledTime, {
+          zone: this.timezone
+        });
+        const scheduledDay = scheduledDateTime.startOf('day');
+        const dayOffset = Math.trunc(scheduledDay.diff(baseStart, 'days').days);
+        const referenceBase = targetStart ? targetStart.plus({ days: dayOffset }) : scheduledDay;
+        const normalizedDateTime = targetStart
+          ? referenceBase.set({
+              hour: scheduledDateTime.hour,
+              minute: scheduledDateTime.minute,
+              second: scheduledDateTime.second,
+              millisecond: scheduledDateTime.millisecond
+            })
+          : scheduledDateTime;
+
+        return {
+          service,
+          arrival: normalizedDateTime
+        };
+      })
+      .filter((entry) => {
+        if (!targetStart) {
+          return true;
+        }
+
+        const end = targetStart.plus({ days: 1 });
+        return entry.arrival >= targetStart && entry.arrival < end;
+      })
+      .sort((first, second) => first.arrival.toMillis() - second.arrival.toMillis());
+
+    const services = normalizedServices.map((entry, index) =>
+      mapSnapshotService(entry.service, record.stop.stopId, index, entry.arrival.toJSDate())
     );
 
     const schedule: StopSchedule = {
       stopId: record.stop.stopId,
       stopCode: record.stop.stopCode,
       stopName: record.stop.stopName,
-      queryDate: new Date(record.stop.query.startTime),
+      queryDate: (targetStart ?? baseStart).toJSDate(),
       generatedAt: new Date(record.stop.query.requestedAt),
       services: Object.freeze(services)
     } satisfies StopSchedule;
@@ -137,6 +187,13 @@ export class StopScheduleService {
         snapshotTime: new Date(record.metadata.generatedAt)
       }
     } satisfies StopScheduleResult;
+  }
+
+  private isSameDay(first: Date, second: Date): boolean {
+    return (
+      toStartOfDayInZone(first, this.timezone).toMillis() ===
+      toStartOfDayInZone(second, this.timezone).toMillis()
+    );
   }
 }
 
@@ -163,7 +220,8 @@ function mapApiService(
 function mapSnapshotService(
   service: StopScheduleSnapshotService,
   stopId: string,
-  index: number
+  index: number,
+  arrivalTimeOverride?: Date
 ): StopService {
   return {
     serviceId: `${stopId}-${service.lineId}-${index}`,
@@ -171,7 +229,7 @@ function mapSnapshotService(
     lineCode: service.lineCode,
     direction: service.direction,
     destination: service.destination,
-    arrivalTime: new Date(service.scheduledTime),
+    arrivalTime: arrivalTimeOverride ?? new Date(service.scheduledTime),
     isAccessible: hasFeature(service.stopType, SERVICE_FEATURE_FLAG.Accessible),
     isUniversityOnly: hasFeature(service.stopType, SERVICE_FEATURE_FLAG.University)
   } satisfies StopService;
@@ -202,6 +260,10 @@ function buildApiUnavailableError(
   const message = `Unable to retrieve live schedules for stop ${metadata.stopCode} (${metadata.name}) from ${providerName}. Last error: ${reason}`;
 
   return new Error(message);
+}
+
+function toStartOfDayInZone(date: Date, zone: string): DateTime {
+  return DateTime.fromJSDate(date, { zone }).startOf('day');
 }
 
 const SERVICE_FEATURE_FLAG = {

@@ -10,7 +10,10 @@ import { StopScheduleResult, StopService } from '../stop-schedule/stop-schedule.
 class StopScheduleServiceStub {
   constructor(private readonly results: Map<string, StopScheduleResult>) {}
 
-  getStopSchedule(stopId: string) {
+  readonly requests: { readonly stopId: string; readonly queryDate: Date | undefined }[] = [];
+
+  getStopSchedule(stopId: string, options?: { readonly queryDate?: Date }) {
+    this.requests.push({ stopId, queryDate: options?.queryDate });
     const result = this.results.get(stopId);
 
     if (!result) {
@@ -48,7 +51,9 @@ describe('RouteSearchResultsService', () => {
     stopIds: ['destination-a']
   };
 
-  function setup(results: Record<string, StopScheduleResult>): RouteSearchResultsService {
+  function setup(
+    results: Record<string, StopScheduleResult>
+  ): { service: RouteSearchResultsService; stopSchedule: StopScheduleServiceStub } {
     TestBed.configureTestingModule({
       providers: [
         RouteSearchResultsService,
@@ -59,11 +64,14 @@ describe('RouteSearchResultsService', () => {
       ]
     });
 
-    return TestBed.inject(RouteSearchResultsService);
+    return {
+      service: TestBed.inject(RouteSearchResultsService),
+      stopSchedule: TestBed.inject(StopScheduleService) as unknown as StopScheduleServiceStub
+    };
   }
 
   it('merges schedules from multiple origin stops and marks the next upcoming service', (done) => {
-    const service = setup({
+    const { service } = setup({
       'origin-a': buildResult('origin-a', [
         buildService(referenceTime, -20, 'service-1', '001', 'L1', 0),
         buildService(referenceTime, 5, 'service-2', '001', 'L1', 0),
@@ -72,6 +80,13 @@ describe('RouteSearchResultsService', () => {
       'origin-b': buildResult('origin-b', [
         buildService(referenceTime, 15, 'service-4', '001', 'L1', 0),
         buildService(referenceTime, 60, 'service-5', '001', 'L1', 0)
+      ]),
+      'destination-a': buildResult('destination-a', [
+        buildService(referenceTime, -5, 'service-1', '001', 'L1', 0),
+        buildService(referenceTime, 20, 'service-2', '001', 'L1', 0),
+        buildService(referenceTime, 55, 'service-3', '001', 'L1', 0),
+        buildService(referenceTime, 30, 'service-4', '001', 'L1', 0),
+        buildService(referenceTime, 75, 'service-5', '001', 'L1', 0)
       ])
     });
 
@@ -100,16 +115,62 @@ describe('RouteSearchResultsService', () => {
       expect(line.items[1].kind).toBe('upcoming');
       expect(line.items[1].relativeLabel).toBe('5m');
       expect(line.items[1].isNext).toBeTrue();
+      expect(line.items[1].progressPercentage).toBe(Math.round((5 / 30) * 100));
+      expect(line.items[1].destinationArrivalTime).not.toBeNull();
+      expect(line.items[1].travelDurationLabel).toBe('15m');
+      expect(line.items[0].pastProgressPercentage).toBe(Math.round((20 / 30) * 100));
       expect(line.items[2].relativeLabel).toBe('15m');
+      const expectedArrival = new Date(referenceTime.getTime() + 20 * 60_000);
+      expect(line.items[1].destinationArrivalTime?.toISOString()).toBe(
+        expectedArrival.toISOString()
+      );
+      done();
+    });
+  });
+
+  it('passes the selection date to the schedule service', (done) => {
+    const { service, stopSchedule } = setup({
+      'origin-a': buildResult('origin-a', [
+        buildService(referenceTime, 5, 'service-1', '001', 'L1', 0)
+      ]),
+      'destination-a': buildResult('destination-a', [
+        buildService(referenceTime, 15, 'service-1', '001', 'L1', 0)
+      ])
+    });
+
+    const selection: RouteSearchSelection = {
+      origin,
+      destination,
+      queryDate: referenceTime,
+      lineMatches: [
+        {
+          lineId: 'L1',
+          lineCode: '001',
+          direction: 0,
+          originStopIds: ['origin-a'],
+          destinationStopIds: ['destination-a']
+        }
+      ]
+    };
+
+    service.loadResults(selection, { currentTime: referenceTime }).subscribe(() => {
+      expect(stopSchedule.requests.length).toBe(2);
+      stopSchedule.requests.forEach((request) => {
+        expect(request.queryDate?.getTime()).toBe(selection.queryDate.getTime());
+      });
       done();
     });
   });
 
   it('omits past services older than thirty minutes and reports when no upcoming services remain', (done) => {
-    const service = setup({
+    const { service } = setup({
       'origin-a': buildResult('origin-a', [
         buildService(referenceTime, -45, 'service-1', '001', 'L1', 0),
         buildService(referenceTime, -10, 'service-2', '001', 'L1', 0)
+      ]),
+      'destination-a': buildResult('destination-a', [
+        buildService(referenceTime, -30, 'service-1', '001', 'L1', 0),
+        buildService(referenceTime, 0, 'service-2', '001', 'L1', 0)
       ])
     });
 
@@ -132,6 +193,8 @@ describe('RouteSearchResultsService', () => {
       expect(viewModel.lines[0].items.length).toBe(1);
       expect(viewModel.lines[0].items[0].relativeLabel).toBe('10m');
       expect(viewModel.lines[0].items[0].kind).toBe('past');
+      expect(viewModel.lines[0].items[0].pastProgressPercentage).toBe(Math.round((10 / 30) * 100));
+      expect(viewModel.lines[0].items[0].destinationArrivalTime).not.toBeNull();
       expect(viewModel.lines[0].hasUpcoming).toBeFalse();
       done();
     });
@@ -139,7 +202,7 @@ describe('RouteSearchResultsService', () => {
 
   it('deduplicates services that share the same line, direction, and arrival minute', (done) => {
     const duplicateTime = new Date(referenceTime.getTime() + 5 * 60_000);
-    const service = setup({
+    const { service } = setup({
       'origin-a': buildResult('origin-a', [
         buildService(referenceTime, 5, 'service-1', '001', 'L1', 0)
       ]),
@@ -154,6 +217,10 @@ describe('RouteSearchResultsService', () => {
           isAccessible: true,
           isUniversityOnly: false
         }
+      ]),
+      'destination-a': buildResult('destination-a', [
+        buildService(referenceTime, 20, 'service-1', '001', 'L1', 0),
+        buildService(referenceTime, 20, 'service-duplicate', '001', 'L1', 0)
       ])
     });
 

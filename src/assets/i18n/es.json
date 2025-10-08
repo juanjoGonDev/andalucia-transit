@@ -129,7 +129,9 @@
     "nextBadge": "Siguiente",
     "noUpcoming": "No hay más salidas directas para esta fecha en las próximas horas.",
     "changeDate": "Buscar otra fecha",
-    "emptyResults": "No se encontraron servicios para esta ruta."
+    "emptyResults": "No se encontraron servicios para esta ruta.",
+    "arrivalAt": "Llega a las {{time}}",
+    "travelDuration": "Trayecto {{duration}}"
   },
   "map": {
     "title": "Mapa de la red",

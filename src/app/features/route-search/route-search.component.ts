@@ -29,12 +29,24 @@ import {
   BottomNavigationItem
 } from '../../shared/ui/bottom-navigation/bottom-navigation.component';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
-import { buildDateSlug, buildStopSlug } from '../../domain/route-search/route-search-url.util';
+import {
+  buildDateSlug,
+  buildStopSlug,
+  buildRouteSearchPath
+} from '../../domain/route-search/route-search-url.util';
+import { SectionComponent } from '../../shared/ui/section/section.component';
+import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
 
 @Component({
   selector: 'app-route-search',
   standalone: true,
-  imports: [CommonModule, TranslateModule, BottomNavigationComponent],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    BottomNavigationComponent,
+    SectionComponent,
+    RouteSearchFormComponent
+  ],
   templateUrl: './route-search.component.html',
   styleUrl: './route-search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -55,6 +67,8 @@ export class RouteSearchComponent implements AfterViewInit {
   protected readonly translationKeys = APP_CONFIG.translationKeys.routeSearch;
   protected readonly badgeTranslationKeys = APP_CONFIG.translationKeys.stopDetail.badges;
   private readonly navigationKeys = APP_CONFIG.translationKeys.navigation;
+  private readonly routeSegments = APP_CONFIG.routeSegments.routeSearch;
+  protected readonly formTitleKey = this.translationKeys.action;
 
   protected readonly bottomNavigationItems: readonly BottomNavigationItem[] = [
     {
@@ -156,6 +170,16 @@ export class RouteSearchComponent implements AfterViewInit {
 
   protected changeDate(): void {
     void this.router.navigate(this.buildCommands(APP_CONFIG.routes.home));
+  }
+
+  protected async onSelectionConfirmed(selection: RouteSearchSelection): Promise<void> {
+    this.state.setSelection(selection);
+    const commands = buildRouteSearchPath(selection.origin, selection.destination, selection.queryDate, {
+      base: APP_CONFIG.routes.routeSearch,
+      connector: this.routeSegments.connector,
+      date: this.routeSegments.date
+    });
+    await this.router.navigate(commands);
   }
 
   private queueScrollToNext(): void {

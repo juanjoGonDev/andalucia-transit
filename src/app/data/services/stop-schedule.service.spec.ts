@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
+import { DateTime } from 'luxon';
 
 import { StopScheduleService } from './stop-schedule.service';
 import { StopDirectoryService, StopDirectoryRecord } from '../stops/stop-directory.service';
@@ -193,6 +194,76 @@ describe('StopScheduleService', () => {
         expect(result.schedule.services[0].direction).toBe(2);
         expect(result.schedule.services[0].isAccessible).toBeTrue();
         expect(result.schedule.services[0].isUniversityOnly).toBeTrue();
+        done();
+      },
+      error: done.fail
+    });
+  });
+
+  it('aligns snapshot schedules to the requested date when not today', (done) => {
+    const multiServiceSnapshot: StopScheduleSnapshotRecord = {
+      ...snapshotRecord,
+      stop: {
+        ...snapshotRecord.stop,
+        services: [
+          {
+            lineId: '24',
+            lineCode: 'M2-1',
+            lineName: 'Jaén - Martos',
+            destination: 'Jaén',
+            scheduledTime: new Date('2025-01-10T06:15:00.000Z'),
+            direction: 2,
+            stopType: 3
+          },
+          {
+            lineId: '24',
+            lineCode: 'M2-1',
+            lineName: 'Jaén - Martos',
+            destination: 'Jaén',
+            scheduledTime: new Date('2025-01-10T15:30:00.000Z'),
+            direction: 2,
+            stopType: 1
+          },
+          {
+            lineId: '24',
+            lineCode: 'M2-1',
+            lineName: 'Jaén - Martos',
+            destination: 'Jaén',
+            scheduledTime: new Date('2025-01-11T07:00:00.000Z'),
+            direction: 2,
+            stopType: 0
+          }
+        ],
+        query: {
+          ...snapshotRecord.stop.query,
+          startTime: new Date('2025-01-10T05:00:00.000Z'),
+          endTime: new Date('2025-01-11T05:00:00.000Z')
+        }
+      }
+    } satisfies StopScheduleSnapshotRecord;
+
+    const service = setup({ snapshot: multiServiceSnapshot });
+    const requestedDate = new Date('2025-02-01T00:00:00Z');
+
+    service.getStopSchedule('55', { queryDate: requestedDate }).subscribe({
+      next: (result: StopScheduleResult) => {
+        expect(result.dataSource.type).toBe('snapshot');
+        const queryDate = DateTime.fromJSDate(result.schedule.queryDate, {
+          zone: 'Europe/Madrid'
+        });
+        expect(queryDate.toISODate()).toBe('2025-02-01');
+        expect(result.schedule.services.length).toBe(2);
+
+        const arrivals = result.schedule.services.map((entry) =>
+          DateTime.fromJSDate(entry.arrivalTime, { zone: 'Europe/Madrid' })
+        );
+
+        expect(arrivals[0].toISODate()).toBe('2025-02-01');
+        expect(arrivals[0].hour).toBe(7);
+        expect(arrivals[0].minute).toBe(15);
+        expect(arrivals[1].toISODate()).toBe('2025-02-01');
+        expect(arrivals[1].hour).toBe(16);
+        expect(arrivals[1].minute).toBe(30);
         done();
       },
       error: done.fail

@@ -1,8 +1,9 @@
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, of } from 'rxjs';
-import { ActivatedRoute, ParamMap, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, convertToParamMap, provideRouter } from '@angular/router';
 
 import { RouteSearchComponent } from './route-search.component';
 import {
@@ -11,10 +12,11 @@ import {
   RouteSearchResultsService,
   RouteSearchResultsViewModel
 } from '../../domain/route-search/route-search-results.service';
-import { RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
+import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
 import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
 import { buildDateSlug } from '../../domain/route-search/route-search-url.util';
+import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
 
 class TranslateTestingLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
@@ -28,6 +30,16 @@ class RouteSearchResultsServiceStub {
   loadResults(): ReturnType<RouteSearchResultsService['loadResults']> {
     return of(this.viewModel);
   }
+}
+
+@Component({
+  selector: 'app-route-search-form',
+  standalone: true,
+  template: ''
+})
+class RouteSearchFormStubComponent {
+  @Input() initialSelection: RouteSearchSelection | null = null;
+  @Output() readonly selectionConfirmed = new EventEmitter<RouteSearchSelection>();
 }
 
 class RouteSearchSelectionResolverServiceStub {
@@ -75,6 +87,7 @@ describe('RouteSearchComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         RouteSearchComponent,
+        RouteSearchFormStubComponent,
         TranslateModule.forRoot({
           loader: { provide: TranslateLoader, useClass: TranslateTestingLoader }
         })
@@ -88,7 +101,12 @@ describe('RouteSearchComponent', () => {
         },
         { provide: ActivatedRoute, useValue: { paramMap: paramMapSubject.asObservable() } }
       ]
-    }).compileComponents();
+    })
+      .overrideComponent(RouteSearchComponent, {
+        remove: { imports: [RouteSearchFormComponent] },
+        add: { imports: [RouteSearchFormStubComponent] }
+      })
+      .compileComponents();
 
     state = TestBed.inject(RouteSearchStateService);
     resultsService = TestBed.inject(
@@ -117,7 +135,10 @@ describe('RouteSearchComponent', () => {
           isNext: true,
           isAccessible: true,
           isUniversityOnly: false,
-          progressPercentage: 75
+          progressPercentage: 75,
+          pastProgressPercentage: 0,
+          destinationArrivalTime: new Date('2025-02-02T08:20:00Z'),
+          travelDurationLabel: '15m'
         }
       ] satisfies RouteSearchLineItem[]
     } satisfies RouteSearchLineView;
@@ -146,6 +167,30 @@ describe('RouteSearchComponent', () => {
     expect(lineLabel.textContent).toContain('001');
     const item = lineCard?.query(By.css('.route-search__item'));
     expect(item).not.toBeNull();
+    const arrival = item?.query(By.css('.route-search__item-arrival'));
+    expect(arrival).not.toBeNull();
+  });
+
+  it('navigates when the search form emits a new selection', async () => {
+    fixture.detectChanges();
+    const router = TestBed.inject(Router);
+    const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
+    const form = fixture.debugElement
+      .query(By.directive(RouteSearchFormStubComponent))
+      .componentInstance as RouteSearchFormStubComponent;
+
+    const selection = {
+      origin,
+      destination,
+      queryDate: new Date('2025-02-02T00:00:00Z'),
+      lineMatches: []
+    } satisfies RouteSearchSelection;
+
+    form.selectionConfirmed.emit(selection);
+    fixture.detectChanges();
+
+    expect(state.getSelection()).toEqual(selection);
+    expect(navigateSpy).toHaveBeenCalled();
   });
 
   it('shows the empty state when no selection is available', () => {
@@ -181,7 +226,10 @@ describe('RouteSearchComponent', () => {
               isNext: false,
               isAccessible: false,
               isUniversityOnly: false,
-              progressPercentage: 0
+              progressPercentage: 0,
+              pastProgressPercentage: 33,
+              destinationArrivalTime: new Date('2025-02-02T07:45:00Z'),
+              travelDurationLabel: '15m'
             }
           ]
         }
@@ -218,7 +266,10 @@ describe('RouteSearchComponent', () => {
           isNext: true,
           isAccessible: true,
           isUniversityOnly: false,
-          progressPercentage: 50
+          progressPercentage: 50,
+          pastProgressPercentage: 0,
+          destinationArrivalTime: new Date('2025-02-02T08:35:00Z'),
+          travelDurationLabel: '15m'
         }
       ] satisfies RouteSearchLineItem[]
     } satisfies RouteSearchLineView;

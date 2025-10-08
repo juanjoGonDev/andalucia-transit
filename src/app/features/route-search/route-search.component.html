@@ -1,124 +1,150 @@
 <div class="route-search">
-  <header class="route-search__top">
-    <button
-      type="button"
-      class="route-search__back-button"
-      (click)="navigateBack()"
-      [attr.aria-label]="translationKeys.backLabel | translate"
-    >
-      <span class="material-symbols-outlined">arrow_back</span>
-    </button>
-    <div class="route-search__titles">
-      <h1 class="route-search__title">{{ translationKeys.title | translate }}</h1>
-      <p class="route-search__description">{{ translationKeys.description | translate }}</p>
-    </div>
-  </header>
-  <main class="route-search__main">
-    <ng-container *ngIf="selection() as current; else emptyState">
-      <section class="route-search__summary">
-        <div class="route-search__summary-stops">
-          <div class="route-search__summary-stop">
-            <span class="route-search__summary-label">{{ translationKeys.originLabel | translate }}</span>
-            <span class="route-search__summary-value">{{ current.origin.name }}</span>
-          </div>
-          <span class="material-symbols-outlined route-search__summary-icon">arrow_forward</span>
-          <div class="route-search__summary-stop">
-            <span class="route-search__summary-label">{{ translationKeys.destinationLabel | translate }}</span>
-            <span class="route-search__summary-value">{{ current.destination.name }}</span>
-          </div>
-        </div>
-        <div class="route-search__summary-date">
-          <span class="route-search__summary-label">{{ translationKeys.dateLabel | translate }}</span>
-          <span class="route-search__summary-value">{{ current.queryDate | date: 'longDate' }}</span>
-        </div>
-      </section>
+  <div class="route-search__content">
+    <header class="route-search__header">
+      <button
+        type="button"
+        class="route-search__back-button"
+        (click)="navigateBack()"
+        [attr.aria-label]="translationKeys.backLabel | translate"
+      >
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <div class="route-search__header-titles">
+        <h1 class="route-search__title">{{ translationKeys.title | translate }}</h1>
+        <p class="route-search__description">{{ translationKeys.description | translate }}</p>
+      </div>
+    </header>
+    <main class="route-search__main">
+      <app-section class="route-search__form" [titleKey]="formTitleKey" appearance="card">
+        <app-route-search-form
+          [initialSelection]="selection()"
+          (selectionConfirmed)="onSelectionConfirmed($event)"
+        ></app-route-search-form>
+      </app-section>
 
-      <section class="route-search__results" *ngIf="hasResults(); else noLines">
-        <article
-          *ngFor="let line of lines(); trackBy: trackLine"
-          class="route-search__line"
-        >
-          <header class="route-search__line-header">
-            <div class="route-search__line-meta">
-              <span class="route-search__line-code">{{ line.lineCode }}</span>
-              <span class="route-search__line-direction">#{{ line.direction }}</span>
+      <ng-container *ngIf="selection() as current; else emptyState">
+        <section class="route-search__results">
+          <header class="route-search__summary">
+            <div class="route-search__summary-stops">
+              <div class="route-search__summary-stop">
+                <span class="route-search__summary-label">{{ translationKeys.originLabel | translate }}</span>
+                <span class="route-search__summary-value">{{ current.origin.name }}</span>
+              </div>
+              <span class="material-symbols-outlined route-search__summary-icon">arrow_forward</span>
+              <div class="route-search__summary-stop">
+                <span class="route-search__summary-label">{{ translationKeys.destinationLabel | translate }}</span>
+                <span class="route-search__summary-value">{{ current.destination.name }}</span>
+              </div>
             </div>
-            <span class="route-search__line-label">{{ translationKeys.results | translate }}</span>
+            <div class="route-search__summary-date">
+              <span class="route-search__summary-label">{{ translationKeys.dateLabel | translate }}</span>
+              <span class="route-search__summary-value">{{ current.queryDate | date: 'longDate' }}</span>
+            </div>
           </header>
-          <ul class="route-search__items">
-            <li
-              *ngFor="let item of line.items; trackBy: trackLineItem"
-              class="route-search__item"
-              [class.route-search__item--past]="item.kind === 'past'"
-              [class.route-search__item--next]="item.isNext"
-              #itemElement
-              [attr.data-next]="item.isNext ? 'true' : null"
+
+          <section class="route-search__lines" *ngIf="hasResults(); else noLines">
+            <article
+              *ngFor="let line of lines(); trackBy: trackLine"
+              class="route-search__line"
             >
-              <div class="route-search__item-time">
-                <span class="route-search__item-clock">{{ item.arrivalTime | date: 'HH:mm' }}</span>
-                <span
-                  class="route-search__item-relative"
-                  [attr.data-kind]="item.kind"
+              <header class="route-search__line-header">
+                <div class="route-search__line-meta">
+                  <span class="route-search__line-code">{{ line.lineCode }}</span>
+                  <span class="route-search__line-direction">#{{ line.direction }}</span>
+                </div>
+                <span class="route-search__line-label">{{ translationKeys.results | translate }}</span>
+              </header>
+              <ul class="route-search__items">
+                <li
+                  *ngFor="let item of line.items; trackBy: trackLineItem"
+                  class="route-search__item"
+                  [class.route-search__item--past]="item.kind === 'past'"
+                  [class.route-search__item--next]="item.isNext"
+                  #itemElement
+                  [attr.data-next]="item.isNext ? 'true' : null"
                 >
-                  <ng-container *ngIf="item.kind === 'upcoming'; else pastLabel">
-                    {{ translationKeys.upcomingLabel | translate:{ time: item.relativeLabel } }}
-                  </ng-container>
-                  <ng-template #pastLabel>
-                    {{ translationKeys.pastLabel | translate:{ time: item.relativeLabel } }}
-                  </ng-template>
-                </span>
-                <span
-                  *ngIf="item.isNext"
-                  class="route-search__item-badge"
-                >
-                  {{ translationKeys.nextBadge | translate }}
-                </span>
-              </div>
-              <div class="route-search__item-details">
-                <span class="route-search__item-line">{{ line.lineCode }}</span>
-                <span class="route-search__item-destination">{{ current.destination.name }}</span>
-              </div>
-              <div class="route-search__item-flags">
-                <span
-                  *ngIf="item.isAccessible"
-                  class="route-search__item-flag"
-                  role="img"
-                  [attr.aria-label]="badgeTranslationKeys.accessible | translate"
-                >
-                  <span class="material-symbols-outlined">accessible_forward</span>
-                </span>
-                <span
-                  *ngIf="item.isUniversityOnly"
-                  class="route-search__item-flag"
-                  role="img"
-                  [attr.aria-label]="badgeTranslationKeys.universityOnly | translate"
-                >
-                  <span class="material-symbols-outlined">school</span>
-                </span>
-              </div>
-              <div
-                class="route-search__item-progress"
-                *ngIf="item.kind === 'upcoming'"
-                aria-hidden="true"
-              >
-                <div
-                  class="route-search__item-progress-bar"
-                  [style.width.%]="item.progressPercentage"
-                ></div>
-              </div>
-            </li>
+                  <div class="route-search__item-time">
+                    <span class="route-search__item-clock">{{ item.arrivalTime | date: 'HH:mm' }}</span>
+                    <span class="route-search__item-relative" [attr.data-kind]="item.kind">
+                      <ng-container *ngIf="item.kind === 'upcoming'; else pastLabel">
+                        {{ translationKeys.upcomingLabel | translate:{ time: item.relativeLabel } }}
+                      </ng-container>
+                      <ng-template #pastLabel>
+                        {{ translationKeys.pastLabel | translate:{ time: item.relativeLabel } }}
+                      </ng-template>
+                    </span>
+                    <span *ngIf="item.isNext" class="route-search__item-badge">
+                      {{ translationKeys.nextBadge | translate }}
+                    </span>
+                  </div>
+                  <div class="route-search__item-details">
+                    <span class="route-search__item-line">{{ line.lineCode }}</span>
+                    <span class="route-search__item-destination">{{ current.destination.name }}</span>
+                    <div
+                      class="route-search__item-arrival"
+                      *ngIf="item.destinationArrivalTime as arrival"
+                    >
+                      <span class="route-search__item-arrival-time">
+                        {{ translationKeys.arrivalAt | translate:{ time: (arrival | date: 'HH:mm') } }}
+                      </span>
+                      <span *ngIf="item.travelDurationLabel" class="route-search__item-travel">
+                        • {{ translationKeys.travelDuration | translate:{ duration: item.travelDurationLabel } }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="route-search__item-flags">
+                    <span
+                      *ngIf="item.isAccessible"
+                      class="route-search__item-flag"
+                      role="img"
+                      [attr.aria-label]="badgeTranslationKeys.accessible | translate"
+                    >
+                      <span class="material-symbols-outlined">accessible_forward</span>
+                    </span>
+                    <span
+                      *ngIf="item.isUniversityOnly"
+                      class="route-search__item-flag"
+                      role="img"
+                      [attr.aria-label]="badgeTranslationKeys.universityOnly | translate"
+                    >
+                      <span class="material-symbols-outlined">school</span>
+                    </span>
+                  </div>
+                  <div
+                    class="route-search__item-progress"
+                    *ngIf="item.kind === 'upcoming'"
+                    aria-hidden="true"
+                  >
+                    <div
+                      class="route-search__item-progress-bar"
+                      [style.width.%]="item.progressPercentage"
+                    ></div>
+                  </div>
+                  <div
+                    class="route-search__item-progress route-search__item-progress--past"
+                    *ngIf="item.kind === 'past' && item.pastProgressPercentage > 0"
+                    aria-hidden="true"
+                  >
+                    <div
+                      class="route-search__item-progress-bar"
+                      [style.width.%]="item.pastProgressPercentage"
+                    ></div>
+                  </div>
+                </li>
           </ul>
         </article>
       </section>
 
-      <div class="route-search__no-upcoming" *ngIf="showNoUpcoming()">
-        <p class="route-search__no-upcoming-text">{{ translationKeys.noUpcoming | translate }}</p>
-        <button type="button" class="route-search__no-upcoming-button" (click)="changeDate()">
-          {{ translationKeys.changeDate | translate }}
-        </button>
-      </div>
-    </ng-container>
-  </main>
+          <div class="route-search__no-upcoming" *ngIf="showNoUpcoming()">
+            <p class="route-search__no-upcoming-text">{{ translationKeys.noUpcoming | translate }}</p>
+            <button type="button" class="route-search__no-upcoming-button" (click)="changeDate()">
+              {{ translationKeys.changeDate | translate }}
+            </button>
+          </div>
+        </section>
+      </ng-container>
+    </main>
+  </div>
   <footer class="route-search__footer">
     <app-bottom-navigation [items]="bottomNavigationItems"></app-bottom-navigation>
   </footer>

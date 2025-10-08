@@ -129,7 +129,9 @@
     "nextBadge": "Next",
     "noUpcoming": "No more direct departures for this date within the next hours.",
     "changeDate": "Choose another date",
-    "emptyResults": "No services were found for this route."
+    "emptyResults": "No services were found for this route.",
+    "arrivalAt": "Arrives at {{time}}",
+    "travelDuration": "Trip {{duration}}"
   },
   "map": {
     "title": "Network map",

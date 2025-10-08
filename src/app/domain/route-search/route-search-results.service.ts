@@ -4,7 +4,7 @@ import { forkJoin, map, Observable, of } from 'rxjs';
 import { StopScheduleService } from '../../data/services/stop-schedule.service';
 import { RouteSearchLineMatch, RouteSearchSelection } from './route-search-state.service';
 import { StopScheduleResult, StopService } from '../stop-schedule/stop-schedule.model';
-import { calculateArrivalProgress } from '../utils/progress.util';
+import { calculatePastProgress, calculateUpcomingProgress } from '../utils/progress.util';
 
 const MILLISECONDS_PER_SECOND = 1_000;
 const MILLISECONDS_PER_MINUTE = 60_000;
@@ -35,6 +35,9 @@ export interface RouteSearchLineItem {
   readonly isAccessible: boolean;
   readonly isUniversityOnly: boolean;
   readonly progressPercentage: number;
+  readonly pastProgressPercentage: number;
+  readonly destinationArrivalTime: Date | null;
+  readonly travelDurationLabel: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -45,22 +48,22 @@ export class RouteSearchResultsService {
     selection: RouteSearchSelection,
     options?: { readonly currentTime?: Date }
   ): Observable<RouteSearchResultsViewModel> {
-    const currentTime = options?.currentTime ?? new Date();
-    const originIds = collectUniqueOriginIds(selection.lineMatches);
+    const referenceTime = resolveReferenceTime(selection.queryDate, options?.currentTime ?? new Date());
+    const stopIds = collectUniqueStopIds(selection.lineMatches);
 
-    if (!originIds.length) {
+    if (!stopIds.length) {
       return of({ lines: [] });
     }
 
-    const scheduleRequests = originIds.map((stopId) =>
+    const scheduleRequests = stopIds.map((stopId) =>
       this.stopSchedule
-        .getStopSchedule(stopId)
+        .getStopSchedule(stopId, { queryDate: selection.queryDate })
         .pipe(map((result) => [stopId, result] as const))
     );
 
     return forkJoin(scheduleRequests).pipe(
       map((entries) => new Map(entries)),
-      map((scheduleMap) => buildResults(selection, scheduleMap, currentTime))
+      map((scheduleMap) => buildResults(selection, scheduleMap, referenceTime))
     );
   }
 }
@@ -75,6 +78,13 @@ function buildResults(
   );
 
   return { lines } satisfies RouteSearchResultsViewModel;
+}
+
+function resolveReferenceTime(queryDate: Date, currentTime: Date): Date {
+  const queryStart = toStartOfDay(queryDate);
+  const currentStart = toStartOfDay(currentTime);
+
+  return queryStart.getTime() === currentStart.getTime() ? currentTime : queryStart;
 }
 
 function buildLineView(
@@ -97,7 +107,7 @@ function buildLineView(
     );
 
     for (const service of relevantServices) {
-      const candidate = createCandidate(service, originStopId, currentTime);
+      const candidate = createCandidate(service, originStopId, currentTime, match, scheduleMap);
 
       if (!candidate) {
         continue;
@@ -128,7 +138,10 @@ function buildLineView(
     isNext: upcomingIndex === index,
     isAccessible: item.isAccessible,
     isUniversityOnly: item.isUniversityOnly,
-    progressPercentage: item.kind === 'upcoming' ? item.progressPercentage : 0
+    progressPercentage: item.kind === 'upcoming' ? item.progressPercentage : 0,
+    pastProgressPercentage: item.kind === 'past' ? item.pastProgressPercentage : 0,
+    destinationArrivalTime: item.destinationArrivalTime,
+    travelDurationLabel: item.travelDurationLabel
   }));
 
   return {
@@ -140,11 +153,12 @@ function buildLineView(
   } satisfies RouteSearchLineView;
 }
 
-function collectUniqueOriginIds(matches: readonly RouteSearchLineMatch[]): readonly string[] {
+function collectUniqueStopIds(matches: readonly RouteSearchLineMatch[]): readonly string[] {
   const set = new Set<string>();
 
   for (const match of matches) {
     match.originStopIds.forEach((id) => set.add(id));
+    match.destinationStopIds.forEach((id) => set.add(id));
   }
 
   return Array.from(set.values());
@@ -160,12 +174,17 @@ interface RouteSearchLineItemCandidate {
   readonly isAccessible: boolean;
   readonly isUniversityOnly: boolean;
   readonly progressPercentage: number;
+  readonly pastProgressPercentage: number;
+  readonly destinationArrivalTime: Date | null;
+  readonly travelDurationLabel: string | null;
 }
 
 function createCandidate(
   service: StopService,
   originStopId: string,
-  currentTime: Date
+  currentTime: Date,
+  match: RouteSearchLineMatch,
+  scheduleMap: ReadonlyMap<string, StopScheduleResult>
 ): RouteSearchLineItemCandidate | null {
   const differenceMs = service.arrivalTime.getTime() - currentTime.getTime();
   const kind: 'past' | 'upcoming' = differenceMs >= 0 ? 'upcoming' : 'past';
@@ -179,9 +198,19 @@ function createCandidate(
     }
   }
 
-  const minutesUntilArrival = Math.round(differenceMs / MILLISECONDS_PER_MINUTE);
+  const minutesUntilArrival = Math.max(0, differenceMs / MILLISECONDS_PER_MINUTE);
+  const minutesSinceDeparture = Math.max(0, -differenceMs / MILLISECONDS_PER_MINUTE);
   const timeParts = decomposeSeconds(waitSeconds);
   const relativeLabel = formatDurationLabel(timeParts);
+  const destinationInfo = findDestinationArrival(
+    service.serviceId,
+    match.destinationStopIds,
+    scheduleMap,
+    service.arrivalTime
+  );
+  const travelDurationLabel = destinationInfo && destinationInfo.travelSeconds > 0
+    ? formatDurationLabel(decomposeSeconds(destinationInfo.travelSeconds))
+    : null;
 
   return {
     id: service.serviceId,
@@ -192,8 +221,49 @@ function createCandidate(
     kind,
     isAccessible: service.isAccessible,
     isUniversityOnly: service.isUniversityOnly,
-    progressPercentage: calculateArrivalProgress(minutesUntilArrival)
+    progressPercentage: calculateUpcomingProgress(minutesUntilArrival),
+    pastProgressPercentage: calculatePastProgress(minutesSinceDeparture),
+    destinationArrivalTime: destinationInfo?.arrivalTime ?? null,
+    travelDurationLabel
   } satisfies RouteSearchLineItemCandidate;
+}
+
+interface DestinationArrivalInfo {
+  readonly arrivalTime: Date;
+  readonly travelSeconds: number;
+}
+
+function findDestinationArrival(
+  serviceId: string,
+  destinationStopIds: readonly string[],
+  scheduleMap: ReadonlyMap<string, StopScheduleResult>,
+  originArrivalTime: Date
+): DestinationArrivalInfo | null {
+  for (const stopId of destinationStopIds) {
+    const schedule = scheduleMap.get(stopId);
+
+    if (!schedule) {
+      continue;
+    }
+
+    const matchingService = schedule.schedule.services.find((entry) => entry.serviceId === serviceId);
+
+    if (!matchingService) {
+      continue;
+    }
+
+    const travelSeconds = Math.max(
+      0,
+      Math.round((matchingService.arrivalTime.getTime() - originArrivalTime.getTime()) / MILLISECONDS_PER_SECOND)
+    );
+
+    return {
+      arrivalTime: matchingService.arrivalTime,
+      travelSeconds
+    } satisfies DestinationArrivalInfo;
+  }
+
+  return null;
 }
 
 function buildServiceKey(service: StopService): string {
@@ -260,4 +330,10 @@ function formatDurationLabel(parts: DurationParts): string {
   }
 
   return segments.join(' ');
+}
+
+function toStartOfDay(date: Date): Date {
+  const copy = new Date(date);
+  copy.setHours(0, 0, 0, 0);
+  return copy;
 }

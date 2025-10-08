@@ -5,7 +5,7 @@ import {
   StopService
 } from './stop-schedule.model';
 import { differenceInMinutes } from '../utils/time.util';
-import { calculateArrivalProgress } from '../utils/progress.util';
+import { calculateUpcomingProgress } from '../utils/progress.util';
 
 export interface StopScheduleUpcomingItem {
   readonly serviceId: string;
@@ -75,7 +75,7 @@ export function buildStopScheduleUiModel(
         isNext: false,
         isAccessible: service.isAccessible,
         isUniversityOnly: service.isUniversityOnly,
-        progressPercentage: calculateArrivalProgress(minutesDifference)
+        progressPercentage: calculateUpcomingProgress(minutesDifference)
       });
       continue;
     }
