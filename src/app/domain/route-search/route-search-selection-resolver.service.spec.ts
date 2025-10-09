@@ -3,7 +3,12 @@ import { of } from 'rxjs';
 
 import { RouteSearchSelectionResolverService } from './route-search-selection-resolver.service';
 import { StopDirectoryService, StopDirectoryOption } from '../../data/stops/stop-directory.service';
-import { StopConnectionsService, StopConnection } from '../../data/route-search/stop-connections.service';
+import {
+  StopConnectionsService,
+  StopConnection,
+  STOP_CONNECTION_DIRECTION,
+  StopConnectionDirection
+} from '../../data/route-search/stop-connections.service';
 import { RouteSearchSelection } from './route-search-state.service';
 
 class StopDirectoryServiceStub {
@@ -19,10 +24,12 @@ class StopDirectoryServiceStub {
 }
 
 class StopConnectionsServiceStub {
-  constructor(private readonly connections: ReadonlyMap<string, StopConnection>) {}
+  constructor(
+    private readonly responses: Partial<Record<StopConnectionDirection, ReadonlyMap<string, StopConnection>>>
+  ) {}
 
-  getConnections() {
-    return of(this.connections);
+  getConnections(_: readonly string[], direction: StopConnectionDirection) {
+    return of(this.responses[direction] ?? new Map<string, StopConnection>());
   }
 }
 
@@ -51,7 +58,9 @@ describe('RouteSearchSelectionResolverService', () => {
     stopIds: ['100']
   };
 
-  function setup(connections: ReadonlyMap<string, StopConnection>) {
+  function setup(
+    connections: Partial<Record<StopConnectionDirection, ReadonlyMap<string, StopConnection>>>
+  ) {
     TestBed.configureTestingModule({
       providers: [
         RouteSearchSelectionResolverService,
@@ -64,7 +73,7 @@ describe('RouteSearchSelectionResolverService', () => {
   }
 
   it('resolves a selection from valid slugs and connections', (done) => {
-    const connections = new Map<string, StopConnection>([
+    const forwardConnections = new Map<string, StopConnection>([
       [
         '100',
         {
@@ -75,7 +84,7 @@ describe('RouteSearchSelectionResolverService', () => {
       ]
     ]);
 
-    const service = setup(connections);
+    const service = setup({ [STOP_CONNECTION_DIRECTION.Forward]: forwardConnections });
 
     service
       .resolveFromSlugs('origin-stop--c7s74', 'destination-stop--c7s100', '2025-10-08')
@@ -90,7 +99,7 @@ describe('RouteSearchSelectionResolverService', () => {
   });
 
   it('returns null when slugs are invalid', (done) => {
-    const service = setup(new Map());
+    const service = setup({});
 
     service
       .resolveFromSlugs('invalid', 'destination-stop--c7s100', '2025-10-08')
@@ -101,8 +110,7 @@ describe('RouteSearchSelectionResolverService', () => {
   });
 
   it('returns a selection with no matches when connections are empty', (done) => {
-    const connections = new Map<string, StopConnection>();
-    const service = setup(connections);
+    const service = setup({ [STOP_CONNECTION_DIRECTION.Forward]: new Map() });
 
     service
       .resolveFromSlugs('origin-stop--c7s74', 'destination-stop--c7s100', '2025-10-08')
@@ -110,6 +118,32 @@ describe('RouteSearchSelectionResolverService', () => {
         expect(selection).not.toBeNull();
         const resolved = selection as RouteSearchSelection;
         expect(resolved.lineMatches.length).toBe(0);
+        done();
+      });
+  });
+
+  it('resolves a selection when only backward connections are available', (done) => {
+    const backwardConnections = new Map<string, StopConnection>([
+      [
+        '100',
+        {
+          stopId: '100',
+          originStopIds: ['75'],
+          lineSignatures: [{ lineId: 'L2', lineCode: '041', direction: 1 }]
+        }
+      ]
+    ]);
+
+    const service = setup({ [STOP_CONNECTION_DIRECTION.Backward]: backwardConnections });
+
+    service
+      .resolveFromSlugs('origin-stop--c7s75', 'destination-stop--c7s100', '2025-10-08')
+      .subscribe((selection) => {
+        expect(selection).not.toBeNull();
+        const resolved = selection as RouteSearchSelection;
+        expect(resolved.lineMatches.length).toBe(1);
+        expect(resolved.lineMatches[0].originStopIds).toEqual(['75']);
+        expect(resolved.lineMatches[0].lineCode).toBe('041');
         done();
       });
   });

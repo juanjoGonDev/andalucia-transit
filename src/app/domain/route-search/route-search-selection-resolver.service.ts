@@ -3,6 +3,7 @@ import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
 import { StopDirectoryService, StopDirectoryOption } from '../../data/stops/stop-directory.service';
 import {
+  StopConnection,
   StopConnectionsService,
   STOP_CONNECTION_DIRECTION
 } from '../../data/route-search/stop-connections.service';
@@ -41,14 +42,12 @@ export class RouteSearchSelectionResolverService {
           return of<RouteSearchSelection | null>(null);
         }
 
-        return this.connections
-          .getConnections(origin.stopIds, STOP_CONNECTION_DIRECTION.Forward)
-          .pipe(
-            map((connectionMap) => {
-              const matches = collectRouteLineMatches(origin, destination, connectionMap);
-              return createRouteSearchSelection(origin, destination, matches, queryDate);
-            })
-          );
+        return this.loadConnections(origin.stopIds).pipe(
+          map((connectionMap) => {
+            const matches = collectRouteLineMatches(origin, destination, connectionMap);
+            return createRouteSearchSelection(origin, destination, matches, queryDate);
+          })
+        );
       }),
       catchError(() => of(null))
     );
@@ -67,4 +66,68 @@ export class RouteSearchSelectionResolverService {
 
     return this.directory.getOptionByStopId(stopId);
   }
+
+  private loadConnections(stopIds: readonly string[]): Observable<ReadonlyMap<string, StopConnection>> {
+    return forkJoin([
+      this.connections.getConnections(stopIds, STOP_CONNECTION_DIRECTION.Forward),
+      this.connections.getConnections(stopIds, STOP_CONNECTION_DIRECTION.Backward)
+    ]).pipe(map((connections) => mergeConnections(connections)));
+  }
+}
+
+const SIGNATURE_KEY_SEPARATOR = '|' as const;
+
+function mergeConnections(
+  maps: readonly ReadonlyMap<string, StopConnection>[]
+): ReadonlyMap<string, StopConnection> {
+  if (!maps.length) {
+    return new Map<string, StopConnection>();
+  }
+
+  const aggregates = new Map<
+    string,
+    {
+      stopId: string;
+      originIds: Set<string>;
+      signatures: Map<string, StopConnection['lineSignatures'][number]>;
+    }
+  >();
+
+  for (const mapEntry of maps) {
+    mapEntry.forEach((connection) => {
+      const aggregate =
+        aggregates.get(connection.stopId) ??
+        {
+          stopId: connection.stopId,
+          originIds: new Set<string>(),
+          signatures: new Map<string, StopConnection['lineSignatures'][number]>()
+        };
+
+      connection.originStopIds.forEach((originId) => aggregate.originIds.add(originId));
+      connection.lineSignatures.forEach((signature) =>
+        aggregate.signatures.set(buildSignatureKey(signature), signature)
+      );
+
+      aggregates.set(connection.stopId, aggregate);
+    });
+  }
+
+  const merged = new Map<string, StopConnection>();
+
+  aggregates.forEach((aggregate, stopId) => {
+    merged.set(stopId, {
+      stopId: aggregate.stopId,
+      originStopIds: Array.from(aggregate.originIds),
+      lineSignatures: Array.from(aggregate.signatures.values())
+    });
+  });
+
+  return merged;
+}
+
+function buildSignatureKey(
+  signature: StopConnection['lineSignatures'][number]
+): string {
+  return [signature.lineId, signature.lineCode, signature.direction]
+    .join(SIGNATURE_KEY_SEPARATOR);
 }
