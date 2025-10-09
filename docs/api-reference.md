@@ -2,6 +2,34 @@
 
 Generated from https://api.ctan.es/doc/api_data.js on 2025-10-08 21:05 UTC.
 
+## External integrations
+
+### GET https://date.nager.at/api/v3/PublicHolidays/{year}/ES — Spanish public holidays
+
+Retrieves the full list of national and regional public holidays for the requested year. The app filters the response for entries marked as global or assigned to `ES-AN` so timetable queries treat Andalusian festivos correctly.
+
+- **Provider:** Nager.Date (https://date.nager.at)
+- **License:** MIT (https://github.com/nager/Nager.Date/blob/master/LICENSE)
+- **Usage:** Cached per year in-memory; no API key required; respect server rate limits noted in the upstream documentation.
+
+**Parameters**
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| year | Number | Yes | Gregorian year for the holiday set. |
+
+**Success responses**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| date | String | ISO `yyyy-MM-dd` date of the holiday. |
+| localName | String | Localised holiday name (Spanish). |
+| name | String | English holiday name. |
+| global | Boolean | Indicates whether the holiday applies nationwide. |
+| counties | Array[String] | Optional list of ISO 3166-2 subdivision codes (e.g., `ES-AN`). |
+
+The integration must display CTAN data attribution unchanged and cite the Nager.Date source in documentation when referencing holiday-aware behaviour.
+
 ## Endpoint catalog
 
 ### Abreviaturas

@@ -19,6 +19,7 @@ export interface RouteTimetableFrequency {
 
 export interface RouteTimetableMapperOptions {
   readonly timezone: string;
+  readonly isHoliday?: boolean;
 }
 
 export function mapRouteTimetableResponse(
@@ -31,9 +32,12 @@ export function mapRouteTimetableResponse(
   const weekday = workingDate.weekday;
   const entries: RouteTimetableEntry[] = [];
   const scheduleEntries = response.horario ?? [];
+  const includeHoliday = options.isHoliday ?? false;
 
   for (const item of scheduleEntries) {
-    if (!shouldIncludeFrequency(item.dias, weekday)) {
+    const frequency = frequencyMap.get(item.dias) ?? createFallbackFrequency(item.dias);
+
+    if (!shouldIncludeFrequency(frequency, weekday, includeHoliday)) {
       continue;
     }
 
@@ -51,7 +55,6 @@ export function mapRouteTimetableResponse(
       arrivalDateTime = arrivalDateTime.plus({ days: 1 });
     }
 
-    const frequency = frequencyMap.get(item.dias) ?? createFallbackFrequency(item.dias);
     const notes = normalizeNotes(item.observaciones);
 
     entries.push({
@@ -77,14 +80,29 @@ function buildFrequencyMap(entries: readonly RouteTimetableFrequencyApi[]): Read
   return new Map(mapped.map((entry) => [entry.code, entry] as const));
 }
 
-function shouldIncludeFrequency(frequencyCode: string, weekday: number): boolean {
-  const allowedDays = FREQUENCY_DAY_MAP.get(frequencyCode);
+function shouldIncludeFrequency(
+  frequency: RouteTimetableFrequency,
+  weekday: number,
+  isHoliday: boolean
+): boolean {
+  const code = frequency.code.trim();
+  const lowerName = frequency.name.toLowerCase();
 
-  if (!allowedDays) {
+  if (HOLIDAY_ONLY_FREQUENCIES.has(code) || lowerName.includes(HOLIDAY_KEYWORD)) {
+    return isHoliday;
+  }
+
+  const rule = FREQUENCY_RULES.get(code);
+
+  if (!rule) {
     return true;
   }
 
-  return allowedDays.has(weekday);
+  if (isHoliday && rule.includeHoliday) {
+    return true;
+  }
+
+  return rule.allowedDays.has(weekday);
 }
 
 function buildDateTime(reference: DateTime, timeText: string): DateTime {
@@ -136,12 +154,72 @@ const WEEKDAY = {
   Sunday: 7
 } as const;
 
-const FREQUENCY_DAY_MAP = new Map<string, ReadonlySet<number>>([
-  ['L-V', new Set([WEEKDAY.Monday, WEEKDAY.Tuesday, WEEKDAY.Wednesday, WEEKDAY.Thursday, WEEKDAY.Friday])],
-  ['L-S', new Set([WEEKDAY.Monday, WEEKDAY.Tuesday, WEEKDAY.Wednesday, WEEKDAY.Thursday, WEEKDAY.Friday, WEEKDAY.Saturday])],
-  ['S', new Set([WEEKDAY.Saturday])],
-  ['D', new Set([WEEKDAY.Sunday])],
-  ['L-D', new Set([WEEKDAY.Monday, WEEKDAY.Tuesday, WEEKDAY.Wednesday, WEEKDAY.Thursday, WEEKDAY.Friday, WEEKDAY.Saturday, WEEKDAY.Sunday])],
-  ['S-D-F', new Set([WEEKDAY.Saturday, WEEKDAY.Sunday])],
-  ['L-VDF', new Set([WEEKDAY.Monday, WEEKDAY.Tuesday, WEEKDAY.Wednesday, WEEKDAY.Thursday, WEEKDAY.Friday, WEEKDAY.Sunday])]
+interface FrequencyRule {
+  readonly allowedDays: ReadonlySet<number>;
+  readonly includeHoliday: boolean;
+}
+
+const FREQUENCY_RULES = new Map<string, FrequencyRule>([
+  [
+    'L-V',
+    {
+      allowedDays: new Set([WEEKDAY.Monday, WEEKDAY.Tuesday, WEEKDAY.Wednesday, WEEKDAY.Thursday, WEEKDAY.Friday]),
+      includeHoliday: false
+    }
+  ],
+  [
+    'L-S',
+    {
+      allowedDays: new Set([
+        WEEKDAY.Monday,
+        WEEKDAY.Tuesday,
+        WEEKDAY.Wednesday,
+        WEEKDAY.Thursday,
+        WEEKDAY.Friday,
+        WEEKDAY.Saturday
+      ]),
+      includeHoliday: false
+    }
+  ],
+  ['S', { allowedDays: new Set([WEEKDAY.Saturday]), includeHoliday: false }],
+  ['D', { allowedDays: new Set([WEEKDAY.Sunday]), includeHoliday: false }],
+  [
+    'L-D',
+    {
+      allowedDays: new Set([
+        WEEKDAY.Monday,
+        WEEKDAY.Tuesday,
+        WEEKDAY.Wednesday,
+        WEEKDAY.Thursday,
+        WEEKDAY.Friday,
+        WEEKDAY.Saturday,
+        WEEKDAY.Sunday
+      ]),
+      includeHoliday: true
+    }
+  ],
+  [
+    'S-D-F',
+    {
+      allowedDays: new Set([WEEKDAY.Saturday, WEEKDAY.Sunday]),
+      includeHoliday: true
+    }
+  ],
+  [
+    'L-VDF',
+    {
+      allowedDays: new Set([
+        WEEKDAY.Monday,
+        WEEKDAY.Tuesday,
+        WEEKDAY.Wednesday,
+        WEEKDAY.Thursday,
+        WEEKDAY.Friday,
+        WEEKDAY.Sunday
+      ]),
+      includeHoliday: true
+    }
+  ]
 ]);
+
+const HOLIDAY_ONLY_FREQUENCIES = new Set(['F']);
+const HOLIDAY_KEYWORD = 'festiv' as const;

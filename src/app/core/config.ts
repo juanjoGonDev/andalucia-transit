@@ -12,6 +12,9 @@ const DATA_TIMEZONE = 'Europe/Madrid' as const;
 const STOP_SERVICES_SNAPSHOT_PATH = 'assets/data/snapshots/stop-services/latest.json' as const;
 const STOP_DIRECTORY_SNAPSHOT_PATH = 'assets/data/stop-directory/index.json' as const;
 const RUNTIME_FLAGS_PROPERTY = '__ANDALUCIA_TRANSIT_FLAGS__' as const;
+const HOLIDAY_API_BASE_URL = 'https://date.nager.at/api/v3' as const;
+const HOLIDAY_COUNTRY_CODE = 'ES' as const;
+const HOLIDAY_REGION_CODES = ['ES-AN'] as const;
 
 export const APP_CONFIG = {
   appName: 'Andalucia Transit',
@@ -33,6 +36,11 @@ export const APP_CONFIG = {
     snapshots: {
       stopServicesPath: STOP_SERVICES_SNAPSHOT_PATH,
       stopDirectoryPath: STOP_DIRECTORY_SNAPSHOT_PATH
+    },
+    holidays: {
+      apiBaseUrl: HOLIDAY_API_BASE_URL,
+      countryCode: HOLIDAY_COUNTRY_CODE,
+      regionCodes: HOLIDAY_REGION_CODES
     }
   },
   runtime: {
