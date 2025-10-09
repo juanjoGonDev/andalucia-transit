@@ -1,5 +1,8 @@
 import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
-import { StopConnection } from '../../data/route-search/stop-connections.service';
+import {
+  StopConnection,
+  buildStopConnectionKey
+} from '../../data/route-search/stop-connections.service';
 import { RouteSearchLineMatch, RouteSearchSelection } from './route-search-state.service';
 
 interface LineAggregate {
@@ -24,7 +27,8 @@ export function collectRouteLineMatches(
   const aggregates = new Map<string, LineAggregate>();
 
   for (const destinationStopId of destination.stopIds) {
-    const connection = connections.get(destinationStopId);
+    const connectionKey = buildStopConnectionKey(destination.consortiumId, destinationStopId);
+    const connection = connections.get(connectionKey);
 
     if (!connection) {
       continue;

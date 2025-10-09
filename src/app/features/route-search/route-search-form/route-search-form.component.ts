@@ -47,12 +47,14 @@ import { APP_CONFIG } from '../../../core/config';
 import {
   StopDirectoryOption,
   StopDirectoryService,
+  StopDirectoryStopSignature,
   StopSearchRequest
 } from '../../../data/stops/stop-directory.service';
 import {
   StopConnectionsService,
   StopConnection,
-  STOP_CONNECTION_DIRECTION
+  STOP_CONNECTION_DIRECTION,
+  buildStopConnectionKey
 } from '../../../data/route-search/stop-connections.service';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import {
@@ -213,7 +215,7 @@ export class RouteSearchFormComponent implements OnChanges {
     this.destinationConnections$
   ]).pipe(
     switchMap(([query, destination, connections]) =>
-      this.stopDirectory
+    this.stopDirectory
         .searchStops(this.buildOriginSearchRequest(query, destination, connections))
         .pipe(map((options) => this.filterOptionsByConnections(options, connections)))
     ),
@@ -226,7 +228,7 @@ export class RouteSearchFormComponent implements OnChanges {
     this.originConnections$
   ]).pipe(
     switchMap(([query, origin, connections]) =>
-      this.stopDirectory
+    this.stopDirectory
         .searchStops(this.buildDestinationSearchRequest(query, origin, connections))
         .pipe(map((options) => this.filterOptionsByConnections(options, connections)))
     ),
@@ -337,8 +339,8 @@ export class RouteSearchFormComponent implements OnChanges {
   ): StopSearchRequest {
     return {
       query,
-      excludeStopId: this.getPrimaryStopId(destination) ?? undefined,
-      includeStopIds: this.buildIncludeIds(connections),
+      excludeStopSignature: this.getPrimaryStopSignature(destination) ?? undefined,
+      includeStopSignatures: this.buildIncludeSignatures(connections),
       limit: this.maxAutocompleteOptions
     } satisfies StopSearchRequest;
   }
@@ -350,22 +352,35 @@ export class RouteSearchFormComponent implements OnChanges {
   ): StopSearchRequest {
     return {
       query,
-      excludeStopId: this.getPrimaryStopId(origin) ?? undefined,
-      includeStopIds: this.buildIncludeIds(connections),
+      excludeStopSignature: this.getPrimaryStopSignature(origin) ?? undefined,
+      includeStopSignatures: this.buildIncludeSignatures(connections),
       limit: this.maxAutocompleteOptions
     } satisfies StopSearchRequest;
   }
 
-  private buildIncludeIds(
+  private buildIncludeSignatures(
     connections: ReadonlyMap<string, StopConnection>
-  ): readonly string[] | undefined {
+  ): readonly StopDirectoryStopSignature[] | undefined {
     if (!connections.size) {
       return undefined;
     }
 
-    const ids = Array.from(connections.keys());
+    const signatures = Array.from(connections.values(), (connection) => ({
+      consortiumId: connection.consortiumId,
+      stopId: connection.stopId
+    } satisfies StopDirectoryStopSignature));
 
-    return ids.slice(0, this.maxAutocompleteOptions);
+    const unique = new Map<string, StopDirectoryStopSignature>();
+
+    for (const signature of signatures) {
+      const key = buildStopConnectionKey(signature.consortiumId, signature.stopId);
+
+      if (!unique.has(key)) {
+        unique.set(key, signature);
+      }
+    }
+
+    return Array.from(unique.values()).slice(0, this.maxAutocompleteOptions);
   }
 
   private groupByNucleus(options: readonly StopDirectoryOption[]): readonly StopAutocompleteGroup[] {
@@ -414,7 +429,9 @@ export class RouteSearchFormComponent implements OnChanges {
       return options;
     }
 
-    return options.filter((option) => option.stopIds.some((id) => connections.has(id)));
+    return options.filter((option) =>
+      option.stopIds.some((id) => connections.has(buildStopConnectionKey(option.consortiumId, id)))
+    );
   }
 
   private buildQueryStream(value: StopAutocompleteValue): Observable<string> {
@@ -498,12 +515,15 @@ export class RouteSearchFormComponent implements OnChanges {
     return value;
   }
 
-  private getPrimaryStopId(option: StopDirectoryOption | null): string | null {
+  private getPrimaryStopSignature(option: StopDirectoryOption | null): StopDirectoryStopSignature | null {
     if (!option?.stopIds.length) {
       return null;
     }
 
-    return option.stopIds[0];
+    return {
+      consortiumId: option.consortiumId,
+      stopId: option.stopIds[0]
+    } satisfies StopDirectoryStopSignature;
   }
 
   private createMinimumDateValidator(minimum: Date): ValidatorFn {

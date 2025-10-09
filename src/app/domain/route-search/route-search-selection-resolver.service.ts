@@ -87,6 +87,7 @@ function mergeConnections(
   const aggregates = new Map<
     string,
     {
+      consortiumId: number;
       stopId: string;
       originIds: Set<string>;
       signatures: Map<string, StopConnection['lineSignatures'][number]>;
@@ -94,10 +95,11 @@ function mergeConnections(
   >();
 
   for (const mapEntry of maps) {
-    mapEntry.forEach((connection) => {
+    mapEntry.forEach((connection, key) => {
       const aggregate =
-        aggregates.get(connection.stopId) ??
+        aggregates.get(key) ??
         {
+          consortiumId: connection.consortiumId,
           stopId: connection.stopId,
           originIds: new Set<string>(),
           signatures: new Map<string, StopConnection['lineSignatures'][number]>()
@@ -108,14 +110,15 @@ function mergeConnections(
         aggregate.signatures.set(buildSignatureKey(signature), signature)
       );
 
-      aggregates.set(connection.stopId, aggregate);
+      aggregates.set(key, aggregate);
     });
   }
 
   const merged = new Map<string, StopConnection>();
 
-  aggregates.forEach((aggregate, stopId) => {
-    merged.set(stopId, {
+  aggregates.forEach((aggregate, key) => {
+    merged.set(key, {
+      consortiumId: aggregate.consortiumId,
       stopId: aggregate.stopId,
       originStopIds: Array.from(aggregate.originIds),
       lineSignatures: Array.from(aggregate.signatures.values())

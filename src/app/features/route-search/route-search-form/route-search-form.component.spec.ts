@@ -13,7 +13,8 @@ import {
   StopConnection,
   StopConnectionsService,
   STOP_CONNECTION_DIRECTION,
-  StopConnectionDirection
+  StopConnectionDirection,
+  buildStopConnectionKey
 } from '../../../data/route-search/stop-connections.service';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 
@@ -117,10 +118,16 @@ describe('RouteSearchFormComponent', () => {
 
   it('emits a selection when a compatible route exists', async () => {
     const forwardConnections = new Map<string, StopConnection>([
-      [DESTINATION_OPTION.stopIds[0], buildConnection(DESTINATION_OPTION.stopIds[0])]
+      [
+        buildStopConnectionKey(DESTINATION_OPTION.consortiumId, DESTINATION_OPTION.stopIds[0]),
+        buildConnection(DESTINATION_OPTION.stopIds[0], DESTINATION_OPTION.consortiumId)
+      ]
     ]);
     const backwardConnections = new Map<string, StopConnection>([
-      [ORIGIN_OPTION.stopIds[0], buildConnection(ORIGIN_OPTION.stopIds[0])]
+      [
+        buildStopConnectionKey(ORIGIN_OPTION.consortiumId, ORIGIN_OPTION.stopIds[0]),
+        buildConnection(ORIGIN_OPTION.stopIds[0], ORIGIN_OPTION.consortiumId)
+      ]
     ]);
     connections.setResponse(
       ORIGIN_OPTION.stopIds,
@@ -201,8 +208,9 @@ interface RouteSearchFormComponentPublicApi {
   ): Promise<RouteSearchSelection | null>;
 }
 
-function buildConnection(stopId: string): StopConnection {
+function buildConnection(stopId: string, consortiumId: number): StopConnection {
   return {
+    consortiumId,
     stopId,
     originStopIds: ORIGIN_OPTION.stopIds,
     lineSignatures: [

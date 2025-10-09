@@ -10,6 +10,7 @@ const MIN_QUERY_LENGTH = 2;
 const NORMALIZE_FORM = 'NFD' as const;
 const DIACRITIC_MATCHER = /\p{M}/gu;
 const ENTRY_KEY_SEPARATOR = ':' as const;
+const SIGNATURE_KEY_SEPARATOR = '|' as const;
 
 export interface StopDirectoryRecord {
   readonly consortiumId: number;
@@ -39,11 +40,16 @@ export interface StopDirectoryOption {
   readonly stopIds: readonly string[];
 }
 
+export interface StopDirectoryStopSignature {
+  readonly consortiumId: number;
+  readonly stopId: string;
+}
+
 export interface StopSearchRequest {
   readonly query: string;
   readonly limit: number;
-  readonly includeStopIds?: readonly string[];
-  readonly excludeStopId?: string;
+  readonly includeStopSignatures?: readonly StopDirectoryStopSignature[];
+  readonly excludeStopSignature?: StopDirectoryStopSignature;
 }
 
 interface StopDirectoryIndexFile {
@@ -321,10 +327,33 @@ function freezeGroups(
   groups: Map<string, StopDirectorySearchEntry[]>
 ): ReadonlyMap<string, readonly StopDirectorySearchEntry[]> {
   const entries = Array.from(groups.entries(), ([key, value]) => {
-    return [key, Object.freeze([...value])] as const;
+    const sorted = [...value].sort(compareGroupEntries);
+    return [key, Object.freeze(sorted)] as const;
   });
 
   return new Map(entries);
+}
+
+function compareGroupEntries(
+  first: StopDirectorySearchEntry,
+  second: StopDirectorySearchEntry
+): number {
+  const nameComparison = first.name.localeCompare(second.name, SEARCH_LOCALE);
+
+  if (nameComparison !== 0) {
+    return nameComparison;
+  }
+
+  const municipalityComparison = first.municipality.localeCompare(
+    second.municipality,
+    SEARCH_LOCALE
+  );
+
+  if (municipalityComparison !== 0) {
+    return municipalityComparison;
+  }
+
+  return first.stopId.localeCompare(second.stopId, SEARCH_LOCALE);
 }
 
 function searchDirectory(
@@ -336,8 +365,12 @@ function searchDirectory(
   }
 
   const trimmedQuery = request.query.trim();
-  const includeSet = request.includeStopIds ? new Set(request.includeStopIds) : null;
-  const excludeStopId = request.excludeStopId ?? null;
+  const includeSet = request.includeStopSignatures
+    ? new Set(request.includeStopSignatures.map(buildSignatureKey))
+    : null;
+  const excludeSignatureKey = request.excludeStopSignature
+    ? buildSignatureKey(request.excludeStopSignature)
+    : null;
   const hasSufficientQuery = trimmedQuery.length >= MIN_QUERY_LENGTH;
   const normalizedQuery = hasSufficientQuery ? normalize(trimmedQuery) : null;
 
@@ -352,17 +385,16 @@ function searchDirectory(
     const entry = item.entry;
     const groupKey = buildGroupKey(entry);
     const groupMembers = index.groups.get(groupKey) ?? [entry];
-    const groupIncludesExcludedStop = excludeStopId
-      ? groupMembers.some((member) => member.stopId === excludeStopId)
+    const memberKeys = groupMembers.map((member) => buildEntryKey(member.consortiumId, member.stopId));
+    const groupIncludesExcludedStop = excludeSignatureKey
+      ? memberKeys.some((key) => key === excludeSignatureKey)
       : false;
 
     if (groupIncludesExcludedStop) {
       continue;
     }
 
-    const isIncluded = includeSet
-      ? groupMembers.some((member) => includeSet.has(member.stopId))
-      : false;
+    const isIncluded = includeSet ? memberKeys.some((key) => includeSet.has(key)) : false;
     const matchesQuery = normalizedQuery ? matchesSearch(item, normalizedQuery) : false;
 
     if (!normalizedQuery && includeSet && !isIncluded) {
@@ -381,7 +413,7 @@ function searchDirectory(
       continue;
     }
 
-    results.push(toOption(entry, groupMembers));
+    results.push(toOption(groupMembers[0] ?? entry, groupMembers));
     addedGroups.add(groupKey);
   }
 
@@ -413,11 +445,15 @@ function buildCompositeOptionMap(
 }
 
 function buildGroupKey(entry: StopDirectorySearchEntry): string {
-  return `${entry.consortiumId}|${entry.nucleusId}|${normalize(entry.name)}`;
+  return `${entry.consortiumId}${SIGNATURE_KEY_SEPARATOR}${entry.nucleusId}`;
 }
 
 function buildEntryKey(consortiumId: number, stopId: string): string {
   return `${consortiumId}${ENTRY_KEY_SEPARATOR}${stopId}`;
+}
+
+function buildSignatureKey(signature: StopDirectoryStopSignature): string {
+  return buildEntryKey(signature.consortiumId, signature.stopId);
 }
 
 function matchesSearch(record: SearchableStopRecord, normalizedQuery: string): boolean {

@@ -4,7 +4,8 @@ import { Observable, of } from 'rxjs';
 import {
   StopConnectionsService,
   StopConnection,
-  STOP_CONNECTION_DIRECTION
+  STOP_CONNECTION_DIRECTION,
+  buildStopConnectionKey
 } from './stop-connections.service';
 import {
   RouteLineStop,
@@ -114,13 +115,19 @@ describe('StopConnectionsService', () => {
       .getConnections(['O1', 'O2'], STOP_CONNECTION_DIRECTION.Forward)
       .subscribe((connections) => {
         const destinationIds = Array.from(connections.keys()).sort();
-        expect(destinationIds).toEqual(['D1', 'D2', 'D3']);
+        expect(destinationIds).toEqual([
+          buildStopConnectionKey(7, 'D1'),
+          buildStopConnectionKey(7, 'D2'),
+          buildStopConnectionKey(7, 'D3')
+        ]);
 
-        const d2 = connections.get('D2') as StopConnection;
+        const d2 = connections.get(buildStopConnectionKey(7, 'D2')) as StopConnection;
+        expect(d2.consortiumId).toBe(7);
         expect(d2.originStopIds).toEqual(['O1', 'O2']);
         expect(d2.lineSignatures).toEqual([{ lineId: 'L1', lineCode: '001', direction: 0 }]);
 
-        const d3 = connections.get('D3') as StopConnection;
+        const d3 = connections.get(buildStopConnectionKey(7, 'D3')) as StopConnection;
+        expect(d3.consortiumId).toBe(7);
         expect(d3.originStopIds).toEqual(['O1', 'O2']);
         expect(d3.lineSignatures).toEqual([{ lineId: 'L1', lineCode: '001', direction: 0 }]);
 
@@ -132,7 +139,7 @@ describe('StopConnectionsService', () => {
     service
       .getConnections(['O2', 'O1'], STOP_CONNECTION_DIRECTION.Forward)
       .subscribe((connections) => {
-        const d2 = connections.get('D2') as StopConnection;
+        const d2 = connections.get(buildStopConnectionKey(7, 'D2')) as StopConnection;
         expect(d2.originStopIds).toEqual(['O2', 'O1']);
         expect(d2.lineSignatures).toEqual([{ lineId: 'L1', lineCode: '001', direction: 0 }]);
 
@@ -144,10 +151,11 @@ describe('StopConnectionsService', () => {
     service
       .getConnections(['D2'], STOP_CONNECTION_DIRECTION.Backward)
       .subscribe((connections) => {
-        expect(connections.has('O1')).toBeTrue();
-        expect(connections.has('O2')).toBeTrue();
+        expect(connections.has(buildStopConnectionKey(7, 'O1'))).toBeTrue();
+        expect(connections.has(buildStopConnectionKey(7, 'O2'))).toBeTrue();
 
-        const origin = connections.get('O2') as StopConnection;
+        const origin = connections.get(buildStopConnectionKey(7, 'O2')) as StopConnection;
+        expect(origin.consortiumId).toBe(7);
         expect(origin.originStopIds).toEqual(['D2']);
         expect(origin.lineSignatures).toEqual([{ lineId: 'L1', lineCode: '001', direction: 0 }]);
 

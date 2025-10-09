@@ -7,7 +7,8 @@ import {
   StopConnectionsService,
   StopConnection,
   STOP_CONNECTION_DIRECTION,
-  StopConnectionDirection
+  StopConnectionDirection,
+  buildStopConnectionKey
 } from '../../data/route-search/stop-connections.service';
 import { RouteSearchSelection } from './route-search-state.service';
 
@@ -75,8 +76,9 @@ describe('RouteSearchSelectionResolverService', () => {
   it('resolves a selection from valid slugs and connections', (done) => {
     const forwardConnections = new Map<string, StopConnection>([
       [
-        '100',
+        buildStopConnectionKey(7, '100'),
         {
+          consortiumId: 7,
           stopId: '100',
           originStopIds: ['74'],
           lineSignatures: [{ lineId: 'L1', lineCode: '040', direction: 0 }]
@@ -125,8 +127,9 @@ describe('RouteSearchSelectionResolverService', () => {
   it('resolves a selection when only backward connections are available', (done) => {
     const backwardConnections = new Map<string, StopConnection>([
       [
-        '100',
+        buildStopConnectionKey(7, '100'),
         {
+          consortiumId: 7,
           stopId: '100',
           originStopIds: ['75'],
           lineSignatures: [{ lineId: 'L2', lineCode: '041', direction: 1 }]

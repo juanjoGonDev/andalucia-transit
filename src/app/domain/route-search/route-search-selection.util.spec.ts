@@ -1,5 +1,8 @@
 import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
-import { StopConnection } from '../../data/route-search/stop-connections.service';
+import {
+  StopConnection,
+  buildStopConnectionKey
+} from '../../data/route-search/stop-connections.service';
 import { RouteSearchLineMatch } from './route-search-state.service';
 import {
   collectRouteLineMatches,
@@ -34,8 +37,9 @@ describe('route-search-selection.util', () => {
   it('collects line matches ordered by origin and destination preference', () => {
     const connections = new Map<string, StopConnection>([
       [
-        '100',
+        buildStopConnectionKey(7, '100'),
         {
+          consortiumId: 7,
           stopId: '100',
           originStopIds: ['75', '74'],
           lineSignatures: [

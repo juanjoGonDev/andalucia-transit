@@ -179,7 +179,11 @@ describe('StopDirectoryService', () => {
 
   it('returns include stop identifiers even without a long query', async () => {
     const promise = firstValueFrom(
-      service.searchStops({ query: '', limit: 5, includeStopIds: ['01', '03'] })
+      service.searchStops({
+        query: '',
+        limit: 5,
+        includeStopSignatures: [buildSignature(7, '01'), buildSignature(7, '03')]
+      })
     );
 
     expectIndexRequest();
@@ -248,7 +252,11 @@ describe('StopDirectoryService', () => {
 
   it('excludes include-only stops when the query filters results', async () => {
     const promise = firstValueFrom(
-      service.searchStops({ query: 'hospital', limit: 5, includeStopIds: ['01'] })
+      service.searchStops({
+        query: 'hospital',
+        limit: 5,
+        includeStopSignatures: [buildSignature(7, '01')]
+      })
     );
 
     expectIndexRequest();
@@ -374,6 +382,10 @@ function buildSearchEntry(
     consortiumId: 7,
     chunkId: 'consortium-7'
   } satisfies DirectorySearchEntry;
+}
+
+function buildSignature(consortiumId: number, stopId: string) {
+  return { consortiumId, stopId };
 }
 
 function buildChunkStop(
