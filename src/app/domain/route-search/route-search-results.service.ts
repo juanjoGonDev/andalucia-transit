@@ -1,16 +1,21 @@
 import { Injectable, inject } from '@angular/core';
-import { map, Observable, of } from 'rxjs';
+import { map, Observable, of, switchMap, timer } from 'rxjs';
 
 import { RouteTimetableService, RouteTimetableRequest } from '../../data/route-search/route-timetable.service';
 import { RouteTimetableEntry } from '../../data/route-search/route-timetable.mapper';
 import { RouteSearchLineMatch, RouteSearchSelection } from './route-search-state.service';
-import { calculatePastProgress, calculateUpcomingProgress } from '../utils/progress.util';
+import {
+  ARRIVAL_PROGRESS_WINDOW_MINUTES,
+  calculatePastProgress,
+  calculateUpcomingProgress
+} from '../utils/progress.util';
 
 const MILLISECONDS_PER_SECOND = 1_000;
 const MILLISECONDS_PER_MINUTE = 60_000;
 const SECONDS_PER_HOUR = 3_600;
 const SECONDS_PER_MINUTE = 60;
 const PAST_WINDOW_MINUTES = 30;
+const RESULTS_REFRESH_INTERVAL_MS = 1_000;
 
 export interface RouteSearchResultsViewModel {
   readonly departures: readonly RouteSearchDepartureView[];
@@ -30,12 +35,19 @@ export interface RouteSearchDepartureView {
   readonly waitTimeSeconds: number;
   readonly kind: 'past' | 'upcoming';
   readonly isNext: boolean;
+  readonly isMostRecentPast: boolean;
   readonly isAccessible: boolean;
   readonly isUniversityOnly: boolean;
+  readonly showUpcomingProgress: boolean;
   readonly progressPercentage: number;
   readonly pastProgressPercentage: number;
   readonly destinationArrivalTime: Date | null;
   readonly travelDurationLabel: string | null;
+}
+
+interface RouteSearchResultsOptions {
+  readonly nowProvider?: () => Date;
+  readonly refreshIntervalMs?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -44,12 +56,13 @@ export class RouteSearchResultsService {
 
   loadResults(
     selection: RouteSearchSelection,
-    options?: { readonly currentTime?: Date }
+    options?: RouteSearchResultsOptions
   ): Observable<RouteSearchResultsViewModel> {
-    const referenceTime = resolveReferenceTime(selection.queryDate, options?.currentTime ?? new Date());
     if (!selection.lineMatches.length) {
       return of({ departures: [], hasUpcoming: false, nextDepartureId: null });
     }
+    const nowProvider = options?.nowProvider ?? (() => new Date());
+    const refreshInterval = options?.refreshIntervalMs ?? RESULTS_REFRESH_INTERVAL_MS;
     const request: RouteTimetableRequest = {
       consortiumId: selection.origin.consortiumId,
       originNucleusId: selection.origin.nucleusId,
@@ -59,7 +72,17 @@ export class RouteSearchResultsService {
 
     return this.timetable
       .loadTimetable(request)
-      .pipe(map((entries) => buildResults(selection, entries, referenceTime)));
+      .pipe(
+        switchMap((entries) =>
+          timer(0, refreshInterval).pipe(
+            map(() => {
+              const currentTime = nowProvider();
+              const referenceTime = resolveReferenceTime(selection.queryDate, currentTime);
+              return buildResults(selection, entries, referenceTime);
+            })
+          )
+        )
+      );
   }
 }
 
@@ -106,6 +129,7 @@ function buildResults(
   );
 
   const upcomingIndex = sorted.findIndex((item) => item.kind === 'upcoming');
+  const lastPastIndex = upcomingIndex === -1 ? sorted.length - 1 : upcomingIndex - 1;
 
   const departures = sorted.map((item, index) => ({
     id: item.id,
@@ -119,8 +143,10 @@ function buildResults(
     waitTimeSeconds: item.waitTimeSeconds,
     kind: item.kind,
     isNext: upcomingIndex === index,
+    isMostRecentPast: item.kind === 'past' && index === lastPastIndex,
     isAccessible: item.isAccessible,
     isUniversityOnly: item.isUniversityOnly,
+    showUpcomingProgress: item.showUpcomingProgress,
     progressPercentage: item.kind === 'upcoming' ? item.progressPercentage : 0,
     pastProgressPercentage: item.kind === 'past' ? item.pastProgressPercentage : 0,
     destinationArrivalTime: item.destinationArrivalTime,
@@ -155,6 +181,7 @@ interface RouteSearchDepartureCandidate {
   readonly kind: 'past' | 'upcoming';
   readonly isAccessible: boolean;
   readonly isUniversityOnly: boolean;
+  readonly showUpcomingProgress: boolean;
   readonly progressPercentage: number;
   readonly pastProgressPercentage: number;
   readonly destinationArrivalTime: Date | null;
@@ -214,6 +241,8 @@ function createCandidate(
     kind,
     isAccessible: false,
     isUniversityOnly: false,
+    showUpcomingProgress:
+      kind === 'upcoming' && minutesUntilArrival <= ARRIVAL_PROGRESS_WINDOW_MINUTES,
     progressPercentage: calculateUpcomingProgress(minutesUntilArrival),
     pastProgressPercentage: calculatePastProgress(minutesSinceDeparture),
     destinationArrivalTime,

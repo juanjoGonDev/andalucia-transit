@@ -62,7 +62,16 @@
                         {{ translationKeys.pastLabel | translate:{ time: item.relativeLabel } }}
                       </ng-template>
                     </span>
-                    <span *ngIf="item.isNext" class="route-search__item-badge">
+                    <span
+                      *ngIf="item.isMostRecentPast"
+                      class="route-search__item-badge route-search__item-badge--previous"
+                    >
+                      {{ translationKeys.previousBadge | translate }}
+                    </span>
+                    <span
+                      *ngIf="item.isNext"
+                      class="route-search__item-badge route-search__item-badge--next route-search__item-badge--align-end"
+                    >
                       {{ translationKeys.nextBadge | translate }}
                     </span>
                   </div>
@@ -103,12 +112,12 @@
                     </span>
                   </div>
                   <div
-                    class="route-search__item-progress"
-                    *ngIf="item.kind === 'upcoming'"
+                    class="route-search__item-progress route-search__item-progress--upcoming"
+                    *ngIf="item.kind === 'upcoming' && item.showUpcomingProgress"
                     aria-hidden="true"
                   >
                     <div
-                      class="route-search__item-progress-bar"
+                      class="route-search__item-progress-bar route-search__item-progress-bar--upcoming"
                       [style.width.%]="item.progressPercentage"
                     ></div>
                   </div>

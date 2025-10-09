@@ -165,13 +165,9 @@
   padding-bottom: 0;
 }
 
-.route-search__item--past {
-  opacity: 0.7;
-}
-
 .route-search__item--next {
   border-radius: 0.75rem;
-  background: linear-gradient(90deg, var(--color-primary-soft) 0%, transparent 100%);
+  background: linear-gradient(90deg, var(--color-upcoming-soft) 0%, transparent 100%);
   padding: 0.75rem;
   margin: -0.75rem;
 }
@@ -193,17 +189,39 @@
 
 .route-search__item-relative {
   font-size: 0.875rem;
-  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.route-search__item-relative[data-kind='upcoming'] {
+  color: var(--color-upcoming-strong);
+}
+
+.route-search__item-relative[data-kind='past'] {
+  color: var(--color-past-strong);
 }
 
 .route-search__item-badge {
-  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   padding: 0.25rem 0.5rem;
   border-radius: 999px;
-  background-color: var(--color-primary-soft);
-  color: var(--color-primary);
   font-size: 0.75rem;
   font-weight: 600;
+}
+
+.route-search__item-badge--align-end {
+  margin-left: auto;
+}
+
+.route-search__item-badge--next {
+  background-color: var(--color-upcoming-soft);
+  color: var(--color-upcoming-strong);
+}
+
+.route-search__item-badge--previous {
+  background-color: var(--color-past-soft);
+  color: var(--color-past-strong);
 }
 
 .route-search__item-details {
@@ -270,7 +288,6 @@
   position: relative;
   height: 0.375rem;
   border-radius: 999px;
-  background-color: var(--color-border-subtle);
   overflow: hidden;
 }
 
@@ -279,12 +296,27 @@
   top: 0;
   left: 0;
   height: 100%;
-  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-soft) 100%);
-  transition: width 0.3s ease;
+  transition: width 0.3s linear;
+}
+
+.route-search__item-progress--upcoming {
+  background-color: var(--color-upcoming-track);
+}
+
+.route-search__item-progress--past {
+  background-color: var(--color-past-track);
+}
+
+.route-search__item-progress-bar--upcoming {
+  background: linear-gradient(
+    90deg,
+    var(--color-upcoming-strong) 0%,
+    var(--color-upcoming-soft) 100%
+  );
 }
 
 .route-search__item-progress--past .route-search__item-progress-bar {
-  background: linear-gradient(90deg, var(--color-border-subtle) 0%, var(--color-primary) 100%);
+  background: linear-gradient(90deg, var(--color-past-soft) 0%, var(--color-past-strong) 100%);
 }
 
 .route-search__no-upcoming {

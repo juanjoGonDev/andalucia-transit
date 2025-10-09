@@ -127,6 +127,7 @@
     "upcomingLabel": "En {{time}}",
     "pastLabel": "Hace {{time}}",
     "nextBadge": "Siguiente",
+    "previousBadge": "Anterior",
     "noUpcoming": "No hay más salidas directas para esta fecha en las próximas horas.",
     "changeDate": "Buscar otra fecha",
     "emptyResults": "No se encontraron servicios para esta ruta.",

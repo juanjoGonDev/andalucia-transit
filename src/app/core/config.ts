@@ -193,6 +193,7 @@ export const APP_CONFIG = {
       upcomingLabel: 'routeSearch.upcomingLabel',
       pastLabel: 'routeSearch.pastLabel',
       nextBadge: 'routeSearch.nextBadge',
+      previousBadge: 'routeSearch.previousBadge',
       noUpcoming: 'routeSearch.noUpcoming',
       changeDate: 'routeSearch.changeDate',
       emptyResults: 'routeSearch.emptyResults',
