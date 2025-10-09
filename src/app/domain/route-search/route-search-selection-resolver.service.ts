@@ -42,7 +42,7 @@ export class RouteSearchSelectionResolverService {
           return of<RouteSearchSelection | null>(null);
         }
 
-        return this.loadConnections(origin.stopIds).pipe(
+        return this.loadConnections(origin).pipe(
           map((connectionMap) => {
             const matches = collectRouteLineMatches(origin, destination, connectionMap);
             return createRouteSearchSelection(origin, destination, matches, queryDate);
@@ -67,10 +67,15 @@ export class RouteSearchSelectionResolverService {
     return this.directory.getOptionByStopId(stopId);
   }
 
-  private loadConnections(stopIds: readonly string[]): Observable<ReadonlyMap<string, StopConnection>> {
+  private loadConnections(origin: StopDirectoryOption): Observable<ReadonlyMap<string, StopConnection>> {
+    const signatures = origin.stopIds.map((stopId) => ({
+      consortiumId: origin.consortiumId,
+      stopId
+    }));
+
     return forkJoin([
-      this.connections.getConnections(stopIds, STOP_CONNECTION_DIRECTION.Forward),
-      this.connections.getConnections(stopIds, STOP_CONNECTION_DIRECTION.Backward)
+      this.connections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Forward),
+      this.connections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Backward)
     ]).pipe(map((connections) => mergeConnections(connections)));
   }
 }

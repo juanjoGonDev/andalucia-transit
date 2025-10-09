@@ -2,7 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { RouteSearchSelectionResolverService } from './route-search-selection-resolver.service';
-import { StopDirectoryService, StopDirectoryOption } from '../../data/stops/stop-directory.service';
+import {
+  StopDirectoryService,
+  StopDirectoryOption,
+  StopDirectoryStopSignature
+} from '../../data/stops/stop-directory.service';
 import {
   StopConnectionsService,
   StopConnection,
@@ -29,14 +33,17 @@ class StopConnectionsServiceStub {
     private readonly responses: Partial<Record<StopConnectionDirection, ReadonlyMap<string, StopConnection>>>
   ) {}
 
-  getConnections(_: readonly string[], direction: StopConnectionDirection) {
+  getConnections(
+    _: readonly StopDirectoryStopSignature[],
+    direction: StopConnectionDirection
+  ) {
     return of(this.responses[direction] ?? new Map<string, StopConnection>());
   }
 }
 
 describe('RouteSearchSelectionResolverService', () => {
   const originOption: StopDirectoryOption = {
-    id: 'origin-group',
+    id: '7:74',
     code: 'origin-code',
     name: 'Origin Stop',
     municipality: 'Origin City',
@@ -48,7 +55,7 @@ describe('RouteSearchSelectionResolverService', () => {
   };
 
   const destinationOption: StopDirectoryOption = {
-    id: 'destination-group',
+    id: '7:100',
     code: 'destination-code',
     name: 'Destination Stop',
     municipality: 'Destination City',

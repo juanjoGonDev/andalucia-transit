@@ -7,6 +7,7 @@ import { RouteSearchFormComponent } from './route-search-form.component';
 import {
   StopDirectoryOption,
   StopDirectoryService,
+  StopDirectoryStopSignature,
   StopSearchRequest
 } from '../../../data/stops/stop-directory.service';
 import {
@@ -19,7 +20,7 @@ import {
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 
 const ORIGIN_OPTION: StopDirectoryOption = {
-  id: 'origin-group',
+  id: '7:origin-stop',
   code: '001',
   name: 'La Gangosa - Av. del Prado',
   municipality: 'La Gangosa',
@@ -31,7 +32,7 @@ const ORIGIN_OPTION: StopDirectoryOption = {
 };
 
 const DESTINATION_OPTION: StopDirectoryOption = {
-  id: 'destination-group',
+  id: '7:destination-stop',
   code: '002',
   name: 'Estación Intermodal',
   municipality: 'Almería',
@@ -41,6 +42,9 @@ const DESTINATION_OPTION: StopDirectoryOption = {
   consortiumId: 7,
   stopIds: ['destination-stop']
 };
+
+const ORIGIN_SIGNATURES: readonly StopDirectoryStopSignature[] = buildSignatures(ORIGIN_OPTION);
+const DESTINATION_SIGNATURES: readonly StopDirectoryStopSignature[] = buildSignatures(DESTINATION_OPTION);
 
 class DirectoryStub {
   lastRequest: StopSearchRequest | null = null;
@@ -67,20 +71,29 @@ class ConnectionsStub {
   private readonly responses = new Map<string, ReadonlyMap<string, StopConnection>>();
 
   setResponse(
-    stopIds: readonly string[],
+    signatures: readonly StopDirectoryStopSignature[],
     direction: StopConnectionDirection,
     connections: ReadonlyMap<string, StopConnection>
   ): void {
-    this.responses.set(this.buildKey(stopIds, direction), connections);
+    this.responses.set(this.buildKey(signatures, direction), connections);
   }
 
-  getConnections(stopIds: readonly string[], direction: StopConnectionDirection) {
-    const key = this.buildKey(stopIds, direction);
+  getConnections(
+    signatures: readonly StopDirectoryStopSignature[],
+    direction: StopConnectionDirection
+  ) {
+    const key = this.buildKey(signatures, direction);
     return of(this.responses.get(key) ?? new Map());
   }
 
-  private buildKey(stopIds: readonly string[], direction: StopConnectionDirection): string {
-    return `${direction}|${[...stopIds].sort().join('|')}`;
+  private buildKey(
+    signatures: readonly StopDirectoryStopSignature[],
+    direction: StopConnectionDirection
+  ): string {
+    const sorted = [...signatures]
+      .map((signature) => buildStopConnectionKey(signature.consortiumId, signature.stopId))
+      .sort();
+    return `${direction}|${sorted.join('|')}`;
   }
 }
 
@@ -130,12 +143,12 @@ describe('RouteSearchFormComponent', () => {
       ]
     ]);
     connections.setResponse(
-      ORIGIN_OPTION.stopIds,
+      ORIGIN_SIGNATURES,
       STOP_CONNECTION_DIRECTION.Forward,
       forwardConnections
     );
     connections.setResponse(
-      DESTINATION_OPTION.stopIds,
+      DESTINATION_SIGNATURES,
       STOP_CONNECTION_DIRECTION.Backward,
       backwardConnections
     );
@@ -217,4 +230,13 @@ function buildConnection(stopId: string, consortiumId: number): StopConnection {
       { lineId: 'line', lineCode: '001', direction: 0 }
     ]
   };
+}
+
+function buildSignatures(
+  option: StopDirectoryOption
+): readonly StopDirectoryStopSignature[] {
+  return option.stopIds.map((stopId) => ({
+    consortiumId: option.consortiumId,
+    stopId
+  }));
 }

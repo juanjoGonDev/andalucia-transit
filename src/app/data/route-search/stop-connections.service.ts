@@ -4,7 +4,8 @@ import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { RouteLineStop, RouteLineSummary, RouteLinesApiService } from './route-lines-api.service';
 import {
   StopDirectoryRecord,
-  StopDirectoryService
+  StopDirectoryService,
+  StopDirectoryStopSignature
 } from '../stops/stop-directory.service';
 
 export interface StopLineSignature {
@@ -34,17 +35,17 @@ export class StopConnectionsService {
   private readonly api = inject(RouteLinesApiService);
 
   getConnections(
-    stopIds: readonly string[],
+    signatures: readonly StopDirectoryStopSignature[],
     direction: StopConnectionDirection = STOP_CONNECTION_DIRECTION.Forward
   ): Observable<ReadonlyMap<string, StopConnection>> {
-    if (!stopIds.length) {
+    if (!signatures.length) {
       return of(EMPTY_CONNECTIONS);
     }
 
-    const uniqueStopIds = Array.from(new Set(stopIds));
-    const originOrderMap = buildOriginOrderMap(uniqueStopIds);
+    const uniqueSignatures = dedupeSignatures(signatures);
+    const originOrderMap = buildOriginOrderMap(uniqueSignatures.map((signature) => signature.stopId));
 
-    return this.loadDirectoryRecords(uniqueStopIds).pipe(
+    return this.loadDirectoryRecords(uniqueSignatures).pipe(
       switchMap((records) => {
         if (!records.length) {
           return of(EMPTY_CONNECTIONS);
@@ -66,12 +67,16 @@ export class StopConnectionsService {
     );
   }
 
-  private loadDirectoryRecords(stopIds: readonly string[]): Observable<readonly StopDirectoryRecord[]> {
-    const requests = stopIds.map((stopId) => this.directory.getStopById(stopId));
-
-    if (!requests.length) {
+  private loadDirectoryRecords(
+    signatures: readonly StopDirectoryStopSignature[]
+  ): Observable<readonly StopDirectoryRecord[]> {
+    if (!signatures.length) {
       return of([]);
     }
+
+    const requests = signatures.map((signature) =>
+      this.directory.getStopBySignature(signature.consortiumId, signature.stopId)
+    );
 
     return forkJoin(requests).pipe(map((records) => records.filter(isRecord)));
   }
@@ -159,6 +164,22 @@ function groupByConsortium(records: readonly StopDirectoryRecord[]): readonly Co
 function buildOriginOrderMap(stopIds: readonly string[]): ReadonlyMap<string, number> {
   const entries = stopIds.map((stopId, index) => [stopId, index] as const);
   return new Map(entries);
+}
+
+function dedupeSignatures(
+  signatures: readonly StopDirectoryStopSignature[]
+): readonly StopDirectoryStopSignature[] {
+  const unique = new Map<string, StopDirectoryStopSignature>();
+
+  signatures.forEach((signature) => {
+    const key = buildStopConnectionKey(signature.consortiumId, signature.stopId);
+
+    if (!unique.has(key)) {
+      unique.set(key, signature);
+    }
+  });
+
+  return Array.from(unique.values());
 }
 
 function buildLineAccumulator(

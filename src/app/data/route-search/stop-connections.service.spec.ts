@@ -14,7 +14,8 @@ import {
 } from './route-lines-api.service';
 import {
   StopDirectoryRecord,
-  StopDirectoryService
+  StopDirectoryService,
+  StopDirectoryStopSignature
 } from '../stops/stop-directory.service';
 
 class DirectoryStub {
@@ -29,11 +30,24 @@ class DirectoryStub {
   }
 
   getStopById(stopId: string): Observable<StopDirectoryRecord | null> {
-    return of(this.records.get(stopId) ?? null);
+    for (const record of this.records.values()) {
+      if (record.stopId === stopId) {
+        return of(record);
+      }
+    }
+
+    return of(null);
+  }
+
+  getStopBySignature(
+    consortiumId: number,
+    stopId: string
+  ): Observable<StopDirectoryRecord | null> {
+    return of(this.records.get(buildStopConnectionKey(consortiumId, stopId)) ?? null);
   }
 
   private addRecord(record: StopDirectoryRecord): void {
-    this.records.set(record.stopId, record);
+    this.records.set(buildStopConnectionKey(record.consortiumId, record.stopId), record);
   }
 }
 
@@ -112,7 +126,7 @@ describe('StopConnectionsService', () => {
 
   it('returns destinations that appear after each origin in the same line direction', (done) => {
     service
-      .getConnections(['O1', 'O2'], STOP_CONNECTION_DIRECTION.Forward)
+      .getConnections([buildSignature(7, 'O1'), buildSignature(7, 'O2')], STOP_CONNECTION_DIRECTION.Forward)
       .subscribe((connections) => {
         const destinationIds = Array.from(connections.keys()).sort();
         expect(destinationIds).toEqual([
@@ -137,7 +151,7 @@ describe('StopConnectionsService', () => {
 
   it('merges matching origins across shared lines while preserving the original order', (done) => {
     service
-      .getConnections(['O2', 'O1'], STOP_CONNECTION_DIRECTION.Forward)
+      .getConnections([buildSignature(7, 'O2'), buildSignature(7, 'O1')], STOP_CONNECTION_DIRECTION.Forward)
       .subscribe((connections) => {
         const d2 = connections.get(buildStopConnectionKey(7, 'D2')) as StopConnection;
         expect(d2.originStopIds).toEqual(['O2', 'O1']);
@@ -149,7 +163,7 @@ describe('StopConnectionsService', () => {
 
   it('returns upstream origins when requesting backward connections', (done) => {
     service
-      .getConnections(['D2'], STOP_CONNECTION_DIRECTION.Backward)
+      .getConnections([buildSignature(7, 'D2')], STOP_CONNECTION_DIRECTION.Backward)
       .subscribe((connections) => {
         expect(connections.has(buildStopConnectionKey(7, 'O1'))).toBeTrue();
         expect(connections.has(buildStopConnectionKey(7, 'O2'))).toBeTrue();
@@ -165,7 +179,7 @@ describe('StopConnectionsService', () => {
 
   it('returns an empty map when none of the stops resolve to directory entries', (done) => {
     service
-      .getConnections(['UNKNOWN'], STOP_CONNECTION_DIRECTION.Forward)
+      .getConnections([buildSignature(7, 'UNKNOWN')], STOP_CONNECTION_DIRECTION.Forward)
       .subscribe((connections) => {
         expect(connections.size).toBe(0);
         done();
@@ -205,4 +219,11 @@ function buildLineStop(
     longitude: 0,
     name: `${stopId} name`
   } satisfies RouteLineStop;
+}
+
+function buildSignature(
+  consortiumId: number,
+  stopId: string
+): StopDirectoryStopSignature {
+  return { consortiumId, stopId };
 }

@@ -162,15 +162,25 @@ export class StopDirectoryService {
           return of(null);
         }
 
-        const descriptor = index.chunks.get(entry.chunkId);
+        return this.loadRecord(index, entry);
+      })
+    );
+  }
 
-        if (!descriptor) {
+  getStopBySignature(
+    consortiumId: number,
+    stopId: string
+  ): Observable<StopDirectoryRecord | null> {
+    return this.index$.pipe(
+      switchMap((index) => {
+        const entryKey = buildEntryKey(consortiumId, stopId);
+        const entry = index.compositeEntries.get(entryKey);
+
+        if (!entry) {
           return of(null);
         }
 
-        return this.loadChunkRecords(descriptor).pipe(
-          map((records) => records.get(stopId) ?? null)
-        );
+        return this.loadRecord(index, entry);
       })
     );
   }
@@ -225,6 +235,21 @@ export class StopDirectoryService {
     return this.index$.pipe(map((index) => searchDirectory(index, request)));
   }
 
+  private loadRecord(
+    index: StopDirectoryIndex,
+    entry: StopDirectorySearchEntry
+  ): Observable<StopDirectoryRecord | null> {
+    const descriptor = index.chunks.get(entry.chunkId);
+
+    if (!descriptor) {
+      return of(null);
+    }
+
+    return this.loadChunkRecords(descriptor).pipe(
+      map((records) => records.get(entry.stopId) ?? null)
+    );
+  }
+
   private loadChunkRecords(descriptor: StopDirectoryChunkDescriptor): Observable<ChunkRecords> {
     const cached = this.chunkCache.get(descriptor.id);
 
@@ -258,7 +283,9 @@ function buildDirectoryIndex(file: StopDirectoryIndexFile): StopDirectoryIndex {
   const groups = new Map<string, StopDirectorySearchEntry[]>();
 
   for (const entry of file.searchIndex) {
-    entries.set(entry.stopId, entry);
+    if (!entries.has(entry.stopId)) {
+      entries.set(entry.stopId, entry);
+    }
     compositeEntries.set(buildEntryKey(entry.consortiumId, entry.stopId), entry);
     const key = buildGroupKey(entry);
     const bucket = groups.get(key);
@@ -486,7 +513,7 @@ function toOption(
   }
 
   return {
-    id: entry.stopId,
+    id: buildEntryKey(entry.consortiumId, entry.stopId),
     code: entry.stopCode,
     name: entry.name,
     municipality: entry.municipality,

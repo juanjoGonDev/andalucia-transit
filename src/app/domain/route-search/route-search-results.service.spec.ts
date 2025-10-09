@@ -25,7 +25,7 @@ describe('RouteSearchResultsService', () => {
   const referenceTime = new Date('2025-06-01T10:00:00Z');
 
   const origin: StopDirectoryOption = {
-    id: 'origin-group',
+    id: '7:origin-a',
     code: 'origin-code',
     name: 'Origen Principal',
     municipality: 'Municipio',
@@ -37,7 +37,7 @@ describe('RouteSearchResultsService', () => {
   };
 
   const destination: StopDirectoryOption = {
-    id: 'destination-group',
+    id: '7:destination-a',
     code: 'destination-code',
     name: 'Destino Final',
     municipality: 'Municipio',

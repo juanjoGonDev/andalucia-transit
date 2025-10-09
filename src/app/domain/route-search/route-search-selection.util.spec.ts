@@ -11,7 +11,7 @@ import {
 
 describe('route-search-selection.util', () => {
   const origin: StopDirectoryOption = {
-    id: 'origin-group',
+    id: '7:74',
     code: 'origin-code',
     name: 'Origin Stop',
     municipality: 'Origin City',
@@ -23,7 +23,7 @@ describe('route-search-selection.util', () => {
   };
 
   const destination: StopDirectoryOption = {
-    id: 'destination-group',
+    id: '7:100',
     code: 'destination-code',
     name: 'Destination Stop',
     municipality: 'Destination City',

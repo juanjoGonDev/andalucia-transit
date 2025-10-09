@@ -70,10 +70,12 @@ interface StopAutocompleteGroup {
   readonly options: readonly StopDirectoryOption[];
 }
 
-const EMPTY_STOP_IDS: readonly string[] = Object.freeze([]);
 const EMPTY_GROUPS: readonly StopAutocompleteGroup[] = Object.freeze([]);
 const STOP_REQUIRED_ERROR = 'stopRequired' as const;
 const MIN_DATE_ERROR = 'minDate' as const;
+const EMPTY_STOP_SIGNATURES: readonly StopDirectoryStopSignature[] = Object.freeze(
+  [] as StopDirectoryStopSignature[]
+);
 
 @Component({
   selector: 'app-route-search-form',
@@ -185,26 +187,26 @@ export class RouteSearchFormComponent implements OnChanges {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  private readonly originStopIds$ = this.selectedOrigin$.pipe(
-    map((option) => option?.stopIds ?? EMPTY_STOP_IDS),
-    distinctUntilChanged((first, second) => this.areSameStopIdList(first, second))
+  private readonly originSignatures$ = this.selectedOrigin$.pipe(
+    map((option) => this.toStopSignatures(option)),
+    distinctUntilChanged((first, second) => this.areSameStopSignatureList(first, second))
   );
 
-  private readonly destinationStopIds$ = this.selectedDestination$.pipe(
-    map((option) => option?.stopIds ?? EMPTY_STOP_IDS),
-    distinctUntilChanged((first, second) => this.areSameStopIdList(first, second))
+  private readonly destinationSignatures$ = this.selectedDestination$.pipe(
+    map((option) => this.toStopSignatures(option)),
+    distinctUntilChanged((first, second) => this.areSameStopSignatureList(first, second))
   );
 
-  private readonly originConnections$ = this.originStopIds$.pipe(
-    switchMap((stopIds) =>
-      this.stopConnections.getConnections(stopIds, STOP_CONNECTION_DIRECTION.Forward)
+  private readonly originConnections$ = this.originSignatures$.pipe(
+    switchMap((signatures) =>
+      this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Forward)
     ),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  private readonly destinationConnections$ = this.destinationStopIds$.pipe(
-    switchMap((stopIds) =>
-      this.stopConnections.getConnections(stopIds, STOP_CONNECTION_DIRECTION.Backward)
+  private readonly destinationConnections$ = this.destinationSignatures$.pipe(
+    switchMap((signatures) =>
+      this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Backward)
     ),
     shareReplay({ bufferSize: 1, refCount: true })
   );
@@ -313,7 +315,10 @@ export class RouteSearchFormComponent implements OnChanges {
   ): Promise<RouteSearchSelection | null> {
     this.hideNoRoutes();
     const connections = await firstValueFrom(
-      this.stopConnections.getConnections(origin.stopIds, STOP_CONNECTION_DIRECTION.Forward)
+      this.stopConnections.getConnections(
+        this.toStopSignatures(origin),
+        STOP_CONNECTION_DIRECTION.Forward
+      )
     );
     const matches = collectRouteLineMatches(origin, destination, connections);
 
@@ -472,7 +477,17 @@ export class RouteSearchFormComponent implements OnChanges {
     return first.some((value) => second.includes(value));
   }
 
-  private areSameStopIdList(first: readonly string[], second: readonly string[]): boolean {
+  private areSameStopSignature(
+    first: StopDirectoryStopSignature,
+    second: StopDirectoryStopSignature
+  ): boolean {
+    return first.consortiumId === second.consortiumId && first.stopId === second.stopId;
+  }
+
+  private areSameStopSignatureList(
+    first: readonly StopDirectoryStopSignature[],
+    second: readonly StopDirectoryStopSignature[]
+  ): boolean {
     if (first === second) {
       return true;
     }
@@ -481,7 +496,7 @@ export class RouteSearchFormComponent implements OnChanges {
       return false;
     }
 
-    return first.every((value, index) => value === second[index]);
+    return first.every((signature, index) => this.areSameStopSignature(signature, second[index]));
   }
 
   private areSameStop(
@@ -524,6 +539,19 @@ export class RouteSearchFormComponent implements OnChanges {
       consortiumId: option.consortiumId,
       stopId: option.stopIds[0]
     } satisfies StopDirectoryStopSignature;
+  }
+
+  private toStopSignatures(
+    option: StopDirectoryOption | null
+  ): readonly StopDirectoryStopSignature[] {
+    if (!option?.stopIds.length) {
+      return EMPTY_STOP_SIGNATURES;
+    }
+
+    return option.stopIds.map((stopId) => ({
+      consortiumId: option.consortiumId,
+      stopId
+    } satisfies StopDirectoryStopSignature));
   }
 
   private createMinimumDateValidator(minimum: Date): ValidatorFn {

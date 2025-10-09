@@ -153,7 +153,7 @@ describe('StopDirectoryService', () => {
 
     expect(options).toEqual([
       {
-        id: '02',
+        id: '7:02',
         code: '02',
         name: 'Hospital Provincial',
         municipality: 'Jaén',
@@ -164,7 +164,7 @@ describe('StopDirectoryService', () => {
         stopIds: ['02', '02B']
       },
       {
-        id: '02C',
+        id: '7:02C',
         code: '02C',
         name: 'Hospital Provincial',
         municipality: 'Martos',
@@ -192,7 +192,7 @@ describe('StopDirectoryService', () => {
 
     expect(options).toEqual([
       {
-        id: '01',
+        id: '7:01',
         code: '01',
         name: 'Estación Central',
         municipality: 'Jaén',
@@ -203,7 +203,7 @@ describe('StopDirectoryService', () => {
         stopIds: ['01']
       },
       {
-        id: '03',
+        id: '7:03',
         code: '03',
         name: 'Museo Íbero',
         municipality: 'Jaén',
@@ -251,7 +251,7 @@ describe('StopDirectoryService', () => {
 
     expect(options).toEqual([
       {
-        id: '03',
+        id: '7:03',
         code: '03',
         name: 'Museo Íbero',
         municipality: 'Jaén',
@@ -277,7 +277,7 @@ describe('StopDirectoryService', () => {
 
     const options = await promise;
 
-    expect(options.every((option) => option.id !== '01')).toBeTrue();
+    expect(options.every((option) => option.id !== '7:01')).toBeTrue();
   });
 
   it('loads full stop metadata on demand from chunk files', async () => {
@@ -293,6 +293,18 @@ describe('StopDirectoryService', () => {
     expect(stop?.location.latitude).toBeCloseTo(37.7);
   });
 
+  it('loads stop metadata by composite signature', async () => {
+    const promise = firstValueFrom(service.getStopBySignature(7, '03'));
+
+    expectIndexRequest();
+    expectChunkRequest('consortium-7');
+
+    const stop = await promise;
+
+    expect(stop?.consortiumId).toBe(7);
+    expect(stop?.stopId).toBe('03');
+  });
+
   it('returns the grouped option for a stop identifier', async () => {
     const promise = firstValueFrom(service.getOptionByStopId('02B'));
 
@@ -301,7 +313,7 @@ describe('StopDirectoryService', () => {
     const option = await promise;
 
     expect(option).toEqual({
-      id: '02',
+      id: '7:02',
       code: '02',
       name: 'Hospital Provincial',
       municipality: 'Jaén',
@@ -352,7 +364,7 @@ describe('StopDirectoryService', () => {
     const option = await promise;
 
     expect(option).toEqual({
-      id: '79',
+      id: '8:79',
       code: '79',
       name: 'La Gangosa - Av. Prado',
       municipality: 'Vícar',
