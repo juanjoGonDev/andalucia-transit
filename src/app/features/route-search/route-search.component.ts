@@ -55,6 +55,8 @@ export class RouteSearchComponent implements AfterViewInit {
 
   @ViewChildren('itemElement', { read: ElementRef })
   private readonly itemElements!: QueryList<ElementRef<HTMLElement>>;
+  private pendingScroll = false;
+  private lastScrollTargetId: string | null = null;
 
   private readonly state = inject(RouteSearchStateService);
   private readonly destroyRef = inject(DestroyRef);
@@ -136,7 +138,16 @@ export class RouteSearchComponent implements AfterViewInit {
 
     selectionStream$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => this.selection.set(value));
+      .subscribe((value) => {
+        this.selection.set(value);
+
+        if (!value) {
+          return;
+        }
+
+        this.lastScrollTargetId = null;
+        this.pendingScroll = false;
+      });
 
     selectionStream$
       .pipe(
@@ -154,15 +165,38 @@ export class RouteSearchComponent implements AfterViewInit {
         })
       )
       .subscribe((result) => {
+        const previousNextId = this.results().nextDepartureId;
+
         this.results.set(result);
-        this.queueScrollToNext();
+
+        if (!result.nextDepartureId) {
+          this.lastScrollTargetId = null;
+          this.pendingScroll = false;
+          return;
+        }
+
+        const isInitialTarget = this.lastScrollTargetId === null;
+
+        if (!isInitialTarget && result.nextDepartureId === this.lastScrollTargetId) {
+          return;
+        }
+
+        this.lastScrollTargetId = result.nextDepartureId;
+
+        if (isInitialTarget || result.nextDepartureId !== previousNextId) {
+          this.queueScrollToNext();
+        }
       });
   }
 
   ngAfterViewInit(): void {
     this.itemElements.changes
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.scrollToNext());
+      .subscribe(() => {
+        if (this.pendingScroll) {
+          this.scrollToNext();
+        }
+      });
   }
 
   protected trackDeparture(_: number, item: RouteSearchDepartureView): string {
@@ -184,11 +218,12 @@ export class RouteSearchComponent implements AfterViewInit {
   }
 
   private queueScrollToNext(): void {
+    this.pendingScroll = true;
     setTimeout(() => this.scrollToNext(), 0);
   }
 
   private scrollToNext(): void {
-    if (!this.itemElements) {
+    if (!this.pendingScroll || !this.itemElements) {
       return;
     }
 
@@ -200,6 +235,7 @@ export class RouteSearchComponent implements AfterViewInit {
       return;
     }
 
+    this.pendingScroll = false;
     target.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
