@@ -6,7 +6,7 @@ Generated from https://api.ctan.es/doc/api_data.js on 2025-10-08 21:05 UTC.
 
 ### GET https://date.nager.at/api/v3/PublicHolidays/{year}/ES — Spanish public holidays
 
-Retrieves the full list of national and regional public holidays for the requested year. The app filters the response for entries marked as global or assigned to `ES-AN` so timetable queries treat Andalusian festivos correctly.
+Retrieves the full list of national and regional public holidays for the requested year. The client keeps only entries that are national or tagged with the Andalusian subdivision (`ES-AN`) and synthesises Monday observances when an official date falls on Sunday to follow the Junta de Andalucía calendar (https://www.juntadeandalucia.es/organismos/empleoempresaytrabajoautonomo/areas/relaciones-laborales/calendario-fiestas.html).
 
 - **Provider:** Nager.Date (https://date.nager.at)
 - **License:** MIT (https://github.com/nager/Nager.Date/blob/master/LICENSE)

@@ -54,6 +54,31 @@ describe('HolidayCalendarService', () => {
     });
   });
 
+  it('marks the observed Monday when a holiday falls on Sunday', (done) => {
+    const entries: ApiPublicHoliday[] = [
+      buildHoliday('2025-10-12', true, null, 'Fiesta Nacional de España')
+    ];
+    const service = setup(entries);
+
+    service.isHoliday(new Date('2025-10-13T10:00:00Z')).subscribe((isHoliday) => {
+      expect(isHoliday).toBeTrue();
+      done();
+    });
+  });
+
+  it('ignores holidays from other regions when they are not national', (done) => {
+    const entries: ApiPublicHoliday[] = [
+      buildHoliday('2025-04-23', false, ['ES-AR'], 'San Jorge'),
+      buildHoliday('2025-02-28', false, ['ES-AN'], 'Día de Andalucía')
+    ];
+    const service = setup(entries);
+
+    service.isHoliday(new Date('2025-04-23T10:00:00Z')).subscribe((isHoliday) => {
+      expect(isHoliday).toBeFalse();
+      done();
+    });
+  });
+
   it('reuses cached data for multiple queries in the same year', (done) => {
     const spy = jasmine.createSpy('loadPublicHolidays');
     const entries: ApiPublicHoliday[] = [

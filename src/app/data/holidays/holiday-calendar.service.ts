@@ -20,6 +20,9 @@ interface HolidayEntry {
   readonly regions: readonly string[];
 }
 
+const SUNDAY_WEEKDAY = 7 as const;
+const OBSERVED_SHIFT_DAYS = 1 as const;
+
 @Injectable({ providedIn: 'root' })
 export class HolidayCalendarService {
   private readonly api = inject(HolidayCalendarApiService);
@@ -68,21 +71,20 @@ export class HolidayCalendarService {
   }
 
   private mapEntries(entries: readonly ApiPublicHoliday[]): readonly HolidayEntry[] {
-    return entries.map((entry) => ({
+    const filtered = entries.filter((entry) => entry.global || this.hasAllowedRegion(entry));
+    const normalized = filtered.map((entry) => ({
       isoDate: entry.date,
       localName: entry.localName,
       englishName: entry.name,
       isGlobal: entry.global,
       regions: entry.counties ? [...entry.counties] : []
     } satisfies HolidayEntry));
+    return this.expandObservedEntries(normalized);
   }
 
   private matchesRegion(entry: HolidayEntry): boolean {
     if (entry.isGlobal) {
       return true;
-    }
-    if (!entry.regions.length) {
-      return false;
     }
     for (const region of entry.regions) {
       if (this.allowedRegionCodes.has(region)) {
@@ -90,5 +92,51 @@ export class HolidayCalendarService {
       }
     }
     return false;
+  }
+
+  private hasAllowedRegion(entry: ApiPublicHoliday): boolean {
+    if (!entry.counties?.length) {
+      return false;
+    }
+    for (const region of entry.counties) {
+      if (this.allowedRegionCodes.has(region)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private expandObservedEntries(entries: readonly HolidayEntry[]): readonly HolidayEntry[] {
+    const expanded: HolidayEntry[] = [...entries];
+    const seen = new Set<string>(expanded.map((entry) => this.buildEntrySignature(entry)));
+    for (const entry of entries) {
+      const observedIsoDate = this.resolveObservedIsoDate(entry);
+      if (!observedIsoDate) {
+        continue;
+      }
+      const observedEntry: HolidayEntry = {
+        ...entry,
+        isoDate: observedIsoDate
+      };
+      const signature = this.buildEntrySignature(observedEntry);
+      if (seen.has(signature)) {
+        continue;
+      }
+      seen.add(signature);
+      expanded.push(observedEntry);
+    }
+    return expanded;
+  }
+
+  private resolveObservedIsoDate(entry: HolidayEntry): string | null {
+    const dateTime = DateTime.fromISO(entry.isoDate, { zone: this.config.data.timezone });
+    if (!dateTime.isValid || dateTime.weekday !== SUNDAY_WEEKDAY) {
+      return null;
+    }
+    return dateTime.plus({ days: OBSERVED_SHIFT_DAYS }).toISODate();
+  }
+
+  private buildEntrySignature(entry: HolidayEntry): string {
+    return JSON.stringify([entry.isoDate, entry.localName, entry.englishName]);
   }
 }
