@@ -228,6 +228,20 @@ describe('StopDirectoryService', () => {
     expect(options[1].stopIds).toEqual(['02C']);
   });
 
+  it('returns distinct stop names within the same nucleus', async () => {
+    const promise = firstValueFrom(service.searchStops({ query: 'jaen', limit: 10 }));
+
+    expectIndexRequest();
+
+    const options = await promise;
+
+    expect(options.map((option) => option.name)).toEqual([
+      'Estación Central',
+      'Hospital Provincial',
+      'Museo Íbero'
+    ]);
+  });
+
   it('matches queries regardless of diacritics', async () => {
     const promise = firstValueFrom(service.searchStops({ query: 'ibero', limit: 5 }));
 

@@ -445,7 +445,11 @@ function buildCompositeOptionMap(
 }
 
 function buildGroupKey(entry: StopDirectorySearchEntry): string {
-  return `${entry.consortiumId}${SIGNATURE_KEY_SEPARATOR}${entry.nucleusId}`;
+  const normalizedName = normalize(entry.name);
+
+  return [entry.consortiumId, entry.nucleusId, normalizedName].join(
+    SIGNATURE_KEY_SEPARATOR
+  );
 }
 
 function buildEntryKey(consortiumId: number, stopId: string): string {
