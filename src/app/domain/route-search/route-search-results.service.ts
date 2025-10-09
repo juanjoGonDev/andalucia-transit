@@ -38,6 +38,7 @@ export interface RouteSearchDepartureView {
   readonly isMostRecentPast: boolean;
   readonly isAccessible: boolean;
   readonly isUniversityOnly: boolean;
+  readonly isHolidayService: boolean;
   readonly showUpcomingProgress: boolean;
   readonly progressPercentage: number;
   readonly pastProgressPercentage: number;
@@ -146,6 +147,7 @@ function buildResults(
     isMostRecentPast: item.kind === 'past' && index === lastPastIndex,
     isAccessible: item.isAccessible,
     isUniversityOnly: item.isUniversityOnly,
+    isHolidayService: item.isHolidayService,
     showUpcomingProgress: item.showUpcomingProgress,
     progressPercentage: item.kind === 'upcoming' ? item.progressPercentage : 0,
     pastProgressPercentage: item.kind === 'past' ? item.pastProgressPercentage : 0,
@@ -181,6 +183,7 @@ interface RouteSearchDepartureCandidate {
   readonly kind: 'past' | 'upcoming';
   readonly isAccessible: boolean;
   readonly isUniversityOnly: boolean;
+  readonly isHolidayService: boolean;
   readonly showUpcomingProgress: boolean;
   readonly progressPercentage: number;
   readonly pastProgressPercentage: number;
@@ -241,6 +244,7 @@ function createCandidate(
     kind,
     isAccessible: false,
     isUniversityOnly: false,
+    isHolidayService: entry.isHolidayOnly,
     showUpcomingProgress:
       kind === 'upcoming' && minutesUntilArrival <= ARRIVAL_PROGRESS_WINDOW_MINUTES,
     progressPercentage: calculateUpcomingProgress(minutesUntilArrival),

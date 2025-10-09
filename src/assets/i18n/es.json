@@ -132,7 +132,8 @@
     "changeDate": "Buscar otra fecha",
     "emptyResults": "No se encontraron servicios para esta ruta.",
     "arrivalAt": "Llega a las {{time}}",
-    "travelDuration": "Trayecto {{duration}}"
+    "travelDuration": "Trayecto {{duration}}",
+    "holidayBadge": "Servicio festivo"
   },
   "map": {
     "title": "Mapa de la red",

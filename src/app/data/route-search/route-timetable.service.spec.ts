@@ -136,6 +136,8 @@ describe('RouteTimetableService', () => {
 
     service.loadTimetable(request).subscribe((entries) => {
       expect(entries.map((entry) => entry.lineId)).toEqual(['90', '17']);
+      expect(entries[0]?.isHolidayOnly).toBeTrue();
+      expect(entries[1]?.isHolidayOnly).toBeFalse();
       done();
     });
   });

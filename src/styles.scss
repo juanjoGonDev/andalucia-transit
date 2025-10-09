@@ -27,6 +27,8 @@ $theme: mat.define-theme(
   --color-past-strong: #c2410c;
   --color-past-soft: rgba(194, 65, 12, 0.18);
   --color-past-track: rgba(194, 65, 12, 0.26);
+  --color-holiday-strong: #0b7285;
+  --color-holiday-soft: rgba(11, 114, 133, 0.16);
   --color-background-light: #f6f7f8;
   --color-background-dark: #101922;
   --color-surface-light: #ffffff;
@@ -64,6 +66,8 @@ $theme: mat.define-theme(
   --color-past-strong: #fbbf24;
   --color-past-soft: rgba(251, 191, 36, 0.28);
   --color-past-track: rgba(251, 191, 36, 0.42);
+  --color-holiday-strong: #67e8f9;
+  --color-holiday-soft: rgba(103, 232, 249, 0.24);
 }
 
 *, *::before, *::after {

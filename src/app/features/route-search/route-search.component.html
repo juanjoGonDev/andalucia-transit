@@ -78,7 +78,12 @@
                   <div class="route-search__item-details">
                     <div class="route-search__item-line-info">
                       <span class="route-search__item-line">{{ item.lineCode }}</span>
-                      <span class="route-search__item-direction">#{{ item.direction }}</span>
+                      <span
+                        *ngIf="item.isHolidayService"
+                        class="route-search__item-frequency route-search__item-frequency--holiday"
+                      >
+                        {{ translationKeys.holidayBadge | translate }}
+                      </span>
                     </div>
                     <span class="route-search__item-destination">{{ item.destination }}</span>
                     <div

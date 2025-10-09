@@ -84,8 +84,8 @@ describe('RouteSearchResultsService', () => {
       buildEntry(referenceTime, -20, 20, 'L1', '001'),
       buildEntry(referenceTime, 5, 15, 'L1', '001'),
       buildEntry(referenceTime, 15, 12, 'L1', '001'),
-      buildEntry(referenceTime, 40, 18, 'L1', '001'),
-      buildEntry(referenceTime, 60, 25, 'L1', '001', 'Servicio especial')
+      buildEntry(referenceTime, 40, 18, 'L1', '001', { isHolidayOnly: true }),
+      buildEntry(referenceTime, 60, 25, 'L1', '001', { notes: 'Servicio especial' })
     ];
 
     const { service } = setup(entries);
@@ -132,6 +132,7 @@ describe('RouteSearchResultsService', () => {
     expect(second.travelDurationLabel).toBe('15m');
     expect(second.showUpcomingProgress).toBeTrue();
     expect(viewModel.departures[3].showUpcomingProgress).toBeFalse();
+    expect(viewModel.departures[3].isHolidayService).toBeTrue();
     expect(viewModel.departures[4].destination).toContain('Servicio especial');
   }));
 
@@ -353,13 +354,18 @@ describe('RouteSearchResultsService', () => {
     subscription.unsubscribe();
   }));
 
+  interface BuildEntryOptions {
+    readonly notes?: string;
+    readonly isHolidayOnly?: boolean;
+  }
+
   function buildEntry(
     reference: Date,
     offsetMinutes: number,
     travelMinutes: number,
     lineId: string,
     lineCode: string,
-    notes?: string
+    options?: BuildEntryOptions
   ): RouteTimetableEntry {
     const departure = new Date(reference.getTime() + offsetMinutes * 60_000);
     const arrival = new Date(departure.getTime() + travelMinutes * 60_000);
@@ -370,7 +376,8 @@ describe('RouteSearchResultsService', () => {
       departureTime: departure,
       arrivalTime: arrival,
       frequency: { id: 'freq', code: 'L-V', name: 'Lunes a viernes' },
-      notes: notes ?? null
+      notes: options?.notes ?? null,
+      isHolidayOnly: options?.isHolidayOnly ?? false
     } satisfies RouteTimetableEntry;
   }
 });

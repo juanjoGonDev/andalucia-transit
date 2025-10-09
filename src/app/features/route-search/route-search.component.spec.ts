@@ -149,6 +149,7 @@ describe('RouteSearchComponent', () => {
       isMostRecentPast: false,
       isAccessible: true,
       isUniversityOnly: false,
+      isHolidayService: true,
       showUpcomingProgress: true,
       progressPercentage: 75,
       pastProgressPercentage: 0,
@@ -182,6 +183,8 @@ describe('RouteSearchComponent', () => {
     expect(item).not.toBeNull();
     const lineLabel = item?.query(By.css('.route-search__item-line'))?.nativeElement as HTMLElement;
     expect(lineLabel.textContent).toContain('001');
+    const holidayBadge = item?.query(By.css('.route-search__item-frequency'));
+    expect(holidayBadge).not.toBeNull();
     const arrival = item?.query(By.css('.route-search__item-arrival'));
     expect(arrival).not.toBeNull();
   });
@@ -240,6 +243,7 @@ describe('RouteSearchComponent', () => {
           isMostRecentPast: true,
           isAccessible: false,
           isUniversityOnly: false,
+          isHolidayService: false,
           showUpcomingProgress: false,
           progressPercentage: 0,
           pastProgressPercentage: 33,
@@ -280,6 +284,7 @@ describe('RouteSearchComponent', () => {
       isMostRecentPast: false,
       isAccessible: true,
       isUniversityOnly: false,
+      isHolidayService: false,
       showUpcomingProgress: true,
       progressPercentage: 50,
       pastProgressPercentage: 0,

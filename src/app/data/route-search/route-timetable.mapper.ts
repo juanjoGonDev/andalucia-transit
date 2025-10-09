@@ -9,6 +9,7 @@ export interface RouteTimetableEntry {
   readonly arrivalTime: Date;
   readonly frequency: RouteTimetableFrequency;
   readonly notes: string | null;
+  readonly isHolidayOnly: boolean;
 }
 
 export interface RouteTimetableFrequency {
@@ -63,7 +64,8 @@ export function mapRouteTimetableResponse(
       departureTime: departureDateTime.toJSDate(),
       arrivalTime: arrivalDateTime.toJSDate(),
       frequency,
-      notes
+      notes,
+      isHolidayOnly: isHolidayOnlyFrequency(frequency)
     });
   }
 
@@ -85,13 +87,11 @@ function shouldIncludeFrequency(
   weekday: number,
   isHoliday: boolean
 ): boolean {
-  const code = frequency.code.trim();
-  const lowerName = frequency.name.toLowerCase();
-
-  if (HOLIDAY_ONLY_FREQUENCIES.has(code) || lowerName.includes(HOLIDAY_KEYWORD)) {
+  if (isHolidayOnlyFrequency(frequency)) {
     return isHoliday;
   }
 
+  const code = frequency.code.trim();
   const rule = FREQUENCY_RULES.get(code);
 
   if (!rule) {
@@ -133,6 +133,12 @@ function normalizeNotes(notes: string): string | null {
   }
 
   return trimmed;
+}
+
+function isHolidayOnlyFrequency(frequency: RouteTimetableFrequency): boolean {
+  const code = frequency.code.trim();
+  const lowerName = frequency.name.toLowerCase();
+  return HOLIDAY_ONLY_FREQUENCIES.has(code) || lowerName.includes(HOLIDAY_KEYWORD);
 }
 
 interface RouteTimetableFrequencyApi {

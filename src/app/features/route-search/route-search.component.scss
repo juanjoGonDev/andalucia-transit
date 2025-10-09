@@ -242,9 +242,18 @@
   font-size: 1.1rem;
 }
 
-.route-search__item-direction {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
+.route-search__item-frequency {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.route-search__item-frequency--holiday {
+  background-color: var(--color-holiday-soft);
+  color: var(--color-holiday-strong);
 }
 
 .route-search__item-destination {
