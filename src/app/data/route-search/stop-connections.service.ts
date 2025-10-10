@@ -112,6 +112,60 @@ export class StopConnectionsService {
   }
 }
 
+export function mergeStopConnectionMaps(
+  maps: readonly ReadonlyMap<string, StopConnection>[]
+): ReadonlyMap<string, StopConnection> {
+  if (!maps.length) {
+    return new Map<string, StopConnection>();
+  }
+
+  const aggregates = new Map<
+    string,
+    {
+      consortiumId: number;
+      stopId: string;
+      originIds: Set<string>;
+      signatures: Map<string, StopConnection['lineSignatures'][number]>;
+    }
+  >();
+
+  for (const mapEntry of maps) {
+    mapEntry.forEach((connection, key) => {
+      const aggregate =
+        aggregates.get(key) ??
+        {
+          consortiumId: connection.consortiumId,
+          stopId: connection.stopId,
+          originIds: new Set<string>(),
+          signatures: new Map<string, StopConnection['lineSignatures'][number]>()
+        };
+
+      connection.originStopIds.forEach((originId) => aggregate.originIds.add(originId));
+      connection.lineSignatures.forEach((signature) =>
+        aggregate.signatures.set(
+          buildSignatureKey(signature.lineId, signature.lineCode, signature.direction),
+          signature
+        )
+      );
+
+      aggregates.set(key, aggregate);
+    });
+  }
+
+  const merged = new Map<string, StopConnection>();
+
+  aggregates.forEach((aggregate, key) => {
+    merged.set(key, {
+      consortiumId: aggregate.consortiumId,
+      stopId: aggregate.stopId,
+      originStopIds: Array.from(aggregate.originIds),
+      lineSignatures: Array.from(aggregate.signatures.values())
+    });
+  });
+
+  return merged;
+}
+
 interface ConsortiumGroup {
   readonly consortiumId: number;
   readonly stopIds: readonly string[];

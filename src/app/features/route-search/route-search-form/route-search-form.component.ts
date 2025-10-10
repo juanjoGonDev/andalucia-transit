@@ -31,6 +31,7 @@ import {
   Observable,
   combineLatest,
   firstValueFrom,
+  forkJoin,
   of,
   timer
 } from 'rxjs';
@@ -54,7 +55,8 @@ import {
   StopConnectionsService,
   StopConnection,
   STOP_CONNECTION_DIRECTION,
-  buildStopConnectionKey
+  buildStopConnectionKey,
+  mergeStopConnectionMaps
 } from '../../../data/route-search/stop-connections.service';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import {
@@ -198,16 +200,12 @@ export class RouteSearchFormComponent implements OnChanges {
   );
 
   private readonly originConnections$ = this.originSignatures$.pipe(
-    switchMap((signatures) =>
-      this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Forward)
-    ),
+    switchMap((signatures) => this.loadBidirectionalConnections(signatures)),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
   private readonly destinationConnections$ = this.destinationSignatures$.pipe(
-    switchMap((signatures) =>
-      this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Backward)
-    ),
+    switchMap((signatures) => this.loadBidirectionalConnections(signatures)),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
@@ -315,10 +313,7 @@ export class RouteSearchFormComponent implements OnChanges {
   ): Promise<RouteSearchSelection | null> {
     this.hideNoRoutes();
     const connections = await firstValueFrom(
-      this.stopConnections.getConnections(
-        this.toStopSignatures(origin),
-        STOP_CONNECTION_DIRECTION.Forward
-      )
+      this.loadBidirectionalConnections(this.toStopSignatures(origin))
     );
     const matches = collectRouteLineMatches(origin, destination, connections);
 
@@ -632,6 +627,19 @@ export class RouteSearchFormComponent implements OnChanges {
     if (this.noRoutes$.getValue()) {
       this.noRoutes$.next(false);
     }
+  }
+
+  private loadBidirectionalConnections(
+    signatures: readonly StopDirectoryStopSignature[]
+  ): Observable<ReadonlyMap<string, StopConnection>> {
+    if (!signatures.length) {
+      return of(new Map<string, StopConnection>());
+    }
+
+    return forkJoin([
+      this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Forward),
+      this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Backward)
+    ]).pipe(map((connections) => mergeStopConnectionMaps(connections)));
   }
 }
 

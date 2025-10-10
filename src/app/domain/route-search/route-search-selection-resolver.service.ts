@@ -5,7 +5,8 @@ import { StopDirectoryService, StopDirectoryOption } from '../../data/stops/stop
 import {
   StopConnection,
   StopConnectionsService,
-  STOP_CONNECTION_DIRECTION
+  STOP_CONNECTION_DIRECTION,
+  mergeStopConnectionMaps
 } from '../../data/route-search/stop-connections.service';
 import { RouteSearchSelection } from './route-search-state.service';
 import { collectRouteLineMatches, createRouteSearchSelection } from './route-search-selection.util';
@@ -76,62 +77,11 @@ export class RouteSearchSelectionResolverService {
     return forkJoin([
       this.connections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Forward),
       this.connections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Backward)
-    ]).pipe(map((connections) => mergeConnections(connections)));
+    ]).pipe(map((connections) => mergeStopConnectionMaps(connections)));
   }
 }
 
 const SIGNATURE_KEY_SEPARATOR = '|' as const;
-
-function mergeConnections(
-  maps: readonly ReadonlyMap<string, StopConnection>[]
-): ReadonlyMap<string, StopConnection> {
-  if (!maps.length) {
-    return new Map<string, StopConnection>();
-  }
-
-  const aggregates = new Map<
-    string,
-    {
-      consortiumId: number;
-      stopId: string;
-      originIds: Set<string>;
-      signatures: Map<string, StopConnection['lineSignatures'][number]>;
-    }
-  >();
-
-  for (const mapEntry of maps) {
-    mapEntry.forEach((connection, key) => {
-      const aggregate =
-        aggregates.get(key) ??
-        {
-          consortiumId: connection.consortiumId,
-          stopId: connection.stopId,
-          originIds: new Set<string>(),
-          signatures: new Map<string, StopConnection['lineSignatures'][number]>()
-        };
-
-      connection.originStopIds.forEach((originId) => aggregate.originIds.add(originId));
-      connection.lineSignatures.forEach((signature) =>
-        aggregate.signatures.set(buildSignatureKey(signature), signature)
-      );
-
-      aggregates.set(key, aggregate);
-    });
-  }
-
-  const merged = new Map<string, StopConnection>();
-
-  aggregates.forEach((aggregate, key) => {
-    merged.set(key, {
-      consortiumId: aggregate.consortiumId,
-      stopId: aggregate.stopId,
-      originStopIds: Array.from(aggregate.originIds),
-      lineSignatures: Array.from(aggregate.signatures.values())
-    });
-  });
-
-  return merged;
-}
 
 function buildSignatureKey(
   signature: StopConnection['lineSignatures'][number]
