@@ -129,13 +129,16 @@ describe('RouteSearchResultsService', () => {
     expect(first.isMostRecentPast).toBeTrue();
     expect(first.pastProgressPercentage).toBeGreaterThan(0);
     expect(first.pastMarkers.length).toBeGreaterThan(0);
+    expect(first.pastHints.length).toBeGreaterThan(0);
     expect(second.kind).toBe('upcoming');
     expect(second.relativeLabel).toBe('5m');
     expect(second.travelDurationLabel).toBe('15m');
     expect(second.showUpcomingProgress).toBeTrue();
     expect(second.upcomingMarkers.length).toBeGreaterThan(0);
+    expect(second.upcomingHints.length).toBeGreaterThan(0);
     expect(viewModel.departures[3].showUpcomingProgress).toBeFalse();
     expect(viewModel.departures[3].upcomingMarkers.length).toBeGreaterThan(0);
+    expect(viewModel.departures[3].upcomingHints.length).toBe(0);
     expect(viewModel.departures[3].isHolidayService).toBeTrue();
     expect(viewModel.departures[4].destination).toContain('Servicio especial');
   }));
@@ -218,6 +221,7 @@ describe('RouteSearchResultsService', () => {
     expect(resolved.departures[0].isMostRecentPast).toBeTrue();
     expect(resolved.hasUpcoming).toBeFalse();
     expect(resolved.nextDepartureId).toBeNull();
+    expect(resolved.departures[0].pastHints.length).toBeGreaterThan(0);
   }));
 
   it('keeps a visible past progress immediately after departure', fakeAsync(() => {

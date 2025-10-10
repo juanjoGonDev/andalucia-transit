@@ -120,40 +120,77 @@
                     </span>
                   </div>
                   <div
-                    class="route-search__item-progress route-search__item-progress--upcoming"
-                    [class.route-search__item-progress--inactive]="!item.showUpcomingProgress"
-                    *ngIf="item.kind === 'upcoming'"
-                    aria-hidden="true"
+                    *ngIf="item.kind === 'upcoming' && item.showUpcomingProgress"
+                    class="route-search__item-progress-group"
                   >
-                    <ng-container *ngFor="let marker of item.upcomingMarkers">
-                      <div
-                        class="route-search__item-progress-marker route-search__item-progress-marker--upcoming"
-                        [style.left.%]="marker.startPercentage"
-                        [style.width.%]="marker.endPercentage - marker.startPercentage"
-                      ></div>
-                    </ng-container>
                     <div
-                      *ngIf="item.showUpcomingProgress"
-                      class="route-search__item-progress-bar route-search__item-progress-bar--upcoming"
-                      [style.width.%]="item.progressPercentage"
-                    ></div>
+                      *ngIf="item.upcomingHints.length"
+                      class="route-search__item-progress-hint route-search__item-progress-hint--upcoming"
+                    >
+                      <span
+                        *ngFor="let hint of item.upcomingHints"
+                        class="route-search__item-progress-hint-label route-search__item-progress-hint-label--upcoming"
+                      >
+                        {{
+                          translationKeys.upcomingMarkerHint
+                            | translate:{
+                                start: (hint.startTime | date: 'HH:mm'),
+                                end: (hint.endTime | date: 'HH:mm')
+                              }
+                        }}
+                      </span>
+                    </div>
+                    <div class="route-search__item-progress route-search__item-progress--upcoming" aria-hidden="true">
+                      <ng-container *ngFor="let marker of item.upcomingMarkers">
+                        <div
+                          class="route-search__item-progress-marker route-search__item-progress-marker--upcoming"
+                          [style.left.%]="marker.startPercentage"
+                          [style.width.%]="marker.endPercentage - marker.startPercentage"
+                        ></div>
+                      </ng-container>
+                      <div
+                        class="route-search__item-progress-bar route-search__item-progress-bar--upcoming"
+                        [style.width.%]="item.progressPercentage"
+                      ></div>
+                    </div>
                   </div>
                   <div
-                    class="route-search__item-progress route-search__item-progress--past"
                     *ngIf="item.kind === 'past' && item.pastProgressPercentage > 0"
-                    aria-hidden="true"
+                    class="route-search__item-progress-group"
                   >
-                    <ng-container *ngFor="let marker of item.pastMarkers">
-                      <div
-                        class="route-search__item-progress-marker route-search__item-progress-marker--past"
-                        [style.left.%]="marker.startPercentage"
-                        [style.width.%]="marker.endPercentage - marker.startPercentage"
-                      ></div>
-                    </ng-container>
                     <div
-                      class="route-search__item-progress-bar"
-                      [style.width.%]="item.pastProgressPercentage"
-                    ></div>
+                      *ngIf="item.pastHints.length"
+                      class="route-search__item-progress-hint route-search__item-progress-hint--past"
+                    >
+                      <span
+                        *ngFor="let hint of item.pastHints"
+                        class="route-search__item-progress-hint-label route-search__item-progress-hint-label--past"
+                      >
+                        {{
+                          translationKeys.pastMarkerHint
+                            | translate:{
+                                start: (hint.startTime | date: 'HH:mm'),
+                                end: (hint.endTime | date: 'HH:mm')
+                              }
+                        }}
+                      </span>
+                    </div>
+                    <div
+                      class="route-search__item-progress route-search__item-progress--past"
+                      aria-hidden="true"
+                    >
+                      <ng-container *ngFor="let marker of item.pastMarkers">
+                        <div
+                          class="route-search__item-progress-marker route-search__item-progress-marker--past"
+                          [style.left.%]="marker.startPercentage"
+                          [style.width.%]="marker.endPercentage - marker.startPercentage"
+                        ></div>
+                      </ng-container>
+                      <div
+                        class="route-search__item-progress-bar"
+                        [style.width.%]="item.pastProgressPercentage"
+                      ></div>
+                    </div>
                   </div>
                 </li>
             </ul>

@@ -313,10 +313,6 @@
   background-color: var(--color-upcoming-track);
 }
 
-.route-search__item-progress--inactive {
-  background-color: transparent;
-}
-
 .route-search__item-progress--past {
   background-color: var(--color-past-track);
 }
@@ -344,6 +340,37 @@
 
 .route-search__item-progress-marker--past {
   background-color: var(--color-past-marker);
+}
+
+.route-search__item-progress-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.route-search__item-progress-hint {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.route-search__item-progress-hint-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--radius-full);
+}
+
+.route-search__item-progress-hint-label--upcoming {
+  background-color: var(--color-upcoming-soft);
+  color: var(--color-upcoming-strong);
+}
+
+.route-search__item-progress-hint-label--past {
+  background-color: var(--color-past-soft);
+  color: var(--color-past-strong);
 }
 
 .route-search__no-upcoming {

@@ -208,7 +208,9 @@ export const APP_CONFIG = {
       arrivalAt: 'routeSearch.arrivalAt',
       travelDuration: 'routeSearch.travelDuration',
       holidayBadge: 'routeSearch.holidayBadge',
-      estimateNotice: 'routeSearch.estimateNotice'
+      estimateNotice: 'routeSearch.estimateNotice',
+      upcomingMarkerHint: 'routeSearch.upcomingMarkerHint',
+      pastMarkerHint: 'routeSearch.pastMarkerHint'
     },
     map: {
       title: 'map.title',

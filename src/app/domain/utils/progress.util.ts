@@ -8,9 +8,14 @@ const PAST_DELAY_WINDOW_END_MINUTES = 10;
 
 export const ARRIVAL_PROGRESS_WINDOW_MINUTES = 30;
 
+export type ProgressMarkerPhase = 'before' | 'after';
+
 export interface ProgressMarker {
   readonly startPercentage: number;
   readonly endPercentage: number;
+  readonly phase: ProgressMarkerPhase;
+  readonly startOffsetMinutes: number;
+  readonly endOffsetMinutes: number;
 }
 
 export const UPCOMING_EARLY_MARKER = buildUpcomingMarker(
@@ -53,14 +58,26 @@ function buildUpcomingMarker(
   const start = toUpcomingPercentage(windowStartMinutes);
   const end = toUpcomingPercentage(windowEndMinutes);
 
-  return createMarker(Math.min(start, end), Math.max(start, end));
+  return createMarker(
+    'before',
+    windowStartMinutes,
+    windowEndMinutes,
+    Math.min(start, end),
+    Math.max(start, end)
+  );
 }
 
 function buildPastMarker(windowStartMinutes: number, windowEndMinutes: number): ProgressMarker {
   const start = toPastPercentage(windowStartMinutes);
   const end = toPastPercentage(windowEndMinutes);
 
-  return createMarker(Math.min(start, end), Math.max(start, end));
+  return createMarker(
+    'after',
+    windowStartMinutes,
+    windowEndMinutes,
+    Math.min(start, end),
+    Math.max(start, end)
+  );
 }
 
 function toUpcomingPercentage(minutesUntilArrival: number): number {
@@ -75,11 +92,38 @@ function toPastPercentage(minutesSinceDeparture: number): number {
   return toTwoDecimalPercentage(ratio * MAX_PERCENTAGE);
 }
 
-function createMarker(start: number, end: number): ProgressMarker {
+function createMarker(
+  phase: ProgressMarkerPhase,
+  firstOffsetMinutes: number,
+  secondOffsetMinutes: number,
+  startPercentage: number,
+  endPercentage: number
+): ProgressMarker {
+  const orderedOffsets = orderOffsets(phase, firstOffsetMinutes, secondOffsetMinutes);
+
   return {
-    startPercentage: start,
-    endPercentage: end
+    startPercentage,
+    endPercentage,
+    phase,
+    startOffsetMinutes: orderedOffsets.start,
+    endOffsetMinutes: orderedOffsets.end
   } satisfies ProgressMarker;
+}
+
+function orderOffsets(
+  phase: ProgressMarkerPhase,
+  firstOffsetMinutes: number,
+  secondOffsetMinutes: number
+): { start: number; end: number } {
+  if (phase === 'before') {
+    const maximum = Math.max(firstOffsetMinutes, secondOffsetMinutes);
+    const minimum = Math.min(firstOffsetMinutes, secondOffsetMinutes);
+    return { start: maximum, end: minimum };
+  }
+
+  const minimum = Math.min(firstOffsetMinutes, secondOffsetMinutes);
+  const maximum = Math.max(firstOffsetMinutes, secondOffsetMinutes);
+  return { start: minimum, end: maximum };
 }
 
 function clamp(value: number, minimum: number, maximum: number): number {
