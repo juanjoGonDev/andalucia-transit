@@ -6,6 +6,9 @@ import { RouteTimetableEntry } from '../../data/route-search/route-timetable.map
 import { RouteSearchLineMatch, RouteSearchSelection } from './route-search-state.service';
 import {
   ARRIVAL_PROGRESS_WINDOW_MINUTES,
+  PAST_DELAY_MARKER,
+  ProgressMarker,
+  UPCOMING_EARLY_MARKER,
   calculatePastProgress,
   calculateUpcomingProgress
 } from '../utils/progress.util';
@@ -42,6 +45,8 @@ export interface RouteSearchDepartureView {
   readonly showUpcomingProgress: boolean;
   readonly progressPercentage: number;
   readonly pastProgressPercentage: number;
+  readonly upcomingMarkers: readonly ProgressMarker[];
+  readonly pastMarkers: readonly ProgressMarker[];
   readonly destinationArrivalTime: Date | null;
   readonly travelDurationLabel: string | null;
 }
@@ -151,6 +156,9 @@ function buildResults(
     showUpcomingProgress: item.showUpcomingProgress,
     progressPercentage: item.kind === 'upcoming' ? item.progressPercentage : 0,
     pastProgressPercentage: item.kind === 'past' ? item.pastProgressPercentage : 0,
+    upcomingMarkers:
+      item.kind === 'upcoming' && item.showUpcomingProgress ? item.upcomingMarkers : [],
+    pastMarkers: item.kind === 'past' ? item.pastMarkers : [],
     destinationArrivalTime: item.destinationArrivalTime,
     travelDurationLabel: item.travelDurationLabel
   } satisfies RouteSearchDepartureView));
@@ -187,9 +195,14 @@ interface RouteSearchDepartureCandidate {
   readonly showUpcomingProgress: boolean;
   readonly progressPercentage: number;
   readonly pastProgressPercentage: number;
+  readonly upcomingMarkers: readonly ProgressMarker[];
+  readonly pastMarkers: readonly ProgressMarker[];
   readonly destinationArrivalTime: Date | null;
   readonly travelDurationLabel: string | null;
 }
+
+const UPCOMING_PROGRESS_MARKERS: readonly ProgressMarker[] = [UPCOMING_EARLY_MARKER];
+const PAST_PROGRESS_MARKERS: readonly ProgressMarker[] = [PAST_DELAY_MARKER];
 
 function createCandidate(
   entry: RouteTimetableEntry,
@@ -229,6 +242,10 @@ function createCandidate(
     ? formatDurationLabel(decomposeSeconds(travelSeconds))
     : null;
   const originPriority = originOrder.get(originStopId) ?? Number.MAX_SAFE_INTEGER;
+  const showUpcomingProgress =
+    kind === 'upcoming' && minutesUntilArrival <= ARRIVAL_PROGRESS_WINDOW_MINUTES;
+  const upcomingMarkers = showUpcomingProgress ? UPCOMING_PROGRESS_MARKERS : [];
+  const pastMarkers = kind === 'past' ? PAST_PROGRESS_MARKERS : [];
 
   return {
     id: buildCandidateId(entry, match),
@@ -245,10 +262,11 @@ function createCandidate(
     isAccessible: false,
     isUniversityOnly: false,
     isHolidayService: entry.isHolidayOnly,
-    showUpcomingProgress:
-      kind === 'upcoming' && minutesUntilArrival <= ARRIVAL_PROGRESS_WINDOW_MINUTES,
+    showUpcomingProgress,
     progressPercentage: calculateUpcomingProgress(minutesUntilArrival),
     pastProgressPercentage: calculatePastProgress(minutesSinceDeparture),
+    upcomingMarkers,
+    pastMarkers,
     destinationArrivalTime,
     travelDurationLabel
   } satisfies RouteSearchDepartureCandidate;

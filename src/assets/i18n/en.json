@@ -133,7 +133,8 @@
     "emptyResults": "No services were found for this route.",
     "arrivalAt": "Arrives at {{time}}",
     "travelDuration": "Trip {{duration}}",
-    "holidayBadge": "Holiday service"
+    "holidayBadge": "Holiday service",
+    "estimateNotice": "Times are estimates based on Junta de Andalucía schedule data."
   },
   "map": {
     "title": "Network map",

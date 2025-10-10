@@ -127,11 +127,15 @@ describe('RouteSearchResultsService', () => {
     expect(first.kind).toBe('past');
     expect(first.relativeLabel).toBe('20m');
     expect(first.isMostRecentPast).toBeTrue();
+    expect(first.pastProgressPercentage).toBeGreaterThan(0);
+    expect(first.pastMarkers.length).toBeGreaterThan(0);
     expect(second.kind).toBe('upcoming');
     expect(second.relativeLabel).toBe('5m');
     expect(second.travelDurationLabel).toBe('15m');
     expect(second.showUpcomingProgress).toBeTrue();
+    expect(second.upcomingMarkers.length).toBeGreaterThan(0);
     expect(viewModel.departures[3].showUpcomingProgress).toBeFalse();
+    expect(viewModel.departures[3].upcomingMarkers.length).toBe(0);
     expect(viewModel.departures[3].isHolidayService).toBeTrue();
     expect(viewModel.departures[4].destination).toContain('Servicio especial');
   }));
@@ -214,6 +218,45 @@ describe('RouteSearchResultsService', () => {
     expect(resolved.departures[0].isMostRecentPast).toBeTrue();
     expect(resolved.hasUpcoming).toBeFalse();
     expect(resolved.nextDepartureId).toBeNull();
+  }));
+
+  it('keeps a visible past progress immediately after departure', fakeAsync(() => {
+    const entries: RouteTimetableEntry[] = [buildEntry(referenceTime, -0.1, 12, 'L1', '001')];
+
+    const { service } = setup(entries);
+
+    const selection: RouteSearchSelection = {
+      origin,
+      destination,
+      queryDate: referenceTime,
+      lineMatches: [
+        {
+          lineId: 'L1',
+          lineCode: '001',
+          direction: 0,
+          originStopIds: ['origin-a'],
+          destinationStopIds: ['destination-a']
+        }
+      ]
+    };
+
+    let viewModel: RouteSearchResultsViewModel | null = null;
+    const subscription = service
+      .loadResults(selection, {
+        nowProvider: () => referenceTime,
+        refreshIntervalMs: 1_000
+      })
+      .subscribe((result) => {
+        viewModel = result;
+      });
+
+    tick(0);
+    subscription.unsubscribe();
+
+    const resolved = ensureResults(viewModel);
+    expect(resolved.departures.length).toBe(1);
+    expect(resolved.departures[0].pastProgressPercentage).toBeGreaterThan(0);
+    expect(resolved.departures[0].pastMarkers.length).toBeGreaterThan(0);
   }));
 
   it('deduplicates timetable entries that share the same slot', fakeAsync(() => {

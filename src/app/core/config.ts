@@ -207,7 +207,8 @@ export const APP_CONFIG = {
       emptyResults: 'routeSearch.emptyResults',
       arrivalAt: 'routeSearch.arrivalAt',
       travelDuration: 'routeSearch.travelDuration',
-      holidayBadge: 'routeSearch.holidayBadge'
+      holidayBadge: 'routeSearch.holidayBadge',
+      estimateNotice: 'routeSearch.estimateNotice'
     },
     map: {
       title: 'map.title',

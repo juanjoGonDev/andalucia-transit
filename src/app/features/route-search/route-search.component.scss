@@ -305,6 +305,7 @@
   top: 0;
   left: 0;
   height: 100%;
+  z-index: 1;
   transition: width 0.3s linear;
 }
 
@@ -317,15 +318,28 @@
 }
 
 .route-search__item-progress-bar--upcoming {
-  background: linear-gradient(
-    90deg,
-    var(--color-upcoming-strong) 0%,
-    var(--color-upcoming-soft) 100%
-  );
+  background-color: var(--color-upcoming-strong);
 }
 
 .route-search__item-progress--past .route-search__item-progress-bar {
-  background: linear-gradient(90deg, var(--color-past-soft) 0%, var(--color-past-strong) 100%);
+  background-color: var(--color-past-strong);
+}
+
+.route-search__item-progress-marker {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.route-search__item-progress-marker--upcoming {
+  background-color: var(--color-upcoming-marker);
+}
+
+.route-search__item-progress-marker--past {
+  background-color: var(--color-past-marker);
 }
 
 .route-search__no-upcoming {
@@ -343,6 +357,13 @@
   margin: 0;
   text-align: center;
   color: var(--color-text-strong);
+}
+
+.route-search__estimate-notice {
+  margin: 0;
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
 }
 
 

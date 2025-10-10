@@ -153,6 +153,10 @@ describe('RouteSearchComponent', () => {
       showUpcomingProgress: true,
       progressPercentage: 75,
       pastProgressPercentage: 0,
+      upcomingMarkers: [
+        { startPercentage: 70, endPercentage: 85 }
+      ],
+      pastMarkers: [],
       destinationArrivalTime: new Date('2025-02-02T08:20:00Z'),
       travelDurationLabel: '15m'
     } satisfies RouteSearchDepartureView;
@@ -247,6 +251,10 @@ describe('RouteSearchComponent', () => {
           showUpcomingProgress: false,
           progressPercentage: 0,
           pastProgressPercentage: 33,
+          upcomingMarkers: [],
+          pastMarkers: [
+            { startPercentage: 15, endPercentage: 30 }
+          ],
           destinationArrivalTime: new Date('2025-02-02T07:45:00Z'),
           travelDurationLabel: '15m'
         }
@@ -288,6 +296,10 @@ describe('RouteSearchComponent', () => {
       showUpcomingProgress: true,
       progressPercentage: 50,
       pastProgressPercentage: 0,
+      upcomingMarkers: [
+        { startPercentage: 70, endPercentage: 85 }
+      ],
+      pastMarkers: [],
       destinationArrivalTime: new Date('2025-02-02T08:35:00Z'),
       travelDurationLabel: '15m'
     } satisfies RouteSearchDepartureView;
