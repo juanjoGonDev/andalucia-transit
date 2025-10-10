@@ -1,0 +1,240 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 3,
+    "consortiumName": "Área de Granada",
+    "itemCount": 57
+  },
+  "municipalities": [
+    {
+      "id": "18001",
+      "name": "Agrón"
+    },
+    {
+      "id": "18003",
+      "name": "Albolote"
+    },
+    {
+      "id": "18011",
+      "name": "Alfacar"
+    },
+    {
+      "id": "18014",
+      "name": "Alhendín"
+    },
+    {
+      "id": "18021",
+      "name": "Armilla"
+    },
+    {
+      "id": "18022",
+      "name": "Atarfe"
+    },
+    {
+      "id": "18024",
+      "name": "Beas de Granada"
+    },
+    {
+      "id": "18034",
+      "name": "Cacín"
+    },
+    {
+      "id": "18036",
+      "name": "Cájar"
+    },
+    {
+      "id": "18037",
+      "name": "Calicasas"
+    },
+    {
+      "id": "18047",
+      "name": "Cenes de la Vega"
+    },
+    {
+      "id": "18059",
+      "name": "Chauchina"
+    },
+    {
+      "id": "18061",
+      "name": "Chimeneas"
+    },
+    {
+      "id": "18062",
+      "name": "Churriana de la Vega"
+    },
+    {
+      "id": "18048",
+      "name": "Cijuela"
+    },
+    {
+      "id": "18050",
+      "name": "Cogollos de la Vega"
+    },
+    {
+      "id": "18051",
+      "name": "Colomera"
+    },
+    {
+      "id": "18057",
+      "name": "Cúllar Vega"
+    },
+    {
+      "id": "18066",
+      "name": "Deifontes"
+    },
+    {
+      "id": "0",
+      "name": "Desconocido"
+    },
+    {
+      "id": "18068",
+      "name": "Dílar"
+    },
+    {
+      "id": "18070",
+      "name": "Dúdar"
+    },
+    {
+      "id": "18071",
+      "name": "Dúrcal"
+    },
+    {
+      "id": "18072",
+      "name": "Escúzar"
+    },
+    {
+      "id": "18079",
+      "name": "Fuente Vaqueros"
+    },
+    {
+      "id": "18084",
+      "name": "Gójar"
+    },
+    {
+      "id": "18087",
+      "name": "Granada"
+    },
+    {
+      "id": "18094",
+      "name": "Güéjar Sierra"
+    },
+    {
+      "id": "18095",
+      "name": "Güevéjar"
+    },
+    {
+      "id": "18099",
+      "name": "Huétor Santillán"
+    },
+    {
+      "id": "18101",
+      "name": "Huétor Vega"
+    },
+    {
+      "id": "18102",
+      "name": "Íllora"
+    },
+    {
+      "id": "18105",
+      "name": "Iznalloz"
+    },
+    {
+      "id": "18111",
+      "name": "Jun"
+    },
+    {
+      "id": "18126",
+      "name": "La Malahá"
+    },
+    {
+      "id": "18193",
+      "name": "La Zubia"
+    },
+    {
+      "id": "18115",
+      "name": "Láchar"
+    },
+    {
+      "id": "18905",
+      "name": "Las Gabias"
+    },
+    {
+      "id": "18127",
+      "name": "Maracena"
+    },
+    {
+      "id": "18132",
+      "name": "Moclín"
+    },
+    {
+      "id": "18134",
+      "name": "Monachil"
+    },
+    {
+      "id": "18138",
+      "name": "Moraleda de Zafayona"
+    },
+    {
+      "id": "18143",
+      "name": "Nigüelas"
+    },
+    {
+      "id": "18144",
+      "name": "Nívar"
+    },
+    {
+      "id": "18145",
+      "name": "Ogíjares"
+    },
+    {
+      "id": "18149",
+      "name": "Otura"
+    },
+    {
+      "id": "18150",
+      "name": "Padul"
+    },
+    {
+      "id": "18153",
+      "name": "Peligros"
+    },
+    {
+      "id": "18157",
+      "name": "Pinos Genil"
+    },
+    {
+      "id": "18158",
+      "name": "Pinos Puente"
+    },
+    {
+      "id": "18165",
+      "name": "Pulianas"
+    },
+    {
+      "id": "18168",
+      "name": "Quéntar"
+    },
+    {
+      "id": "18175",
+      "name": "Santa Fe"
+    },
+    {
+      "id": "18914",
+      "name": "Valderrubio"
+    },
+    {
+      "id": "18911",
+      "name": "Vegas del Genil"
+    },
+    {
+      "id": "18185",
+      "name": "Ventas de Huelma"
+    },
+    {
+      "id": "18189",
+      "name": "Víznar"
+    }
+  ]
+}

@@ -1,0 +1,234 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 2,
+    "consortiumName": "Bahía de Cádiz",
+    "itemCount": 37
+  },
+  "nuclei": [
+    {
+      "id": "42",
+      "municipalityId": "6",
+      "zone": "K",
+      "name": "Aeropuerto"
+    },
+    {
+      "id": "20",
+      "municipalityId": "10",
+      "zone": "O",
+      "name": "Arcos"
+    },
+    {
+      "id": "11",
+      "municipalityId": "4",
+      "zone": "E",
+      "name": "Barrio Jarana"
+    },
+    {
+      "id": "47",
+      "municipalityId": "16",
+      "zone": "R",
+      "name": "Barrio Nuevo"
+    },
+    {
+      "id": "1",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Cádiz"
+    },
+    {
+      "id": "41",
+      "municipalityId": "4",
+      "zone": "F",
+      "name": "Campus Universitario"
+    },
+    {
+      "id": "3",
+      "municipalityId": "3",
+      "zone": "C",
+      "name": "Chiclana"
+    },
+    {
+      "id": "4",
+      "municipalityId": "3",
+      "zone": "D",
+      "name": "Chiclana Costa"
+    },
+    {
+      "id": "44",
+      "municipalityId": "15",
+      "zone": "P",
+      "name": "Chipiona"
+    },
+    {
+      "id": "45",
+      "municipalityId": "16",
+      "zone": "S",
+      "name": "Conil"
+    },
+    {
+      "id": "49",
+      "municipalityId": "15",
+      "zone": "P",
+      "name": "Costa Ballena (Chipiona)"
+    },
+    {
+      "id": "17",
+      "municipalityId": "7",
+      "zone": "L",
+      "name": "Costa Ballena (Rota)"
+    },
+    {
+      "id": "9",
+      "municipalityId": "5",
+      "zone": "I",
+      "name": "Costa Oeste"
+    },
+    {
+      "id": "13",
+      "municipalityId": "5",
+      "zone": "J",
+      "name": "Doña Blanca"
+    },
+    {
+      "id": "46",
+      "municipalityId": "16",
+      "zone": "R",
+      "name": "El Colorado"
+    },
+    {
+      "id": "40",
+      "municipalityId": "4",
+      "zone": "E",
+      "name": "El Marquesado"
+    },
+    {
+      "id": "16",
+      "municipalityId": "6",
+      "zone": "J",
+      "name": "El Portal"
+    },
+    {
+      "id": "8",
+      "municipalityId": "5",
+      "zone": "H",
+      "name": "El Puerto de Santa María"
+    },
+    {
+      "id": "30",
+      "municipalityId": "6",
+      "zone": "K",
+      "name": "El Torno"
+    },
+    {
+      "id": "26",
+      "municipalityId": "6",
+      "zone": "K",
+      "name": "Estella del Marqués"
+    },
+    {
+      "id": "24",
+      "municipalityId": "6",
+      "zone": "K",
+      "name": "Guadalcín"
+    },
+    {
+      "id": "43",
+      "municipalityId": "4",
+      "zone": "F",
+      "name": "Hospital Pto. Real"
+    },
+    {
+      "id": "19",
+      "municipalityId": "10",
+      "zone": "N",
+      "name": "Jédula"
+    },
+    {
+      "id": "14",
+      "municipalityId": "6",
+      "zone": "K",
+      "name": "Jerez"
+    },
+    {
+      "id": "22",
+      "municipalityId": "6",
+      "zone": "K",
+      "name": "La Barca de la Florida"
+    },
+    {
+      "id": "18",
+      "municipalityId": "8",
+      "zone": "M",
+      "name": "Medina"
+    },
+    {
+      "id": "25",
+      "municipalityId": "6",
+      "zone": "K",
+      "name": "Nueva Jarilla"
+    },
+    {
+      "id": "21",
+      "municipalityId": "5",
+      "zone": "J",
+      "name": "Penal"
+    },
+    {
+      "id": "6",
+      "municipalityId": "4",
+      "zone": "F",
+      "name": "Puerto Real"
+    },
+    {
+      "id": "12",
+      "municipalityId": "4",
+      "zone": "G",
+      "name": "Río San Pedro"
+    },
+    {
+      "id": "15",
+      "municipalityId": "7",
+      "zone": "L",
+      "name": "Rota"
+    },
+    {
+      "id": "48",
+      "municipalityId": "3",
+      "zone": "R",
+      "name": "San Andrés Golf"
+    },
+    {
+      "id": "2",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "San Fernando"
+    },
+    {
+      "id": "28",
+      "municipalityId": "11",
+      "zone": "Q",
+      "name": "Sanlúcar de Barrameda"
+    },
+    {
+      "id": "23",
+      "municipalityId": "6",
+      "zone": "K",
+      "name": "Torrecera"
+    },
+    {
+      "id": "32",
+      "municipalityId": "6",
+      "zone": "K",
+      "name": "Torremelgarejo"
+    },
+    {
+      "id": "31",
+      "municipalityId": "4",
+      "zone": "E",
+      "name": "Tres Caminos"
+    }
+  ]
+}

@@ -1,0 +1,1260 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 4,
+    "consortiumName": "Área de Málaga",
+    "itemCount": 208
+  },
+  "nuclei": [
+    {
+      "id": "123",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Aeropuerto de Málaga"
+    },
+    {
+      "id": "66",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Alhaurín de la Torre"
+    },
+    {
+      "id": "83",
+      "municipalityId": "6",
+      "zone": "C",
+      "name": "Alhaurín el Grande"
+    },
+    {
+      "id": "88",
+      "municipalityId": "7",
+      "zone": "C",
+      "name": "Aljaima"
+    },
+    {
+      "id": "100",
+      "municipalityId": "9",
+      "zone": "B",
+      "name": "Almogía"
+    },
+    {
+      "id": "166",
+      "municipalityId": "13",
+      "zone": "B",
+      "name": "Aloha"
+    },
+    {
+      "id": "112",
+      "municipalityId": "15",
+      "zone": "D",
+      "name": "Álora"
+    },
+    {
+      "id": "170",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Alquería"
+    },
+    {
+      "id": "162",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Altos Lo Cea"
+    },
+    {
+      "id": "143",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Ambulatorio la Cala"
+    },
+    {
+      "id": "43",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Ampliación de Teatinos"
+    },
+    {
+      "id": "202",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Antequera"
+    },
+    {
+      "id": "153",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Añoreta"
+    },
+    {
+      "id": "98",
+      "municipalityId": "9",
+      "zone": "B",
+      "name": "Arroyo Coche"
+    },
+    {
+      "id": "51",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Arroyo de la Miel"
+    },
+    {
+      "id": "175",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Asociación Los Verdiales"
+    },
+    {
+      "id": "30",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Asperones"
+    },
+    {
+      "id": "92",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "Atalaya Cártama"
+    },
+    {
+      "id": "2",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Aviación"
+    },
+    {
+      "id": "13",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Azucarera"
+    },
+    {
+      "id": "117",
+      "municipalityId": "15",
+      "zone": "D",
+      "name": "Bellavista"
+    },
+    {
+      "id": "61",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Benagalbón"
+    },
+    {
+      "id": "49",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Benalmádena Costa"
+    },
+    {
+      "id": "52",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Benalmádena Pueblo"
+    },
+    {
+      "id": "114",
+      "municipalityId": "15",
+      "zone": "D",
+      "name": "Bermejo"
+    },
+    {
+      "id": "188",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Bobadilla"
+    },
+    {
+      "id": "187",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Bobadilla Estación"
+    },
+    {
+      "id": "64",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "C.C. Rincón de la Victoria"
+    },
+    {
+      "id": "45",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Cala de Mijas"
+    },
+    {
+      "id": "47",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Calahonda"
+    },
+    {
+      "id": "3",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Campamento"
+    },
+    {
+      "id": "11",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Campanillas"
+    },
+    {
+      "id": "53",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Carola"
+    },
+    {
+      "id": "182",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Carretera Mijas-Fuengirola"
+    },
+    {
+      "id": "141",
+      "municipalityId": "1",
+      "zone": "B",
+      "name": "Carretera Totalán"
+    },
+    {
+      "id": "84",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "Cártama Estación"
+    },
+    {
+      "id": "85",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "Cártama Pueblo"
+    },
+    {
+      "id": "189",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Cartaojal"
+    },
+    {
+      "id": "203",
+      "municipalityId": "14",
+      "zone": "C",
+      "name": "Carvajal"
+    },
+    {
+      "id": "103",
+      "municipalityId": "11",
+      "zone": "B",
+      "name": "Casabermeja"
+    },
+    {
+      "id": "119",
+      "municipalityId": "15",
+      "zone": "D",
+      "name": "Casablanquilla"
+    },
+    {
+      "id": "130",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Cementerio Fuengirola"
+    },
+    {
+      "id": "105",
+      "municipalityId": "11",
+      "zone": "B",
+      "name": "Cementerio Judío"
+    },
+    {
+      "id": "96",
+      "municipalityId": "8",
+      "zone": "C",
+      "name": "Cerralba"
+    },
+    {
+      "id": "135",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Cerros del Águila"
+    },
+    {
+      "id": "15",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Churriana"
+    },
+    {
+      "id": "201",
+      "municipalityId": "21",
+      "zone": "D",
+      "name": "Coín"
+    },
+    {
+      "id": "101",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "Colmenar"
+    },
+    {
+      "id": "18",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Colmenarejo"
+    },
+    {
+      "id": "35",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Colonia Santa Inés"
+    },
+    {
+      "id": "157",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Cortijo Blanco"
+    },
+    {
+      "id": "133",
+      "municipalityId": "1",
+      "zone": "B",
+      "name": "Cortijo de Mazas"
+    },
+    {
+      "id": "10",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Cortijo Jurado"
+    },
+    {
+      "id": "108",
+      "municipalityId": "13",
+      "zone": "B",
+      "name": "Cortijo Maza"
+    },
+    {
+      "id": "191",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Cortijo Pachén"
+    },
+    {
+      "id": "28",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Cortijo Pizarro"
+    },
+    {
+      "id": "94",
+      "municipalityId": "8",
+      "zone": "C",
+      "name": "Cortijo Ratón"
+    },
+    {
+      "id": "58",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Cotomar"
+    },
+    {
+      "id": "24",
+      "municipalityId": "1",
+      "zone": "B",
+      "name": "Cotrina"
+    },
+    {
+      "id": "14",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Cruce Churriana"
+    },
+    {
+      "id": "16",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Cruce Guardia Civil"
+    },
+    {
+      "id": "82",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Cruce Peñón"
+    },
+    {
+      "id": "65",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Ctra. Benagalbón"
+    },
+    {
+      "id": "74",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Cuatro Vientos"
+    },
+    {
+      "id": "160",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Cuevas del Tesoro"
+    },
+    {
+      "id": "86",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "Desvío al Sexmo"
+    },
+    {
+      "id": "90",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "Doñana"
+    },
+    {
+      "id": "76",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Doñana (antiguo)"
+    },
+    {
+      "id": "169",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "El Barrio"
+    },
+    {
+      "id": "142",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "El Candado"
+    },
+    {
+      "id": "152",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "El Cantal"
+    },
+    {
+      "id": "115",
+      "municipalityId": "15",
+      "zone": "D",
+      "name": "El Chorro"
+    },
+    {
+      "id": "36",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "El Cónsul"
+    },
+    {
+      "id": "171",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "El Coto"
+    },
+    {
+      "id": "4",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "El Palo"
+    },
+    {
+      "id": "204",
+      "municipalityId": "14",
+      "zone": "C",
+      "name": "El Pinillo"
+    },
+    {
+      "id": "168",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Entrerríos"
+    },
+    {
+      "id": "180",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Equitación"
+    },
+    {
+      "id": "113",
+      "municipalityId": "15",
+      "zone": "D",
+      "name": "Est. FFCC Álora"
+    },
+    {
+      "id": "186",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Estación Autobuses Antequera"
+    },
+    {
+      "id": "127",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "Feria de Cártama"
+    },
+    {
+      "id": "37",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Feria de Málaga"
+    },
+    {
+      "id": "48",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Flatotel"
+    },
+    {
+      "id": "20",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Fresneda"
+    },
+    {
+      "id": "111",
+      "municipalityId": "14",
+      "zone": "C",
+      "name": "Fuengirola"
+    },
+    {
+      "id": "167",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Fuente La Teja"
+    },
+    {
+      "id": "89",
+      "municipalityId": "7",
+      "zone": "C",
+      "name": "Gibralgalia"
+    },
+    {
+      "id": "97",
+      "municipalityId": "8",
+      "zone": "C",
+      "name": "Gibralgalia (antiguo)"
+    },
+    {
+      "id": "207",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Guadalhorce"
+    },
+    {
+      "id": "131",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Guadalmar"
+    },
+    {
+      "id": "122",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Hipódromo"
+    },
+    {
+      "id": "129",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Holiday World"
+    },
+    {
+      "id": "192",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Hospital Antequera"
+    },
+    {
+      "id": "147",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "Hospital Valle del Guadalhorce"
+    },
+    {
+      "id": "17",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Huertecilla"
+    },
+    {
+      "id": "41",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "IKEA"
+    },
+    {
+      "id": "8",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Intelhorce"
+    },
+    {
+      "id": "80",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "La Alquería"
+    },
+    {
+      "id": "5",
+      "municipalityId": "1",
+      "zone": "B",
+      "name": "La Araña"
+    },
+    {
+      "id": "56",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "La Cala"
+    },
+    {
+      "id": "206",
+      "municipalityId": "13",
+      "zone": "B",
+      "name": "La Colina"
+    },
+    {
+      "id": "198",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "La Higuera"
+    },
+    {
+      "id": "194",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "La Joya"
+    },
+    {
+      "id": "23",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "La Redonda"
+    },
+    {
+      "id": "79",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "La Trampa"
+    },
+    {
+      "id": "33",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Las Castañetas"
+    },
+    {
+      "id": "46",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Las Lagunas"
+    },
+    {
+      "id": "211",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Las Lagunillas"
+    },
+    {
+      "id": "193",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Las Pedrizas"
+    },
+    {
+      "id": "155",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Lo Cea"
+    },
+    {
+      "id": "156",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Lomas del Rincón"
+    },
+    {
+      "id": "165",
+      "municipalityId": "13",
+      "zone": "B",
+      "name": "Los Álamos"
+    },
+    {
+      "id": "124",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Los Álamos"
+    },
+    {
+      "id": "205",
+      "municipalityId": "14",
+      "zone": "C",
+      "name": "Los Boliches"
+    },
+    {
+      "id": "72",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Los Cañitos"
+    },
+    {
+      "id": "154",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Los Delgado"
+    },
+    {
+      "id": "137",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Los Gámez"
+    },
+    {
+      "id": "116",
+      "municipalityId": "15",
+      "zone": "D",
+      "name": "Los Llanos"
+    },
+    {
+      "id": "195",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Los Llanos Antequera"
+    },
+    {
+      "id": "34",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Los Manceras"
+    },
+    {
+      "id": "63",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Los Morenos"
+    },
+    {
+      "id": "196",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Los Nogales"
+    },
+    {
+      "id": "22",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Los Núñez"
+    },
+    {
+      "id": "161",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Los Olivos"
+    },
+    {
+      "id": "208",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Los Prados"
+    },
+    {
+      "id": "62",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Los Rubios"
+    },
+    {
+      "id": "1",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Málaga"
+    },
+    {
+      "id": "176",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Mercado Ciudad Jardín"
+    },
+    {
+      "id": "73",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Mestanza"
+    },
+    {
+      "id": "44",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Mijas"
+    },
+    {
+      "id": "172",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Mijas Pueblo"
+    },
+    {
+      "id": "134",
+      "municipalityId": "1",
+      "zone": "B",
+      "name": "Monsálvez"
+    },
+    {
+      "id": "209",
+      "municipalityId": "13",
+      "zone": "B",
+      "name": "Montemar Alto"
+    },
+    {
+      "id": "91",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "Nueva Aljaima"
+    },
+    {
+      "id": "126",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Nueva Torrequebrada"
+    },
+    {
+      "id": "29",
+      "municipalityId": "1",
+      "zone": "B",
+      "name": "Olías"
+    },
+    {
+      "id": "6",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "P.I. Alameda"
+    },
+    {
+      "id": "7",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "P.I. El Viso"
+    },
+    {
+      "id": "102",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "P.I. Virgen Candelaria"
+    },
+    {
+      "id": "177",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Pantano del Agujero"
+    },
+    {
+      "id": "136",
+      "municipalityId": "16",
+      "zone": "D",
+      "name": "Pantano del Chorro"
+    },
+    {
+      "id": "132",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Parador de Turismo"
+    },
+    {
+      "id": "110",
+      "municipalityId": "13",
+      "zone": "B",
+      "name": "Parque Acuático"
+    },
+    {
+      "id": "164",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Parque Acuático Mijas"
+    },
+    {
+      "id": "158",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Parque Victoria"
+    },
+    {
+      "id": "54",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Patronato"
+    },
+    {
+      "id": "69",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Peñón"
+    },
+    {
+      "id": "67",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Pinos de Alhaurín"
+    },
+    {
+      "id": "93",
+      "municipalityId": "8",
+      "zone": "C",
+      "name": "Pizarra"
+    },
+    {
+      "id": "109",
+      "municipalityId": "13",
+      "zone": "B",
+      "name": "Playamar"
+    },
+    {
+      "id": "40",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Plaza Mayor"
+    },
+    {
+      "id": "70",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Pol. Ind. Alh. de la Torre"
+    },
+    {
+      "id": "32",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Portales Victoria"
+    },
+    {
+      "id": "71",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Prisión"
+    },
+    {
+      "id": "139",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Prueba"
+    },
+    {
+      "id": "174",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "PTA"
+    },
+    {
+      "id": "144",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Pueblo Andaluz"
+    },
+    {
+      "id": "197",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Puente Lucena"
+    },
+    {
+      "id": "25",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Puertosol"
+    },
+    {
+      "id": "57",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Rincón de la Victoria"
+    },
+    {
+      "id": "184",
+      "municipalityId": "18",
+      "zone": "C",
+      "name": "Riogordo"
+    },
+    {
+      "id": "77",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Romeral"
+    },
+    {
+      "id": "173",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Rotonda Ford"
+    },
+    {
+      "id": "38",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Rotonda PTA"
+    },
+    {
+      "id": "26",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "San Cayetano"
+    },
+    {
+      "id": "27",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "San Isidro"
+    },
+    {
+      "id": "148",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "San Julian"
+    },
+    {
+      "id": "75",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Santa Amalia"
+    },
+    {
+      "id": "199",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Santa Ana"
+    },
+    {
+      "id": "31",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Santa Matilde"
+    },
+    {
+      "id": "12",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Santa Rosalía"
+    },
+    {
+      "id": "140",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Santangelo Norte"
+    },
+    {
+      "id": "159",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Serramar"
+    },
+    {
+      "id": "87",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "Sexmo"
+    },
+    {
+      "id": "181",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "Sierra Llana"
+    },
+    {
+      "id": "81",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Sol Andalusí"
+    },
+    {
+      "id": "19",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Somera"
+    },
+    {
+      "id": "9",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Tarajal"
+    },
+    {
+      "id": "39",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Teatinos"
+    },
+    {
+      "id": "42",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Terminal de Carga"
+    },
+    {
+      "id": "59",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Torre Benagalbón"
+    },
+    {
+      "id": "78",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Torrealquería"
+    },
+    {
+      "id": "210",
+      "municipalityId": "14",
+      "zone": "C",
+      "name": "Torreblanca"
+    },
+    {
+      "id": "107",
+      "municipalityId": "13",
+      "zone": "B",
+      "name": "Torremolinos"
+    },
+    {
+      "id": "55",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Torremuelle"
+    },
+    {
+      "id": "106",
+      "municipalityId": "12",
+      "zone": "B",
+      "name": "Totalán"
+    },
+    {
+      "id": "50",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Tritón"
+    },
+    {
+      "id": "104",
+      "municipalityId": "11",
+      "zone": "B",
+      "name": "Urb. Alcaide"
+    },
+    {
+      "id": "125",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Urb. Benalmarina"
+    },
+    {
+      "id": "146",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Urb. Calahonda"
+    },
+    {
+      "id": "145",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Urb. Miraflores"
+    },
+    {
+      "id": "121",
+      "municipalityId": "15",
+      "zone": "D",
+      "name": "Vado del Álamo"
+    },
+    {
+      "id": "185",
+      "municipalityId": "19",
+      "zone": "E",
+      "name": "Valle de Abdalajís"
+    },
+    {
+      "id": "212",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Valtocado"
+    },
+    {
+      "id": "178",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Venta El Túnel"
+    },
+    {
+      "id": "138",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Venta Gutiérrez"
+    },
+    {
+      "id": "179",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Venta Las Pitas"
+    },
+    {
+      "id": "120",
+      "municipalityId": "15",
+      "zone": "D",
+      "name": "Venta Tendilla"
+    },
+    {
+      "id": "21",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Ventorrillo Cruces"
+    },
+    {
+      "id": "99",
+      "municipalityId": "1",
+      "zone": "B",
+      "name": "Ventorrillo de Mayo"
+    },
+    {
+      "id": "118",
+      "municipalityId": "15",
+      "zone": "D",
+      "name": "Ventorros"
+    },
+    {
+      "id": "60",
+      "municipalityId": "1",
+      "zone": "B",
+      "name": "Vilches"
+    },
+    {
+      "id": "183",
+      "municipalityId": "6",
+      "zone": "C",
+      "name": "Villafranco del Guadalhorce"
+    },
+    {
+      "id": "213",
+      "municipalityId": "8",
+      "zone": "C",
+      "name": "Villalón"
+    },
+    {
+      "id": "200",
+      "municipalityId": "22",
+      "zone": "C",
+      "name": "Villanueva de la Concepción"
+    },
+    {
+      "id": "190",
+      "municipalityId": "20",
+      "zone": "E",
+      "name": "Virlecha"
+    },
+    {
+      "id": "95",
+      "municipalityId": "8",
+      "zone": "C",
+      "name": "Zalea"
+    },
+    {
+      "id": "68",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Zapata"
+    }
+  ]
+}

@@ -25,10 +25,17 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Use Angular DI and factory providers for abstractions; rely on OnPush change detection where possible; tear down subscriptions via `async` pipe or `takeUntil`.
 - Follow English naming, 2-space indentation, semicolons, and avoid redundant comments or commented-out code.
 
+## Decision Log
+- 2025-10-09: Route search URLs and selectors rely on consortium-aware stop signatures (`consortiumId:stopId`) to disambiguate repeated stop codes when restoring deep links or swapping directions.
+- 2025-10-09: Timetable filtering checks Spanish national and Andalusian public holidays using the Nager.Date API (MIT License) so festivo frequencies are only included when appropriate; document usage in `docs/api-reference.md` before expanding scope.
+- 2025-10-10: Holiday detection filters the Nager.Date dataset to Andalusian entries, and Sunday holidays gain a Monday observance entry to mirror the Junta de Andalucía calendar.
+
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.
 - `docs/api.html` contains a static snapshot of the CTAN open data portal describing all consumed API endpoints. Refresh it when the upstream site changes and note the update in this file.
+- `docs/api-reference.md` summarizes every CTAN REST endpoint and cross-references shared parameters for planning data combinations; keep it current when the upstream API evolves.
 - Add new documentation artifacts in `docs/` alongside a short pointer in AGENTS.md for discoverability.
+- Track feature work using the checklist at `docs/features-checklist.md` and update entries as scope evolves.
 
 ## Security & Privacy Practices
 - Angular safety: rely on Angular template sanitization; do not use direct DOM APIs or `DomSanitizer.bypassSecurityTrust*` unless reviewed and documented; never evaluate dynamic scripts or HTML.
@@ -45,6 +52,10 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
   - Do not imply CTAN or Junta de Andalucia endorse or support this application.
 - Document any additional external services before integration and record their licensing or usage limits.
 - Cache CTAN responses sparingly, respect freshness windows, and provide manual refresh to correct stale data.
+- Home search and stop metadata now rely on `StopDirectoryService`, which loads the generated snapshot index at `assets/data/stop-directory/index.json`; remove mock network usages in new code.
+- Daily snapshots produce a stop directory index at `assets/data/stop-directory/index.json` with chunked stop files under `assets/data/stop-directory/chunks/` to keep the initial payload light; `StopDirectoryService` streams the index and only fetches chunk files when a stop record is needed.
+- `assets/data/catalog/` stores consortium datasets (municipalities, nuclei, lines) for the entire CTAN network so features can hydrate localized pickers without refetching the API.
+- `.github/workflows/daily-snapshot.yml` generates transport snapshots every day at 05:00 Europe/Madrid, commits changes with the `PAT_FINE` token, and auto-merges refreshed data. Keep snapshot scripts green (`npm run snapshot`, `npm run test:scripts`).
 
 ## Legal & Regulatory Compliance
 - **GDPR / RGPD (Reglamento UE 2016/679 & LO 3/2018):** collect only necessary data; geolocation requires explicit browser consent and an in-app explanation; publish an accessible privacy notice covering controller identity, processing purposes, lawful basis, retention, third parties (none by default), and user rights (access, rectification, erasure, restriction, portability, objection). Document procedures for handling rights requests and reporting personal data breaches within 72 hours.
@@ -67,6 +78,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - E2E tests: Cypress scenarios for home load, stop detail, route search, map interaction, offline mode, and language switching.
 - Static analysis: run `npm run lint`, `npm run format:check`, and type-checking in CI; fail builds on lint, test, or coverage regressions.
 - Track Lighthouse scores for performance, accessibility, best practices, and SEO; gate releases on meeting agreed thresholds.
+- Break complex product goals into smaller verifiable tasks and validate each step before progressing to the next.
 
 ## Performance & UX Guardrails
 - Leverage lazy-loaded routes and code splitting; reuse API results with RxJS `shareReplay` or caching services; offload heavy computations (e.g., nearest stop calculations) to Web Workers if needed.

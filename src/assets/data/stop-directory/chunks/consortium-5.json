@@ -1,0 +1,1122 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:43.383Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 5,
+    "consortiumName": "Campo de Gibraltar",
+    "stopCount": 74
+  },
+  "stops": [
+    {
+      "consortiumId": 5,
+      "stopId": "87",
+      "stopCode": "87",
+      "name": "Alameda",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "San Roque",
+      "nucleusId": "13",
+      "zone": "AB",
+      "location": {
+        "latitude": 36.2102305555556,
+        "longitude": -5.38923055555556
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "41",
+      "stopCode": "41",
+      "name": "Apeadero Los Barrios",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Los Barrios",
+      "nucleusId": "5",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1833944444444,
+        "longitude": -5.49435
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "143",
+      "stopCode": "143",
+      "name": "Apeadero Tarifa",
+      "municipality": "Tarifa ",
+      "municipalityId": "4",
+      "nucleus": "Tarifa",
+      "nucleusId": "7",
+      "zone": "C",
+      "location": {
+        "latitude": 36.0190944444444,
+        "longitude": -5.60943333333333
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "5",
+      "stopCode": "5",
+      "name": "Audiencia",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.13503700718081,
+        "longitude": -5.445855259895325
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "124",
+      "stopCode": "124",
+      "name": "Ayuntamiento La Línea",
+      "municipality": "La Línea de la Concepción ",
+      "municipalityId": "5",
+      "nucleus": "La Línea de la Concepción",
+      "nucleusId": "10",
+      "zone": "B",
+      "location": {
+        "latitude": 36.1606638888889,
+        "longitude": -5.35050277777778
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "75",
+      "stopCode": "75",
+      "name": "Bar La Redonda",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Taraguilla-Estación de San Roque",
+      "nucleusId": "23",
+      "zone": "AB",
+      "location": {
+        "latitude": 36.20306831490965,
+        "longitude": -5.420680046081543
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "80",
+      "stopCode": "80",
+      "name": "Campamento Centro",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Campamento",
+      "nucleusId": "22",
+      "zone": "B",
+      "location": {
+        "latitude": 36.1781638888889,
+        "longitude": -5.377925
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "83",
+      "stopCode": "83",
+      "name": "Campamento La Guita",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Campamento",
+      "nucleusId": "22",
+      "zone": "B",
+      "location": {
+        "latitude": 36.1723555555556,
+        "longitude": -5.372075
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "114",
+      "stopCode": "114",
+      "name": "Casino San Roque",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "San Roque",
+      "nucleusId": "13",
+      "zone": "AB",
+      "location": {
+        "latitude": 36.2307305555556,
+        "longitude": -5.35417777777778
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "126",
+      "stopCode": "126",
+      "name": "Castellar Avda. Adelfas",
+      "municipality": "Castellar de la Frontera",
+      "municipalityId": "3",
+      "nucleus": "Castellar de la Frontera",
+      "nucleusId": "6",
+      "zone": "D",
+      "location": {
+        "latitude": 36.2859888888889,
+        "longitude": -5.41828611111111
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "128",
+      "stopCode": "128",
+      "name": "Castellar Avda. Las Rosas",
+      "municipality": "Castellar de la Frontera",
+      "municipalityId": "3",
+      "nucleus": "Castellar de la Frontera",
+      "nucleusId": "6",
+      "zone": "D",
+      "location": {
+        "latitude": 36.2844888888889,
+        "longitude": -5.422025
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "147",
+      "stopCode": "147",
+      "name": "Centro Salud",
+      "municipality": "Tarifa ",
+      "municipalityId": "4",
+      "nucleus": "Tarifa",
+      "nucleusId": "7",
+      "zone": "C",
+      "location": {
+        "latitude": 36.0181888888889,
+        "longitude": -5.60056111111111
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "8",
+      "stopCode": "8",
+      "name": "Corpus Christi",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1393333333333,
+        "longitude": -5.45076388888889
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "68",
+      "stopCode": "68",
+      "name": "Cruce Carrefour",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Palmones",
+      "nucleusId": "3",
+      "zone": "A",
+      "location": {
+        "latitude": 36.18345189832001,
+        "longitude": -5.442816317081451
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "78",
+      "stopCode": "78",
+      "name": "Cruce El Toril",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "San Roque",
+      "nucleusId": "13",
+      "zone": "AB",
+      "location": {
+        "latitude": 36.2061694444444,
+        "longitude": -5.38591388888889
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "105",
+      "stopCode": "105",
+      "name": "Cruce Guadiaro",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Guadiaro",
+      "nucleusId": "15",
+      "zone": "E",
+      "location": {
+        "latitude": 36.3104861111111,
+        "longitude": -5.2991
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "157",
+      "stopCode": "157",
+      "name": "Cruce Pte. Mayorga",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Puente Mayorga",
+      "nucleusId": "21",
+      "zone": "B",
+      "location": {
+        "latitude": 36.18132869528202,
+        "longitude": -5.380511283874512
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "22",
+      "stopCode": "22",
+      "name": "Cruce Rinconcillo",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.15541642693217,
+        "longitude": -5.454559028148651
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "82",
+      "stopCode": "82",
+      "name": "Cruce Taraguillas",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "San Roque",
+      "nucleusId": "13",
+      "zone": "AB",
+      "location": {
+        "latitude": 36.2038361111111,
+        "longitude": -5.42234444444444
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "21",
+      "stopCode": "21",
+      "name": "Cuartel Militar",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.15017316887019,
+        "longitude": -5.4546234011650085
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "94",
+      "stopCode": "94",
+      "name": "Cuatro Vientos",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "San Roque",
+      "nucleusId": "13",
+      "zone": "AB",
+      "location": {
+        "latitude": 36.2128916666667,
+        "longitude": -5.38177777777778
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "11",
+      "stopCode": "11",
+      "name": "Delegación Hacienda",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.14086178599021,
+        "longitude": -5.4552483558654785
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "33",
+      "stopCode": "33",
+      "name": "El Corte Ingles",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.13803717968456,
+        "longitude": -5.448722541332245
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "145",
+      "stopCode": "145",
+      "name": "El Mesón",
+      "municipality": "Tarifa ",
+      "municipalityId": "4",
+      "nucleus": "Tarifa",
+      "nucleusId": "7",
+      "zone": "C",
+      "location": {
+        "latitude": 36.0684861111111,
+        "longitude": -5.5308
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "93",
+      "stopCode": "93",
+      "name": "Escuela Hostelería",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "San Roque",
+      "nucleusId": "13",
+      "zone": "AB",
+      "location": {
+        "latitude": 36.2052638888889,
+        "longitude": -5.38425833333333
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "85",
+      "stopCode": "85",
+      "name": "Estación de San Roque",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Taraguilla-Estación de San Roque",
+      "nucleusId": "23",
+      "zone": "AB",
+      "location": {
+        "latitude": 36.2146805555556,
+        "longitude": -5.43253055555556
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "138",
+      "stopCode": "138",
+      "name": "Estación Jimena",
+      "municipality": "Jimena de la Frontera ",
+      "municipalityId": "6",
+      "nucleus": "Jimena de la Frontera",
+      "nucleusId": "11",
+      "zone": "G",
+      "location": {
+        "latitude": 36.4218472222222,
+        "longitude": -5.43537222222222
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "116",
+      "stopCode": "116",
+      "name": "Estación La Línea",
+      "municipality": "La Línea de la Concepción ",
+      "municipalityId": "5",
+      "nucleus": "La Línea de la Concepción",
+      "nucleusId": "10",
+      "zone": "B",
+      "location": {
+        "latitude": 36.1582166666667,
+        "longitude": -5.349925
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "1",
+      "stopCode": "1",
+      "name": "Estación San Bernardo",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.125920977937476,
+        "longitude": -5.447542369365692
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "151",
+      "stopCode": "151",
+      "name": "Facinas",
+      "municipality": "Tarifa ",
+      "municipalityId": "4",
+      "nucleus": "Facinas",
+      "nucleusId": "8",
+      "zone": "F",
+      "location": {
+        "latitude": 36.1414138888889,
+        "longitude": -5.69921388888889
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "106",
+      "stopCode": "106",
+      "name": "Guadiaro",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Guadiaro",
+      "nucleusId": "15",
+      "zone": "E",
+      "location": {
+        "latitude": 36.3007111111111,
+        "longitude": -5.30301388888889
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "158",
+      "stopCode": "158",
+      "name": "Hospital La Línea",
+      "municipality": "La Línea de la Concepción ",
+      "municipalityId": "5",
+      "nucleus": "La Línea de la Concepción",
+      "nucleusId": "10",
+      "zone": "B",
+      "location": {
+        "latitude": 36.17482,
+        "longitude": -5.355031
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "23",
+      "stopCode": "23",
+      "name": "Hotel Alborán",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1553527777778,
+        "longitude": -5.45514444444444
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "73",
+      "stopCode": "73",
+      "name": "Hotel Guadacorte",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Guadacorte-Cortijillos",
+      "nucleusId": "4",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1958,
+        "longitude": -5.42936666666667
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "37",
+      "stopCode": "37",
+      "name": "Hoyo Los Caballos",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1447416666667,
+        "longitude": -5.4543
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "140",
+      "stopCode": "140",
+      "name": "Jimena",
+      "municipality": "Jimena de la Frontera ",
+      "municipalityId": "6",
+      "nucleus": "Jimena de la Frontera",
+      "nucleusId": "11",
+      "zone": "G",
+      "location": {
+        "latitude": 36.4329444444444,
+        "longitude": -5.44972222222222
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "130",
+      "stopCode": "130",
+      "name": "La Almoraima",
+      "municipality": "Castellar de la Frontera",
+      "municipalityId": "3",
+      "nucleus": "Castellar de la Frontera",
+      "nucleusId": "6",
+      "zone": "D",
+      "location": {
+        "latitude": 36.2762416666667,
+        "longitude": -5.42924444444444
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "2",
+      "stopCode": "2",
+      "name": "La Charca",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.13738733255713,
+        "longitude": -5.4560986161231995
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "120",
+      "stopCode": "120",
+      "name": "La Colonia",
+      "municipality": "La Línea de la Concepción ",
+      "municipalityId": "5",
+      "nucleus": "La Línea de la Concepción",
+      "nucleusId": "10",
+      "zone": "B",
+      "location": {
+        "latitude": 36.1675555555556,
+        "longitude": -5.36571666666667
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "38",
+      "stopCode": "38",
+      "name": "La Granja N-340",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1476944444444,
+        "longitude": -5.45458333333333
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "99",
+      "stopCode": "99",
+      "name": "Las Camelias",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Guadiaro",
+      "nucleusId": "15",
+      "zone": "E",
+      "location": {
+        "latitude": 36.2967055555556,
+        "longitude": -5.27405833333333
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "39",
+      "stopCode": "39",
+      "name": "Las Piedras",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Pelayo",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.082487243392414,
+        "longitude": -5.503666251897812
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "49",
+      "stopCode": "49",
+      "name": "Los Canarios",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Los Barrios",
+      "nucleusId": "5",
+      "zone": "A",
+      "location": {
+        "latitude": 36.17605,
+        "longitude": -5.46742777777778
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "70",
+      "stopCode": "70",
+      "name": "Los Cortijillos",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Guadacorte-Cortijillos",
+      "nucleusId": "4",
+      "zone": "A",
+      "location": {
+        "latitude": 36.185823007405155,
+        "longitude": -5.438446998596191
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "122",
+      "stopCode": "122",
+      "name": "Los Navegantes",
+      "municipality": "La Línea de la Concepción ",
+      "municipalityId": "5",
+      "nucleus": "La Línea de la Concepción",
+      "nucleusId": "10",
+      "zone": "B",
+      "location": {
+        "latitude": 36.1614027777778,
+        "longitude": -5.35360555555556
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "17",
+      "stopCode": "17",
+      "name": "Los Pastores",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1108685851861,
+        "longitude": -5.457824617624283
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "74",
+      "stopCode": "74",
+      "name": "Mancomunidad",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Guadacorte-Cortijillos",
+      "nucleusId": "4",
+      "zone": "A",
+      "location": {
+        "latitude": 36.19197304264104,
+        "longitude": -5.43398916721344
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "159",
+      "stopCode": "159",
+      "name": "Mirador de Tarifa",
+      "municipality": "Tarifa ",
+      "municipalityId": "4",
+      "nucleus": "Tarifa",
+      "nucleusId": "7",
+      "zone": "C",
+      "location": {
+        "latitude": 36.05421613296055,
+        "longitude": -5.550298578307045
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "76",
+      "stopCode": "76",
+      "name": "Miraflores",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "San Roque",
+      "nucleusId": "13",
+      "zone": "AB",
+      "location": {
+        "latitude": 36.206654542153494,
+        "longitude": -5.414789915084839
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "118",
+      "stopCode": "118",
+      "name": "Mondéjar",
+      "municipality": "La Línea de la Concepción ",
+      "municipalityId": "5",
+      "nucleus": "La Línea de la Concepción",
+      "nucleusId": "10",
+      "zone": "B",
+      "location": {
+        "latitude": 36.1637472222222,
+        "longitude": -5.35906388888889
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "101",
+      "stopCode": "101",
+      "name": "Montilla",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Guadiaro",
+      "nucleusId": "15",
+      "zone": "E",
+      "location": {
+        "latitude": 36.2964722222222,
+        "longitude": -5.28132777777778
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "45",
+      "stopCode": "45",
+      "name": "Oficina Información Turística",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Los Barrios",
+      "nucleusId": "5",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1812055555556,
+        "longitude": -5.48754444444444
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "24",
+      "stopCode": "24",
+      "name": "Pelayo",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Pelayo",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.08381168513883,
+        "longitude": -5.497550815343857
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "36",
+      "stopCode": "36",
+      "name": "Plaza Andalucia",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1333194444444,
+        "longitude": -5.45238333333333
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "89",
+      "stopCode": "89",
+      "name": "Polideportivo",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "San Roque",
+      "nucleusId": "13",
+      "zone": "AB",
+      "location": {
+        "latitude": 36.20862182269859,
+        "longitude": -5.386685729026794
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "108",
+      "stopCode": "108",
+      "name": "Pueblo Nuevo Guadiaro",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Guadiaro",
+      "nucleusId": "15",
+      "zone": "E",
+      "location": {
+        "latitude": 36.2922777777778,
+        "longitude": -5.30430555555556
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "91",
+      "stopCode": "91",
+      "name": "Puente Mayorga",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Puente Mayorga",
+      "nucleusId": "21",
+      "zone": "B",
+      "location": {
+        "latitude": 36.1811944444444,
+        "longitude": -5.38283888888889
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "51",
+      "stopCode": "51",
+      "name": "Puente Romano I",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Los Barrios",
+      "nucleusId": "5",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1748888888889,
+        "longitude": -5.45950833333333
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "54",
+      "stopCode": "54",
+      "name": "Puente Romano II",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Los Barrios",
+      "nucleusId": "5",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1786972222222,
+        "longitude": -5.45775833333333
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "43",
+      "stopCode": "43",
+      "name": "Rotonda Del Toro",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Los Barrios",
+      "nucleusId": "5",
+      "zone": "A",
+      "location": {
+        "latitude": 36.18182879767575,
+        "longitude": -5.489148795604706
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "103",
+      "stopCode": "103",
+      "name": "San Enrique",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Guadiaro",
+      "nucleusId": "15",
+      "zone": "E",
+      "location": {
+        "latitude": 36.3040944444444,
+        "longitude": -5.29242222222222
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "136",
+      "stopCode": "136",
+      "name": "San Pablo",
+      "municipality": "Jimena de la Frontera ",
+      "municipalityId": "6",
+      "nucleus": "San Pablo de Buceite",
+      "nucleusId": "12",
+      "zone": "G",
+      "location": {
+        "latitude": 36.4693305555556,
+        "longitude": -5.41253888888889
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "112",
+      "stopCode": "112",
+      "name": "San Roque Club",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Guadiaro",
+      "nucleusId": "15",
+      "zone": "E",
+      "location": {
+        "latitude": 36.2595027777778,
+        "longitude": -5.33380833333333
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "132",
+      "stopCode": "132",
+      "name": "Secadero",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Tesorillo",
+      "nucleusId": "25",
+      "zone": "E",
+      "location": {
+        "latitude": 36.3361611111111,
+        "longitude": -5.31430277777778
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "110",
+      "stopCode": "110",
+      "name": "Sotogrande Alto",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Guadiaro",
+      "nucleusId": "15",
+      "zone": "E",
+      "location": {
+        "latitude": 36.2787083333333,
+        "longitude": -5.31402222222222
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "149",
+      "stopCode": "149",
+      "name": "Tahivilla",
+      "municipality": "Tarifa ",
+      "municipalityId": "4",
+      "nucleus": "Tahivilla",
+      "nucleusId": "9",
+      "zone": "F",
+      "location": {
+        "latitude": 36.1840916666667,
+        "longitude": -5.75684166666667
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "153",
+      "stopCode": "153",
+      "name": "Terminal Bus Urbano",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.12896915972668,
+        "longitude": -5.4446107149124146
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "134",
+      "stopCode": "134",
+      "name": "Tesorillo",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Tesorillo",
+      "nucleusId": "25",
+      "zone": "E",
+      "location": {
+        "latitude": 36.3400666666667,
+        "longitude": -5.32007222222222
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "97",
+      "stopCode": "97",
+      "name": "Torreguadiaro",
+      "municipality": "San Roque",
+      "municipalityId": "7",
+      "nucleus": "Guadiaro",
+      "nucleusId": "15",
+      "zone": "E",
+      "location": {
+        "latitude": 36.3002555555556,
+        "longitude": -5.26969722222222
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "72",
+      "stopCode": "72",
+      "name": "UGC Cine Cité",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Guadacorte-Cortijillos",
+      "nucleusId": "4",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1903305555556,
+        "longitude": -5.43190833333333
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "55",
+      "stopCode": "55",
+      "name": "Urb. Ciudad Jardín",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Los Barrios",
+      "nucleusId": "5",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1843944444444,
+        "longitude": -5.44309722222222
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "47",
+      "stopCode": "47",
+      "name": "Urb. Cortijo Grande",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Los Barrios",
+      "nucleusId": "5",
+      "zone": "A",
+      "location": {
+        "latitude": 36.1787583333333,
+        "longitude": -5.48326388888889
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "12",
+      "stopCode": "12",
+      "name": "Urb. Las Colinas",
+      "municipality": "Algeciras",
+      "municipalityId": "1",
+      "nucleus": "Algeciras",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 36.141963224923884,
+        "longitude": -5.456474125385284
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "142",
+      "stopCode": "142",
+      "name": "Venta Marchenilla",
+      "municipality": "Jimena de la Frontera ",
+      "municipalityId": "6",
+      "nucleus": "Jimena de la Frontera",
+      "nucleusId": "11",
+      "zone": "G",
+      "location": {
+        "latitude": 36.3854916666667,
+        "longitude": -5.42933055555556
+      }
+    }
+  ]
+}

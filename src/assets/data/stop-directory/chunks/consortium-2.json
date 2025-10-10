@@ -1,0 +1,2667 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:43.383Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 2,
+    "consortiumName": "Bahía de Cádiz",
+    "stopCount": 177
+  },
+  "stops": [
+    {
+      "consortiumId": 2,
+      "stopId": "91",
+      "stopCode": "91",
+      "name": "512 Viviendas",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Puerto Real",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 36.530574,
+        "longitude": -6.196301
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "155",
+      "stopCode": "155",
+      "name": "A-2078 Venta El Cepo",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "Penal",
+      "nucleusId": "21",
+      "zone": "J",
+      "location": {
+        "latitude": 36.666621,
+        "longitude": -6.246744
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "273",
+      "stopCode": "273",
+      "name": "A-480 Venta El Menuito",
+      "municipality": "Sanlucar de Barrameda",
+      "municipalityId": "11",
+      "nucleus": "Sanlúcar de Barrameda",
+      "nucleusId": "28",
+      "zone": "Q",
+      "location": {
+        "latitude": 36.748809603470434,
+        "longitude": -6.380444169044495
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "173",
+      "stopCode": "173",
+      "name": "Aeropuerto",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Aeropuerto",
+      "nucleusId": "42",
+      "zone": "K",
+      "location": {
+        "latitude": 36.750376,
+        "longitude": -6.064607
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "73",
+      "stopCode": "73",
+      "name": "Águila-El Término",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.467022,
+        "longitude": -6.118394
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "339",
+      "stopCode": "339",
+      "name": "Alameda Solano",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.425343932229005,
+        "longitude": -6.144451709154064
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "134",
+      "stopCode": "134",
+      "name": "Ant. N-IV-El Paseo",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "El Puerto de Santa María",
+      "nucleusId": "8",
+      "zone": "H",
+      "location": {
+        "latitude": 36.614142,
+        "longitude": -6.212519
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "296",
+      "stopCode": "296",
+      "name": "Apeadero De Autobuses Conil",
+      "municipality": "Conil de la Frontera",
+      "municipalityId": "16",
+      "nucleus": "Conil",
+      "nucleusId": "45",
+      "zone": "S",
+      "location": {
+        "latitude": 36.28192562206986,
+        "longitude": -6.081410050392151
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "233",
+      "stopCode": "233",
+      "name": "Apeadero De Autobuses De Costa Ballena",
+      "municipality": "Rota",
+      "municipalityId": "7",
+      "nucleus": "Costa Ballena (Rota)",
+      "nucleusId": "17",
+      "zone": "L",
+      "location": {
+        "latitude": 36.69267585556875,
+        "longitude": -6.407162643357848
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "329",
+      "stopCode": "329",
+      "name": "Ardila",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.45628171587166,
+        "longitude": -6.215954089676154
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "71",
+      "stopCode": "71",
+      "name": "Arroyo Del Aljibe",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.461041,
+        "longitude": -6.118616
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "303",
+      "stopCode": "303",
+      "name": "Av. Astilleros-Estación Autobuses",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.52731210460236,
+        "longitude": -6.28530889749527
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "169",
+      "stopCode": "169",
+      "name": "Avda M Álvarez Beigbeder",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.697053,
+        "longitude": -6.143516
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "23",
+      "stopCode": "23",
+      "name": "Avda. Al-Andalus",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.45947743713433,
+        "longitude": -6.208618050632475
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "25",
+      "stopCode": "25",
+      "name": "Avda. Almirante León Herrero",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.462013231240284,
+        "longitude": -6.205045348224638
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "75",
+      "stopCode": "75",
+      "name": "Avda. Argentina-Edif. Bahía",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Río San Pedro",
+      "nucleusId": "12",
+      "zone": "G",
+      "location": {
+        "latitude": 36.524031,
+        "longitude": -6.227945
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "77",
+      "stopCode": "77",
+      "name": "Avda. Argentina-Instituto",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Río San Pedro",
+      "nucleusId": "12",
+      "zone": "G",
+      "location": {
+        "latitude": 36.524832,
+        "longitude": -6.222788
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "157",
+      "stopCode": "157",
+      "name": "Avda. Blas Infante-Bda. Santo Tomás",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.6704778580713,
+        "longitude": -6.134647876024246
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "346",
+      "stopCode": "346",
+      "name": "Avda. Campo del Sur-Mercado",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.52878168661495,
+        "longitude": -6.298829126284983
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "229",
+      "stopCode": "229",
+      "name": "Avda. Constitución",
+      "municipality": "Sanlucar de Barrameda",
+      "municipalityId": "11",
+      "nucleus": "Sanlúcar de Barrameda",
+      "nucleusId": "28",
+      "zone": "Q",
+      "location": {
+        "latitude": 36.76979957546195,
+        "longitude": -6.346879836069508
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "29",
+      "stopCode": "29",
+      "name": "Avda. Constitución 1.978-Comisaría",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.452110112753,
+        "longitude": -6.216447418746946
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "31",
+      "stopCode": "31",
+      "name": "Avda. Constitución 1.978-Instituto",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.4520669638431,
+        "longitude": -6.2097204385375955
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "310",
+      "stopCode": "310",
+      "name": "Avda. de Andalucía",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.70521618846066,
+        "longitude": -6.117768883461606
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "345",
+      "stopCode": "345",
+      "name": "Avda. de Huelva",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.51935382183055,
+        "longitude": -6.278385040952424
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "254",
+      "stopCode": "254",
+      "name": "Avda. De La Marina",
+      "municipality": "Rota",
+      "municipalityId": "7",
+      "nucleus": "Rota",
+      "nucleusId": "15",
+      "zone": "L",
+      "location": {
+        "latitude": 36.62310164168587,
+        "longitude": -6.361879706355467
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "230",
+      "stopCode": "230",
+      "name": "Avda. de Trebujena",
+      "municipality": "Sanlucar de Barrameda",
+      "municipalityId": "11",
+      "nucleus": "Sanlúcar de Barrameda",
+      "nucleusId": "28",
+      "zone": "Q",
+      "location": {
+        "latitude": 36.76998776245468,
+        "longitude": -6.345768958170699
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "271",
+      "stopCode": "271",
+      "name": "Avda. Del Comercio",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.426464353900435,
+        "longitude": -6.1477330327034
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "1",
+      "stopCode": "1",
+      "name": "Avda. Del Puerto-Edif. Trocadero",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.53021016116525,
+        "longitude": -6.2909189520454385
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "186",
+      "stopCode": "186",
+      "name": "Avda. Juan Carlos I-H. Colón",
+      "municipality": "Rota",
+      "municipalityId": "7",
+      "nucleus": "Costa Ballena (Rota)",
+      "nucleusId": "17",
+      "zone": "L",
+      "location": {
+        "latitude": 36.692467,
+        "longitude": -6.410083
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "187",
+      "stopCode": "187",
+      "name": "Avda. Juan Carlos I-H. Playa",
+      "municipality": "Rota",
+      "municipalityId": "7",
+      "nucleus": "Costa Ballena (Rota)",
+      "nucleusId": "17",
+      "zone": "L",
+      "location": {
+        "latitude": 36.688138,
+        "longitude": -6.41723
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "291",
+      "stopCode": "291",
+      "name": "Avda. Las Cortes",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.52179847212352,
+        "longitude": -6.276908218860626
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "162",
+      "stopCode": "162",
+      "name": "Avda. Ntra. Sra. De La Paz",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.681659,
+        "longitude": -6.128064
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "227",
+      "stopCode": "227",
+      "name": "Avda. Pto. Sta. Mª (El Palmar)",
+      "municipality": "Sanlucar de Barrameda",
+      "municipalityId": "11",
+      "nucleus": "Sanlúcar de Barrameda",
+      "nucleusId": "28",
+      "zone": "Q",
+      "location": {
+        "latitude": 36.76691739413688,
+        "longitude": -6.34674528225212
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "37",
+      "stopCode": "37",
+      "name": "Avda. San Juan Bosco",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.46440380402708,
+        "longitude": -6.1927323147193825
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "129",
+      "stopCode": "129",
+      "name": "Avda. Sanlúcar",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "El Puerto de Santa María",
+      "nucleusId": "8",
+      "zone": "H",
+      "location": {
+        "latitude": 36.604638,
+        "longitude": -6.228673
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "352",
+      "stopCode": "352",
+      "name": "Avda. Tomás García Figueras",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.70067483881514,
+        "longitude": -6.141437308963645
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "224",
+      "stopCode": "224",
+      "name": "Avda. V Centenario",
+      "municipality": "Sanlucar de Barrameda",
+      "municipalityId": "11",
+      "nucleus": "Sanlúcar de Barrameda",
+      "nucleusId": "28",
+      "zone": "Q",
+      "location": {
+        "latitude": 36.77142406819268,
+        "longitude": -6.356657385666655
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "163",
+      "stopCode": "163",
+      "name": "Avda.Cartuja-Estación FC",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.680821,
+        "longitude": -6.127525
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "49",
+      "stopCode": "49",
+      "name": "Bahía Sur",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.47277506839376,
+        "longitude": -6.2067388101951515
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "177",
+      "stopCode": "177",
+      "name": "Baldío Gallardo",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.564217,
+        "longitude": -6.010452
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "100",
+      "stopCode": "100",
+      "name": "Barrio Jarana",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Barrio Jarana",
+      "nucleusId": "11",
+      "zone": "E",
+      "location": {
+        "latitude": 36.502917,
+        "longitude": -6.143661
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "288",
+      "stopCode": "288",
+      "name": "Barrio Nuevo",
+      "municipality": "Conil de la Frontera",
+      "municipalityId": "16",
+      "nucleus": "Barrio Nuevo",
+      "nucleusId": "47",
+      "zone": "R",
+      "location": {
+        "latitude": 36.33916425236646,
+        "longitude": -6.074719280004501
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "251",
+      "stopCode": "251",
+      "name": "C.C. Las Dunas",
+      "municipality": "Sanlucar de Barrameda",
+      "municipalityId": "11",
+      "nucleus": "Sanlúcar de Barrameda",
+      "nucleusId": "28",
+      "zone": "Q",
+      "location": {
+        "latitude": 36.74914487225048,
+        "longitude": -6.336783170700073
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "208",
+      "stopCode": "208",
+      "name": "Cádiz",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.527919686875215,
+        "longitude": -6.286855768256332
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "245",
+      "stopCode": "245",
+      "name": "Camino De Algodonales",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.44621645900167,
+        "longitude": -6.1186124831199935
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "241",
+      "stopCode": "241",
+      "name": "Camino Del Arroyo",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.43977465050151,
+        "longitude": -6.121705070114185
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "69",
+      "stopCode": "69",
+      "name": "Camino Del Cañaveral",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.456257,
+        "longitude": -6.11856
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "65",
+      "stopCode": "65",
+      "name": "Camino Lagunetas",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.442686,
+        "longitude": -6.120368
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "111",
+      "stopCode": "111",
+      "name": "Campo De fútbol",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "El Marquesado",
+      "nucleusId": "40",
+      "zone": "E",
+      "location": {
+        "latitude": 36.486832,
+        "longitude": -6.116635
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "90",
+      "stopCode": "90",
+      "name": "Campo De Fútbol Pto. Real",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Puerto Real",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 36.531574,
+        "longitude": -6.193957
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "171",
+      "stopCode": "171",
+      "name": "Campus De Jerez",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.686249,
+        "longitude": -6.119375
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "79",
+      "stopCode": "79",
+      "name": "Campus-C. Educación",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Campus Universitario",
+      "nucleusId": "41",
+      "zone": "F",
+      "location": {
+        "latitude": 36.527558,
+        "longitude": -6.213559
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "81",
+      "stopCode": "81",
+      "name": "Campus-Ciencias",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Campus Universitario",
+      "nucleusId": "41",
+      "zone": "F",
+      "location": {
+        "latitude": 36.530918,
+        "longitude": -6.210391
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "51",
+      "stopCode": "51",
+      "name": "Cantabria",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.47500955347344,
+        "longitude": -6.18805454219741
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "61",
+      "stopCode": "61",
+      "name": "Cañada De Los Barrancos",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.432479,
+        "longitude": -6.129915
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "301",
+      "stopCode": "301",
+      "name": "Cañada De Los Barrancos-Los Cazadores",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.42186086643798,
+        "longitude": -6.124802827835083
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "312",
+      "stopCode": "312",
+      "name": "Carretera de Jerez",
+      "municipality": "Sanlucar de Barrameda",
+      "municipalityId": "11",
+      "nucleus": "Sanlúcar de Barrameda",
+      "nucleusId": "28",
+      "zone": "Q",
+      "location": {
+        "latitude": 36.7648275805982,
+        "longitude": -6.342550813855808
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "279",
+      "stopCode": "279",
+      "name": "Casa De Postas",
+      "municipality": "Conil de la Frontera",
+      "municipalityId": "16",
+      "nucleus": "El Colorado",
+      "nucleusId": "46",
+      "zone": "R",
+      "location": {
+        "latitude": 36.295076987330354,
+        "longitude": -6.07407420873642
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "257",
+      "stopCode": "257",
+      "name": "Casines",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Puerto Real",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 36.52205713228747,
+        "longitude": -6.170787960290909
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "182",
+      "stopCode": "182",
+      "name": "Cementerio",
+      "municipality": "Rota",
+      "municipalityId": "7",
+      "nucleus": "Rota",
+      "nucleusId": "15",
+      "zone": "L",
+      "location": {
+        "latitude": 36.659012,
+        "longitude": -6.370426
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "56",
+      "stopCode": "56",
+      "name": "Cementerio Mancomunado",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.42195038574302,
+        "longitude": -6.096100413619987
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "197",
+      "stopCode": "197",
+      "name": "Centro P. Puerto I Y II",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "Penal",
+      "nucleusId": "21",
+      "zone": "J",
+      "location": {
+        "latitude": 36.6634,
+        "longitude": -6.246123
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "196",
+      "stopCode": "196",
+      "name": "Centro P. Puerto III",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "Penal",
+      "nucleusId": "21",
+      "zone": "J",
+      "location": {
+        "latitude": 36.664249,
+        "longitude": -6.256196
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "283",
+      "stopCode": "283",
+      "name": "Chinarejos",
+      "municipality": "Conil de la Frontera",
+      "municipalityId": "16",
+      "nucleus": "El Colorado",
+      "nucleusId": "46",
+      "zone": "R",
+      "location": {
+        "latitude": 36.32113750990034,
+        "longitude": -6.088643968105316
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "259",
+      "stopCode": "259",
+      "name": "Ciudad Jardín",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Puerto Real",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 36.52316289473787,
+        "longitude": -6.175190806388855
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "131",
+      "stopCode": "131",
+      "name": "Cl. Valdés-Hospital",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "El Puerto de Santa María",
+      "nucleusId": "8",
+      "zone": "H",
+      "location": {
+        "latitude": 36.59845,
+        "longitude": -6.236959
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "105",
+      "stopCode": "105",
+      "name": "Club Hípico",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "El Marquesado",
+      "nucleusId": "40",
+      "zone": "E",
+      "location": {
+        "latitude": 36.496177,
+        "longitude": -6.133945
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "11",
+      "stopCode": "11",
+      "name": "Comisaría",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.521808460123054,
+        "longitude": -6.285879081306455
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "332",
+      "stopCode": "332",
+      "name": "Compañía de María",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.46039799426797,
+        "longitude": -6.201041013032847
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "8",
+      "stopCode": "8",
+      "name": "Complejo Deportivo",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.49696012447015,
+        "longitude": -6.271749204216001
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "109",
+      "stopCode": "109",
+      "name": "Cuartel",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "El Marquesado",
+      "nucleusId": "40",
+      "zone": "E",
+      "location": {
+        "latitude": 36.49389,
+        "longitude": -6.115483
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "159",
+      "stopCode": "159",
+      "name": "Cuatro Caminos",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.677662,
+        "longitude": -6.14502
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "204",
+      "stopCode": "204",
+      "name": "Cuatro Caminos-Avda. Blas Infante",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.67288746144813,
+        "longitude": -6.137926876544952
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "314",
+      "stopCode": "314",
+      "name": "El Berrueco",
+      "municipality": "Medina Sidonia",
+      "municipalityId": "8",
+      "nucleus": "Medina",
+      "nucleusId": "18",
+      "zone": "M",
+      "location": {
+        "latitude": 36.43822774664942,
+        "longitude": -6.021543920873059
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "83",
+      "stopCode": "83",
+      "name": "El Cartabón",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Puerto Real",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 36.526036,
+        "longitude": -6.182332
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "285",
+      "stopCode": "285",
+      "name": "El Colorado-1",
+      "municipality": "Conil de la Frontera",
+      "municipalityId": "16",
+      "nucleus": "El Colorado",
+      "nucleusId": "46",
+      "zone": "R",
+      "location": {
+        "latitude": 36.33182116766874,
+        "longitude": -6.090564429759979
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "119",
+      "stopCode": "119",
+      "name": "El Marquesado-Venta Nicolás",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "El Marquesado",
+      "nucleusId": "40",
+      "zone": "E",
+      "location": {
+        "latitude": 36.469496,
+        "longitude": -6.118366
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "178",
+      "stopCode": "178",
+      "name": "El Mojo",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.580883,
+        "longitude": -6.016463
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "175",
+      "stopCode": "175",
+      "name": "Enlace A-381-Ctra. Paterna-V. El Pedroso",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.52513,
+        "longitude": -5.982413
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "262",
+      "stopCode": "262",
+      "name": "Escuela Ingeniería",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Campus Universitario",
+      "nucleusId": "41",
+      "zone": "F",
+      "location": {
+        "latitude": 36.53687476012414,
+        "longitude": -6.200977563858032
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "264",
+      "stopCode": "264",
+      "name": "Escuela Ingeniería (Interior)",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Campus Universitario",
+      "nucleusId": "41",
+      "zone": "F",
+      "location": {
+        "latitude": 36.536704179923404,
+        "longitude": -6.20187939574726
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "191",
+      "stopCode": "191",
+      "name": "Estación De Autobuses Arcos",
+      "municipality": "Arcos de la Frontera",
+      "municipalityId": "10",
+      "nucleus": "Arcos",
+      "nucleusId": "20",
+      "zone": "O",
+      "location": {
+        "latitude": 36.749337,
+        "longitude": -5.818322
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "14",
+      "stopCode": "14",
+      "name": "Estación De Autobuses Cádiz",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.52722370886567,
+        "longitude": -6.2853893637657166
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "266",
+      "stopCode": "266",
+      "name": "Estación De Autobuses Chipiona",
+      "municipality": "Chipiona",
+      "municipalityId": "15",
+      "nucleus": "Chipiona",
+      "nucleusId": "44",
+      "zone": "P",
+      "location": {
+        "latitude": 36.736829230805995,
+        "longitude": -6.428471803665161
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "161",
+      "stopCode": "161",
+      "name": "Estación De Autobuses Jerez",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.679414,
+        "longitude": -6.126668
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "188",
+      "stopCode": "188",
+      "name": "Estación De Autobuses Medina",
+      "municipality": "Medina Sidonia",
+      "municipalityId": "8",
+      "nucleus": "Medina",
+      "nucleusId": "18",
+      "zone": "M",
+      "location": {
+        "latitude": 36.462408,
+        "longitude": -5.930291
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "181",
+      "stopCode": "181",
+      "name": "Estación De Autobuses Rota",
+      "municipality": "Rota",
+      "municipalityId": "7",
+      "nucleus": "Rota",
+      "nucleusId": "15",
+      "zone": "L",
+      "location": {
+        "latitude": 36.627986,
+        "longitude": -6.355891
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "222",
+      "stopCode": "222",
+      "name": "Estación De Autobuses Sanlúcar",
+      "municipality": "Sanlucar de Barrameda",
+      "municipalityId": "11",
+      "nucleus": "Sanlúcar de Barrameda",
+      "nucleusId": "28",
+      "zone": "Q",
+      "location": {
+        "latitude": 36.78157949665965,
+        "longitude": -6.358451783497618
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "250",
+      "stopCode": "250",
+      "name": "Estación FC Aeropuerto",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Aeropuerto",
+      "nucleusId": "42",
+      "zone": "K",
+      "location": {
+        "latitude": 36.75021785086857,
+        "longitude": -6.064699583358701
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "125",
+      "stopCode": "125",
+      "name": "Estación FC El Pto. De Sta. María",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "El Puerto de Santa María",
+      "nucleusId": "8",
+      "zone": "H",
+      "location": {
+        "latitude": 36.604761,
+        "longitude": -6.218873
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "86",
+      "stopCode": "86",
+      "name": "Estación FC Puerto Real",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Puerto Real",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 36.530555,
+        "longitude": -6.185302
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "47",
+      "stopCode": "47",
+      "name": "Estación FC-Bahía Sur",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.46924203486384,
+        "longitude": -6.206721375836555
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "347",
+      "stopCode": "347",
+      "name": "F. Ciencias Empresariales",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.53151436143342,
+        "longitude": -6.305470381012
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "253",
+      "stopCode": "253",
+      "name": "Facultad Filosofía y Letras",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.535881259617064,
+        "longitude": -6.303183138370514
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "107",
+      "stopCode": "107",
+      "name": "Finca Villanueva Y Rosal",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "El Marquesado",
+      "nucleusId": "40",
+      "zone": "E",
+      "location": {
+        "latitude": 36.496047,
+        "longitude": -6.130434
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "141",
+      "stopCode": "141",
+      "name": "Fuenterrabía",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "Costa Oeste",
+      "nucleusId": "9",
+      "zone": "I",
+      "location": {
+        "latitude": 36.609399,
+        "longitude": -6.278401
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "316",
+      "stopCode": "316",
+      "name": "General Lobo",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.474772340495385,
+        "longitude": -6.195007783417189
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "202",
+      "stopCode": "202",
+      "name": "Hospital De Jerez",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.699575,
+        "longitude": -6.14593
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "95",
+      "stopCode": "95",
+      "name": "Hospital De Puerto Real",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Hospital Pto. Real",
+      "nucleusId": "43",
+      "zone": "F",
+      "location": {
+        "latitude": 36.51928966617859,
+        "longitude": -6.152954202760202
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "359",
+      "stopCode": "359",
+      "name": "Hospital De Puerto Real",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Hospital Pto. Real",
+      "nucleusId": "43",
+      "zone": "F",
+      "location": {
+        "latitude": 36.51934562282705,
+        "longitude": -6.151750414591955
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "354",
+      "stopCode": "354",
+      "name": "Hospital Puerta del Mar",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.5085324881102,
+        "longitude": -6.2784447361305045
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "355",
+      "stopCode": "355",
+      "name": "Hospital Puerta del Mar",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.50858203795657,
+        "longitude": -6.2783348011775635
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "356",
+      "stopCode": "356",
+      "name": "Hospital Puerta del Mar",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.50946374914346,
+        "longitude": -6.278802997610547
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "357",
+      "stopCode": "357",
+      "name": "Hospital Puerta del Mar",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.509606136566184,
+        "longitude": -6.278905688681334
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "5",
+      "stopCode": "5",
+      "name": "Hospital Puerta Del Mar",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.50903119010323,
+        "longitude": -6.278618341503141
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "318",
+      "stopCode": "318",
+      "name": "Hospital S. Carlos",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.47931003858101,
+        "longitude": -6.195349549614012
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "226",
+      "stopCode": "226",
+      "name": "Hospital Virgen Del Camino",
+      "municipality": "Sanlucar de Barrameda",
+      "municipalityId": "11",
+      "nucleus": "Sanlúcar de Barrameda",
+      "nucleusId": "28",
+      "zone": "Q",
+      "location": {
+        "latitude": 36.76814319273308,
+        "longitude": -6.35866099580078
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "85",
+      "stopCode": "85",
+      "name": "Huerta Pley",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Puerto Real",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 36.528564,
+        "longitude": -6.18511
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "6",
+      "stopCode": "6",
+      "name": "Ingeniero La Cierva",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.506289425814266,
+        "longitude": -6.277057295856474
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "360",
+      "stopCode": "360",
+      "name": "Intercambiador de Transporte El Pto. de Santa Mª",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "El Puerto de Santa María",
+      "nucleusId": "8",
+      "zone": "H",
+      "location": {
+        "latitude": 36.60440093320923,
+        "longitude": -6.217192866107507
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "57",
+      "stopCode": "57",
+      "name": "Jardines Del Marquesado",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.43007,
+        "longitude": -6.140354
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "189",
+      "stopCode": "189",
+      "name": "Jédula",
+      "municipality": "Arcos de la Frontera",
+      "municipalityId": "10",
+      "nucleus": "Jédula",
+      "nucleusId": "19",
+      "zone": "N",
+      "location": {
+        "latitude": 36.724754,
+        "longitude": -5.92982
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "20",
+      "stopCode": "20",
+      "name": "La Ardila",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.455872605383455,
+        "longitude": -6.214650338706968
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "167",
+      "stopCode": "167",
+      "name": "La Granja-Hogar Del Pensionista",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.69322461018721,
+        "longitude": -6.103653609752655
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "344",
+      "stopCode": "344",
+      "name": "La Hoya",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.41118495249933,
+        "longitude": -6.138979955640099
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "295",
+      "stopCode": "295",
+      "name": "La Laguna",
+      "municipality": "Chipiona",
+      "municipalityId": "15",
+      "nucleus": "Chipiona",
+      "nucleusId": "44",
+      "zone": "P",
+      "location": {
+        "latitude": 36.72399134922532,
+        "longitude": -6.435413360595703
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "96",
+      "stopCode": "96",
+      "name": "La Romera-Venta Rosario",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Puerto Real",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 36.517358,
+        "longitude": -6.04446
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "265",
+      "stopCode": "265",
+      "name": "Las Aletas",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Puerto Real",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 36.54456587548587,
+        "longitude": -6.199142932891846
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "269",
+      "stopCode": "269",
+      "name": "Las Redes/Los Esteros",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.42969612822568,
+        "longitude": -6.144150942564011
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "145",
+      "stopCode": "145",
+      "name": "Las Tórtolas",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "Costa Oeste",
+      "nucleusId": "9",
+      "zone": "I",
+      "location": {
+        "latitude": 36.617615,
+        "longitude": -6.277921
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "121",
+      "stopCode": "121",
+      "name": "Los Toruños",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "El Puerto de Santa María",
+      "nucleusId": "8",
+      "zone": "H",
+      "location": {
+        "latitude": 36.57923384877586,
+        "longitude": -6.214028769346247
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "67",
+      "stopCode": "67",
+      "name": "Manuel Aragón",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.451805,
+        "longitude": -6.118891
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "198",
+      "stopCode": "198",
+      "name": "Manuel De Falla",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.457785,
+        "longitude": -6.198996
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "93",
+      "stopCode": "93",
+      "name": "Marina De La Bahía",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Puerto Real",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 36.530703,
+        "longitude": -6.199554
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "338",
+      "stopCode": "338",
+      "name": "Marquesado",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.42859833348263,
+        "longitude": -6.143314568696888
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "113",
+      "stopCode": "113",
+      "name": "Matadero",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "El Marquesado",
+      "nucleusId": "40",
+      "zone": "E",
+      "location": {
+        "latitude": 36.480557,
+        "longitude": -6.11695
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "115",
+      "stopCode": "115",
+      "name": "Mirlo",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "El Marquesado",
+      "nucleusId": "40",
+      "zone": "E",
+      "location": {
+        "latitude": 36.476511,
+        "longitude": -6.11725
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "340",
+      "stopCode": "340",
+      "name": "Nuestra Señora de los Remedios",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.42027630622159,
+        "longitude": -6.144612480598043
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "221",
+      "stopCode": "221",
+      "name": "Parque Acuático",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "El Puerto de Santa María",
+      "nucleusId": "8",
+      "zone": "H",
+      "location": {
+        "latitude": 36.631297613916416,
+        "longitude": -6.1983150027233025
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "27",
+      "stopCode": "27",
+      "name": "Parque Almirante Laulhé",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.466547451970136,
+        "longitude": -6.202521395414726
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "164",
+      "stopCode": "164",
+      "name": "Parque Juan Carlos Durán (La Unión)",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.695612,
+        "longitude": -6.135986
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "127",
+      "stopCode": "127",
+      "name": "Parque Vino Fino",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "El Puerto de Santa María",
+      "nucleusId": "8",
+      "zone": "H",
+      "location": {
+        "latitude": 36.607108316360744,
+        "longitude": -6.221217346234019
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "343",
+      "stopCode": "343",
+      "name": "Pelagatos",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.40867228912546,
+        "longitude": -6.134275400480279
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "337",
+      "stopCode": "337",
+      "name": "Pinar de los Franceses",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.44052760349078,
+        "longitude": -6.1444785389154974
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "98",
+      "stopCode": "98",
+      "name": "Pinar De Los Franceses",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.440655103661825,
+        "longitude": -6.143926978111267
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "4",
+      "stopCode": "4",
+      "name": "Plaza Asdrúbal",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.51749323128765,
+        "longitude": -6.283438271102903
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "351",
+      "stopCode": "351",
+      "name": "Plaza Asdrúbal",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.51833347122721,
+        "longitude": -6.283853592528017
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "232",
+      "stopCode": "232",
+      "name": "Plaza De España",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.53324687781956,
+        "longitude": -6.293276613769529
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "334",
+      "stopCode": "334",
+      "name": "Plaza de la Iglesía",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.466213652885905,
+        "longitude": -6.195601726576784
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "234",
+      "stopCode": "234",
+      "name": "Plaza De Las Marinas",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.69774139541855,
+        "longitude": -6.137006203041078
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "305",
+      "stopCode": "305",
+      "name": "Plaza De Sevilla",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.530139952837146,
+        "longitude": -6.2889352440834045
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "133",
+      "stopCode": "133",
+      "name": "Plaza De Toros",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "El Puerto de Santa María",
+      "nucleusId": "8",
+      "zone": "H",
+      "location": {
+        "latitude": 36.597182,
+        "longitude": -6.232289
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "179",
+      "stopCode": "179",
+      "name": "Plaza Del Caballo",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.693608,
+        "longitude": -6.129309
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "331",
+      "stopCode": "331",
+      "name": "Plaza del Carmen",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.45811995628523,
+        "longitude": -6.203545782003502
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "43",
+      "stopCode": "43",
+      "name": "Plaza Del Castillo",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.46784010550127,
+        "longitude": -6.190936259187963
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "333",
+      "stopCode": "333",
+      "name": "Plaza del Rey",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.46412125765201,
+        "longitude": -6.198187209490728
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "88",
+      "stopCode": "88",
+      "name": "Plaza Iglesia",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Puerto Real",
+      "nucleusId": "6",
+      "zone": "F",
+      "location": {
+        "latitude": 36.528436,
+        "longitude": -6.189262
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "277",
+      "stopCode": "277",
+      "name": "Pocito Blanco",
+      "municipality": "Conil de la Frontera",
+      "municipalityId": "16",
+      "nucleus": "Conil",
+      "nucleusId": "45",
+      "zone": "S",
+      "location": {
+        "latitude": 36.28734491029222,
+        "longitude": -6.079431921243668
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "40",
+      "stopCode": "40",
+      "name": "Ponce De León",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.45615267513754,
+        "longitude": -6.210423839286802
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "3",
+      "stopCode": "3",
+      "name": "Puerta Tierra",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.52605953745319,
+        "longitude": -6.2892090437984445
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "261",
+      "stopCode": "261",
+      "name": "Recinto Ferial",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "Penal",
+      "nucleusId": "21",
+      "zone": "J",
+      "location": {
+        "latitude": 36.61375793480854,
+        "longitude": -6.241360902786255
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "236",
+      "stopCode": "236",
+      "name": "Reyes Católicos",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.46828169535278,
+        "longitude": -6.200212013452903
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "341",
+      "stopCode": "341",
+      "name": "Reyes Católicos",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.4143795956404,
+        "longitude": -6.1431429358132625
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "328",
+      "stopCode": "328",
+      "name": "Río Arillo",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.457627735849215,
+        "longitude": -6.2246105661187725
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "272",
+      "stopCode": "272",
+      "name": "Río Iro",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.42284935511073,
+        "longitude": -6.149012446403503
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "200",
+      "stopCode": "200",
+      "name": "Ronda Del Estero",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.45174793639307,
+        "longitude": -6.205760000000016
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "247",
+      "stopCode": "247",
+      "name": "Ruiz Marcet",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.47055843000482,
+        "longitude": -6.198037200022721
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "289",
+      "stopCode": "289",
+      "name": "San Andrés Golf",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "San Andrés Golf",
+      "nucleusId": "48",
+      "zone": "R",
+      "location": {
+        "latitude": 36.35478045485695,
+        "longitude": -6.105598211288452
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "35",
+      "stopCode": "35",
+      "name": "San Marcos",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.461352102035576,
+        "longitude": -6.196463484256598
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "33",
+      "stopCode": "33",
+      "name": "San Onofre",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.45552714170314,
+        "longitude": -6.201299428939819
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "330",
+      "stopCode": "330",
+      "name": "Santo Entierro",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.45590222925057,
+        "longitude": -6.20965081191525
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "7",
+      "stopCode": "7",
+      "name": "Telegrafía Sin Hilos",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.500057150866574,
+        "longitude": -6.273421347141266
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "193",
+      "stopCode": "193",
+      "name": "Terminal Marítima Cádiz",
+      "municipality": "Cádiz",
+      "municipalityId": "1",
+      "nucleus": "Cádiz",
+      "nucleusId": "1",
+      "zone": "A",
+      "location": {
+        "latitude": 36.530915,
+        "longitude": -6.289546
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "194",
+      "stopCode": "194",
+      "name": "Terminal Marítima El Puerto De Santa María",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "El Puerto de Santa María",
+      "nucleusId": "8",
+      "zone": "H",
+      "location": {
+        "latitude": 36.593778,
+        "longitude": -6.226493
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "195",
+      "stopCode": "195",
+      "name": "Terminal Marítima Rota",
+      "municipality": "Rota",
+      "municipalityId": "7",
+      "nucleus": "Rota",
+      "nucleusId": "15",
+      "zone": "L",
+      "location": {
+        "latitude": 36.615357,
+        "longitude": -6.352778
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "166",
+      "stopCode": "166",
+      "name": "Torres Blancas",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.68760813398017,
+        "longitude": -6.113221049308777
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "249",
+      "stopCode": "249",
+      "name": "Tres Caminos",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Tres Caminos",
+      "nucleusId": "31",
+      "zone": "E",
+      "location": {
+        "latitude": 36.469026950332044,
+        "longitude": -6.173693007049598
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "336",
+      "stopCode": "336",
+      "name": "Tres Caminos",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Tres Caminos",
+      "nucleusId": "31",
+      "zone": "E",
+      "location": {
+        "latitude": 36.46648965507417,
+        "longitude": -6.17566224941803
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "123",
+      "stopCode": "123",
+      "name": "Valdelagrana-Caballo Blanco",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "El Puerto de Santa María",
+      "nucleusId": "8",
+      "zone": "H",
+      "location": {
+        "latitude": 36.583432,
+        "longitude": -6.217442
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "140",
+      "stopCode": "140",
+      "name": "Valdelagrana-Playa",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "El Puerto de Santa María",
+      "nucleusId": "8",
+      "zone": "H",
+      "location": {
+        "latitude": 36.579915,
+        "longitude": -6.227011
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "335",
+      "stopCode": "335",
+      "name": "Venta de Vargas",
+      "municipality": "San Fernando",
+      "municipalityId": "2",
+      "nucleus": "San Fernando",
+      "nucleusId": "2",
+      "zone": "B",
+      "location": {
+        "latitude": 36.467732041958854,
+        "longitude": -6.191148963719751
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "117",
+      "stopCode": "117",
+      "name": "Venta El Chirimono",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "El Marquesado",
+      "nucleusId": "40",
+      "zone": "E",
+      "location": {
+        "latitude": 36.471414,
+        "longitude": -6.118335
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "59",
+      "stopCode": "59",
+      "name": "Venta El Pino",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.431565,
+        "longitude": -6.135204
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "103",
+      "stopCode": "103",
+      "name": "Venta Paquete",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "El Marquesado",
+      "nucleusId": "40",
+      "zone": "E",
+      "location": {
+        "latitude": 36.496422,
+        "longitude": -6.139463
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "63",
+      "stopCode": "63",
+      "name": "Venta Pololo",
+      "municipality": "Chiclana",
+      "municipalityId": "3",
+      "nucleus": "Chiclana",
+      "nucleusId": "3",
+      "zone": "C",
+      "location": {
+        "latitude": 36.435422,
+        "longitude": -6.124686
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "102",
+      "stopCode": "102",
+      "name": "Venta Santa Ana",
+      "municipality": "Puerto Real",
+      "municipalityId": "4",
+      "nucleus": "Barrio Jarana",
+      "nucleusId": "11",
+      "zone": "E",
+      "location": {
+        "latitude": 36.491921,
+        "longitude": -6.1423
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "143",
+      "stopCode": "143",
+      "name": "Vistahermosa",
+      "municipality": "El Puerto de Santa María",
+      "municipalityId": "5",
+      "nucleus": "Costa Oeste",
+      "nucleusId": "9",
+      "zone": "I",
+      "location": {
+        "latitude": 36.60042,
+        "longitude": -6.250995
+      }
+    }
+  ]
+}

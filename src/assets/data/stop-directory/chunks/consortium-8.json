@@ -1,0 +1,1182 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:43.383Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 8,
+    "consortiumName": "Área de Córdoba",
+    "stopCount": 78
+  },
+  "stops": [
+    {
+      "consortiumId": 8,
+      "stopId": "50",
+      "stopCode": "50",
+      "name": "Alcolea (Hostal)",
+      "municipality": "Córdoba",
+      "municipalityId": "6",
+      "nucleus": "Alcolea",
+      "nucleusId": "73",
+      "zone": "B",
+      "location": {
+        "latitude": 37.93335723,
+        "longitude": -4.670696663
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "133",
+      "stopCode": "133",
+      "name": "Alcolea (Ronda De Salida)",
+      "municipality": "Córdoba",
+      "municipalityId": "6",
+      "nucleus": "Alcolea",
+      "nucleusId": "73",
+      "zone": "B",
+      "location": {
+        "latitude": 37.9359497624,
+        "longitude": -4.67001020015
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "48",
+      "stopCode": "48",
+      "name": "Alcolea (Supermercado Dia)",
+      "municipality": "Córdoba",
+      "municipalityId": "6",
+      "nucleus": "Alcolea",
+      "nucleusId": "73",
+      "zone": "B",
+      "location": {
+        "latitude": 37.93098844,
+        "longitude": -4.67629165
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "22",
+      "stopCode": "22",
+      "name": "Aldea Quintana",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "Aldea Quintana",
+      "nucleusId": "49",
+      "zone": "C",
+      "location": {
+        "latitude": 37.71223338,
+        "longitude": -4.868131316
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "107",
+      "stopCode": "107",
+      "name": "Almacén (El Cortinilla)",
+      "municipality": "Villafranca De Córdoba",
+      "municipalityId": "16",
+      "nucleus": "Villafranca De Córdoba",
+      "nucleusId": "233",
+      "zone": "D",
+      "location": {
+        "latitude": 37.9606930094,
+        "longitude": -4.54993743989
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "24",
+      "stopCode": "24",
+      "name": "Arrecife 1",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "El Arrecife",
+      "nucleusId": "23",
+      "zone": "C",
+      "location": {
+        "latitude": 37.70397179,
+        "longitude": -4.884157204
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "153",
+      "stopCode": "153",
+      "name": "Arrecife 2",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "El Arrecife",
+      "nucleusId": "23",
+      "zone": "C",
+      "location": {
+        "latitude": 37.7011810992,
+        "longitude": -4.88979519572
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "26",
+      "stopCode": "26",
+      "name": "Arrecife 3",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "El Arrecife",
+      "nucleusId": "23",
+      "zone": "C",
+      "location": {
+        "latitude": 37.69848274,
+        "longitude": -4.895695753
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "28",
+      "stopCode": "28",
+      "name": "Arrecife 4",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "El Arrecife",
+      "nucleusId": "23",
+      "zone": "C",
+      "location": {
+        "latitude": 37.691584720267166,
+        "longitude": -4.902663677930832
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "77",
+      "stopCode": "77",
+      "name": "Av. De Andalucía",
+      "municipality": "Posadas",
+      "municipalityId": "13",
+      "nucleus": "Posadas",
+      "nucleusId": "220",
+      "zone": "D",
+      "location": {
+        "latitude": 37.80276465,
+        "longitude": -5.10254975
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "34",
+      "stopCode": "34",
+      "name": "Avda Carlos III",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "La Carlota",
+      "nucleusId": "20",
+      "zone": "D",
+      "location": {
+        "latitude": 37.6690655633,
+        "longitude": -4.9377205745
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "173",
+      "stopCode": "173",
+      "name": "Avda. Andalucía (Cementerio)",
+      "municipality": "Villa Del Río",
+      "municipalityId": "25",
+      "nucleus": "Villa Del Río",
+      "nucleusId": "274",
+      "zone": "F",
+      "location": {
+        "latitude": 37.9836512736,
+        "longitude": -4.29667297767
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "151",
+      "stopCode": "151",
+      "name": "Avda. Del Deporte",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "La Carlota",
+      "nucleusId": "20",
+      "zone": "D",
+      "location": {
+        "latitude": 37.6647685407,
+        "longitude": -4.93295337418
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "159",
+      "stopCode": "159",
+      "name": "Avda. Juan Carlos I ( Instituto)",
+      "municipality": "Fernán-Núñez",
+      "municipalityId": "8",
+      "nucleus": "Fernán-Núñez",
+      "nucleusId": "187",
+      "zone": "D",
+      "location": {
+        "latitude": 37.6658502464,
+        "longitude": -4.72441126038
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "62",
+      "stopCode": "62",
+      "name": "Avda. Juan Carlos I (Desvío SS Ballesteros)",
+      "municipality": "Fernán-Núñez",
+      "municipalityId": "8",
+      "nucleus": "Fernán-Núñez",
+      "nucleusId": "187",
+      "zone": "D",
+      "location": {
+        "latitude": 37.673918378399414,
+        "longitude": -4.731128364801407
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "171",
+      "stopCode": "171",
+      "name": "Ayuntamiento",
+      "municipality": "Villa Del Río",
+      "municipalityId": "25",
+      "nucleus": "Villa Del Río",
+      "nucleusId": "274",
+      "zone": "F",
+      "location": {
+        "latitude": 37.9824901826,
+        "longitude": -4.29071795454
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "54",
+      "stopCode": "54",
+      "name": "Brigadas Militares (Núcleo A)",
+      "municipality": "Córdoba",
+      "municipalityId": "6",
+      "nucleus": "BRIMZ",
+      "nucleusId": "92",
+      "zone": "C",
+      "location": {
+        "latitude": 38.01232901,
+        "longitude": -4.776991921
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "55",
+      "stopCode": "55",
+      "name": "Brigadas Militares (Núcleo B)",
+      "municipality": "Córdoba",
+      "municipalityId": "6",
+      "nucleus": "BRIMZ",
+      "nucleusId": "92",
+      "zone": "C",
+      "location": {
+        "latitude": 38.01693012,
+        "longitude": -4.781748552
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "81",
+      "stopCode": "81",
+      "name": "C/ Sevilla (Pedrera)",
+      "municipality": "Posadas",
+      "municipalityId": "13",
+      "nucleus": "Posadas",
+      "nucleusId": "220",
+      "zone": "D",
+      "location": {
+        "latitude": 37.80093524,
+        "longitude": -5.11372763
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "90",
+      "stopCode": "90",
+      "name": "Calle La Encina",
+      "municipality": "Villafranca De Córdoba",
+      "municipalityId": "16",
+      "nucleus": "Villafranca De Córdoba",
+      "nucleusId": "233",
+      "zone": "D",
+      "location": {
+        "latitude": 37.958408,
+        "longitude": -4.54926788
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "32",
+      "stopCode": "32",
+      "name": "Camping Carlos III",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "La Carlota",
+      "nucleusId": "20",
+      "zone": "D",
+      "location": {
+        "latitude": 37.68259049,
+        "longitude": -4.918013052
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "126",
+      "stopCode": "126",
+      "name": "Campus Universitario Rabanales",
+      "municipality": "Córdoba",
+      "municipalityId": "6",
+      "nucleus": "Universidad (Campus Rabanales)",
+      "nucleusId": "151",
+      "zone": "A",
+      "location": {
+        "latitude": 37.9134599766,
+        "longitude": -4.71764559832
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "16",
+      "stopCode": "16",
+      "name": "CASTILLO de Almodóvar",
+      "municipality": "Almodóvar Del Río",
+      "municipalityId": "19",
+      "nucleus": "Almodóvar Del Río",
+      "nucleusId": "247",
+      "zone": "C",
+      "location": {
+        "latitude": 37.8103151587,
+        "longitude": -5.02478131739
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "92",
+      "stopCode": "92",
+      "name": "Cementerio",
+      "municipality": "Villafranca De Córdoba",
+      "municipalityId": "16",
+      "nucleus": "Villafranca De Córdoba",
+      "nucleusId": "233",
+      "zone": "D",
+      "location": {
+        "latitude": 37.96711093,
+        "longitude": -4.542567963
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "103",
+      "stopCode": "103",
+      "name": "Cerro Muriano - Est. Obejo (Guardia Civil)",
+      "municipality": "Obejo",
+      "municipalityId": "11",
+      "nucleus": "Cerro Muriano (Obejo)",
+      "nucleusId": "206",
+      "zone": "C",
+      "location": {
+        "latitude": 38.0081404734,
+        "longitude": -4.7714520712
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "52",
+      "stopCode": "52",
+      "name": "Cerro Muriano (Bar Cinema)",
+      "municipality": "Obejo",
+      "municipalityId": "11",
+      "nucleus": "Cerro Muriano",
+      "nucleusId": "275",
+      "zone": "C",
+      "location": {
+        "latitude": 38.001536,
+        "longitude": -4.770077
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "105",
+      "stopCode": "105",
+      "name": "Cerro Muriano (Rest. Los Pinares)",
+      "municipality": "Obejo",
+      "municipalityId": "11",
+      "nucleus": "Cerro Muriano",
+      "nucleusId": "275",
+      "zone": "C",
+      "location": {
+        "latitude": 37.9981766708,
+        "longitude": -4.76930075369
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "145",
+      "stopCode": "145",
+      "name": "Cordobesas",
+      "municipality": "La Guijarrosa",
+      "municipalityId": "21",
+      "nucleus": "Cordobesas",
+      "nucleusId": "266",
+      "zone": "E",
+      "location": {
+        "latitude": 37.6457092499,
+        "longitude": -4.86969231576
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "20",
+      "stopCode": "20",
+      "name": "Cuatro Caminos",
+      "municipality": "Almodóvar Del Río",
+      "municipalityId": "19",
+      "nucleus": "Almodóvar Del Río",
+      "nucleusId": "247",
+      "zone": "C",
+      "location": {
+        "latitude": 37.8106195361,
+        "longitude": -5.017673475
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "45",
+      "stopCode": "45",
+      "name": "El Carpio (Ecce Homo)",
+      "municipality": "El Carpio",
+      "municipalityId": "5",
+      "nucleus": "El Carpio",
+      "nucleusId": "56",
+      "zone": "D",
+      "location": {
+        "latitude": 37.9430288246,
+        "longitude": -4.49878114826
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "102",
+      "stopCode": "102",
+      "name": "El Vacar (Aparcamiento)",
+      "municipality": "Villaviciosa De Córdoba",
+      "municipalityId": "18",
+      "nucleus": "El Vacar",
+      "nucleusId": "261",
+      "zone": "D",
+      "location": {
+        "latitude": 38.0788626,
+        "longitude": -4.85426881
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "59",
+      "stopCode": "59",
+      "name": "Espejo (C/Regiones Devastadas)",
+      "municipality": "Espejo",
+      "municipalityId": "7",
+      "nucleus": "Espejo",
+      "nucleusId": "184",
+      "zone": "D",
+      "location": {
+        "latitude": 37.67985787,
+        "longitude": -4.550300307
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "99",
+      "stopCode": "99",
+      "name": "Estación De Autobuses Córdoba",
+      "municipality": "Córdoba",
+      "municipalityId": "6",
+      "nucleus": "Córdoba",
+      "nucleusId": "66",
+      "zone": "A",
+      "location": {
+        "latitude": 37.88915221,
+        "longitude": -4.790648275
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "168",
+      "stopCode": "168",
+      "name": "Estación De Baena",
+      "municipality": "Baena",
+      "municipalityId": "24",
+      "nucleus": "Baena",
+      "nucleusId": "273",
+      "zone": "G",
+      "location": {
+        "latitude": 37.6188594828,
+        "longitude": -4.33007267434
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "165",
+      "stopCode": "165",
+      "name": "Estación De Castro Del Río",
+      "municipality": "Castro Del Río",
+      "municipalityId": "23",
+      "nucleus": "Castro Del Río",
+      "nucleusId": "271",
+      "zone": "E",
+      "location": {
+        "latitude": 37.6888171835,
+        "longitude": -4.47952995782
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "69",
+      "stopCode": "69",
+      "name": "Estación de Obejo (Rotonda)",
+      "municipality": "Obejo",
+      "municipalityId": "11",
+      "nucleus": "Estación De Obejo",
+      "nucleusId": "209",
+      "zone": "C",
+      "location": {
+        "latitude": 38.02475511,
+        "longitude": -4.789647895
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "42",
+      "stopCode": "42",
+      "name": "Fuencubierta (Calle Ancha)",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "Fuencubierta",
+      "nucleusId": "33",
+      "zone": "D",
+      "location": {
+        "latitude": 37.7091371844,
+        "longitude": -4.9906464827
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "15",
+      "stopCode": "15",
+      "name": "Fuente Del Santo",
+      "municipality": "Almodóvar Del Río",
+      "municipalityId": "19",
+      "nucleus": "Almodóvar Del Río",
+      "nucleusId": "247",
+      "zone": "C",
+      "location": {
+        "latitude": 37.81409048,
+        "longitude": -5.02229547222
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "63",
+      "stopCode": "63",
+      "name": "Guadalcázar (Los Silos)",
+      "municipality": "Guadalcázar",
+      "municipalityId": "9",
+      "nucleus": "Guadalcázar",
+      "nucleusId": "191",
+      "zone": "C",
+      "location": {
+        "latitude": 37.75650777,
+        "longitude": -4.942983276
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "30",
+      "stopCode": "30",
+      "name": "Hotel El Pilar",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "La Carlota",
+      "nucleusId": "20",
+      "zone": "D",
+      "location": {
+        "latitude": 37.68620826,
+        "longitude": -4.911987573
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "166",
+      "stopCode": "166",
+      "name": "Izcar",
+      "municipality": "Baena",
+      "municipalityId": "24",
+      "nucleus": "Izcar",
+      "nucleusId": "272",
+      "zone": "F",
+      "location": {
+        "latitude": 37.6601943853,
+        "longitude": -4.383487927
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "125",
+      "stopCode": "125",
+      "name": "La Cantina ",
+      "municipality": "Almodóvar Del Río",
+      "municipalityId": "19",
+      "nucleus": "Los Mochos",
+      "nucleusId": "253",
+      "zone": "C",
+      "location": {
+        "latitude": 37.8271166667,
+        "longitude": -4.97261666667
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "143",
+      "stopCode": "143",
+      "name": "La Guijarrosa",
+      "municipality": "La Guijarrosa",
+      "municipalityId": "21",
+      "nucleus": "La Guijarrosa",
+      "nucleusId": "265",
+      "zone": "E",
+      "location": {
+        "latitude": 37.6376287682,
+        "longitude": -4.86581097165
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "35",
+      "stopCode": "35",
+      "name": "La Paz",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "La Paz",
+      "nucleusId": "43",
+      "zone": "D",
+      "location": {
+        "latitude": 37.65826907,
+        "longitude": -4.924602025
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "85",
+      "stopCode": "85",
+      "name": "La Victoria (Plaza De La Constitución)",
+      "municipality": "La Victoria",
+      "municipalityId": "15",
+      "nucleus": "La Victoria",
+      "nucleusId": "229",
+      "zone": "D",
+      "location": {
+        "latitude": 37.68431441,
+        "longitude": -4.854541447
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "87",
+      "stopCode": "87",
+      "name": "La Victoria 2 (C/ Jesús María)",
+      "municipality": "La Victoria",
+      "municipalityId": "15",
+      "nucleus": "La Victoria",
+      "nucleusId": "229",
+      "zone": "D",
+      "location": {
+        "latitude": 37.68193421,
+        "longitude": -4.852021964
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "155",
+      "stopCode": "155",
+      "name": "Las Malvinas",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "La Carlota",
+      "nucleusId": "20",
+      "zone": "D",
+      "location": {
+        "latitude": 37.6750488530852,
+        "longitude": -4.930522441864014
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "98",
+      "stopCode": "98",
+      "name": "Las Platas ",
+      "municipality": "La Victoria",
+      "municipalityId": "15",
+      "nucleus": "Las Platas",
+      "nucleusId": "231",
+      "zone": "C",
+      "location": {
+        "latitude": 37.7128406,
+        "longitude": -4.86571704
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "5",
+      "stopCode": "5",
+      "name": "Los Mochos 2",
+      "municipality": "Almodóvar Del Río",
+      "municipalityId": "19",
+      "nucleus": "Los Mochos",
+      "nucleusId": "253",
+      "zone": "C",
+      "location": {
+        "latitude": 37.8310221167,
+        "longitude": -4.95760247222
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "7",
+      "stopCode": "7",
+      "name": "Los Mochos 3",
+      "municipality": "Almodóvar Del Río",
+      "municipalityId": "19",
+      "nucleus": "Los Mochos",
+      "nucleusId": "253",
+      "zone": "C",
+      "location": {
+        "latitude": 37.8290035424,
+        "longitude": -4.96387314103
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "3",
+      "stopCode": "3",
+      "name": "Los Mochos,1",
+      "municipality": "Almodóvar Del Río",
+      "municipalityId": "19",
+      "nucleus": "Los Mochos",
+      "nucleusId": "253",
+      "zone": "C",
+      "location": {
+        "latitude": 37.8341800423,
+        "longitude": -4.95153071174
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "161",
+      "stopCode": "161",
+      "name": "Maruanas",
+      "municipality": "El Carpio",
+      "municipalityId": "5",
+      "nucleus": "Maruanas",
+      "nucleusId": "270",
+      "zone": "D",
+      "location": {
+        "latitude": 37.9372476885,
+        "longitude": -4.46938593035
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "38",
+      "stopCode": "38",
+      "name": "Montealto 1",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "Montealto",
+      "nucleusId": "40",
+      "zone": "D",
+      "location": {
+        "latitude": 37.657495362752734,
+        "longitude": -4.911447912454605
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "40",
+      "stopCode": "40",
+      "name": "Montealto 2",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "Montealto",
+      "nucleusId": "40",
+      "zone": "D",
+      "location": {
+        "latitude": 37.656475,
+        "longitude": -4.902254
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "116",
+      "stopCode": "116",
+      "name": "Montealto 3",
+      "municipality": "La Carlota",
+      "municipalityId": "4",
+      "nucleus": "Montealto",
+      "nucleusId": "40",
+      "zone": "D",
+      "location": {
+        "latitude": 37.65478,
+        "longitude": -4.8955
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "111",
+      "stopCode": "111",
+      "name": "Montemayor (Avda. Granada) 1",
+      "municipality": "Montemayor",
+      "municipalityId": "10",
+      "nucleus": "Montemayor",
+      "nucleusId": "198",
+      "zone": "D",
+      "location": {
+        "latitude": 37.6458375779,
+        "longitude": -4.70056536445
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "100",
+      "stopCode": "100",
+      "name": "Pantano Puente Nuevo",
+      "municipality": "Villaviciosa De Córdoba",
+      "municipalityId": "18",
+      "nucleus": "Pantano Puente Nuevo",
+      "nucleusId": "244",
+      "zone": "E",
+      "location": {
+        "latitude": 38.0857752079,
+        "longitude": -4.92688326295
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "157",
+      "stopCode": "157",
+      "name": "Parque Acuático ",
+      "municipality": "Villafranca De Córdoba",
+      "municipalityId": "16",
+      "nucleus": "Villafranca De Córdoba",
+      "nucleusId": "233",
+      "zone": "D",
+      "location": {
+        "latitude": 37.9576444444,
+        "longitude": -4.572229
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "74",
+      "stopCode": "74",
+      "name": "Pedro Abad 2 (Sta. Rafaela Mª Convento)",
+      "municipality": "Pedro Abad",
+      "municipalityId": "12",
+      "nucleus": "Pedro Abad",
+      "nucleusId": "216",
+      "zone": "D",
+      "location": {
+        "latitude": 37.96862067033123,
+        "longitude": -4.455448702804981
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "72",
+      "stopCode": "72",
+      "name": "Pedro Abad I ",
+      "municipality": "Pedro Abad",
+      "municipalityId": "12",
+      "nucleus": "Pedro Abad",
+      "nucleusId": "216",
+      "zone": "D",
+      "location": {
+        "latitude": 37.9637743818,
+        "longitude": -4.46149030486
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "141",
+      "stopCode": "141",
+      "name": "Plano De La Feria",
+      "municipality": "Montoro",
+      "municipalityId": "20",
+      "nucleus": "Montoro",
+      "nucleusId": "263",
+      "zone": "E",
+      "location": {
+        "latitude": 38.0169725227,
+        "longitude": -4.38245632405
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "142",
+      "stopCode": "142",
+      "name": "Plaza De España",
+      "municipality": "Obejo",
+      "municipalityId": "11",
+      "nucleus": "Obejo",
+      "nucleusId": "202",
+      "zone": "E",
+      "location": {
+        "latitude": 38.1318685931,
+        "longitude": -4.80011250285
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "80",
+      "stopCode": "80",
+      "name": "Plaza Estación",
+      "municipality": "Posadas",
+      "municipalityId": "13",
+      "nucleus": "Posadas",
+      "nucleusId": "220",
+      "zone": "D",
+      "location": {
+        "latitude": 37.80339493,
+        "longitude": -5.1059961
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "94",
+      "stopCode": "94",
+      "name": "Pozoafuera",
+      "municipality": "Villafranca De Córdoba",
+      "municipalityId": "16",
+      "nucleus": "Villafranca De Córdoba",
+      "nucleusId": "233",
+      "zone": "D",
+      "location": {
+        "latitude": 37.96447688,
+        "longitude": -4.548497906
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "83",
+      "stopCode": "83",
+      "name": "Rivero De Posadas",
+      "municipality": "Posadas",
+      "municipalityId": "13",
+      "nucleus": "Rivero De Posadas",
+      "nucleusId": "224",
+      "zone": "D",
+      "location": {
+        "latitude": 37.79420968,
+        "longitude": -5.143100656
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "84",
+      "stopCode": "84",
+      "name": "San Sebastián De Los Ballesteros (Carlos III)",
+      "municipality": "S Sebastián De Los Ballestero\u0000",
+      "municipalityId": "14",
+      "nucleus": "San Sebastián De Los Ballesteros",
+      "nucleusId": "226",
+      "zone": "D",
+      "location": {
+        "latitude": 37.65262515,
+        "longitude": -4.825446478
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "57",
+      "stopCode": "57",
+      "name": "Santa Cruz (Rafael Alberti)",
+      "municipality": "Córdoba",
+      "municipalityId": "6",
+      "nucleus": "Santa Cruz",
+      "nucleusId": "181",
+      "zone": "C",
+      "location": {
+        "latitude": 37.73304992,
+        "longitude": -4.637136003
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "149",
+      "stopCode": "149",
+      "name": "Siete Torres 1",
+      "municipality": "La Guijarrosa",
+      "municipalityId": "21",
+      "nucleus": "Siete Torres",
+      "nucleusId": "267",
+      "zone": "E",
+      "location": {
+        "latitude": 37.6366558911,
+        "longitude": -4.86236410332
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "12",
+      "stopCode": "12",
+      "name": "Torrealba",
+      "municipality": "Almodóvar Del Río",
+      "municipalityId": "19",
+      "nucleus": "Almodóvar Del Río",
+      "nucleusId": "247",
+      "zone": "C",
+      "location": {
+        "latitude": 37.8196933362,
+        "longitude": -5.00730419544
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "117",
+      "stopCode": "117",
+      "name": "Urbanización Los Olivos",
+      "municipality": "Posadas",
+      "municipalityId": "13",
+      "nucleus": "Posadas",
+      "nucleusId": "220",
+      "zone": "D",
+      "location": {
+        "latitude": 37.8052557178,
+        "longitude": -5.09994560333
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "14",
+      "stopCode": "14",
+      "name": "Venta Pastor",
+      "municipality": "Almodóvar Del Río",
+      "municipalityId": "19",
+      "nucleus": "Almodóvar Del Río",
+      "nucleusId": "247",
+      "zone": "C",
+      "location": {
+        "latitude": 37.8131216797,
+        "longitude": -5.01507214753
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "118",
+      "stopCode": "118",
+      "name": "Viaducto Caneriles",
+      "municipality": "Almodóvar Del Río",
+      "municipalityId": "19",
+      "nucleus": "Los Mochos",
+      "nucleusId": "253",
+      "zone": "C",
+      "location": {
+        "latitude": 37.8374736613,
+        "longitude": -4.95223802438
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "106",
+      "stopCode": "106",
+      "name": "Villafranca Cruce",
+      "municipality": "Villafranca De Córdoba",
+      "municipalityId": "16",
+      "nucleus": "Cruce De Villafranca De Córdoba",
+      "nucleusId": "234",
+      "zone": "D",
+      "location": {
+        "latitude": 37.9462767,
+        "longitude": -4.54075732
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "104",
+      "stopCode": "104",
+      "name": "Villaharta (Cruce)",
+      "municipality": "Villaharta",
+      "municipalityId": "17",
+      "nucleus": "Cruce De Villaharta",
+      "nucleusId": "239",
+      "zone": "E",
+      "location": {
+        "latitude": 38.1259163652,
+        "longitude": -4.90111960752
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "95",
+      "stopCode": "95",
+      "name": "Villaharta (Pueblo)",
+      "municipality": "Villaharta",
+      "municipalityId": "17",
+      "nucleus": "Villaharta",
+      "nucleusId": "237",
+      "zone": "E",
+      "location": {
+        "latitude": 38.1397189,
+        "longitude": -4.901999579
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "139",
+      "stopCode": "139",
+      "name": "Villaviciosa (C/ Tomás Carretero)",
+      "municipality": "Villaviciosa De Córdoba",
+      "municipalityId": "18",
+      "nucleus": "Villaviciosa De Córdoba",
+      "nucleusId": "241",
+      "zone": "E",
+      "location": {
+        "latitude": 38.0745052898,
+        "longitude": -5.01320968379
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "56",
+      "stopCode": "56",
+      "name": "Villlarubia ",
+      "municipality": "Córdoba",
+      "municipalityId": "6",
+      "nucleus": "Villarrubia",
+      "nucleusId": "176",
+      "zone": "B",
+      "location": {
+        "latitude": 37.84983591,
+        "longitude": -4.91500233233
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "96",
+      "stopCode": "96",
+      "name": "Villlaviciosa (Carretera De Posadas)",
+      "municipality": "Villaviciosa De Córdoba",
+      "municipalityId": "18",
+      "nucleus": "Villaviciosa De Córdoba",
+      "nucleusId": "241",
+      "zone": "E",
+      "location": {
+        "latitude": 38.0738632477,
+        "longitude": -5.01557429583
+      }
+    }
+  ]
+}

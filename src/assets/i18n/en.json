@@ -25,7 +25,8 @@
         "destinationPlaceholder": "Where do you want to go?",
         "dateLabel": "Date",
         "submit": "Search schedules",
-        "swapLabel": "Swap origin and destination"
+        "swapLabel": "Swap origin and destination",
+        "noRoutes": "No direct routes are available between these stops."
       },
       "recentStops": {
         "title": "Recent Stops",
@@ -82,6 +83,10 @@
     "title": "Stop overview",
     "subtitle": "Live departures with accessibility and university indicators.",
     "loading": "Loading schedule…",
+    "error": {
+      "title": "Schedule unavailable",
+      "description": "We can't load departures for this stop right now. Try again in a moment."
+    },
     "header": {
       "stopCodeLabel": "Stop code",
       "scheduleDateLabel": "Schedule date",
@@ -107,6 +112,10 @@
     "badges": {
       "accessible": "Accessible bus",
       "universityOnly": "University service"
+    },
+    "source": {
+      "live": "This information comes right now from the {{provider}}.",
+      "snapshot": "This information comes from a copy saved on {{date}} at {{time}} by the {{provider}}."
     }
   },
   "routeSearch": {
@@ -117,7 +126,19 @@
     "originLabel": "Origin stop",
     "destinationLabel": "Destination stop",
     "dateLabel": "Travel date",
-    "sampleResult": "Take line C2 from Plaza Nueva to Parque María Luisa at 08:15."
+    "sampleResult": "Take line C2 from Plaza Nueva to Parque María Luisa at 08:15.",
+    "backLabel": "Back to search",
+    "upcomingLabel": "In {{time}}",
+    "pastLabel": "{{time}} ago",
+    "nextBadge": "Next",
+    "previousBadge": "Previous",
+    "noUpcoming": "No more direct departures for this date within the next hours.",
+    "changeDate": "Choose another date",
+    "emptyResults": "No services were found for this route.",
+    "arrivalAt": "Arrives at {{time}}",
+    "travelDuration": "Trip {{duration}}",
+    "holidayBadge": "Holiday service",
+    "estimateNotice": "Times are estimates based on Junta de Andalucía schedule data."
   },
   "map": {
     "title": "Network map",

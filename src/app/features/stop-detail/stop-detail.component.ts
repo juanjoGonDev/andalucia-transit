@@ -1,33 +1,43 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Observable,
+  catchError,
   combineLatest,
+  distinctUntilChanged,
   filter,
   map,
+  of,
   shareReplay,
   startWith,
-  switchMap,
-  distinctUntilChanged
+  switchMap
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { APP_CONFIG } from '../../core/config';
-import { MockStopScheduleService } from '../../data/services/mock-stop-schedule.service';
-import { buildStopScheduleUiModel, StopScheduleUiModel } from '../../domain/stop-schedule/stop-schedule.transform';
+import { StopScheduleService } from '../../data/services/stop-schedule.service';
+import {
+  buildStopScheduleUiModel,
+  StopScheduleUiModel
+} from '../../domain/stop-schedule/stop-schedule.transform';
+import { StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
 
 const ALL_DESTINATIONS_OPTION = 'all';
 
 type ScheduleItem = StopScheduleUiModel['upcoming'][number] | StopScheduleUiModel['past'][number];
 
+type ScheduleState =
+  | { readonly status: 'loading' }
+  | { readonly status: 'error' }
+  | { readonly status: 'success'; readonly result: StopScheduleResult };
+
 @Component({
   selector: 'app-stop-detail',
   standalone: true,
-  imports: [CommonModule, MatCardModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './stop-detail.component.html',
   styleUrl: './stop-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -38,7 +48,7 @@ export class StopDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly stopScheduleService = inject(MockStopScheduleService);
+  private readonly stopScheduleService = inject(StopScheduleService);
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.stopDetail;
   protected readonly destinationControl = new FormControl<string>(ALL_DESTINATIONS_OPTION, {
@@ -57,23 +67,42 @@ export class StopDetailComponent {
     filter((stopId): stopId is string => stopId !== null)
   );
 
-  private readonly schedule$ = this.stopId$.pipe(
-    switchMap((stopId) => this.stopScheduleService.getStopSchedule(stopId)),
-    shareReplay({ bufferSize: 1, refCount: false })
+  private readonly scheduleState$: Observable<ScheduleState> = this.stopId$.pipe(
+    switchMap((stopId) =>
+      this.stopScheduleService.getStopSchedule(stopId).pipe(
+        map((result) => ({ status: 'success', result }) as const),
+        startWith({ status: 'loading' } as const),
+        catchError(() => of({ status: 'error' } as const))
+      )
+    ),
+    shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  protected readonly isLoading$ = this.schedule$.pipe(map(() => false), startWith(true));
+  private readonly scheduleResult$: Observable<StopScheduleResult> = this.scheduleState$.pipe(
+    filter(
+      (state): state is Extract<ScheduleState, { status: 'success' }> =>
+        state.status === 'success'
+    ),
+    map((state) => state.result),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
+  protected readonly isLoading$ = this.scheduleState$.pipe(
+    map((state) => state.status === 'loading'),
+    distinctUntilChanged()
+  );
+
+  protected readonly loadError$ = this.scheduleState$.pipe(
+    map((state) => state.status === 'error'),
+    distinctUntilChanged()
+  );
 
   protected readonly viewModel$: Observable<StopScheduleUiModel> = combineLatest([
-    this.schedule$,
+    this.scheduleResult$,
     this.destinationControl.valueChanges.pipe(startWith(this.destinationControl.value))
   ]).pipe(
-    map(([schedule, destination]) =>
-      buildStopScheduleUiModel(
-        schedule,
-        new Date(),
-        destination === ALL_DESTINATIONS_OPTION ? null : destination
-      )
+    map(([result, destination]) =>
+      buildStopScheduleUiModel(result, new Date(), destination === ALL_DESTINATIONS_OPTION ? null : destination)
     ),
     shareReplay({ bufferSize: 1, refCount: false })
   );

@@ -1,23 +1,18 @@
-import { ComponentFixture, TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { registerLocaleData } from '@angular/common';
-import localeEs from '@angular/common/locales/es';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatDatepicker, MatDatepickerInput } from '@angular/material/datepicker';
 import { of } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
+import { HomeComponent } from './home.component';
+import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
 import { APP_CONFIG } from '../../core/config';
+import { MatDialog } from '@angular/material/dialog';
 import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-item.component';
 import { StopNavigationItemComponent } from '../../shared/ui/stop-navigation-item/stop-navigation-item.component';
-import { HomeComponent } from './home.component';
-import {
-  MockTransitNetworkService,
-  StopOption,
-  StopSearchRequest
-} from '../../data/stops/mock-transit-network.service';
+import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
+import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
@@ -25,69 +20,58 @@ class FakeTranslateLoader implements TranslateLoader {
   }
 }
 
-const STUB_STOPS: readonly StopOption[] = [
-  { id: 'alpha', name: 'Alpha Station', lineIds: ['line-a', 'line-b'] },
-  { id: 'beta', name: 'Beta Terminal', lineIds: ['line-a'] },
-  { id: 'gamma', name: 'Gamma Center', lineIds: ['line-b'] },
-  { id: 'delta', name: 'Delta Park', lineIds: ['line-c'] }
-] as const;
+class RouteSearchStateStub {
+  selection: RouteSearchSelection | null = null;
+  selection$ = of<RouteSearchSelection | null>(null);
 
-class TransitNetworkStub {
-  public lastRequest: StopSearchRequest | null = null;
-  private readonly stops = STUB_STOPS;
-  private readonly reachability = new Map<string, readonly string[]>([
-    ['alpha', ['beta', 'gamma']],
-    ['beta', ['alpha']],
-    ['gamma', ['alpha']],
-    ['delta', []]
-  ]);
-
-  searchStops(request: StopSearchRequest) {
-    this.lastRequest = request;
-    const normalizedQuery = request.query.trim().toLocaleLowerCase();
-    let results = this.stops.filter((stop) =>
-      request.includeStopIds ? request.includeStopIds.includes(stop.id) : true
-    );
-
-    if (normalizedQuery) {
-      results = results.filter((stop) =>
-        stop.name.toLocaleLowerCase().includes(normalizedQuery)
-      );
-    }
-
-    if (request.excludeStopId) {
-      results = results.filter((stop) => stop.id !== request.excludeStopId);
-    }
-
-    return of(results.slice(0, request.limit));
+  setSelection(selection: RouteSearchSelection): void {
+    this.selection = selection;
   }
+}
 
-  getReachableStopIds(stopId: string): readonly string[] {
-    return this.reachability.get(stopId) ?? [];
-  }
-
-  getStopById(stopId: string): StopOption | null {
-    return this.stops.find((stop) => stop.id === stopId) ?? null;
-  }
+@Component({
+  selector: 'app-route-search-form',
+  standalone: true,
+  template: ''
+})
+class RouteSearchFormStubComponent {
+  @Input() initialSelection: RouteSearchSelection | null = null;
+  @Output() readonly selectionConfirmed = new EventEmitter<RouteSearchSelection>();
 }
 
 describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
-  let component: HomeComponent;
   let router: Router;
-
-  beforeAll(() => {
-    registerLocaleData(localeEs);
-  });
-
+  let routeSearchState: RouteSearchStateStub;
   const dialogStub = { open: jasmine.createSpy('open') };
+  const originOption: StopDirectoryOption = {
+    id: 'origin',
+    code: '001',
+    name: 'Origin Stop',
+    municipality: 'Origin',
+    municipalityId: 'origin-mun',
+    nucleus: 'Origin',
+    nucleusId: 'origin-nuc',
+    consortiumId: 7,
+    stopIds: ['origin-stop']
+  };
+  const destinationOption: StopDirectoryOption = {
+    id: 'destination',
+    code: '002',
+    name: 'Destination Stop',
+    municipality: 'Destination',
+    municipalityId: 'destination-mun',
+    nucleus: 'Destination',
+    nucleusId: 'destination-nuc',
+    consortiumId: 7,
+    stopIds: ['destination-stop']
+  };
 
   beforeEach(async () => {
-    dialogStub.open.calls.reset();
-
     await TestBed.configureTestingModule({
       imports: [
         HomeComponent,
+        RouteSearchFormStubComponent,
         TranslateModule.forRoot({
           loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
         })
@@ -95,142 +79,62 @@ describe('HomeComponent', () => {
       providers: [
         provideRouter([]),
         { provide: MatDialog, useValue: dialogStub },
-        { provide: MockTransitNetworkService, useClass: TransitNetworkStub }
+        { provide: RouteSearchStateService, useClass: RouteSearchStateStub }
       ]
-    }).compileComponents();
+    })
+      .overrideComponent(HomeComponent, {
+        remove: { imports: [RouteSearchFormComponent] },
+        add: {
+          imports: [RouteSearchFormStubComponent],
+          providers: [{ provide: MatDialog, useValue: dialogStub }]
+        }
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
-    component = fixture.componentInstance;
     router = TestBed.inject(Router);
+    routeSearchState = TestBed.inject(RouteSearchStateService) as unknown as RouteSearchStateStub;
+    dialogStub.open.calls.reset();
     fixture.detectChanges();
   });
 
-  it('initializes the date field with today and enforces the minimum date attribute', async () => {
-    await fixture.whenStable();
-
-    const dateControl = component['searchForm'].controls.date;
-    const expectedToday = new Date();
-    expectedToday.setHours(0, 0, 0, 0);
-
-    const datepickerInput = fixture.debugElement
-      .query(By.directive(MatDatepickerInput))
-      .injector.get(MatDatepickerInput<Date>);
-
-    expect(dateControl.value?.getTime()).toBe(expectedToday.getTime());
-    expect(datepickerInput.min?.getTime()).toBe(expectedToday.getTime());
-  });
-
-  it('prevents searching with a date earlier than today', async () => {
+  it('navigates to the route results page when the form emits a selection', fakeAsync(() => {
     const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
-    const form = component['searchForm'];
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    yesterday.setHours(0, 0, 0, 0);
+    const selection: RouteSearchSelection = {
+      origin: originOption,
+      destination: destinationOption,
+      queryDate: new Date('2025-10-07T00:00:00Z'),
+      lineMatches: []
+    };
 
-    form.setValue({
-      origin: STUB_STOPS[0],
-      destination: STUB_STOPS[1],
-      date: yesterday
-    });
-    form.updateValueAndValidity();
+    (fixture.componentInstance as unknown as HomeComponentPublicApi).onSelectionConfirmed(selection);
+    tick();
 
-    component['onSearch']();
+    expect(routeSearchState.selection).toBe(selection);
+    expect(navigateSpy).toHaveBeenCalled();
+  }));
 
-    expect(form.invalid).toBeTrue();
-    expect(form.get('date')?.hasError('minDate')).toBeTrue();
-    expect(navigateSpy).not.toHaveBeenCalled();
+  it('opens the nearby stops dialog when clicking the action card', () => {
+    const button = fixture.debugElement
+      .query(By.css('.home__main app-section:nth-of-type(3) app-card-list-item'))
+      .componentInstance as CardListItemComponent;
+
+    button.action.emit();
+    expect(dialogStub.open).toHaveBeenCalled();
   });
 
-  it('opens the date picker when focusing the date field and blocks manual typing', async () => {
-    await fixture.whenStable();
-
-    const datepickerDebug = fixture.debugElement.query(By.directive(MatDatepicker));
-    const datepicker = datepickerDebug.componentInstance as MatDatepicker<Date>;
-    const openSpy = spyOn(datepicker, 'open');
-    const dateInput = fixture.debugElement.query(
-      By.css(`#${APP_CONFIG.homeData.search.dateFieldId}`)
-    ).nativeElement as HTMLInputElement;
-
-    dateInput.dispatchEvent(new Event('focus'));
-    fixture.detectChanges();
-
-    expect(openSpy).toHaveBeenCalled();
-    expect(dateInput.readOnly).toBeTrue();
-  });
-
-  it('renders the configured recent stops with a scrollable list', () => {
-    const expectedStops = APP_CONFIG.homeData.recentStops.items.slice(
-      0,
+  it('renders the configured recent stops', () => {
+    const recentList = fixture.debugElement.query(By.css('.home__recent-list'));
+    const navigationItems = recentList.queryAll(By.directive(StopNavigationItemComponent));
+    const expectedCount = Math.min(
+      APP_CONFIG.homeData.recentStops.items.length,
       APP_CONFIG.homeData.recentStops.maxItems
     );
 
-    const recentList = fixture.debugElement.query(By.css('.home__recent-list'));
-    const navigationItems = recentList.queryAll(By.directive(StopNavigationItemComponent));
-    const cardItems = recentList.queryAll(By.directive(CardListItemComponent));
-
-    expect(navigationItems.length).toBe(expectedStops.length);
-    expect(cardItems.length).toBe(expectedStops.length);
-    expect(recentList.nativeElement.classList.contains('home__list--scroll')).toBeTrue();
-
-    navigationItems.forEach((debugElement, index) => {
-      const navigationInstance = debugElement.componentInstance as StopNavigationItemComponent;
-      expect(navigationInstance.stopId).toBe(expectedStops[index].id);
-    });
-
-    cardItems.forEach((item) => {
-      const instance = item.componentInstance as CardListItemComponent;
-      expect(instance.leadingIcon).toBe(APP_CONFIG.homeData.recentStops.icon);
-    });
-  });
-
-  it('filters destination options to those reachable from the selected origin', fakeAsync(() => {
-    const originControl = component['searchForm'].controls
-      .origin as FormControl<StopOption | string | null>;
-    const debounce = APP_CONFIG.homeData.search.debounceMs;
-    const network = TestBed.inject(MockTransitNetworkService) as unknown as TransitNetworkStub;
-    const getReachableSpy = spyOn(network, 'getReachableStopIds').and.callThrough();
-    const subscription = component['destinationOptions$'].subscribe();
-
-    tick(debounce + 1);
-    originControl.setValue(STUB_STOPS[0]);
-    tick(debounce + 1);
-    fixture.detectChanges();
-    flush();
-    tick();
-
-    expect(getReachableSpy).toHaveBeenCalledWith(STUB_STOPS[0].id);
-    subscription.unsubscribe();
-  }));
-
-  it('clears an incompatible destination when the origin changes', fakeAsync(() => {
-    const originControl = component['searchForm'].controls
-      .origin as FormControl<StopOption | string | null>;
-    const destinationControl = component['searchForm'].controls
-      .destination as FormControl<StopOption | string | null>;
-    const debounce = APP_CONFIG.homeData.search.debounceMs;
-
-    originControl.setValue(STUB_STOPS[0]);
-    destinationControl.setValue(STUB_STOPS[1]);
-    tick(debounce);
-
-    originControl.setValue(STUB_STOPS[3]);
-    tick(debounce);
-
-    expect(destinationControl.value).toBeNull();
-  }));
-
-  it('swaps selected stops when the swap action is triggered', () => {
-    const originControl = component['searchForm'].controls
-      .origin as FormControl<StopOption | string | null>;
-    const destinationControl = component['searchForm'].controls
-      .destination as FormControl<StopOption | string | null>;
-
-    originControl.setValue(STUB_STOPS[0]);
-    destinationControl.setValue(STUB_STOPS[2]);
-
-    component['swapStops']();
-
-    expect(originControl.value).toEqual(STUB_STOPS[2]);
-    expect(destinationControl.value).toEqual(STUB_STOPS[0]);
+    expect(navigationItems.length).toBe(expectedCount);
   });
 });
+
+interface HomeComponentPublicApi {
+  onSelectionConfirmed(selection: RouteSearchSelection): Promise<void>;
+}

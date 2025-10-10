@@ -1,0 +1,1881 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:55.808Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "datasetName": "stop-services"
+  },
+  "stops": [
+    {
+      "consortiumId": 1,
+      "stopId": "2528",
+      "stopCode": "2528",
+      "stopName": "ACEITES LA ESPANOLA",
+      "location": {
+        "latitude": 37.29927140721956,
+        "longitude": -5.9577226638793945
+      },
+      "municipality": "DOS HERMANAS",
+      "nucleus": "FUENTE DEL REY (Dos Hermanas) zonaC",
+      "services": [
+        {
+          "lineId": "242",
+          "lineCode": "1320",
+          "lineName": "M-132 Dos Hermanas - Sevilla (Barriadas)",
+          "destination": "SEVILLA",
+          "scheduledTime": "2025-10-07T10:07:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "242",
+          "lineCode": "1320",
+          "lineName": "M-132 Dos Hermanas - Sevilla (Barriadas)",
+          "destination": "SEVILLA",
+          "scheduledTime": "2025-10-07T10:37:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 1,
+      "stopId": "2565",
+      "stopCode": "2565",
+      "stopName": "1 SEMAFORO",
+      "location": {
+        "latitude": 37.38309966756113,
+        "longitude": -6.1218196993225105
+      },
+      "municipality": "ESPARTINAS",
+      "nucleus": "ESPARTINAS",
+      "services": [
+        {
+          "lineId": "284",
+          "lineCode": "1666",
+          "lineName": "M-166 Sanlúcar la Mayor - Sevilla (por Villanueva y A-49)",
+          "destination": "SEVILLA",
+          "scheduledTime": "2025-10-07T10:31:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "295",
+          "lineCode": "1681",
+          "lineName": "M-168 Benacazón - Sevilla (por Espartinas)",
+          "destination": "SEVILLA",
+          "scheduledTime": "2025-10-07T10:42:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "290",
+          "lineCode": "1020",
+          "lineName": "M-102A Circular Aljarafe (sentido A)",
+          "destination": "SANLUCAR LA MAYOR",
+          "scheduledTime": "2025-10-07T10:46:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "279",
+          "lineCode": "1661",
+          "lineName": "M-166 Sanlúcar la Mayor - Sevilla",
+          "destination": "SEVILLA",
+          "scheduledTime": "2025-10-07T10:48:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 1,
+      "stopId": "2947",
+      "stopCode": "2947",
+      "stopName": "AGRO GARCIA AV DE EXTREMADURA",
+      "location": {
+        "latitude": 37.4378292,
+        "longitude": -6.040146028333333
+      },
+      "municipality": "SANTIPONCE",
+      "nucleus": "SANTIPONCE",
+      "services": [
+        {
+          "lineId": "287",
+          "lineCode": "1720",
+          "lineName": "M-170A Santiponce - Sevilla",
+          "destination": "SEVILLA",
+          "scheduledTime": "2025-10-07T10:02:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "287",
+          "lineCode": "1720",
+          "lineName": "M-170A Santiponce - Sevilla",
+          "destination": "SEVILLA",
+          "scheduledTime": "2025-10-07T10:32:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 1,
+      "stopId": "3209",
+      "stopCode": "3209",
+      "stopName": "1º DE MAYO",
+      "location": {
+        "latitude": 37.38098611,
+        "longitude": -5.957230556
+      },
+      "municipality": "SEVILLA",
+      "nucleus": "SEVILLA",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 1,
+      "stopId": "3237",
+      "stopCode": "3237",
+      "stopName": "ACD DR FEDRIANI Nº 27 ( FRENTE KIOSKO )",
+      "location": {
+        "latitude": 37.41055359247939,
+        "longitude": -5.984116159460726
+      },
+      "municipality": "SEVILLA",
+      "nucleus": "SEVILLA",
+      "services": [
+        {
+          "lineId": "232",
+          "lineCode": "1100",
+          "lineName": "M-110 La Algaba - Sevilla",
+          "destination": "LA ALGABA",
+          "scheduledTime": "2025-10-07T10:04:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "238",
+          "lineCode": "2160",
+          "lineName": "M-216 Brenes - Sevilla",
+          "destination": "BRENES",
+          "scheduledTime": "2025-10-07T10:04:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "232",
+          "lineCode": "1100",
+          "lineName": "M-110 La Algaba - Sevilla",
+          "destination": "LA ALGABA",
+          "scheduledTime": "2025-10-07T10:34:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "155",
+      "stopCode": "155",
+      "stopName": "A-2078 Venta El Cepo",
+      "location": {
+        "latitude": 36.666621,
+        "longitude": -6.246744
+      },
+      "municipality": "El Puerto de Santa María",
+      "nucleus": "Penal",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "173",
+      "stopCode": "173",
+      "stopName": "Aeropuerto",
+      "location": {
+        "latitude": 36.750376,
+        "longitude": -6.064607
+      },
+      "municipality": "Jerez de la Frontera",
+      "nucleus": "Aeropuerto",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "273",
+      "stopCode": "273",
+      "stopName": "A-480 Venta El Menuito",
+      "location": {
+        "latitude": 36.748809603470434,
+        "longitude": -6.380444169044495
+      },
+      "municipality": "Sanlucar de Barrameda",
+      "nucleus": "Sanlúcar de Barrameda",
+      "services": [
+        {
+          "lineId": "225",
+          "lineCode": "M-967",
+          "lineName": "Chipiona-Sanlúcar De Barrameda-Cádiz  (Por Campus De Puerto Real)",
+          "destination": "Cádiz",
+          "scheduledTime": "2025-10-07T10:05:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "225",
+          "lineCode": "M-967",
+          "lineName": "Chipiona-Sanlúcar De Barrameda-Cádiz  (Por Campus De Puerto Real)",
+          "destination": "Chipiona",
+          "scheduledTime": "2025-10-07T10:28:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "166",
+          "lineCode": "M-963",
+          "lineName": "Chipiona-Sanlúcar De Barrameda-Jerez De La Frontera",
+          "destination": "Jerez",
+          "scheduledTime": "2025-10-07T10:45:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "73",
+      "stopCode": "73",
+      "stopName": "Águila-El Término",
+      "location": {
+        "latitude": 36.467022,
+        "longitude": -6.118394
+      },
+      "municipality": "Chiclana",
+      "nucleus": "Chiclana",
+      "services": [
+        {
+          "lineId": "26",
+          "lineCode": "M-230",
+          "lineName": "Chiclana De La Frontera-Hospital De Puerto Real (Por Marquesado)",
+          "destination": "Hospital Pto. Real",
+          "scheduledTime": "2025-10-07T10:16:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "26",
+          "lineCode": "M-230",
+          "lineName": "Chiclana De La Frontera-Hospital De Puerto Real (Por Marquesado)",
+          "destination": "Chiclana",
+          "scheduledTime": "2025-10-07T10:44:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "91",
+      "stopCode": "91",
+      "stopName": "512 Viviendas",
+      "location": {
+        "latitude": 36.530574,
+        "longitude": -6.196301
+      },
+      "municipality": "Puerto Real",
+      "nucleus": "Puerto Real",
+      "services": [
+        {
+          "lineId": "6",
+          "lineCode": "M-030",
+          "lineName": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real-Hospital",
+          "destination": "Hospital Pto. Real",
+          "scheduledTime": "2025-10-07T10:05:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "6",
+          "lineCode": "M-030",
+          "lineName": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real-Hospital",
+          "destination": "Cádiz",
+          "scheduledTime": "2025-10-07T10:10:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "163",
+          "lineCode": "M-960",
+          "lineName": "Chipiona-Sanlúcar De Barrameda-Cádiz (Por Puerto Real Y Campus)",
+          "destination": "Chipiona",
+          "scheduledTime": "2025-10-07T10:21:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "6",
+          "lineCode": "M-030",
+          "lineName": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real-Hospital",
+          "destination": "Hospital Pto. Real",
+          "scheduledTime": "2025-10-07T10:35:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "6",
+          "lineCode": "M-030",
+          "lineName": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real-Hospital",
+          "destination": "Cádiz",
+          "scheduledTime": "2025-10-07T10:40:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "9",
+          "lineCode": "M-031",
+          "lineName": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real",
+          "destination": "Puerto Real",
+          "scheduledTime": "2025-10-07T10:51:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "6",
+          "lineCode": "M-030",
+          "lineName": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real-Hospital",
+          "destination": "Cádiz",
+          "scheduledTime": "2025-10-07T11:00:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 3,
+      "stopId": "10",
+      "stopCode": "10",
+      "stopName": "Acceso a Ctra. de Córdoba",
+      "location": {
+        "latitude": 37.19889801618159,
+        "longitude": -3.647901687893123
+      },
+      "municipality": "Granada",
+      "nucleus": "Granada",
+      "services": [
+        {
+          "lineId": "991",
+          "lineCode": "0225",
+          "lineName": "Granada - P.Puente",
+          "destination": "Pinos Puente",
+          "scheduledTime": "2025-10-07T10:21:00.000Z",
+          "direction": 1,
+          "stopType": 1
+        },
+        {
+          "lineId": "1077",
+          "lineCode": "0124",
+          "lineName": "Granada - Atarfe",
+          "destination": "Atarfe",
+          "scheduledTime": "2025-10-07T10:28:00.000Z",
+          "direction": 1,
+          "stopType": 1
+        },
+        {
+          "lineId": "991",
+          "lineCode": "0225",
+          "lineName": "Granada - P.Puente",
+          "destination": "Pinos Puente",
+          "scheduledTime": "2025-10-07T10:51:00.000Z",
+          "direction": 1,
+          "stopType": 1
+        },
+        {
+          "lineId": "1077",
+          "lineCode": "0124",
+          "lineName": "Granada - Atarfe",
+          "destination": "Atarfe",
+          "scheduledTime": "2025-10-07T11:08:00.000Z",
+          "direction": 1,
+          "stopType": 1
+        },
+        {
+          "lineId": "991",
+          "lineCode": "0225",
+          "lineName": "Granada - P.Puente",
+          "destination": "Pinos Puente",
+          "scheduledTime": "2025-10-07T11:21:00.000Z",
+          "direction": 1,
+          "stopType": 1
+        },
+        {
+          "lineId": "1077",
+          "lineCode": "0124",
+          "lineName": "Granada - Atarfe",
+          "destination": "Atarfe",
+          "scheduledTime": "2025-10-07T11:48:00.000Z",
+          "direction": 1,
+          "stopType": 1
+        },
+        {
+          "lineId": "991",
+          "lineCode": "0225",
+          "lineName": "Granada - P.Puente",
+          "destination": "Pinos Puente",
+          "scheduledTime": "2025-10-07T11:51:00.000Z",
+          "direction": 1,
+          "stopType": 1
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 3,
+      "stopId": "2",
+      "stopCode": "2",
+      "stopName": "Acceso a Albolote",
+      "location": {
+        "latitude": 37.23315159931341,
+        "longitude": -3.641069233417511
+      },
+      "municipality": "Albolote",
+      "nucleus": "Pol. Ind. Juncaril",
+      "services": [
+        {
+          "lineId": "1032",
+          "lineCode": "0117",
+          "lineName": "Granada - P.Cubillas",
+          "destination": "Granada",
+          "scheduledTime": "2025-10-07T10:39:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "710",
+          "lineCode": "0318",
+          "lineName": "Granada - Colomera",
+          "destination": "Cerro Cauro",
+          "scheduledTime": "2025-10-07T10:41:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "1032",
+          "lineCode": "0117",
+          "lineName": "Granada - P.Cubillas",
+          "destination": "Parque del Cubillas",
+          "scheduledTime": "2025-10-07T11:30:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 3,
+      "stopId": "210",
+      "stopCode": "210",
+      "stopName": "Acceso a Chauchina",
+      "location": {
+        "latitude": 37.19073,
+        "longitude": -3.77543
+      },
+      "municipality": "Chauchina",
+      "nucleus": "Chauchina",
+      "services": [
+        {
+          "lineId": "868",
+          "lineCode": "0241",
+          "lineName": "Granada - Santa Fe - Chauchina - Cijuela",
+          "destination": "Cijuela",
+          "scheduledTime": "2025-10-07T10:26:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "1119",
+          "lineCode": "0242",
+          "lineName": "Granada - Santa Fe - Chauchina - Cijuela - Láchar",
+          "destination": "Láchar",
+          "scheduledTime": "2025-10-07T11:27:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "1119",
+          "lineCode": "0242",
+          "lineName": "Granada - Santa Fe - Chauchina - Cijuela - Láchar",
+          "destination": "Láchar",
+          "scheduledTime": "2025-10-07T11:57:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 3,
+      "stopId": "322",
+      "stopCode": "322",
+      "stopName": "Acceso a Cijuela",
+      "location": {
+        "latitude": 37.1954,
+        "longitude": -3.80352
+      },
+      "municipality": "Cijuela",
+      "nucleus": "Cijuela",
+      "services": [
+        {
+          "lineId": "877",
+          "lineCode": "0340",
+          "lineName": "Granada - Santa Fe - Cijuela - Láchar - Trasmulas - Peñuelas - C.Tajarja - El Turro",
+          "destination": "Granada",
+          "scheduledTime": "2025-10-07T11:01:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 3,
+      "stopId": "8",
+      "stopCode": "8",
+      "stopName": "Acceso a Ambroz",
+      "location": {
+        "latitude": 37.16581474306285,
+        "longitude": -3.6713439971208572
+      },
+      "municipality": "Vegas del Genil",
+      "nucleus": "Ambroz",
+      "services": [
+        {
+          "lineId": "1113",
+          "lineCode": "0150",
+          "lineName": "Granada - Cúllar V. - V. del Genil",
+          "destination": "El Ventorrillo",
+          "scheduledTime": "2025-10-07T10:01:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "1042",
+          "lineCode": "0154",
+          "lineName": "Granada-V. del Genil (Directo)",
+          "destination": "Granada",
+          "scheduledTime": "2025-10-07T10:30:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "1042",
+          "lineCode": "0154",
+          "lineName": "Granada-V. del Genil (Directo)",
+          "destination": "El Ventorrillo",
+          "scheduledTime": "2025-10-07T10:35:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "1042",
+          "lineCode": "0154",
+          "lineName": "Granada-V. del Genil (Directo)",
+          "destination": "El Ventorrillo",
+          "scheduledTime": "2025-10-07T11:15:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "1042",
+          "lineCode": "0154",
+          "lineName": "Granada-V. del Genil (Directo)",
+          "destination": "Granada",
+          "scheduledTime": "2025-10-07T11:15:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "1113",
+          "lineCode": "0150",
+          "lineName": "Granada - Cúllar V. - V. del Genil",
+          "destination": "El Ventorrillo",
+          "scheduledTime": "2025-10-07T11:46:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "1042",
+          "lineCode": "0154",
+          "lineName": "Granada-V. del Genil (Directo)",
+          "destination": "Granada",
+          "scheduledTime": "2025-10-07T11:55:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "590",
+      "stopCode": "590",
+      "stopName": "A-7075 Km 6,800",
+      "location": {
+        "latitude": 36.76548611111111,
+        "longitude": -4.494716666666667
+      },
+      "municipality": "Málaga",
+      "nucleus": "Ventorrillo de Mayo",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T10:15:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "592",
+      "stopCode": "592",
+      "stopName": "A-7075 Km  8,200",
+      "location": {
+        "latitude": 36.776316666666666,
+        "longitude": -4.493455555555555
+      },
+      "municipality": "Málaga",
+      "nucleus": "Ventorrillo de Mayo",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T10:15:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "594",
+      "stopCode": "594",
+      "stopName": "A-7075 Km 10,200",
+      "location": {
+        "latitude": 36.78570833333333,
+        "longitude": -4.497316666666666
+      },
+      "municipality": "Málaga",
+      "nucleus": "Ventorrillo de Mayo",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T10:15:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "595",
+      "stopCode": "595",
+      "stopName": "A-7075 Km  9,800",
+      "location": {
+        "latitude": 36.78265,
+        "longitude": -4.499155555555555
+      },
+      "municipality": "Málaga",
+      "nucleus": "Ventorrillo de Mayo",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T10:15:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "598",
+      "stopCode": "598",
+      "stopName": "A-7075 Km 11,300",
+      "location": {
+        "latitude": 36.793505555555555,
+        "longitude": -4.5004888888888885
+      },
+      "municipality": "Málaga",
+      "nucleus": "Ventorrillo de Mayo",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T10:15:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "124",
+      "stopCode": "124",
+      "stopName": "Ayuntamiento La Línea",
+      "location": {
+        "latitude": 36.1606638888889,
+        "longitude": -5.35050277777778
+      },
+      "municipality": "La Línea de la Concepción ",
+      "nucleus": "La Línea de la Concepción",
+      "services": [
+        {
+          "lineId": "11",
+          "lineCode": "M-230",
+          "lineName": "La Línea-San Roque",
+          "destination": "San Roque",
+          "scheduledTime": "2025-10-07T10:32:00.000Z",
+          "direction": 1,
+          "stopType": 1
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "143",
+      "stopCode": "143",
+      "stopName": "Apeadero Tarifa",
+      "location": {
+        "latitude": 36.0190944444444,
+        "longitude": -5.60943333333333
+      },
+      "municipality": "Tarifa ",
+      "nucleus": "Tarifa",
+      "services": [
+        {
+          "lineId": "7",
+          "lineCode": "M-150",
+          "lineName": "Algeciras-Tarifa",
+          "destination": "Algeciras",
+          "scheduledTime": "2025-10-07T10:45:00.000Z",
+          "direction": 2,
+          "stopType": 1
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "41",
+      "stopCode": "41",
+      "stopName": "Apeadero Los Barrios",
+      "location": {
+        "latitude": 36.1833944444444,
+        "longitude": -5.49435
+      },
+      "municipality": "Los Barrios",
+      "nucleus": "Los Barrios",
+      "services": [
+        {
+          "lineId": "1",
+          "lineCode": "M-110",
+          "lineName": "Los Barrios-Algeciras Directo",
+          "destination": "Los Barrios",
+          "scheduledTime": "2025-10-07T10:30:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "1",
+          "lineCode": "M-110",
+          "lineName": "Los Barrios-Algeciras Directo",
+          "destination": "Algeciras",
+          "scheduledTime": "2025-10-07T10:30:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "5",
+      "stopCode": "5",
+      "stopName": "Audiencia",
+      "location": {
+        "latitude": 36.13503700718081,
+        "longitude": -5.445855259895325
+      },
+      "municipality": "Algeciras",
+      "nucleus": "Algeciras",
+      "services": [
+        {
+          "lineId": "1",
+          "lineCode": "M-110",
+          "lineName": "Los Barrios-Algeciras Directo",
+          "destination": "Los Barrios",
+          "scheduledTime": "2025-10-07T10:03:00.000Z",
+          "direction": 2,
+          "stopType": 1
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "87",
+      "stopCode": "87",
+      "stopName": "Alameda",
+      "location": {
+        "latitude": 36.2102305555556,
+        "longitude": -5.38923055555556
+      },
+      "municipality": "San Roque",
+      "nucleus": "San Roque",
+      "services": [
+        {
+          "lineId": "6",
+          "lineCode": "M-130",
+          "lineName": "San Roque-Algeciras",
+          "destination": "Algeciras",
+          "scheduledTime": "2025-10-07T10:45:00.000Z",
+          "direction": 1,
+          "stopType": 1
+        },
+        {
+          "lineId": "12",
+          "lineCode": "M-240",
+          "lineName": "Estepona-La Línea (Ruta)",
+          "destination": "Guadiaro",
+          "scheduledTime": "2025-10-07T10:55:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "105",
+      "stopCode": "105",
+      "stopName": "Adra - Cuatro Higueras",
+      "location": {
+        "latitude": 36.759684,
+        "longitude": -2.970368
+      },
+      "municipality": "ADRA",
+      "nucleus": "CUATRO HIGUERAS",
+      "services": [
+        {
+          "lineId": "40",
+          "lineCode": "M-380",
+          "lineName": "Almería - Aguadulce - El Parador - Puebla de Vícar - El Ejido - Adra NN",
+          "destination": "ADRA",
+          "scheduledTime": "2025-10-07T10:36:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "40",
+          "lineCode": "M-380",
+          "lineName": "Almería - Aguadulce - El Parador - Puebla de Vícar - El Ejido - Adra NN",
+          "destination": "ALMERIA",
+          "scheduledTime": "2025-10-07T10:48:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "48",
+          "lineCode": "M-384",
+          "lineName": "El Ejido - Guardias Viejas - Balerma - Balanegra - Adra",
+          "destination": "ADRA",
+          "scheduledTime": "2025-10-07T10:51:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "108",
+      "stopCode": "108",
+      "stopName": "Adra - Alcazaba",
+      "location": {
+        "latitude": 36.749353,
+        "longitude": -3.093255
+      },
+      "municipality": "ADRA",
+      "nucleus": "LA ALCAZABA",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "348",
+      "stopCode": "348",
+      "stopName": "Adra - Caracola",
+      "location": {
+        "latitude": 36.747836,
+        "longitude": -3.03319
+      },
+      "municipality": "ADRA",
+      "nucleus": "ADRA",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "349",
+      "stopCode": "349",
+      "stopName": "Adra - Caracola",
+      "location": {
+        "latitude": 36.74785,
+        "longitude": -3.033663
+      },
+      "municipality": "ADRA",
+      "nucleus": "ADRA",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "352",
+      "stopCode": "352",
+      "stopName": "Adra - Alcazaba",
+      "location": {
+        "latitude": 36.748557,
+        "longitude": -3.091618
+      },
+      "municipality": "ADRA",
+      "nucleus": "LA ALCAZABA",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T11:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "119",
+      "stopCode": "119",
+      "stopName": "Aeropuerto",
+      "location": {
+        "latitude": 37.68911,
+        "longitude": -3.82394
+      },
+      "municipality": "Los Villares",
+      "nucleus": "Los Villares",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "54",
+      "stopCode": "54",
+      "stopName": "Apeadero Torredelcampo",
+      "location": {
+        "latitude": 37.775396,
+        "longitude": -3.892896
+      },
+      "municipality": "Torredelcampo",
+      "nucleus": "Torredelcampo",
+      "services": [
+        {
+          "lineId": "279",
+          "lineCode": "M20-02",
+          "lineName": "Jaén - Jamilena, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:13:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T10:20:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "286",
+          "lineCode": "M20-10",
+          "lineName": "Jaén - Torredelcampo, 2024",
+          "destination": "Torredelcampo",
+          "scheduledTime": "2025-10-07T10:25:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:28:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "286",
+          "lineCode": "M20-10",
+          "lineName": "Jaén - Torredelcampo, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:33:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "287",
+          "lineCode": "M20-11",
+          "lineName": "Fuensanta de Martos - Jaén, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:38:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "283",
+          "lineCode": "M20-06",
+          "lineName": "Jaén - Córdoba (Ruta), 2024",
+          "destination": "Torredonjimeno",
+          "scheduledTime": "2025-10-07T10:40:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T11:05:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T11:20:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "286",
+          "lineCode": "M20-10",
+          "lineName": "Jaén - Torredelcampo, 2024",
+          "destination": "Torredelcampo",
+          "scheduledTime": "2025-10-07T11:25:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T11:28:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "288",
+          "lineCode": "M20-12",
+          "lineName": "Jaén - Escañuela, 2024",
+          "destination": "Escañuela",
+          "scheduledTime": "2025-10-07T11:55:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "285",
+          "lineCode": "M20-08",
+          "lineName": "Jaén - Lopera, 2024",
+          "destination": "Torredonjimeno",
+          "scheduledTime": "2025-10-07T12:20:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T12:20:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "281",
+          "lineCode": "M20-04",
+          "lineName": "Jaén - Alcaudete, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T12:25:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T12:28:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "55",
+      "stopCode": "55",
+      "stopName": "Apeadero Torredonjimeno",
+      "location": {
+        "latitude": 37.76464,
+        "longitude": -3.94937
+      },
+      "municipality": "Torredonjimeno",
+      "nucleus": "Torredonjimeno",
+      "services": [
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:15:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "287",
+          "lineCode": "M20-11",
+          "lineName": "Fuensanta de Martos - Jaén, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:25:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T10:33:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "283",
+          "lineCode": "M20-06",
+          "lineName": "Jaén - Córdoba (Ruta), 2024",
+          "destination": "Torredonjimeno",
+          "scheduledTime": "2025-10-07T10:53:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T11:15:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T11:18:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-07T11:33:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "288",
+          "lineCode": "M20-12",
+          "lineName": "Jaén - Escañuela, 2024",
+          "destination": "Escañuela",
+          "scheduledTime": "2025-10-07T12:08:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T12:15:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "58",
+      "stopCode": "58",
+      "stopName": "Apeadero Mengibar",
+      "location": {
+        "latitude": 37.970267,
+        "longitude": -3.802664
+      },
+      "municipality": "Mengibar",
+      "nucleus": "Mengíbar",
+      "services": [
+        {
+          "lineId": "71",
+          "lineCode": "M16-1",
+          "lineName": "Santa Elena - Jaén",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:05:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "203",
+          "lineCode": "M04-8",
+          "lineName": "Linares - Jaén",
+          "destination": "Mengíbar",
+          "scheduledTime": "2025-10-07T10:10:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "71",
+          "lineCode": "M16-1",
+          "lineName": "Santa Elena - Jaén",
+          "destination": "Mengíbar",
+          "scheduledTime": "2025-10-07T10:15:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "203",
+          "lineCode": "M04-8",
+          "lineName": "Linares - Jaén",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:45:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "203",
+          "lineCode": "M04-8",
+          "lineName": "Linares - Jaén",
+          "destination": "Mengíbar",
+          "scheduledTime": "2025-10-07T11:00:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "71",
+          "lineCode": "M16-1",
+          "lineName": "Santa Elena - Jaén",
+          "destination": "Mengíbar",
+          "scheduledTime": "2025-10-07T11:25:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "203",
+          "lineCode": "M04-8",
+          "lineName": "Linares - Jaén",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T11:30:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "203",
+          "lineCode": "M04-8",
+          "lineName": "Linares - Jaén",
+          "destination": "Mengíbar",
+          "scheduledTime": "2025-10-07T11:55:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "96",
+      "stopCode": "96",
+      "stopName": "Apeadero Mancha Real",
+      "location": {
+        "latitude": 37.788432,
+        "longitude": -3.608815
+      },
+      "municipality": "Mancha Real",
+      "nucleus": "Mancha Real",
+      "services": [
+        {
+          "lineId": "17",
+          "lineCode": "M1-9",
+          "lineName": "Mancha Real - Jaén",
+          "destination": "Jaén",
+          "scheduledTime": "2025-10-07T10:45:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "35",
+          "lineCode": "M3-103",
+          "lineName": "Úbeda - Jaén",
+          "destination": "Mancha Real",
+          "scheduledTime": "2025-10-07T11:00:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "17",
+          "lineCode": "M1-9",
+          "lineName": "Mancha Real - Jaén",
+          "destination": "Mancha Real",
+          "scheduledTime": "2025-10-07T11:25:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "21",
+          "lineCode": "M1-20",
+          "lineName": "Pozo Alcón - Jaén",
+          "destination": "Mancha Real",
+          "scheduledTime": "2025-10-07T12:00:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "14",
+          "lineCode": "M1-5",
+          "lineName": "Quesada - Jaén",
+          "destination": "Mancha Real",
+          "scheduledTime": "2025-10-07T12:00:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T12:30:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "107",
+      "stopCode": "107",
+      "stopName": "Almacén (El Cortinilla)",
+      "location": {
+        "latitude": 37.9606930094,
+        "longitude": -4.54993743989
+      },
+      "municipality": "Villafranca De Córdoba",
+      "nucleus": "Villafranca De Córdoba",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-08T02:39:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "133",
+      "stopCode": "133",
+      "stopName": "Alcolea (Ronda De Salida)",
+      "location": {
+        "latitude": 37.9359497624,
+        "longitude": -4.67001020015
+      },
+      "municipality": "Córdoba",
+      "nucleus": "Alcolea",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-08T02:39:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "22",
+      "stopCode": "22",
+      "stopName": "Aldea Quintana",
+      "location": {
+        "latitude": 37.71223338,
+        "longitude": -4.868131316
+      },
+      "municipality": "La Carlota",
+      "nucleus": "Aldea Quintana",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-08T02:39:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "48",
+      "stopCode": "48",
+      "stopName": "Alcolea (Supermercado Dia)",
+      "location": {
+        "latitude": 37.93098844,
+        "longitude": -4.67629165
+      },
+      "municipality": "Córdoba",
+      "nucleus": "Alcolea",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-08T02:39:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 8,
+      "stopId": "50",
+      "stopCode": "50",
+      "stopName": "Alcolea (Hostal)",
+      "location": {
+        "latitude": 37.93335723,
+        "longitude": -4.670696663
+      },
+      "municipality": "Córdoba",
+      "nucleus": "Alcolea",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-08T02:39:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "120",
+      "stopCode": "120",
+      "stopName": "APEADERO LEPE",
+      "location": {
+        "latitude": 37.253609250204256,
+        "longitude": -7.197045385837555
+      },
+      "municipality": "LEPE",
+      "nucleus": "LEPE",
+      "services": [
+        {
+          "lineId": "36",
+          "lineCode": "M-309",
+          "lineName": "Huelva-La Antilla-Isla Cristina",
+          "destination": "HUELVA",
+          "scheduledTime": "2025-10-07T10:05:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "36",
+          "lineCode": "M-309",
+          "lineName": "Huelva-La Antilla-Isla Cristina",
+          "destination": "ISLA CRISTINA",
+          "scheduledTime": "2025-10-07T10:41:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "5",
+          "lineCode": "M-310",
+          "lineName": "Huelva-Isla Cristina-Ayamonte",
+          "destination": "HUELVA",
+          "scheduledTime": "2025-10-07T11:34:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "66",
+          "lineCode": "M-902",
+          "lineName": "Ayamonte-Huelva-Sevilla",
+          "destination": "AYAMONTE",
+          "scheduledTime": "2025-10-07T11:36:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "3",
+          "lineCode": "M-306",
+          "lineName": "Huelva-Corrales-La Redondela-Isla Cristina",
+          "destination": "HUELVA",
+          "scheduledTime": "2025-10-07T11:44:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "3",
+          "lineCode": "M-306",
+          "lineName": "Huelva-Corrales-La Redondela-Isla Cristina",
+          "destination": "ISLA CRISTINA",
+          "scheduledTime": "2025-10-07T12:06:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "8",
+          "lineCode": "M-316",
+          "lineName": "Huelva-Ayamonte-San Silvestre De Guzman",
+          "destination": "VILLABLANCA",
+          "scheduledTime": "2025-10-07T12:36:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "8",
+          "lineCode": "M-316",
+          "lineName": "Huelva-Ayamonte-San Silvestre De Guzman",
+          "destination": "VILLABLANCA",
+          "scheduledTime": "2025-10-07T12:36:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "66",
+          "lineCode": "M-902",
+          "lineName": "Ayamonte-Huelva-Sevilla",
+          "destination": "AYAMONTE",
+          "scheduledTime": "2025-10-07T13:36:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "36",
+          "lineCode": "M-309",
+          "lineName": "Huelva-La Antilla-Isla Cristina",
+          "destination": "ISLA CRISTINA",
+          "scheduledTime": "2025-10-07T13:41:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "66",
+          "lineCode": "M-902",
+          "lineName": "Ayamonte-Huelva-Sevilla",
+          "destination": "HUELVA",
+          "scheduledTime": "2025-10-07T13:52:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T14:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "121",
+      "stopCode": "121",
+      "stopName": "APEADERO IC",
+      "location": {
+        "latitude": 37.20338296811213,
+        "longitude": -7.323620170354843
+      },
+      "municipality": "ISLA CRISTINA",
+      "nucleus": "ISLA CRISTINA",
+      "services": [
+        {
+          "lineId": "5",
+          "lineCode": "M-310",
+          "lineName": "Huelva-Isla Cristina-Ayamonte",
+          "destination": "HUELVA",
+          "scheduledTime": "2025-10-07T11:14:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "36",
+          "lineCode": "M-309",
+          "lineName": "Huelva-La Antilla-Isla Cristina",
+          "destination": "ISLA CRISTINA",
+          "scheduledTime": "2025-10-07T11:20:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "3",
+          "lineCode": "M-306",
+          "lineName": "Huelva-Corrales-La Redondela-Isla Cristina",
+          "destination": "HUELVA",
+          "scheduledTime": "2025-10-07T11:20:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "3",
+          "lineCode": "M-306",
+          "lineName": "Huelva-Corrales-La Redondela-Isla Cristina",
+          "destination": "ISLA CRISTINA",
+          "scheduledTime": "2025-10-07T12:29:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "36",
+          "lineCode": "M-309",
+          "lineName": "Huelva-La Antilla-Isla Cristina",
+          "destination": "HUELVA",
+          "scheduledTime": "2025-10-07T13:20:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T14:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "225",
+      "stopCode": "225",
+      "stopName": "APEADERO ALMONTE",
+      "location": {
+        "latitude": 37.25715583824002,
+        "longitude": -6.520061865448952
+      },
+      "municipality": "ALMONTE",
+      "nucleus": "ALMONTE",
+      "services": [
+        {
+          "lineId": "70",
+          "lineCode": "M-906",
+          "lineName": "Sevilla-Hinojos-Almonte-Bollullos-Rociana",
+          "destination": "ROCIANA DEL CONDADO",
+          "scheduledTime": "2025-10-07T12:28:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "59",
+          "lineCode": "M-416",
+          "lineName": "Almonte-Torre Higuera",
+          "destination": "ALMONTE",
+          "scheduledTime": "2025-10-07T12:33:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "48",
+          "lineCode": "M-405",
+          "lineName": "Huelva-Rociana-Almonte-Bollullos Par Del Condado",
+          "destination": "BOLLULLOS PAR DEL CONDADO",
+          "scheduledTime": "2025-10-07T12:36:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "50",
+          "lineCode": "M-407",
+          "lineName": "Huelva-Bonares-Almonte-Bollullos Par Del Condado",
+          "destination": "HUELVA",
+          "scheduledTime": "2025-10-07T13:17:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "59",
+          "lineCode": "M-416",
+          "lineName": "Almonte-Torre Higuera",
+          "destination": "TORRE DE LA HIGUERA",
+          "scheduledTime": "2025-10-07T13:33:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T14:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "272",
+      "stopCode": "272",
+      "stopName": "ANTIGUA CARCEL",
+      "location": {
+        "latitude": 37.260467971174926,
+        "longitude": -6.931017190217972
+      },
+      "municipality": "HUELVA",
+      "nucleus": "HUELVA",
+      "services": [
+        {
+          "lineId": "18",
+          "lineCode": "M-103",
+          "lineName": "Huelva-Hospitales (Circular)",
+          "destination": "HUELVA",
+          "scheduledTime": "2025-10-07T10:47:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "18",
+          "lineCode": "M-103",
+          "lineName": "Huelva-Hospitales (Circular)",
+          "destination": "HUELVA",
+          "scheduledTime": "2025-10-07T11:20:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T14:00:00.000Z"
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "292",
+      "stopCode": "292",
+      "stopName": "APEADERO EL ROCIO",
+      "location": {
+        "latitude": 37.132912695008514,
+        "longitude": -6.489242368241207
+      },
+      "municipality": "ALMONTE",
+      "nucleus": "EL ROCIO",
+      "services": [],
+      "query": {
+        "requestedAt": "2025-10-07T00:00:55.808Z",
+        "startTime": "2025-10-07T10:00:00.000Z",
+        "endTime": "2025-10-07T14:00:00.000Z"
+      }
+    }
+  ]
+}

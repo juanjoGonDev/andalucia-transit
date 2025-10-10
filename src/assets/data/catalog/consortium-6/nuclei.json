@@ -1,0 +1,996 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 6,
+    "consortiumName": "Área de Almería",
+    "itemCount": 164
+  },
+  "nuclei": [
+    {
+      "id": "9",
+      "municipalityId": "1",
+      "zone": "J",
+      "name": "ADRA"
+    },
+    {
+      "id": "149",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "AEROPUERTO"
+    },
+    {
+      "id": "67",
+      "municipalityId": "15",
+      "zone": "F",
+      "name": "AGUADULCE"
+    },
+    {
+      "id": "62",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "AGUAMARGA"
+    },
+    {
+      "id": "22",
+      "municipalityId": "4",
+      "zone": "J",
+      "name": "ALCAUDIQUE"
+    },
+    {
+      "id": "10",
+      "municipalityId": "2",
+      "zone": "A",
+      "name": "ALMERIA"
+    },
+    {
+      "id": "35",
+      "municipalityId": "6",
+      "zone": "H",
+      "name": "ALMERIMAR"
+    },
+    {
+      "id": "51",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "ATOCHARES"
+    },
+    {
+      "id": "146",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "BAHÍA ALTA"
+    },
+    {
+      "id": "23",
+      "municipalityId": "4",
+      "zone": "I",
+      "name": "BALANEGRA"
+    },
+    {
+      "id": "32",
+      "municipalityId": "6",
+      "zone": "I",
+      "name": "BALERMA"
+    },
+    {
+      "id": "141",
+      "municipalityId": "12",
+      "zone": "D",
+      "name": "BALSA SECA"
+    },
+    {
+      "id": "129",
+      "municipalityId": "18",
+      "zone": "F",
+      "name": "BARRIO ARCHILLA"
+    },
+    {
+      "id": "117",
+      "municipalityId": "15",
+      "zone": "G",
+      "name": "BARRIO DE LOS OJEDAS"
+    },
+    {
+      "id": "72",
+      "municipalityId": "15",
+      "zone": "G",
+      "name": "BARRIO SAN FRANCISCO"
+    },
+    {
+      "id": "124",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "BARRIO SAN VICENTE"
+    },
+    {
+      "id": "164",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "BELLAVISTA"
+    },
+    {
+      "id": "20",
+      "municipalityId": "3",
+      "zone": "C",
+      "name": "BENAHADUX"
+    },
+    {
+      "id": "127",
+      "municipalityId": "4",
+      "zone": "J",
+      "name": "BENEJÍ"
+    },
+    {
+      "id": "21",
+      "municipalityId": "4",
+      "zone": "J",
+      "name": "BERJA"
+    },
+    {
+      "id": "139",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "BOCA DE LOS FRAILES"
+    },
+    {
+      "id": "17",
+      "municipalityId": "2",
+      "zone": "E",
+      "name": "CABO DE GATA"
+    },
+    {
+      "id": "159",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "CALA CARBÓN"
+    },
+    {
+      "id": "174",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "CALA MEDIA LUNA"
+    },
+    {
+      "id": "100",
+      "municipalityId": "17",
+      "zone": "C",
+      "name": "CAMPAMENTO"
+    },
+    {
+      "id": "50",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "CAMPOHERMOSO"
+    },
+    {
+      "id": "130",
+      "municipalityId": "18",
+      "zone": "F",
+      "name": "CAÑADA SEBASTIANA"
+    },
+    {
+      "id": "126",
+      "municipalityId": "6",
+      "zone": "H",
+      "name": "CARTABONA"
+    },
+    {
+      "id": "138",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "CASAS DEL NAZARENO"
+    },
+    {
+      "id": "82",
+      "municipalityId": "2",
+      "zone": "A",
+      "name": "CASTELL DEL REY"
+    },
+    {
+      "id": "27",
+      "municipalityId": "5",
+      "zone": "I",
+      "name": "CELÍN"
+    },
+    {
+      "id": "114",
+      "municipalityId": "18",
+      "zone": "F",
+      "name": "CENTRO COMERCIAL VIAPARK"
+    },
+    {
+      "id": "121",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "CERCADO"
+    },
+    {
+      "id": "160",
+      "municipalityId": "1",
+      "zone": "J",
+      "name": "CORTIJO DE LA JUANA"
+    },
+    {
+      "id": "136",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "CORTIJO DE LOS CAZADORES"
+    },
+    {
+      "id": "95",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "CORTIJO DEL HERRERO"
+    },
+    {
+      "id": "145",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "CORTIJO LOS NIETOS"
+    },
+    {
+      "id": "143",
+      "municipalityId": "12",
+      "zone": "D",
+      "name": "CORTIJO SANTA RITA"
+    },
+    {
+      "id": "148",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "CORTIJO SORIA"
+    },
+    {
+      "id": "69",
+      "municipalityId": "15",
+      "zone": "G",
+      "name": "CORTIJOS DE MARÍN"
+    },
+    {
+      "id": "151",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "CRUCE AGUA AMARGA"
+    },
+    {
+      "id": "152",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "CRUCE ARGAMASÓN"
+    },
+    {
+      "id": "137",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "CRUCE LOS ALBARICOQUES"
+    },
+    {
+      "id": "142",
+      "municipalityId": "12",
+      "zone": "D",
+      "name": "CRUCE LOS PELAOS"
+    },
+    {
+      "id": "2",
+      "municipalityId": "1",
+      "zone": "J",
+      "name": "CUATRO HIGUERAS"
+    },
+    {
+      "id": "155",
+      "municipalityId": "6",
+      "zone": "I",
+      "name": "CUATRO VIENTOS"
+    },
+    {
+      "id": "19",
+      "municipalityId": "2",
+      "zone": "D",
+      "name": "CUEVAS DE LOS MEDINAS"
+    },
+    {
+      "id": "25",
+      "municipalityId": "5",
+      "zone": "I",
+      "name": "DALIAS"
+    },
+    {
+      "id": "167",
+      "municipalityId": "14",
+      "zone": "C",
+      "name": "EL ABRIOJAL"
+    },
+    {
+      "id": "13",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "EL ALQUIAN"
+    },
+    {
+      "id": "53",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "EL BARRANQUETE"
+    },
+    {
+      "id": "3",
+      "municipalityId": "1",
+      "zone": "J",
+      "name": "EL CANAL"
+    },
+    {
+      "id": "107",
+      "municipalityId": "6",
+      "zone": "I",
+      "name": "EL CANALILLO"
+    },
+    {
+      "id": "168",
+      "municipalityId": "15",
+      "zone": "G",
+      "name": "EL CAÑUELO"
+    },
+    {
+      "id": "90",
+      "municipalityId": "3",
+      "zone": "C",
+      "name": "EL CHUCHE"
+    },
+    {
+      "id": "26",
+      "municipalityId": "6",
+      "zone": "H",
+      "name": "EL EJIDO"
+    },
+    {
+      "id": "93",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "EL MAMÍ"
+    },
+    {
+      "id": "38",
+      "municipalityId": "7",
+      "zone": "F",
+      "name": "EL PALMER"
+    },
+    {
+      "id": "68",
+      "municipalityId": "15",
+      "zone": "F",
+      "name": "EL PARADOR"
+    },
+    {
+      "id": "119",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "EL POTRO"
+    },
+    {
+      "id": "8",
+      "municipalityId": "1",
+      "zone": "J",
+      "name": "EL POZUELO"
+    },
+    {
+      "id": "163",
+      "municipalityId": "2",
+      "zone": "A",
+      "name": "EL PUCHE"
+    },
+    {
+      "id": "131",
+      "municipalityId": "15",
+      "zone": "F",
+      "name": "EL RONCALILLO"
+    },
+    {
+      "id": "73",
+      "municipalityId": "15",
+      "zone": "G",
+      "name": "EL SOLANILLO"
+    },
+    {
+      "id": "98",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "EL TOYO"
+    },
+    {
+      "id": "47",
+      "municipalityId": "12",
+      "zone": "D",
+      "name": "EL VISO"
+    },
+    {
+      "id": "37",
+      "municipalityId": "7",
+      "zone": "F",
+      "name": "ENIX"
+    },
+    {
+      "id": "103",
+      "municipalityId": "2",
+      "zone": "D",
+      "name": "ESTACIÓN DE SERVICIO EL 21"
+    },
+    {
+      "id": "150",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "ESTACIÓN DE SERVICIO HOTEL BALISA"
+    },
+    {
+      "id": "134",
+      "municipalityId": "12",
+      "zone": "D",
+      "name": "EUROPOOL"
+    },
+    {
+      "id": "39",
+      "municipalityId": "8",
+      "zone": "G",
+      "name": "FELIX"
+    },
+    {
+      "id": "56",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "FERNÁN PÉREZ"
+    },
+    {
+      "id": "43",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "FUENSANTA"
+    },
+    {
+      "id": "40",
+      "municipalityId": "9",
+      "zone": "C",
+      "name": "GÁDOR"
+    },
+    {
+      "id": "5",
+      "municipalityId": "1",
+      "zone": "J",
+      "name": "GUAINOS BAJOS"
+    },
+    {
+      "id": "36",
+      "municipalityId": "6",
+      "zone": "I",
+      "name": "GUARDIAS VIEJAS"
+    },
+    {
+      "id": "83",
+      "municipalityId": "6",
+      "zone": "H",
+      "name": "HOSPITAL DE PONIENTE"
+    },
+    {
+      "id": "41",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "HUERCAL DE ALMERIA"
+    },
+    {
+      "id": "144",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "IES PORTOCARRERO"
+    },
+    {
+      "id": "96",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "ISLETA DEL MORO"
+    },
+    {
+      "id": "7",
+      "municipalityId": "1",
+      "zone": "J",
+      "name": "LA ALCAZABA"
+    },
+    {
+      "id": "128",
+      "municipalityId": "1",
+      "zone": "J",
+      "name": "LA ALQUERÍA"
+    },
+    {
+      "id": "12",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "LA CAÑADA"
+    },
+    {
+      "id": "108",
+      "municipalityId": "1",
+      "zone": "J",
+      "name": "LA CURVA"
+    },
+    {
+      "id": "153",
+      "municipalityId": "18",
+      "zone": "F",
+      "name": "LA ENVÍA"
+    },
+    {
+      "id": "161",
+      "municipalityId": "2",
+      "zone": "E",
+      "name": "LA FABRIQUILLA"
+    },
+    {
+      "id": "120",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "LA FOCA"
+    },
+    {
+      "id": "74",
+      "municipalityId": "18",
+      "zone": "F",
+      "name": "LA GANGOSA"
+    },
+    {
+      "id": "11",
+      "municipalityId": "2",
+      "zone": "A",
+      "name": "LA GARROFA"
+    },
+    {
+      "id": "173",
+      "municipalityId": "17",
+      "zone": "C",
+      "name": "LA JUAIDA"
+    },
+    {
+      "id": "102",
+      "municipalityId": "18",
+      "zone": "G",
+      "name": "LA LOMILLA"
+    },
+    {
+      "id": "44",
+      "municipalityId": "11",
+      "zone": "G",
+      "name": "LA MOJONERA"
+    },
+    {
+      "id": "101",
+      "municipalityId": "6",
+      "zone": "H",
+      "name": "LA MOLINA"
+    },
+    {
+      "id": "6",
+      "municipalityId": "1",
+      "zone": "J",
+      "name": "LANCE DE LA VIRGEN"
+    },
+    {
+      "id": "75",
+      "municipalityId": "18",
+      "zone": "G",
+      "name": "LAS CABAÑUELAS"
+    },
+    {
+      "id": "58",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "LAS HORTICHUELAS"
+    },
+    {
+      "id": "70",
+      "municipalityId": "15",
+      "zone": "G",
+      "name": "LAS MARINAS"
+    },
+    {
+      "id": "59",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "LAS NEGRAS"
+    },
+    {
+      "id": "33",
+      "municipalityId": "6",
+      "zone": "H",
+      "name": "LAS NORIAS DE DAZA"
+    },
+    {
+      "id": "135",
+      "municipalityId": "2",
+      "zone": "D",
+      "name": "LAS PALMERAS"
+    },
+    {
+      "id": "125",
+      "municipalityId": "6",
+      "zone": "H",
+      "name": "LAS PALMERILLAS"
+    },
+    {
+      "id": "18",
+      "municipalityId": "2",
+      "zone": "E",
+      "name": "LAS SALINAS"
+    },
+    {
+      "id": "109",
+      "municipalityId": "18",
+      "zone": "G",
+      "name": "LLANOS DE VÍCAR"
+    },
+    {
+      "id": "94",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "LOS ALBARICOQUES"
+    },
+    {
+      "id": "115",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "LOS ESCULLOS"
+    },
+    {
+      "id": "113",
+      "municipalityId": "13",
+      "zone": "C",
+      "name": "LOS ESPECIEROS"
+    },
+    {
+      "id": "140",
+      "municipalityId": "12",
+      "zone": "D",
+      "name": "LOS GRILLOS"
+    },
+    {
+      "id": "112",
+      "municipalityId": "13",
+      "zone": "C",
+      "name": "LOS MANDARINOS"
+    },
+    {
+      "id": "97",
+      "municipalityId": "16",
+      "zone": "C",
+      "name": "LOS MILLARES"
+    },
+    {
+      "id": "170",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "LOS PARTIDORES"
+    },
+    {
+      "id": "111",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "LOS PINOS"
+    },
+    {
+      "id": "30",
+      "municipalityId": "6",
+      "zone": "I",
+      "name": "MATAGORDA"
+    },
+    {
+      "id": "169",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "MIRADOR DEL MEDITERRÁNEO"
+    },
+    {
+      "id": "45",
+      "municipalityId": "12",
+      "zone": "D",
+      "name": "NÍJAR"
+    },
+    {
+      "id": "28",
+      "municipalityId": "6",
+      "zone": "H",
+      "name": "PAMPANICO"
+    },
+    {
+      "id": "171",
+      "municipalityId": "12",
+      "zone": "D",
+      "name": "PARAJE CHUMBO"
+    },
+    {
+      "id": "132",
+      "municipalityId": "9",
+      "zone": "C",
+      "name": "PARAJE JALVO"
+    },
+    {
+      "id": "60",
+      "municipalityId": "13",
+      "zone": "C",
+      "name": "PECHINA"
+    },
+    {
+      "id": "162",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "PITA"
+    },
+    {
+      "id": "158",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "PLAYA BARRONAL"
+    },
+    {
+      "id": "157",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "PLAYA LOS GENOVESES"
+    },
+    {
+      "id": "156",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "PLAYA MÓNSUL"
+    },
+    {
+      "id": "123",
+      "municipalityId": "15",
+      "zone": "G",
+      "name": "PLAYA SERENA"
+    },
+    {
+      "id": "133",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "POLÍGONO INDUSTRIAL LA CEPA"
+    },
+    {
+      "id": "105",
+      "municipalityId": "6",
+      "zone": "H",
+      "name": "POLÍGONO INDUSTRIAL LA REDONDA"
+    },
+    {
+      "id": "122",
+      "municipalityId": "15",
+      "zone": "G",
+      "name": "POLÍGONO INDUSTRIAL LAS SALINAS"
+    },
+    {
+      "id": "110",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "POLÍGONO INDUSTRIAL SAN RAFAEL"
+    },
+    {
+      "id": "54",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "POZO DE LOS FRAILES"
+    },
+    {
+      "id": "77",
+      "municipalityId": "18",
+      "zone": "G",
+      "name": "POZO SAN JOSÉ"
+    },
+    {
+      "id": "76",
+      "municipalityId": "18",
+      "zone": "G",
+      "name": "PUEBLA DE VÍCAR"
+    },
+    {
+      "id": "52",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "PUEBLO BLANCO"
+    },
+    {
+      "id": "4",
+      "municipalityId": "1",
+      "zone": "J",
+      "name": "PUENTE DEL RIO"
+    },
+    {
+      "id": "16",
+      "municipalityId": "2",
+      "zone": "E",
+      "name": "PUJAIRE"
+    },
+    {
+      "id": "49",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "PUJAIRE"
+    },
+    {
+      "id": "79",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "RAMBLA LECHUGA"
+    },
+    {
+      "id": "81",
+      "municipalityId": "2",
+      "zone": "D",
+      "name": "RAMBLA MORALES"
+    },
+    {
+      "id": "14",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "RETAMAR"
+    },
+    {
+      "id": "106",
+      "municipalityId": "4",
+      "zone": "J",
+      "name": "RÍO CHICO"
+    },
+    {
+      "id": "63",
+      "municipalityId": "14",
+      "zone": "C",
+      "name": "RIOJA"
+    },
+    {
+      "id": "57",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "RODALQUILAR"
+    },
+    {
+      "id": "66",
+      "municipalityId": "15",
+      "zone": "G",
+      "name": "ROQUETAS DE MAR"
+    },
+    {
+      "id": "48",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "RUESCAS"
+    },
+    {
+      "id": "15",
+      "municipalityId": "2",
+      "zone": "E",
+      "name": "RUESCAS"
+    },
+    {
+      "id": "34",
+      "municipalityId": "6",
+      "zone": "H",
+      "name": "SAN AGUSTÍN"
+    },
+    {
+      "id": "46",
+      "municipalityId": "12",
+      "zone": "D",
+      "name": "SAN ISIDRO"
+    },
+    {
+      "id": "55",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "SAN JOSÉ"
+    },
+    {
+      "id": "165",
+      "municipalityId": "11",
+      "zone": "G",
+      "name": "SAN NICOLÁS"
+    },
+    {
+      "id": "24",
+      "municipalityId": "4",
+      "zone": "J",
+      "name": "SAN ROQUE"
+    },
+    {
+      "id": "64",
+      "municipalityId": "16",
+      "zone": "C",
+      "name": "SANTA FE DE MONDÚJAR"
+    },
+    {
+      "id": "29",
+      "municipalityId": "6",
+      "zone": "H",
+      "name": "SANTA MARIA DEL ÁGUILA"
+    },
+    {
+      "id": "172",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "UNIVERSIDAD"
+    },
+    {
+      "id": "116",
+      "municipalityId": "15",
+      "zone": "G",
+      "name": "URBANIZACIÓN ROQUETAS DE MAR"
+    },
+    {
+      "id": "80",
+      "municipalityId": "19",
+      "zone": "--",
+      "name": "Vacio"
+    },
+    {
+      "id": "78",
+      "municipalityId": "18",
+      "zone": "G",
+      "name": "VENTA COSARIO"
+    },
+    {
+      "id": "166",
+      "municipalityId": "12",
+      "zone": "D",
+      "name": "VENTA DE VARGAS"
+    },
+    {
+      "id": "99",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "VENTA DEL POBRE"
+    },
+    {
+      "id": "104",
+      "municipalityId": "11",
+      "zone": "G",
+      "name": "VENTA DEL VISO"
+    },
+    {
+      "id": "91",
+      "municipalityId": "2",
+      "zone": "B",
+      "name": "VENTA GASPAR"
+    },
+    {
+      "id": "1",
+      "municipalityId": "1",
+      "zone": "J",
+      "name": "VENTA NUEVA"
+    },
+    {
+      "id": "31",
+      "municipalityId": "6",
+      "zone": "I",
+      "name": "VENTA TARAMBANA"
+    },
+    {
+      "id": "65",
+      "municipalityId": "17",
+      "zone": "C",
+      "name": "VIATOR"
+    },
+    {
+      "id": "71",
+      "municipalityId": "18",
+      "zone": "G",
+      "name": "VICAR"
+    },
+    {
+      "id": "42",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "VILLA INÉS"
+    },
+    {
+      "id": "154",
+      "municipalityId": "12",
+      "zone": "E",
+      "name": "VISTABELLA"
+    }
+  ]
+}

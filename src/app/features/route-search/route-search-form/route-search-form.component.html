@@ -1,0 +1,99 @@
+<form class="route-search-form" [formGroup]="searchForm" (ngSubmit)="submit()">
+  <div class="route-search-form__grid">
+    <mat-form-field appearance="fill" class="route-search-form__field route-search-form__field--origin">
+      <mat-label>{{ originLabelKey | translate }}</mat-label>
+      <span matPrefix class="material-symbols-outlined route-search-form__icon">{{ originIcon }}</span>
+      <input
+        matInput
+        type="text"
+        [id]="originFieldId"
+        formControlName="origin"
+        [matAutocomplete]="originAutocomplete"
+        autocomplete="off"
+        [placeholder]="originPlaceholderKey | translate"
+      />
+      <mat-autocomplete
+        #originAutocomplete="matAutocomplete"
+        [displayWith]="displayStop"
+      >
+        <ng-container *ngFor="let group of originGroups$ | async; trackBy: trackGroup">
+          <mat-optgroup [label]="group.label" [attr.aria-label]="group.municipality">
+            <mat-option
+              *ngFor="let option of group.options; trackBy: trackOption"
+              [value]="option"
+            >
+              {{ option.name }}
+            </mat-option>
+          </mat-optgroup>
+        </ng-container>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <button
+      type="button"
+      class="route-search-form__swap"
+      (click)="swap()"
+      [attr.aria-label]="swapLabelKey | translate"
+    >
+      <span class="material-symbols-outlined">{{ swapIcon }}</span>
+    </button>
+
+    <mat-form-field appearance="fill" class="route-search-form__field route-search-form__field--destination">
+      <mat-label>{{ destinationLabelKey | translate }}</mat-label>
+      <span matPrefix class="material-symbols-outlined route-search-form__icon">{{ destinationIcon }}</span>
+      <input
+        matInput
+        type="text"
+        [id]="destinationFieldId"
+        formControlName="destination"
+        [matAutocomplete]="destinationAutocomplete"
+        autocomplete="off"
+        [placeholder]="destinationPlaceholderKey | translate"
+      />
+      <mat-autocomplete
+        #destinationAutocomplete="matAutocomplete"
+        [displayWith]="displayStop"
+      >
+        <ng-container *ngFor="let group of destinationGroups$ | async; trackBy: trackGroup">
+          <mat-optgroup [label]="group.label" [attr.aria-label]="group.municipality">
+            <mat-option
+              *ngFor="let option of group.options; trackBy: trackOption"
+              [value]="option"
+            >
+              {{ option.name }}
+            </mat-option>
+          </mat-optgroup>
+        </ng-container>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="route-search-form__field route-search-form__field--date">
+      <mat-label>{{ dateLabelKey | translate }}</mat-label>
+      <span matPrefix class="material-symbols-outlined route-search-form__icon">{{ dateIcon }}</span>
+      <input
+        matInput
+        [id]="dateFieldId"
+        formControlName="date"
+        [matDatepicker]="datePicker"
+        [min]="minSearchDate"
+        readonly
+        (focus)="focusDatePicker(datePicker)"
+        (click)="focusDatePicker(datePicker)"
+      />
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <button class="route-search-form__submit" type="submit" [disabled]="searchForm.invalid">
+    {{ submitLabelKey | translate }}
+  </button>
+
+  <p
+    *ngIf="noRoutes$ | async"
+    class="route-search-form__feedback"
+    role="status"
+    aria-live="polite"
+  >
+    {{ noRoutesMessageKey | translate }}
+  </p>
+</form>

@@ -1,0 +1,270 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 7,
+    "consortiumName": "Área de Jaén",
+    "itemCount": 43
+  },
+  "nuclei": [
+    {
+      "id": "51",
+      "municipalityId": "21",
+      "zone": "E",
+      "name": "Albanchez de Mágina"
+    },
+    {
+      "id": "54",
+      "municipalityId": "24",
+      "zone": "E",
+      "name": "Andújar"
+    },
+    {
+      "id": "55",
+      "municipalityId": "25",
+      "zone": "E",
+      "name": "Arjona"
+    },
+    {
+      "id": "56",
+      "municipalityId": "26",
+      "zone": "E",
+      "name": "Arjonilla"
+    },
+    {
+      "id": "45",
+      "municipalityId": "17",
+      "zone": "E",
+      "name": "Campillo del Rio"
+    },
+    {
+      "id": "46",
+      "municipalityId": "18",
+      "zone": "D",
+      "name": "Carchel"
+    },
+    {
+      "id": "47",
+      "municipalityId": "18",
+      "zone": "D",
+      "name": "Carchelejo"
+    },
+    {
+      "id": "59",
+      "municipalityId": "29",
+      "zone": "D",
+      "name": "Cazalilla"
+    },
+    {
+      "id": "6",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "Ciudad Jardin"
+    },
+    {
+      "id": "57",
+      "municipalityId": "27",
+      "zone": "D",
+      "name": "Escañuela"
+    },
+    {
+      "id": "50",
+      "municipalityId": "20",
+      "zone": "D",
+      "name": "Espeluy"
+    },
+    {
+      "id": "35",
+      "municipalityId": "13",
+      "zone": "C",
+      "name": "Fuensanta de Martos"
+    },
+    {
+      "id": "28",
+      "municipalityId": "9",
+      "zone": "B",
+      "name": "Fuerte del Rey"
+    },
+    {
+      "id": "40",
+      "municipalityId": "12",
+      "zone": "C",
+      "name": "Geolit"
+    },
+    {
+      "id": "8",
+      "municipalityId": "1",
+      "zone": "AB",
+      "name": "Grañena"
+    },
+    {
+      "id": "1",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "Jaén"
+    },
+    {
+      "id": "24",
+      "municipalityId": "6",
+      "zone": "B",
+      "name": "Jamilena"
+    },
+    {
+      "id": "16",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "La Carrasca"
+    },
+    {
+      "id": "26",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "La Cerradura"
+    },
+    {
+      "id": "5",
+      "municipalityId": "3",
+      "zone": "B",
+      "name": "La Guardia de Jaén"
+    },
+    {
+      "id": "43",
+      "municipalityId": "1",
+      "zone": "A",
+      "name": "La Yuca"
+    },
+    {
+      "id": "38",
+      "municipalityId": "3",
+      "zone": "A",
+      "name": "La Yuca(asignada zona A)"
+    },
+    {
+      "id": "58",
+      "municipalityId": "28",
+      "zone": "D",
+      "name": "Lahiguera"
+    },
+    {
+      "id": "17",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Las Casillas"
+    },
+    {
+      "id": "7",
+      "municipalityId": "1",
+      "zone": "AB",
+      "name": "Las Infantas"
+    },
+    {
+      "id": "22",
+      "municipalityId": "4",
+      "zone": "B",
+      "name": "Los Villares"
+    },
+    {
+      "id": "4",
+      "municipalityId": "10",
+      "zone": "BC",
+      "name": "Mancha Real"
+    },
+    {
+      "id": "15",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Martos"
+    },
+    {
+      "id": "33",
+      "municipalityId": "12",
+      "zone": "C",
+      "name": "Mengíbar"
+    },
+    {
+      "id": "25",
+      "municipalityId": "7",
+      "zone": "B",
+      "name": "Pegalajar"
+    },
+    {
+      "id": "61",
+      "municipalityId": "2",
+      "zone": "G",
+      "name": "Poligono Ind. Martos. G"
+    },
+    {
+      "id": "3",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "Sotogordo"
+    },
+    {
+      "id": "44",
+      "municipalityId": "17",
+      "zone": "F",
+      "name": "Torreblascopedro"
+    },
+    {
+      "id": "23",
+      "municipalityId": "5",
+      "zone": "B",
+      "name": "Torredelcampo"
+    },
+    {
+      "id": "27",
+      "municipalityId": "8",
+      "zone": "B",
+      "name": "Torredonjimeno"
+    },
+    {
+      "id": "30",
+      "municipalityId": "11",
+      "zone": "C",
+      "name": "Torrequebradilla"
+    },
+    {
+      "id": "48",
+      "municipalityId": "19",
+      "zone": "D",
+      "name": "Torres"
+    },
+    {
+      "id": "31",
+      "municipalityId": "11",
+      "zone": "C",
+      "name": "Vados de Torralba"
+    },
+    {
+      "id": "37",
+      "municipalityId": "15",
+      "zone": "D",
+      "name": "Valdepeñas de Jaén"
+    },
+    {
+      "id": "60",
+      "municipalityId": "30",
+      "zone": "D",
+      "name": "Villanueva de la Reina"
+    },
+    {
+      "id": "18",
+      "municipalityId": "2",
+      "zone": "C",
+      "name": "Villarbajo"
+    },
+    {
+      "id": "49",
+      "municipalityId": "14",
+      "zone": "C",
+      "name": "Villardompardo"
+    },
+    {
+      "id": "32",
+      "municipalityId": "11",
+      "zone": "C",
+      "name": "Villargordo"
+    }
+  ]
+}

@@ -25,7 +25,8 @@
         "destinationPlaceholder": "¿A dónde vas?",
         "dateLabel": "Fecha",
         "submit": "Buscar horarios",
-        "swapLabel": "Intercambiar origen y destino"
+        "swapLabel": "Intercambiar origen y destino",
+        "noRoutes": "No hay rutas directas disponibles entre estas paradas."
       },
       "recentStops": {
         "title": "Paradas recientes",
@@ -82,6 +83,10 @@
     "title": "Resumen de la parada",
     "subtitle": "Horarios en vivo con información de accesibilidad y servicios universitarios.",
     "loading": "Cargando horarios…",
+    "error": {
+      "title": "Horario no disponible",
+      "description": "No podemos cargar las salidas de esta parada en este momento. Inténtalo de nuevo en unos instantes."
+    },
     "header": {
       "stopCodeLabel": "Código de parada",
       "scheduleDateLabel": "Fecha del horario",
@@ -107,6 +112,10 @@
     "badges": {
       "accessible": "Servicio accesible",
       "universityOnly": "Servicio universitario"
+    },
+    "source": {
+      "live": "Estos datos vienen ahora mismo del {{provider}}.",
+      "snapshot": "Estos datos provienen de una copia guardada el {{date}} a las {{time}} del {{provider}}."
     }
   },
   "routeSearch": {
@@ -117,7 +126,19 @@
     "originLabel": "Parada de origen",
     "destinationLabel": "Parada de destino",
     "dateLabel": "Fecha de viaje",
-    "sampleResult": "Toma la línea C2 desde Plaza Nueva hasta Parque María Luisa a las 08:15."
+    "sampleResult": "Toma la línea C2 desde Plaza Nueva hasta Parque María Luisa a las 08:15.",
+    "backLabel": "Volver a la búsqueda",
+    "upcomingLabel": "En {{time}}",
+    "pastLabel": "Hace {{time}}",
+    "nextBadge": "Siguiente",
+    "previousBadge": "Anterior",
+    "noUpcoming": "No hay más salidas directas para esta fecha en las próximas horas.",
+    "changeDate": "Buscar otra fecha",
+    "emptyResults": "No se encontraron servicios para esta ruta.",
+    "arrivalAt": "Llega a las {{time}}",
+    "travelDuration": "Trayecto {{duration}}",
+    "holidayBadge": "Servicio festivo",
+    "estimateNotice": "Horarios estimados con los datos oficiales de la Junta de Andalucía."
   },
   "map": {
     "title": "Mapa de la red",

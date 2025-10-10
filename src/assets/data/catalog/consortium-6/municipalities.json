@@ -1,0 +1,92 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 6,
+    "consortiumName": "Área de Almería",
+    "itemCount": 20
+  },
+  "municipalities": [
+    {
+      "id": "1",
+      "name": "ADRA"
+    },
+    {
+      "id": "2",
+      "name": "ALMERÍA"
+    },
+    {
+      "id": "74",
+      "name": "BALANEGRA"
+    },
+    {
+      "id": "3",
+      "name": "BENAHADUX"
+    },
+    {
+      "id": "4",
+      "name": "BERJA"
+    },
+    {
+      "id": "5",
+      "name": "DALÍAS"
+    },
+    {
+      "id": "6",
+      "name": "EL EJIDO"
+    },
+    {
+      "id": "7",
+      "name": "ENIX"
+    },
+    {
+      "id": "8",
+      "name": "FELIX"
+    },
+    {
+      "id": "9",
+      "name": "GÁDOR"
+    },
+    {
+      "id": "10",
+      "name": "HUERCAL DE ALMERÍA"
+    },
+    {
+      "id": "11",
+      "name": "LA MOJONERA"
+    },
+    {
+      "id": "12",
+      "name": "NÍJAR"
+    },
+    {
+      "id": "13",
+      "name": "PECHINA"
+    },
+    {
+      "id": "14",
+      "name": "RIOJA"
+    },
+    {
+      "id": "15",
+      "name": "ROQUETAS DE MAR"
+    },
+    {
+      "id": "16",
+      "name": "SANTA FE DE MONDUJAR"
+    },
+    {
+      "id": "19",
+      "name": "VACIO"
+    },
+    {
+      "id": "17",
+      "name": "VIATOR"
+    },
+    {
+      "id": "18",
+      "name": "VÍCAR"
+    }
+  ]
+}

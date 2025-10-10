@@ -1,4 +1,4 @@
-import { StopSchedule } from './stop-schedule.model';
+import { StopSchedule, StopScheduleResult } from './stop-schedule.model';
 import { buildStopScheduleUiModel } from './stop-schedule.transform';
 import { addMinutesToDate, startOfMinute } from '../utils/time.util';
 
@@ -6,8 +6,7 @@ describe('buildStopScheduleUiModel', () => {
   it('classifies services into upcoming and past buckets', () => {
     const now = startOfMinute(new Date('2024-05-01T10:00:00Z'));
     const schedule = createSchedule(now, [-10, 5, -2]);
-
-    const result = buildStopScheduleUiModel(schedule, now, null);
+    const result = buildStopScheduleUiModel(createResult(schedule), now, null);
 
     expect(result.upcoming.length).toBe(1);
     expect(result.past.length).toBe(2);
@@ -18,8 +17,7 @@ describe('buildStopScheduleUiModel', () => {
   it('marks the earliest upcoming service as next', () => {
     const now = startOfMinute(new Date('2024-05-01T10:00:00Z'));
     const schedule = createSchedule(now, [3, 7, 12]);
-
-    const result = buildStopScheduleUiModel(schedule, now, null);
+    const result = buildStopScheduleUiModel(createResult(schedule), now, null);
 
     expect(result.upcoming[0].isNext).toBeTrue();
     expect(result.upcoming[1].isNext).toBeFalse();
@@ -36,7 +34,9 @@ describe('buildStopScheduleUiModel', () => {
       services: [
         {
           serviceId: 'a',
+          lineId: 'line-a',
           lineCode: 'L1',
+          direction: 0,
           destination: 'North Campus',
           arrivalTime: addMinutesToDate(now, 5),
           isAccessible: true,
@@ -44,7 +44,9 @@ describe('buildStopScheduleUiModel', () => {
         },
         {
           serviceId: 'b',
+          lineId: 'line-b',
           lineCode: 'L2',
+          direction: 1,
           destination: 'City Center',
           arrivalTime: addMinutesToDate(now, 8),
           isAccessible: false,
@@ -53,7 +55,7 @@ describe('buildStopScheduleUiModel', () => {
       ]
     };
 
-    const result = buildStopScheduleUiModel(schedule, now, 'North Campus');
+    const result = buildStopScheduleUiModel(createResult(schedule), now, 'North Campus');
 
     expect(result.upcoming.length).toBe(1);
     expect(result.upcoming[0].destination).toBe('North Campus');
@@ -71,12 +73,26 @@ function createSchedule(reference: Date, offsets: readonly number[]): StopSchedu
   };
 }
 
+function createResult(schedule: StopSchedule): StopScheduleResult {
+  return {
+    schedule,
+    dataSource: {
+      type: 'api',
+      providerName: 'Test Provider',
+      queryTime: schedule.queryDate,
+      snapshotTime: null
+    }
+  };
+}
+
 function createService(reference: Date, offset: number, index: number): StopSchedule['services'][number] {
   const arrival = addMinutesToDate(reference, offset);
 
   return {
     serviceId: `service-${index}`,
+    lineId: `line-${index}`,
     lineCode: `L${index + 1}`,
+    direction: index % 2,
     destination: `Destination ${index}`,
     arrivalTime: arrival,
     isAccessible: index % 2 === 0,

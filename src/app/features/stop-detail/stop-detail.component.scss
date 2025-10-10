@@ -5,9 +5,17 @@
   padding: 1.5rem 1rem 2rem;
 }
 
-.stop-detail__card {
+.stop-detail__card,
+.stop-detail__panel {
   display: flex;
   flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.04);
+}
+
+.stop-detail__card {
   gap: 1.5rem;
   padding: 1.5rem;
 }
@@ -18,7 +26,12 @@
   min-height: 12rem;
 }
 
-.stop-detail__loading {
+.stop-detail__panel {
+  gap: 1.25rem;
+  padding: 1.5rem;
+}
+
+.stop-detail__status {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,13 +39,30 @@
   text-align: center;
 }
 
-.stop-detail__loading-icon {
+.stop-detail__status-icon {
   font-size: 2.5rem;
+}
+
+.stop-detail__loading-icon {
   color: var(--mat-sys-primary, #137fec);
 }
 
 .stop-detail__loading-text {
   font-weight: 500;
+}
+
+.stop-detail__error-icon {
+  color: var(--mat-sys-error, #ba1a1a);
+}
+
+.stop-detail__error-text {
+  margin: 0;
+  font-weight: 600;
+}
+
+.stop-detail__error-description {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .stop-detail__summary {
@@ -91,6 +121,12 @@
   font-weight: 600;
 }
 
+.stop-detail__data-origin {
+  margin: 0;
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.7);
+}
+
 .stop-detail__controls {
   display: flex;
   flex-wrap: wrap;
@@ -122,13 +158,6 @@
 .stop-detail__panels {
   display: grid;
   gap: 1.5rem;
-}
-
-.stop-detail__panel {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  padding: 1.5rem;
 }
 
 .stop-detail__panel-header {

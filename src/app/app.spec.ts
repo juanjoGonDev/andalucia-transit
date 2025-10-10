@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { TestBed } from '@angular/core/testing';
@@ -9,6 +10,20 @@ import { Observable, of } from 'rxjs';
 import { AppComponent } from './app';
 import { routes } from './app.routes';
 import { HomeComponent } from './features/home/home.component';
+import {
+  StopDirectoryOption,
+  StopDirectoryService
+} from './data/stops/stop-directory.service';
+
+class StopDirectoryTestingService {
+  searchStops(): Observable<readonly StopDirectoryOption[]> {
+    return of([] as const satisfies readonly StopDirectoryOption[]);
+  }
+
+  getStopById(): Observable<null> {
+    return of(null);
+  }
+}
 
 class TranslateTestingLoader implements TranslateLoader {
   getTranslation(lang: string): Observable<Record<string, string>> {
@@ -26,6 +41,7 @@ describe('AppComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         AppComponent,
+        HttpClientTestingModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -33,7 +49,10 @@ describe('AppComponent', () => {
           }
         })
       ],
-      providers: [provideRouter(routes)]
+      providers: [
+        provideRouter(routes),
+        { provide: StopDirectoryService, useClass: StopDirectoryTestingService }
+      ]
     }).compileComponents();
   });
 

@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { APP_CONFIG } from '../../core/config';
-import { StopSchedule } from '../../domain/stop-schedule/stop-schedule.model';
-import { MockStopScheduleService } from '../../data/services/mock-stop-schedule.service';
+import { StopSchedule, StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
+import { StopScheduleService } from '../../data/services/stop-schedule.service';
 import { StopDetailComponent } from './stop-detail.component';
 
 class FakeTranslateLoader implements TranslateLoader {
@@ -17,17 +17,15 @@ class FakeTranslateLoader implements TranslateLoader {
 describe('StopDetailComponent', () => {
   let fixture: ComponentFixture<StopDetailComponent>;
   let router: Router;
-  let scheduleService: jasmine.SpyObj<MockStopScheduleService>;
+  let scheduleService: jasmine.SpyObj<StopScheduleService>;
   let paramMapSubject: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
 
   beforeEach(async () => {
     paramMapSubject = new BehaviorSubject(convertToParamMap({ stopId: 'stop-main-street' }));
-    scheduleService = jasmine.createSpyObj<MockStopScheduleService>('MockStopScheduleService', [
+    scheduleService = jasmine.createSpyObj<StopScheduleService>('StopScheduleService', [
       'getStopSchedule'
     ]);
-    scheduleService.getStopSchedule.and.callFake((stopId: string) =>
-      of(createSchedule(stopId))
-    );
+    scheduleService.getStopSchedule.and.callFake((stopId: string) => of(createResult(stopId)));
     const routerStub = jasmine.createSpyObj<Router>('Router', ['navigate']);
     routerStub.navigate.and.resolveTo(true);
 
@@ -39,7 +37,7 @@ describe('StopDetailComponent', () => {
         })
       ],
       providers: [
-        { provide: MockStopScheduleService, useValue: scheduleService },
+        { provide: StopScheduleService, useValue: scheduleService },
         { provide: ActivatedRoute, useValue: { paramMap: paramMapSubject.asObservable() } },
         { provide: Router, useValue: routerStub }
       ]
@@ -71,16 +69,57 @@ describe('StopDetailComponent', () => {
     ]);
     expect(scheduleService.getStopSchedule).not.toHaveBeenCalled();
   }));
+
+  it('shows an error message when the schedule request fails', fakeAsync(() => {
+    scheduleService.getStopSchedule.and.returnValue(throwError(() => new Error('Network error')));
+
+    fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const errorText = fixture.nativeElement.querySelector('.stop-detail__error-text');
+    expect(errorText?.textContent?.trim()).toBe(APP_CONFIG.translationKeys.stopDetail.error.title);
+  }));
+
+  it('recovers from errors when navigating to a different stop', fakeAsync(() => {
+    scheduleService.getStopSchedule.and.returnValues(
+      throwError(() => new Error('Unavailable')),
+      of(createResult('stop-avenue-center'))
+    );
+
+    fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+    tick();
+
+    expect(scheduleService.getStopSchedule).toHaveBeenCalledTimes(1);
+
+    paramMapSubject.next(convertToParamMap({ stopId: 'stop-avenue-center' }));
+    tick();
+
+    expect(scheduleService.getStopSchedule).toHaveBeenCalledTimes(2);
+    expect(scheduleService.getStopSchedule).toHaveBeenCalledWith('stop-avenue-center');
+  }));
 });
 
-function createSchedule(stopId: string): StopSchedule {
+function createResult(stopId: string): StopScheduleResult {
   const now = new Date();
-  return {
+  const schedule: StopSchedule = {
     stopId,
     stopCode: '1234',
     stopName: 'Test Stop',
     queryDate: now,
     generatedAt: now,
     services: []
+  } as const;
+
+  return {
+    schedule,
+    dataSource: {
+      type: 'api',
+      providerName: 'Test Provider',
+      queryTime: now,
+      snapshotTime: null
+    }
   } as const;
 }

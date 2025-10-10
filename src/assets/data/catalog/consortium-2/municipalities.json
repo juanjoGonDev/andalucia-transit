@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 2,
+    "consortiumName": "Bahía de Cádiz",
+    "itemCount": 12
+  },
+  "municipalities": [
+    {
+      "id": "10",
+      "name": "Arcos de la Frontera"
+    },
+    {
+      "id": "1",
+      "name": "Cádiz"
+    },
+    {
+      "id": "3",
+      "name": "Chiclana"
+    },
+    {
+      "id": "15",
+      "name": "Chipiona"
+    },
+    {
+      "id": "16",
+      "name": "Conil de la Frontera"
+    },
+    {
+      "id": "5",
+      "name": "El Puerto de Santa María"
+    },
+    {
+      "id": "6",
+      "name": "Jerez de la Frontera"
+    },
+    {
+      "id": "8",
+      "name": "Medina Sidonia"
+    },
+    {
+      "id": "4",
+      "name": "Puerto Real"
+    },
+    {
+      "id": "7",
+      "name": "Rota"
+    },
+    {
+      "id": "2",
+      "name": "San Fernando"
+    },
+    {
+      "id": "11",
+      "name": "Sanlucar de Barrameda"
+    }
+  ]
+}

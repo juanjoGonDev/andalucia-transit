@@ -1,9 +1,11 @@
-import { StopSchedule, StopService } from './stop-schedule.model';
+import {
+  StopScheduleDataSource,
+  StopScheduleResult,
+  StopScheduleDataSourceType,
+  StopService
+} from './stop-schedule.model';
 import { differenceInMinutes } from '../utils/time.util';
-
-const MAX_PERCENTAGE = 100;
-const MIN_PERCENTAGE = 0;
-const PROGRESS_WINDOW_MINUTES = 30;
+import { calculateUpcomingProgress } from '../utils/progress.util';
 
 export interface StopScheduleUpcomingItem {
   readonly serviceId: string;
@@ -35,13 +37,22 @@ export interface StopScheduleUiModel {
   readonly availableDestinations: readonly string[];
   readonly upcoming: readonly StopScheduleUpcomingItem[];
   readonly past: readonly StopSchedulePastItem[];
+  readonly dataSource: StopScheduleSourceUiModel;
+}
+
+export interface StopScheduleSourceUiModel {
+  readonly type: StopScheduleDataSourceType;
+  readonly providerName: string;
+  readonly queryTime: Date;
+  readonly snapshotTime: Date | null;
 }
 
 export function buildStopScheduleUiModel(
-  schedule: StopSchedule,
+  result: StopScheduleResult,
   currentTime: Date,
   destinationFilter: string | null
 ): StopScheduleUiModel {
+  const schedule = result.schedule;
   const availableDestinations = buildDestinationList(schedule.services);
   const filteredServices = destinationFilter
     ? schedule.services.filter((service) => service.destination === destinationFilter)
@@ -64,7 +75,7 @@ export function buildStopScheduleUiModel(
         isNext: false,
         isAccessible: service.isAccessible,
         isUniversityOnly: service.isUniversityOnly,
-        progressPercentage: calculateProgress(minutesDifference)
+        progressPercentage: calculateUpcomingProgress(minutesDifference)
       });
       continue;
     }
@@ -96,8 +107,18 @@ export function buildStopScheduleUiModel(
     generatedAt: schedule.generatedAt,
     availableDestinations,
     upcoming,
-    past: orderedPast
+    past: orderedPast,
+    dataSource: mapDataSource(result.dataSource)
   } satisfies StopScheduleUiModel;
+}
+
+function mapDataSource(source: StopScheduleDataSource): StopScheduleSourceUiModel {
+  return {
+    type: source.type,
+    providerName: source.providerName,
+    queryTime: source.queryTime,
+    snapshotTime: source.snapshotTime
+  } satisfies StopScheduleSourceUiModel;
 }
 
 function buildDestinationList(services: readonly StopService[]): readonly string[] {
@@ -108,19 +129,6 @@ function buildDestinationList(services: readonly StopService[]): readonly string
   }
 
   return [...destinationSet].sort((first, second) => first.localeCompare(second));
-}
-
-function calculateProgress(minutesUntilArrival: number): number {
-  if (minutesUntilArrival <= 0) {
-    return MAX_PERCENTAGE;
-  }
-
-  if (minutesUntilArrival >= PROGRESS_WINDOW_MINUTES) {
-    return MIN_PERCENTAGE;
-  }
-
-  const ratio = (PROGRESS_WINDOW_MINUTES - minutesUntilArrival) / PROGRESS_WINDOW_MINUTES;
-  return Math.round(ratio * MAX_PERCENTAGE);
 }
 
 function compareByArrivalTime(first: StopService, second: StopService): number {

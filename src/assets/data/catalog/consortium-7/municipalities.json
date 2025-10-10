@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 7,
+    "consortiumName": "Área de Jaén",
+    "itemCount": 27
+  },
+  "municipalities": [
+    {
+      "id": "21",
+      "name": "Albanchez de Mágina"
+    },
+    {
+      "id": "24",
+      "name": "Andújar"
+    },
+    {
+      "id": "25",
+      "name": "Arjona"
+    },
+    {
+      "id": "26",
+      "name": "Arjonilla"
+    },
+    {
+      "id": "18",
+      "name": "Carcheles"
+    },
+    {
+      "id": "29",
+      "name": "Cazalilla"
+    },
+    {
+      "id": "27",
+      "name": "Escañuela"
+    },
+    {
+      "id": "20",
+      "name": "Espeluy"
+    },
+    {
+      "id": "13",
+      "name": "Fuensanta de Martos"
+    },
+    {
+      "id": "9",
+      "name": "Fuerte del Rey"
+    },
+    {
+      "id": "1",
+      "name": "Jaén"
+    },
+    {
+      "id": "6",
+      "name": "Jamilena"
+    },
+    {
+      "id": "3",
+      "name": "La Guardia de Jaén"
+    },
+    {
+      "id": "28",
+      "name": "Lahiguera"
+    },
+    {
+      "id": "4",
+      "name": "Los Villares"
+    },
+    {
+      "id": "10",
+      "name": "Mancha Real"
+    },
+    {
+      "id": "2",
+      "name": "Martos"
+    },
+    {
+      "id": "12",
+      "name": "Mengibar"
+    },
+    {
+      "id": "7",
+      "name": "Pegalajar"
+    },
+    {
+      "id": "17",
+      "name": "Torreblascopedro"
+    },
+    {
+      "id": "5",
+      "name": "Torredelcampo"
+    },
+    {
+      "id": "8",
+      "name": "Torredonjimeno"
+    },
+    {
+      "id": "19",
+      "name": "Torres"
+    },
+    {
+      "id": "15",
+      "name": "Valdepeñas de Jaén"
+    },
+    {
+      "id": "30",
+      "name": "Villanueva de la Reina"
+    },
+    {
+      "id": "14",
+      "name": "Villardompardo"
+    },
+    {
+      "id": "11",
+      "name": "Villatorres"
+    }
+  ]
+}

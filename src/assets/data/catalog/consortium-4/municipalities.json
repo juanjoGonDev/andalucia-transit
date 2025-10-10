@@ -1,0 +1,96 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
+    "consortiumId": 4,
+    "consortiumName": "Área de Málaga",
+    "itemCount": 21
+  },
+  "municipalities": [
+    {
+      "id": "5",
+      "name": "Alhaurín de la Torre"
+    },
+    {
+      "id": "6",
+      "name": "Alhaurín el Grande"
+    },
+    {
+      "id": "9",
+      "name": "Almogía"
+    },
+    {
+      "id": "15",
+      "name": "Álora"
+    },
+    {
+      "id": "20",
+      "name": "Antequera"
+    },
+    {
+      "id": "16",
+      "name": "Ardales"
+    },
+    {
+      "id": "3",
+      "name": "Benalmádena"
+    },
+    {
+      "id": "7",
+      "name": "Cártama"
+    },
+    {
+      "id": "11",
+      "name": "Casabermeja"
+    },
+    {
+      "id": "21",
+      "name": "Coín"
+    },
+    {
+      "id": "10",
+      "name": "Colmenar"
+    },
+    {
+      "id": "14",
+      "name": "Fuengirola"
+    },
+    {
+      "id": "1",
+      "name": "Málaga"
+    },
+    {
+      "id": "2",
+      "name": "Mijas"
+    },
+    {
+      "id": "8",
+      "name": "Pizarra"
+    },
+    {
+      "id": "4",
+      "name": "Rincón de la Victoria"
+    },
+    {
+      "id": "18",
+      "name": "Riogordo"
+    },
+    {
+      "id": "13",
+      "name": "Torremolinos"
+    },
+    {
+      "id": "12",
+      "name": "Totalán"
+    },
+    {
+      "id": "19",
+      "name": "Valle de Abdalajís"
+    },
+    {
+      "id": "22",
+      "name": "Villanueva de la Concepción"
+    }
+  ]
+}

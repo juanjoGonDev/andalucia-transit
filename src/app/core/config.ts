@@ -1,5 +1,20 @@
 const STOP_DETAIL_BASE_SEGMENT = 'stop-detail' as const;
 const STOP_ID_ROUTE_PARAM = 'stopId' as const;
+const ROUTE_SEARCH_BASE_SEGMENT = 'routes' as const;
+const ROUTE_SEARCH_CONNECTOR_SEGMENT = 'to' as const;
+const ROUTE_SEARCH_DATE_SEGMENT = 'on' as const;
+const ROUTE_SEARCH_ORIGIN_PARAM = 'originSlug' as const;
+const ROUTE_SEARCH_DESTINATION_PARAM = 'destinationSlug' as const;
+const ROUTE_SEARCH_DATE_PARAM = 'dateSlug' as const;
+const DATA_PROVIDER_NAME =
+  'Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía' as const;
+const DATA_TIMEZONE = 'Europe/Madrid' as const;
+const STOP_SERVICES_SNAPSHOT_PATH = 'assets/data/snapshots/stop-services/latest.json' as const;
+const STOP_DIRECTORY_SNAPSHOT_PATH = 'assets/data/stop-directory/index.json' as const;
+const RUNTIME_FLAGS_PROPERTY = '__ANDALUCIA_TRANSIT_FLAGS__' as const;
+const HOLIDAY_API_BASE_URL = 'https://date.nager.at/api/v3' as const;
+const HOLIDAY_COUNTRY_CODE = 'ES' as const;
+const HOLIDAY_REGION_CODES = ['ES-AN'] as const;
 
 export const APP_CONFIG = {
   appName: 'Andalucia Transit',
@@ -15,15 +30,44 @@ export const APP_CONFIG = {
   formats: {
     isoDate: 'yyyy-MM-dd'
   },
+  data: {
+    providerName: DATA_PROVIDER_NAME,
+    timezone: DATA_TIMEZONE,
+    snapshots: {
+      stopServicesPath: STOP_SERVICES_SNAPSHOT_PATH,
+      stopDirectoryPath: STOP_DIRECTORY_SNAPSHOT_PATH
+    },
+    holidays: {
+      apiBaseUrl: HOLIDAY_API_BASE_URL,
+      countryCode: HOLIDAY_COUNTRY_CODE,
+      regionCodes: HOLIDAY_REGION_CODES
+    }
+  },
+  runtime: {
+    flagsProperty: RUNTIME_FLAGS_PROPERTY
+  },
   routes: {
     home: '' as const,
     stopDetailBase: STOP_DETAIL_BASE_SEGMENT,
     stopDetailPattern: `${STOP_DETAIL_BASE_SEGMENT}/:${STOP_ID_ROUTE_PARAM}` as const,
-    routeSearch: 'route-search' as const,
+    routeSearch: ROUTE_SEARCH_BASE_SEGMENT,
+    routeSearchResultPattern:
+      `${ROUTE_SEARCH_BASE_SEGMENT}/:${ROUTE_SEARCH_ORIGIN_PARAM}/${ROUTE_SEARCH_CONNECTOR_SEGMENT}/:${ROUTE_SEARCH_DESTINATION_PARAM}/${ROUTE_SEARCH_DATE_SEGMENT}/:${ROUTE_SEARCH_DATE_PARAM}` as const,
     map: 'map' as const
   },
+  routeSegments: {
+    routeSearch: {
+      connector: ROUTE_SEARCH_CONNECTOR_SEGMENT,
+      date: ROUTE_SEARCH_DATE_SEGMENT
+    }
+  },
   routeParams: {
-    stopId: STOP_ID_ROUTE_PARAM
+    stopId: STOP_ID_ROUTE_PARAM,
+    routeSearch: {
+      origin: ROUTE_SEARCH_ORIGIN_PARAM,
+      destination: ROUTE_SEARCH_DESTINATION_PARAM,
+      date: ROUTE_SEARCH_DATE_PARAM
+    }
   },
   errors: {
     geolocationNotSupported: 'errors.geolocation.notSupported'
@@ -55,7 +99,8 @@ export const APP_CONFIG = {
           destinationPlaceholder: 'home.sections.search.destinationPlaceholder',
           dateLabel: 'home.sections.search.dateLabel',
           submit: 'home.sections.search.submit',
-          swapLabel: 'home.sections.search.swapLabel'
+          swapLabel: 'home.sections.search.swapLabel',
+          noRoutes: 'home.sections.search.noRoutes'
         },
         recentStops: {
           title: 'home.sections.recentStops.title',
@@ -112,6 +157,10 @@ export const APP_CONFIG = {
       title: 'stopDetail.title',
       subtitle: 'stopDetail.subtitle',
       loading: 'stopDetail.loading',
+      error: {
+        title: 'stopDetail.error.title',
+        description: 'stopDetail.error.description'
+      },
       header: {
         stopCodeLabel: 'stopDetail.header.stopCodeLabel',
         scheduleDateLabel: 'stopDetail.header.scheduleDateLabel',
@@ -137,6 +186,10 @@ export const APP_CONFIG = {
       badges: {
         accessible: 'stopDetail.badges.accessible',
         universityOnly: 'stopDetail.badges.universityOnly'
+      },
+      source: {
+        live: 'stopDetail.source.live',
+        snapshot: 'stopDetail.source.snapshot'
       }
     },
     routeSearch: {
@@ -147,7 +200,19 @@ export const APP_CONFIG = {
       originLabel: 'routeSearch.originLabel',
       destinationLabel: 'routeSearch.destinationLabel',
       dateLabel: 'routeSearch.dateLabel',
-      sampleResult: 'routeSearch.sampleResult'
+      sampleResult: 'routeSearch.sampleResult',
+      backLabel: 'routeSearch.backLabel',
+      upcomingLabel: 'routeSearch.upcomingLabel',
+      pastLabel: 'routeSearch.pastLabel',
+      nextBadge: 'routeSearch.nextBadge',
+      previousBadge: 'routeSearch.previousBadge',
+      noUpcoming: 'routeSearch.noUpcoming',
+      changeDate: 'routeSearch.changeDate',
+      emptyResults: 'routeSearch.emptyResults',
+      arrivalAt: 'routeSearch.arrivalAt',
+      travelDuration: 'routeSearch.travelDuration',
+      holidayBadge: 'routeSearch.holidayBadge',
+      estimateNotice: 'routeSearch.estimateNotice'
     },
     map: {
       title: 'map.title',
