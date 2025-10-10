@@ -53,7 +53,9 @@
                 }
               ],
               "outputHashing": "all",
-              "serviceWorker": "ngsw-config.json"
+              "serviceWorker": "ngsw-config.json",
+              "baseHref": "/andalucia-transit/",
+              "deployUrl": "/andalucia-transit/"
             },
             "development": {
               "optimization": false,
