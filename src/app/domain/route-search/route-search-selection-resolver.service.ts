@@ -81,11 +81,3 @@ export class RouteSearchSelectionResolverService {
   }
 }
 
-const SIGNATURE_KEY_SEPARATOR = '|' as const;
-
-function buildSignatureKey(
-  signature: StopConnection['lineSignatures'][number]
-): string {
-  return [signature.lineId, signature.lineCode, signature.direction]
-    .join(SIGNATURE_KEY_SEPARATOR);
-}

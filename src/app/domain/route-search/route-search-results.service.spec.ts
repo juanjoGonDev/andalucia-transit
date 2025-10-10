@@ -155,12 +155,15 @@ describe('RouteSearchResultsService', () => {
       ]
     };
 
+    let emissionCount = 0;
     const subscription = service
       .loadResults(selection, {
         nowProvider: () => referenceTime,
         refreshIntervalMs: 1_000
       })
-      .subscribe(() => {});
+      .subscribe(() => {
+        emissionCount += 1;
+      });
 
     tick(0);
     subscription.unsubscribe();
@@ -171,6 +174,7 @@ describe('RouteSearchResultsService', () => {
     expect(request.consortiumId).toBe(origin.consortiumId);
     expect(request.originNucleusId).toBe(origin.nucleusId);
     expect(request.destinationNucleusId).toBe(destination.nucleusId);
+    expect(emissionCount).toBeGreaterThan(0);
   }));
 
   it('filters past departures older than thirty minutes', fakeAsync(() => {

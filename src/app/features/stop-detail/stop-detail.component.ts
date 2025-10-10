@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -38,7 +37,7 @@ type ScheduleState =
 @Component({
   selector: 'app-stop-detail',
   standalone: true,
-  imports: [CommonModule, MatCardModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './stop-detail.component.html',
   styleUrl: './stop-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

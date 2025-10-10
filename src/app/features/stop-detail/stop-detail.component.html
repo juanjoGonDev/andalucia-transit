@@ -1,28 +1,28 @@
 <section class="stop-detail">
   <ng-container *ngIf="isLoading$ | async; else scheduleContent">
-    <mat-card class="stop-detail__card stop-detail__card--centered" appearance="outlined">
-      <div class="stop-detail__loading">
-        <span class="material-symbols-outlined stop-detail__loading-icon">hourglass_top</span>
+    <section class="stop-detail__card stop-detail__card--centered">
+      <div class="stop-detail__status stop-detail__loading">
+        <span class="material-symbols-outlined stop-detail__status-icon stop-detail__loading-icon">hourglass_top</span>
         <p class="stop-detail__loading-text">{{ translationKeys.loading | translate }}</p>
       </div>
-    </mat-card>
+    </section>
   </ng-container>
 
   <ng-template #scheduleContent>
     <ng-container *ngIf="loadError$ | async; else scheduleLoaded">
-      <mat-card class="stop-detail__card stop-detail__card--centered" appearance="outlined">
-        <div class="stop-detail__error">
-          <span class="material-symbols-outlined stop-detail__error-icon">warning</span>
+      <section class="stop-detail__card stop-detail__card--centered">
+        <div class="stop-detail__status stop-detail__error">
+          <span class="material-symbols-outlined stop-detail__status-icon stop-detail__error-icon">warning</span>
           <p class="stop-detail__error-text">{{ translationKeys.error.title | translate }}</p>
           <p class="stop-detail__error-description">{{ translationKeys.error.description | translate }}</p>
         </div>
-      </mat-card>
+      </section>
     </ng-container>
   </ng-template>
 
   <ng-template #scheduleLoaded>
     <ng-container *ngIf="viewModel$ | async as viewModel">
-      <mat-card class="stop-detail__card" appearance="outlined">
+      <section class="stop-detail__card">
         <div class="stop-detail__summary">
           <div class="stop-detail__summary-heading">
             <span class="stop-detail__tag">{{ viewModel.stopCode }}</span>
@@ -71,10 +71,10 @@
             </select>
           </label>
         </div>
-      </mat-card>
+      </section>
 
       <section class="stop-detail__panels">
-        <mat-card class="stop-detail__panel" appearance="outlined">
+        <section class="stop-detail__panel">
           <header class="stop-detail__panel-header">
             <div>
               <h2 class="stop-detail__panel-title">{{ translationKeys.schedule.upcomingTitle | translate }}</h2>
@@ -141,9 +141,9 @@
           <ng-template #emptyUpcoming>
             <p class="stop-detail__empty">{{ translationKeys.schedule.emptyUpcoming | translate }}</p>
           </ng-template>
-        </mat-card>
+        </section>
 
-        <mat-card class="stop-detail__panel" appearance="outlined">
+        <section class="stop-detail__panel">
           <header class="stop-detail__panel-header">
             <div>
               <h2 class="stop-detail__panel-title">{{ translationKeys.schedule.pastTitle | translate }}</h2>
@@ -194,7 +194,7 @@
           <ng-template #emptyPast>
             <p class="stop-detail__empty">{{ translationKeys.schedule.emptyPast | translate }}</p>
           </ng-template>
-        </mat-card>
+        </section>
       </section>
     </ng-container>
   </ng-template>
