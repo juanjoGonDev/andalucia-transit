@@ -153,7 +153,7 @@ describe('StopDirectoryService', () => {
 
     expect(options).toEqual([
       {
-        id: '02',
+        id: '7:02',
         code: '02',
         name: 'Hospital Provincial',
         municipality: 'Jaén',
@@ -164,7 +164,7 @@ describe('StopDirectoryService', () => {
         stopIds: ['02', '02B']
       },
       {
-        id: '02C',
+        id: '7:02C',
         code: '02C',
         name: 'Hospital Provincial',
         municipality: 'Martos',
@@ -179,7 +179,11 @@ describe('StopDirectoryService', () => {
 
   it('returns include stop identifiers even without a long query', async () => {
     const promise = firstValueFrom(
-      service.searchStops({ query: '', limit: 5, includeStopIds: ['01', '03'] })
+      service.searchStops({
+        query: '',
+        limit: 5,
+        includeStopSignatures: [buildSignature(7, '01'), buildSignature(7, '03')]
+      })
     );
 
     expectIndexRequest();
@@ -188,7 +192,7 @@ describe('StopDirectoryService', () => {
 
     expect(options).toEqual([
       {
-        id: '01',
+        id: '7:01',
         code: '01',
         name: 'Estación Central',
         municipality: 'Jaén',
@@ -199,7 +203,7 @@ describe('StopDirectoryService', () => {
         stopIds: ['01']
       },
       {
-        id: '03',
+        id: '7:03',
         code: '03',
         name: 'Museo Íbero',
         municipality: 'Jaén',
@@ -224,6 +228,20 @@ describe('StopDirectoryService', () => {
     expect(options[1].stopIds).toEqual(['02C']);
   });
 
+  it('returns distinct stop names within the same nucleus', async () => {
+    const promise = firstValueFrom(service.searchStops({ query: 'jaen', limit: 10 }));
+
+    expectIndexRequest();
+
+    const options = await promise;
+
+    expect(options.map((option) => option.name)).toEqual([
+      'Estación Central',
+      'Hospital Provincial',
+      'Museo Íbero'
+    ]);
+  });
+
   it('matches queries regardless of diacritics', async () => {
     const promise = firstValueFrom(service.searchStops({ query: 'ibero', limit: 5 }));
 
@@ -233,7 +251,7 @@ describe('StopDirectoryService', () => {
 
     expect(options).toEqual([
       {
-        id: '03',
+        id: '7:03',
         code: '03',
         name: 'Museo Íbero',
         municipality: 'Jaén',
@@ -248,14 +266,18 @@ describe('StopDirectoryService', () => {
 
   it('excludes include-only stops when the query filters results', async () => {
     const promise = firstValueFrom(
-      service.searchStops({ query: 'hospital', limit: 5, includeStopIds: ['01'] })
+      service.searchStops({
+        query: 'hospital',
+        limit: 5,
+        includeStopSignatures: [buildSignature(7, '01')]
+      })
     );
 
     expectIndexRequest();
 
     const options = await promise;
 
-    expect(options.every((option) => option.id !== '01')).toBeTrue();
+    expect(options.every((option) => option.id !== '7:01')).toBeTrue();
   });
 
   it('loads full stop metadata on demand from chunk files', async () => {
@@ -271,6 +293,18 @@ describe('StopDirectoryService', () => {
     expect(stop?.location.latitude).toBeCloseTo(37.7);
   });
 
+  it('loads stop metadata by composite signature', async () => {
+    const promise = firstValueFrom(service.getStopBySignature(7, '03'));
+
+    expectIndexRequest();
+    expectChunkRequest('consortium-7');
+
+    const stop = await promise;
+
+    expect(stop?.consortiumId).toBe(7);
+    expect(stop?.stopId).toBe('03');
+  });
+
   it('returns the grouped option for a stop identifier', async () => {
     const promise = firstValueFrom(service.getOptionByStopId('02B'));
 
@@ -279,7 +313,7 @@ describe('StopDirectoryService', () => {
     const option = await promise;
 
     expect(option).toEqual({
-      id: '02',
+      id: '7:02',
       code: '02',
       name: 'Hospital Provincial',
       municipality: 'Jaén',
@@ -288,6 +322,57 @@ describe('StopDirectoryService', () => {
       nucleusId: 'nuc-j-02',
       consortiumId: 7,
       stopIds: ['02', '02B']
+    } satisfies StopDirectoryOption);
+  });
+
+  it('returns the grouped option for a composite stop signature', async () => {
+    const compositeIndex: DirectoryIndexResponse = {
+      metadata: {
+        ...indexResponse.metadata,
+        consortiums: [
+          ...indexResponse.metadata.consortiums,
+          { id: 8, name: 'Almería', shortName: 'CTAL' }
+        ],
+        totalStops: indexResponse.metadata.totalStops + 1
+      },
+      chunks: [
+        ...indexResponse.chunks,
+        { id: 'consortium-8', consortiumId: 8, path: 'chunks/consortium-8.json', stopCount: 1 }
+      ],
+      searchIndex: [
+        ...indexResponse.searchIndex,
+        {
+          stopId: '79',
+          stopCode: '79',
+          name: 'La Gangosa - Av. Prado',
+          municipality: 'Vícar',
+          municipalityId: 'mun-79',
+          nucleus: 'La Gangosa',
+          nucleusId: 'nuc-79',
+          consortiumId: 8,
+          chunkId: 'consortium-8'
+        }
+      ]
+    } satisfies DirectoryIndexResponse;
+
+    const promise = firstValueFrom(service.getOptionByStopSignature(8, '79'));
+
+    http
+      .expectOne(APP_CONFIG.data.snapshots.stopDirectoryPath)
+      .flush(compositeIndex);
+
+    const option = await promise;
+
+    expect(option).toEqual({
+      id: '8:79',
+      code: '79',
+      name: 'La Gangosa - Av. Prado',
+      municipality: 'Vícar',
+      municipalityId: 'mun-79',
+      nucleus: 'La Gangosa',
+      nucleusId: 'nuc-79',
+      consortiumId: 8,
+      stopIds: ['79']
     } satisfies StopDirectoryOption);
   });
 
@@ -323,6 +408,10 @@ function buildSearchEntry(
     consortiumId: 7,
     chunkId: 'consortium-7'
   } satisfies DirectorySearchEntry;
+}
+
+function buildSignature(consortiumId: number, stopId: string) {
+  return { consortiumId, stopId };
 }
 
 function buildChunkStop(

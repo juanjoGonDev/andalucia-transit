@@ -13,7 +13,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { map, of, startWith, switchMap } from 'rxjs';
+import { distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
 import { APP_CONFIG } from '../../core/config';
@@ -55,6 +55,8 @@ export class RouteSearchComponent implements AfterViewInit {
 
   @ViewChildren('itemElement', { read: ElementRef })
   private readonly itemElements!: QueryList<ElementRef<HTMLElement>>;
+  private pendingScroll = false;
+  private lastScrollTargetId: string | null = null;
 
   private readonly state = inject(RouteSearchStateService);
   private readonly destroyRef = inject(DestroyRef);
@@ -104,7 +106,9 @@ export class RouteSearchComponent implements AfterViewInit {
     const initialSelection = this.state.getSelection();
     const selectionStream$ = this.state.selection$.pipe(startWith(initialSelection));
     const params$ = this.route.paramMap.pipe(
-      map((paramMap) => this.extractParams(paramMap))
+      startWith(this.route.snapshot.paramMap),
+      map((paramMap) => this.extractParams(paramMap)),
+      distinctUntilChanged((first, second) => this.paramsEqual(first, second))
     );
 
     params$
@@ -134,7 +138,16 @@ export class RouteSearchComponent implements AfterViewInit {
 
     selectionStream$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => this.selection.set(value));
+      .subscribe((value) => {
+        this.selection.set(value);
+
+        if (!value) {
+          return;
+        }
+
+        this.lastScrollTargetId = null;
+        this.pendingScroll = false;
+      });
 
     selectionStream$
       .pipe(
@@ -152,15 +165,38 @@ export class RouteSearchComponent implements AfterViewInit {
         })
       )
       .subscribe((result) => {
+        const previousNextId = this.results().nextDepartureId;
+
         this.results.set(result);
-        this.queueScrollToNext();
+
+        if (!result.nextDepartureId) {
+          this.lastScrollTargetId = null;
+          this.pendingScroll = false;
+          return;
+        }
+
+        const isInitialTarget = this.lastScrollTargetId === null;
+
+        if (!isInitialTarget && result.nextDepartureId === this.lastScrollTargetId) {
+          return;
+        }
+
+        this.lastScrollTargetId = result.nextDepartureId;
+
+        if (isInitialTarget || result.nextDepartureId !== previousNextId) {
+          this.queueScrollToNext();
+        }
       });
   }
 
   ngAfterViewInit(): void {
     this.itemElements.changes
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.scrollToNext());
+      .subscribe(() => {
+        if (this.pendingScroll) {
+          this.scrollToNext();
+        }
+      });
   }
 
   protected trackDeparture(_: number, item: RouteSearchDepartureView): string {
@@ -182,11 +218,12 @@ export class RouteSearchComponent implements AfterViewInit {
   }
 
   private queueScrollToNext(): void {
+    this.pendingScroll = true;
     setTimeout(() => this.scrollToNext(), 0);
   }
 
   private scrollToNext(): void {
-    if (!this.itemElements) {
+    if (!this.pendingScroll || !this.itemElements) {
       return;
     }
 
@@ -198,6 +235,7 @@ export class RouteSearchComponent implements AfterViewInit {
       return;
     }
 
+    this.pendingScroll = false;
     target.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
@@ -215,6 +253,17 @@ export class RouteSearchComponent implements AfterViewInit {
       destinationSlug: paramMap.get(APP_CONFIG.routeParams.routeSearch.destination),
       dateSlug: paramMap.get(APP_CONFIG.routeParams.routeSearch.date)
     } satisfies RouteSearchRouteParams;
+  }
+
+  private paramsEqual(
+    first: RouteSearchRouteParams,
+    second: RouteSearchRouteParams
+  ): boolean {
+    return (
+      first.originSlug === second.originSlug &&
+      first.destinationSlug === second.destinationSlug &&
+      first.dateSlug === second.dateSlug
+    );
   }
 
   private selectionMatchesParams(

@@ -31,6 +31,7 @@ import {
   Observable,
   combineLatest,
   firstValueFrom,
+  forkJoin,
   of,
   timer
 } from 'rxjs';
@@ -47,12 +48,15 @@ import { APP_CONFIG } from '../../../core/config';
 import {
   StopDirectoryOption,
   StopDirectoryService,
+  StopDirectoryStopSignature,
   StopSearchRequest
 } from '../../../data/stops/stop-directory.service';
 import {
   StopConnectionsService,
   StopConnection,
-  STOP_CONNECTION_DIRECTION
+  STOP_CONNECTION_DIRECTION,
+  buildStopConnectionKey,
+  mergeStopConnectionMaps
 } from '../../../data/route-search/stop-connections.service';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import {
@@ -68,10 +72,12 @@ interface StopAutocompleteGroup {
   readonly options: readonly StopDirectoryOption[];
 }
 
-const EMPTY_STOP_IDS: readonly string[] = Object.freeze([]);
 const EMPTY_GROUPS: readonly StopAutocompleteGroup[] = Object.freeze([]);
 const STOP_REQUIRED_ERROR = 'stopRequired' as const;
 const MIN_DATE_ERROR = 'minDate' as const;
+const EMPTY_STOP_SIGNATURES: readonly StopDirectoryStopSignature[] = Object.freeze(
+  [] as StopDirectoryStopSignature[]
+);
 
 @Component({
   selector: 'app-route-search-form',
@@ -183,27 +189,23 @@ export class RouteSearchFormComponent implements OnChanges {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  private readonly originStopIds$ = this.selectedOrigin$.pipe(
-    map((option) => option?.stopIds ?? EMPTY_STOP_IDS),
-    distinctUntilChanged((first, second) => this.areSameStopIdList(first, second))
+  private readonly originSignatures$ = this.selectedOrigin$.pipe(
+    map((option) => this.toStopSignatures(option)),
+    distinctUntilChanged((first, second) => this.areSameStopSignatureList(first, second))
   );
 
-  private readonly destinationStopIds$ = this.selectedDestination$.pipe(
-    map((option) => option?.stopIds ?? EMPTY_STOP_IDS),
-    distinctUntilChanged((first, second) => this.areSameStopIdList(first, second))
+  private readonly destinationSignatures$ = this.selectedDestination$.pipe(
+    map((option) => this.toStopSignatures(option)),
+    distinctUntilChanged((first, second) => this.areSameStopSignatureList(first, second))
   );
 
-  private readonly originConnections$ = this.originStopIds$.pipe(
-    switchMap((stopIds) =>
-      this.stopConnections.getConnections(stopIds, STOP_CONNECTION_DIRECTION.Forward)
-    ),
+  private readonly originConnections$ = this.originSignatures$.pipe(
+    switchMap((signatures) => this.loadBidirectionalConnections(signatures)),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  private readonly destinationConnections$ = this.destinationStopIds$.pipe(
-    switchMap((stopIds) =>
-      this.stopConnections.getConnections(stopIds, STOP_CONNECTION_DIRECTION.Backward)
-    ),
+  private readonly destinationConnections$ = this.destinationSignatures$.pipe(
+    switchMap((signatures) => this.loadBidirectionalConnections(signatures)),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
@@ -213,7 +215,7 @@ export class RouteSearchFormComponent implements OnChanges {
     this.destinationConnections$
   ]).pipe(
     switchMap(([query, destination, connections]) =>
-      this.stopDirectory
+    this.stopDirectory
         .searchStops(this.buildOriginSearchRequest(query, destination, connections))
         .pipe(map((options) => this.filterOptionsByConnections(options, connections)))
     ),
@@ -226,7 +228,7 @@ export class RouteSearchFormComponent implements OnChanges {
     this.originConnections$
   ]).pipe(
     switchMap(([query, origin, connections]) =>
-      this.stopDirectory
+    this.stopDirectory
         .searchStops(this.buildDestinationSearchRequest(query, origin, connections))
         .pipe(map((options) => this.filterOptionsByConnections(options, connections)))
     ),
@@ -311,7 +313,7 @@ export class RouteSearchFormComponent implements OnChanges {
   ): Promise<RouteSearchSelection | null> {
     this.hideNoRoutes();
     const connections = await firstValueFrom(
-      this.stopConnections.getConnections(origin.stopIds, STOP_CONNECTION_DIRECTION.Forward)
+      this.loadBidirectionalConnections(this.toStopSignatures(origin))
     );
     const matches = collectRouteLineMatches(origin, destination, connections);
 
@@ -337,8 +339,8 @@ export class RouteSearchFormComponent implements OnChanges {
   ): StopSearchRequest {
     return {
       query,
-      excludeStopId: this.getPrimaryStopId(destination) ?? undefined,
-      includeStopIds: this.buildIncludeIds(connections),
+      excludeStopSignature: this.getPrimaryStopSignature(destination) ?? undefined,
+      includeStopSignatures: this.buildIncludeSignatures(connections),
       limit: this.maxAutocompleteOptions
     } satisfies StopSearchRequest;
   }
@@ -350,22 +352,35 @@ export class RouteSearchFormComponent implements OnChanges {
   ): StopSearchRequest {
     return {
       query,
-      excludeStopId: this.getPrimaryStopId(origin) ?? undefined,
-      includeStopIds: this.buildIncludeIds(connections),
+      excludeStopSignature: this.getPrimaryStopSignature(origin) ?? undefined,
+      includeStopSignatures: this.buildIncludeSignatures(connections),
       limit: this.maxAutocompleteOptions
     } satisfies StopSearchRequest;
   }
 
-  private buildIncludeIds(
+  private buildIncludeSignatures(
     connections: ReadonlyMap<string, StopConnection>
-  ): readonly string[] | undefined {
+  ): readonly StopDirectoryStopSignature[] | undefined {
     if (!connections.size) {
       return undefined;
     }
 
-    const ids = Array.from(connections.keys());
+    const signatures = Array.from(connections.values(), (connection) => ({
+      consortiumId: connection.consortiumId,
+      stopId: connection.stopId
+    } satisfies StopDirectoryStopSignature));
 
-    return ids.slice(0, this.maxAutocompleteOptions);
+    const unique = new Map<string, StopDirectoryStopSignature>();
+
+    for (const signature of signatures) {
+      const key = buildStopConnectionKey(signature.consortiumId, signature.stopId);
+
+      if (!unique.has(key)) {
+        unique.set(key, signature);
+      }
+    }
+
+    return Array.from(unique.values()).slice(0, this.maxAutocompleteOptions);
   }
 
   private groupByNucleus(options: readonly StopDirectoryOption[]): readonly StopAutocompleteGroup[] {
@@ -414,7 +429,9 @@ export class RouteSearchFormComponent implements OnChanges {
       return options;
     }
 
-    return options.filter((option) => option.stopIds.some((id) => connections.has(id)));
+    return options.filter((option) =>
+      option.stopIds.some((id) => connections.has(buildStopConnectionKey(option.consortiumId, id)))
+    );
   }
 
   private buildQueryStream(value: StopAutocompleteValue): Observable<string> {
@@ -455,7 +472,17 @@ export class RouteSearchFormComponent implements OnChanges {
     return first.some((value) => second.includes(value));
   }
 
-  private areSameStopIdList(first: readonly string[], second: readonly string[]): boolean {
+  private areSameStopSignature(
+    first: StopDirectoryStopSignature,
+    second: StopDirectoryStopSignature
+  ): boolean {
+    return first.consortiumId === second.consortiumId && first.stopId === second.stopId;
+  }
+
+  private areSameStopSignatureList(
+    first: readonly StopDirectoryStopSignature[],
+    second: readonly StopDirectoryStopSignature[]
+  ): boolean {
     if (first === second) {
       return true;
     }
@@ -464,7 +491,7 @@ export class RouteSearchFormComponent implements OnChanges {
       return false;
     }
 
-    return first.every((value, index) => value === second[index]);
+    return first.every((signature, index) => this.areSameStopSignature(signature, second[index]));
   }
 
   private areSameStop(
@@ -498,12 +525,28 @@ export class RouteSearchFormComponent implements OnChanges {
     return value;
   }
 
-  private getPrimaryStopId(option: StopDirectoryOption | null): string | null {
+  private getPrimaryStopSignature(option: StopDirectoryOption | null): StopDirectoryStopSignature | null {
     if (!option?.stopIds.length) {
       return null;
     }
 
-    return option.stopIds[0];
+    return {
+      consortiumId: option.consortiumId,
+      stopId: option.stopIds[0]
+    } satisfies StopDirectoryStopSignature;
+  }
+
+  private toStopSignatures(
+    option: StopDirectoryOption | null
+  ): readonly StopDirectoryStopSignature[] {
+    if (!option?.stopIds.length) {
+      return EMPTY_STOP_SIGNATURES;
+    }
+
+    return option.stopIds.map((stopId) => ({
+      consortiumId: option.consortiumId,
+      stopId
+    } satisfies StopDirectoryStopSignature));
   }
 
   private createMinimumDateValidator(minimum: Date): ValidatorFn {
@@ -584,6 +627,19 @@ export class RouteSearchFormComponent implements OnChanges {
     if (this.noRoutes$.getValue()) {
       this.noRoutes$.next(false);
     }
+  }
+
+  private loadBidirectionalConnections(
+    signatures: readonly StopDirectoryStopSignature[]
+  ): Observable<ReadonlyMap<string, StopConnection>> {
+    if (!signatures.length) {
+      return of(new Map<string, StopConnection>());
+    }
+
+    return forkJoin([
+      this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Forward),
+      this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Backward)
+    ]).pipe(map((connections) => mergeStopConnectionMaps(connections)));
   }
 }
 

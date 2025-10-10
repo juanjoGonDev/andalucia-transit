@@ -127,11 +127,14 @@
     "upcomingLabel": "In {{time}}",
     "pastLabel": "{{time}} ago",
     "nextBadge": "Next",
+    "previousBadge": "Previous",
     "noUpcoming": "No more direct departures for this date within the next hours.",
     "changeDate": "Choose another date",
     "emptyResults": "No services were found for this route.",
     "arrivalAt": "Arrives at {{time}}",
-    "travelDuration": "Trip {{duration}}"
+    "travelDuration": "Trip {{duration}}",
+    "holidayBadge": "Holiday service",
+    "estimateNotice": "Times are estimates based on Junta de Andalucía schedule data."
   },
   "map": {
     "title": "Network map",

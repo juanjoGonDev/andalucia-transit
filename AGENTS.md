@@ -25,6 +25,11 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Use Angular DI and factory providers for abstractions; rely on OnPush change detection where possible; tear down subscriptions via `async` pipe or `takeUntil`.
 - Follow English naming, 2-space indentation, semicolons, and avoid redundant comments or commented-out code.
 
+## Decision Log
+- 2025-10-09: Route search URLs and selectors rely on consortium-aware stop signatures (`consortiumId:stopId`) to disambiguate repeated stop codes when restoring deep links or swapping directions.
+- 2025-10-09: Timetable filtering checks Spanish national and Andalusian public holidays using the Nager.Date API (MIT License) so festivo frequencies are only included when appropriate; document usage in `docs/api-reference.md` before expanding scope.
+- 2025-10-10: Holiday detection filters the Nager.Date dataset to Andalusian entries, and Sunday holidays gain a Monday observance entry to mirror the Junta de Andalucía calendar.
+
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.
 - `docs/api.html` contains a static snapshot of the CTAN open data portal describing all consumed API endpoints. Refresh it when the upstream site changes and note the update in this file.

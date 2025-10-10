@@ -4,7 +4,8 @@ import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { RouteLineStop, RouteLineSummary, RouteLinesApiService } from './route-lines-api.service';
 import {
   StopDirectoryRecord,
-  StopDirectoryService
+  StopDirectoryService,
+  StopDirectoryStopSignature
 } from '../stops/stop-directory.service';
 
 export interface StopLineSignature {
@@ -14,6 +15,7 @@ export interface StopLineSignature {
 }
 
 export interface StopConnection {
+  readonly consortiumId: number;
   readonly stopId: string;
   readonly originStopIds: readonly string[];
   readonly lineSignatures: readonly StopLineSignature[];
@@ -33,17 +35,17 @@ export class StopConnectionsService {
   private readonly api = inject(RouteLinesApiService);
 
   getConnections(
-    stopIds: readonly string[],
+    signatures: readonly StopDirectoryStopSignature[],
     direction: StopConnectionDirection = STOP_CONNECTION_DIRECTION.Forward
   ): Observable<ReadonlyMap<string, StopConnection>> {
-    if (!stopIds.length) {
+    if (!signatures.length) {
       return of(EMPTY_CONNECTIONS);
     }
 
-    const uniqueStopIds = Array.from(new Set(stopIds));
-    const originOrderMap = buildOriginOrderMap(uniqueStopIds);
+    const uniqueSignatures = dedupeSignatures(signatures);
+    const originOrderMap = buildOriginOrderMap(uniqueSignatures.map((signature) => signature.stopId));
 
-    return this.loadDirectoryRecords(uniqueStopIds).pipe(
+    return this.loadDirectoryRecords(uniqueSignatures).pipe(
       switchMap((records) => {
         if (!records.length) {
           return of(EMPTY_CONNECTIONS);
@@ -65,12 +67,16 @@ export class StopConnectionsService {
     );
   }
 
-  private loadDirectoryRecords(stopIds: readonly string[]): Observable<readonly StopDirectoryRecord[]> {
-    const requests = stopIds.map((stopId) => this.directory.getStopById(stopId));
-
-    if (!requests.length) {
+  private loadDirectoryRecords(
+    signatures: readonly StopDirectoryStopSignature[]
+  ): Observable<readonly StopDirectoryRecord[]> {
+    if (!signatures.length) {
       return of([]);
     }
+
+    const requests = signatures.map((signature) =>
+      this.directory.getStopBySignature(signature.consortiumId, signature.stopId)
+    );
 
     return forkJoin(requests).pipe(map((records) => records.filter(isRecord)));
   }
@@ -78,11 +84,11 @@ export class StopConnectionsService {
   private resolveGroupConnections(
     group: ConsortiumGroup,
     direction: StopConnectionDirection
-  ): Observable<ReadonlyMap<string, ConnectionAccumulator>> {
+  ): Observable<ConsortiumConnectionGroup> {
     return this.api.getLinesForStops(group.consortiumId, group.stopIds).pipe(
       switchMap((summaries) => {
         if (!summaries.length) {
-          return of(EMPTY_ACCUMULATORS);
+          return of(createEmptyGroup(group.consortiumId));
         }
 
         const lineObservables = summaries.map((summary) =>
@@ -95,10 +101,69 @@ export class StopConnectionsService {
             )
         );
 
-        return forkJoin(lineObservables).pipe(map(mergeAccumulators));
+        return forkJoin(lineObservables).pipe(
+          map((accumulators) => ({
+            consortiumId: group.consortiumId,
+            connections: mergeAccumulators(accumulators)
+          }))
+        );
       })
     );
   }
+}
+
+export function mergeStopConnectionMaps(
+  maps: readonly ReadonlyMap<string, StopConnection>[]
+): ReadonlyMap<string, StopConnection> {
+  if (!maps.length) {
+    return new Map<string, StopConnection>();
+  }
+
+  const aggregates = new Map<
+    string,
+    {
+      consortiumId: number;
+      stopId: string;
+      originIds: Set<string>;
+      signatures: Map<string, StopConnection['lineSignatures'][number]>;
+    }
+  >();
+
+  for (const mapEntry of maps) {
+    mapEntry.forEach((connection, key) => {
+      const aggregate =
+        aggregates.get(key) ??
+        {
+          consortiumId: connection.consortiumId,
+          stopId: connection.stopId,
+          originIds: new Set<string>(),
+          signatures: new Map<string, StopConnection['lineSignatures'][number]>()
+        };
+
+      connection.originStopIds.forEach((originId) => aggregate.originIds.add(originId));
+      connection.lineSignatures.forEach((signature) =>
+        aggregate.signatures.set(
+          buildSignatureKey(signature.lineId, signature.lineCode, signature.direction),
+          signature
+        )
+      );
+
+      aggregates.set(key, aggregate);
+    });
+  }
+
+  const merged = new Map<string, StopConnection>();
+
+  aggregates.forEach((aggregate, key) => {
+    merged.set(key, {
+      consortiumId: aggregate.consortiumId,
+      stopId: aggregate.stopId,
+      originStopIds: Array.from(aggregate.originIds),
+      lineSignatures: Array.from(aggregate.signatures.values())
+    });
+  });
+
+  return merged;
 }
 
 interface ConsortiumGroup {
@@ -113,9 +178,15 @@ interface ConnectionAccumulator {
   readonly signatureKeys: Set<string>;
 }
 
+interface ConsortiumConnectionGroup {
+  readonly consortiumId: number;
+  readonly connections: ReadonlyMap<string, ConnectionAccumulator>;
+}
+
 const EMPTY_CONNECTIONS: ReadonlyMap<string, StopConnection> = new Map();
 const EMPTY_ACCUMULATORS: ReadonlyMap<string, ConnectionAccumulator> = new Map();
 const SIGNATURE_SEPARATOR = '|' as const;
+const CONNECTION_KEY_SEPARATOR = ':' as const;
 
 function isRecord(value: StopDirectoryRecord | null): value is StopDirectoryRecord {
   return Boolean(value);
@@ -147,6 +218,22 @@ function groupByConsortium(records: readonly StopDirectoryRecord[]): readonly Co
 function buildOriginOrderMap(stopIds: readonly string[]): ReadonlyMap<string, number> {
   const entries = stopIds.map((stopId, index) => [stopId, index] as const);
   return new Map(entries);
+}
+
+function dedupeSignatures(
+  signatures: readonly StopDirectoryStopSignature[]
+): readonly StopDirectoryStopSignature[] {
+  const unique = new Map<string, StopDirectoryStopSignature>();
+
+  signatures.forEach((signature) => {
+    const key = buildStopConnectionKey(signature.consortiumId, signature.stopId);
+
+    if (!unique.has(key)) {
+      unique.set(key, signature);
+    }
+  });
+
+  return Array.from(unique.values());
 }
 
 function buildLineAccumulator(
@@ -256,41 +343,52 @@ function mergeAccumulators(
 }
 
 function mergeGroupConnections(
-  groups: readonly ReadonlyMap<string, ConnectionAccumulator>[],
+  groups: readonly ConsortiumConnectionGroup[],
   originOrderMap: ReadonlyMap<string, number>
 ): ReadonlyMap<string, StopConnection> {
   if (!groups.length) {
     return EMPTY_CONNECTIONS;
   }
 
-  const merged = new Map<string, ConnectionAccumulator>();
+  const merged = new Map<
+    string,
+    {
+      consortiumId: number;
+      accumulator: ConnectionAccumulator;
+    }
+  >();
 
   for (const group of groups) {
-    group.forEach((value, stopId) => {
-      const existing = merged.get(stopId);
+    group.connections.forEach((value, stopId) => {
+      const key = buildStopConnectionKey(group.consortiumId, stopId);
+      const existing = merged.get(key);
 
       if (existing) {
-        value.originIds.forEach((originId) => existing.originIds.add(originId));
-        value.signatureKeys.forEach((key) => existing.signatureKeys.add(key));
+        value.originIds.forEach((originId) => existing.accumulator.originIds.add(originId));
+        value.signatureKeys.forEach((signatureKey) => existing.accumulator.signatureKeys.add(signatureKey));
       } else {
-        merged.set(stopId, {
-          stopId,
-          originIds: new Set(value.originIds),
-          signatureKeys: new Set(value.signatureKeys)
+        merged.set(key, {
+          consortiumId: group.consortiumId,
+          accumulator: {
+            stopId,
+            originIds: new Set(value.originIds),
+            signatureKeys: new Set(value.signatureKeys)
+          }
         });
       }
     });
   }
 
-  const connections = Array.from(merged.values(), (value) =>
-    buildConnection(value, originOrderMap)
-  );
+  const connections = Array.from(merged.entries(), ([key, value]) => {
+    const connection = buildConnection(value.consortiumId, value.accumulator, originOrderMap);
+    return [key, connection] as const;
+  });
 
-  const entries = connections.map((connection) => [connection.stopId, connection] as const);
-  return new Map(entries);
+  return new Map(connections);
 }
 
 function buildConnection(
+  consortiumId: number,
   accumulator: ConnectionAccumulator,
   originOrderMap: ReadonlyMap<string, number>
 ): StopConnection {
@@ -298,6 +396,7 @@ function buildConnection(
   const signatures = Array.from(accumulator.signatureKeys, parseSignatureKey);
 
   return {
+    consortiumId,
     stopId: accumulator.stopId,
     originStopIds: Object.freeze(orderedOrigins),
     lineSignatures: Object.freeze(signatures)
@@ -325,4 +424,12 @@ function buildSignatureKey(lineId: string, lineCode: string, direction: number):
 function parseSignatureKey(key: string): StopLineSignature {
   const [lineId, lineCode, direction] = key.split(SIGNATURE_SEPARATOR);
   return { lineId, lineCode, direction: Number(direction) };
+}
+
+export function buildStopConnectionKey(consortiumId: number, stopId: string): string {
+  return `${consortiumId}${CONNECTION_KEY_SEPARATOR}${stopId}`;
+}
+
+function createEmptyGroup(consortiumId: number): ConsortiumConnectionGroup {
+  return { consortiumId, connections: EMPTY_ACCUMULATORS };
 }

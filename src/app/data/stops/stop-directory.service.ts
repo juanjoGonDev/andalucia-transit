@@ -9,6 +9,8 @@ const SEARCH_LOCALE = 'es-ES' as const;
 const MIN_QUERY_LENGTH = 2;
 const NORMALIZE_FORM = 'NFD' as const;
 const DIACRITIC_MATCHER = /\p{M}/gu;
+const ENTRY_KEY_SEPARATOR = ':' as const;
+const SIGNATURE_KEY_SEPARATOR = '|' as const;
 
 export interface StopDirectoryRecord {
   readonly consortiumId: number;
@@ -38,11 +40,16 @@ export interface StopDirectoryOption {
   readonly stopIds: readonly string[];
 }
 
+export interface StopDirectoryStopSignature {
+  readonly consortiumId: number;
+  readonly stopId: string;
+}
+
 export interface StopSearchRequest {
   readonly query: string;
   readonly limit: number;
-  readonly includeStopIds?: readonly string[];
-  readonly excludeStopId?: string;
+  readonly includeStopSignatures?: readonly StopDirectoryStopSignature[];
+  readonly excludeStopSignature?: StopDirectoryStopSignature;
 }
 
 interface StopDirectoryIndexFile {
@@ -115,8 +122,10 @@ interface StopDirectoryChunkEntry {
 interface StopDirectoryIndex {
   readonly searchable: readonly SearchableStopRecord[];
   readonly entries: ReadonlyMap<string, StopDirectorySearchEntry>;
+  readonly compositeEntries: ReadonlyMap<string, StopDirectorySearchEntry>;
   readonly chunks: ReadonlyMap<string, StopDirectoryChunkDescriptor>;
   readonly groups: ReadonlyMap<string, readonly StopDirectorySearchEntry[]>;
+  readonly optionsByComposite: ReadonlyMap<string, StopDirectoryOption>;
 }
 
 interface SearchableStopRecord {
@@ -153,15 +162,25 @@ export class StopDirectoryService {
           return of(null);
         }
 
-        const descriptor = index.chunks.get(entry.chunkId);
+        return this.loadRecord(index, entry);
+      })
+    );
+  }
 
-        if (!descriptor) {
+  getStopBySignature(
+    consortiumId: number,
+    stopId: string
+  ): Observable<StopDirectoryRecord | null> {
+    return this.index$.pipe(
+      switchMap((index) => {
+        const entryKey = buildEntryKey(consortiumId, stopId);
+        const entry = index.compositeEntries.get(entryKey);
+
+        if (!entry) {
           return of(null);
         }
 
-        return this.loadChunkRecords(descriptor).pipe(
-          map((records) => records.get(stopId) ?? null)
-        );
+        return this.loadRecord(index, entry);
       })
     );
   }
@@ -184,8 +203,51 @@ export class StopDirectoryService {
     );
   }
 
+  getOptionByStopSignature(
+    consortiumId: number,
+    stopId: string
+  ): Observable<StopDirectoryOption | null> {
+    return this.index$.pipe(
+      map((index) => {
+        const key = buildEntryKey(consortiumId, stopId);
+        const option = index.optionsByComposite.get(key);
+
+        if (option) {
+          return option;
+        }
+
+        const entry = index.compositeEntries.get(key);
+
+        if (!entry) {
+          return null;
+        }
+
+        const groupKey = buildGroupKey(entry);
+        const members = index.groups.get(groupKey) ?? [entry];
+        const primaryEntry = members[0] ?? entry;
+
+        return toOption(primaryEntry, members);
+      })
+    );
+  }
+
   searchStops(request: StopSearchRequest): Observable<readonly StopDirectoryOption[]> {
     return this.index$.pipe(map((index) => searchDirectory(index, request)));
+  }
+
+  private loadRecord(
+    index: StopDirectoryIndex,
+    entry: StopDirectorySearchEntry
+  ): Observable<StopDirectoryRecord | null> {
+    const descriptor = index.chunks.get(entry.chunkId);
+
+    if (!descriptor) {
+      return of(null);
+    }
+
+    return this.loadChunkRecords(descriptor).pipe(
+      map((records) => records.get(entry.stopId) ?? null)
+    );
   }
 
   private loadChunkRecords(descriptor: StopDirectoryChunkDescriptor): Observable<ChunkRecords> {
@@ -217,10 +279,14 @@ function resolveChunkBasePath(indexPath: string): string {
 
 function buildDirectoryIndex(file: StopDirectoryIndexFile): StopDirectoryIndex {
   const entries = new Map<string, StopDirectorySearchEntry>();
+  const compositeEntries = new Map<string, StopDirectorySearchEntry>();
   const groups = new Map<string, StopDirectorySearchEntry[]>();
 
   for (const entry of file.searchIndex) {
-    entries.set(entry.stopId, entry);
+    if (!entries.has(entry.stopId)) {
+      entries.set(entry.stopId, entry);
+    }
+    compositeEntries.set(buildEntryKey(entry.consortiumId, entry.stopId), entry);
     const key = buildGroupKey(entry);
     const bucket = groups.get(key);
 
@@ -247,11 +313,16 @@ function buildDirectoryIndex(file: StopDirectoryIndexFile): StopDirectoryIndex {
     }))
     .sort((first, second) => first.entry.name.localeCompare(second.entry.name, SEARCH_LOCALE));
 
+  const frozenGroups = freezeGroups(groups);
+  const optionsByComposite = buildCompositeOptionMap(frozenGroups);
+
   return {
     searchable: Object.freeze(searchable),
     entries,
+    compositeEntries,
     chunks,
-    groups: freezeGroups(groups)
+    groups: frozenGroups,
+    optionsByComposite
   } satisfies StopDirectoryIndex;
 }
 
@@ -283,10 +354,33 @@ function freezeGroups(
   groups: Map<string, StopDirectorySearchEntry[]>
 ): ReadonlyMap<string, readonly StopDirectorySearchEntry[]> {
   const entries = Array.from(groups.entries(), ([key, value]) => {
-    return [key, Object.freeze([...value])] as const;
+    const sorted = [...value].sort(compareGroupEntries);
+    return [key, Object.freeze(sorted)] as const;
   });
 
   return new Map(entries);
+}
+
+function compareGroupEntries(
+  first: StopDirectorySearchEntry,
+  second: StopDirectorySearchEntry
+): number {
+  const nameComparison = first.name.localeCompare(second.name, SEARCH_LOCALE);
+
+  if (nameComparison !== 0) {
+    return nameComparison;
+  }
+
+  const municipalityComparison = first.municipality.localeCompare(
+    second.municipality,
+    SEARCH_LOCALE
+  );
+
+  if (municipalityComparison !== 0) {
+    return municipalityComparison;
+  }
+
+  return first.stopId.localeCompare(second.stopId, SEARCH_LOCALE);
 }
 
 function searchDirectory(
@@ -298,8 +392,12 @@ function searchDirectory(
   }
 
   const trimmedQuery = request.query.trim();
-  const includeSet = request.includeStopIds ? new Set(request.includeStopIds) : null;
-  const excludeStopId = request.excludeStopId ?? null;
+  const includeSet = request.includeStopSignatures
+    ? new Set(request.includeStopSignatures.map(buildSignatureKey))
+    : null;
+  const excludeSignatureKey = request.excludeStopSignature
+    ? buildSignatureKey(request.excludeStopSignature)
+    : null;
   const hasSufficientQuery = trimmedQuery.length >= MIN_QUERY_LENGTH;
   const normalizedQuery = hasSufficientQuery ? normalize(trimmedQuery) : null;
 
@@ -314,17 +412,16 @@ function searchDirectory(
     const entry = item.entry;
     const groupKey = buildGroupKey(entry);
     const groupMembers = index.groups.get(groupKey) ?? [entry];
-    const groupIncludesExcludedStop = excludeStopId
-      ? groupMembers.some((member) => member.stopId === excludeStopId)
+    const memberKeys = groupMembers.map((member) => buildEntryKey(member.consortiumId, member.stopId));
+    const groupIncludesExcludedStop = excludeSignatureKey
+      ? memberKeys.some((key) => key === excludeSignatureKey)
       : false;
 
     if (groupIncludesExcludedStop) {
       continue;
     }
 
-    const isIncluded = includeSet
-      ? groupMembers.some((member) => includeSet.has(member.stopId))
-      : false;
+    const isIncluded = includeSet ? memberKeys.some((key) => includeSet.has(key)) : false;
     const matchesQuery = normalizedQuery ? matchesSearch(item, normalizedQuery) : false;
 
     if (!normalizedQuery && includeSet && !isIncluded) {
@@ -343,15 +440,51 @@ function searchDirectory(
       continue;
     }
 
-    results.push(toOption(entry, groupMembers));
+    results.push(toOption(groupMembers[0] ?? entry, groupMembers));
     addedGroups.add(groupKey);
   }
 
   return Object.freeze(results);
 }
 
+function buildCompositeOptionMap(
+  groups: ReadonlyMap<string, readonly StopDirectorySearchEntry[]>
+): ReadonlyMap<string, StopDirectoryOption> {
+  const entries = new Map<string, StopDirectoryOption>();
+
+  groups.forEach((members) => {
+    const primary = members[0];
+
+    if (!primary) {
+      return;
+    }
+
+    const option = toOption(primary, members);
+    const primaryStopId = option.stopIds[0] ?? primary.stopId;
+    entries.set(buildEntryKey(primary.consortiumId, primaryStopId), option);
+
+    members.forEach((member) => {
+      entries.set(buildEntryKey(member.consortiumId, member.stopId), option);
+    });
+  });
+
+  return new Map(entries);
+}
+
 function buildGroupKey(entry: StopDirectorySearchEntry): string {
-  return `${entry.consortiumId}|${entry.nucleusId}|${normalize(entry.name)}`;
+  const normalizedName = normalize(entry.name);
+
+  return [entry.consortiumId, entry.nucleusId, normalizedName].join(
+    SIGNATURE_KEY_SEPARATOR
+  );
+}
+
+function buildEntryKey(consortiumId: number, stopId: string): string {
+  return `${consortiumId}${ENTRY_KEY_SEPARATOR}${stopId}`;
+}
+
+function buildSignatureKey(signature: StopDirectoryStopSignature): string {
+  return buildEntryKey(signature.consortiumId, signature.stopId);
 }
 
 function matchesSearch(record: SearchableStopRecord, normalizedQuery: string): boolean {
@@ -380,7 +513,7 @@ function toOption(
   }
 
   return {
-    id: entry.stopId,
+    id: buildEntryKey(entry.consortiumId, entry.stopId),
     code: entry.stopCode,
     name: entry.name,
     municipality: entry.municipality,

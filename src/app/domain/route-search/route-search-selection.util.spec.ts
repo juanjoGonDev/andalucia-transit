@@ -1,5 +1,8 @@
 import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
-import { StopConnection } from '../../data/route-search/stop-connections.service';
+import {
+  StopConnection,
+  buildStopConnectionKey
+} from '../../data/route-search/stop-connections.service';
 import { RouteSearchLineMatch } from './route-search-state.service';
 import {
   collectRouteLineMatches,
@@ -8,7 +11,7 @@ import {
 
 describe('route-search-selection.util', () => {
   const origin: StopDirectoryOption = {
-    id: 'origin-group',
+    id: '7:74',
     code: 'origin-code',
     name: 'Origin Stop',
     municipality: 'Origin City',
@@ -20,7 +23,7 @@ describe('route-search-selection.util', () => {
   };
 
   const destination: StopDirectoryOption = {
-    id: 'destination-group',
+    id: '7:100',
     code: 'destination-code',
     name: 'Destination Stop',
     municipality: 'Destination City',
@@ -34,8 +37,9 @@ describe('route-search-selection.util', () => {
   it('collects line matches ordered by origin and destination preference', () => {
     const connections = new Map<string, StopConnection>([
       [
-        '100',
+        buildStopConnectionKey(7, '100'),
         {
+          consortiumId: 7,
           stopId: '100',
           originStopIds: ['75', '74'],
           lineSignatures: [

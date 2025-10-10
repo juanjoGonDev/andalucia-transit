@@ -127,11 +127,14 @@
     "upcomingLabel": "En {{time}}",
     "pastLabel": "Hace {{time}}",
     "nextBadge": "Siguiente",
+    "previousBadge": "Anterior",
     "noUpcoming": "No hay más salidas directas para esta fecha en las próximas horas.",
     "changeDate": "Buscar otra fecha",
     "emptyResults": "No se encontraron servicios para esta ruta.",
     "arrivalAt": "Llega a las {{time}}",
-    "travelDuration": "Trayecto {{duration}}"
+    "travelDuration": "Trayecto {{duration}}",
+    "holidayBadge": "Servicio festivo",
+    "estimateNotice": "Horarios estimados con los datos oficiales de la Junta de Andalucía."
   },
   "map": {
     "title": "Mapa de la red",

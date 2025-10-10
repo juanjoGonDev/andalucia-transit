@@ -7,18 +7,20 @@ import { RouteSearchFormComponent } from './route-search-form.component';
 import {
   StopDirectoryOption,
   StopDirectoryService,
+  StopDirectoryStopSignature,
   StopSearchRequest
 } from '../../../data/stops/stop-directory.service';
 import {
   StopConnection,
   StopConnectionsService,
   STOP_CONNECTION_DIRECTION,
-  StopConnectionDirection
+  StopConnectionDirection,
+  buildStopConnectionKey
 } from '../../../data/route-search/stop-connections.service';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 
 const ORIGIN_OPTION: StopDirectoryOption = {
-  id: 'origin-group',
+  id: '7:origin-stop',
   code: '001',
   name: 'La Gangosa - Av. del Prado',
   municipality: 'La Gangosa',
@@ -30,7 +32,7 @@ const ORIGIN_OPTION: StopDirectoryOption = {
 };
 
 const DESTINATION_OPTION: StopDirectoryOption = {
-  id: 'destination-group',
+  id: '7:destination-stop',
   code: '002',
   name: 'Estación Intermodal',
   municipality: 'Almería',
@@ -40,6 +42,9 @@ const DESTINATION_OPTION: StopDirectoryOption = {
   consortiumId: 7,
   stopIds: ['destination-stop']
 };
+
+const ORIGIN_SIGNATURES: readonly StopDirectoryStopSignature[] = buildSignatures(ORIGIN_OPTION);
+const DESTINATION_SIGNATURES: readonly StopDirectoryStopSignature[] = buildSignatures(DESTINATION_OPTION);
 
 class DirectoryStub {
   lastRequest: StopSearchRequest | null = null;
@@ -66,20 +71,29 @@ class ConnectionsStub {
   private readonly responses = new Map<string, ReadonlyMap<string, StopConnection>>();
 
   setResponse(
-    stopIds: readonly string[],
+    signatures: readonly StopDirectoryStopSignature[],
     direction: StopConnectionDirection,
     connections: ReadonlyMap<string, StopConnection>
   ): void {
-    this.responses.set(this.buildKey(stopIds, direction), connections);
+    this.responses.set(this.buildKey(signatures, direction), connections);
   }
 
-  getConnections(stopIds: readonly string[], direction: StopConnectionDirection) {
-    const key = this.buildKey(stopIds, direction);
+  getConnections(
+    signatures: readonly StopDirectoryStopSignature[],
+    direction: StopConnectionDirection
+  ) {
+    const key = this.buildKey(signatures, direction);
     return of(this.responses.get(key) ?? new Map());
   }
 
-  private buildKey(stopIds: readonly string[], direction: StopConnectionDirection): string {
-    return `${direction}|${[...stopIds].sort().join('|')}`;
+  private buildKey(
+    signatures: readonly StopDirectoryStopSignature[],
+    direction: StopConnectionDirection
+  ): string {
+    const sorted = [...signatures]
+      .map((signature) => buildStopConnectionKey(signature.consortiumId, signature.stopId))
+      .sort();
+    return `${direction}|${sorted.join('|')}`;
   }
 }
 
@@ -117,18 +131,24 @@ describe('RouteSearchFormComponent', () => {
 
   it('emits a selection when a compatible route exists', async () => {
     const forwardConnections = new Map<string, StopConnection>([
-      [DESTINATION_OPTION.stopIds[0], buildConnection(DESTINATION_OPTION.stopIds[0])]
+      [
+        buildStopConnectionKey(DESTINATION_OPTION.consortiumId, DESTINATION_OPTION.stopIds[0]),
+        buildConnection(DESTINATION_OPTION.stopIds[0], DESTINATION_OPTION.consortiumId)
+      ]
     ]);
     const backwardConnections = new Map<string, StopConnection>([
-      [ORIGIN_OPTION.stopIds[0], buildConnection(ORIGIN_OPTION.stopIds[0])]
+      [
+        buildStopConnectionKey(ORIGIN_OPTION.consortiumId, ORIGIN_OPTION.stopIds[0]),
+        buildConnection(ORIGIN_OPTION.stopIds[0], ORIGIN_OPTION.consortiumId)
+      ]
     ]);
     connections.setResponse(
-      ORIGIN_OPTION.stopIds,
+      ORIGIN_SIGNATURES,
       STOP_CONNECTION_DIRECTION.Forward,
       forwardConnections
     );
     connections.setResponse(
-      DESTINATION_OPTION.stopIds,
+      DESTINATION_SIGNATURES,
       STOP_CONNECTION_DIRECTION.Backward,
       backwardConnections
     );
@@ -201,12 +221,22 @@ interface RouteSearchFormComponentPublicApi {
   ): Promise<RouteSearchSelection | null>;
 }
 
-function buildConnection(stopId: string): StopConnection {
+function buildConnection(stopId: string, consortiumId: number): StopConnection {
   return {
+    consortiumId,
     stopId,
     originStopIds: ORIGIN_OPTION.stopIds,
     lineSignatures: [
       { lineId: 'line', lineCode: '001', direction: 0 }
     ]
   };
+}
+
+function buildSignatures(
+  option: StopDirectoryOption
+): readonly StopDirectoryStopSignature[] {
+  return option.stopIds.map((stopId) => ({
+    consortiumId: option.consortiumId,
+    stopId
+  }));
 }

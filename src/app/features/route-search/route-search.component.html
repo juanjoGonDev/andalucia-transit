@@ -43,6 +43,9 @@
           </header>
 
           <section class="route-search__timeline" *ngIf="hasResults(); else noLines">
+            <p class="route-search__estimate-notice">
+              {{ translationKeys.estimateNotice | translate }}
+            </p>
             <ul class="route-search__items">
               <li
                 *ngFor="let item of departures(); trackBy: trackDeparture"
@@ -62,14 +65,28 @@
                         {{ translationKeys.pastLabel | translate:{ time: item.relativeLabel } }}
                       </ng-template>
                     </span>
-                    <span *ngIf="item.isNext" class="route-search__item-badge">
+                    <span
+                      *ngIf="item.isMostRecentPast"
+                      class="route-search__item-badge route-search__item-badge--previous route-search__item-badge--align-end"
+                    >
+                      {{ translationKeys.previousBadge | translate }}
+                    </span>
+                    <span
+                      *ngIf="item.isNext"
+                      class="route-search__item-badge route-search__item-badge--next route-search__item-badge--align-end"
+                    >
                       {{ translationKeys.nextBadge | translate }}
                     </span>
                   </div>
                   <div class="route-search__item-details">
                     <div class="route-search__item-line-info">
                       <span class="route-search__item-line">{{ item.lineCode }}</span>
-                      <span class="route-search__item-direction">#{{ item.direction }}</span>
+                      <span
+                        *ngIf="item.isHolidayService"
+                        class="route-search__item-frequency route-search__item-frequency--holiday"
+                      >
+                        {{ translationKeys.holidayBadge | translate }}
+                      </span>
                     </div>
                     <span class="route-search__item-destination">{{ item.destination }}</span>
                     <div
@@ -103,24 +120,26 @@
                     </span>
                   </div>
                   <div
-                    class="route-search__item-progress"
-                    *ngIf="item.kind === 'upcoming'"
-                    aria-hidden="true"
+                    *ngIf="item.kind === 'upcoming' && item.showUpcomingProgress"
+                    class="route-search__item-progress-group"
                   >
-                    <div
-                      class="route-search__item-progress-bar"
-                      [style.width.%]="item.progressPercentage"
-                    ></div>
+                    <div class="route-search__item-progress route-search__item-progress--upcoming" aria-hidden="true">
+                      <div
+                        class="route-search__item-progress-bar route-search__item-progress-bar--upcoming"
+                        [style.width.%]="item.progressPercentage"
+                      ></div>
+                    </div>
                   </div>
                   <div
-                    class="route-search__item-progress route-search__item-progress--past"
                     *ngIf="item.kind === 'past' && item.pastProgressPercentage > 0"
-                    aria-hidden="true"
+                    class="route-search__item-progress-group"
                   >
-                    <div
-                      class="route-search__item-progress-bar"
-                      [style.width.%]="item.pastProgressPercentage"
-                    ></div>
+                    <div class="route-search__item-progress route-search__item-progress--past" aria-hidden="true">
+                      <div
+                        class="route-search__item-progress-bar"
+                        [style.width.%]="item.pastProgressPercentage"
+                      ></div>
+                    </div>
                   </div>
                 </li>
             </ul>

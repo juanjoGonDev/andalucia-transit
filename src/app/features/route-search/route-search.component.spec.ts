@@ -53,12 +53,24 @@ class RouteSearchSelectionResolverServiceStub {
     .and.returnValue(of(null));
 }
 
+class ActivatedRouteStub {
+  private readonly subject = new BehaviorSubject<ParamMap>(convertToParamMap({}));
+  readonly paramMap = this.subject.asObservable();
+  snapshot = { paramMap: convertToParamMap({}) };
+
+  emit(params: Record<string, string>): void {
+    const map = convertToParamMap(params);
+    this.snapshot = { paramMap: map };
+    this.subject.next(map);
+  }
+}
+
 describe('RouteSearchComponent', () => {
   let fixture: ComponentFixture<RouteSearchComponent>;
   let state: RouteSearchStateService;
   let resultsService: RouteSearchResultsServiceStub;
   let resolver: RouteSearchSelectionResolverServiceStub;
-  let paramMapSubject: BehaviorSubject<ParamMap>;
+  let activatedRoute: ActivatedRouteStub;
 
   const origin: StopDirectoryOption = {
     id: 'alpha',
@@ -85,7 +97,7 @@ describe('RouteSearchComponent', () => {
   };
 
   beforeEach(async () => {
-    paramMapSubject = new BehaviorSubject<ParamMap>(convertToParamMap({}));
+    activatedRoute = new ActivatedRouteStub();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -102,7 +114,7 @@ describe('RouteSearchComponent', () => {
           provide: RouteSearchSelectionResolverService,
           useClass: RouteSearchSelectionResolverServiceStub
         },
-        { provide: ActivatedRoute, useValue: { paramMap: paramMapSubject.asObservable() } }
+        { provide: ActivatedRoute, useValue: activatedRoute }
       ]
     })
       .overrideComponent(RouteSearchComponent, {
@@ -134,8 +146,11 @@ describe('RouteSearchComponent', () => {
       waitTimeSeconds: 300,
       kind: 'upcoming',
       isNext: true,
+      isMostRecentPast: false,
       isAccessible: true,
       isUniversityOnly: false,
+      isHolidayService: true,
+      showUpcomingProgress: true,
       progressPercentage: 75,
       pastProgressPercentage: 0,
       destinationArrivalTime: new Date('2025-02-02T08:20:00Z'),
@@ -168,6 +183,8 @@ describe('RouteSearchComponent', () => {
     expect(item).not.toBeNull();
     const lineLabel = item?.query(By.css('.route-search__item-line'))?.nativeElement as HTMLElement;
     expect(lineLabel.textContent).toContain('001');
+    const holidayBadge = item?.query(By.css('.route-search__item-frequency'));
+    expect(holidayBadge).not.toBeNull();
     const arrival = item?.query(By.css('.route-search__item-arrival'));
     expect(arrival).not.toBeNull();
   });
@@ -223,8 +240,11 @@ describe('RouteSearchComponent', () => {
           waitTimeSeconds: 600,
           kind: 'past',
           isNext: false,
+          isMostRecentPast: true,
           isAccessible: false,
           isUniversityOnly: false,
+          isHolidayService: false,
+          showUpcomingProgress: false,
           progressPercentage: 0,
           pastProgressPercentage: 33,
           destinationArrivalTime: new Date('2025-02-02T07:45:00Z'),
@@ -261,8 +281,11 @@ describe('RouteSearchComponent', () => {
       waitTimeSeconds: 900,
       kind: 'upcoming',
       isNext: true,
+      isMostRecentPast: false,
       isAccessible: true,
       isUniversityOnly: false,
+      isHolidayService: false,
+      showUpcomingProgress: true,
       progressPercentage: 50,
       pastProgressPercentage: 0,
       destinationArrivalTime: new Date('2025-02-02T08:35:00Z'),
@@ -292,13 +315,11 @@ describe('RouteSearchComponent', () => {
       })
     );
 
-    paramMapSubject.next(
-      convertToParamMap({
-        originSlug: 'alpha-station--alpha',
-        destinationSlug: 'beta-terminal--beta',
-        dateSlug: buildDateSlug(new Date('2025-02-02T00:00:00Z'))
-      })
-    );
+    activatedRoute.emit({
+      originSlug: 'alpha-station--alpha',
+      destinationSlug: 'beta-terminal--beta',
+      dateSlug: buildDateSlug(new Date('2025-02-02T00:00:00Z'))
+    });
 
     fixture.detectChanges();
 

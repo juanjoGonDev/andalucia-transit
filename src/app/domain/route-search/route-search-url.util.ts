@@ -9,14 +9,19 @@ export interface RouteSearchSegments {
 const SLUG_SEPARATOR = '--';
 const WORD_SEPARATOR = '-';
 const MAX_SLUG_LENGTH = 120;
+const CONSORTIUM_PREFIX = 'c';
+const STOP_PREFIX = 's';
 
 export function buildStopSlug(option: StopDirectoryOption): string {
   const primaryStopId = option.stopIds[0] ?? option.id;
   const normalizedName = normalizeSlugValue(option.name);
-  return `${normalizedName}${SLUG_SEPARATOR}${primaryStopId}`;
+  const metadata = `${CONSORTIUM_PREFIX}${option.consortiumId}${STOP_PREFIX}${primaryStopId}`;
+  return `${normalizedName}${SLUG_SEPARATOR}${metadata}`;
 }
 
-export function parseStopSlug(slug: string): { readonly stopId: string } | null {
+export function parseStopSlug(
+  slug: string
+): { readonly consortiumId: number | null; readonly stopId: string } | null {
   if (!slug) {
     return null;
   }
@@ -27,13 +32,28 @@ export function parseStopSlug(slug: string): { readonly stopId: string } | null 
     return null;
   }
 
-  const stopId = slug.slice(separatorIndex + SLUG_SEPARATOR.length);
+  const metadata = slug.slice(separatorIndex + SLUG_SEPARATOR.length);
 
-  if (!stopId) {
+  if (!metadata) {
     return null;
   }
 
-  return { stopId };
+  const consortiumMatch = new RegExp(
+    `^${CONSORTIUM_PREFIX}([0-9]+)${STOP_PREFIX}(.+)$`
+  ).exec(metadata);
+
+  if (consortiumMatch) {
+    const [, consortiumText, stopId] = consortiumMatch;
+    const consortiumId = Number(consortiumText);
+
+    if (Number.isNaN(consortiumId) || !stopId) {
+      return null;
+    }
+
+    return { consortiumId, stopId };
+  }
+
+  return { consortiumId: null, stopId: metadata };
 }
 
 export function buildRouteSearchPath(
