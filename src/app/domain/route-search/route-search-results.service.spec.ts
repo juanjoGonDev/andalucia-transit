@@ -135,7 +135,7 @@ describe('RouteSearchResultsService', () => {
     expect(second.showUpcomingProgress).toBeTrue();
     expect(second.upcomingMarkers.length).toBeGreaterThan(0);
     expect(viewModel.departures[3].showUpcomingProgress).toBeFalse();
-    expect(viewModel.departures[3].upcomingMarkers.length).toBe(0);
+    expect(viewModel.departures[3].upcomingMarkers.length).toBeGreaterThan(0);
     expect(viewModel.departures[3].isHolidayService).toBeTrue();
     expect(viewModel.departures[4].destination).toContain('Servicio especial');
   }));

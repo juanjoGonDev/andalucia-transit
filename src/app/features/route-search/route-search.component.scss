@@ -313,6 +313,10 @@
   background-color: var(--color-upcoming-track);
 }
 
+.route-search__item-progress--inactive {
+  background-color: transparent;
+}
+
 .route-search__item-progress--past {
   background-color: var(--color-past-track);
 }
@@ -361,7 +365,6 @@
 
 .route-search__estimate-notice {
   margin: 0;
-  margin-top: 1rem;
   font-size: 0.75rem;
   color: var(--color-text-muted);
 }

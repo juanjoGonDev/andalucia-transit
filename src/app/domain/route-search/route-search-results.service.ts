@@ -156,8 +156,7 @@ function buildResults(
     showUpcomingProgress: item.showUpcomingProgress,
     progressPercentage: item.kind === 'upcoming' ? item.progressPercentage : 0,
     pastProgressPercentage: item.kind === 'past' ? item.pastProgressPercentage : 0,
-    upcomingMarkers:
-      item.kind === 'upcoming' && item.showUpcomingProgress ? item.upcomingMarkers : [],
+    upcomingMarkers: item.kind === 'upcoming' ? item.upcomingMarkers : [],
     pastMarkers: item.kind === 'past' ? item.pastMarkers : [],
     destinationArrivalTime: item.destinationArrivalTime,
     travelDurationLabel: item.travelDurationLabel
@@ -244,7 +243,7 @@ function createCandidate(
   const originPriority = originOrder.get(originStopId) ?? Number.MAX_SAFE_INTEGER;
   const showUpcomingProgress =
     kind === 'upcoming' && minutesUntilArrival <= ARRIVAL_PROGRESS_WINDOW_MINUTES;
-  const upcomingMarkers = showUpcomingProgress ? UPCOMING_PROGRESS_MARKERS : [];
+  const upcomingMarkers = kind === 'upcoming' ? UPCOMING_PROGRESS_MARKERS : [];
   const pastMarkers = kind === 'past' ? PAST_PROGRESS_MARKERS : [];
 
   return {

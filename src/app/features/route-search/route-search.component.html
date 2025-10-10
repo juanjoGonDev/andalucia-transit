@@ -43,6 +43,9 @@
           </header>
 
           <section class="route-search__timeline" *ngIf="hasResults(); else noLines">
+            <p class="route-search__estimate-notice">
+              {{ translationKeys.estimateNotice | translate }}
+            </p>
             <ul class="route-search__items">
               <li
                 *ngFor="let item of departures(); trackBy: trackDeparture"
@@ -118,7 +121,8 @@
                   </div>
                   <div
                     class="route-search__item-progress route-search__item-progress--upcoming"
-                    *ngIf="item.kind === 'upcoming' && item.showUpcomingProgress"
+                    [class.route-search__item-progress--inactive]="!item.showUpcomingProgress"
+                    *ngIf="item.kind === 'upcoming'"
                     aria-hidden="true"
                   >
                     <ng-container *ngFor="let marker of item.upcomingMarkers">
@@ -129,6 +133,7 @@
                       ></div>
                     </ng-container>
                     <div
+                      *ngIf="item.showUpcomingProgress"
                       class="route-search__item-progress-bar route-search__item-progress-bar--upcoming"
                       [style.width.%]="item.progressPercentage"
                     ></div>
@@ -152,9 +157,6 @@
                   </div>
                 </li>
             </ul>
-            <p class="route-search__estimate-notice">
-              {{ translationKeys.estimateNotice | translate }}
-            </p>
           </section>
 
           <div class="route-search__no-upcoming" *ngIf="showNoUpcoming()">
