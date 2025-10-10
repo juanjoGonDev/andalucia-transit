@@ -6,23 +6,34 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Observable,
+  catchError,
   combineLatest,
+  distinctUntilChanged,
   filter,
   map,
+  of,
   shareReplay,
   startWith,
-  switchMap,
-  distinctUntilChanged
+  switchMap
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { APP_CONFIG } from '../../core/config';
 import { StopScheduleService } from '../../data/services/stop-schedule.service';
-import { buildStopScheduleUiModel, StopScheduleUiModel } from '../../domain/stop-schedule/stop-schedule.transform';
+import {
+  buildStopScheduleUiModel,
+  StopScheduleUiModel
+} from '../../domain/stop-schedule/stop-schedule.transform';
+import { StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
 
 const ALL_DESTINATIONS_OPTION = 'all';
 
 type ScheduleItem = StopScheduleUiModel['upcoming'][number] | StopScheduleUiModel['past'][number];
+
+type ScheduleState =
+  | { readonly status: 'loading' }
+  | { readonly status: 'error' }
+  | { readonly status: 'success'; readonly result: StopScheduleResult };
 
 @Component({
   selector: 'app-stop-detail',
@@ -57,12 +68,35 @@ export class StopDetailComponent {
     filter((stopId): stopId is string => stopId !== null)
   );
 
-  private readonly scheduleResult$ = this.stopId$.pipe(
-    switchMap((stopId) => this.stopScheduleService.getStopSchedule(stopId)),
-    shareReplay({ bufferSize: 1, refCount: false })
+  private readonly scheduleState$: Observable<ScheduleState> = this.stopId$.pipe(
+    switchMap((stopId) =>
+      this.stopScheduleService.getStopSchedule(stopId).pipe(
+        map((result) => ({ status: 'success', result }) as const),
+        startWith({ status: 'loading' } as const),
+        catchError(() => of({ status: 'error' } as const))
+      )
+    ),
+    shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  protected readonly isLoading$ = this.scheduleResult$.pipe(map(() => false), startWith(true));
+  private readonly scheduleResult$: Observable<StopScheduleResult> = this.scheduleState$.pipe(
+    filter(
+      (state): state is Extract<ScheduleState, { status: 'success' }> =>
+        state.status === 'success'
+    ),
+    map((state) => state.result),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
+  protected readonly isLoading$ = this.scheduleState$.pipe(
+    map((state) => state.status === 'loading'),
+    distinctUntilChanged()
+  );
+
+  protected readonly loadError$ = this.scheduleState$.pipe(
+    map((state) => state.status === 'error'),
+    distinctUntilChanged()
+  );
 
   protected readonly viewModel$: Observable<StopScheduleUiModel> = combineLatest([
     this.scheduleResult$,

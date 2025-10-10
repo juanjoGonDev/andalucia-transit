@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { APP_CONFIG } from '../../core/config';
@@ -68,6 +68,37 @@ describe('StopDetailComponent', () => {
       APP_CONFIG.routes.home
     ]);
     expect(scheduleService.getStopSchedule).not.toHaveBeenCalled();
+  }));
+
+  it('shows an error message when the schedule request fails', fakeAsync(() => {
+    scheduleService.getStopSchedule.and.returnValue(throwError(() => new Error('Network error')));
+
+    fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const errorText = fixture.nativeElement.querySelector('.stop-detail__error-text');
+    expect(errorText?.textContent?.trim()).toBe(APP_CONFIG.translationKeys.stopDetail.error.title);
+  }));
+
+  it('recovers from errors when navigating to a different stop', fakeAsync(() => {
+    scheduleService.getStopSchedule.and.returnValues(
+      throwError(() => new Error('Unavailable')),
+      of(createResult('stop-avenue-center'))
+    );
+
+    fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+    tick();
+
+    expect(scheduleService.getStopSchedule).toHaveBeenCalledTimes(1);
+
+    paramMapSubject.next(convertToParamMap({ stopId: 'stop-avenue-center' }));
+    tick();
+
+    expect(scheduleService.getStopSchedule).toHaveBeenCalledTimes(2);
+    expect(scheduleService.getStopSchedule).toHaveBeenCalledWith('stop-avenue-center');
   }));
 });
 

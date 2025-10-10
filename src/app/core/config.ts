@@ -157,6 +157,10 @@ export const APP_CONFIG = {
       title: 'stopDetail.title',
       subtitle: 'stopDetail.subtitle',
       loading: 'stopDetail.loading',
+      error: {
+        title: 'stopDetail.error.title',
+        description: 'stopDetail.error.description'
+      },
       header: {
         stopCodeLabel: 'stopDetail.header.stopCodeLabel',
         scheduleDateLabel: 'stopDetail.header.scheduleDateLabel',

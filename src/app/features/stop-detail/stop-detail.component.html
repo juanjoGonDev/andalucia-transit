@@ -9,6 +9,18 @@
   </ng-container>
 
   <ng-template #scheduleContent>
+    <ng-container *ngIf="loadError$ | async; else scheduleLoaded">
+      <mat-card class="stop-detail__card stop-detail__card--centered" appearance="outlined">
+        <div class="stop-detail__error">
+          <span class="material-symbols-outlined stop-detail__error-icon">warning</span>
+          <p class="stop-detail__error-text">{{ translationKeys.error.title | translate }}</p>
+          <p class="stop-detail__error-description">{{ translationKeys.error.description | translate }}</p>
+        </div>
+      </mat-card>
+    </ng-container>
+  </ng-template>
+
+  <ng-template #scheduleLoaded>
     <ng-container *ngIf="viewModel$ | async as viewModel">
       <mat-card class="stop-detail__card" appearance="outlined">
         <div class="stop-detail__summary">
