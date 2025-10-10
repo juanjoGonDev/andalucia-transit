@@ -4,12 +4,25 @@
     "stopDetail": "Stop detail",
     "routeSearch": "Route search",
     "map": "Map",
+    "settings": "Settings",
     "language": "Language",
     "lines": "Lines"
   },
   "languages": {
     "es": "Spanish",
     "en": "English"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your preferences for Andalucia Transit.",
+    "language": {
+      "title": "Language",
+      "description": "Choose the language used across the application."
+    },
+    "version": {
+      "title": "Application version",
+      "label": "Version {{ version }}"
+    }
   },
   "home": {
     "header": {

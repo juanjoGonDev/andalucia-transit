@@ -4,12 +4,25 @@
     "stopDetail": "Detalle de parada",
     "routeSearch": "Buscar ruta",
     "map": "Mapa",
+    "settings": "Configuración",
     "language": "Idioma",
     "lines": "Líneas"
   },
   "languages": {
     "es": "Español",
     "en": "Inglés"
+  },
+  "settings": {
+    "title": "Configuración",
+    "description": "Gestiona tus preferencias de Andalucia Transit.",
+    "language": {
+      "title": "Idioma",
+      "description": "Elige el idioma que se usará en la aplicación."
+    },
+    "version": {
+      "title": "Versión de la aplicación",
+      "label": "Versión {{ version }}"
+    }
   },
   "home": {
     "header": {

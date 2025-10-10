@@ -6,6 +6,7 @@ const ROUTE_SEARCH_DATE_SEGMENT = 'on' as const;
 const ROUTE_SEARCH_ORIGIN_PARAM = 'originSlug' as const;
 const ROUTE_SEARCH_DESTINATION_PARAM = 'destinationSlug' as const;
 const ROUTE_SEARCH_DATE_PARAM = 'dateSlug' as const;
+const SETTINGS_ROUTE_SEGMENT = 'settings' as const;
 const DATA_PROVIDER_NAME =
   'Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía' as const;
 const DATA_TIMEZONE = 'Europe/Madrid' as const;
@@ -53,7 +54,8 @@ export const APP_CONFIG = {
     routeSearch: ROUTE_SEARCH_BASE_SEGMENT,
     routeSearchResultPattern:
       `${ROUTE_SEARCH_BASE_SEGMENT}/:${ROUTE_SEARCH_ORIGIN_PARAM}/${ROUTE_SEARCH_CONNECTOR_SEGMENT}/:${ROUTE_SEARCH_DESTINATION_PARAM}/${ROUTE_SEARCH_DATE_SEGMENT}/:${ROUTE_SEARCH_DATE_PARAM}` as const,
-    map: 'map' as const
+    map: 'map' as const,
+    settings: SETTINGS_ROUTE_SEGMENT
   },
   routeSegments: {
     routeSearch: {
@@ -78,6 +80,7 @@ export const APP_CONFIG = {
       stopDetail: 'navigation.stopDetail',
       routeSearch: 'navigation.routeSearch',
       map: 'navigation.map',
+      settings: 'navigation.settings',
       language: 'navigation.language',
       lines: 'navigation.lines'
     },
@@ -219,6 +222,18 @@ export const APP_CONFIG = {
       description: 'map.description',
       openList: 'map.openList',
       hint: 'map.hint'
+    },
+    settings: {
+      title: 'settings.title',
+      description: 'settings.description',
+      language: {
+        title: 'settings.language.title',
+        description: 'settings.language.description'
+      },
+      version: {
+        title: 'settings.version.title',
+        label: 'settings.version.label'
+      }
     }
   },
   homeData: {

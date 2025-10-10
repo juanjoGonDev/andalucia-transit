@@ -3,10 +3,31 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const runtimeFlagsPath = resolve('src/assets/runtime-flags.js');
-const snapshotFlags = "window.__ANDALUCIA_TRANSIT_FLAGS__ = Object.freeze({ forceSnapshot: true });\n";
+const packageJsonPath = resolve('package.json');
+const runtimeFlagsProperty = '__ANDALUCIA_TRANSIT_FLAGS__';
+const versionGlobalProperty = 'NG_APP_VERSION';
+
+const readPackageVersion = async () => {
+  const packageContent = await readFile(packageJsonPath, { encoding: 'utf-8' });
+  const { version } = JSON.parse(packageContent);
+
+  return version;
+};
+
+const resolveVersion = async () => {
+  return process.env[versionGlobalProperty] ?? (await readPackageVersion());
+};
+
+const buildSnapshotFlags = async () => {
+  const version = await resolveVersion();
+  const versionLiteral = JSON.stringify(version);
+
+  return `window.${runtimeFlagsProperty} = Object.freeze({ forceSnapshot: true });\nwindow.${versionGlobalProperty} = ${versionLiteral};\n`;
+};
 
 async function main() {
   const originalContent = await readFile(runtimeFlagsPath, 'utf-8');
+  const snapshotFlags = await buildSnapshotFlags();
 
   await writeFile(runtimeFlagsPath, snapshotFlags, { encoding: 'utf-8' });
 

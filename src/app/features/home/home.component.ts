@@ -101,6 +101,11 @@ export class HomeComponent {
       commands: this.buildCommands(APP_CONFIG.routes.map)
     },
     {
+      labelKey: this.navigation.settings,
+      icon: 'settings',
+      commands: this.buildCommands(APP_CONFIG.routes.settings)
+    },
+    {
       labelKey: this.navigation.lines,
       icon: 'route',
       commands: this.buildCommands(APP_CONFIG.routes.routeSearch)

@@ -8,5 +8,6 @@ describe('App Routes', () => {
     expect(routePaths).toContain(APP_CONFIG.routes.stopDetailPattern);
     expect(routePaths).toContain(APP_CONFIG.routes.routeSearch);
     expect(routePaths).toContain(APP_CONFIG.routes.map);
+    expect(routePaths).toContain(APP_CONFIG.routes.settings);
   });
 });
