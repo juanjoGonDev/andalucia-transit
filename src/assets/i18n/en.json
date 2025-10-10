@@ -134,9 +134,7 @@
     "arrivalAt": "Arrives at {{time}}",
     "travelDuration": "Trip {{duration}}",
     "holidayBadge": "Holiday service",
-    "estimateNotice": "Times are estimates based on Junta de Andalucía schedule data.",
-    "upcomingMarkerHint": "Could arrive between {{start}} and {{end}}.",
-    "pastMarkerHint": "Could have departed between {{start}} and {{end}}."
+    "estimateNotice": "Times are estimates based on Junta de Andalucía schedule data."
   },
   "map": {
     "title": "Network map",

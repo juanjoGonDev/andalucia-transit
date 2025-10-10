@@ -24,11 +24,9 @@ $theme: mat.define-theme(
   --color-upcoming-strong: #0f9d58;
   --color-upcoming-soft: rgba(15, 157, 88, 0.16);
   --color-upcoming-track: rgba(15, 157, 88, 0.25);
-  --color-upcoming-marker: rgba(15, 157, 88, 0.35);
   --color-past-strong: #c2410c;
   --color-past-soft: rgba(194, 65, 12, 0.18);
   --color-past-track: rgba(194, 65, 12, 0.26);
-  --color-past-marker: rgba(194, 65, 12, 0.32);
   --color-holiday-strong: #0b7285;
   --color-holiday-soft: rgba(11, 114, 133, 0.16);
   --color-background-light: #f6f7f8;
@@ -65,11 +63,9 @@ $theme: mat.define-theme(
   --color-upcoming-strong: #34d399;
   --color-upcoming-soft: rgba(52, 211, 153, 0.22);
   --color-upcoming-track: rgba(52, 211, 153, 0.38);
-  --color-upcoming-marker: rgba(52, 211, 153, 0.55);
   --color-past-strong: #fbbf24;
   --color-past-soft: rgba(251, 191, 36, 0.28);
   --color-past-track: rgba(251, 191, 36, 0.42);
-  --color-past-marker: rgba(251, 191, 36, 0.6);
   --color-holiday-strong: #67e8f9;
   --color-holiday-soft: rgba(103, 232, 249, 0.24);
 }

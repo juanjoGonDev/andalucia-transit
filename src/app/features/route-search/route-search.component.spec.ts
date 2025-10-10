@@ -16,7 +16,6 @@ import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
 import { buildDateSlug } from '../../domain/route-search/route-search-url.util';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
-import { UPCOMING_EARLY_MARKER, PAST_DELAY_MARKER } from '../../domain/utils/progress.util';
 
 class TranslateTestingLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
@@ -154,15 +153,6 @@ describe('RouteSearchComponent', () => {
       showUpcomingProgress: true,
       progressPercentage: 75,
       pastProgressPercentage: 0,
-      upcomingMarkers: [UPCOMING_EARLY_MARKER],
-      pastMarkers: [],
-      upcomingHints: [
-        {
-          startTime: new Date('2025-02-02T07:55:00Z'),
-          endTime: new Date('2025-02-02T08:00:00Z')
-        }
-      ],
-      pastHints: [],
       destinationArrivalTime: new Date('2025-02-02T08:20:00Z'),
       travelDurationLabel: '15m'
     } satisfies RouteSearchDepartureView;
@@ -257,15 +247,6 @@ describe('RouteSearchComponent', () => {
           showUpcomingProgress: false,
           progressPercentage: 0,
           pastProgressPercentage: 33,
-          upcomingMarkers: [],
-          pastMarkers: [PAST_DELAY_MARKER],
-          upcomingHints: [],
-          pastHints: [
-            {
-              startTime: new Date('2025-02-02T07:35:00Z'),
-              endTime: new Date('2025-02-02T07:40:00Z')
-            }
-          ],
           destinationArrivalTime: new Date('2025-02-02T07:45:00Z'),
           travelDurationLabel: '15m'
         }
@@ -307,15 +288,6 @@ describe('RouteSearchComponent', () => {
       showUpcomingProgress: true,
       progressPercentage: 50,
       pastProgressPercentage: 0,
-      upcomingMarkers: [UPCOMING_EARLY_MARKER],
-      pastMarkers: [],
-      upcomingHints: [
-        {
-          startTime: new Date('2025-02-02T08:10:00Z'),
-          endTime: new Date('2025-02-02T08:15:00Z')
-        }
-      ],
-      pastHints: [],
       destinationArrivalTime: new Date('2025-02-02T08:35:00Z'),
       travelDurationLabel: '15m'
     } satisfies RouteSearchDepartureView;

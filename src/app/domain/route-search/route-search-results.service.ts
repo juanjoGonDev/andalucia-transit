@@ -6,10 +6,6 @@ import { RouteTimetableEntry } from '../../data/route-search/route-timetable.map
 import { RouteSearchLineMatch, RouteSearchSelection } from './route-search-state.service';
 import {
   ARRIVAL_PROGRESS_WINDOW_MINUTES,
-  PAST_DELAY_MARKER,
-  ProgressMarkerPhase,
-  ProgressMarker,
-  UPCOMING_EARLY_MARKER,
   calculatePastProgress,
   calculateUpcomingProgress
 } from '../utils/progress.util';
@@ -46,17 +42,8 @@ export interface RouteSearchDepartureView {
   readonly showUpcomingProgress: boolean;
   readonly progressPercentage: number;
   readonly pastProgressPercentage: number;
-  readonly upcomingMarkers: readonly ProgressMarker[];
-  readonly pastMarkers: readonly ProgressMarker[];
-  readonly upcomingHints: readonly RouteSearchProgressMarkerHint[];
-  readonly pastHints: readonly RouteSearchProgressMarkerHint[];
   readonly destinationArrivalTime: Date | null;
   readonly travelDurationLabel: string | null;
-}
-
-export interface RouteSearchProgressMarkerHint {
-  readonly startTime: Date;
-  readonly endTime: Date;
 }
 
 interface RouteSearchResultsOptions {
@@ -164,10 +151,6 @@ function buildResults(
     showUpcomingProgress: item.showUpcomingProgress,
     progressPercentage: item.kind === 'upcoming' ? item.progressPercentage : 0,
     pastProgressPercentage: item.kind === 'past' ? item.pastProgressPercentage : 0,
-    upcomingMarkers: item.kind === 'upcoming' ? item.upcomingMarkers : [],
-    pastMarkers: item.kind === 'past' ? item.pastMarkers : [],
-    upcomingHints: item.kind === 'upcoming' ? item.upcomingHints : [],
-    pastHints: item.kind === 'past' ? item.pastHints : [],
     destinationArrivalTime: item.destinationArrivalTime,
     travelDurationLabel: item.travelDurationLabel
   } satisfies RouteSearchDepartureView));
@@ -204,16 +187,9 @@ interface RouteSearchDepartureCandidate {
   readonly showUpcomingProgress: boolean;
   readonly progressPercentage: number;
   readonly pastProgressPercentage: number;
-  readonly upcomingMarkers: readonly ProgressMarker[];
-  readonly pastMarkers: readonly ProgressMarker[];
-  readonly upcomingHints: readonly RouteSearchProgressMarkerHint[];
-  readonly pastHints: readonly RouteSearchProgressMarkerHint[];
   readonly destinationArrivalTime: Date | null;
   readonly travelDurationLabel: string | null;
 }
-
-const UPCOMING_PROGRESS_MARKERS: readonly ProgressMarker[] = [UPCOMING_EARLY_MARKER];
-const PAST_PROGRESS_MARKERS: readonly ProgressMarker[] = [PAST_DELAY_MARKER];
 
 function createCandidate(
   entry: RouteTimetableEntry,
@@ -259,17 +235,6 @@ function createCandidate(
     kind === 'past' ? calculatePastProgress(minutesSinceDeparture) : 0;
   const showUpcomingProgress =
     kind === 'upcoming' && minutesUntilArrival <= ARRIVAL_PROGRESS_WINDOW_MINUTES;
-  const upcomingMarkers = kind === 'upcoming' ? UPCOMING_PROGRESS_MARKERS : [];
-  const pastMarkers = kind === 'past' ? PAST_PROGRESS_MARKERS : [];
-  const upcomingHints =
-    showUpcomingProgress && upcomingMarkers.length > 0
-      ? buildMarkerHints(upcomingMarkers, entry.departureTime)
-      : [];
-  const pastHints =
-    kind === 'past' && pastProgressPercentage > 0 && pastMarkers.length > 0
-      ? buildMarkerHints(pastMarkers, entry.departureTime)
-      : [];
-
   return {
     id: buildCandidateId(entry, match),
     lineId: match.lineId,
@@ -288,10 +253,6 @@ function createCandidate(
     showUpcomingProgress,
     progressPercentage: upcomingProgressPercentage,
     pastProgressPercentage,
-    upcomingMarkers,
-    pastMarkers,
-    upcomingHints,
-    pastHints,
     destinationArrivalTime,
     travelDurationLabel
   } satisfies RouteSearchDepartureCandidate;
@@ -399,27 +360,6 @@ function toStartOfDay(date: Date): Date {
   const copy = new Date(date);
   copy.setHours(0, 0, 0, 0);
   return copy;
-}
-
-function buildMarkerHints(
-  markers: readonly ProgressMarker[],
-  referenceTime: Date
-): RouteSearchProgressMarkerHint[] {
-  return markers.map((marker) => ({
-    startTime: adjustTime(referenceTime, marker.phase, marker.startOffsetMinutes),
-    endTime: adjustTime(referenceTime, marker.phase, marker.endOffsetMinutes)
-  } satisfies RouteSearchProgressMarkerHint));
-}
-
-function adjustTime(
-  base: Date,
-  phase: ProgressMarkerPhase,
-  offsetMinutes: number
-): Date {
-  const direction = phase === 'before' ? -1 : 1;
-  const adjusted = new Date(base);
-  adjusted.setTime(adjusted.getTime() + direction * offsetMinutes * MILLISECONDS_PER_MINUTE);
-  return adjusted;
 }
 
 const DESTINATION_NOTE_SEPARATOR = ' • ' as const;
