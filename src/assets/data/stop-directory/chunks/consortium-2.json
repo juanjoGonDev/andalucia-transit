@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-07T00:00:43.383Z",
+    "generatedAt": "2025-10-11T01:39:19.614Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
     "consortiumName": "Bahía de Cádiz",
-    "stopCount": 177
+    "stopCount": 175
   },
   "stops": [
     {
@@ -96,21 +96,6 @@
       "location": {
         "latitude": 36.425343932229005,
         "longitude": -6.144451709154064
-      }
-    },
-    {
-      "consortiumId": 2,
-      "stopId": "134",
-      "stopCode": "134",
-      "name": "Ant. N-IV-El Paseo",
-      "municipality": "El Puerto de Santa María",
-      "municipalityId": "5",
-      "nucleus": "El Puerto de Santa María",
-      "nucleusId": "8",
-      "zone": "H",
-      "location": {
-        "latitude": 36.614142,
-        "longitude": -6.212519
       }
     },
     {
@@ -1401,21 +1386,6 @@
       "location": {
         "latitude": 36.53151436143342,
         "longitude": -6.305470381012
-      }
-    },
-    {
-      "consortiumId": 2,
-      "stopId": "253",
-      "stopCode": "253",
-      "name": "Facultad Filosofía y Letras",
-      "municipality": "Cádiz",
-      "municipalityId": "1",
-      "nucleus": "Cádiz",
-      "nucleusId": "1",
-      "zone": "A",
-      "location": {
-        "latitude": 36.535881259617064,
-        "longitude": -6.303183138370514
       }
     },
     {
