@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "generatedAt": "2025-10-11T01:26:16.465Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 9,
     "consortiumName": "Costa de Huelva",
-    "itemCount": 42
+    "itemCount": 41
   },
   "lines": [
     {
@@ -84,30 +84,6 @@
       "id": "6",
       "code": "M-312",
       "name": "Ayamonte-Punta Del Moral (Circular)",
-      "mode": "AUTOBUS",
-      "modeId": "2",
-      "operators": [
-        "DAMAS SA"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "37",
-      "code": "M-311",
-      "name": "Cartaya-Punta Umbria",
       "mode": "AUTOBUS",
       "modeId": "2",
       "operators": [
