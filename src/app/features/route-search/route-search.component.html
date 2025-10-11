@@ -42,6 +42,18 @@
             </div>
           </header>
 
+          <div class="route-search__notice" *ngIf="showPastSearchNotice()">
+            <div class="route-search__notice-content">
+              <span class="material-symbols-outlined route-search__notice-icon">history</span>
+              <div class="route-search__notice-text">
+                <p>{{ translationKeys.pastSearchNotice | translate }}</p>
+              </div>
+            </div>
+            <button type="button" class="route-search__notice-button" (click)="searchToday()">
+              {{ translationKeys.searchToday | translate }}
+            </button>
+          </div>
+
           <section class="route-search__timeline" *ngIf="hasResults(); else noLines">
             <p class="route-search__estimate-notice">
               {{ translationKeys.estimateNotice | translate }}
@@ -57,12 +69,16 @@
               >
                   <div class="route-search__item-time">
                     <span class="route-search__item-clock">{{ item.arrivalTime | date: 'HH:mm' }}</span>
-                    <span class="route-search__item-relative" [attr.data-kind]="item.kind">
+                    <span
+                      *ngIf="item.relativeLabel as label"
+                      class="route-search__item-relative"
+                      [attr.data-kind]="item.kind"
+                    >
                       <ng-container *ngIf="item.kind === 'upcoming'; else pastLabel">
-                        {{ translationKeys.upcomingLabel | translate:{ time: item.relativeLabel } }}
+                        {{ translationKeys.upcomingLabel | translate:{ time: label } }}
                       </ng-container>
                       <ng-template #pastLabel>
-                        {{ translationKeys.pastLabel | translate:{ time: item.relativeLabel } }}
+                        {{ translationKeys.pastLabel | translate:{ time: label } }}
                       </ng-template>
                     </span>
                     <span

@@ -138,7 +138,9 @@
     "arrivalAt": "Arrives at {{time}}",
     "travelDuration": "Trip {{duration}}",
     "holidayBadge": "Holiday service",
-    "estimateNotice": "Times are estimates based on Junta de Andalucía schedule data."
+    "estimateNotice": "Times are estimates based on Junta de Andalucía schedule data.",
+    "pastSearchNotice": "You are viewing schedules for a past date. Refresh to see the current services.",
+    "searchToday": "View today's schedules"
   },
   "map": {
     "title": "Network map",

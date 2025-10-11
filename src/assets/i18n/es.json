@@ -138,7 +138,9 @@
     "arrivalAt": "Llega a las {{time}}",
     "travelDuration": "Trayecto {{duration}}",
     "holidayBadge": "Servicio festivo",
-    "estimateNotice": "Horarios estimados con los datos oficiales de la Junta de Andalucía."
+    "estimateNotice": "Horarios estimados con los datos oficiales de la Junta de Andalucía.",
+    "pastSearchNotice": "Estás consultando horarios de una fecha pasada. Actualiza la búsqueda para ver los servicios vigentes.",
+    "searchToday": "Ver horarios de hoy"
   },
   "map": {
     "title": "Mapa de la red",

@@ -42,8 +42,8 @@ export function mapRouteTimetableResponse(
       continue;
     }
 
-    const departureTimeText = item.horas[0] ?? null;
-    const arrivalTimeText = item.horas[1] ?? null;
+    const departureTimeText = findFirstValidTimeText(item.horas ?? []);
+    const arrivalTimeText = findLastValidTimeText(item.horas ?? []);
 
     if (!departureTimeText || !arrivalTimeText) {
       continue;
@@ -112,6 +112,44 @@ function buildDateTime(reference: DateTime, timeText: string): DateTime {
   return reference.set({ hour, minute, second: 0, millisecond: 0 });
 }
 
+function findFirstValidTimeText(values: readonly string[]): string | null {
+  for (const value of values) {
+    const normalized = normalizeTimeText(value);
+
+    if (normalized) {
+      return normalized;
+    }
+  }
+
+  return null;
+}
+
+function findLastValidTimeText(values: readonly string[]): string | null {
+  for (let index = values.length - 1; index >= 0; index -= 1) {
+    const normalized = normalizeTimeText(values[index]);
+
+    if (normalized) {
+      return normalized;
+    }
+  }
+
+  return null;
+}
+
+function normalizeTimeText(value: string | undefined): string | null {
+  if (!value) {
+    return null;
+  }
+
+  const trimmed = value.trim();
+
+  if (!TIME_TEXT_PATTERN.test(trimmed)) {
+    return null;
+  }
+
+  return trimmed;
+}
+
 function createFallbackFrequency(code: string): RouteTimetableFrequency {
   return {
     id: FALLBACK_FREQUENCY_ID,
@@ -163,6 +201,7 @@ interface RouteTimetableFrequencyApi {
 }
 
 const TIME_SEPARATOR = ':' as const;
+const TIME_TEXT_PATTERN = /^\d{1,2}:\d{2}$/;
 const FALLBACK_FREQUENCY_ID = 'fallback';
 const WEEKDAY = {
   Monday: 1,

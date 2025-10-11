@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon';
+
 import { mapRouteTimetableResponse } from './route-timetable.mapper';
 import { ApiRouteTimetableResponse } from './route-timetable.api-service';
 
@@ -188,6 +190,50 @@ describe('RouteTimetableMapper frequency rules', () => {
       }
     });
   }
+
+  it('ignores placeholder time markers when mapping departures', () => {
+    const response: ApiRouteTimetableResponse = {
+      bloques: [],
+      horario: [
+        {
+          idlinea: '47',
+          codigo: 'M-383',
+          horas: ['08:20', '--', '08:48'],
+          dias: 'L-V',
+          observaciones: ''
+        },
+        {
+          idlinea: '19',
+          codigo: 'M-330',
+          horas: ['--', '08:29', '08:57'],
+          dias: 'L-V',
+          observaciones: ''
+        }
+      ],
+      frecuencias: [
+        {
+          idfrecuencia: '1',
+          acronimo: 'L-V',
+          nombre: 'Lunes a viernes'
+        }
+      ]
+    } satisfies ApiRouteTimetableResponse;
+
+    const entries = mapRouteTimetableResponse(response, buildDate('2025-10-06'), { timezone });
+
+    expect(entries.length).toBe(2);
+
+    const [firstEntry, secondEntry] = entries;
+    const firstDeparture = DateTime.fromJSDate(firstEntry.departureTime, { zone: timezone }).toFormat('HH:mm');
+    const firstArrival = DateTime.fromJSDate(firstEntry.arrivalTime, { zone: timezone }).toFormat('HH:mm');
+    const secondDeparture = DateTime.fromJSDate(secondEntry.departureTime, { zone: timezone }).toFormat('HH:mm');
+    const secondArrival = DateTime.fromJSDate(secondEntry.arrivalTime, { zone: timezone }).toFormat('HH:mm');
+
+    expect(firstDeparture).toBe('08:20');
+    expect(firstArrival).toBe('08:48');
+    expect(secondDeparture).toBe('08:29');
+    expect(secondArrival).toBe('08:57');
+  });
 
   function buildResponse(code: string, name: string, includeMetadata: boolean): ApiRouteTimetableResponse {
     const frecuencias = includeMetadata
