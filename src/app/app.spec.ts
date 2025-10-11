@@ -9,11 +9,11 @@ import { Observable, of } from 'rxjs';
 
 import { AppComponent } from './app';
 import { routes } from './app.routes';
-import { HomeComponent } from './features/home/home.component';
 import {
   StopDirectoryOption,
   StopDirectoryService
 } from './data/stops/stop-directory.service';
+import { AppShellComponent } from './shared/layout/app-shell/app-shell.component';
 
 class StopDirectoryTestingService {
   searchStops(): Observable<readonly StopDirectoryOption[]> {
@@ -72,9 +72,10 @@ describe('AppComponent', () => {
 
   it('navigates to the home component for the root path', async () => {
     const harness = await RouterTestingHarness.create();
-    const instance = await harness.navigateByUrl('/', HomeComponent);
-    expect(instance).toBeInstanceOf(HomeComponent);
+    const instance = await harness.navigateByUrl('/', AppShellComponent);
+    expect(instance).toBeInstanceOf(AppShellComponent);
     const rendered = harness.routeNativeElement as HTMLElement;
     expect(rendered.querySelector('.home')).not.toBeNull();
+    expect(rendered.querySelector('app-bottom-navigation')).not.toBeNull();
   });
 });

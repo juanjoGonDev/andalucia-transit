@@ -29,6 +29,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - 2025-10-09: Route search URLs and selectors rely on consortium-aware stop signatures (`consortiumId:stopId`) to disambiguate repeated stop codes when restoring deep links or swapping directions.
 - 2025-10-09: Timetable filtering checks Spanish national and Andalusian public holidays using the Nager.Date API (MIT License) so festivo frequencies are only included when appropriate; document usage in `docs/api-reference.md` before expanding scope.
 - 2025-10-10: Holiday detection filters the Nager.Date dataset to Andalusian entries, and Sunday holidays gain a Monday observance entry to mirror the Junta de Andalucía calendar.
+- 2025-10-11: Page-level components must render only their feature content and register as children of the shared `AppShellComponent`. New pages are created by (1) generating a standalone component inside `src/app/features/<feature-name>/`, (2) exposing the component in the feature `index.ts` when needed by other modules, (3) adding a child route entry beneath the shell route in `app.routes.ts` with titles sourced from `APP_CONFIG.translationKeys`, and (4) placing shared layout elements, including navigation, exclusively inside the shell.
 
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.
