@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-07T00:00:55.808Z",
+    "generatedAt": "2025-10-11T01:15:56.366Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "datasetName": "stop-services"
@@ -17,30 +17,11 @@
       },
       "municipality": "DOS HERMANAS",
       "nucleus": "FUENTE DEL REY (Dos Hermanas) zonaC",
-      "services": [
-        {
-          "lineId": "242",
-          "lineCode": "1320",
-          "lineName": "M-132 Dos Hermanas - Sevilla (Barriadas)",
-          "destination": "SEVILLA",
-          "scheduledTime": "2025-10-07T10:07:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "242",
-          "lineCode": "1320",
-          "lineName": "M-132 Dos Hermanas - Sevilla (Barriadas)",
-          "destination": "SEVILLA",
-          "scheduledTime": "2025-10-07T10:37:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        }
-      ],
+      "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -60,7 +41,7 @@
           "lineCode": "1666",
           "lineName": "M-166 Sanlúcar la Mayor - Sevilla (por Villanueva y A-49)",
           "destination": "SEVILLA",
-          "scheduledTime": "2025-10-07T10:31:00.000Z",
+          "scheduledTime": "2025-10-11T10:31:00.000Z",
           "direction": 1,
           "stopType": 0
         },
@@ -69,33 +50,15 @@
           "lineCode": "1681",
           "lineName": "M-168 Benacazón - Sevilla (por Espartinas)",
           "destination": "SEVILLA",
-          "scheduledTime": "2025-10-07T10:42:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "290",
-          "lineCode": "1020",
-          "lineName": "M-102A Circular Aljarafe (sentido A)",
-          "destination": "SANLUCAR LA MAYOR",
-          "scheduledTime": "2025-10-07T10:46:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "279",
-          "lineCode": "1661",
-          "lineName": "M-166 Sanlúcar la Mayor - Sevilla",
-          "destination": "SEVILLA",
-          "scheduledTime": "2025-10-07T10:48:00.000Z",
+          "scheduledTime": "2025-10-11T10:57:00.000Z",
           "direction": 1,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -115,7 +78,7 @@
           "lineCode": "1720",
           "lineName": "M-170A Santiponce - Sevilla",
           "destination": "SEVILLA",
-          "scheduledTime": "2025-10-07T10:02:00.000Z",
+          "scheduledTime": "2025-10-11T10:17:00.000Z",
           "direction": 1,
           "stopType": 0
         },
@@ -124,15 +87,15 @@
           "lineCode": "1720",
           "lineName": "M-170A Santiponce - Sevilla",
           "destination": "SEVILLA",
-          "scheduledTime": "2025-10-07T10:32:00.000Z",
+          "scheduledTime": "2025-10-11T10:47:00.000Z",
           "direction": 1,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -148,9 +111,9 @@
       "nucleus": "SEVILLA",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -170,7 +133,7 @@
           "lineCode": "1100",
           "lineName": "M-110 La Algaba - Sevilla",
           "destination": "LA ALGABA",
-          "scheduledTime": "2025-10-07T10:04:00.000Z",
+          "scheduledTime": "2025-10-11T10:04:00.000Z",
           "direction": 2,
           "stopType": 0
         },
@@ -179,7 +142,7 @@
           "lineCode": "2160",
           "lineName": "M-216 Brenes - Sevilla",
           "destination": "BRENES",
-          "scheduledTime": "2025-10-07T10:04:00.000Z",
+          "scheduledTime": "2025-10-11T10:04:00.000Z",
           "direction": 2,
           "stopType": 0
         },
@@ -188,15 +151,15 @@
           "lineCode": "1100",
           "lineName": "M-110 La Algaba - Sevilla",
           "destination": "LA ALGABA",
-          "scheduledTime": "2025-10-07T10:34:00.000Z",
+          "scheduledTime": "2025-10-11T10:34:00.000Z",
           "direction": 2,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -212,9 +175,9 @@
       "nucleus": "Penal",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -230,9 +193,9 @@
       "nucleus": "Aeropuerto",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -248,37 +211,46 @@
       "nucleus": "Sanlúcar de Barrameda",
       "services": [
         {
-          "lineId": "225",
-          "lineCode": "M-967",
-          "lineName": "Chipiona-Sanlúcar De Barrameda-Cádiz  (Por Campus De Puerto Real)",
+          "lineId": "163",
+          "lineCode": "M-960",
+          "lineName": "Chipiona-Sanlúcar De Barrameda-Cádiz (Por Puerto Real Y Campus)",
           "destination": "Cádiz",
-          "scheduledTime": "2025-10-07T10:05:00.000Z",
+          "scheduledTime": "2025-10-11T10:05:00.000Z",
           "direction": 1,
           "stopType": 0
         },
         {
-          "lineId": "225",
-          "lineCode": "M-967",
-          "lineName": "Chipiona-Sanlúcar De Barrameda-Cádiz  (Por Campus De Puerto Real)",
+          "lineId": "230",
+          "lineCode": "M-965",
+          "lineName": "Chipiona-Sanlúcar De Barrameda (Sevilla/Utrera)",
           "destination": "Chipiona",
-          "scheduledTime": "2025-10-07T10:28:00.000Z",
+          "scheduledTime": "2025-10-11T10:11:00.000Z",
           "direction": 2,
           "stopType": 0
         },
         {
-          "lineId": "166",
-          "lineCode": "M-963",
-          "lineName": "Chipiona-Sanlúcar De Barrameda-Jerez De La Frontera",
+          "lineId": "231",
+          "lineCode": "M-974",
+          "lineName": "Costa Ballena-Chipiona-Sanlúcar De Barrameda (Sevilla)",
+          "destination": "Costa Ballena (Rota)",
+          "scheduledTime": "2025-10-11T10:12:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "172",
+          "lineCode": "M-561",
+          "lineName": "Costa Ballena-Chipiona-Sanlúcar-Jerez",
           "destination": "Jerez",
-          "scheduledTime": "2025-10-07T10:45:00.000Z",
+          "scheduledTime": "2025-10-11T10:45:00.000Z",
           "direction": 1,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -292,30 +264,11 @@
       },
       "municipality": "Chiclana",
       "nucleus": "Chiclana",
-      "services": [
-        {
-          "lineId": "26",
-          "lineCode": "M-230",
-          "lineName": "Chiclana De La Frontera-Hospital De Puerto Real (Por Marquesado)",
-          "destination": "Hospital Pto. Real",
-          "scheduledTime": "2025-10-07T10:16:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "26",
-          "lineCode": "M-230",
-          "lineName": "Chiclana De La Frontera-Hospital De Puerto Real (Por Marquesado)",
-          "destination": "Chiclana",
-          "scheduledTime": "2025-10-07T10:44:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        }
-      ],
+      "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -334,17 +287,8 @@
           "lineId": "6",
           "lineCode": "M-030",
           "lineName": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real-Hospital",
-          "destination": "Hospital Pto. Real",
-          "scheduledTime": "2025-10-07T10:05:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "6",
-          "lineCode": "M-030",
-          "lineName": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real-Hospital",
           "destination": "Cádiz",
-          "scheduledTime": "2025-10-07T10:10:00.000Z",
+          "scheduledTime": "2025-10-11T10:10:00.000Z",
           "direction": 2,
           "stopType": 0
         },
@@ -353,51 +297,15 @@
           "lineCode": "M-960",
           "lineName": "Chipiona-Sanlúcar De Barrameda-Cádiz (Por Puerto Real Y Campus)",
           "destination": "Chipiona",
-          "scheduledTime": "2025-10-07T10:21:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "6",
-          "lineCode": "M-030",
-          "lineName": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real-Hospital",
-          "destination": "Hospital Pto. Real",
-          "scheduledTime": "2025-10-07T10:35:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "6",
-          "lineCode": "M-030",
-          "lineName": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real-Hospital",
-          "destination": "Cádiz",
-          "scheduledTime": "2025-10-07T10:40:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "9",
-          "lineCode": "M-031",
-          "lineName": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real",
-          "destination": "Puerto Real",
-          "scheduledTime": "2025-10-07T10:51:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "6",
-          "lineCode": "M-030",
-          "lineName": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real-Hospital",
-          "destination": "Cádiz",
-          "scheduledTime": "2025-10-07T11:00:00.000Z",
+          "scheduledTime": "2025-10-11T10:21:00.000Z",
           "direction": 2,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -417,69 +325,24 @@
           "lineCode": "0225",
           "lineName": "Granada - P.Puente",
           "destination": "Pinos Puente",
-          "scheduledTime": "2025-10-07T10:21:00.000Z",
+          "scheduledTime": "2025-10-11T10:21:00.000Z",
           "direction": 1,
           "stopType": 1
         },
         {
-          "lineId": "1077",
-          "lineCode": "0124",
-          "lineName": "Granada - Atarfe",
-          "destination": "Atarfe",
-          "scheduledTime": "2025-10-07T10:28:00.000Z",
-          "direction": 1,
-          "stopType": 1
-        },
-        {
-          "lineId": "991",
-          "lineCode": "0225",
-          "lineName": "Granada - P.Puente",
-          "destination": "Pinos Puente",
-          "scheduledTime": "2025-10-07T10:51:00.000Z",
-          "direction": 1,
-          "stopType": 1
-        },
-        {
-          "lineId": "1077",
-          "lineCode": "0124",
-          "lineName": "Granada - Atarfe",
-          "destination": "Atarfe",
-          "scheduledTime": "2025-10-07T11:08:00.000Z",
-          "direction": 1,
-          "stopType": 1
-        },
-        {
-          "lineId": "991",
-          "lineCode": "0225",
-          "lineName": "Granada - P.Puente",
-          "destination": "Pinos Puente",
-          "scheduledTime": "2025-10-07T11:21:00.000Z",
-          "direction": 1,
-          "stopType": 1
-        },
-        {
-          "lineId": "1077",
-          "lineCode": "0124",
-          "lineName": "Granada - Atarfe",
-          "destination": "Atarfe",
-          "scheduledTime": "2025-10-07T11:48:00.000Z",
-          "direction": 1,
-          "stopType": 1
-        },
-        {
-          "lineId": "991",
-          "lineCode": "0225",
-          "lineName": "Granada - P.Puente",
-          "destination": "Pinos Puente",
-          "scheduledTime": "2025-10-07T11:51:00.000Z",
+          "lineId": "992",
+          "lineCode": "0226",
+          "lineName": "Granada - P.Puente - Zujaira",
+          "destination": "Zujaira",
+          "scheduledTime": "2025-10-11T11:49:00.000Z",
           "direction": 1,
           "stopType": 1
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T12:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T12:00:00.000Z"
       }
     },
     {
@@ -498,17 +361,8 @@
           "lineId": "1032",
           "lineCode": "0117",
           "lineName": "Granada - P.Cubillas",
-          "destination": "Granada",
-          "scheduledTime": "2025-10-07T10:39:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "710",
-          "lineCode": "0318",
-          "lineName": "Granada - Colomera",
-          "destination": "Cerro Cauro",
-          "scheduledTime": "2025-10-07T10:41:00.000Z",
+          "destination": "Centro Penitenciario de Albolote",
+          "scheduledTime": "2025-10-11T10:15:00.000Z",
           "direction": 1,
           "stopType": 0
         },
@@ -516,16 +370,25 @@
           "lineId": "1032",
           "lineCode": "0117",
           "lineName": "Granada - P.Cubillas",
-          "destination": "Parque del Cubillas",
-          "scheduledTime": "2025-10-07T11:30:00.000Z",
+          "destination": "Granada",
+          "scheduledTime": "2025-10-11T11:09:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "1032",
+          "lineCode": "0117",
+          "lineName": "Granada - P.Cubillas",
+          "destination": "Centro Penitenciario de Albolote",
+          "scheduledTime": "2025-10-11T11:45:00.000Z",
           "direction": 1,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T12:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T12:00:00.000Z"
       }
     },
     {
@@ -541,11 +404,11 @@
       "nucleus": "Chauchina",
       "services": [
         {
-          "lineId": "868",
-          "lineCode": "0241",
-          "lineName": "Granada - Santa Fe - Chauchina - Cijuela",
-          "destination": "Cijuela",
-          "scheduledTime": "2025-10-07T10:26:00.000Z",
+          "lineId": "1119",
+          "lineCode": "0242",
+          "lineName": "Granada - Santa Fe - Chauchina - Cijuela - Láchar",
+          "destination": "Láchar",
+          "scheduledTime": "2025-10-11T10:27:00.000Z",
           "direction": 1,
           "stopType": 0
         },
@@ -554,24 +417,15 @@
           "lineCode": "0242",
           "lineName": "Granada - Santa Fe - Chauchina - Cijuela - Láchar",
           "destination": "Láchar",
-          "scheduledTime": "2025-10-07T11:27:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "1119",
-          "lineCode": "0242",
-          "lineName": "Granada - Santa Fe - Chauchina - Cijuela - Láchar",
-          "destination": "Láchar",
-          "scheduledTime": "2025-10-07T11:57:00.000Z",
+          "scheduledTime": "2025-10-11T11:27:00.000Z",
           "direction": 1,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T12:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T12:00:00.000Z"
       }
     },
     {
@@ -585,21 +439,11 @@
       },
       "municipality": "Cijuela",
       "nucleus": "Cijuela",
-      "services": [
-        {
-          "lineId": "877",
-          "lineCode": "0340",
-          "lineName": "Granada - Santa Fe - Cijuela - Láchar - Trasmulas - Peñuelas - C.Tajarja - El Turro",
-          "destination": "Granada",
-          "scheduledTime": "2025-10-07T11:01:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        }
-      ],
+      "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T12:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T12:00:00.000Z"
       }
     },
     {
@@ -615,47 +459,11 @@
       "nucleus": "Ambroz",
       "services": [
         {
-          "lineId": "1113",
-          "lineCode": "0150",
-          "lineName": "Granada - Cúllar V. - V. del Genil",
-          "destination": "El Ventorrillo",
-          "scheduledTime": "2025-10-07T10:01:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
           "lineId": "1042",
           "lineCode": "0154",
           "lineName": "Granada-V. del Genil (Directo)",
           "destination": "Granada",
-          "scheduledTime": "2025-10-07T10:30:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "1042",
-          "lineCode": "0154",
-          "lineName": "Granada-V. del Genil (Directo)",
-          "destination": "El Ventorrillo",
-          "scheduledTime": "2025-10-07T10:35:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "1042",
-          "lineCode": "0154",
-          "lineName": "Granada-V. del Genil (Directo)",
-          "destination": "El Ventorrillo",
-          "scheduledTime": "2025-10-07T11:15:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "1042",
-          "lineCode": "0154",
-          "lineName": "Granada-V. del Genil (Directo)",
-          "destination": "Granada",
-          "scheduledTime": "2025-10-07T11:15:00.000Z",
+          "scheduledTime": "2025-10-11T10:00:00.000Z",
           "direction": 2,
           "stopType": 0
         },
@@ -664,7 +472,16 @@
           "lineCode": "0150",
           "lineName": "Granada - Cúllar V. - V. del Genil",
           "destination": "El Ventorrillo",
-          "scheduledTime": "2025-10-07T11:46:00.000Z",
+          "scheduledTime": "2025-10-11T10:01:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "1042",
+          "lineCode": "0154",
+          "lineName": "Granada-V. del Genil (Directo)",
+          "destination": "El Ventorrillo",
+          "scheduledTime": "2025-10-11T10:45:00.000Z",
           "direction": 1,
           "stopType": 0
         },
@@ -673,15 +490,24 @@
           "lineCode": "0154",
           "lineName": "Granada-V. del Genil (Directo)",
           "destination": "Granada",
-          "scheduledTime": "2025-10-07T11:55:00.000Z",
+          "scheduledTime": "2025-10-11T11:15:00.000Z",
           "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "1113",
+          "lineCode": "0150",
+          "lineName": "Granada - Cúllar V. - V. del Genil",
+          "destination": "El Ventorrillo",
+          "scheduledTime": "2025-10-11T11:31:00.000Z",
+          "direction": 1,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T12:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T12:00:00.000Z"
       }
     },
     {
@@ -697,9 +523,9 @@
       "nucleus": "Ventorrillo de Mayo",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T10:15:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T10:15:00.000Z"
       }
     },
     {
@@ -715,9 +541,9 @@
       "nucleus": "Ventorrillo de Mayo",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T10:15:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T10:15:00.000Z"
       }
     },
     {
@@ -733,9 +559,9 @@
       "nucleus": "Ventorrillo de Mayo",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T10:15:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T10:15:00.000Z"
       }
     },
     {
@@ -751,9 +577,9 @@
       "nucleus": "Ventorrillo de Mayo",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T10:15:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T10:15:00.000Z"
       }
     },
     {
@@ -769,9 +595,9 @@
       "nucleus": "Ventorrillo de Mayo",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T10:15:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T10:15:00.000Z"
       }
     },
     {
@@ -791,15 +617,15 @@
           "lineCode": "M-230",
           "lineName": "La Línea-San Roque",
           "destination": "San Roque",
-          "scheduledTime": "2025-10-07T10:32:00.000Z",
+          "scheduledTime": "2025-10-11T10:17:00.000Z",
           "direction": 1,
           "stopType": 1
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -813,21 +639,11 @@
       },
       "municipality": "Tarifa ",
       "nucleus": "Tarifa",
-      "services": [
-        {
-          "lineId": "7",
-          "lineCode": "M-150",
-          "lineName": "Algeciras-Tarifa",
-          "destination": "Algeciras",
-          "scheduledTime": "2025-10-07T10:45:00.000Z",
-          "direction": 2,
-          "stopType": 1
-        }
-      ],
+      "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -847,7 +663,7 @@
           "lineCode": "M-110",
           "lineName": "Los Barrios-Algeciras Directo",
           "destination": "Los Barrios",
-          "scheduledTime": "2025-10-07T10:30:00.000Z",
+          "scheduledTime": "2025-10-11T10:30:00.000Z",
           "direction": 2,
           "stopType": 0
         },
@@ -856,15 +672,15 @@
           "lineCode": "M-110",
           "lineName": "Los Barrios-Algeciras Directo",
           "destination": "Algeciras",
-          "scheduledTime": "2025-10-07T10:30:00.000Z",
+          "scheduledTime": "2025-10-11T10:30:00.000Z",
           "direction": 1,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -884,15 +700,15 @@
           "lineCode": "M-110",
           "lineName": "Los Barrios-Algeciras Directo",
           "destination": "Los Barrios",
-          "scheduledTime": "2025-10-07T10:03:00.000Z",
+          "scheduledTime": "2025-10-11T10:03:00.000Z",
           "direction": 2,
           "stopType": 1
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -912,8 +728,17 @@
           "lineCode": "M-130",
           "lineName": "San Roque-Algeciras",
           "destination": "Algeciras",
-          "scheduledTime": "2025-10-07T10:45:00.000Z",
+          "scheduledTime": "2025-10-11T10:45:00.000Z",
           "direction": 1,
+          "stopType": 1
+        },
+        {
+          "lineId": "11",
+          "lineCode": "M-230",
+          "lineName": "La Línea-San Roque",
+          "destination": "La Línea de la Concepción",
+          "scheduledTime": "2025-10-11T10:45:00.000Z",
+          "direction": 2,
           "stopType": 1
         },
         {
@@ -921,15 +746,15 @@
           "lineCode": "M-240",
           "lineName": "Estepona-La Línea (Ruta)",
           "destination": "Guadiaro",
-          "scheduledTime": "2025-10-07T10:55:00.000Z",
+          "scheduledTime": "2025-10-11T10:55:00.000Z",
           "direction": 2,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -948,34 +773,16 @@
           "lineId": "40",
           "lineCode": "M-380",
           "lineName": "Almería - Aguadulce - El Parador - Puebla de Vícar - El Ejido - Adra NN",
-          "destination": "ADRA",
-          "scheduledTime": "2025-10-07T10:36:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "40",
-          "lineCode": "M-380",
-          "lineName": "Almería - Aguadulce - El Parador - Puebla de Vícar - El Ejido - Adra NN",
           "destination": "ALMERIA",
-          "scheduledTime": "2025-10-07T10:48:00.000Z",
+          "scheduledTime": "2025-10-11T10:33:00.000Z",
           "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "48",
-          "lineCode": "M-384",
-          "lineName": "El Ejido - Guardias Viejas - Balerma - Balanegra - Adra",
-          "destination": "ADRA",
-          "scheduledTime": "2025-10-07T10:51:00.000Z",
-          "direction": 1,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -991,9 +798,9 @@
       "nucleus": "LA ALCAZABA",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -1009,9 +816,9 @@
       "nucleus": "ADRA",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -1027,9 +834,9 @@
       "nucleus": "ADRA",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -1045,9 +852,9 @@
       "nucleus": "LA ALCAZABA",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T11:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T11:00:00.000Z"
       }
     },
     {
@@ -1063,9 +870,9 @@
       "nucleus": "Los Villares",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T12:30:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T12:30:00.000Z"
       }
     },
     {
@@ -1081,11 +888,11 @@
       "nucleus": "Torredelcampo",
       "services": [
         {
-          "lineId": "279",
-          "lineCode": "M20-02",
-          "lineName": "Jaén - Jamilena, 2024",
+          "lineId": "278",
+          "lineCode": "M20-01",
+          "lineName": "Jaén - Martos, 2024",
           "destination": "Jaén",
-          "scheduledTime": "2025-10-07T10:13:00.000Z",
+          "scheduledTime": "2025-10-11T10:28:00.000Z",
           "direction": 2,
           "stopType": 0
         },
@@ -1094,43 +901,7 @@
           "lineCode": "M20-01",
           "lineName": "Jaén - Martos, 2024",
           "destination": "Martos",
-          "scheduledTime": "2025-10-07T10:20:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "286",
-          "lineCode": "M20-10",
-          "lineName": "Jaén - Torredelcampo, 2024",
-          "destination": "Torredelcampo",
-          "scheduledTime": "2025-10-07T10:25:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "278",
-          "lineCode": "M20-01",
-          "lineName": "Jaén - Martos, 2024",
-          "destination": "Jaén",
-          "scheduledTime": "2025-10-07T10:28:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "286",
-          "lineCode": "M20-10",
-          "lineName": "Jaén - Torredelcampo, 2024",
-          "destination": "Jaén",
-          "scheduledTime": "2025-10-07T10:33:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "287",
-          "lineCode": "M20-11",
-          "lineName": "Fuensanta de Martos - Jaén, 2024",
-          "destination": "Jaén",
-          "scheduledTime": "2025-10-07T10:38:00.000Z",
+          "scheduledTime": "2025-10-11T10:35:00.000Z",
           "direction": 1,
           "stopType": 0
         },
@@ -1139,70 +910,25 @@
           "lineCode": "M20-06",
           "lineName": "Jaén - Córdoba (Ruta), 2024",
           "destination": "Torredonjimeno",
-          "scheduledTime": "2025-10-07T10:40:00.000Z",
+          "scheduledTime": "2025-10-11T11:00:00.000Z",
           "direction": 1,
           "stopType": 0
         },
         {
-          "lineId": "278",
-          "lineCode": "M20-01",
-          "lineName": "Jaén - Martos, 2024",
-          "destination": "Martos",
-          "scheduledTime": "2025-10-07T11:05:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "278",
-          "lineCode": "M20-01",
-          "lineName": "Jaén - Martos, 2024",
-          "destination": "Martos",
-          "scheduledTime": "2025-10-07T11:20:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "286",
-          "lineCode": "M20-10",
-          "lineName": "Jaén - Torredelcampo, 2024",
-          "destination": "Torredelcampo",
-          "scheduledTime": "2025-10-07T11:25:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "278",
-          "lineCode": "M20-01",
-          "lineName": "Jaén - Martos, 2024",
-          "destination": "Jaén",
-          "scheduledTime": "2025-10-07T11:28:00.000Z",
+          "lineId": "287",
+          "lineCode": "M20-11",
+          "lineName": "Fuensanta de Martos - Jaén, 2024",
+          "destination": "Fuensanta de Martos",
+          "scheduledTime": "2025-10-11T11:25:00.000Z",
           "direction": 2,
           "stopType": 0
         },
         {
-          "lineId": "288",
-          "lineCode": "M20-12",
-          "lineName": "Jaén - Escañuela, 2024",
-          "destination": "Escañuela",
-          "scheduledTime": "2025-10-07T11:55:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "285",
-          "lineCode": "M20-08",
-          "lineName": "Jaén - Lopera, 2024",
-          "destination": "Torredonjimeno",
-          "scheduledTime": "2025-10-07T12:20:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "278",
-          "lineCode": "M20-01",
-          "lineName": "Jaén - Martos, 2024",
-          "destination": "Martos",
-          "scheduledTime": "2025-10-07T12:20:00.000Z",
+          "lineId": "279",
+          "lineCode": "M20-02",
+          "lineName": "Jaén - Jamilena, 2024",
+          "destination": "Jamilena",
+          "scheduledTime": "2025-10-11T11:25:00.000Z",
           "direction": 1,
           "stopType": 0
         },
@@ -1211,7 +937,7 @@
           "lineCode": "M20-04",
           "lineName": "Jaén - Alcaudete, 2024",
           "destination": "Martos",
-          "scheduledTime": "2025-10-07T12:25:00.000Z",
+          "scheduledTime": "2025-10-11T11:55:00.000Z",
           "direction": 1,
           "stopType": 0
         },
@@ -1220,15 +946,24 @@
           "lineCode": "M20-01",
           "lineName": "Jaén - Martos, 2024",
           "destination": "Jaén",
-          "scheduledTime": "2025-10-07T12:28:00.000Z",
+          "scheduledTime": "2025-10-11T12:08:00.000Z",
           "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "280",
+          "lineCode": "M20-03",
+          "lineName": "Jaén - Villardompardo, 2024",
+          "destination": "Villardompardo",
+          "scheduledTime": "2025-10-11T12:25:00.000Z",
+          "direction": 1,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T12:30:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T12:30:00.000Z"
       }
     },
     {
@@ -1248,17 +983,8 @@
           "lineCode": "M20-01",
           "lineName": "Jaén - Martos, 2024",
           "destination": "Jaén",
-          "scheduledTime": "2025-10-07T10:15:00.000Z",
+          "scheduledTime": "2025-10-11T10:15:00.000Z",
           "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "287",
-          "lineCode": "M20-11",
-          "lineName": "Fuensanta de Martos - Jaén, 2024",
-          "destination": "Jaén",
-          "scheduledTime": "2025-10-07T10:25:00.000Z",
-          "direction": 1,
           "stopType": 0
         },
         {
@@ -1266,7 +992,7 @@
           "lineCode": "M20-01",
           "lineName": "Jaén - Martos, 2024",
           "destination": "Martos",
-          "scheduledTime": "2025-10-07T10:33:00.000Z",
+          "scheduledTime": "2025-10-11T10:48:00.000Z",
           "direction": 1,
           "stopType": 0
         },
@@ -1275,16 +1001,16 @@
           "lineCode": "M20-06",
           "lineName": "Jaén - Córdoba (Ruta), 2024",
           "destination": "Torredonjimeno",
-          "scheduledTime": "2025-10-07T10:53:00.000Z",
+          "scheduledTime": "2025-10-11T11:13:00.000Z",
           "direction": 1,
           "stopType": 0
         },
         {
-          "lineId": "278",
-          "lineCode": "M20-01",
-          "lineName": "Jaén - Martos, 2024",
-          "destination": "Jaén",
-          "scheduledTime": "2025-10-07T11:15:00.000Z",
+          "lineId": "287",
+          "lineCode": "M20-11",
+          "lineName": "Fuensanta de Martos - Jaén, 2024",
+          "destination": "Fuensanta de Martos",
+          "scheduledTime": "2025-10-11T11:38:00.000Z",
           "direction": 2,
           "stopType": 0
         },
@@ -1292,43 +1018,25 @@
           "lineId": "278",
           "lineCode": "M20-01",
           "lineName": "Jaén - Martos, 2024",
-          "destination": "Martos",
-          "scheduledTime": "2025-10-07T11:18:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "278",
-          "lineCode": "M20-01",
-          "lineName": "Jaén - Martos, 2024",
-          "destination": "Martos",
-          "scheduledTime": "2025-10-07T11:33:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "288",
-          "lineCode": "M20-12",
-          "lineName": "Jaén - Escañuela, 2024",
-          "destination": "Escañuela",
-          "scheduledTime": "2025-10-07T12:08:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "278",
-          "lineCode": "M20-01",
-          "lineName": "Jaén - Martos, 2024",
           "destination": "Jaén",
-          "scheduledTime": "2025-10-07T12:15:00.000Z",
+          "scheduledTime": "2025-10-11T11:55:00.000Z",
           "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "281",
+          "lineCode": "M20-04",
+          "lineName": "Jaén - Alcaudete, 2024",
+          "destination": "Martos",
+          "scheduledTime": "2025-10-11T12:08:00.000Z",
+          "direction": 1,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T12:30:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T12:30:00.000Z"
       }
     },
     {
@@ -1344,82 +1052,37 @@
       "nucleus": "Mengíbar",
       "services": [
         {
-          "lineId": "71",
-          "lineCode": "M16-1",
-          "lineName": "Santa Elena - Jaén",
-          "destination": "Jaén",
-          "scheduledTime": "2025-10-07T10:05:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "203",
-          "lineCode": "M04-8",
-          "lineName": "Linares - Jaén",
-          "destination": "Mengíbar",
-          "scheduledTime": "2025-10-07T10:10:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "71",
-          "lineCode": "M16-1",
-          "lineName": "Santa Elena - Jaén",
-          "destination": "Mengíbar",
-          "scheduledTime": "2025-10-07T10:15:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
           "lineId": "203",
           "lineCode": "M04-8",
           "lineName": "Linares - Jaén",
           "destination": "Jaén",
-          "scheduledTime": "2025-10-07T10:45:00.000Z",
+          "scheduledTime": "2025-10-11T10:00:00.000Z",
           "direction": 1,
           "stopType": 0
         },
         {
-          "lineId": "203",
-          "lineCode": "M04-8",
-          "lineName": "Linares - Jaén",
-          "destination": "Mengíbar",
-          "scheduledTime": "2025-10-07T11:00:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "71",
-          "lineCode": "M16-1",
-          "lineName": "Santa Elena - Jaén",
-          "destination": "Mengíbar",
-          "scheduledTime": "2025-10-07T11:25:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "203",
-          "lineCode": "M04-8",
-          "lineName": "Linares - Jaén",
-          "destination": "Jaén",
-          "scheduledTime": "2025-10-07T11:30:00.000Z",
+          "lineId": "276",
+          "lineCode": "M15-7",
+          "lineName": "Jaén - Andújar - Marmolejo",
+          "destination": "Andújar",
+          "scheduledTime": "2025-10-11T10:55:00.000Z",
           "direction": 1,
-          "stopType": 0
+          "stopType": 1
         },
         {
           "lineId": "203",
           "lineCode": "M04-8",
           "lineName": "Linares - Jaén",
           "destination": "Mengíbar",
-          "scheduledTime": "2025-10-07T11:55:00.000Z",
+          "scheduledTime": "2025-10-11T11:00:00.000Z",
           "direction": 2,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T12:30:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T12:30:00.000Z"
       }
     },
     {
@@ -1438,35 +1101,8 @@
           "lineId": "17",
           "lineCode": "M1-9",
           "lineName": "Mancha Real - Jaén",
-          "destination": "Jaén",
-          "scheduledTime": "2025-10-07T10:45:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "35",
-          "lineCode": "M3-103",
-          "lineName": "Úbeda - Jaén",
           "destination": "Mancha Real",
-          "scheduledTime": "2025-10-07T11:00:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "17",
-          "lineCode": "M1-9",
-          "lineName": "Mancha Real - Jaén",
-          "destination": "Mancha Real",
-          "scheduledTime": "2025-10-07T11:25:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "21",
-          "lineCode": "M1-20",
-          "lineName": "Pozo Alcón - Jaén",
-          "destination": "Mancha Real",
-          "scheduledTime": "2025-10-07T12:00:00.000Z",
+          "scheduledTime": "2025-10-11T11:55:00.000Z",
           "direction": 2,
           "stopType": 0
         },
@@ -1475,15 +1111,24 @@
           "lineCode": "M1-5",
           "lineName": "Quesada - Jaén",
           "destination": "Mancha Real",
-          "scheduledTime": "2025-10-07T12:00:00.000Z",
+          "scheduledTime": "2025-10-11T12:00:00.000Z",
+          "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "22",
+          "lineCode": "M1-21",
+          "lineName": "Torres - Jaén",
+          "destination": "Torres",
+          "scheduledTime": "2025-10-11T12:25:00.000Z",
           "direction": 2,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T12:30:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T12:30:00.000Z"
       }
     },
     {
@@ -1499,9 +1144,9 @@
       "nucleus": "Villafranca De Córdoba",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-08T02:39:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-12T02:39:00.000Z"
       }
     },
     {
@@ -1517,9 +1162,9 @@
       "nucleus": "Alcolea",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-08T02:39:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-12T02:39:00.000Z"
       }
     },
     {
@@ -1535,9 +1180,9 @@
       "nucleus": "Aldea Quintana",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-08T02:39:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-12T02:39:00.000Z"
       }
     },
     {
@@ -1553,9 +1198,9 @@
       "nucleus": "Alcolea",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-08T02:39:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-12T02:39:00.000Z"
       }
     },
     {
@@ -1571,9 +1216,9 @@
       "nucleus": "Alcolea",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-08T02:39:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-12T02:39:00.000Z"
       }
     },
     {
@@ -1589,109 +1234,46 @@
       "nucleus": "LEPE",
       "services": [
         {
-          "lineId": "36",
-          "lineCode": "M-309",
-          "lineName": "Huelva-La Antilla-Isla Cristina",
+          "lineId": "76",
+          "lineCode": "M-912",
+          "lineName": "Sevillla-Huelva-Isla Cristina-Ayamonte",
           "destination": "HUELVA",
-          "scheduledTime": "2025-10-07T10:05:00.000Z",
+          "scheduledTime": "2025-10-11T10:03:00.000Z",
           "direction": 2,
           "stopType": 0
         },
         {
-          "lineId": "36",
-          "lineCode": "M-309",
-          "lineName": "Huelva-La Antilla-Isla Cristina",
-          "destination": "ISLA CRISTINA",
-          "scheduledTime": "2025-10-07T10:41:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "5",
-          "lineCode": "M-310",
-          "lineName": "Huelva-Isla Cristina-Ayamonte",
-          "destination": "HUELVA",
-          "scheduledTime": "2025-10-07T11:34:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "66",
-          "lineCode": "M-902",
-          "lineName": "Ayamonte-Huelva-Sevilla",
+          "lineId": "76",
+          "lineCode": "M-912",
+          "lineName": "Sevillla-Huelva-Isla Cristina-Ayamonte",
           "destination": "AYAMONTE",
-          "scheduledTime": "2025-10-07T11:36:00.000Z",
-          "direction": 2,
+          "scheduledTime": "2025-10-11T11:22:00.000Z",
+          "direction": 1,
           "stopType": 0
         },
         {
-          "lineId": "3",
-          "lineCode": "M-306",
-          "lineName": "Huelva-Corrales-La Redondela-Isla Cristina",
+          "lineId": "76",
+          "lineCode": "M-912",
+          "lineName": "Sevillla-Huelva-Isla Cristina-Ayamonte",
           "destination": "HUELVA",
-          "scheduledTime": "2025-10-07T11:44:00.000Z",
+          "scheduledTime": "2025-10-11T12:03:00.000Z",
           "direction": 2,
           "stopType": 0
         },
         {
-          "lineId": "3",
-          "lineCode": "M-306",
-          "lineName": "Huelva-Corrales-La Redondela-Isla Cristina",
-          "destination": "ISLA CRISTINA",
-          "scheduledTime": "2025-10-07T12:06:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "8",
-          "lineCode": "M-316",
-          "lineName": "Huelva-Ayamonte-San Silvestre De Guzman",
-          "destination": "VILLABLANCA",
-          "scheduledTime": "2025-10-07T12:36:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "8",
-          "lineCode": "M-316",
-          "lineName": "Huelva-Ayamonte-San Silvestre De Guzman",
-          "destination": "VILLABLANCA",
-          "scheduledTime": "2025-10-07T12:36:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "66",
-          "lineCode": "M-902",
-          "lineName": "Ayamonte-Huelva-Sevilla",
+          "lineId": "76",
+          "lineCode": "M-912",
+          "lineName": "Sevillla-Huelva-Isla Cristina-Ayamonte",
           "destination": "AYAMONTE",
-          "scheduledTime": "2025-10-07T13:36:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "36",
-          "lineCode": "M-309",
-          "lineName": "Huelva-La Antilla-Isla Cristina",
-          "destination": "ISLA CRISTINA",
-          "scheduledTime": "2025-10-07T13:41:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "66",
-          "lineCode": "M-902",
-          "lineName": "Ayamonte-Huelva-Sevilla",
-          "destination": "HUELVA",
-          "scheduledTime": "2025-10-07T13:52:00.000Z",
+          "scheduledTime": "2025-10-11T13:22:00.000Z",
           "direction": 1,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T14:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T14:00:00.000Z"
       }
     },
     {
@@ -1707,55 +1289,55 @@
       "nucleus": "ISLA CRISTINA",
       "services": [
         {
-          "lineId": "5",
-          "lineCode": "M-310",
-          "lineName": "Huelva-Isla Cristina-Ayamonte",
-          "destination": "HUELVA",
-          "scheduledTime": "2025-10-07T11:14:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "36",
-          "lineCode": "M-309",
-          "lineName": "Huelva-La Antilla-Isla Cristina",
-          "destination": "ISLA CRISTINA",
-          "scheduledTime": "2025-10-07T11:20:00.000Z",
+          "lineId": "76",
+          "lineCode": "M-912",
+          "lineName": "Sevillla-Huelva-Isla Cristina-Ayamonte",
+          "destination": "AYAMONTE",
+          "scheduledTime": "2025-10-11T10:00:00.000Z",
           "direction": 1,
           "stopType": 0
         },
         {
-          "lineId": "3",
-          "lineCode": "M-306",
-          "lineName": "Huelva-Corrales-La Redondela-Isla Cristina",
+          "lineId": "76",
+          "lineCode": "M-912",
+          "lineName": "Sevillla-Huelva-Isla Cristina-Ayamonte",
           "destination": "HUELVA",
-          "scheduledTime": "2025-10-07T11:20:00.000Z",
+          "scheduledTime": "2025-10-11T11:20:00.000Z",
           "direction": 2,
           "stopType": 0
         },
         {
-          "lineId": "3",
-          "lineCode": "M-306",
-          "lineName": "Huelva-Corrales-La Redondela-Isla Cristina",
-          "destination": "ISLA CRISTINA",
-          "scheduledTime": "2025-10-07T12:29:00.000Z",
+          "lineId": "76",
+          "lineCode": "M-912",
+          "lineName": "Sevillla-Huelva-Isla Cristina-Ayamonte",
+          "destination": "AYAMONTE",
+          "scheduledTime": "2025-10-11T12:00:00.000Z",
           "direction": 1,
           "stopType": 0
         },
         {
-          "lineId": "36",
-          "lineCode": "M-309",
-          "lineName": "Huelva-La Antilla-Isla Cristina",
+          "lineId": "76",
+          "lineCode": "M-912",
+          "lineName": "Sevillla-Huelva-Isla Cristina-Ayamonte",
           "destination": "HUELVA",
-          "scheduledTime": "2025-10-07T13:20:00.000Z",
+          "scheduledTime": "2025-10-11T13:20:00.000Z",
           "direction": 2,
+          "stopType": 0
+        },
+        {
+          "lineId": "76",
+          "lineCode": "M-912",
+          "lineName": "Sevillla-Huelva-Isla Cristina-Ayamonte",
+          "destination": "AYAMONTE",
+          "scheduledTime": "2025-10-11T14:00:00.000Z",
+          "direction": 1,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T14:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T14:00:00.000Z"
       }
     },
     {
@@ -1771,11 +1353,38 @@
       "nucleus": "ALMONTE",
       "services": [
         {
-          "lineId": "70",
-          "lineCode": "M-906",
-          "lineName": "Sevilla-Hinojos-Almonte-Bollullos-Rociana",
-          "destination": "ROCIANA DEL CONDADO",
-          "scheduledTime": "2025-10-07T12:28:00.000Z",
+          "lineId": "75",
+          "lineCode": "M-911",
+          "lineName": "Sevilla-Hinojos-Almonte-Caño Guerrero",
+          "destination": "TORRE DE LA HIGUERA",
+          "scheduledTime": "2025-10-11T10:14:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "59",
+          "lineCode": "M-416",
+          "lineName": "Almonte-Torre Higuera",
+          "destination": "TORRE DE LA HIGUERA",
+          "scheduledTime": "2025-10-11T10:18:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "59",
+          "lineCode": "M-416",
+          "lineName": "Almonte-Torre Higuera",
+          "destination": "TORRE DE LA HIGUERA",
+          "scheduledTime": "2025-10-11T11:03:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "50",
+          "lineCode": "M-407",
+          "lineName": "Huelva-Bonares-Almonte-Bollullos Par Del Condado",
+          "destination": "BOLLULLOS PAR DEL CONDADO",
+          "scheduledTime": "2025-10-11T12:47:00.000Z",
           "direction": 1,
           "stopType": 0
         },
@@ -1784,25 +1393,7 @@
           "lineCode": "M-416",
           "lineName": "Almonte-Torre Higuera",
           "destination": "ALMONTE",
-          "scheduledTime": "2025-10-07T12:33:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        },
-        {
-          "lineId": "48",
-          "lineCode": "M-405",
-          "lineName": "Huelva-Rociana-Almonte-Bollullos Par Del Condado",
-          "destination": "BOLLULLOS PAR DEL CONDADO",
-          "scheduledTime": "2025-10-07T12:36:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "50",
-          "lineCode": "M-407",
-          "lineName": "Huelva-Bonares-Almonte-Bollullos Par Del Condado",
-          "destination": "HUELVA",
-          "scheduledTime": "2025-10-07T13:17:00.000Z",
+          "scheduledTime": "2025-10-11T12:48:00.000Z",
           "direction": 2,
           "stopType": 0
         },
@@ -1811,15 +1402,24 @@
           "lineCode": "M-416",
           "lineName": "Almonte-Torre Higuera",
           "destination": "TORRE DE LA HIGUERA",
-          "scheduledTime": "2025-10-07T13:33:00.000Z",
+          "scheduledTime": "2025-10-11T13:33:00.000Z",
           "direction": 1,
+          "stopType": 0
+        },
+        {
+          "lineId": "50",
+          "lineCode": "M-407",
+          "lineName": "Huelva-Bonares-Almonte-Bollullos Par Del Condado",
+          "destination": "HUELVA",
+          "scheduledTime": "2025-10-11T13:47:00.000Z",
+          "direction": 2,
           "stopType": 0
         }
       ],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T14:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T14:00:00.000Z"
       }
     },
     {
@@ -1833,30 +1433,11 @@
       },
       "municipality": "HUELVA",
       "nucleus": "HUELVA",
-      "services": [
-        {
-          "lineId": "18",
-          "lineCode": "M-103",
-          "lineName": "Huelva-Hospitales (Circular)",
-          "destination": "HUELVA",
-          "scheduledTime": "2025-10-07T10:47:00.000Z",
-          "direction": 1,
-          "stopType": 0
-        },
-        {
-          "lineId": "18",
-          "lineCode": "M-103",
-          "lineName": "Huelva-Hospitales (Circular)",
-          "destination": "HUELVA",
-          "scheduledTime": "2025-10-07T11:20:00.000Z",
-          "direction": 2,
-          "stopType": 0
-        }
-      ],
+      "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T14:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T14:00:00.000Z"
       }
     },
     {
@@ -1872,9 +1453,9 @@
       "nucleus": "EL ROCIO",
       "services": [],
       "query": {
-        "requestedAt": "2025-10-07T00:00:55.808Z",
-        "startTime": "2025-10-07T10:00:00.000Z",
-        "endTime": "2025-10-07T14:00:00.000Z"
+        "requestedAt": "2025-10-11T01:15:56.366Z",
+        "startTime": "2025-10-11T10:00:00.000Z",
+        "endTime": "2025-10-11T14:00:00.000Z"
       }
     }
   ]

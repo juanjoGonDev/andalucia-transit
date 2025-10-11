@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-07T00:00:43.383Z",
+    "generatedAt": "2025-10-11T01:15:48.978Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -4482,7 +4482,7 @@
       "consortiumId": 4,
       "stopId": "1894",
       "stopCode": "1894",
-      "name": "Cruce Villafranco-Alhaurín-Churriana",
+      "name": "Cruce Villa del Guadalhorce-Alhaurín-Churriana",
       "municipality": "Alhaurín el Grande",
       "municipalityId": "6",
       "nucleus": "Alhaurín el Grande",
@@ -14547,10 +14547,10 @@
       "consortiumId": 4,
       "stopId": "2022",
       "stopCode": "2022",
-      "name": "Villafranco del Guadalhorce",
+      "name": "Villa del Guadalhorce",
       "municipality": "Alhaurín el Grande",
       "municipalityId": "6",
-      "nucleus": "Villafranco del Guadalhorce",
+      "nucleus": "Villa del Guadalhorce",
       "nucleusId": "183",
       "zone": "C",
       "location": {

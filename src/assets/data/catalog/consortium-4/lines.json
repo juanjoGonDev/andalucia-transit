@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-07T00:00:49.966Z",
+    "generatedAt": "2025-10-11T01:15:52.459Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -111,7 +111,7 @@
     {
       "id": "302",
       "code": "M-159B",
-      "name": "Alhaurín el Grande-Villafranco-Hospital Guadalhorce",
+      "name": "Alhaurín el Grande-Villa del Guadalhorce-Hospital Guadalhorce",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
