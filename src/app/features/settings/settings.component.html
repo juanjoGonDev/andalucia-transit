@@ -4,25 +4,25 @@
     <p class="settings__description">{{ descriptionKey | translate }}</p>
   </header>
 
-  <section class="settings__section">
-    <h2 class="settings__section-title">{{ languageTitleKey | translate }}</h2>
-    <p class="settings__section-description">{{ languageDescriptionKey | translate }}</p>
-    <ul class="settings__language-list">
-      <li class="settings__language-item" *ngFor="let option of languageOptions">
-        <button
-          type="button"
-          class="settings__language-button"
-          [class.settings__language-button--active]="currentLanguage() === option.code"
-          (click)="onLanguageSelected(option.code)"
-        >
-          {{ option.labelKey | translate }}
-        </button>
-      </li>
-    </ul>
-  </section>
+  <main class="settings__content">
+    <app-section [titleKey]="languageTitleKey" appearance="card">
+      <p class="settings__section-description">{{ languageDescriptionKey | translate }}</p>
+      <ul class="settings__language-list">
+        <li class="settings__language-item" *ngFor="let option of languageOptions">
+          <button
+            type="button"
+            class="settings__language-button"
+            [class.settings__language-button--active]="currentLanguage() === option.code"
+            (click)="onLanguageSelected(option.code)"
+          >
+            {{ option.labelKey | translate }}
+          </button>
+        </li>
+      </ul>
+    </app-section>
 
-  <section class="settings__section">
-    <h2 class="settings__section-title">{{ versionTitleKey | translate }}</h2>
-    <p class="settings__version">{{ versionLabelKey | translate: versionTemplateVariables }}</p>
-  </section>
+    <app-section [titleKey]="versionTitleKey" appearance="card">
+      <p class="settings__version">{{ versionLabelKey | translate: versionTemplateVariables }}</p>
+    </app-section>
+  </main>
 </section>

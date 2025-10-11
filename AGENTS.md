@@ -24,6 +24,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Define data contracts with TypeScript interfaces; keep constants in dedicated config modules; avoid magic numbers/strings.
 - Use Angular DI and factory providers for abstractions; rely on OnPush change detection where possible; tear down subscriptions via `async` pipe or `takeUntil`.
 - Follow English naming, 2-space indentation, semicolons, and avoid redundant comments or commented-out code.
+- Feature views must wrap user-facing content inside the shared `<app-section>` component, keeping every logical block inside an `app-section` for consistent layout structure.
 
 ## Decision Log
 - 2025-10-09: Route search URLs and selectors rely on consortium-aware stop signatures (`consortiumId:stopId`) to disambiguate repeated stop codes when restoring deep links or swapping directions.

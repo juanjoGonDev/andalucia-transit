@@ -9,6 +9,7 @@ $settings-max-width: 48rem;
   padding: $settings-spacing-large $settings-spacing-medium;
 }
 
+
 .settings {
   margin: 0 auto;
   max-width: $settings-max-width;
@@ -35,26 +36,10 @@ $settings-max-width: 48rem;
   font-size: 1rem;
 }
 
-.settings__section {
+.settings__content {
   display: flex;
   flex-direction: column;
-  gap: $settings-spacing-regular;
-  padding: $settings-spacing-medium;
-  background-color: var(--color-surface-light);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
-}
-
-:host-context(.dark) .settings__section {
-  background-color: var(--color-surface-dark);
-  color: var(--color-text-strong-dark);
-  box-shadow: var(--shadow-dark);
-}
-
-.settings__section-title {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
+  gap: $settings-spacing-large;
 }
 
 .settings__section-description {
@@ -130,10 +115,6 @@ $settings-max-width: 48rem;
 @media (max-width: 600px) {
   :host {
     padding: $settings-spacing-medium $settings-spacing-regular;
-  }
-
-  .settings__section {
-    padding: $settings-spacing-regular;
   }
 
   .settings__title {

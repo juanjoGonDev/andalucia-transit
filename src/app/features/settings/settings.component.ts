@@ -6,13 +6,14 @@ import { APP_CONFIG, SupportedLanguage } from '../../core/config';
 import { LanguageService } from '../../core/services/language.service';
 import { LanguageOption } from '../../core/interfaces/language-option.interface';
 import { APP_VERSION_TOKEN } from '../../core/tokens/app-version.token';
+import { SectionComponent } from '../../shared/ui/section/section.component';
 
 const VERSION_VARIABLE_KEY = 'version' as const;
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, SectionComponent],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
