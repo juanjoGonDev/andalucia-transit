@@ -23,10 +23,6 @@ import {
   RouteSearchResultsViewModel,
   RouteSearchDepartureView
 } from '../../domain/route-search/route-search-results.service';
-import {
-  BottomNavigationComponent,
-  BottomNavigationItem
-} from '../../shared/ui/bottom-navigation/bottom-navigation.component';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
 import {
   buildDateSlug,
@@ -35,6 +31,7 @@ import {
 } from '../../domain/route-search/route-search-url.util';
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
+import { buildNavigationCommands } from '../../shared/navigation/navigation.util';
 
 @Component({
   selector: 'app-route-search',
@@ -42,7 +39,6 @@ import { RouteSearchFormComponent } from './route-search-form/route-search-form.
   imports: [
     CommonModule,
     TranslateModule,
-    BottomNavigationComponent,
     SectionComponent,
     RouteSearchFormComponent
   ],
@@ -51,8 +47,6 @@ import { RouteSearchFormComponent } from './route-search-form/route-search-form.
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RouteSearchComponent implements AfterViewInit {
-  private static readonly ROOT_COMMAND = '/' as const;
-
   @ViewChildren('itemElement', { read: ElementRef })
   private readonly itemElements!: QueryList<ElementRef<HTMLElement>>;
   private pendingScroll = false;
@@ -67,27 +61,8 @@ export class RouteSearchComponent implements AfterViewInit {
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.routeSearch;
   protected readonly badgeTranslationKeys = APP_CONFIG.translationKeys.stopDetail.badges;
-  private readonly navigationKeys = APP_CONFIG.translationKeys.navigation;
   private readonly routeSegments = APP_CONFIG.routeSegments.routeSearch;
   protected readonly formTitleKey = this.translationKeys.action;
-
-  protected readonly bottomNavigationItems: readonly BottomNavigationItem[] = [
-    {
-      labelKey: this.navigationKeys.home,
-      icon: 'home',
-      commands: this.buildCommands(APP_CONFIG.routes.home)
-    },
-    {
-      labelKey: this.navigationKeys.map,
-      icon: 'map',
-      commands: this.buildCommands(APP_CONFIG.routes.map)
-    },
-    {
-      labelKey: this.navigationKeys.lines,
-      icon: 'route',
-      commands: this.buildCommands(APP_CONFIG.routes.routeSearch)
-    }
-  ];
 
   protected readonly selection = signal<RouteSearchSelection | null>(this.state.getSelection());
   protected readonly results = signal<RouteSearchResultsViewModel>({
@@ -204,7 +179,7 @@ export class RouteSearchComponent implements AfterViewInit {
   }
 
   protected navigateBack(): void {
-    void this.router.navigate(this.buildCommands(APP_CONFIG.routes.home));
+    void this.router.navigate(buildNavigationCommands(APP_CONFIG.routes.home));
   }
 
   protected async onSelectionConfirmed(selection: RouteSearchSelection): Promise<void> {
@@ -237,14 +212,6 @@ export class RouteSearchComponent implements AfterViewInit {
 
     this.pendingScroll = false;
     target.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  private buildCommands(path: string): readonly string[] {
-    if (!path) {
-      return [RouteSearchComponent.ROOT_COMMAND];
-    }
-
-    return [RouteSearchComponent.ROOT_COMMAND, path];
   }
 
   private extractParams(paramMap: ParamMap): RouteSearchRouteParams {

@@ -12,10 +12,6 @@ import { HomeNearbyStopsDialogComponent } from './home-nearby-stops-dialog.compo
 import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
 import { buildRouteSearchPath } from '../../domain/route-search/route-search-url.util';
 import { StopNavigationItemComponent } from '../../shared/ui/stop-navigation-item/stop-navigation-item.component';
-import {
-  BottomNavigationComponent,
-  BottomNavigationItem
-} from '../../shared/ui/bottom-navigation/bottom-navigation.component';
 import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
 
 interface ActionListItem {
@@ -46,7 +42,6 @@ interface StopNavigationItemViewModel {
     CardListItemComponent,
     SectionComponent,
     StopNavigationItemComponent,
-    BottomNavigationComponent,
     RouteSearchFormComponent
   ],
   templateUrl: './home.component.html',
@@ -54,14 +49,11 @@ interface StopNavigationItemViewModel {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {
-  private static readonly ROOT_COMMAND = '/' as const;
-
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly routeSearchState = inject(RouteSearchStateService);
 
   private readonly translation = APP_CONFIG.translationKeys.home;
-  private readonly navigation = APP_CONFIG.translationKeys.navigation;
   private readonly routeSegments = APP_CONFIG.routeSegments.routeSearch;
   private readonly locationIcon: MaterialSymbolName = 'my_location';
   private readonly recentStopIcon: MaterialSymbolName = APP_CONFIG.homeData.recentStops.icon;
@@ -89,24 +81,6 @@ export class HomeComponent {
 
   protected readonly favoriteStops: StopNavigationItemViewModel[] = this.buildFavoriteStops();
 
-  protected readonly bottomNavigationItems: BottomNavigationItem[] = [
-    {
-      labelKey: this.navigation.home,
-      icon: 'home',
-      commands: this.buildCommands(APP_CONFIG.routes.home)
-    },
-    {
-      labelKey: this.navigation.map,
-      icon: 'map',
-      commands: this.buildCommands(APP_CONFIG.routes.map)
-    },
-    {
-      labelKey: this.navigation.lines,
-      icon: 'route',
-      commands: this.buildCommands(APP_CONFIG.routes.routeSearch)
-    }
-  ];
-
   protected readonly currentSelection$ = this.routeSearchState.selection$;
 
   protected openNearbyStopsDialog(): void {
@@ -126,14 +100,6 @@ export class HomeComponent {
       }
     );
     await this.router.navigate(commands);
-  }
-
-  private buildCommands(path: string): readonly string[] {
-    if (!path) {
-      return [HomeComponent.ROOT_COMMAND] as const;
-    }
-
-    return [HomeComponent.ROOT_COMMAND, path] as const;
   }
 
   private buildRecentStops(): StopNavigationItemViewModel[] {

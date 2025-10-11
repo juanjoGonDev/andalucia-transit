@@ -218,13 +218,6 @@ describe('RouteSearchComponent', () => {
     expect(empty).not.toBeNull();
   });
 
-  it('renders the bottom navigation component', () => {
-    fixture.detectChanges();
-
-    const nav = fixture.debugElement.query(By.css('app-bottom-navigation'));
-    expect(nav).not.toBeNull();
-  });
-
   it('shows the no upcoming message when all lines lack future services', () => {
     resultsService.viewModel = {
       departures: [

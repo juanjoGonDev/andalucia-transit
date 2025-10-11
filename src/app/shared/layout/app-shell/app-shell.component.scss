@@ -1,0 +1,35 @@
+:host {
+  display: block;
+}
+
+.app-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-background-light);
+}
+
+.app-shell__section {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-shell__footer {
+  position: sticky;
+  bottom: 0;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-sm);
+}
+
+:host-context(.dark) .app-shell {
+  background-color: var(--color-background-dark);
+}
+
+:host-context(.dark) .app-shell__footer {
+  background-color: var(--color-surface-dark);
+  border-top-color: var(--color-border-subtle-dark);
+  box-shadow: var(--shadow-dark);
+}
