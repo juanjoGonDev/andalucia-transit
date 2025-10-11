@@ -228,7 +228,6 @@ function createCandidate(
 
   const minutesUntilArrival = Math.max(0, referenceDifferenceMs / MILLISECONDS_PER_MINUTE);
   const minutesSinceDeparture = Math.max(0, -referenceDifferenceMs / MILLISECONDS_PER_MINUTE);
-  const waitSeconds = Math.max(0, Math.round(Math.abs(referenceDifferenceMs) / MILLISECONDS_PER_SECOND));
   const actualDifferenceMs = entry.departureTime.getTime() - context.actualNow.getTime();
   const actualWaitSeconds = Math.max(
     0,

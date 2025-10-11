@@ -66,6 +66,16 @@ class ActivatedRouteStub {
   }
 }
 
+const invalidDateTimeMessage = 'Invalid DateTime for test setup';
+
+function ensureValidDateTime(dateTime: DateTime): DateTime<true> {
+  if (!dateTime.isValid) {
+    throw new Error(invalidDateTimeMessage);
+  }
+
+  return dateTime as DateTime<true>;
+}
+
 describe('RouteSearchComponent', () => {
   let fixture: ComponentFixture<RouteSearchComponent>;
   let state: RouteSearchStateService;
@@ -264,7 +274,7 @@ describe('RouteSearchComponent', () => {
 
   it('shows a past search notice and navigates back to today', async () => {
     const nowSpy = spyOn(DateTime, 'now').and.returnValue(
-      DateTime.fromISO('2025-06-10T12:00:00', { zone: 'Europe/Madrid' })
+      ensureValidDateTime(DateTime.fromISO('2025-06-10T12:00:00', { zone: 'Europe/Madrid' }))
     );
 
     resultsService.viewModel = {
