@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-07T00:00:43.383Z",
+    "generatedAt": "2025-10-11T01:39:19.614Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 3998
+    "totalStops": 3996
   },
   "chunks": [
     {
@@ -63,7 +63,7 @@
       "id": "consortium-2",
       "consortiumId": 2,
       "path": "chunks/consortium-2.json",
-      "stopCount": 177
+      "stopCount": 175
     },
     {
       "id": "consortium-3",
@@ -2055,17 +2055,6 @@
       "nucleusId": "241",
       "consortiumId": 3,
       "chunkId": "consortium-3"
-    },
-    {
-      "stopId": "134",
-      "stopCode": "134",
-      "name": "Ant. N-IV-El Paseo",
-      "municipality": "El Puerto de Santa María",
-      "municipalityId": "5",
-      "nucleus": "El Puerto de Santa María",
-      "nucleusId": "8",
-      "consortiumId": 2,
-      "chunkId": "consortium-2"
     },
     {
       "stopId": "272",
@@ -16821,7 +16810,7 @@
     {
       "stopId": "1894",
       "stopCode": "1894",
-      "name": "Cruce Villafranco-Alhaurín-Churriana",
+      "name": "Cruce Villa del Guadalhorce-Alhaurín-Churriana",
       "municipality": "Alhaurín el Grande",
       "municipalityId": "6",
       "nucleus": "Alhaurín el Grande",
@@ -21998,17 +21987,6 @@
       "nucleusId": "8",
       "consortiumId": 5,
       "chunkId": "consortium-5"
-    },
-    {
-      "stopId": "253",
-      "stopCode": "253",
-      "name": "Facultad Filosofía y Letras",
-      "municipality": "Cádiz",
-      "municipalityId": "1",
-      "nucleus": "Cádiz",
-      "nucleusId": "1",
-      "consortiumId": 2,
-      "chunkId": "consortium-2"
     },
     {
       "stopId": "1322",
@@ -43736,6 +43714,17 @@
       "chunkId": "consortium-1"
     },
     {
+      "stopId": "2022",
+      "stopCode": "2022",
+      "name": "Villa del Guadalhorce",
+      "municipality": "Alhaurín el Grande",
+      "municipalityId": "6",
+      "nucleus": "Villa del Guadalhorce",
+      "nucleusId": "183",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "3078",
       "stopCode": "3078",
       "name": "VILLA MARILO",
@@ -43756,17 +43745,6 @@
       "nucleusId": "234",
       "consortiumId": 8,
       "chunkId": "consortium-8"
-    },
-    {
-      "stopId": "2022",
-      "stopCode": "2022",
-      "name": "Villafranco del Guadalhorce",
-      "municipality": "Alhaurín el Grande",
-      "municipalityId": "6",
-      "nucleus": "Villafranco del Guadalhorce",
-      "nucleusId": "183",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
     },
     {
       "stopId": "104",
