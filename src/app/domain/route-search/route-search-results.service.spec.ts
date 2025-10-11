@@ -340,6 +340,87 @@ describe('RouteSearchResultsService', () => {
     expect(resolved.departures.every((item) => item.kind === 'upcoming')).toBeTrue();
   }));
 
+  it('marks departures as past when the query date is before today', fakeAsync(() => {
+    const pastDate = new Date('2025-05-20T00:00:00Z');
+    const entries: RouteTimetableEntry[] = [buildEntry(pastDate, 90, 25, 'L1', '001')];
+
+    const { service } = setup(entries);
+
+    const selection: RouteSearchSelection = {
+      origin,
+      destination,
+      queryDate: pastDate,
+      lineMatches: [
+        {
+          lineId: 'L1',
+          lineCode: '001',
+          direction: 0,
+          originStopIds: ['origin-a'],
+          destinationStopIds: ['destination-a']
+        }
+      ]
+    };
+
+    let viewModel: RouteSearchResultsViewModel | null = null;
+    const subscription = service
+      .loadResults(selection, {
+        nowProvider: () => referenceTime,
+        refreshIntervalMs: 1_000
+      })
+      .subscribe((result) => {
+        viewModel = result;
+      });
+
+    tick(0);
+    subscription.unsubscribe();
+
+    const resolved = ensureResults(viewModel);
+    expect(resolved.hasUpcoming).toBeFalse();
+    expect(resolved.departures.length).toBe(1);
+    expect(resolved.departures[0].kind).toBe('past');
+    expect(resolved.departures[0].relativeLabel).toBeNull();
+  }));
+
+  it('suppresses relative labels when the departure is more than a day away', fakeAsync(() => {
+    const futureDate = new Date('2025-06-15T00:00:00Z');
+    const entries: RouteTimetableEntry[] = [buildEntry(futureDate, 120, 20, 'L5', '005')];
+
+    const { service } = setup(entries);
+
+    const selection: RouteSearchSelection = {
+      origin,
+      destination,
+      queryDate: futureDate,
+      lineMatches: [
+        {
+          lineId: 'L5',
+          lineCode: '005',
+          direction: 1,
+          originStopIds: ['origin-a'],
+          destinationStopIds: ['destination-a']
+        }
+      ]
+    };
+
+    let viewModel: RouteSearchResultsViewModel | null = null;
+    const subscription = service
+      .loadResults(selection, {
+        nowProvider: () => referenceTime,
+        refreshIntervalMs: 1_000
+      })
+      .subscribe((result) => {
+        viewModel = result;
+      });
+
+    tick(0);
+    subscription.unsubscribe();
+
+    const resolved = ensureResults(viewModel);
+    expect(resolved.departures.length).toBe(1);
+    expect(resolved.departures[0].relativeLabel).toBeNull();
+    expect(resolved.departures[0].kind).toBe('upcoming');
+  }));
+
   it('updates the timeline as time advances', fakeAsync(() => {
     const entries: RouteTimetableEntry[] = [
       buildEntry(referenceTime, -5, 15, 'L1', '001'),

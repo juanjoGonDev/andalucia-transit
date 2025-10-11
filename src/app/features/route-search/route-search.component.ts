@@ -15,6 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { DateTime } from 'luxon';
 
 import { APP_CONFIG } from '../../core/config';
 import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
@@ -58,6 +59,7 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly route = inject(ActivatedRoute);
   private readonly resultsService = inject(RouteSearchResultsService);
   private readonly selectionResolver = inject(RouteSearchSelectionResolverService);
+  private readonly timezone = APP_CONFIG.data.timezone;
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.routeSearch;
   protected readonly badgeTranslationKeys = APP_CONFIG.translationKeys.stopDetail.badges;
@@ -76,6 +78,18 @@ export class RouteSearchComponent implements AfterViewInit {
   protected readonly showNoUpcoming = computed(() =>
     this.hasResults() && !this.results().hasUpcoming
   );
+  protected readonly showPastSearchNotice = computed(() => {
+    const current = this.selection();
+
+    if (!current) {
+      return false;
+    }
+
+    const today = DateTime.now().setZone(this.timezone).startOf('day');
+    const queryDay = DateTime.fromJSDate(current.queryDate, { zone: this.timezone }).startOf('day');
+
+    return queryDay < today;
+  });
 
   constructor() {
     const initialSelection = this.state.getSelection();
@@ -190,6 +204,21 @@ export class RouteSearchComponent implements AfterViewInit {
       date: this.routeSegments.date
     });
     await this.router.navigate(commands);
+  }
+
+  protected searchToday(): void {
+    const current = this.selection();
+
+    if (!current) {
+      return;
+    }
+
+    const today = DateTime.now().setZone(this.timezone).startOf('day').toJSDate();
+
+    void this.onSelectionConfirmed({
+      ...current,
+      queryDate: today
+    });
   }
 
   private queueScrollToNext(): void {

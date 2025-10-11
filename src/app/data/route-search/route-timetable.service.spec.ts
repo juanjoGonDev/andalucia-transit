@@ -136,8 +136,33 @@ describe('RouteTimetableService', () => {
 
     service.loadTimetable(request).subscribe((entries) => {
       expect(entries.map((entry) => entry.lineId)).toEqual(['90', '17']);
-      expect(entries[0]?.isHolidayOnly).toBeTrue();
+      expect(entries[0]?.isHolidayOnly).toBeFalse();
       expect(entries[1]?.isHolidayOnly).toBeFalse();
+      done();
+    });
+  });
+
+  it('includes weekend services with holiday availability on matching weekends when not a holiday', (done) => {
+    const response = buildResponse(
+      [
+        buildApiEntry('90', 'M-999', ['08:00', '08:45'], 'S-D-F', ''),
+        buildApiEntry('17', 'M-301', ['09:00', '09:40'], 'L-V', '')
+      ],
+      [
+        { idfrecuencia: '9', acronimo: 'S-D-F', nombre: 'Sábados, domingos y festivos' },
+        { idfrecuencia: '1', acronimo: 'L-V', nombre: 'Lunes a viernes' }
+      ]
+    );
+
+    const service = setup(response, false);
+    const saturdayRequest: RouteTimetableRequest = {
+      ...request,
+      queryDate: new Date('2025-10-04T00:00:00Z')
+    };
+
+    service.loadTimetable(saturdayRequest).subscribe((entries) => {
+      expect(entries.map((entry) => entry.lineId)).toEqual(['90']);
+      expect(entries[0]?.isHolidayOnly).toBeFalse();
       done();
     });
   });

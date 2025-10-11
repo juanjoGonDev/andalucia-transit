@@ -4,6 +4,7 @@ import { By } from '@angular/platform-browser';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router, convertToParamMap, provideRouter } from '@angular/router';
+import { DateTime } from 'luxon';
 
 import { RouteSearchComponent } from './route-search.component';
 import {
@@ -63,6 +64,16 @@ class ActivatedRouteStub {
     this.snapshot = { paramMap: map };
     this.subject.next(map);
   }
+}
+
+const invalidDateTimeMessage = 'Invalid DateTime for test setup';
+
+function ensureValidDateTime(dateTime: DateTime): DateTime<true> {
+  if (!dateTime.isValid) {
+    throw new Error(invalidDateTimeMessage);
+  }
+
+  return dateTime as DateTime<true>;
 }
 
 describe('RouteSearchComponent', () => {
@@ -259,6 +270,40 @@ describe('RouteSearchComponent', () => {
 
     const message = fixture.debugElement.query(By.css('.route-search__no-upcoming'));
     expect(message).not.toBeNull();
+  });
+
+  it('shows a past search notice and navigates back to today', async () => {
+    const nowSpy = spyOn(DateTime, 'now').and.returnValue(
+      ensureValidDateTime(DateTime.fromISO('2025-06-10T12:00:00', { zone: 'Europe/Madrid' }))
+    );
+
+    resultsService.viewModel = {
+      departures: [],
+      hasUpcoming: false,
+      nextDepartureId: null
+    } satisfies RouteSearchResultsViewModel;
+
+    state.setSelection({
+      origin,
+      destination,
+      queryDate: new Date('2025-06-01T00:00:00Z'),
+      lineMatches: []
+    });
+
+    fixture.detectChanges();
+
+    const notice = fixture.debugElement.query(By.css('.route-search__notice'));
+    expect(notice).not.toBeNull();
+
+    const router = TestBed.inject(Router);
+    const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
+    const button = fixture.debugElement.query(By.css('.route-search__notice-button'));
+    button.triggerEventHandler('click', {});
+
+    await fixture.whenStable();
+    expect(navigateSpy).toHaveBeenCalled();
+
+    nowSpy.and.callThrough();
   });
 
   it('restores the selection from route parameters when state is empty', () => {

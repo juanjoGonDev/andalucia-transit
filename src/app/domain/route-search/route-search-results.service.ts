@@ -31,7 +31,7 @@ export interface RouteSearchDepartureView {
   readonly destination: string;
   readonly originStopId: string;
   readonly arrivalTime: Date;
-  readonly relativeLabel: string;
+  readonly relativeLabel: string | null;
   readonly waitTimeSeconds: number;
   readonly kind: 'past' | 'upcoming';
   readonly isNext: boolean;
@@ -77,9 +77,9 @@ export class RouteSearchResultsService {
         switchMap((entries) =>
           timer(0, refreshInterval).pipe(
             map(() => {
-              const currentTime = nowProvider();
-              const referenceTime = resolveReferenceTime(selection.queryDate, currentTime);
-              return buildResults(selection, entries, referenceTime);
+              const actualNow = nowProvider();
+              const referenceContext = resolveReferenceContext(selection.queryDate, actualNow);
+              return buildResults(selection, entries, actualNow, referenceContext);
             })
           )
         )
@@ -90,7 +90,8 @@ export class RouteSearchResultsService {
 function buildResults(
   selection: RouteSearchSelection,
   timetableEntries: readonly RouteTimetableEntry[],
-  currentTime: Date
+  actualNow: Date,
+  context: ReferenceContext
 ): RouteSearchResultsViewModel {
   const candidateMap = new Map<string, RouteSearchDepartureCandidate>();
   const lineMatchMap = buildLineMatchMap(selection.lineMatches);
@@ -105,13 +106,11 @@ function buildResults(
 
     const originOrder =
       originPriorityCache.get(match) ?? cacheOriginOrder(match, originPriorityCache);
-    const candidate = createCandidate(
-      entry,
-      match,
-      selection.destination.name,
-      originOrder,
-      currentTime
-    );
+    const candidate = createCandidate(entry, match, selection.destination.name, originOrder, {
+      actualNow,
+      referenceTime: context.referenceTime,
+      relation: context.relation
+    });
 
     if (!candidate) {
       continue;
@@ -162,11 +161,19 @@ function buildResults(
   } satisfies RouteSearchResultsViewModel;
 }
 
-function resolveReferenceTime(queryDate: Date, currentTime: Date): Date {
+function resolveReferenceContext(queryDate: Date, currentTime: Date): ReferenceContext {
   const queryStart = toStartOfDay(queryDate);
   const currentStart = toStartOfDay(currentTime);
 
-  return queryStart.getTime() === currentStart.getTime() ? currentTime : queryStart;
+  if (queryStart.getTime() === currentStart.getTime()) {
+    return { referenceTime: currentTime, relation: 'today' } satisfies ReferenceContext;
+  }
+
+  if (queryStart.getTime() < currentStart.getTime()) {
+    return { referenceTime: queryStart, relation: 'past' } satisfies ReferenceContext;
+  }
+
+  return { referenceTime: queryStart, relation: 'future' } satisfies ReferenceContext;
 }
 
 interface RouteSearchDepartureCandidate {
@@ -178,7 +185,7 @@ interface RouteSearchDepartureCandidate {
   readonly originStopId: string;
   readonly originPriority: number;
   readonly arrivalTime: Date;
-  readonly relativeLabel: string;
+  readonly relativeLabel: string | null;
   readonly waitTimeSeconds: number;
   readonly kind: 'past' | 'upcoming';
   readonly isAccessible: boolean;
@@ -196,7 +203,7 @@ function createCandidate(
   match: RouteSearchLineMatch,
   destinationName: string,
   originOrder: ReadonlyMap<string, number>,
-  currentTime: Date
+  context: CandidateContext
 ): RouteSearchDepartureCandidate | null {
   const originStopId = match.originStopIds[0] ?? null;
 
@@ -204,22 +211,31 @@ function createCandidate(
     return null;
   }
 
-  const differenceMs = entry.departureTime.getTime() - currentTime.getTime();
-  const kind: 'past' | 'upcoming' = differenceMs >= 0 ? 'upcoming' : 'past';
-  const waitSeconds = Math.max(0, Math.round(Math.abs(differenceMs) / MILLISECONDS_PER_SECOND));
+  const referenceDifferenceMs = entry.departureTime.getTime() - context.referenceTime.getTime();
+  let kind: 'past' | 'upcoming' = referenceDifferenceMs >= 0 ? 'upcoming' : 'past';
 
-  if (kind === 'past') {
-    const elapsedMinutes = waitSeconds / SECONDS_PER_MINUTE;
+  if (context.relation === 'past') {
+    kind = 'past';
+  }
+
+  if (kind === 'past' && context.relation === 'today') {
+    const elapsedMinutes = Math.abs(referenceDifferenceMs) / MILLISECONDS_PER_MINUTE;
 
     if (elapsedMinutes > PAST_WINDOW_MINUTES) {
       return null;
     }
   }
 
-  const minutesUntilArrival = Math.max(0, differenceMs / MILLISECONDS_PER_MINUTE);
-  const minutesSinceDeparture = Math.max(0, -differenceMs / MILLISECONDS_PER_MINUTE);
-  const timeParts = decomposeSeconds(waitSeconds);
-  const relativeLabel = formatDurationLabel(timeParts);
+  const minutesUntilArrival = Math.max(0, referenceDifferenceMs / MILLISECONDS_PER_MINUTE);
+  const minutesSinceDeparture = Math.max(0, -referenceDifferenceMs / MILLISECONDS_PER_MINUTE);
+  const actualDifferenceMs = entry.departureTime.getTime() - context.actualNow.getTime();
+  const actualWaitSeconds = Math.max(
+    0,
+    Math.round(Math.abs(actualDifferenceMs) / MILLISECONDS_PER_SECOND)
+  );
+  const relativeLabel = Math.abs(actualDifferenceMs) > MILLISECONDS_PER_DAY
+    ? null
+    : formatDurationLabel(decomposeSeconds(actualWaitSeconds));
   const destinationArrivalTime = entry.arrivalTime;
   const travelSeconds = Math.max(
     0,
@@ -245,7 +261,7 @@ function createCandidate(
     originPriority,
     arrivalTime: entry.departureTime,
     relativeLabel,
-    waitTimeSeconds: waitSeconds,
+    waitTimeSeconds: actualWaitSeconds,
     kind,
     isAccessible: false,
     isUniversityOnly: false,
@@ -363,3 +379,17 @@ function toStartOfDay(date: Date): Date {
 }
 
 const DESTINATION_NOTE_SEPARATOR = ' • ' as const;
+const MILLISECONDS_PER_DAY = 86_400_000;
+
+interface CandidateContext {
+  readonly actualNow: Date;
+  readonly referenceTime: Date;
+  readonly relation: QueryTemporalRelation;
+}
+
+interface ReferenceContext {
+  readonly referenceTime: Date;
+  readonly relation: QueryTemporalRelation;
+}
+
+type QueryTemporalRelation = 'past' | 'today' | 'future';
