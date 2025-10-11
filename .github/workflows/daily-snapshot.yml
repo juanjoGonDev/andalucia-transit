@@ -52,7 +52,14 @@ jobs:
         run: |
           SNAPSHOT_TIME="$(date -u '+%Y-%m-%d %H:%M UTC')"
           cat > pr-body.md <<'BODY'
-          sed -i "s/consultado automáticamente/consultado automáticamente el ${SNAPSHOT_TIME}/" pr-body.md
+          ## Daily snapshot refresh
+
+          This pull request refreshes the transport data snapshots using the CTAN open data service.
+
+          - Data source: Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía (automatically fetched).
+          - Scripts: `npm run snapshot`, `npm run test:scripts`
+          BODY
+          sed -i "s/automatically fetched/automatically fetched at ${SNAPSHOT_TIME}/" pr-body.md
       - name: Create pull request
         id: create-pr
         if: steps.diff.outputs.changed == 'true'
@@ -61,8 +68,8 @@ jobs:
           token: ${{ secrets.PAT_FINE }}
           branch: automation/update-snapshots
           base: main
-          commit-message: "chore: refresh transport snapshots"
-          title: "chore: refresh transport snapshots"
+          commit-message: "task: refresh transport snapshots"
+          title: "task: refresh transport snapshots"
           body-path: pr-body.md
           author: Andalucia Transit Bot <bot@andaluciatransit.local>
           committer: Andalucia Transit Bot <bot@andaluciatransit.local>
@@ -78,5 +85,10 @@ jobs:
         run: gh pr merge --squash --auto "${{ steps.create-pr.outputs.pull-request-number }}"
         env:
           GH_TOKEN: ${{ secrets.PAT_FINE }}
+      - name: ✅ Approve PR
+        if: steps.create-pr.outputs.pull-request-operation == 'created'
+        run: gh pr review ${{ steps.create-pr.outputs.pull-request-url }} --approve -b "I'm **approving** this pull request because **it includes a daily snapshot refresh**"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
           
