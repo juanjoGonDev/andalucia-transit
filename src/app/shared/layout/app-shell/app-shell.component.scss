@@ -19,7 +19,7 @@
   position: sticky;
   bottom: 0;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(180deg, transparent 0%, var(--color-background-light) 60%);
+  background-color: var(--color-surface);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,5 +31,5 @@
 }
 
 :host-context(.dark) .app-shell__footer {
-  background: linear-gradient(180deg, transparent 0%, var(--color-background-dark) 60%);
+  background-color: var(--color-surface-dark);
 }

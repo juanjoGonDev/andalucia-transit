@@ -1,9 +1,6 @@
 :host {
   display: block;
   width: 100%;
-  background-color: var(--color-surface);
-  border-radius: 1.25rem;
-  box-shadow: var(--shadow-sm);
 }
 
 .bottom-navigation {
@@ -44,11 +41,6 @@
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--color-text-muted);
-}
-
-:host-context(.dark) {
-  background-color: var(--color-surface-dark);
-  box-shadow: var(--shadow-dark);
 }
 
 :host-context(.dark) .bottom-navigation__item {
