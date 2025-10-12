@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { firstValueFrom, of, throwError } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
-import { RouteSearchPreviewService } from './route-search-preview.service';
+import { RouteSearchPreview, RouteSearchPreviewService } from './route-search-preview.service';
 import {
   RouteSearchResultsService,
   RouteSearchDepartureView,
@@ -11,7 +11,19 @@ import { RouteSearchSelection } from './route-search-state.service';
 import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
 
 class RouteSearchResultsStub {
-  loadResults = jasmine.createSpy('loadResults');
+  private subject = new Subject<RouteSearchResultsViewModel>();
+  readonly loadResults = jasmine
+    .createSpy('loadResults')
+    .and.callFake(() => this.subject.asObservable());
+
+  emit(value: RouteSearchResultsViewModel): void {
+    this.subject.next(value);
+  }
+
+  fail(error: Error): void {
+    this.subject.error(error);
+    this.subject = new Subject<RouteSearchResultsViewModel>();
+  }
 }
 
 describe('RouteSearchPreviewService', () => {
@@ -28,33 +40,93 @@ describe('RouteSearchPreviewService', () => {
     service = TestBed.inject(RouteSearchPreviewService);
   });
 
-  it('returns the next and previous departures', async () => {
-    const departures: RouteSearchDepartureView[] = [
-      buildDeparture('prev', 'past', true),
-      buildDeparture('next', 'upcoming', false)
-    ];
-    results.loadResults.and.returnValue(of(buildResults(departures)));
+  it('streams next and previous departures over time', () => {
+    const previewValues: RouteSearchPreview[] = [];
+    const subscription = subscribeToPreview(previewValues);
 
-    const preview = await firstValueFrom(service.loadPreview(selection));
+    results.emit(buildResults([buildDeparture('prev', 'past', true)]));
+    results.emit(buildResults([buildDeparture('next', 'upcoming', false)]));
 
-    expect(preview.next?.id).toBe('next');
-    expect(preview.previous?.id).toBe('prev');
+    expect(previewValues.length).toBe(2);
+    expect(previewValues[0]?.previous?.id).toBe('prev');
+    expect(previewValues[1]?.next?.id).toBe('next');
+
+    subscription.unsubscribe();
   });
 
-  it('handles missing departures by returning nulls', async () => {
-    results.loadResults.and.returnValue(of(buildResults([])));
+  it('emits null preview when departures are missing', () => {
+    const previewValues: RouteSearchPreview[] = [];
+    const subscription = subscribeToPreview(previewValues);
 
-    const preview = await firstValueFrom(service.loadPreview(selection));
+    results.emit(buildResults([]));
 
-    expect(preview.next).toBeNull();
-    expect(preview.previous).toBeNull();
+    expect(previewValues[0]?.next).toBeNull();
+    expect(previewValues[0]?.previous).toBeNull();
+
+    subscription.unsubscribe();
   });
 
-  it('propagates errors from the results service', async () => {
-    results.loadResults.and.returnValue(throwError(() => new Error('failed')));
+  it('shares the same results subscription across observers', () => {
+    const firstValues: RouteSearchPreview[] = [];
+    const secondValues: RouteSearchPreview[] = [];
+    const firstSubscription = subscribeToPreview(firstValues);
+    const secondSubscription = subscribeToPreview(secondValues);
 
-    await expectAsync(firstValueFrom(service.loadPreview(selection))).toBeRejected();
+    results.emit(buildResults([buildDeparture('next', 'upcoming', false)]));
+
+    expect(results.loadResults).toHaveBeenCalledTimes(1);
+    expect(firstValues.length).toBe(1);
+    expect(secondValues.length).toBe(1);
+
+    firstSubscription.unsubscribe();
+    secondSubscription.unsubscribe();
   });
+
+  it('retains cached data after observers unsubscribe', () => {
+    const firstValues: RouteSearchPreview[] = [];
+    const firstSubscription = subscribeToPreview(firstValues);
+
+    results.emit(buildResults([buildDeparture('next', 'upcoming', false)]));
+    firstSubscription.unsubscribe();
+
+    const secondValues: RouteSearchPreview[] = [];
+    const secondSubscription = subscribeToPreview(secondValues);
+
+    expect(results.loadResults).toHaveBeenCalledTimes(1);
+    expect(secondValues.length).toBe(1);
+    expect(secondValues[0]?.next?.id).toBe('next');
+
+    secondSubscription.unsubscribe();
+  });
+
+  it('propagates errors and clears the cache entry', () => {
+    const previewValues: RouteSearchPreview[] = [];
+    const errorSpy = jasmine.createSpy('error');
+    const subscription = subscribeToPreview(previewValues, errorSpy);
+    results.fail(new Error('failed'));
+
+    expect(previewValues.length).toBe(0);
+    expect(errorSpy).toHaveBeenCalled();
+    subscription.unsubscribe();
+
+    const nextValues: RouteSearchPreview[] = [];
+    const nextErrorSpy = jasmine.createSpy('nextError');
+    const nextSubscription = subscribeToPreview(nextValues, nextErrorSpy);
+
+    expect(results.loadResults).toHaveBeenCalledTimes(2);
+    expect(nextErrorSpy).not.toHaveBeenCalled();
+    nextSubscription.unsubscribe();
+  });
+
+  function subscribeToPreview(
+    target: RouteSearchPreview[],
+    error?: jasmine.Spy
+  ): Subscription {
+    return service.loadPreview(selection).subscribe({
+      next: (preview) => target.push(preview),
+      error: error ?? (() => {})
+    });
+  }
 
   function buildResults(departures: RouteSearchDepartureView[]): RouteSearchResultsViewModel {
     return {

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 
@@ -155,6 +155,66 @@ describe('HomeRecentSearchesComponent', () => {
     expect(route.nativeElement.textContent).toContain('Origin');
     const previewContainer = fixture.debugElement.query(By.css('.home-recent__preview'));
     expect(previewContainer).not.toBeNull();
+  }));
+
+  it('updates the preview when the stream emits new departures', fakeAsync(() => {
+    const entry = buildEntry('entry-stream', new Date('2025-01-01T00:00:00Z'));
+    const stream = new Subject<RouteSearchPreview>();
+    preview.loadPreview.and.returnValue(stream.asObservable());
+
+    history.emit([entry]);
+    flushMicrotasks();
+    fixture.detectChanges();
+
+    stream.next({
+      next: {
+        id: 'next-1',
+        lineCode: 'L1',
+        destination: 'Destination 1',
+        arrivalTime: new Date('2025-01-01T11:00:00Z'),
+        relativeLabel: '5 min',
+        kind: 'upcoming'
+      },
+      previous: null
+    });
+    tick();
+    fixture.detectChanges();
+
+    let items = (
+      fixture.componentInstance as unknown as { readonly items: () => readonly ComponentStateItem[] }
+    ).items();
+    let previewState = items[0]?.preview;
+
+    expect(previewState?.status).toBe('ready');
+    if (previewState?.status === 'ready') {
+      expect(previewState.preview.next?.id).toBe('next-1');
+    }
+
+    stream.next({
+      next: {
+        id: 'next-2',
+        lineCode: 'L2',
+        destination: 'Destination 2',
+        arrivalTime: new Date('2025-01-01T11:30:00Z'),
+        relativeLabel: '2 min',
+        kind: 'upcoming'
+      },
+      previous: null
+    });
+    tick();
+    fixture.detectChanges();
+
+    items = (
+      fixture.componentInstance as unknown as { readonly items: () => readonly ComponentStateItem[] }
+    ).items();
+    previewState = items[0]?.preview;
+
+    expect(previewState?.status).toBe('ready');
+    if (previewState?.status === 'ready') {
+      expect(previewState.preview.next?.id).toBe('next-2');
+    }
+
+    stream.complete();
   }));
 
   it('navigates when selecting an entry', fakeAsync(() => {

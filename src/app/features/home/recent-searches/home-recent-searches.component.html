@@ -24,7 +24,14 @@
         </span>
         <span class="home-recent__preview" *ngIf="item.preview as preview">
           <ng-container *ngIf="isLoading(preview)">
-            <span class="home-recent__preview-status">{{ loadingKey | translate }}</span>
+            <div class="home-recent__preview-loading" role="status" aria-live="polite">
+              <span class="home-recent__visually-hidden">{{ loadingKey | translate }}</span>
+              <span
+                class="home-recent__preview-skeleton home-recent__preview-skeleton--wide"
+                aria-hidden="true"
+              ></span>
+              <span class="home-recent__preview-skeleton" aria-hidden="true"></span>
+            </div>
           </ng-container>
           <ng-container *ngIf="isError(preview)">
             <span class="home-recent__preview-status home-recent__preview-status--error">
