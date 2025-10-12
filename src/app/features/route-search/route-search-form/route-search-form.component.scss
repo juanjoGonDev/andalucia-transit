@@ -84,9 +84,12 @@
   color: var(--color-icon-muted-dark);
 }
 
+.mat-mdc-optgroup {
+  font-weight: 600 !important;
+}
+
 .route-search-form__option-name {
   display: block;
-  font-weight: 600;
   color: var(--color-text-strong);
 }
 
