@@ -15,6 +15,7 @@
     "lint": "npm run lint:unused && npm run lint:deps",
     "lint:unused": "ng lint",
     "lint:deps": "depcheck --skip-missing --ignores=tslib,@angular/build,@angular/compiler-cli,@cypress/schematic,jasmine-core,karma,karma-chrome-launcher,karma-coverage,karma-jasmine,karma-jasmine-html-reporter,puppeteer",
+    "verify:all": "npm run lint && npm run test -- --watch=false && npm run build && npm run snapshot",
     "e2e": "ng e2e",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
