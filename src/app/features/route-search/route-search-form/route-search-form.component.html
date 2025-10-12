@@ -2,7 +2,17 @@
   <div class="route-search-form__grid">
     <mat-form-field appearance="fill" class="route-search-form__field route-search-form__field--origin">
       <mat-label>{{ originLabelKey | translate }}</mat-label>
-      <span matPrefix class="material-symbols-outlined route-search-form__icon">{{ originIcon }}</span>
+      <button
+        mat-icon-button
+        matPrefix
+        type="button"
+        class="route-search-form__location-button"
+        [disabled]="originLocationLoading"
+        [attr.aria-label]="originLocationActionLabelKey | translate"
+        (click)="recommendOriginFromLocation()"
+      >
+        <span class="material-symbols-outlined route-search-form__icon">{{ originIcon }}</span>
+      </button>
       <input
         matInput
         type="text"

@@ -11,13 +11,15 @@
   </div>
   <ul *ngIf="state === 'success' && stops.length" class="nearby-dialog__list">
     <li *ngFor="let stop of stops" class="nearby-dialog__item">
-      <span class="material-symbols-outlined nearby-dialog__item-icon">{{ stopIcon }}</span>
-      <div class="nearby-dialog__item-body">
-        <p class="nearby-dialog__item-title">{{ stop.titleKey | translate }}</p>
-        <p class="nearby-dialog__item-distance">
-          {{ stop.distanceKey | translate: { value: stop.distanceValue } }}
-        </p>
-      </div>
+      <button type="button" class="nearby-dialog__item-button" (click)="selectStop(stop)">
+        <span class="material-symbols-outlined nearby-dialog__item-icon">{{ stopIcon }}</span>
+        <div class="nearby-dialog__item-body">
+          <p class="nearby-dialog__item-title">{{ stop.title }}</p>
+          <p class="nearby-dialog__item-distance">
+            {{ stop.distanceKey | translate: { value: stop.distanceValue } }}
+          </p>
+        </div>
+      </button>
     </li>
   </ul>
   <p *ngIf="state === 'success' && !stops.length" class="nearby-dialog__message">

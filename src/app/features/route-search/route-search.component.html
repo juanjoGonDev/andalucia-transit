@@ -18,6 +18,7 @@
       <app-section class="route-search__form" [titleKey]="formTitleKey" appearance="card">
         <app-route-search-form
           [initialSelection]="selection()"
+          [originDraft]="originDraft()"
           (selectionConfirmed)="onSelectionConfirmed($event)"
         ></app-route-search-form>
       </app-section>

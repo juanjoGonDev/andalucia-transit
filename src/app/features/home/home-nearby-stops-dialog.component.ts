@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { APP_CONFIG } from '../../core/config';
@@ -8,12 +9,13 @@ import { GeolocationService } from '../../core/services/geolocation.service';
 import { NearbyStopsService, NearbyStopResult } from '../../core/services/nearby-stops.service';
 import { GeoCoordinate } from '../../domain/utils/geo-distance.util';
 import { MaterialSymbolName } from '../../shared/ui/types/material-symbol-name';
+import { GEOLOCATION_REQUEST_OPTIONS } from '../../core/services/geolocation-request.options';
 
 type NearbyDialogState = 'loading' | 'success' | 'permissionDenied' | 'notSupported' | 'unknown';
 
 interface NearbyStopViewModel {
   id: string;
-  titleKey: string;
+  title: string;
   distanceKey: string;
   distanceValue: string;
 }
@@ -22,8 +24,6 @@ const METERS_IN_KILOMETER = 1_000;
 const GEOLOCATION_PERMISSION_DENIED = 1;
 const GEOLOCATION_POSITION_UNAVAILABLE = 2;
 const GEOLOCATION_TIMEOUT = 3;
-const GEOLOCATION_TIMEOUT_MS = 10_000;
-const GEOLOCATION_MAXIMUM_AGE_MS = 0;
 const KILOMETER_DECIMALS = 1;
 const METER_DECIMALS = 0;
 
@@ -39,9 +39,12 @@ export class HomeNearbyStopsDialogComponent implements OnInit {
   private readonly dialogRef = inject(MatDialogRef<HomeNearbyStopsDialogComponent>);
   private readonly geolocationService = inject(GeolocationService);
   private readonly nearbyStopsService = inject(NearbyStopsService);
+  private readonly router = inject(Router);
   private readonly translation = APP_CONFIG.translationKeys.home.dialogs.nearbyStops;
   private readonly notSupportedMessage = APP_CONFIG.errors.geolocationNotSupported;
   private readonly metersPerKilometer = METERS_IN_KILOMETER;
+  private readonly routeSearchPath = APP_CONFIG.routes.routeSearch;
+  private readonly originQueryParam = APP_CONFIG.routeSearchData.queryParams.originStopId;
 
   protected readonly titleKey = this.translation.title;
   protected readonly descriptionKey = this.translation.description;
@@ -69,6 +72,16 @@ export class HomeNearbyStopsDialogComponent implements OnInit {
     await this.loadNearbyStops();
   }
 
+  protected async selectStop(stop: NearbyStopViewModel): Promise<void> {
+    const navigated = await this.router.navigate([this.routeSearchPath], {
+      queryParams: { [this.originQueryParam]: stop.id }
+    });
+
+    if (navigated) {
+      this.dialogRef.close();
+    }
+  }
+
   protected get isLoading(): boolean {
     return this.state === 'loading';
   }
@@ -77,16 +90,14 @@ export class HomeNearbyStopsDialogComponent implements OnInit {
     this.state = 'loading';
 
     try {
-      const position = await this.geolocationService.getCurrentPosition({
-        enableHighAccuracy: true,
-        timeout: GEOLOCATION_TIMEOUT_MS,
-        maximumAge: GEOLOCATION_MAXIMUM_AGE_MS
-      });
+      const position = await this.geolocationService.getCurrentPosition(
+        GEOLOCATION_REQUEST_OPTIONS
+      );
       const coordinates: GeoCoordinate = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
       };
-      const results = this.nearbyStopsService.findClosestStops(coordinates);
+      const results = await this.nearbyStopsService.findClosestStops(coordinates);
       this.stops = results.map((stop) => this.buildViewModel(stop));
       this.state = 'success';
     } catch (error) {
@@ -106,7 +117,7 @@ export class HomeNearbyStopsDialogComponent implements OnInit {
 
     return {
       id: stop.id,
-      titleKey: stop.titleKey,
+      title: stop.name,
       distanceKey,
       distanceValue: formattedValue
     };

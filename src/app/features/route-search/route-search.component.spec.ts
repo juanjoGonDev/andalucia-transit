@@ -13,7 +13,7 @@ import {
   RouteSearchResultsViewModel
 } from '../../domain/route-search/route-search-results.service';
 import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
-import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
+import { StopDirectoryOption, StopDirectoryService } from '../../data/stops/stop-directory.service';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
 import { buildDateSlug } from '../../domain/route-search/route-search-url.util';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
@@ -45,6 +45,7 @@ class RouteSearchResultsServiceStub {
 })
 class RouteSearchFormStubComponent {
   @Input() initialSelection: RouteSearchSelection | null = null;
+  @Input() originDraft: StopDirectoryOption | null = null;
   @Output() readonly selectionConfirmed = new EventEmitter<RouteSearchSelection>();
 }
 
@@ -56,15 +57,40 @@ class RouteSearchSelectionResolverServiceStub {
     .and.returnValue(of(null));
 }
 
+class StopDirectoryServiceStub {
+  private readonly options = new Map<string, StopDirectoryOption>();
+
+  setOptions(...options: StopDirectoryOption[]): void {
+    for (const option of options) {
+      this.options.set(option.id, option);
+    }
+  }
+
+  getOptionByStopId(id: string) {
+    return of(this.options.get(id) ?? null);
+  }
+}
+
 class ActivatedRouteStub {
   private readonly subject = new BehaviorSubject<ParamMap>(convertToParamMap({}));
+  private readonly querySubject = new BehaviorSubject<ParamMap>(convertToParamMap({}));
   readonly paramMap = this.subject.asObservable();
-  snapshot = { paramMap: convertToParamMap({}) };
+  readonly queryParamMap = this.querySubject.asObservable();
+  snapshot = {
+    paramMap: convertToParamMap({}),
+    queryParamMap: convertToParamMap({})
+  };
 
   emit(params: Record<string, string>): void {
     const map = convertToParamMap(params);
-    this.snapshot = { paramMap: map };
+    this.snapshot = { ...this.snapshot, paramMap: map };
     this.subject.next(map);
+  }
+
+  emitQuery(params: Record<string, string>): void {
+    const map = convertToParamMap(params);
+    this.snapshot = { ...this.snapshot, queryParamMap: map };
+    this.querySubject.next(map);
   }
 }
 
@@ -84,6 +110,7 @@ describe('RouteSearchComponent', () => {
   let resultsService: RouteSearchResultsServiceStub;
   let resolver: RouteSearchSelectionResolverServiceStub;
   let activatedRoute: ActivatedRouteStub;
+  let directoryService: StopDirectoryServiceStub;
 
   const origin: StopDirectoryOption = {
     id: 'alpha',
@@ -111,6 +138,8 @@ describe('RouteSearchComponent', () => {
 
   beforeEach(async () => {
     activatedRoute = new ActivatedRouteStub();
+    directoryService = new StopDirectoryServiceStub();
+    directoryService.setOptions(origin, destination);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -127,7 +156,8 @@ describe('RouteSearchComponent', () => {
           provide: RouteSearchSelectionResolverService,
           useClass: RouteSearchSelectionResolverServiceStub
         },
-        { provide: ActivatedRoute, useValue: activatedRoute }
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: StopDirectoryService, useValue: directoryService }
       ]
     })
       .overrideComponent(RouteSearchComponent, {
@@ -200,6 +230,18 @@ describe('RouteSearchComponent', () => {
     expect(holidayBadge).not.toBeNull();
     const arrival = item?.query(By.css('.route-search__item-arrival'));
     expect(arrival).not.toBeNull();
+  });
+
+  it('prefills the origin field from the query parameter', () => {
+    fixture.detectChanges();
+
+    activatedRoute.emitQuery({ originStopId: origin.id });
+    fixture.detectChanges();
+
+    const form = fixture.debugElement.query(By.directive(RouteSearchFormStubComponent))
+      .componentInstance as RouteSearchFormStubComponent;
+
+    expect(form.originDraft).toEqual(origin);
   });
 
   it('shows the accuracy warning for a distant future search', () => {

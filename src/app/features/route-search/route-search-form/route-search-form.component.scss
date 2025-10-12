@@ -62,8 +62,21 @@
   display: none;
 }
 
+.route-search-form__location-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+.route-search-form__location-button:disabled {
+  opacity: 0.6;
+}
+
 .route-search-form__icon {
-  margin-right: 0.75rem;
   color: var(--color-icon-muted);
 }
 

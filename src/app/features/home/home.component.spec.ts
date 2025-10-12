@@ -79,6 +79,7 @@ class RouteSearchExecutionStub {
 })
 class RouteSearchFormStubComponent {
   @Input() initialSelection: RouteSearchSelection | null = null;
+  @Input() originDraft: StopDirectoryOption | null = null;
   @Output() readonly selectionConfirmed = new EventEmitter<RouteSearchSelection>();
 }
 
