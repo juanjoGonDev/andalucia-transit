@@ -31,17 +31,17 @@
       },
       "recentStops": {
         "title": "Paradas recientes",
-        "items": {
-          "mainStreet": "Calle Principal y Avenida 1",
-          "oakwoodPlaza": "Plaza Oakwood",
-          "cityLibrary": "Biblioteca Municipal",
-          "centralStation": "Estación Central",
-          "riverPark": "Parque del Río",
-          "harborPier": "Muelle del Puerto",
-          "universityGate": "Puerta de la Universidad",
-          "historicCenter": "Centro Histórico",
-          "northTerminal": "Terminal Norte",
-          "marketSquare": "Plaza del Mercado"
+        "empty": "Las búsquedas que hagas aparecerán aquí.",
+        "searchDate": "Buscaremos para {{date}}",
+        "searchDateToday": "Actualizado a hoy",
+        "next": "Próximo",
+        "previous": "Último",
+        "previewLoading": "Cargando horarios...",
+        "previewError": "No pudimos cargar el horario.",
+        "noPreview": "No hay horarios para mostrar.",
+        "actions": {
+          "clearAll": "Borrar todo",
+          "remove": "Eliminar"
         }
       },
       "findNearby": {
@@ -76,6 +76,20 @@
         "distance": {
           "meters": "{{value}} m",
           "kilometers": "{{value}} km"
+        }
+      },
+      "recentStops": {
+        "remove": {
+          "title": "¿Eliminar búsqueda?",
+          "message": "Se quitará esta búsqueda de la lista de recientes.",
+          "confirm": "Eliminar",
+          "cancel": "Cancelar"
+        },
+        "clearAll": {
+          "title": "¿Vaciar historial?",
+          "message": "Se borrarán todas las búsquedas recientes.",
+          "confirm": "Borrar",
+          "cancel": "Cancelar"
         }
       }
     }

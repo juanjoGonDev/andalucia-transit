@@ -15,6 +15,7 @@ const RUNTIME_FLAGS_PROPERTY = '__ANDALUCIA_TRANSIT_FLAGS__' as const;
 const HOLIDAY_API_BASE_URL = 'https://date.nager.at/api/v3' as const;
 const HOLIDAY_COUNTRY_CODE = 'ES' as const;
 const HOLIDAY_REGION_CODES = ['ES-AN'] as const;
+const ROUTE_SEARCH_HISTORY_STORAGE_KEY = 'andalucia-transit.routeSearchHistory' as const;
 
 export const APP_CONFIG = {
   appName: 'Andalucia Transit',
@@ -106,18 +107,18 @@ export const APP_CONFIG = {
         },
         recentStops: {
           title: 'home.sections.recentStops.title',
-          items: [
-            'home.sections.recentStops.items.mainStreet',
-            'home.sections.recentStops.items.oakwoodPlaza',
-            'home.sections.recentStops.items.cityLibrary',
-            'home.sections.recentStops.items.centralStation',
-            'home.sections.recentStops.items.riverPark',
-            'home.sections.recentStops.items.harborPier',
-            'home.sections.recentStops.items.universityGate',
-            'home.sections.recentStops.items.historicCenter',
-            'home.sections.recentStops.items.northTerminal',
-            'home.sections.recentStops.items.marketSquare'
-          ] as const
+          empty: 'home.sections.recentStops.empty',
+          searchDate: 'home.sections.recentStops.searchDate',
+          searchDateToday: 'home.sections.recentStops.searchDateToday',
+          next: 'home.sections.recentStops.next',
+          previous: 'home.sections.recentStops.previous',
+          previewLoading: 'home.sections.recentStops.previewLoading',
+          previewError: 'home.sections.recentStops.previewError',
+          noPreview: 'home.sections.recentStops.noPreview',
+          actions: {
+            clearAll: 'home.sections.recentStops.actions.clearAll',
+            remove: 'home.sections.recentStops.actions.remove'
+          }
         },
         findNearby: {
           title: 'home.sections.findNearby.title',
@@ -151,6 +152,20 @@ export const APP_CONFIG = {
           distance: {
             meters: 'home.dialogs.nearbyStops.distance.meters',
             kilometers: 'home.dialogs.nearbyStops.distance.kilometers'
+          }
+        },
+        recentStops: {
+          remove: {
+            title: 'home.dialogs.recentStops.remove.title',
+            message: 'home.dialogs.recentStops.remove.message',
+            confirm: 'home.dialogs.recentStops.remove.confirm',
+            cancel: 'home.dialogs.recentStops.remove.cancel'
+          },
+          clearAll: {
+            title: 'home.dialogs.recentStops.clearAll.title',
+            message: 'home.dialogs.recentStops.clearAll.message',
+            confirm: 'home.dialogs.recentStops.clearAll.confirm',
+            cancel: 'home.dialogs.recentStops.clearAll.cancel'
           }
         }
       }
@@ -251,48 +266,7 @@ export const APP_CONFIG = {
     recentStops: {
       icon: 'pin_drop' as const,
       maxItems: 10,
-      items: [
-        {
-          id: 'stop-main-street',
-          titleKey: 'home.sections.recentStops.items.mainStreet'
-        },
-        {
-          id: 'stop-oakwood-plaza',
-          titleKey: 'home.sections.recentStops.items.oakwoodPlaza'
-        },
-        {
-          id: 'stop-city-library',
-          titleKey: 'home.sections.recentStops.items.cityLibrary'
-        },
-        {
-          id: 'stop-central-station',
-          titleKey: 'home.sections.recentStops.items.centralStation'
-        },
-        {
-          id: 'stop-river-park',
-          titleKey: 'home.sections.recentStops.items.riverPark'
-        },
-        {
-          id: 'stop-harbor-pier',
-          titleKey: 'home.sections.recentStops.items.harborPier'
-        },
-        {
-          id: 'stop-university-gate',
-          titleKey: 'home.sections.recentStops.items.universityGate'
-        },
-        {
-          id: 'stop-historic-center',
-          titleKey: 'home.sections.recentStops.items.historicCenter'
-        },
-        {
-          id: 'stop-north-terminal',
-          titleKey: 'home.sections.recentStops.items.northTerminal'
-        },
-        {
-          id: 'stop-market-square',
-          titleKey: 'home.sections.recentStops.items.marketSquare'
-        }
-      ] as const
+      storageKey: ROUTE_SEARCH_HISTORY_STORAGE_KEY
     },
     nearbyStops: {
       maxResults: 3,

@@ -18,19 +18,7 @@
         ></app-route-search-form>
       </app-section>
       <app-section [titleKey]="recentStopsTitleKey">
-        <div class="home__list home__list--scroll home__recent-list">
-          <app-stop-navigation-item
-            *ngFor="let stop of recentStops"
-            [stopId]="stop.id"
-            [leadingIcon]="stop.leadingIcon"
-            [titleKey]="stop.titleKey"
-            [subtitleKey]="stop.subtitleKey"
-            [layout]="stop.layout"
-            [iconVariant]="stop.iconVariant"
-            [trailingIcon]="stop.trailingIcon"
-            [ariaLabelKey]="stop.ariaLabelKey"
-          ></app-stop-navigation-item>
-        </div>
+        <app-home-recent-searches></app-home-recent-searches>
       </app-section>
       <app-section [titleKey]="findNearbyTitleKey">
         <app-card-list-item

@@ -1,0 +1,10 @@
+<h2 class="confirm-dialog__title">{{ data.titleKey | translate }}</h2>
+<p class="confirm-dialog__message">{{ data.messageKey | translate }}</p>
+<div class="confirm-dialog__actions">
+  <button type="button" class="confirm-dialog__button confirm-dialog__button--secondary" (click)="cancel()">
+    {{ data.cancelKey | translate }}
+  </button>
+  <button type="button" class="confirm-dialog__button confirm-dialog__button--primary" (click)="confirm()">
+    {{ data.confirmKey | translate }}
+  </button>
+</div>

@@ -25,11 +25,8 @@ import {
   RouteSearchDepartureView
 } from '../../domain/route-search/route-search-results.service';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
-import {
-  buildDateSlug,
-  buildStopSlug,
-  buildRouteSearchPath
-} from '../../domain/route-search/route-search-url.util';
+import { buildDateSlug, buildStopSlug } from '../../domain/route-search/route-search-url.util';
+import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
 import { buildNavigationCommands } from '../../shared/navigation/navigation.util';
@@ -59,6 +56,7 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly route = inject(ActivatedRoute);
   private readonly resultsService = inject(RouteSearchResultsService);
   private readonly selectionResolver = inject(RouteSearchSelectionResolverService);
+  private readonly execution = inject(RouteSearchExecutionService);
   private readonly timezone = APP_CONFIG.data.timezone;
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.routeSearch;
@@ -197,12 +195,7 @@ export class RouteSearchComponent implements AfterViewInit {
   }
 
   protected async onSelectionConfirmed(selection: RouteSearchSelection): Promise<void> {
-    this.state.setSelection(selection);
-    const commands = buildRouteSearchPath(selection.origin, selection.destination, selection.queryDate, {
-      base: APP_CONFIG.routes.routeSearch,
-      connector: this.routeSegments.connector,
-      date: this.routeSegments.date
-    });
+    const commands = this.execution.prepare(selection);
     await this.router.navigate(commands);
   }
 

@@ -30,18 +30,18 @@
         "noRoutes": "No direct routes are available between these stops."
       },
       "recentStops": {
-        "title": "Recent Stops",
-        "items": {
-          "mainStreet": "Main St & 1st Ave",
-          "oakwoodPlaza": "Oakwood Plaza",
-          "cityLibrary": "City Library",
-          "centralStation": "Central Station",
-          "riverPark": "River Park",
-          "harborPier": "Harbor Pier",
-          "universityGate": "University Gate",
-          "historicCenter": "Historic Center",
-          "northTerminal": "North Terminal",
-          "marketSquare": "Market Square"
+        "title": "Recent searches",
+        "empty": "Your recent searches will appear here.",
+        "searchDate": "We will search for {{date}}",
+        "searchDateToday": "Updated to today",
+        "next": "Next",
+        "previous": "Previous",
+        "previewLoading": "Loading schedule...",
+        "previewError": "We could not load the schedule.",
+        "noPreview": "No schedules to show.",
+        "actions": {
+          "clearAll": "Clear all",
+          "remove": "Remove"
         }
       },
       "findNearby": {
@@ -76,6 +76,20 @@
         "distance": {
           "meters": "{{value}} m",
           "kilometers": "{{value}} km"
+        }
+      },
+      "recentStops": {
+        "remove": {
+          "title": "Remove search?",
+          "message": "This search will be removed from your recent list.",
+          "confirm": "Remove",
+          "cancel": "Cancel"
+        },
+        "clearAll": {
+          "title": "Clear history?",
+          "message": "All recent searches will be deleted.",
+          "confirm": "Clear",
+          "cancel": "Cancel"
         }
       }
     }

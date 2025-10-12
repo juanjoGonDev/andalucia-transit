@@ -8,7 +8,6 @@
   min-height: max(884px, 100dvh);
   background-color: var(--color-background-light);
   color: var(--color-text-strong);
-  --home-recent-list-max-height: min(70vh, 26rem);
   --home-scrollbar-width: 0.4rem;
   --home-scrollbar-padding: 0.25rem;
   --home-content-max-width: 64rem;
@@ -83,32 +82,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-}
-
-.home__list--scroll {
-  max-height: var(--home-recent-list-max-height);
-  overflow-y: auto;
-  padding-right: var(--home-scrollbar-padding);
-  scrollbar-width: thin;
-  overscroll-behavior: contain;
-  scrollbar-gutter: stable;
-}
-
-.home__list--scroll::-webkit-scrollbar {
-  width: var(--home-scrollbar-width);
-}
-
-.home__list--scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.home__list--scroll::-webkit-scrollbar-thumb {
-  background-color: var(--color-border-subtle);
-  border-radius: var(--radius-lg);
-}
-
-.dark .home__list--scroll::-webkit-scrollbar-thumb {
-  background-color: var(--color-border-subtle-dark);
 }
 
 .home__search {

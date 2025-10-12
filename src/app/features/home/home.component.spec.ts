@@ -7,12 +7,12 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { HomeComponent } from './home.component';
 import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
-import { APP_CONFIG } from '../../core/config';
 import { MatDialog } from '@angular/material/dialog';
 import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-item.component';
-import { StopNavigationItemComponent } from '../../shared/ui/stop-navigation-item/stop-navigation-item.component';
 import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
 import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
+import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
+import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
@@ -29,6 +29,10 @@ class RouteSearchStateStub {
   }
 }
 
+class RouteSearchExecutionStub {
+  prepare = jasmine.createSpy('prepare').and.returnValue(['', 'routes']);
+}
+
 @Component({
   selector: 'app-route-search-form',
   standalone: true,
@@ -39,10 +43,17 @@ class RouteSearchFormStubComponent {
   @Output() readonly selectionConfirmed = new EventEmitter<RouteSearchSelection>();
 }
 
+@Component({
+  selector: 'app-home-recent-searches',
+  standalone: true,
+  template: ''
+})
+class HomeRecentSearchesStubComponent {}
+
 describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
   let router: Router;
-  let routeSearchState: RouteSearchStateStub;
+  let execution: RouteSearchExecutionStub;
   const dialogStub = { open: jasmine.createSpy('open') };
   const originOption: StopDirectoryOption = {
     id: 'origin',
@@ -79,13 +90,14 @@ describe('HomeComponent', () => {
       providers: [
         provideRouter([]),
         { provide: MatDialog, useValue: dialogStub },
-        { provide: RouteSearchStateService, useClass: RouteSearchStateStub }
+        { provide: RouteSearchStateService, useClass: RouteSearchStateStub },
+        { provide: RouteSearchExecutionService, useClass: RouteSearchExecutionStub }
       ]
     })
       .overrideComponent(HomeComponent, {
-        remove: { imports: [RouteSearchFormComponent] },
+        remove: { imports: [RouteSearchFormComponent, HomeRecentSearchesComponent] },
         add: {
-          imports: [RouteSearchFormStubComponent],
+          imports: [RouteSearchFormStubComponent, HomeRecentSearchesStubComponent],
           providers: [{ provide: MatDialog, useValue: dialogStub }]
         }
       })
@@ -93,7 +105,7 @@ describe('HomeComponent', () => {
 
     fixture = TestBed.createComponent(HomeComponent);
     router = TestBed.inject(Router);
-    routeSearchState = TestBed.inject(RouteSearchStateService) as unknown as RouteSearchStateStub;
+    execution = TestBed.inject(RouteSearchExecutionService) as unknown as RouteSearchExecutionStub;
     dialogStub.open.calls.reset();
     fixture.detectChanges();
   });
@@ -110,7 +122,7 @@ describe('HomeComponent', () => {
     (fixture.componentInstance as unknown as HomeComponentPublicApi).onSelectionConfirmed(selection);
     tick();
 
-    expect(routeSearchState.selection).toBe(selection);
+    expect(execution.prepare).toHaveBeenCalledWith(selection);
     expect(navigateSpy).toHaveBeenCalled();
   }));
 
@@ -123,15 +135,9 @@ describe('HomeComponent', () => {
     expect(dialogStub.open).toHaveBeenCalled();
   });
 
-  it('renders the configured recent stops', () => {
-    const recentList = fixture.debugElement.query(By.css('.home__recent-list'));
-    const navigationItems = recentList.queryAll(By.directive(StopNavigationItemComponent));
-    const expectedCount = Math.min(
-      APP_CONFIG.homeData.recentStops.items.length,
-      APP_CONFIG.homeData.recentStops.maxItems
-    );
-
-    expect(navigationItems.length).toBe(expectedCount);
+  it('renders the recent searches component', () => {
+    const recent = fixture.debugElement.query(By.directive(HomeRecentSearchesStubComponent));
+    expect(recent).not.toBeNull();
   });
 });
 
