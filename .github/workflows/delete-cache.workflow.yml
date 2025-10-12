@@ -16,6 +16,7 @@ on:
 
 jobs:
   delete-cache:
+    if: github.actor == github.repository_owner || github.actor == 'github-actions'
     runs-on: ubuntu-latest
     steps:
       - name: 🕐 Calculate ${{ inputs.expired-days || 7 }} days ago
