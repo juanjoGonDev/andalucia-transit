@@ -160,7 +160,7 @@ export class RouteSearchFormComponent implements OnChanges {
   private readonly searchIds = APP_CONFIG.homeData.search;
   private readonly maxAutocompleteOptions = APP_CONFIG.homeData.search.maxAutocompleteOptions;
   private readonly searchDebounceMs = APP_CONFIG.homeData.search.debounceMs;
-  private readonly nearbyGroupId = APP_CONFIG.homeData.search.nearbyGroupId;
+  protected readonly nearbyGroupId = APP_CONFIG.homeData.search.nearbyGroupId;
 
   private readonly minimumDate = this.buildDefaultDate();
   private readonly minimumDateValidator = this.createMinimumDateValidator(this.minimumDate);
