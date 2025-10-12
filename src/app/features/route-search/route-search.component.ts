@@ -41,7 +41,12 @@ import { buildNavigationCommands } from '../../shared/navigation/navigation.util
     RouteSearchFormComponent
   ],
   templateUrl: './route-search.component.html',
-  styleUrl: './route-search.component.scss',
+  styleUrls: [
+    './route-search.component.scss',
+    './route-search.component-summary.scss',
+    './route-search.component-timeline.scss',
+    './route-search.component-states.scss'
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RouteSearchComponent implements AfterViewInit {

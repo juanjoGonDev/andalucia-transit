@@ -2,13 +2,12 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 import { APP_CONFIG } from '../../core/config';
 import { MaterialSymbolName } from '../../shared/ui/types/material-symbol-name';
 import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-item.component';
 import { SectionComponent } from '../../shared/ui/section/section.component';
-import { HomeNearbyStopsDialogComponent } from './home-nearby-stops-dialog.component';
 import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
 import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
 import { StopNavigationItemComponent } from '../../shared/ui/stop-navigation-item/stop-navigation-item.component';
@@ -39,7 +38,6 @@ interface StopNavigationItemViewModel {
   imports: [
     CommonModule,
     TranslateModule,
-    MatDialogModule,
     CardListItemComponent,
     SectionComponent,
     StopNavigationItemComponent,
@@ -47,10 +45,11 @@ interface StopNavigationItemViewModel {
     HomeRecentSearchesComponent
   ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
+  styleUrls: ['./home.component.scss', './home.component-search.scss', './home.component-placeholder.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {
+  private static readonly recentPlaceholderCount = 3;
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly routeSearchState = inject(RouteSearchStateService);
@@ -81,8 +80,13 @@ export class HomeComponent {
   protected readonly favoriteStops: StopNavigationItemViewModel[] = this.buildFavoriteStops();
 
   protected readonly currentSelection$ = this.routeSearchState.selection$;
+  protected readonly recentPlaceholderItems = Array.from(
+    { length: HomeComponent.recentPlaceholderCount },
+    (_, index) => index
+  );
 
-  protected openNearbyStopsDialog(): void {
+  protected async openNearbyStopsDialog(): Promise<void> {
+    const { HomeNearbyStopsDialogComponent } = await import('./home-nearby-stops-dialog.component');
     this.dialog.open(HomeNearbyStopsDialogComponent);
   }
 

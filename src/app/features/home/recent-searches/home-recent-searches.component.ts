@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DateTime } from 'luxon';
 import { firstValueFrom } from 'rxjs';
@@ -57,7 +57,7 @@ interface RecentSearchItem {
 @Component({
   selector: 'app-home-recent-searches',
   standalone: true,
-  imports: [CommonModule, TranslateModule, MatDialogModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './home-recent-searches.component.html',
   styleUrl: './home-recent-searches.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

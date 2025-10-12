@@ -124,7 +124,7 @@ describe('RouteSearchPreviewService', () => {
   ): Subscription {
     return service.loadPreview(selection).subscribe({
       next: (preview) => target.push(preview),
-      error: error ?? (() => {})
+      error: error ?? (() => undefined)
     });
   }
 
