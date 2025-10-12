@@ -1,5 +1,5 @@
 import { SimpleChange } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { firstValueFrom, of } from 'rxjs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
@@ -314,6 +314,48 @@ describe('RouteSearchFormComponent', () => {
       value: '150'
     });
   });
+
+  it('hides recommended origins when they do not match the query', fakeAsync(() => {
+    nearbyStops.results = [
+      {
+        id: ORIGIN_OPTION.stopIds[0] ?? '',
+        name: ORIGIN_OPTION.name,
+        distanceInMeters: 150
+      }
+    ];
+    nearbyStopOptions.options = [
+      {
+        ...ORIGIN_OPTION,
+        distanceInMeters: 150
+      }
+    ];
+
+    component.recommendOriginFromLocation();
+    flushMicrotasks();
+    fixture.detectChanges();
+
+    let groups: readonly { id: string }[] = [];
+    const subscription = component.originGroups$.subscribe((value) => {
+      groups = value;
+    });
+
+    try {
+      flushMicrotasks();
+
+      expect((groups[0] ?? null)?.id).toBe(APP_CONFIG.homeData.search.nearbyGroupId);
+
+      component.searchForm.controls.origin.setValue('Estación');
+      tick(APP_CONFIG.homeData.search.debounceMs);
+      flushMicrotasks();
+      fixture.detectChanges();
+      tick();
+      flushMicrotasks();
+
+      expect((groups[0] ?? null)?.id).not.toBe(APP_CONFIG.homeData.search.nearbyGroupId);
+    } finally {
+      subscription.unsubscribe();
+    }
+  }));
 });
 
 interface RouteSearchFormComponentPublicApi {

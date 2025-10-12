@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
@@ -33,7 +34,7 @@ const GEOLOCATION_TIMEOUT = 3;
 @Component({
   selector: 'app-home-nearby-stops-dialog',
   standalone: true,
-  imports: [CommonModule, TranslateModule, DialogLayoutComponent],
+  imports: [CommonModule, TranslateModule, DialogLayoutComponent, MatButtonModule],
   templateUrl: './home-nearby-stops-dialog.component.html',
   styleUrl: './home-nearby-stops-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
