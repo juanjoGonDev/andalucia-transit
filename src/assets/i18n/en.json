@@ -4,6 +4,7 @@
     "stopDetail": "Stop detail",
     "routeSearch": "Route search",
     "map": "Map",
+    "settings": "Settings",
     "language": "Language",
     "lines": "Lines"
   },
@@ -147,6 +148,21 @@
     "description": "Explore the network map and inspect each stop.",
     "openList": "View list",
     "hint": "Map preview loading"
+  },
+  "settings": {
+    "title": "Settings",
+    "sections": {
+      "language": {
+        "title": "Language",
+        "description": "Choose your preferred language.",
+        "actionLabel": "Switch application language to {{language}}",
+        "activeLabel": "Current language"
+      },
+      "application": {
+        "title": "Application",
+        "versionLabel": "Version"
+      }
+    }
   },
   "errors": {
     "geolocation": {

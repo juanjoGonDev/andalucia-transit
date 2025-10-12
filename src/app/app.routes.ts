@@ -33,6 +33,12 @@ export const routes: Routes = [
         title: APP_CONFIG.translationKeys.navigation.routeSearch
       },
       {
+        path: APP_CONFIG.routes.settings,
+        loadComponent: () =>
+          import('./features/settings/settings.component').then((module) => module.SettingsComponent),
+        title: APP_CONFIG.translationKeys.settings.title
+      },
+      {
         path: APP_CONFIG.routes.map,
         component: MapComponent,
         title: APP_CONFIG.translationKeys.navigation.map

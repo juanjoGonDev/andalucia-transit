@@ -53,7 +53,8 @@ export const APP_CONFIG = {
     routeSearch: ROUTE_SEARCH_BASE_SEGMENT,
     routeSearchResultPattern:
       `${ROUTE_SEARCH_BASE_SEGMENT}/:${ROUTE_SEARCH_ORIGIN_PARAM}/${ROUTE_SEARCH_CONNECTOR_SEGMENT}/:${ROUTE_SEARCH_DESTINATION_PARAM}/${ROUTE_SEARCH_DATE_SEGMENT}/:${ROUTE_SEARCH_DATE_PARAM}` as const,
-    map: 'map' as const
+    map: 'map' as const,
+    settings: 'settings' as const
   },
   routeSegments: {
     routeSearch: {
@@ -78,6 +79,7 @@ export const APP_CONFIG = {
       stopDetail: 'navigation.stopDetail',
       routeSearch: 'navigation.routeSearch',
       map: 'navigation.map',
+      settings: 'navigation.settings',
       language: 'navigation.language',
       lines: 'navigation.lines'
     },
@@ -221,6 +223,21 @@ export const APP_CONFIG = {
       description: 'map.description',
       openList: 'map.openList',
       hint: 'map.hint'
+    },
+    settings: {
+      title: 'settings.title',
+      sections: {
+        language: {
+          title: 'settings.sections.language.title',
+          description: 'settings.sections.language.description',
+          actionLabel: 'settings.sections.language.actionLabel',
+          activeLabel: 'settings.sections.language.activeLabel'
+        },
+        application: {
+          title: 'settings.sections.application.title',
+          versionLabel: 'settings.sections.application.versionLabel'
+        }
+      }
     }
   },
   homeData: {

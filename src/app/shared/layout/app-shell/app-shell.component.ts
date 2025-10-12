@@ -22,6 +22,7 @@ export class AppShellComponent {
   private static readonly HOME_ICON: MaterialSymbolName = 'home';
   private static readonly MAP_ICON: MaterialSymbolName = 'map';
   private static readonly LINES_ICON: MaterialSymbolName = 'route';
+  private static readonly SETTINGS_ICON: MaterialSymbolName = 'settings';
 
   private readonly navigationKeys = APP_CONFIG.translationKeys.navigation;
 
@@ -40,6 +41,11 @@ export class AppShellComponent {
       labelKey: this.navigationKeys.lines,
       icon: AppShellComponent.LINES_ICON,
       commands: buildNavigationCommands(APP_CONFIG.routes.routeSearch)
+    },
+    {
+      labelKey: this.navigationKeys.settings,
+      icon: AppShellComponent.SETTINGS_ICON,
+      commands: buildNavigationCommands(APP_CONFIG.routes.settings)
     }
   ];
 }

@@ -2,6 +2,8 @@ import { spawnSync } from 'node:child_process';
 import puppeteer from 'puppeteer';
 
 const browserFlag = '--browsers';
+const watchFlag = '--watch';
+const disabledWatchValue = 'false';
 const browsersDelimiter = ',';
 const chromeHeadless = 'ChromeHeadless';
 const chromeHeadlessNoSandbox = 'ChromeHeadlessNoSandbox';
@@ -33,6 +35,15 @@ for (let index = 0; index < incomingArgs.length; index += 1) {
     continue;
   }
   forwardedArgs.push(value);
+}
+
+const hasWatchArgument = incomingArgs.some((value) => value === watchFlag || value.startsWith(`${watchFlag}=`));
+if (!hasWatchArgument) {
+  forwardedArgs.push(watchFlag, disabledWatchValue);
+}
+
+if (explicitBrowsers.length === 0) {
+  forwardedArgs.push(browserFlag, formatBrowsers(defaultBrowsers));
 }
 
 const desiredBrowsers = explicitBrowsers.length > 0 ? explicitBrowsers : defaultBrowsers;

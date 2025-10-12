@@ -4,6 +4,7 @@
     "stopDetail": "Detalle de parada",
     "routeSearch": "Buscar ruta",
     "map": "Mapa",
+    "settings": "Configuración",
     "language": "Idioma",
     "lines": "Líneas"
   },
@@ -147,6 +148,21 @@
     "description": "Explora el mapa y revisa cada parada.",
     "openList": "Ver lista",
     "hint": "Vista previa del mapa"
+  },
+  "settings": {
+    "title": "Configuración",
+    "sections": {
+      "language": {
+        "title": "Idioma",
+        "description": "Elige tu idioma preferido.",
+        "actionLabel": "Cambiar el idioma de la aplicación a {{language}}",
+        "activeLabel": "Idioma actual"
+      },
+      "application": {
+        "title": "Aplicación",
+        "versionLabel": "Versión"
+      }
+    }
   },
   "errors": {
     "geolocation": {
