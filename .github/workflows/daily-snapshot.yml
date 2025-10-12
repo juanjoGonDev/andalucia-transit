@@ -20,7 +20,7 @@ jobs:
       SNAPSHOT_BOT_EMAIL: bot@andaluciatransit.local
       SNAPSHOT_BOT_IDENT: Andalucia Transit Bot <bot@andaluciatransit.local>
       SNAPSHOT_BRANCH: automation/update-snapshots
-      SNAPSHOT_TITLE: task: refresh transport snapshots
+      SNAPSHOT_TITLE: 'task: refresh transport snapshots'
       SNAPSHOT_LABEL: automation
       SNAPSHOT_REVIEW_BODY: I'm **approving** this pull request because **it includes a daily snapshot refresh**
     steps:
