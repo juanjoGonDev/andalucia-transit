@@ -4,7 +4,6 @@ import { APP_CONFIG } from './core/config';
 import { HomeComponent } from './features/home/home.component';
 import { RouteSearchComponent } from './features/route-search/route-search.component';
 import { MapComponent } from './features/map/map.component';
-import { SettingsComponent } from './features/settings/settings.component';
 import { AppShellComponent } from './shared/layout/app-shell/app-shell.component';
 
 export const routes: Routes = [
@@ -35,7 +34,8 @@ export const routes: Routes = [
       },
       {
         path: APP_CONFIG.routes.settings,
-        component: SettingsComponent,
+        loadComponent: () =>
+          import('./features/settings/settings.component').then((module) => module.SettingsComponent),
         title: APP_CONFIG.translationKeys.settings.title
       },
       {

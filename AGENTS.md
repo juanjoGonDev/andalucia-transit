@@ -82,6 +82,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Static analysis: run `npm run lint`, `npm run format:check`, and type-checking in CI; fail builds on lint, test, or coverage regressions.
 - Track Lighthouse scores for performance, accessibility, best practices, and SEO; gate releases on meeting agreed thresholds.
 - Break complex product goals into smaller verifiable tasks and validate each step before progressing to the next.
+- Local development workflow: before completing any task, run and pass `npm run lint`, `npm run test`, `npm run build`, and `npm run snapshot` locally to ensure all checks succeed.
 
 ## Performance & UX Guardrails
 - Leverage lazy-loaded routes and code splitting; reuse API results with RxJS `shareReplay` or caching services; offload heavy computations (e.g., nearest stop calculations) to Web Workers if needed.

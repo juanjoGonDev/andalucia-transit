@@ -38,14 +38,14 @@ export class AppShellComponent {
       commands: buildNavigationCommands(APP_CONFIG.routes.map)
     },
     {
-      labelKey: this.navigationKeys.settings,
-      icon: AppShellComponent.SETTINGS_ICON,
-      commands: buildNavigationCommands(APP_CONFIG.routes.settings)
-    },
-    {
       labelKey: this.navigationKeys.lines,
       icon: AppShellComponent.LINES_ICON,
       commands: buildNavigationCommands(APP_CONFIG.routes.routeSearch)
+    },
+    {
+      labelKey: this.navigationKeys.settings,
+      icon: AppShellComponent.SETTINGS_ICON,
+      commands: buildNavigationCommands(APP_CONFIG.routes.settings)
     }
   ];
 }
