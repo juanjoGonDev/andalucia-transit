@@ -31,8 +31,8 @@
               {{ errorKey | translate }}
             </span>
           </ng-container>
-          <ng-container *ngIf="isReady(preview) as ready">
-            <div class="home-recent__preview-entry" *ngIf="ready.preview?.next as next">
+          <ng-container *ngIf="isReady(preview)">
+            <div class="home-recent__preview-entry" *ngIf="preview.preview.next as next">
               <span class="home-recent__preview-label">{{ nextLabelKey | translate }}</span>
               <span class="home-recent__preview-time">{{ next.arrivalTime | date:'HH:mm' }}</span>
               <span class="home-recent__preview-line">{{ next.lineCode }} · {{ next.destination }}</span>
@@ -40,7 +40,7 @@
                 {{ upcomingTranslation | translate:{ time: next.relativeLabel } }}
               </span>
             </div>
-            <div class="home-recent__preview-entry" *ngIf="ready.preview?.previous as previous">
+            <div class="home-recent__preview-entry" *ngIf="preview.preview.previous as previous">
               <span class="home-recent__preview-label">{{ previousLabelKey | translate }}</span>
               <span class="home-recent__preview-time">{{ previous.arrivalTime | date:'HH:mm' }}</span>
               <span class="home-recent__preview-line">
@@ -52,7 +52,7 @@
             </div>
             <div
               class="home-recent__preview-entry home-recent__preview-entry--empty"
-              *ngIf="!ready.preview?.next && !ready.preview?.previous"
+              *ngIf="!preview.preview.next && !preview.preview.previous"
             >
               {{ noPreviewKey | translate }}
             </div>
