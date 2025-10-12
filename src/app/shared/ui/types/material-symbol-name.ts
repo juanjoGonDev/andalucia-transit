@@ -10,4 +10,5 @@ export type MaterialSymbolName =
   | 'home'
   | 'map'
   | 'route'
+  | 'settings'
   | 'swap_vert';

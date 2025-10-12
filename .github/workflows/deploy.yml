@@ -32,6 +32,8 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
+      - name: Export app version
+        run: echo "NG_APP_VERSION=$(node -p \"require('./package.json').version\")" >> "$GITHUB_ENV"
       - name: Build application
         run: npm run build:prod
       - name: Create single-page fallback

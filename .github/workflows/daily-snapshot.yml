@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
@@ -56,8 +56,10 @@ jobs:
 
           This pull request refreshes the transport data snapshots using the CTAN open data service.
 
+          <!-- resource-summary:start -->
           - Data source: Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía (automatically fetched).
           - Scripts: `npm run snapshot`, `npm run test:scripts`
+          <!-- resource-summary:end -->
           BODY
           sed -i "s/automatically fetched/automatically fetched at ${SNAPSHOT_TIME}/" pr-body.md
       - name: Create pull request
@@ -89,6 +91,6 @@ jobs:
         if: steps.create-pr.outputs.pull-request-operation == 'created'
         run: gh pr review ${{ steps.create-pr.outputs.pull-request-url }} --approve -b "I'm **approving** this pull request because **it includes a daily snapshot refresh**"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
           
