@@ -14,11 +14,13 @@ import { RouteSearchPreviewService, RouteSearchPreview } from '../../../domain/r
 import { RouteSearchExecutionService } from '../../../domain/route-search/route-search-execution.service';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import { StopDirectoryOption } from '../../../data/stops/stop-directory.service';
+import { RouteSearchPreferencesService } from '../../../domain/route-search/route-search-preferences.service';
 
 type PreviewState =
   | { readonly status: 'loading' }
   | { readonly status: 'error' }
-  | { readonly status: 'ready'; readonly preview: RouteSearchPreview };
+  | { readonly status: 'ready'; readonly preview: RouteSearchPreview }
+  | { readonly status: 'disabled' };
 
 interface ComponentStateItem {
   readonly preview: PreviewState;
@@ -35,6 +37,7 @@ class FakeTranslateLoader implements TranslateLoader {
       'home.sections.recentStops.previewLoading': 'Loading',
       'home.sections.recentStops.previewError': 'Error',
       'home.sections.recentStops.noPreview': 'No results',
+      'home.sections.recentStops.previewDisabled': 'Preview disabled',
       'home.sections.recentStops.actions.remove': 'Remove',
       'home.sections.recentStops.actions.clearAll': 'Clear all',
       'home.dialogs.recentStops.remove.title': 'Remove?',
@@ -70,11 +73,26 @@ class RouteSearchExecutionStub {
   prepare = jasmine.createSpy('prepare').and.returnValue(['', 'routes']);
 }
 
+class RouteSearchPreferencesStub {
+  private readonly subject = new BehaviorSubject<boolean>(true);
+
+  readonly previewEnabled$ = this.subject.asObservable();
+
+  previewEnabled(): boolean {
+    return this.subject.value;
+  }
+
+  setPreviewEnabled(enabled: boolean): void {
+    this.subject.next(enabled);
+  }
+}
+
 describe('HomeRecentSearchesComponent', () => {
   let fixture: ComponentFixture<HomeRecentSearchesComponent>;
   let history: RouteSearchHistoryStub;
   let preview: RouteSearchPreviewStub;
   let execution: RouteSearchExecutionStub;
+  let preferences: RouteSearchPreferencesStub;
   const dialogOpenSpy = jasmine
     .createSpy('open')
     .and.returnValue({ afterClosed: () => of(true) });
@@ -86,6 +104,7 @@ describe('HomeRecentSearchesComponent', () => {
     history = new RouteSearchHistoryStub();
     preview = new RouteSearchPreviewStub();
     execution = new RouteSearchExecutionStub();
+    preferences = new RouteSearchPreferencesStub();
 
     TestBed.configureTestingModule({
       imports: [
@@ -97,7 +116,8 @@ describe('HomeRecentSearchesComponent', () => {
         { provide: RouteSearchPreviewService, useValue: preview },
         { provide: RouteSearchExecutionService, useValue: execution },
         { provide: MatDialog, useValue: dialogStub },
-        { provide: Router, useValue: routerStub }
+        { provide: Router, useValue: routerStub },
+        { provide: RouteSearchPreferencesService, useValue: preferences }
       ]
     });
 
@@ -155,6 +175,22 @@ describe('HomeRecentSearchesComponent', () => {
     expect(route.nativeElement.textContent).toContain('Origin');
     const previewContainer = fixture.debugElement.query(By.css('.home-recent__preview'));
     expect(previewContainer).not.toBeNull();
+  }));
+
+  it('shows a disabled message when preview calculations are turned off', fakeAsync(() => {
+    preferences.setPreviewEnabled(false);
+    const entry = buildEntry('entry-disabled', new Date('2025-01-01T00:00:00Z'));
+    preview.loadPreview.and.returnValue(of<RouteSearchPreview>({ next: null, previous: null }));
+
+    history.emit([entry]);
+    flushMicrotasks();
+    fixture.detectChanges();
+    flushMicrotasks();
+    fixture.detectChanges();
+
+    const status = fixture.debugElement.query(By.css('.home-recent__preview-status--disabled'));
+    expect(status).not.toBeNull();
+    expect(preview.loadPreview).not.toHaveBeenCalled();
   }));
 
   it('updates the preview when the stream emits new departures', fakeAsync(() => {

@@ -16,6 +16,8 @@ const HOLIDAY_API_BASE_URL = 'https://date.nager.at/api/v3' as const;
 const HOLIDAY_COUNTRY_CODE = 'ES' as const;
 const HOLIDAY_REGION_CODES = ['ES-AN'] as const;
 const ROUTE_SEARCH_HISTORY_STORAGE_KEY = 'andalucia-transit.routeSearchHistory' as const;
+const ROUTE_SEARCH_PREFERENCES_STORAGE_KEY = 'andalucia-transit.routeSearchPreferences' as const;
+const ROUTE_SEARCH_SCHEDULE_ACCURACY_THRESHOLD_DAYS = 30 as const;
 
 export const APP_CONFIG = {
   appName: 'Andalucia Transit',
@@ -46,6 +48,11 @@ export const APP_CONFIG = {
   },
   runtime: {
     flagsProperty: RUNTIME_FLAGS_PROPERTY
+  },
+  routeSearchData: {
+    scheduleAccuracy: {
+      warningThresholdDays: ROUTE_SEARCH_SCHEDULE_ACCURACY_THRESHOLD_DAYS
+    }
   },
   routes: {
     home: '' as const,
@@ -115,6 +122,7 @@ export const APP_CONFIG = {
           previewLoading: 'home.sections.recentStops.previewLoading',
           previewError: 'home.sections.recentStops.previewError',
           noPreview: 'home.sections.recentStops.noPreview',
+          previewDisabled: 'home.sections.recentStops.previewDisabled',
           actions: {
             clearAll: 'home.sections.recentStops.actions.clearAll',
             remove: 'home.sections.recentStops.actions.remove'
@@ -231,7 +239,8 @@ export const APP_CONFIG = {
       holidayBadge: 'routeSearch.holidayBadge',
       estimateNotice: 'routeSearch.estimateNotice',
       pastSearchNotice: 'routeSearch.pastSearchNotice',
-      searchToday: 'routeSearch.searchToday'
+      searchToday: 'routeSearch.searchToday',
+      scheduleAccuracyWarning: 'routeSearch.scheduleAccuracyWarning'
     },
     map: {
       title: 'map.title',
@@ -247,6 +256,11 @@ export const APP_CONFIG = {
           description: 'settings.sections.language.description',
           actionLabel: 'settings.sections.language.actionLabel',
           activeLabel: 'settings.sections.language.activeLabel'
+        },
+        recentSearches: {
+          title: 'settings.sections.recentSearches.title',
+          description: 'settings.sections.recentSearches.description',
+          previewToggleLabel: 'settings.sections.recentSearches.previewToggleLabel'
         },
         application: {
           title: 'settings.sections.application.title',
@@ -266,7 +280,11 @@ export const APP_CONFIG = {
     recentStops: {
       icon: 'pin_drop' as const,
       maxItems: 10,
-      storageKey: ROUTE_SEARCH_HISTORY_STORAGE_KEY
+      storageKey: ROUTE_SEARCH_HISTORY_STORAGE_KEY,
+      preferences: {
+        storageKey: ROUTE_SEARCH_PREFERENCES_STORAGE_KEY,
+        previewEnabledDefault: true
+      }
     },
     nearbyStops: {
       maxResults: 3,

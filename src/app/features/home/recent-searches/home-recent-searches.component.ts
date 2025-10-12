@@ -11,7 +11,15 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DateTime } from 'luxon';
-import { firstValueFrom } from 'rxjs';
+import {
+  Subscription,
+  catchError,
+  firstValueFrom,
+  map,
+  of,
+  startWith,
+  switchMap
+} from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
@@ -28,6 +36,7 @@ import {
 } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { APP_CONFIG_TOKEN } from '../../../core/tokens/app-config.token';
 import { AppConfig } from '../../../core/config';
+import { RouteSearchPreferencesService } from '../../../domain/route-search/route-search-preferences.service';
 
 interface PreviewStateLoading {
   readonly status: 'loading';
@@ -42,7 +51,15 @@ interface PreviewStateReady {
   readonly preview: RouteSearchPreview;
 }
 
-type PreviewState = PreviewStateLoading | PreviewStateError | PreviewStateReady;
+interface PreviewStateDisabled {
+  readonly status: 'disabled';
+}
+
+type PreviewState =
+  | PreviewStateLoading
+  | PreviewStateError
+  | PreviewStateReady
+  | PreviewStateDisabled;
 
 interface RecentSearchItem {
   readonly id: string;
@@ -70,10 +87,12 @@ export class HomeRecentSearchesComponent {
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
   private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
+  private readonly preferences = inject(RouteSearchPreferencesService);
   private readonly timezone = this.config.data.timezone;
   private readonly translations = this.config.translationKeys.home.sections.recentStops;
   private readonly dialogTranslations = this.config.translationKeys.home.dialogs.recentStops;
   private readonly icon = this.config.homeData.recentStops.icon;
+  private readonly previewSubscriptions = new Map<string, Subscription>();
 
   protected readonly items = signal<readonly RecentSearchItem[]>([]);
   protected readonly hasItems = computed(() => this.items().length > 0);
@@ -86,6 +105,7 @@ export class HomeRecentSearchesComponent {
   protected readonly loadingKey = this.translations.previewLoading;
   protected readonly errorKey = this.translations.previewError;
   protected readonly noPreviewKey = this.translations.noPreview;
+  protected readonly previewDisabledKey = this.translations.previewDisabled;
   protected readonly removeActionKey = this.translations.actions.remove;
   protected readonly clearAllActionKey = this.translations.actions.clearAll;
   protected readonly upcomingTranslation = this.config.translationKeys.routeSearch.upcomingLabel;
@@ -96,6 +116,8 @@ export class HomeRecentSearchesComponent {
     this.history.entries$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((entries) => this.syncEntries(entries));
+
+    this.destroyRef.onDestroy(() => this.teardownPreviewSubscriptions());
   }
 
   protected trackById(_: number, item: RecentSearchItem): string {
@@ -149,6 +171,10 @@ export class HomeRecentSearchesComponent {
     return state.status === 'ready';
   }
 
+  protected isDisabled(state: PreviewState): state is PreviewStateDisabled {
+    return state.status === 'disabled';
+  }
+
   private syncEntries(entries: readonly RouteSearchHistoryEntry[]): void {
     const previousItems = this.items();
     const previousMap = new Map(previousItems.map((item) => [item.id, item]));
@@ -165,15 +191,23 @@ export class HomeRecentSearchesComponent {
 
     this.items.set(mapped);
 
+    const ids = new Set(mapped.map((item) => item.id));
+    for (const [id, subscription] of this.previewSubscriptions.entries()) {
+      if (!ids.has(id)) {
+        subscription.unsubscribe();
+        this.previewSubscriptions.delete(id);
+      }
+    }
+
     mapped.forEach((item) => {
       const previous = previousMap.get(item.id);
+      const previousState: PreviewState = previous?.preview ?? { status: 'loading' };
       const needsReload =
         !previous ||
         !this.sameSelection(previous.effectiveSelection, item.effectiveSelection) ||
-        !this.isReady(item.preview);
+        this.shouldReload(previousState);
 
       if (needsReload) {
-        this.setPreviewState(item.id, { status: 'loading' });
         this.loadPreview(item);
       }
     });
@@ -195,7 +229,9 @@ export class HomeRecentSearchesComponent {
       effectiveSelection,
       effectiveQueryDate: resolved.date,
       showTodayNotice: resolved.adjusted,
-      preview: { status: 'loading' }
+      preview: this.preferences.previewEnabled()
+        ? { status: 'loading' }
+        : { status: 'disabled' }
     } satisfies RecentSearchItem;
   }
 
@@ -211,13 +247,28 @@ export class HomeRecentSearchesComponent {
   }
 
   private loadPreview(item: RecentSearchItem): void {
-    this.preview
-      .loadPreview(item.effectiveSelection)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (value) => this.setPreviewState(item.id, { status: 'ready', preview: value }),
-        error: () => this.setPreviewState(item.id, { status: 'error' })
-      });
+    this.previewSubscriptions.get(item.id)?.unsubscribe();
+
+    const subscription = this.preferences.previewEnabled$
+      .pipe(
+        switchMap((enabled) => {
+          if (!enabled) {
+            return of<PreviewState>({ status: 'disabled' });
+          }
+
+          return this.preview.loadPreview(item.effectiveSelection).pipe(
+            map<RouteSearchPreview, PreviewState>((value) => ({
+              status: 'ready',
+              preview: value
+            })),
+            startWith<PreviewState>({ status: 'loading' }),
+            catchError(() => of<PreviewState>({ status: 'error' }))
+          );
+        })
+      )
+      .subscribe((state) => this.setPreviewState(item.id, state));
+
+    this.previewSubscriptions.set(item.id, subscription);
   }
 
   private setPreviewState(id: string, state: PreviewState): void {
@@ -226,12 +277,23 @@ export class HomeRecentSearchesComponent {
     );
   }
 
+  private shouldReload(state: PreviewState): boolean {
+    return state.status !== 'ready' && state.status !== 'disabled';
+  }
+
   private sameSelection(first: RouteSearchSelection, second: RouteSearchSelection): boolean {
     return (
       first.origin.id === second.origin.id &&
       first.destination.id === second.destination.id &&
       first.queryDate.getTime() === second.queryDate.getTime()
     );
+  }
+
+  private teardownPreviewSubscriptions(): void {
+    for (const subscription of this.previewSubscriptions.values()) {
+      subscription.unsubscribe();
+    }
+    this.previewSubscriptions.clear();
   }
 
   private async confirm(data: ConfirmDialogData): Promise<boolean> {

@@ -39,6 +39,7 @@
         "previewLoading": "Loading schedule...",
         "previewError": "We could not load the schedule.",
         "noPreview": "No schedules to show.",
+        "previewDisabled": "Schedule preview disabled",
         "actions": {
           "clearAll": "Clear all",
           "remove": "Remove"
@@ -155,7 +156,8 @@
     "holidayBadge": "Holiday service",
     "estimateNotice": "Times are estimates based on Junta de Andalucía schedule data.",
     "pastSearchNotice": "You are viewing schedules for a past date. Refresh to see the current services.",
-    "searchToday": "View today's schedules"
+    "searchToday": "View today's schedules",
+    "scheduleAccuracyWarning": "Schedules for past or distant dates may change without notice."
   },
   "map": {
     "title": "Network map",
@@ -171,6 +173,11 @@
         "description": "Choose your preferred language.",
         "actionLabel": "Switch application language to {{language}}",
         "activeLabel": "Current language"
+      },
+      "recentSearches": {
+        "title": "Recent searches",
+        "description": "Control how we calculate previews for your recent routes.",
+        "previewToggleLabel": "Enable live schedule previews"
       },
       "application": {
         "title": "Application",

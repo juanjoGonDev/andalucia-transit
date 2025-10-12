@@ -63,11 +63,14 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly selectionResolver = inject(RouteSearchSelectionResolverService);
   private readonly execution = inject(RouteSearchExecutionService);
   private readonly timezone = APP_CONFIG.data.timezone;
+  private readonly scheduleAccuracyThresholdDays =
+    APP_CONFIG.routeSearchData.scheduleAccuracy.warningThresholdDays;
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.routeSearch;
   protected readonly badgeTranslationKeys = APP_CONFIG.translationKeys.stopDetail.badges;
   private readonly routeSegments = APP_CONFIG.routeSegments.routeSearch;
   protected readonly formTitleKey = this.translationKeys.action;
+  protected readonly scheduleAccuracyWarningKey = this.translationKeys.scheduleAccuracyWarning;
 
   protected readonly selection = signal<RouteSearchSelection | null>(this.state.getSelection());
   protected readonly results = signal<RouteSearchResultsViewModel>({
@@ -92,6 +95,23 @@ export class RouteSearchComponent implements AfterViewInit {
     const queryDay = DateTime.fromJSDate(current.queryDate, { zone: this.timezone }).startOf('day');
 
     return queryDay < today;
+  });
+  protected readonly showScheduleAccuracyWarning = computed(() => {
+    const current = this.selection();
+
+    if (!current) {
+      return false;
+    }
+
+    const today = DateTime.now().setZone(this.timezone).startOf('day');
+    const queryDay = DateTime.fromJSDate(current.queryDate, { zone: this.timezone }).startOf('day');
+
+    if (queryDay < today) {
+      return true;
+    }
+
+    const futureThreshold = today.plus({ days: this.scheduleAccuracyThresholdDays });
+    return queryDay > futureThreshold;
   });
 
   constructor() {

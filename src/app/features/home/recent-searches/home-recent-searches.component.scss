@@ -220,6 +220,11 @@
   color: var(--color-text-strong);
 }
 
+.home-recent__preview-status--disabled {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
 .home-recent__remove {
   align-self: center;
   width: 2.25rem;

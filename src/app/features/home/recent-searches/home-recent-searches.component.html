@@ -38,6 +38,11 @@
               {{ errorKey | translate }}
             </span>
           </ng-container>
+          <ng-container *ngIf="isDisabled(preview)">
+            <span class="home-recent__preview-status home-recent__preview-status--disabled">
+              {{ previewDisabledKey | translate }}
+            </span>
+          </ng-container>
           <ng-container *ngIf="isReady(preview)">
             <div class="home-recent__preview-entry" *ngIf="preview.preview.next as next">
               <span class="home-recent__preview-label">{{ nextLabelKey | translate }}</span>

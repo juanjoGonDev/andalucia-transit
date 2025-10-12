@@ -58,6 +58,12 @@
             <p class="route-search__estimate-notice">
               {{ translationKeys.estimateNotice | translate }}
             </p>
+            <div class="route-search__accuracy" *ngIf="showScheduleAccuracyWarning()">
+              <span class="material-symbols-outlined route-search__accuracy-icon">warning</span>
+              <p class="route-search__accuracy-text">
+                {{ scheduleAccuracyWarningKey | translate }}
+              </p>
+            </div>
             <ul class="route-search__items">
               <li
                 *ngFor="let item of departures(); trackBy: trackDeparture"

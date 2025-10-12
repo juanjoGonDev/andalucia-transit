@@ -24,6 +24,29 @@
       </ul>
     </div>
   </app-section>
+  <app-section [titleKey]="recentSearchesTitleKey" appearance="card">
+    <div class="settings__section">
+      <p class="settings__description">{{ recentSearchesDescriptionKey | translate }}</p>
+      <div class="settings__controls">
+        <button
+          type="button"
+          class="settings__toggle"
+          role="switch"
+          [attr.aria-checked]="previewEnabled()"
+          (click)="togglePreview()"
+        >
+          <span
+            class="settings__toggle-track"
+            aria-hidden="true"
+            [attr.data-active]="previewEnabled() ? 'true' : null"
+          >
+            <span class="settings__toggle-thumb"></span>
+          </span>
+          <span class="settings__toggle-label">{{ previewToggleLabelKey | translate }}</span>
+        </button>
+      </div>
+    </div>
+  </app-section>
   <app-section [titleKey]="applicationSectionTitleKey" appearance="card">
     <div class="settings__section settings__section--application">
       <span class="settings__version-label">{{ applicationVersionLabelKey | translate }}</span>

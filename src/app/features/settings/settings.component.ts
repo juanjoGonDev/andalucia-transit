@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, TrackByFunction, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import { LanguageService } from '../../core/services/language.service';
 import { APP_CONFIG, SupportedLanguage } from '../../core/config';
 import { LanguageOption } from '../../core/interfaces/language-option.interface';
 import { APP_VERSION } from '../../core/tokens/app-version.token';
+import { RouteSearchPreferencesService } from '../../domain/route-search/route-search-preferences.service';
 
 interface LanguageItem extends LanguageOption {
   readonly isActive: boolean;
@@ -23,6 +25,7 @@ interface LanguageItem extends LanguageOption {
 export class SettingsComponent {
   private readonly languageService = inject(LanguageService);
   private readonly appVersion = inject(APP_VERSION);
+  private readonly routeSearchPreferences = inject(RouteSearchPreferencesService);
 
   private readonly translation = APP_CONFIG.translationKeys.settings;
 
@@ -30,12 +33,23 @@ export class SettingsComponent {
   protected readonly languageDescriptionKey = this.translation.sections.language.description;
   protected readonly languageActionLabelKey = this.translation.sections.language.actionLabel;
   protected readonly languageActiveLabelKey = this.translation.sections.language.activeLabel;
+  protected readonly recentSearchesTitleKey = this.translation.sections.recentSearches.title;
+  protected readonly recentSearchesDescriptionKey =
+    this.translation.sections.recentSearches.description;
+  protected readonly previewToggleLabelKey =
+    this.translation.sections.recentSearches.previewToggleLabel;
   protected readonly applicationSectionTitleKey = this.translation.sections.application.title;
   protected readonly applicationVersionLabelKey = this.translation.sections.application.versionLabel;
   protected readonly version = this.appVersion;
 
   protected readonly languageOptions: readonly LanguageOption[] = this.languageService.options;
   protected readonly currentLanguage = this.languageService.currentLanguage;
+  protected readonly previewEnabled = toSignal(
+    this.routeSearchPreferences.previewEnabled$,
+    {
+      initialValue: this.routeSearchPreferences.previewEnabled()
+    }
+  );
   protected readonly languageItems = computed<readonly LanguageItem[]>(() =>
     this.languageOptions.map((option) => ({
       ...option,
@@ -50,5 +64,10 @@ export class SettingsComponent {
       return;
     }
     this.languageService.setLanguage(language);
+  }
+
+  protected togglePreview(): void {
+    const next = !this.previewEnabled();
+    this.routeSearchPreferences.setPreviewEnabled(next);
   }
 }
