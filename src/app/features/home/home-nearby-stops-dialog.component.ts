@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -30,7 +30,7 @@ const METER_DECIMALS = 0;
 @Component({
   selector: 'app-home-nearby-stops-dialog',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, MatDialogModule, TranslateModule],
   templateUrl: './home-nearby-stops-dialog.component.html',
   styleUrl: './home-nearby-stops-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -40,6 +40,7 @@ export class HomeNearbyStopsDialogComponent implements OnInit {
   private readonly geolocationService = inject(GeolocationService);
   private readonly nearbyStopsService = inject(NearbyStopsService);
   private readonly router = inject(Router);
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly translation = APP_CONFIG.translationKeys.home.dialogs.nearbyStops;
   private readonly notSupportedMessage = APP_CONFIG.errors.geolocationNotSupported;
   private readonly metersPerKilometer = METERS_IN_KILOMETER;
@@ -104,6 +105,8 @@ export class HomeNearbyStopsDialogComponent implements OnInit {
       this.state = this.mapError(error);
       this.stops = [];
     }
+
+    this.changeDetector.markForCheck();
   }
 
   private buildViewModel(stop: NearbyStopResult): NearbyStopViewModel {
