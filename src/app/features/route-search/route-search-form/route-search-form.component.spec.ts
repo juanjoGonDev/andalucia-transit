@@ -19,6 +19,10 @@ import {
 } from '../../../data/route-search/stop-connections.service';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import { NearbyStopResult, NearbyStopsService } from '../../../core/services/nearby-stops.service';
+import {
+  NearbyStopOption,
+  NearbyStopOptionsService
+} from '../../../core/services/nearby-stop-options.service';
 import { GeolocationService } from '../../../core/services/geolocation.service';
 import { APP_CONFIG } from '../../../core/config';
 
@@ -139,6 +143,18 @@ class NearbyStopsStub {
   }
 }
 
+class NearbyStopOptionsStub {
+  options: readonly NearbyStopOption[] = [];
+  lastRequest: readonly NearbyStopResult[] | null = null;
+
+  loadOptions(
+    stops: readonly NearbyStopResult[]
+  ): ReturnType<NearbyStopOptionsService['loadOptions']> {
+    this.lastRequest = stops;
+    return of(this.options);
+  }
+}
+
 class TranslateLoaderStub implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
     return of({});
@@ -151,11 +167,13 @@ describe('RouteSearchFormComponent', () => {
   let connections: ConnectionsStub;
   let geolocation: GeolocationStub;
   let nearbyStops: NearbyStopsStub;
+  let nearbyStopOptions: NearbyStopOptionsStub;
 
   beforeEach(async () => {
     connections = new ConnectionsStub();
     geolocation = new GeolocationStub();
     nearbyStops = new NearbyStopsStub();
+    nearbyStopOptions = new NearbyStopOptionsStub();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -168,7 +186,8 @@ describe('RouteSearchFormComponent', () => {
         { provide: StopDirectoryService, useClass: DirectoryStub },
         { provide: StopConnectionsService, useValue: connections },
         { provide: GeolocationService, useValue: geolocation },
-        { provide: NearbyStopsService, useValue: nearbyStops }
+        { provide: NearbyStopsService, useValue: nearbyStops },
+        { provide: NearbyStopOptionsService, useValue: nearbyStopOptions }
       ]
     }).compileComponents();
 
@@ -278,12 +297,22 @@ describe('RouteSearchFormComponent', () => {
         distanceInMeters: 150
       }
     ];
+    nearbyStopOptions.options = [
+      {
+        ...ORIGIN_OPTION,
+        distanceInMeters: 150
+      }
+    ];
 
     await component.recommendOriginFromLocation();
 
     const groups = await firstValueFrom(component.originGroups$);
     expect(groups[0]?.id).toBe(APP_CONFIG.homeData.search.nearbyGroupId);
-    expect(groups[0]?.options[0]).toEqual(ORIGIN_OPTION);
+    expect(groups[0]?.options[0]?.id).toBe(ORIGIN_OPTION.id);
+    expect(groups[0]?.options[0]?.distanceLabel).toEqual({
+      translationKey: APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance.meters,
+      value: '150'
+    });
   });
 });
 

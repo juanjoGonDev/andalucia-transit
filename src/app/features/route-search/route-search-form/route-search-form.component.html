@@ -27,12 +27,23 @@
         [displayWith]="displayStop"
       >
         <ng-container *ngFor="let group of originGroups$ | async; trackBy: trackGroup">
-          <mat-optgroup [label]="group.label" [attr.aria-label]="group.municipality">
+          <mat-optgroup
+            [label]="group.translateLabel ? (group.label | translate) : group.label"
+            [attr.aria-label]="
+              group.translateLabel ? (group.municipality | translate) : group.municipality
+            "
+          >
             <mat-option
               *ngFor="let option of group.options; trackBy: trackOption"
               [value]="option"
             >
-              {{ option.name }}
+              <span class="route-search-form__option-name">{{ option.name }}</span>
+              <span
+                *ngIf="option.distanceLabel as distance"
+                class="route-search-form__option-distance"
+              >
+                {{ distance.translationKey | translate: { value: distance.value } }}
+              </span>
             </mat-option>
           </mat-optgroup>
         </ng-container>
@@ -65,12 +76,23 @@
         [displayWith]="displayStop"
       >
         <ng-container *ngFor="let group of destinationGroups$ | async; trackBy: trackGroup">
-          <mat-optgroup [label]="group.label" [attr.aria-label]="group.municipality">
+          <mat-optgroup
+            [label]="group.translateLabel ? (group.label | translate) : group.label"
+            [attr.aria-label]="
+              group.translateLabel ? (group.municipality | translate) : group.municipality
+            "
+          >
             <mat-option
               *ngFor="let option of group.options; trackBy: trackOption"
               [value]="option"
             >
-              {{ option.name }}
+              <span class="route-search-form__option-name">{{ option.name }}</span>
+              <span
+                *ngIf="option.distanceLabel as distance"
+                class="route-search-form__option-distance"
+              >
+                {{ distance.translationKey | translate: { value: distance.value } }}
+              </span>
             </mat-option>
           </mat-optgroup>
         </ng-container>

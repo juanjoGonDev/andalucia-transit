@@ -1,0 +1,10 @@
+<h2 mat-dialog-title class="dialog-layout__title">{{ titleKey | translate }}</h2>
+
+<div mat-dialog-content class="dialog-layout__content">
+  <p *ngIf="descriptionKey" class="dialog-layout__description">{{ descriptionKey | translate }}</p>
+  <ng-content select="[appDialogBody]"></ng-content>
+</div>
+
+<div mat-dialog-actions class="dialog-layout__actions">
+  <ng-content select="[appDialogActions]"></ng-content>
+</div>

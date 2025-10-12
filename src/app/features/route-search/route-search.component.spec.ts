@@ -15,7 +15,7 @@ import {
 import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
 import { StopDirectoryOption, StopDirectoryService } from '../../data/stops/stop-directory.service';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
-import { buildDateSlug } from '../../domain/route-search/route-search-url.util';
+import { buildDateSlug, buildStopSlug } from '../../domain/route-search/route-search-url.util';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
 
 class TranslateTestingLoader implements TranslateLoader {
@@ -68,6 +68,15 @@ class StopDirectoryServiceStub {
 
   getOptionByStopId(id: string) {
     return of(this.options.get(id) ?? null);
+  }
+
+  getOptionByStopSignature(consortiumId: number, stopId: string) {
+    const option = Array.from(this.options.values()).find(
+      (candidate) =>
+        candidate.consortiumId === consortiumId && candidate.stopIds.some((value) => value === stopId)
+    );
+
+    return of(option ?? null);
   }
 }
 
@@ -236,6 +245,18 @@ describe('RouteSearchComponent', () => {
     fixture.detectChanges();
 
     activatedRoute.emitQuery({ originStopId: origin.id });
+    fixture.detectChanges();
+
+    const form = fixture.debugElement.query(By.directive(RouteSearchFormStubComponent))
+      .componentInstance as RouteSearchFormStubComponent;
+
+    expect(form.originDraft).toEqual(origin);
+  });
+
+  it('prefills the origin field when the query parameter is a slug', () => {
+    fixture.detectChanges();
+
+    activatedRoute.emitQuery({ originStopId: buildStopSlug(origin) });
     fixture.detectChanges();
 
     const form = fixture.debugElement.query(By.directive(RouteSearchFormStubComponent))

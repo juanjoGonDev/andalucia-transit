@@ -1,0 +1,94 @@
+:host {
+  display: block;
+  --dialog-layout-max-content-height: min(70vh, 24rem);
+  --dialog-layout-scrollbar-width: 0.4rem;
+}
+
+.dialog-layout__title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.dialog-layout__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 0.5rem;
+  max-height: var(--dialog-layout-max-content-height);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+  padding-right: calc(var(--dialog-layout-scrollbar-width) / 2);
+}
+
+.dialog-layout__content::-webkit-scrollbar {
+  width: var(--dialog-layout-scrollbar-width);
+}
+
+.dialog-layout__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dialog-layout__content::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.dialog-layout__description {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.dialog-layout__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 0 0;
+}
+
+.dialog-layout__button {
+  min-width: 6.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dialog-layout__button--primary {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.dialog-layout__button--primary:hover {
+  background-color: var(--color-primary-light);
+}
+
+.dialog-layout__button--ghost {
+  background-color: transparent;
+  color: var(--color-primary);
+}
+
+.dialog-layout__button--ghost:hover {
+  background-color: var(--color-primary-soft);
+}
+
+.dark .dialog-layout__title {
+  color: var(--color-text-strong-dark);
+}
+
+.dark .dialog-layout__description {
+  color: var(--color-text-muted-dark);
+}
+
+.dark .dialog-layout__content::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-subtle-dark);
+}
+
+.dark .dialog-layout__button--ghost:hover {
+  background-color: var(--color-primary-soft-dark);
+}

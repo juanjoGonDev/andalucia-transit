@@ -25,7 +25,11 @@ import {
   RouteSearchDepartureView
 } from '../../domain/route-search/route-search-results.service';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
-import { buildDateSlug, buildStopSlug } from '../../domain/route-search/route-search-url.util';
+import {
+  buildDateSlug,
+  buildStopSlug,
+  parseStopSlug
+} from '../../domain/route-search/route-search-url.util';
 import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
@@ -135,12 +139,25 @@ export class RouteSearchComponent implements AfterViewInit {
     queryParams$
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        switchMap((stopId) => {
-          if (!stopId) {
+        switchMap((value) => {
+          if (!value) {
             return of<StopDirectoryOption | null>(null);
           }
 
-          return this.stopDirectory.getOptionByStopId(stopId);
+          const parsed = parseStopSlug(value);
+
+          if (parsed) {
+            if (parsed.consortiumId !== null) {
+              return this.stopDirectory.getOptionByStopSignature(
+                parsed.consortiumId,
+                parsed.stopId
+              );
+            }
+
+            return this.stopDirectory.getOptionByStopId(parsed.stopId);
+          }
+
+          return this.stopDirectory.getOptionByStopId(value);
         })
       )
       .subscribe((option) => {

@@ -84,6 +84,26 @@
   color: var(--color-icon-muted-dark);
 }
 
+.route-search-form__option-name {
+  display: block;
+  font-weight: 600;
+  color: var(--color-text-strong);
+}
+
+.route-search-form__option-distance {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+:host-context(.dark) .route-search-form__option-name {
+  color: var(--color-text-strong-dark);
+}
+
+:host-context(.dark) .route-search-form__option-distance {
+  color: var(--color-text-muted-dark);
+}
+
 .route-search-form__swap {
   grid-area: swap;
   display: flex;

@@ -1,36 +1,39 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
 
 import { APP_CONFIG } from '../../core/config';
 import { GeolocationService } from '../../core/services/geolocation.service';
-import { NearbyStopsService, NearbyStopResult } from '../../core/services/nearby-stops.service';
+import { NearbyStopsService } from '../../core/services/nearby-stops.service';
 import { GeoCoordinate } from '../../domain/utils/geo-distance.util';
 import { MaterialSymbolName } from '../../shared/ui/types/material-symbol-name';
 import { GEOLOCATION_REQUEST_OPTIONS } from '../../core/services/geolocation-request.options';
+import { NearbyStopOptionsService, NearbyStopOption } from '../../core/services/nearby-stop-options.service';
+import { buildDistanceDisplay } from '../../domain/utils/distance-display.util';
+import { DialogLayoutComponent } from '../../shared/ui/dialog/dialog-layout.component';
+import { buildStopSlug } from '../../domain/route-search/route-search-url.util';
 
 type NearbyDialogState = 'loading' | 'success' | 'permissionDenied' | 'notSupported' | 'unknown';
 
 interface NearbyStopViewModel {
   id: string;
+  slug: string;
   title: string;
   distanceKey: string;
   distanceValue: string;
 }
 
-const METERS_IN_KILOMETER = 1_000;
 const GEOLOCATION_PERMISSION_DENIED = 1;
 const GEOLOCATION_POSITION_UNAVAILABLE = 2;
 const GEOLOCATION_TIMEOUT = 3;
-const KILOMETER_DECIMALS = 1;
-const METER_DECIMALS = 0;
 
 @Component({
   selector: 'app-home-nearby-stops-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, DialogLayoutComponent],
   templateUrl: './home-nearby-stops-dialog.component.html',
   styleUrl: './home-nearby-stops-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -41,11 +44,12 @@ export class HomeNearbyStopsDialogComponent implements OnInit {
   private readonly nearbyStopsService = inject(NearbyStopsService);
   private readonly router = inject(Router);
   private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly nearbyStopOptions = inject(NearbyStopOptionsService);
   private readonly translation = APP_CONFIG.translationKeys.home.dialogs.nearbyStops;
   private readonly notSupportedMessage = APP_CONFIG.errors.geolocationNotSupported;
-  private readonly metersPerKilometer = METERS_IN_KILOMETER;
   private readonly routeSearchPath = APP_CONFIG.routes.routeSearch;
   private readonly originQueryParam = APP_CONFIG.routeSearchData.queryParams.originStopId;
+  private readonly distanceTranslation = this.translation.distance;
 
   protected readonly titleKey = this.translation.title;
   protected readonly descriptionKey = this.translation.description;
@@ -75,7 +79,7 @@ export class HomeNearbyStopsDialogComponent implements OnInit {
 
   protected async selectStop(stop: NearbyStopViewModel): Promise<void> {
     const navigated = await this.router.navigate([this.routeSearchPath], {
-      queryParams: { [this.originQueryParam]: stop.id }
+      queryParams: { [this.originQueryParam]: stop.slug }
     });
 
     if (navigated) {
@@ -99,7 +103,8 @@ export class HomeNearbyStopsDialogComponent implements OnInit {
         longitude: position.coords.longitude
       };
       const results = await this.nearbyStopsService.findClosestStops(coordinates);
-      this.stops = results.map((stop) => this.buildViewModel(stop));
+      const options = await firstValueFrom(this.nearbyStopOptions.loadOptions(results));
+      this.stops = options.map((option) => this.buildViewModel(option));
       this.state = 'success';
     } catch (error) {
       this.state = this.mapError(error);
@@ -109,28 +114,15 @@ export class HomeNearbyStopsDialogComponent implements OnInit {
     this.changeDetector.markForCheck();
   }
 
-  private buildViewModel(stop: NearbyStopResult): NearbyStopViewModel {
-    const isKilometers = stop.distanceInMeters >= this.metersPerKilometer;
-    const distanceKey = isKilometers ? this.translation.distance.kilometers : this.translation.distance.meters;
-    const fractionDigits = isKilometers ? KILOMETER_DECIMALS : METER_DECIMALS;
-    const formattedValue = this.formatDistanceValue(
-      isKilometers ? stop.distanceInMeters / this.metersPerKilometer : stop.distanceInMeters,
-      fractionDigits
-    );
-
+  private buildViewModel(stop: NearbyStopOption): NearbyStopViewModel {
+    const distance = buildDistanceDisplay(stop.distanceInMeters, this.distanceTranslation);
     return {
       id: stop.id,
+      slug: buildStopSlug(stop),
       title: stop.name,
-      distanceKey,
-      distanceValue: formattedValue
+      distanceKey: distance.translationKey,
+      distanceValue: distance.value
     };
-  }
-
-  private formatDistanceValue(distance: number, fractionDigits: number): string {
-    return new Intl.NumberFormat(undefined, {
-      minimumFractionDigits: fractionDigits,
-      maximumFractionDigits: fractionDigits
-    }).format(distance);
   }
 
   private mapError(error: unknown): NearbyDialogState {
