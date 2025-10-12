@@ -25,11 +25,16 @@ import {
   RouteSearchDepartureView
 } from '../../domain/route-search/route-search-results.service';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
-import { buildDateSlug, buildStopSlug } from '../../domain/route-search/route-search-url.util';
+import {
+  buildDateSlug,
+  buildStopSlug,
+  parseStopSlug
+} from '../../domain/route-search/route-search-url.util';
 import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
 import { buildNavigationCommands } from '../../shared/navigation/navigation.util';
+import { StopDirectoryService, StopDirectoryOption } from '../../data/stops/stop-directory.service';
 
 @Component({
   selector: 'app-route-search',
@@ -62,9 +67,11 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly resultsService = inject(RouteSearchResultsService);
   private readonly selectionResolver = inject(RouteSearchSelectionResolverService);
   private readonly execution = inject(RouteSearchExecutionService);
+  private readonly stopDirectory = inject(StopDirectoryService);
   private readonly timezone = APP_CONFIG.data.timezone;
   private readonly scheduleAccuracyThresholdDays =
     APP_CONFIG.routeSearchData.scheduleAccuracy.warningThresholdDays;
+  private readonly originQueryParamKey = APP_CONFIG.routeSearchData.queryParams.originStopId;
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.routeSearch;
   protected readonly badgeTranslationKeys = APP_CONFIG.translationKeys.stopDetail.badges;
@@ -78,6 +85,7 @@ export class RouteSearchComponent implements AfterViewInit {
     hasUpcoming: false,
     nextDepartureId: null
   });
+  protected readonly originDraft = signal<StopDirectoryOption | null>(null);
   protected readonly hasSelection = computed(() => this.selection() !== null);
   protected readonly departures = computed(() => this.results().departures);
   protected readonly hasResults = computed(() => this.departures().length > 0);
@@ -122,6 +130,39 @@ export class RouteSearchComponent implements AfterViewInit {
       map((paramMap) => this.extractParams(paramMap)),
       distinctUntilChanged((first, second) => this.paramsEqual(first, second))
     );
+    const queryParams$ = this.route.queryParamMap.pipe(
+      startWith(this.route.snapshot.queryParamMap),
+      map((paramMap) => paramMap.get(this.originQueryParamKey)),
+      distinctUntilChanged()
+    );
+
+    queryParams$
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        switchMap((value) => {
+          if (!value) {
+            return of<StopDirectoryOption | null>(null);
+          }
+
+          const parsed = parseStopSlug(value);
+
+          if (parsed) {
+            if (parsed.consortiumId !== null) {
+              return this.stopDirectory.getOptionByStopSignature(
+                parsed.consortiumId,
+                parsed.stopId
+              );
+            }
+
+            return this.stopDirectory.getOptionByStopId(parsed.stopId);
+          }
+
+          return this.stopDirectory.getOptionByStopId(value);
+        })
+      )
+      .subscribe((option) => {
+        this.originDraft.set(option);
+      });
 
     params$
       .pipe(

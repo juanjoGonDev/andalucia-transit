@@ -1,32 +1,73 @@
-import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+
+import type {
+  NearbyStopRecord,
+  NearbyStopResult as LoaderNearbyStopResult
+} from './nearby-stops.loader';
 
 import { APP_CONFIG } from '../config';
-import { GeoCoordinate, calculateDistanceInMeters } from '../../domain/utils/geo-distance.util';
+import type { GeoCoordinate } from '../../domain/utils/geo-distance.util';
 
-export interface NearbyStopResult {
-  id: string;
-  titleKey: string;
-  distanceInMeters: number;
-}
+export type NearbyStopResult = LoaderNearbyStopResult;
 
 @Injectable({ providedIn: 'root' })
 export class NearbyStopsService {
-  private readonly stops = APP_CONFIG.homeData.nearbyStops.stops;
-  private readonly defaultLimit = APP_CONFIG.homeData.nearbyStops.maxResults;
+  private static readonly EMPTY_RESULTS: readonly NearbyStopResult[] = Object.freeze([]);
 
-  findClosestStops(position: GeoCoordinate, limit?: number): readonly NearbyStopResult[] {
+  private readonly http = inject(HttpClient);
+  private readonly defaultLimit = APP_CONFIG.homeData.nearbyStops.maxResults;
+  private readonly maxDistanceInMeters = APP_CONFIG.homeData.nearbyStops.maxDistanceInMeters;
+  private readonly indexPath = APP_CONFIG.data.snapshots.stopDirectoryPath;
+
+  private stopsPromise: Promise<readonly NearbyStopRecord[]> | null = null;
+  private loaderPromise: Promise<NearbyStopsLoaderModule> | null = null;
+
+  async findClosestStops(
+    position: GeoCoordinate,
+    limit?: number
+  ): Promise<readonly NearbyStopResult[]> {
+    const records = await this.loadStops();
     const resultsLimit = limit ?? this.defaultLimit;
 
-    return this.stops
-      .map((stop) => ({
-        id: stop.id,
-        titleKey: stop.titleKey,
-        distanceInMeters: calculateDistanceInMeters(position, {
-          latitude: stop.latitude,
-          longitude: stop.longitude
-        })
-      }))
-      .sort((first, second) => first.distanceInMeters - second.distanceInMeters)
-      .slice(0, resultsLimit);
+    if (resultsLimit <= 0 || !records.length) {
+      return NearbyStopsService.EMPTY_RESULTS;
+    }
+
+    const { buildNearbyStopResults } = await this.loadLoaderModule();
+    const results = buildNearbyStopResults(
+      records,
+      position,
+      resultsLimit,
+      this.maxDistanceInMeters
+    );
+
+    return results.length ? results : NearbyStopsService.EMPTY_RESULTS;
+  }
+
+  private async loadStops(): Promise<readonly NearbyStopRecord[]> {
+    if (!this.stopsPromise) {
+      this.stopsPromise = this.fetchStops().catch((error) => {
+        this.stopsPromise = null;
+        throw error;
+      });
+    }
+
+    return this.stopsPromise;
+  }
+
+  private async fetchStops(): Promise<readonly NearbyStopRecord[]> {
+    const { loadNearbyStopRecords } = await this.loadLoaderModule();
+    return loadNearbyStopRecords(this.http, this.indexPath);
+  }
+
+  private loadLoaderModule(): Promise<NearbyStopsLoaderModule> {
+    if (!this.loaderPromise) {
+      this.loaderPromise = import('./nearby-stops.loader');
+    }
+
+    return this.loaderPromise;
   }
 }
+
+type NearbyStopsLoaderModule = typeof import('./nearby-stops.loader');

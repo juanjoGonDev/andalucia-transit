@@ -24,6 +24,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Define data contracts with TypeScript interfaces; keep constants in dedicated config modules; avoid magic numbers/strings.
 - Use Angular DI and factory providers for abstractions; rely on OnPush change detection where possible; tear down subscriptions via `async` pipe or `takeUntil`.
 - Follow English naming, 2-space indentation, semicolons, and avoid redundant comments or commented-out code.
+- Keep navigable URLs human-friendly at all entry points. When generating links or parsing deep links, prefer descriptive slugs over opaque identifiers while preserving the ability to resolve the underlying record.
 
 ## Decision Log
 - 2025-10-09: Route search URLs and selectors rely on consortium-aware stop signatures (`consortiumId:stopId`) to disambiguate repeated stop codes when restoring deep links or swapping directions.
@@ -89,6 +90,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Keep map rendering efficient via clustering and viewport filtering; dispose of subscriptions and event listeners to prevent leaks.
 - Ensure responsive layouts with Angular Material breakpoints; validate on low-end Android devices, desktop, and offline contexts.
 - Dialogs and modals must include comfortable padding, maintain responsive layouts across breakpoints, and prevent content overflow on narrow screens.
+- Implement dialogs using a shared, reusable layout so that only their projected content changes between variants. Avoid duplicating structure or styling across dialog components.
 
 ## Operational Snapshot
 - Workspace: `andalucia-transit` Angular standalone project with `core`, `data`, `domain`, `features`, and `shared` directories under `src/app`.

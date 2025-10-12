@@ -1,6 +1,6 @@
 import { SimpleChange } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
+import { firstValueFrom, of } from 'rxjs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { RouteSearchFormComponent } from './route-search-form.component';
@@ -18,6 +18,13 @@ import {
   buildStopConnectionKey
 } from '../../../data/route-search/stop-connections.service';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
+import { NearbyStopResult, NearbyStopsService } from '../../../core/services/nearby-stops.service';
+import {
+  NearbyStopOption,
+  NearbyStopOptionsService
+} from '../../../core/services/nearby-stop-options.service';
+import { GeolocationService } from '../../../core/services/geolocation.service';
+import { APP_CONFIG } from '../../../core/config';
 
 const ORIGIN_OPTION: StopDirectoryOption = {
   id: '7:origin-stop',
@@ -48,15 +55,21 @@ const DESTINATION_SIGNATURES: readonly StopDirectoryStopSignature[] = buildSigna
 
 class DirectoryStub {
   lastRequest: StopSearchRequest | null = null;
+  options = new Map<string, StopDirectoryOption>([
+    [ORIGIN_OPTION.stopIds[0] ?? '', ORIGIN_OPTION],
+    [DESTINATION_OPTION.stopIds[0] ?? '', DESTINATION_OPTION]
+  ]);
 
   searchStops(request: StopSearchRequest) {
     this.lastRequest = request;
+    const values = Array.from(this.options.values());
+
     if (!request.query) {
-      return of([ORIGIN_OPTION, DESTINATION_OPTION]);
+      return of(values);
     }
 
     const normalized = request.query.toLocaleLowerCase('es-ES');
-    const results = [ORIGIN_OPTION, DESTINATION_OPTION].filter((option) =>
+    const results = values.filter((option) =>
       option.name.toLocaleLowerCase('es-ES').includes(normalized)
     );
     return of(results);
@@ -64,6 +77,10 @@ class DirectoryStub {
 
   getStopById() {
     return of(null);
+  }
+
+  getOptionByStopId(stopId: string) {
+    return of(this.options.get(stopId) ?? null);
   }
 }
 
@@ -97,6 +114,47 @@ class ConnectionsStub {
   }
 }
 
+class GeolocationStub {
+  position: GeolocationPosition = {
+    coords: {
+      accuracy: 1,
+      altitude: null,
+      altitudeAccuracy: null,
+      heading: null,
+      latitude: 37.389,
+      longitude: -5.984,
+      speed: null,
+      toJSON: () => ({})
+    },
+    timestamp: Date.now(),
+    toJSON: () => ({})
+  };
+
+  async getCurrentPosition(): Promise<GeolocationPosition> {
+    return this.position;
+  }
+}
+
+class NearbyStopsStub {
+  results: NearbyStopResult[] = [];
+
+  async findClosestStops(): Promise<readonly NearbyStopResult[]> {
+    return this.results;
+  }
+}
+
+class NearbyStopOptionsStub {
+  options: readonly NearbyStopOption[] = [];
+  lastRequest: readonly NearbyStopResult[] | null = null;
+
+  loadOptions(
+    stops: readonly NearbyStopResult[]
+  ): ReturnType<NearbyStopOptionsService['loadOptions']> {
+    this.lastRequest = stops;
+    return of(this.options);
+  }
+}
+
 class TranslateLoaderStub implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
     return of({});
@@ -107,9 +165,15 @@ describe('RouteSearchFormComponent', () => {
   let fixture: ComponentFixture<RouteSearchFormComponent>;
   let component: RouteSearchFormComponent;
   let connections: ConnectionsStub;
+  let geolocation: GeolocationStub;
+  let nearbyStops: NearbyStopsStub;
+  let nearbyStopOptions: NearbyStopOptionsStub;
 
   beforeEach(async () => {
     connections = new ConnectionsStub();
+    geolocation = new GeolocationStub();
+    nearbyStops = new NearbyStopsStub();
+    nearbyStopOptions = new NearbyStopOptionsStub();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -120,7 +184,10 @@ describe('RouteSearchFormComponent', () => {
       ],
       providers: [
         { provide: StopDirectoryService, useClass: DirectoryStub },
-        { provide: StopConnectionsService, useValue: connections }
+        { provide: StopConnectionsService, useValue: connections },
+        { provide: GeolocationService, useValue: geolocation },
+        { provide: NearbyStopsService, useValue: nearbyStops },
+        { provide: NearbyStopOptionsService, useValue: nearbyStopOptions }
       ]
     }).compileComponents();
 
@@ -212,6 +279,83 @@ describe('RouteSearchFormComponent', () => {
     expect(component.searchForm.controls.origin.value).toEqual(ORIGIN_OPTION);
     expect(component.searchForm.controls.destination.value).toEqual(DESTINATION_OPTION);
   });
+
+  it('applies an origin draft when provided', () => {
+    component.originDraft = ORIGIN_OPTION;
+    component.ngOnChanges({
+      originDraft: new SimpleChange(null, ORIGIN_OPTION, true)
+    });
+
+    expect(component.searchForm.controls.origin.value).toEqual(ORIGIN_OPTION);
+  });
+
+  it('recommends nearby origins after requesting location', async () => {
+    nearbyStops.results = [
+      {
+        id: ORIGIN_OPTION.stopIds[0] ?? '',
+        name: ORIGIN_OPTION.name,
+        distanceInMeters: 150
+      }
+    ];
+    nearbyStopOptions.options = [
+      {
+        ...ORIGIN_OPTION,
+        distanceInMeters: 150
+      }
+    ];
+
+    await component.recommendOriginFromLocation();
+
+    const groups = await firstValueFrom(component.originGroups$);
+    expect(groups[0]?.id).toBe(APP_CONFIG.homeData.search.nearbyGroupId);
+    expect(groups[0]?.options[0]?.id).toBe(ORIGIN_OPTION.id);
+    expect(groups[0]?.options[0]?.distanceLabel).toEqual({
+      translationKey: APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance.meters,
+      value: '150'
+    });
+  });
+
+  it('hides recommended origins when they do not match the query', fakeAsync(() => {
+    nearbyStops.results = [
+      {
+        id: ORIGIN_OPTION.stopIds[0] ?? '',
+        name: ORIGIN_OPTION.name,
+        distanceInMeters: 150
+      }
+    ];
+    nearbyStopOptions.options = [
+      {
+        ...ORIGIN_OPTION,
+        distanceInMeters: 150
+      }
+    ];
+
+    component.recommendOriginFromLocation();
+    flushMicrotasks();
+    fixture.detectChanges();
+
+    let groups: readonly { id: string }[] = [];
+    const subscription = component.originGroups$.subscribe((value) => {
+      groups = value;
+    });
+
+    try {
+      flushMicrotasks();
+
+      expect((groups[0] ?? null)?.id).toBe(APP_CONFIG.homeData.search.nearbyGroupId);
+
+      component.searchForm.controls.origin.setValue('Estación');
+      tick(APP_CONFIG.homeData.search.debounceMs);
+      flushMicrotasks();
+      fixture.detectChanges();
+      tick();
+      flushMicrotasks();
+
+      expect((groups[0] ?? null)?.id).not.toBe(APP_CONFIG.homeData.search.nearbyGroupId);
+    } finally {
+      subscription.unsubscribe();
+    }
+  }));
 });
 
 interface RouteSearchFormComponentPublicApi {

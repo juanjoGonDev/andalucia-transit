@@ -6,6 +6,7 @@ const ROUTE_SEARCH_DATE_SEGMENT = 'on' as const;
 const ROUTE_SEARCH_ORIGIN_PARAM = 'originSlug' as const;
 const ROUTE_SEARCH_DESTINATION_PARAM = 'destinationSlug' as const;
 const ROUTE_SEARCH_DATE_PARAM = 'dateSlug' as const;
+const ROUTE_SEARCH_ORIGIN_QUERY_PARAM = 'originStopId' as const;
 const DATA_PROVIDER_NAME =
   'Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía' as const;
 const DATA_TIMEZONE = 'Europe/Madrid' as const;
@@ -52,6 +53,9 @@ export const APP_CONFIG = {
   routeSearchData: {
     scheduleAccuracy: {
       warningThresholdDays: ROUTE_SEARCH_SCHEDULE_ACCURACY_THRESHOLD_DAYS
+    },
+    queryParams: {
+      originStopId: ROUTE_SEARCH_ORIGIN_QUERY_PARAM
     }
   },
   routes: {
@@ -110,7 +114,9 @@ export const APP_CONFIG = {
           dateLabel: 'home.sections.search.dateLabel',
           submit: 'home.sections.search.submit',
           swapLabel: 'home.sections.search.swapLabel',
-          noRoutes: 'home.sections.search.noRoutes'
+          noRoutes: 'home.sections.search.noRoutes',
+          nearbyGroupLabel: 'home.sections.search.nearbyGroupLabel',
+          originLocationActionLabel: 'home.sections.search.originLocationActionLabel'
         },
         recentStops: {
           title: 'home.sections.recentStops.title',
@@ -275,7 +281,8 @@ export const APP_CONFIG = {
       destinationFieldId: 'home-search-destination',
       dateFieldId: 'home-search-date',
       maxAutocompleteOptions: 50,
-      debounceMs: 150
+      debounceMs: 150,
+      nearbyGroupId: 'nearby' as const
     },
     recentStops: {
       icon: 'pin_drop' as const,
@@ -287,6 +294,7 @@ export const APP_CONFIG = {
       }
     },
     nearbyStops: {
+      maxDistanceInMeters: 3_000,
       maxResults: 3,
       stops: [
         {

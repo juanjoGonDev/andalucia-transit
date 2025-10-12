@@ -27,7 +27,9 @@
         "dateLabel": "Date",
         "submit": "Search schedules",
         "swapLabel": "Swap origin and destination",
-        "noRoutes": "No direct routes are available between these stops."
+        "noRoutes": "No direct routes are available between these stops.",
+        "nearbyGroupLabel": "Near you",
+        "originLocationActionLabel": "Find stops near your location"
       },
       "recentStops": {
         "title": "Recent searches",

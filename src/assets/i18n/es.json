@@ -27,7 +27,9 @@
         "dateLabel": "Fecha",
         "submit": "Buscar horarios",
         "swapLabel": "Intercambiar origen y destino",
-        "noRoutes": "No hay rutas directas disponibles entre estas paradas."
+        "noRoutes": "No hay rutas directas disponibles entre estas paradas.",
+        "nearbyGroupLabel": "Cerca de ti",
+        "originLocationActionLabel": "Buscar paradas cercanas a tu ubicación"
       },
       "recentStops": {
         "title": "Paradas recientes",

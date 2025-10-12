@@ -25,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
+import { MatButtonModule } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
@@ -64,12 +65,40 @@ import {
   createRouteSearchSelection
 } from '../../../domain/route-search/route-search-selection.util';
 import { MaterialSymbolName } from '../../../shared/ui/types/material-symbol-name';
+import { GeolocationService } from '../../../core/services/geolocation.service';
+import {
+  NearbyStopResult,
+  NearbyStopsService
+} from '../../../core/services/nearby-stops.service';
+import { GEOLOCATION_REQUEST_OPTIONS } from '../../../core/services/geolocation-request.options';
+import { GeoCoordinate } from '../../../domain/utils/geo-distance.util';
+import {
+  NearbyStopOption,
+  NearbyStopOptionsService
+} from '../../../core/services/nearby-stop-options.service';
+import { buildDistanceDisplay } from '../../../domain/utils/distance-display.util';
+
+interface StopOptionDistanceLabel {
+  readonly translationKey: string;
+  readonly value: string;
+}
+
+type StopAutocompleteOption = StopDirectoryOption & {
+  readonly distanceInMeters?: number;
+  readonly distanceLabel?: StopOptionDistanceLabel;
+};
 
 interface StopAutocompleteGroup {
   readonly id: string;
   readonly label: string;
   readonly municipality: string;
-  readonly options: readonly StopDirectoryOption[];
+  readonly translateLabel: boolean;
+  readonly options: readonly StopAutocompleteOption[];
+}
+
+interface CategorizedOriginOptions {
+  readonly recommended: readonly StopAutocompleteOption[];
+  readonly others: readonly StopAutocompleteOption[];
 }
 
 const EMPTY_GROUPS: readonly StopAutocompleteGroup[] = Object.freeze([]);
@@ -78,6 +107,13 @@ const MIN_DATE_ERROR = 'minDate' as const;
 const EMPTY_STOP_SIGNATURES: readonly StopDirectoryStopSignature[] = Object.freeze(
   [] as StopDirectoryStopSignature[]
 );
+const EMPTY_OPTIONS: readonly StopAutocompleteOption[] = Object.freeze(
+  [] as StopAutocompleteOption[]
+);
+const EMPTY_ORIGIN_OPTIONS: CategorizedOriginOptions = Object.freeze({
+  recommended: EMPTY_OPTIONS,
+  others: EMPTY_OPTIONS
+});
 
 @Component({
   selector: 'app-route-search-form',
@@ -91,7 +127,8 @@ const EMPTY_STOP_SIGNATURES: readonly StopDirectoryStopSignature[] = Object.free
     MatAutocompleteModule,
     MatOptionModule,
     MatNativeDateModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatButtonModule
   ],
   templateUrl: './route-search-form.component.html',
   styleUrl: './route-search-form.component.scss',
@@ -108,16 +145,22 @@ export class RouteSearchFormComponent implements OnChanges {
 
   private readonly formBuilder = inject(FormBuilder);
   private readonly stopDirectory = inject(StopDirectoryService);
+  private readonly nearbyStopOptions = inject(NearbyStopOptionsService);
   private readonly stopConnections = inject(StopConnectionsService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly geolocation = inject(GeolocationService);
+  private readonly nearbyStops = inject(NearbyStopsService);
 
   @Input() initialSelection: RouteSearchSelection | null = null;
+  @Input() originDraft: StopAutocompleteOption | null = null;
   @Output() readonly selectionConfirmed = new EventEmitter<RouteSearchSelection>();
 
   private readonly translation = APP_CONFIG.translationKeys.home.sections.search;
+  private readonly distanceTranslation = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
   private readonly searchIds = APP_CONFIG.homeData.search;
   private readonly maxAutocompleteOptions = APP_CONFIG.homeData.search.maxAutocompleteOptions;
   private readonly searchDebounceMs = APP_CONFIG.homeData.search.debounceMs;
+  private readonly nearbyGroupId = APP_CONFIG.homeData.search.nearbyGroupId;
 
   private readonly minimumDate = this.buildDefaultDate();
   private readonly minimumDateValidator = this.createMinimumDateValidator(this.minimumDate);
@@ -209,20 +252,7 @@ export class RouteSearchFormComponent implements OnChanges {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  readonly originOptions$: Observable<readonly StopDirectoryOption[]> = combineLatest([
-    this.originQuery$,
-    this.selectedDestination$,
-    this.destinationConnections$
-  ]).pipe(
-    switchMap(([query, destination, connections]) =>
-    this.stopDirectory
-        .searchStops(this.buildOriginSearchRequest(query, destination, connections))
-        .pipe(map((options) => this.filterOptionsByConnections(options, connections)))
-    ),
-    shareReplay({ bufferSize: 1, refCount: false })
-  );
-
-  readonly destinationOptions$: Observable<readonly StopDirectoryOption[]> = combineLatest([
+  readonly destinationOptions$: Observable<readonly StopAutocompleteOption[]> = combineLatest([
     this.destinationQuery$,
     this.selectedOrigin$,
     this.originConnections$
@@ -235,8 +265,36 @@ export class RouteSearchFormComponent implements OnChanges {
     shareReplay({ bufferSize: 1, refCount: false })
   );
 
-  readonly originGroups$: Observable<readonly StopAutocompleteGroup[]> = this.originOptions$.pipe(
-    map((options) => this.groupByNucleus(options))
+  private readonly recommendedOriginOptions = new BehaviorSubject<readonly StopAutocompleteOption[]>(
+    EMPTY_OPTIONS
+  );
+
+  private readonly originOptionsState$: Observable<CategorizedOriginOptions> = combineLatest([
+    this.recommendedOriginOptions.asObservable(),
+    this.originQuery$,
+    this.selectedDestination$,
+    this.destinationConnections$
+  ]).pipe(
+    switchMap(([recommended, query, destination, connections]) =>
+      this.stopDirectory
+        .searchStops(
+          this.buildOriginSearchRequest(
+            query,
+            destination,
+            connections,
+            this.toStopSignaturesFromOptions(recommended)
+          )
+        )
+        .pipe(
+          map((options) => this.filterOptionsByConnections(options, connections)),
+          map((options) => this.categorizeOriginOptions(recommended, options))
+        )
+    ),
+    shareReplay({ bufferSize: 1, refCount: false })
+  );
+
+  readonly originGroups$: Observable<readonly StopAutocompleteGroup[]> = this.originOptionsState$.pipe(
+    map((options) => this.buildOriginGroups(options.recommended, options.others))
   );
   readonly destinationGroups$: Observable<readonly StopAutocompleteGroup[]> = this.destinationOptions$.pipe(
     map((options) => this.groupByNucleus(options))
@@ -255,9 +313,11 @@ export class RouteSearchFormComponent implements OnChanges {
   };
 
   readonly trackGroup = (_: number, group: StopAutocompleteGroup): string => group.id;
-  readonly trackOption = (_: number, option: StopDirectoryOption): string => option.id;
+  readonly trackOption = (_: number, option: StopAutocompleteOption): string => option.id;
 
   readonly noRoutes$ = new BehaviorSubject<boolean>(false);
+  protected readonly originLocationActionLabelKey = this.translation.originLocationActionLabel;
+  protected originLocationLoading = false;
 
   private lastPatchedSelectionId: string | null = null;
 
@@ -268,6 +328,10 @@ export class RouteSearchFormComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if ('initialSelection' in changes) {
       this.patchSelection(changes['initialSelection'].currentValue as RouteSearchSelection | null);
+    }
+
+    if ('originDraft' in changes) {
+      this.applyOriginDraft(changes['originDraft'].currentValue as StopAutocompleteOption | null);
     }
   }
 
@@ -307,9 +371,32 @@ export class RouteSearchFormComponent implements OnChanges {
     this.destinationControl.setValue(origin ?? null);
   }
 
+  async recommendOriginFromLocation(): Promise<void> {
+    if (this.originLocationLoading) {
+      return;
+    }
+
+    this.originLocationLoading = true;
+
+    try {
+      const position = await this.geolocation.getCurrentPosition(GEOLOCATION_REQUEST_OPTIONS);
+      const coordinates: GeoCoordinate = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      };
+      const nearbyStops = await this.nearbyStops.findClosestStops(coordinates);
+      const options = await firstValueFrom(this.loadRecommendedOptions(nearbyStops));
+      this.recommendedOriginOptions.next(options);
+    } catch {
+      this.recommendedOriginOptions.next(EMPTY_OPTIONS);
+    } finally {
+      this.originLocationLoading = false;
+    }
+  }
+
   private async buildSelection(
-    origin: StopDirectoryOption,
-    destination: StopDirectoryOption
+    origin: StopAutocompleteOption,
+    destination: StopAutocompleteOption
   ): Promise<RouteSearchSelection | null> {
     this.hideNoRoutes();
     const connections = await firstValueFrom(
@@ -334,20 +421,21 @@ export class RouteSearchFormComponent implements OnChanges {
 
   private buildOriginSearchRequest(
     query: string,
-    destination: StopDirectoryOption | null,
-    connections: ReadonlyMap<string, StopConnection>
+    destination: StopAutocompleteOption | null,
+    connections: ReadonlyMap<string, StopConnection>,
+    recommended: readonly StopDirectoryStopSignature[]
   ): StopSearchRequest {
     return {
       query,
       excludeStopSignature: this.getPrimaryStopSignature(destination) ?? undefined,
-      includeStopSignatures: this.buildIncludeSignatures(connections),
+      includeStopSignatures: this.buildIncludeSignatures(connections, recommended),
       limit: this.maxAutocompleteOptions
     } satisfies StopSearchRequest;
   }
 
   private buildDestinationSearchRequest(
     query: string,
-    origin: StopDirectoryOption | null,
+    origin: StopAutocompleteOption | null,
     connections: ReadonlyMap<string, StopConnection>
   ): StopSearchRequest {
     return {
@@ -359,20 +447,16 @@ export class RouteSearchFormComponent implements OnChanges {
   }
 
   private buildIncludeSignatures(
-    connections: ReadonlyMap<string, StopConnection>
+    connections: ReadonlyMap<string, StopConnection>,
+    additional: readonly StopDirectoryStopSignature[] = EMPTY_STOP_SIGNATURES
   ): readonly StopDirectoryStopSignature[] | undefined {
-    if (!connections.size) {
+    if (!connections.size && !additional.length) {
       return undefined;
     }
 
-    const signatures = Array.from(connections.values(), (connection) => ({
-      consortiumId: connection.consortiumId,
-      stopId: connection.stopId
-    } satisfies StopDirectoryStopSignature));
-
     const unique = new Map<string, StopDirectoryStopSignature>();
 
-    for (const signature of signatures) {
+    for (const signature of additional) {
       const key = buildStopConnectionKey(signature.consortiumId, signature.stopId);
 
       if (!unique.has(key)) {
@@ -380,15 +464,27 @@ export class RouteSearchFormComponent implements OnChanges {
       }
     }
 
+    connections.forEach((connection) => {
+      const signature: StopDirectoryStopSignature = {
+        consortiumId: connection.consortiumId,
+        stopId: connection.stopId
+      };
+      const key = buildStopConnectionKey(signature.consortiumId, signature.stopId);
+
+      if (!unique.has(key)) {
+        unique.set(key, signature);
+      }
+    });
+
     return Array.from(unique.values()).slice(0, this.maxAutocompleteOptions);
   }
 
-  private groupByNucleus(options: readonly StopDirectoryOption[]): readonly StopAutocompleteGroup[] {
+  private groupByNucleus(options: readonly StopAutocompleteOption[]): readonly StopAutocompleteGroup[] {
     if (!options.length) {
       return EMPTY_GROUPS;
     }
 
-    const groups = new Map<string, StopDirectoryOption[]>();
+    const groups = new Map<string, StopAutocompleteOption[]>();
 
     for (const option of options) {
       const bucket = groups.get(option.nucleusId);
@@ -404,6 +500,7 @@ export class RouteSearchFormComponent implements OnChanges {
       id,
       label: members[0]?.nucleus ?? '',
       municipality: members[0]?.municipality ?? '',
+      translateLabel: false,
       options: members
     }));
 
@@ -416,15 +513,39 @@ export class RouteSearchFormComponent implements OnChanges {
         id: group.id,
         label: group.label,
         municipality: group.municipality,
+        translateLabel: group.translateLabel,
         options: Object.freeze([...group.options])
       }))
     );
   }
 
+  private buildOriginGroups(
+    recommended: readonly StopAutocompleteOption[],
+    options: readonly StopAutocompleteOption[]
+  ): readonly StopAutocompleteGroup[] {
+    const uniqueRecommended = this.deduplicateOptions(recommended);
+    const filteredOptions = this.excludeOptions(options, uniqueRecommended);
+    const baseGroups = this.groupByNucleus(filteredOptions);
+
+    if (!uniqueRecommended.length) {
+      return baseGroups;
+    }
+
+    const nearbyGroup: StopAutocompleteGroup = Object.freeze({
+      id: this.nearbyGroupId,
+      label: this.translation.nearbyGroupLabel,
+      municipality: this.translation.nearbyGroupLabel,
+      translateLabel: true,
+      options: Object.freeze([...uniqueRecommended])
+    });
+
+    return Object.freeze([nearbyGroup, ...baseGroups]);
+  }
+
   private filterOptionsByConnections(
-    options: readonly StopDirectoryOption[],
+    options: readonly StopAutocompleteOption[],
     connections: ReadonlyMap<string, StopConnection>
-  ): readonly StopDirectoryOption[] {
+  ): readonly StopAutocompleteOption[] {
     if (!connections.size) {
       return options;
     }
@@ -444,6 +565,149 @@ export class RouteSearchFormComponent implements OnChanges {
     return timer(this.searchDebounceMs).pipe(map(() => query));
   }
 
+  private loadRecommendedOptions(
+    stops: readonly NearbyStopResult[]
+  ): Observable<readonly StopAutocompleteOption[]> {
+    if (!stops.length) {
+      return of(EMPTY_OPTIONS);
+    }
+
+    return this.nearbyStopOptions.loadOptions(stops).pipe(
+      map((options) => options.map((option) => this.withDistanceLabel(option))),
+      map((options) => this.deduplicateOptions(options))
+    );
+  }
+
+  private categorizeOriginOptions(
+    recommended: readonly StopAutocompleteOption[],
+    options: readonly StopAutocompleteOption[]
+  ): CategorizedOriginOptions {
+    if (!recommended.length) {
+      return Object.freeze({
+        recommended: EMPTY_OPTIONS,
+        others: options
+      });
+    }
+
+    if (!options.length) {
+      return EMPTY_ORIGIN_OPTIONS;
+    }
+
+    const resultIds = new Set(options.map((option) => option.id));
+    const matchingRecommended = this.deduplicateOptions(
+      recommended.filter((option) => resultIds.has(option.id))
+    );
+
+    if (!matchingRecommended.length) {
+      return Object.freeze({
+        recommended: EMPTY_OPTIONS,
+        others: options
+      });
+    }
+
+    const recommendedIds = new Set(matchingRecommended.map((option) => option.id));
+    const remaining = Object.freeze(
+      options.filter((option) => !recommendedIds.has(option.id))
+    );
+
+    return Object.freeze({
+      recommended: matchingRecommended,
+      others: remaining
+    });
+  }
+
+  private withDistanceLabel(option: NearbyStopOption): StopAutocompleteOption {
+    const distance = buildDistanceDisplay(option.distanceInMeters, this.distanceTranslation);
+
+    return {
+      ...option,
+      distanceLabel: {
+        translationKey: distance.translationKey,
+        value: distance.value
+      }
+    };
+  }
+
+  private deduplicateOptions(
+    options: readonly StopAutocompleteOption[]
+  ): readonly StopAutocompleteOption[] {
+    if (!options.length) {
+      return EMPTY_OPTIONS;
+    }
+
+    const unique = new Map<string, StopAutocompleteOption>();
+
+    for (const option of options) {
+      const existing = unique.get(option.id);
+
+      if (!existing) {
+        unique.set(option.id, option);
+        continue;
+      }
+
+      const currentDistance = existing.distanceInMeters ?? Number.POSITIVE_INFINITY;
+      const nextDistance = option.distanceInMeters ?? Number.POSITIVE_INFINITY;
+
+      if (nextDistance < currentDistance) {
+        unique.set(option.id, option);
+      }
+    }
+
+    return Object.freeze(Array.from(unique.values(), (value) => ({ ...value })));
+  }
+
+  private excludeOptions(
+    options: readonly StopAutocompleteOption[],
+    excluded: readonly StopAutocompleteOption[]
+  ): readonly StopAutocompleteOption[] {
+    if (!excluded.length) {
+      return options;
+    }
+
+    const excludedIds = new Set(excluded.map((option) => option.id));
+    return options.filter((option) => !excludedIds.has(option.id));
+  }
+
+  private toStopSignaturesFromOptions(
+    options: readonly StopAutocompleteOption[]
+  ): readonly StopDirectoryStopSignature[] {
+    if (!options.length) {
+      return EMPTY_STOP_SIGNATURES;
+    }
+
+    const unique = new Map<string, StopDirectoryStopSignature>();
+
+    for (const option of options) {
+      for (const stopId of option.stopIds) {
+        const signature: StopDirectoryStopSignature = {
+          consortiumId: option.consortiumId,
+          stopId
+        };
+        const key = buildStopConnectionKey(signature.consortiumId, signature.stopId);
+
+        if (!unique.has(key)) {
+          unique.set(key, signature);
+        }
+      }
+    }
+
+    return Array.from(unique.values());
+  }
+
+  private applyOriginDraft(option: StopAutocompleteOption | null): void {
+    if (!option) {
+      return;
+    }
+
+    const current = this.toStopOption(this.originControl.value);
+
+    if (this.areSameStop(current, option)) {
+      return;
+    }
+
+    this.originControl.setValue(option);
+  }
+
   private observeSelections(): void {
     combineLatest([this.selectedOrigin$, this.selectedDestination$])
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -454,8 +718,8 @@ export class RouteSearchFormComponent implements OnChanges {
   }
 
   private ensureDistinctStops(
-    origin: StopDirectoryOption | null,
-    destination: StopDirectoryOption | null
+    origin: StopAutocompleteOption | null,
+    destination: StopAutocompleteOption | null
   ): void {
     if (!origin || !destination) {
       return;
@@ -495,8 +759,8 @@ export class RouteSearchFormComponent implements OnChanges {
   }
 
   private areSameStop(
-    first: StopDirectoryOption | null,
-    second: StopDirectoryOption | null
+    first: StopAutocompleteOption | null,
+    second: StopAutocompleteOption | null
   ): boolean {
     if (!first && !second) {
       return true;
@@ -509,7 +773,7 @@ export class RouteSearchFormComponent implements OnChanges {
     return first.id === second.id;
   }
 
-  private toStopOption(value: StopAutocompleteValue): StopDirectoryOption | null {
+  private toStopOption(value: StopAutocompleteValue): StopAutocompleteOption | null {
     if (!value || typeof value === 'string') {
       return null;
     }
@@ -525,7 +789,7 @@ export class RouteSearchFormComponent implements OnChanges {
     return value;
   }
 
-  private getPrimaryStopSignature(option: StopDirectoryOption | null): StopDirectoryStopSignature | null {
+  private getPrimaryStopSignature(option: StopAutocompleteOption | null): StopDirectoryStopSignature | null {
     if (!option?.stopIds.length) {
       return null;
     }
@@ -537,7 +801,7 @@ export class RouteSearchFormComponent implements OnChanges {
   }
 
   private toStopSignatures(
-    option: StopDirectoryOption | null
+    option: StopAutocompleteOption | null
   ): readonly StopDirectoryStopSignature[] {
     if (!option?.stopIds.length) {
       return EMPTY_STOP_SIGNATURES;
@@ -643,7 +907,7 @@ export class RouteSearchFormComponent implements OnChanges {
   }
 }
 
-type StopAutocompleteValue = StopDirectoryOption | string | null;
+type StopAutocompleteValue = StopAutocompleteOption | string | null;
 
 interface RouteSearchFormGroup {
   readonly origin: FormControl<StopAutocompleteValue>;
