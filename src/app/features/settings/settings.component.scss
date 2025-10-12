@@ -15,6 +15,74 @@
   gap: 1rem;
 }
 
+.settings__controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.settings__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--color-text-strong);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.settings__toggle:hover {
+  border-color: var(--color-primary);
+}
+
+.settings__toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.settings__toggle[aria-checked='true'] {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-soft);
+}
+
+.settings__toggle-track {
+  position: relative;
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  background-color: var(--color-border-subtle);
+  transition: background-color 0.2s ease;
+}
+
+.settings__toggle-thumb {
+  position: absolute;
+  top: 0.1rem;
+  left: 0.1rem;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-text-muted);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.settings__toggle-track[data-active='true'] {
+  background-color: var(--color-primary-soft);
+}
+
+.settings__toggle-track[data-active='true'] .settings__toggle-thumb {
+  transform: translateX(1.25rem);
+  background-color: var(--color-primary);
+}
+
+.settings__toggle-label {
+  text-align: left;
+}
+
 .settings__description {
   margin: 0;
   font-size: 0.95rem;
@@ -111,6 +179,34 @@
   border-color: var(--color-primary-light);
   background-color: var(--color-primary-soft);
   color: var(--color-primary-light);
+}
+:host-context(.dark) .settings__toggle {
+  border-color: var(--color-border-subtle-dark);
+  color: var(--color-text-strong-dark);
+}
+
+:host-context(.dark) .settings__toggle:hover {
+  border-color: var(--color-primary-light);
+}
+
+:host-context(.dark) .settings__toggle[aria-checked='true'] {
+  background-color: rgba(33, 150, 243, 0.2);
+}
+
+:host-context(.dark) .settings__toggle-track {
+  background-color: var(--color-border-subtle-dark);
+}
+
+:host-context(.dark) .settings__toggle-track[data-active='true'] {
+  background-color: rgba(33, 150, 243, 0.35);
+}
+
+:host-context(.dark) .settings__toggle-thumb {
+  background-color: var(--color-text-muted-dark);
+}
+
+:host-context(.dark) .settings__toggle-track[data-active='true'] .settings__toggle-thumb {
+  background-color: var(--color-primary-light);
 }
 
 :host-context(.dark) .settings__version-label {

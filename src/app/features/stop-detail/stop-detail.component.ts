@@ -39,7 +39,7 @@ type ScheduleState =
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './stop-detail.component.html',
-  styleUrl: './stop-detail.component.scss',
+  styleUrls: ['./stop-detail.component.scss', './stop-detail.component-list.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StopDetailComponent {

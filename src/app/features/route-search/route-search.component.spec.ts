@@ -20,7 +20,9 @@ import { RouteSearchFormComponent } from './route-search-form/route-search-form.
 
 class TranslateTestingLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
-    return of({});
+    return of({
+      'routeSearch.scheduleAccuracyWarning': 'Schedules may change'
+    });
   }
 }
 
@@ -198,6 +200,54 @@ describe('RouteSearchComponent', () => {
     expect(holidayBadge).not.toBeNull();
     const arrival = item?.query(By.css('.route-search__item-arrival'));
     expect(arrival).not.toBeNull();
+  });
+
+  it('shows the accuracy warning for a distant future search', () => {
+    const departure: RouteSearchDepartureView = {
+      id: 'service-2',
+      lineId: 'L2',
+      lineCode: '002',
+      direction: 0,
+      destination: 'Beta Terminal',
+      originStopId: 'alpha',
+      arrivalTime: new Date('2025-02-02T08:05:00Z'),
+      relativeLabel: '5m',
+      waitTimeSeconds: 300,
+      kind: 'upcoming',
+      isNext: true,
+      isMostRecentPast: false,
+      isAccessible: false,
+      isUniversityOnly: false,
+      isHolidayService: false,
+      showUpcomingProgress: false,
+      progressPercentage: 0,
+      pastProgressPercentage: 0,
+      destinationArrivalTime: null,
+      travelDurationLabel: null
+    } satisfies RouteSearchDepartureView;
+
+    resultsService.viewModel = {
+      departures: [departure],
+      hasUpcoming: true,
+      nextDepartureId: 'service-2'
+    } satisfies RouteSearchResultsViewModel;
+
+    const futureDate = DateTime.now().plus({ days: 45 }).startOf('day');
+
+    state.setSelection({
+      origin,
+      destination,
+      queryDate: futureDate.toJSDate(),
+      lineMatches: []
+    });
+
+    fixture.detectChanges();
+
+    const warning = fixture.debugElement.query(By.css('.route-search__accuracy'));
+    expect(warning).not.toBeNull();
+    const text = warning?.query(By.css('.route-search__accuracy-text'))?.nativeElement as HTMLElement;
+    const content = text.textContent ?? '';
+    expect(content).toMatch(/Schedules may change|routeSearch\.scheduleAccuracyWarning/);
   });
 
   it('navigates when the search form emits a new selection', async () => {

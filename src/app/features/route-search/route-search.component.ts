@@ -25,11 +25,8 @@ import {
   RouteSearchDepartureView
 } from '../../domain/route-search/route-search-results.service';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
-import {
-  buildDateSlug,
-  buildStopSlug,
-  buildRouteSearchPath
-} from '../../domain/route-search/route-search-url.util';
+import { buildDateSlug, buildStopSlug } from '../../domain/route-search/route-search-url.util';
+import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
 import { buildNavigationCommands } from '../../shared/navigation/navigation.util';
@@ -44,7 +41,12 @@ import { buildNavigationCommands } from '../../shared/navigation/navigation.util
     RouteSearchFormComponent
   ],
   templateUrl: './route-search.component.html',
-  styleUrl: './route-search.component.scss',
+  styleUrls: [
+    './route-search.component.scss',
+    './route-search.component-summary.scss',
+    './route-search.component-timeline.scss',
+    './route-search.component-states.scss'
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RouteSearchComponent implements AfterViewInit {
@@ -59,12 +61,16 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly route = inject(ActivatedRoute);
   private readonly resultsService = inject(RouteSearchResultsService);
   private readonly selectionResolver = inject(RouteSearchSelectionResolverService);
+  private readonly execution = inject(RouteSearchExecutionService);
   private readonly timezone = APP_CONFIG.data.timezone;
+  private readonly scheduleAccuracyThresholdDays =
+    APP_CONFIG.routeSearchData.scheduleAccuracy.warningThresholdDays;
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.routeSearch;
   protected readonly badgeTranslationKeys = APP_CONFIG.translationKeys.stopDetail.badges;
   private readonly routeSegments = APP_CONFIG.routeSegments.routeSearch;
   protected readonly formTitleKey = this.translationKeys.action;
+  protected readonly scheduleAccuracyWarningKey = this.translationKeys.scheduleAccuracyWarning;
 
   protected readonly selection = signal<RouteSearchSelection | null>(this.state.getSelection());
   protected readonly results = signal<RouteSearchResultsViewModel>({
@@ -89,6 +95,23 @@ export class RouteSearchComponent implements AfterViewInit {
     const queryDay = DateTime.fromJSDate(current.queryDate, { zone: this.timezone }).startOf('day');
 
     return queryDay < today;
+  });
+  protected readonly showScheduleAccuracyWarning = computed(() => {
+    const current = this.selection();
+
+    if (!current) {
+      return false;
+    }
+
+    const today = DateTime.now().setZone(this.timezone).startOf('day');
+    const queryDay = DateTime.fromJSDate(current.queryDate, { zone: this.timezone }).startOf('day');
+
+    if (queryDay < today) {
+      return true;
+    }
+
+    const futureThreshold = today.plus({ days: this.scheduleAccuracyThresholdDays });
+    return queryDay > futureThreshold;
   });
 
   constructor() {
@@ -197,12 +220,7 @@ export class RouteSearchComponent implements AfterViewInit {
   }
 
   protected async onSelectionConfirmed(selection: RouteSearchSelection): Promise<void> {
-    this.state.setSelection(selection);
-    const commands = buildRouteSearchPath(selection.origin, selection.destination, selection.queryDate, {
-      base: APP_CONFIG.routes.routeSearch,
-      connector: this.routeSegments.connector,
-      date: this.routeSegments.date
-    });
+    const commands = this.execution.prepare(selection);
     await this.router.navigate(commands);
   }
 

@@ -31,17 +31,18 @@
       },
       "recentStops": {
         "title": "Paradas recientes",
-        "items": {
-          "mainStreet": "Calle Principal y Avenida 1",
-          "oakwoodPlaza": "Plaza Oakwood",
-          "cityLibrary": "Biblioteca Municipal",
-          "centralStation": "Estación Central",
-          "riverPark": "Parque del Río",
-          "harborPier": "Muelle del Puerto",
-          "universityGate": "Puerta de la Universidad",
-          "historicCenter": "Centro Histórico",
-          "northTerminal": "Terminal Norte",
-          "marketSquare": "Plaza del Mercado"
+        "empty": "Las búsquedas que hagas aparecerán aquí.",
+        "searchDate": "Buscaremos para {{date}}",
+        "searchDateToday": "Actualizado a hoy",
+        "next": "Próximo",
+        "previous": "Último",
+        "previewLoading": "Cargando horarios...",
+        "previewError": "No pudimos cargar el horario.",
+        "noPreview": "No hay horarios para mostrar.",
+        "previewDisabled": "Vista previa desactivada",
+        "actions": {
+          "clearAll": "Borrar todo",
+          "remove": "Eliminar"
         }
       },
       "findNearby": {
@@ -76,6 +77,20 @@
         "distance": {
           "meters": "{{value}} m",
           "kilometers": "{{value}} km"
+        }
+      },
+      "recentStops": {
+        "remove": {
+          "title": "¿Eliminar búsqueda?",
+          "message": "Se quitará esta búsqueda de la lista de recientes.",
+          "confirm": "Eliminar",
+          "cancel": "Cancelar"
+        },
+        "clearAll": {
+          "title": "¿Vaciar historial?",
+          "message": "Se borrarán todas las búsquedas recientes.",
+          "confirm": "Borrar",
+          "cancel": "Cancelar"
         }
       }
     }
@@ -141,7 +156,8 @@
     "holidayBadge": "Servicio festivo",
     "estimateNotice": "Horarios estimados con los datos oficiales de la Junta de Andalucía.",
     "pastSearchNotice": "Estás consultando horarios de una fecha pasada. Actualiza la búsqueda para ver los servicios vigentes.",
-    "searchToday": "Ver horarios de hoy"
+    "searchToday": "Ver horarios de hoy",
+    "scheduleAccuracyWarning": "Los horarios para fechas pasadas o con mucha antelación pueden variar sin previo aviso."
   },
   "map": {
     "title": "Mapa de la red",
@@ -157,6 +173,11 @@
         "description": "Elige tu idioma preferido.",
         "actionLabel": "Cambiar el idioma de la aplicación a {{language}}",
         "activeLabel": "Idioma actual"
+      },
+      "recentSearches": {
+        "title": "Búsquedas recientes",
+        "description": "Decide cómo calculamos las vistas previas de tus rutas recientes.",
+        "previewToggleLabel": "Activar vistas previas en tiempo real"
       },
       "application": {
         "title": "Aplicación",

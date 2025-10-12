@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { APP_CONFIG } from '../../core/config';
@@ -30,7 +30,7 @@ const METER_DECIMALS = 0;
 @Component({
   selector: 'app-home-nearby-stops-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, TranslateModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './home-nearby-stops-dialog.component.html',
   styleUrl: './home-nearby-stops-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

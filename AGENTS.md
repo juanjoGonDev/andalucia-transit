@@ -82,12 +82,13 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Static analysis: run `npm run lint`, `npm run format:check`, and type-checking in CI; fail builds on lint, test, or coverage regressions.
 - Track Lighthouse scores for performance, accessibility, best practices, and SEO; gate releases on meeting agreed thresholds.
 - Break complex product goals into smaller verifiable tasks and validate each step before progressing to the next.
-- Local development workflow: before completing any task, run and pass `npm run lint`, `npm run test`, `npm run build`, and `npm run snapshot` locally to ensure all checks succeed.
+- Local development workflow: before completing any task, run and pass `npm run lint`, `npm run test`, `npm run build`, and `npm run snapshot` locally to ensure all checks succeed. Confirm `npm start` launches without compilation errors. Use `npm run verify:all` to execute the full lint, test, build, and snapshot sequence together during development.
 
 ## Performance & UX Guardrails
 - Leverage lazy-loaded routes and code splitting; reuse API results with RxJS `shareReplay` or caching services; offload heavy computations (e.g., nearest stop calculations) to Web Workers if needed.
 - Keep map rendering efficient via clustering and viewport filtering; dispose of subscriptions and event listeners to prevent leaks.
 - Ensure responsive layouts with Angular Material breakpoints; validate on low-end Android devices, desktop, and offline contexts.
+- Dialogs and modals must include comfortable padding, maintain responsive layouts across breakpoints, and prevent content overflow on narrow screens.
 
 ## Operational Snapshot
 - Workspace: `andalucia-transit` Angular standalone project with `core`, `data`, `domain`, `features`, and `shared` directories under `src/app`.

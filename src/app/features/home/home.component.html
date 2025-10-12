@@ -12,25 +12,34 @@
     </header>
     <main class="home__main">
       <app-section [titleKey]="searchTitleKey" appearance="card">
-        <app-route-search-form
-          [initialSelection]="currentSelection$ | async"
-          (selectionConfirmed)="onSelectionConfirmed($event)"
-        ></app-route-search-form>
+        @defer (on viewport) {
+          <app-route-search-form
+            [initialSelection]="currentSelection$ | async"
+            (selectionConfirmed)="onSelectionConfirmed($event)"
+          ></app-route-search-form>
+        } @placeholder {
+          <div class="home-search-placeholder" aria-hidden="true">
+            <span class="home-search-placeholder__field"></span>
+            <span class="home-search-placeholder__field"></span>
+            <span class="home-search-placeholder__field"></span>
+            <span class="home-search-placeholder__action"></span>
+          </div>
+        }
       </app-section>
       <app-section [titleKey]="recentStopsTitleKey">
-        <div class="home__list home__list--scroll home__recent-list">
-          <app-stop-navigation-item
-            *ngFor="let stop of recentStops"
-            [stopId]="stop.id"
-            [leadingIcon]="stop.leadingIcon"
-            [titleKey]="stop.titleKey"
-            [subtitleKey]="stop.subtitleKey"
-            [layout]="stop.layout"
-            [iconVariant]="stop.iconVariant"
-            [trailingIcon]="stop.trailingIcon"
-            [ariaLabelKey]="stop.ariaLabelKey"
-          ></app-stop-navigation-item>
-        </div>
+        @defer (on viewport) {
+          <app-home-recent-searches></app-home-recent-searches>
+        } @placeholder {
+          <ul class="home-recent-placeholder" aria-hidden="true">
+            <li
+              *ngFor="let index of recentPlaceholderItems"
+              class="home-recent-placeholder__item"
+            >
+              <span class="home-recent-placeholder__line home-recent-placeholder__line--primary"></span>
+              <span class="home-recent-placeholder__line home-recent-placeholder__line--secondary"></span>
+            </li>
+          </ul>
+        }
       </app-section>
       <app-section [titleKey]="findNearbyTitleKey">
         <app-card-list-item
