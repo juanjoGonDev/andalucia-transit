@@ -6,17 +6,23 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   snapshot:
     name: Refresh data snapshots
     runs-on: ubuntu-latest
-    if: github.event.repository.fork == false
+    if: github.event.repository.fork == false && (github.actor == github.repository_owner || github.actor == 'github-actions')
     environment: admin
     env:
       NODE_OPTIONS: --max_old_space_size=4096
+      SNAPSHOT_BOT_NAME: Andalucia Transit Bot
+      SNAPSHOT_BOT_EMAIL: bot@andaluciatransit.local
+      SNAPSHOT_BOT_IDENT: Andalucia Transit Bot <bot@andaluciatransit.local>
+      SNAPSHOT_BRANCH: automation/update-snapshots
+      SNAPSHOT_TITLE: 'task: refresh transport snapshots'
+      SNAPSHOT_LABEL: automation
+      SNAPSHOT_REVIEW_BODY: I'm **approving** this pull request because **it includes a daily snapshot refresh**
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -45,8 +51,8 @@ jobs:
       - name: Configure git author
         if: steps.diff.outputs.changed == 'true'
         run: |
-          git config user.name "Andalucia Transit Bot"
-          git config user.email "bot@andaluciatransit.local"
+          git config user.name "$SNAPSHOT_BOT_NAME"
+          git config user.email "$SNAPSHOT_BOT_EMAIL"
       - name: Prepare pull request body
         if: steps.diff.outputs.changed == 'true'
         run: |
@@ -68,29 +74,29 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.PAT_FINE }}
-          branch: automation/update-snapshots
+          branch: ${{ env.SNAPSHOT_BRANCH }}
           base: main
-          commit-message: "task: refresh transport snapshots"
-          title: "task: refresh transport snapshots"
+          commit-message: ${{ env.SNAPSHOT_TITLE }}
+          title: ${{ env.SNAPSHOT_TITLE }}
           body-path: pr-body.md
-          author: Andalucia Transit Bot <bot@andaluciatransit.local>
-          committer: Andalucia Transit Bot <bot@andaluciatransit.local>
+          author: ${{ env.SNAPSHOT_BOT_IDENT }}
+          committer: ${{ env.SNAPSHOT_BOT_IDENT }}
           add-paths: |
             src/assets/data/**
             src/assets/runtime-flags.js
           delete-branch: true
           draft: false
           signoff: false
-          labels: automation
+          labels: ${{ env.SNAPSHOT_LABEL }}
       - name: Enable Pull Request Automerge
-        if: steps.create-pr.outputs.pull-request-operation == 'created'
+        if: steps.create-pr.outputs.pull-request-operation == 'created' && github.actor == 'github-actions'
         run: gh pr merge --squash --auto "${{ steps.create-pr.outputs.pull-request-number }}"
         env:
           GH_TOKEN: ${{ secrets.PAT_FINE }}
       - name: ✅ Approve PR
-        if: steps.create-pr.outputs.pull-request-operation == 'created'
-        run: gh pr review ${{ steps.create-pr.outputs.pull-request-url }} --approve -b "I'm **approving** this pull request because **it includes a daily snapshot refresh**"
+        if: steps.create-pr.outputs.pull-request-operation == 'created' && github.actor == 'github-actions'
+        run: gh pr review ${{ steps.create-pr.outputs.pull-request-url }} --approve -b "$SNAPSHOT_REVIEW_BODY"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_FINE }}
 
           
