@@ -33,6 +33,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - 2025-10-11: Page-level components must render only their feature content and register as children of the shared `AppShellComponent`. New pages are created by (1) generating a standalone component inside `src/app/features/<feature-name>/`, (2) exposing the component in the feature `index.ts` when needed by other modules, (3) adding a child route entry beneath the shell route in `app.routes.ts` with titles sourced from `APP_CONFIG.translationKeys`, and (4) placing shared layout elements, including navigation, exclusively inside the shell.
 - 2025-10-12: Route timetable holiday detection now distinguishes weekend-plus-holiday frequencies from holiday-only services so mixed schedules remain visible on matching weekdays without holiday badges.
 - 2025-10-13: Route timetable mapping infers weekday sets and holiday availability from consortium frequency codes and labels, covering variations across CTAN consorcios 1-9.
+- 2025-10-15: Snapshot pipeline now streams progress logs, persists catalog data in parallel, and linting enforces GitHub Actions validity via actionlint; see `docs/development-environment.md` for the environment bootstrap script.
 
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.
@@ -84,6 +85,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Track Lighthouse scores for performance, accessibility, best practices, and SEO; gate releases on meeting agreed thresholds.
 - Break complex product goals into smaller verifiable tasks and validate each step before progressing to the next.
 - Local development workflow: before completing any task, run and pass `npm run lint`, `npm run test`, `npm run build`, and `npm run snapshot` locally to ensure all checks succeed. Confirm `npm start` launches without compilation errors. Use `npm run verify:all` to execute the full lint, test, build, and snapshot sequence together during development.
+- Reference `docs/development-environment.md` for targeted command guidance when determining which checks must run for a change.
 
 ## Performance & UX Guardrails
 - Leverage lazy-loaded routes and code splitting; reuse API results with RxJS `shareReplay` or caching services; offload heavy computations (e.g., nearest stop calculations) to Web Workers if needed.
