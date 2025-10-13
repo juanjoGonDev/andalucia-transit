@@ -1,4 +1,5 @@
 import { Injectable, Signal, inject, signal } from '@angular/core';
+import { DateAdapter } from '@angular/material/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { APP_CONFIG_TOKEN } from '../tokens/app-config.token';
@@ -11,6 +12,9 @@ const storageAvailable = (): boolean => typeof window !== 'undefined' && typeof 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
   private readonly translateService = inject(TranslateService);
+  private readonly dateAdapter: DateAdapter<Date> | null = inject(DateAdapter, {
+    optional: true
+  });
   private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
   private readonly languageSignal = signal<SupportedLanguage>(APP_CONFIG.locales.default);
   private initialized = false;
@@ -48,6 +52,7 @@ export class LanguageService {
       this.translateService.use(language);
     }
 
+    this.updateDateLocale(language);
     this.languageSignal.set(language);
 
     if (persist) {
@@ -86,5 +91,17 @@ export class LanguageService {
     }
 
     window.localStorage.setItem(this.config.locales.storageKey, language);
+  }
+
+  private updateDateLocale(language: SupportedLanguage): void {
+    if (!this.dateAdapter) {
+      return;
+    }
+
+    const fallbackLanguage = this.config.locales.default;
+    const localeMap = this.config.locales.dateLocales;
+    const resolvedLocale = localeMap[language] ?? localeMap[fallbackLanguage];
+
+    this.dateAdapter.setLocale(resolvedLocale);
   }
 }

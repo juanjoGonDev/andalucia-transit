@@ -19,6 +19,12 @@ const HOLIDAY_REGION_CODES = ['ES-AN'] as const;
 const ROUTE_SEARCH_HISTORY_STORAGE_KEY = 'andalucia-transit.routeSearchHistory' as const;
 const ROUTE_SEARCH_PREFERENCES_STORAGE_KEY = 'andalucia-transit.routeSearchPreferences' as const;
 const ROUTE_SEARCH_SCHEDULE_ACCURACY_THRESHOLD_DAYS = 30 as const;
+const LOCALE_ES_STANDARD = 'es-ES' as const;
+const LOCALE_EN_STANDARD = 'en-GB' as const;
+const LANGUAGE_LOCALE_MAP = {
+  es: LOCALE_ES_STANDARD,
+  en: LOCALE_EN_STANDARD
+} as const;
 
 export const APP_CONFIG = {
   appName: 'Andalucia Transit',
@@ -28,6 +34,7 @@ export const APP_CONFIG = {
     fallback: 'es',
     storageKey: 'andalucia-transit.language',
     supported: ['es', 'en'] as const,
+    dateLocales: LANGUAGE_LOCALE_MAP,
     assetsPath: 'assets/i18n/',
     fileExtension: '.json'
   },
