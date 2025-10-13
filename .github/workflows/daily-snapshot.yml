@@ -8,14 +8,11 @@ on:
 permissions:
   contents: read
 
-env:
-  SNAPSHOT_AUTOMATION_ACTOR: github-actions[bot]
-
 jobs:
   snapshot:
     name: Refresh data snapshots
     runs-on: ubuntu-latest
-    if: github.event.repository.fork == false && (github.actor == github.repository_owner || github.actor == env.SNAPSHOT_AUTOMATION_ACTOR)
+    if: github.event.repository.fork == false && (github.actor == github.repository_owner || github.event_name == 'schedule')
     environment: admin
     env:
       NODE_OPTIONS: --max_old_space_size=4096
@@ -26,7 +23,6 @@ jobs:
       SNAPSHOT_TITLE: 'task: refresh transport snapshots'
       SNAPSHOT_LABEL: automation
       SNAPSHOT_REVIEW_BODY: I'm **approving** this pull request because **it includes a daily snapshot refresh**
-      SNAPSHOT_AUTOMATION_ACTOR: github-actions[bot]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -93,12 +89,12 @@ jobs:
           signoff: false
           labels: ${{ env.SNAPSHOT_LABEL }}
       - name: ✅ Approve PR
-        if: steps.diff.outputs.changed == 'true' && steps.create-pr.outputs.pull-request-operation != 'none' && (github.actor == env.SNAPSHOT_AUTOMATION_ACTOR || github.actor == github.repository_owner)
+        if: steps.diff.outputs.changed == 'true' && steps.create-pr.outputs.pull-request-operation != 'none' && (github.actor == github.repository_owner || github.event_name == 'schedule')
         run: gh pr review ${{ steps.create-pr.outputs.pull-request-url }} --approve -b "$SNAPSHOT_REVIEW_BODY"
         env:
           GH_TOKEN: ${{ secrets.PAT_FINE }}
       - name: Enable Pull Request Automerge
-        if: steps.diff.outputs.changed == 'true' && steps.create-pr.outputs.pull-request-operation != 'none' && (github.actor == env.SNAPSHOT_AUTOMATION_ACTOR || github.actor == github.repository_owner)
+        if: steps.diff.outputs.changed == 'true' && steps.create-pr.outputs.pull-request-operation != 'none' && (github.actor == github.repository_owner || github.event_name == 'schedule')
         run: gh pr merge --squash --auto "${{ steps.create-pr.outputs.pull-request-number }}"
         env:
           GH_TOKEN: ${{ secrets.PAT_FINE }}
