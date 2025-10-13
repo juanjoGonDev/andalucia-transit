@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { APP_CONFIG } from '../../core/config';
 import { MaterialSymbolName } from '../../shared/ui/types/material-symbol-name';
@@ -10,25 +11,15 @@ import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
 import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
-import { StopNavigationItemComponent } from '../../shared/ui/stop-navigation-item/stop-navigation-item.component';
+import { StopFavoritesService, StopFavorite } from '../../domain/stops/stop-favorites.service';
 import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
 import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
+import { buildNavigationCommands } from '../../shared/navigation/navigation.util';
 
 interface ActionListItem {
   titleKey: string;
   subtitleKey?: string;
   leadingIcon: MaterialSymbolName;
-  ariaLabelKey?: string;
-}
-
-interface StopNavigationItemViewModel {
-  id: string;
-  titleKey: string;
-  leadingIcon: MaterialSymbolName;
-  subtitleKey?: string;
-  iconVariant: 'plain' | 'soft';
-  layout: 'list' | 'action';
-  trailingIcon: MaterialSymbolName | null;
   ariaLabelKey?: string;
 }
 
@@ -40,7 +31,6 @@ interface StopNavigationItemViewModel {
     TranslateModule,
     CardListItemComponent,
     SectionComponent,
-    StopNavigationItemComponent,
     RouteSearchFormComponent,
     HomeRecentSearchesComponent
   ],
@@ -54,9 +44,13 @@ export class HomeComponent {
   private readonly dialog = inject(MatDialog);
   private readonly routeSearchState = inject(RouteSearchStateService);
   private readonly execution = inject(RouteSearchExecutionService);
+  private readonly favoritesService = inject(StopFavoritesService);
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly translation = APP_CONFIG.translationKeys.home;
   private readonly locationIcon: MaterialSymbolName = 'my_location';
+  private readonly favoriteIconName: MaterialSymbolName = APP_CONFIG.homeData.favoriteStops.icon;
+  private readonly favoritePreviewLimit = APP_CONFIG.homeData.favoriteStops.homePreviewLimit;
 
   protected readonly headerTitleKey = this.translation.header.title;
   protected readonly headerInfoLabelKey = this.translation.header.infoLabel;
@@ -66,8 +60,13 @@ export class HomeComponent {
   protected readonly findNearbyTitleKey = this.translation.sections.findNearby.title;
   protected readonly findNearbyActionKey = this.translation.sections.findNearby.action;
   protected readonly favoritesTitleKey = this.translation.sections.favorites.title;
+  protected readonly favoritesDescriptionKey = this.translation.sections.favorites.description;
+  protected readonly favoritesActionKey = this.translation.sections.favorites.action;
+  protected readonly favoritesEmptyKey = this.translation.sections.favorites.empty;
+  protected readonly favoritesCodeLabelKey = APP_CONFIG.translationKeys.favorites.list.code;
 
   protected readonly trailingIcon: MaterialSymbolName = 'chevron_right';
+  protected readonly favoritesCommands = buildNavigationCommands(APP_CONFIG.routes.favorites);
 
   protected readonly locationAction: ActionListItem = {
     titleKey: this.findNearbyActionKey,
@@ -77,13 +76,27 @@ export class HomeComponent {
   protected readonly locationActionLayout = 'action' as const;
   protected readonly locationActionIconVariant = 'soft' as const;
 
-  protected readonly favoriteStops: StopNavigationItemViewModel[] = this.buildFavoriteStops();
+  private readonly favorites = signal<readonly StopFavorite[]>([]);
+  protected readonly favoritePreview = computed(() => {
+    const current = this.favorites();
+
+    if (!current.length) {
+      return [] as readonly StopFavorite[];
+    }
+
+    return current.slice(0, Math.max(this.favoritePreviewLimit, 0));
+  });
+  protected readonly hasFavorites = computed(() => this.favorites().length > 0);
 
   protected readonly currentSelection$ = this.routeSearchState.selection$;
   protected readonly recentPlaceholderItems = Array.from(
     { length: HomeComponent.recentPlaceholderCount },
     (_, index) => index
   );
+
+  constructor() {
+    this.observeFavorites();
+  }
 
   protected async openNearbyStopsDialog(): Promise<void> {
     const { HomeNearbyStopsDialogComponent } = await import('./home-nearby-stops-dialog.component');
@@ -95,15 +108,23 @@ export class HomeComponent {
     await this.router.navigate(commands);
   }
 
-  private buildFavoriteStops(): StopNavigationItemViewModel[] {
-    return APP_CONFIG.homeData.favoriteStops.items.map((item) => ({
-      id: item.id,
-      titleKey: item.titleKey,
-      subtitleKey: item.subtitleKey,
-      leadingIcon: item.leadingIcon,
-      iconVariant: 'soft',
-      layout: 'list',
-      trailingIcon: this.trailingIcon
-    }));
+  protected async openFavorite(favorite: StopFavorite): Promise<void> {
+    const stopId = favorite.stopIds[0] ?? favorite.id;
+    const commands: readonly string[] = ['/', APP_CONFIG.routes.stopDetailBase, stopId];
+    await this.router.navigate(commands);
+  }
+
+  protected trackFavorite(_: number, favorite: StopFavorite): string {
+    return favorite.id;
+  }
+
+  protected favoriteIcon(): MaterialSymbolName {
+    return this.favoriteIconName;
+  }
+
+  private observeFavorites(): void {
+    this.favoritesService.favorites$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((favorites) => this.favorites.set(favorites));
   }
 }

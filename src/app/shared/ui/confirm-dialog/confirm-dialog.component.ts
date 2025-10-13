@@ -8,6 +8,12 @@ export interface ConfirmDialogData {
   readonly messageKey: string;
   readonly confirmKey: string;
   readonly cancelKey: string;
+  readonly details?: readonly ConfirmDialogDetail[];
+}
+
+export interface ConfirmDialogDetail {
+  readonly labelKey: string;
+  readonly value: string;
 }
 
 @Component({

@@ -6,7 +6,8 @@
     "map": "Mapa",
     "settings": "Configuración",
     "language": "Idioma",
-    "lines": "Líneas"
+    "lines": "Líneas",
+    "favorites": "Favoritas"
   },
   "languages": {
     "es": "Español",
@@ -29,7 +30,10 @@
         "swapLabel": "Intercambiar origen y destino",
         "noRoutes": "No hay rutas directas disponibles entre estas paradas.",
         "nearbyGroupLabel": "Cerca de ti",
-        "originLocationActionLabel": "Buscar paradas cercanas a tu ubicación"
+        "originLocationActionLabel": "Buscar paradas cercanas a tu ubicación",
+        "favoritesGroupLabel": "Favoritas",
+        "addFavoriteLabel": "Añadir a favoritos",
+        "removeFavoriteLabel": "Eliminar de favoritos"
       },
       "recentStops": {
         "title": "Paradas recientes",
@@ -52,17 +56,10 @@
         "action": "Usar mi ubicación"
       },
       "favorites": {
-        "title": "Favoritas",
-        "items": {
-          "uptown": {
-            "title": "Centro de Transporte Uptown",
-            "subtitle": "Parada: 7821"
-          },
-          "eastMarket": {
-            "title": "Mercado del Este",
-            "subtitle": "Parada: 3455"
-          }
-        }
+        "title": "Paradas favoritas",
+        "description": "Guarda tus paradas habituales y consúltalas desde cualquier lugar.",
+        "action": "Abrir paradas favoritas",
+        "empty": "Todavía no has guardado ninguna parada favorita."
       }
     },
     "dialogs": {
@@ -86,14 +83,57 @@
           "title": "¿Eliminar búsqueda?",
           "message": "Se quitará esta búsqueda de la lista de recientes.",
           "confirm": "Eliminar",
-          "cancel": "Cancelar"
+          "cancel": "Cancelar",
+          "details": {
+            "origin": "Origen",
+            "destination": "Destino"
+          }
         },
         "clearAll": {
           "title": "¿Vaciar historial?",
           "message": "Se borrarán todas las búsquedas recientes.",
           "confirm": "Borrar",
-          "cancel": "Cancelar"
+          "cancel": "Cancelar",
+          "details": {
+            "count": "Búsquedas guardadas"
+          }
         }
+      }
+    }
+  },
+  "favorites": {
+    "title": "Paradas favoritas",
+    "description": "Organiza tus paradas favoritas y navega rápidamente a cada una.",
+    "search": {
+      "label": "Buscar",
+      "placeholder": "Filtra por nombre, código o municipio"
+    },
+    "empty": "Todavía no has añadido paradas favoritas.",
+    "actions": {
+      "clearAll": "Eliminar todas",
+      "remove": "Eliminar de favoritos"
+    },
+    "list": {
+      "code": "Código",
+      "nucleus": "Núcleo"
+    },
+    "dialogs": {
+      "remove": {
+        "title": "¿Eliminar parada?",
+        "message": "Se quitará esta parada de tus favoritas.",
+        "confirm": "Eliminar",
+        "cancel": "Cancelar"
+      },
+      "clearAll": {
+        "title": "¿Eliminar todas las favoritas?",
+        "message": "Se borrarán todas las paradas favoritas guardadas.",
+        "confirm": "Eliminar todas",
+        "cancel": "Cancelar"
+      },
+      "details": {
+        "name": "Nombre",
+        "code": "Código",
+        "count": "Paradas a eliminar"
       }
     }
   },

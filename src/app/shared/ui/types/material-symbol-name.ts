@@ -6,9 +6,12 @@ export type MaterialSymbolName =
   | 'flag'
   | 'calendar_today'
   | 'directions_bus'
+  | 'delete'
   | 'mail'
   | 'home'
   | 'map'
   | 'route'
   | 'settings'
+  | 'star'
+  | 'star_border'
   | 'swap_vert';

@@ -64,6 +64,7 @@ import {
   collectRouteLineMatches,
   createRouteSearchSelection
 } from '../../../domain/route-search/route-search-selection.util';
+import { StopFavoritesService, StopFavorite } from '../../../domain/stops/stop-favorites.service';
 import { MaterialSymbolName } from '../../../shared/ui/types/material-symbol-name';
 import { GeolocationService } from '../../../core/services/geolocation.service';
 import {
@@ -88,16 +89,21 @@ type StopAutocompleteOption = StopDirectoryOption & {
   readonly distanceLabel?: StopOptionDistanceLabel;
 };
 
+type StopAutocompleteViewOption = StopAutocompleteOption & {
+  readonly isFavorite: boolean;
+};
+
 interface StopAutocompleteGroup {
   readonly id: string;
   readonly label: string;
   readonly municipality: string;
   readonly translateLabel: boolean;
-  readonly options: readonly StopAutocompleteOption[];
+  readonly options: readonly StopAutocompleteViewOption[];
 }
 
 interface CategorizedOriginOptions {
   readonly recommended: readonly StopAutocompleteOption[];
+  readonly favorites: readonly StopAutocompleteOption[];
   readonly others: readonly StopAutocompleteOption[];
 }
 
@@ -110,8 +116,12 @@ const EMPTY_STOP_SIGNATURES: readonly StopDirectoryStopSignature[] = Object.free
 const EMPTY_OPTIONS: readonly StopAutocompleteOption[] = Object.freeze(
   [] as StopAutocompleteOption[]
 );
+const EMPTY_VIEW_OPTIONS: readonly StopAutocompleteViewOption[] = Object.freeze(
+  [] as StopAutocompleteViewOption[]
+);
 const EMPTY_ORIGIN_OPTIONS: CategorizedOriginOptions = Object.freeze({
   recommended: EMPTY_OPTIONS,
+  favorites: EMPTY_OPTIONS,
   others: EMPTY_OPTIONS
 });
 
@@ -147,6 +157,7 @@ export class RouteSearchFormComponent implements OnChanges {
   private readonly stopDirectory = inject(StopDirectoryService);
   private readonly nearbyStopOptions = inject(NearbyStopOptionsService);
   private readonly stopConnections = inject(StopConnectionsService);
+  private readonly favoritesService = inject(StopFavoritesService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly geolocation = inject(GeolocationService);
   private readonly nearbyStops = inject(NearbyStopsService);
@@ -161,6 +172,9 @@ export class RouteSearchFormComponent implements OnChanges {
   private readonly maxAutocompleteOptions = APP_CONFIG.homeData.search.maxAutocompleteOptions;
   private readonly searchDebounceMs = APP_CONFIG.homeData.search.debounceMs;
   private readonly nearbyGroupId = APP_CONFIG.homeData.search.nearbyGroupId;
+  private readonly favoritesGroupId = 'favorites' as const;
+  private readonly favoriteActiveIcon: MaterialSymbolName = APP_CONFIG.homeData.favoriteStops.activeIcon;
+  private readonly favoriteInactiveIcon: MaterialSymbolName = APP_CONFIG.homeData.favoriteStops.inactiveIcon;
 
   private readonly minimumDate = this.buildDefaultDate();
   private readonly minimumDateValidator = this.createMinimumDateValidator(this.minimumDate);
@@ -179,6 +193,9 @@ export class RouteSearchFormComponent implements OnChanges {
   readonly destinationPlaceholderKey = this.translation.destinationPlaceholder;
   readonly swapLabelKey = this.translation.swapLabel;
   readonly noRoutesMessageKey = this.translation.noRoutes;
+  readonly favoritesGroupLabelKey = this.translation.favoritesGroupLabel;
+  readonly addFavoriteLabelKey = this.translation.addFavoriteLabel;
+  readonly removeFavoriteLabelKey = this.translation.removeFavoriteLabel;
 
   readonly originIcon: MaterialSymbolName = 'my_location';
   readonly destinationIcon: MaterialSymbolName = 'flag';
@@ -252,14 +269,32 @@ export class RouteSearchFormComponent implements OnChanges {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
+  private readonly favoriteOptions$ = this.favoritesService.favorites$.pipe(
+    map((favorites) => favorites.map((favorite) => this.fromFavorite(favorite))),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
+  private readonly favoriteIds$ = this.favoritesService.favorites$.pipe(
+    map((favorites) => new Set(favorites.map((favorite) => favorite.id))),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
   readonly destinationOptions$: Observable<readonly StopAutocompleteOption[]> = combineLatest([
     this.destinationQuery$,
     this.selectedOrigin$,
-    this.originConnections$
+    this.originConnections$,
+    this.favoriteOptions$
   ]).pipe(
-    switchMap(([query, origin, connections]) =>
-    this.stopDirectory
-        .searchStops(this.buildDestinationSearchRequest(query, origin, connections))
+    switchMap(([query, origin, connections, favorites]) =>
+      this.stopDirectory
+        .searchStops(
+          this.buildDestinationSearchRequest(
+            query,
+            origin,
+            connections,
+            this.toStopSignaturesFromOptions(favorites)
+          )
+        )
         .pipe(map((options) => this.filterOptionsByConnections(options, connections)))
     ),
     shareReplay({ bufferSize: 1, refCount: false })
@@ -271,33 +306,46 @@ export class RouteSearchFormComponent implements OnChanges {
 
   private readonly originOptionsState$: Observable<CategorizedOriginOptions> = combineLatest([
     this.recommendedOriginOptions.asObservable(),
+    this.favoriteOptions$,
     this.originQuery$,
     this.selectedDestination$,
     this.destinationConnections$
   ]).pipe(
-    switchMap(([recommended, query, destination, connections]) =>
+    switchMap(([recommended, favorites, query, destination, connections]) =>
       this.stopDirectory
         .searchStops(
           this.buildOriginSearchRequest(
             query,
             destination,
             connections,
-            this.toStopSignaturesFromOptions(recommended)
+            this.toStopSignaturesFromOptions(recommended),
+            this.toStopSignaturesFromOptions(favorites)
           )
         )
         .pipe(
           map((options) => this.filterOptionsByConnections(options, connections)),
-          map((options) => this.categorizeOriginOptions(recommended, options))
+          map((options) => this.categorizeOriginOptions(recommended, favorites, options))
         )
     ),
     shareReplay({ bufferSize: 1, refCount: false })
   );
 
-  readonly originGroups$: Observable<readonly StopAutocompleteGroup[]> = this.originOptionsState$.pipe(
-    map((options) => this.buildOriginGroups(options.recommended, options.others))
+  readonly originGroups$: Observable<readonly StopAutocompleteGroup[]> = combineLatest([
+    this.originOptionsState$,
+    this.favoriteIds$
+  ]).pipe(
+    map(([options, favoriteIds]) =>
+      this.buildOriginGroups(options.recommended, options.favorites, options.others, favoriteIds)
+    )
   );
-  readonly destinationGroups$: Observable<readonly StopAutocompleteGroup[]> = this.destinationOptions$.pipe(
-    map((options) => this.groupByNucleus(options))
+  readonly destinationGroups$: Observable<readonly StopAutocompleteGroup[]> = combineLatest([
+    this.destinationOptions$,
+    this.favoriteOptions$,
+    this.favoriteIds$
+  ]).pipe(
+    map(([options, favorites, favoriteIds]) =>
+      this.buildDestinationGroups(options, favorites, favoriteIds)
+    )
   );
 
   readonly displayStop = (value: StopAutocompleteValue): string => {
@@ -320,6 +368,21 @@ export class RouteSearchFormComponent implements OnChanges {
   protected originLocationLoading = false;
 
   private lastPatchedSelectionId: string | null = null;
+
+  protected favoriteToggleIcon(option: StopAutocompleteViewOption): MaterialSymbolName {
+    return option.isFavorite ? this.favoriteActiveIcon : this.favoriteInactiveIcon;
+  }
+
+  protected favoriteToggleLabel(option: StopAutocompleteViewOption): string {
+    return option.isFavorite ? this.removeFavoriteLabelKey : this.addFavoriteLabelKey;
+  }
+
+  protected toggleFavorite(option: StopAutocompleteViewOption, event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.favoritesService.toggle(option);
+  }
 
   constructor() {
     this.observeSelections();
@@ -423,12 +486,15 @@ export class RouteSearchFormComponent implements OnChanges {
     query: string,
     destination: StopAutocompleteOption | null,
     connections: ReadonlyMap<string, StopConnection>,
-    recommended: readonly StopDirectoryStopSignature[]
+    recommended: readonly StopDirectoryStopSignature[],
+    favorites: readonly StopDirectoryStopSignature[]
   ): StopSearchRequest {
+    const additional = recommended.length || favorites.length ? [...recommended, ...favorites] : EMPTY_STOP_SIGNATURES;
+
     return {
       query,
       excludeStopSignature: this.getPrimaryStopSignature(destination) ?? undefined,
-      includeStopSignatures: this.buildIncludeSignatures(connections, recommended),
+      includeStopSignatures: this.buildIncludeSignatures(connections, additional),
       limit: this.maxAutocompleteOptions
     } satisfies StopSearchRequest;
   }
@@ -436,12 +502,13 @@ export class RouteSearchFormComponent implements OnChanges {
   private buildDestinationSearchRequest(
     query: string,
     origin: StopAutocompleteOption | null,
-    connections: ReadonlyMap<string, StopConnection>
+    connections: ReadonlyMap<string, StopConnection>,
+    favorites: readonly StopDirectoryStopSignature[]
   ): StopSearchRequest {
     return {
       query,
       excludeStopSignature: this.getPrimaryStopSignature(origin) ?? undefined,
-      includeStopSignatures: this.buildIncludeSignatures(connections),
+      includeStopSignatures: this.buildIncludeSignatures(connections, favorites),
       limit: this.maxAutocompleteOptions
     } satisfies StopSearchRequest;
   }
@@ -479,7 +546,10 @@ export class RouteSearchFormComponent implements OnChanges {
     return Array.from(unique.values()).slice(0, this.maxAutocompleteOptions);
   }
 
-  private groupByNucleus(options: readonly StopAutocompleteOption[]): readonly StopAutocompleteGroup[] {
+  private groupByNucleus(
+    options: readonly StopAutocompleteOption[],
+    favoriteIds: ReadonlySet<string>
+  ): readonly StopAutocompleteGroup[] {
     if (!options.length) {
       return EMPTY_GROUPS;
     }
@@ -514,32 +584,78 @@ export class RouteSearchFormComponent implements OnChanges {
         label: group.label,
         municipality: group.municipality,
         translateLabel: group.translateLabel,
-        options: Object.freeze([...group.options])
+        options: this.toViewOptions(group.options, favoriteIds)
       }))
     );
   }
 
   private buildOriginGroups(
     recommended: readonly StopAutocompleteOption[],
-    options: readonly StopAutocompleteOption[]
+    favorites: readonly StopAutocompleteOption[],
+    others: readonly StopAutocompleteOption[],
+    favoriteIds: ReadonlySet<string>
   ): readonly StopAutocompleteGroup[] {
     const uniqueRecommended = this.deduplicateOptions(recommended);
-    const filteredOptions = this.excludeOptions(options, uniqueRecommended);
-    const baseGroups = this.groupByNucleus(filteredOptions);
+    const uniqueFavorites = this.deduplicateOptions(favorites);
+    const baseGroups = this.groupByNucleus(others, favoriteIds);
+    const groups: StopAutocompleteGroup[] = [];
 
-    if (!uniqueRecommended.length) {
+    if (uniqueRecommended.length) {
+      groups.push(
+        Object.freeze({
+          id: this.nearbyGroupId,
+          label: this.translation.nearbyGroupLabel,
+          municipality: this.translation.nearbyGroupLabel,
+          translateLabel: true,
+          options: this.toViewOptions(uniqueRecommended, favoriteIds)
+        })
+      );
+    }
+
+    if (uniqueFavorites.length) {
+      groups.push(
+        Object.freeze({
+          id: this.favoritesGroupId,
+          label: this.favoritesGroupLabelKey,
+          municipality: this.favoritesGroupLabelKey,
+          translateLabel: true,
+          options: this.toViewOptions(uniqueFavorites, favoriteIds)
+        })
+      );
+    }
+
+    if (!groups.length) {
       return baseGroups;
     }
 
-    const nearbyGroup: StopAutocompleteGroup = Object.freeze({
-      id: this.nearbyGroupId,
-      label: this.translation.nearbyGroupLabel,
-      municipality: this.translation.nearbyGroupLabel,
+    return Object.freeze([...groups, ...baseGroups]);
+  }
+
+  private buildDestinationGroups(
+    options: readonly StopAutocompleteOption[],
+    favorites: readonly StopAutocompleteOption[],
+    favoriteIds: ReadonlySet<string>
+  ): readonly StopAutocompleteGroup[] {
+    const uniqueFavorites = this.deduplicateOptions(favorites);
+    const filteredFavorites = uniqueFavorites.filter((favorite) =>
+      options.some((option) => option.id === favorite.id)
+    );
+    const remaining = this.excludeOptions(options, filteredFavorites);
+    const baseGroups = this.groupByNucleus(remaining, favoriteIds);
+
+    if (!filteredFavorites.length) {
+      return baseGroups;
+    }
+
+    const favoritesGroup: StopAutocompleteGroup = Object.freeze({
+      id: this.favoritesGroupId,
+      label: this.favoritesGroupLabelKey,
+      municipality: this.favoritesGroupLabelKey,
       translateLabel: true,
-      options: Object.freeze([...uniqueRecommended])
+      options: this.toViewOptions(filteredFavorites, favoriteIds)
     });
 
-    return Object.freeze([nearbyGroup, ...baseGroups]);
+    return Object.freeze([favoritesGroup, ...baseGroups]);
   }
 
   private filterOptionsByConnections(
@@ -578,13 +694,29 @@ export class RouteSearchFormComponent implements OnChanges {
     );
   }
 
+  private fromFavorite(favorite: StopFavorite): StopAutocompleteOption {
+    return {
+      id: favorite.id,
+      code: favorite.code,
+      name: favorite.name,
+      municipality: favorite.municipality,
+      municipalityId: favorite.municipalityId,
+      nucleus: favorite.nucleus,
+      nucleusId: favorite.nucleusId,
+      consortiumId: favorite.consortiumId,
+      stopIds: favorite.stopIds
+    } satisfies StopAutocompleteOption;
+  }
+
   private categorizeOriginOptions(
     recommended: readonly StopAutocompleteOption[],
+    favorites: readonly StopAutocompleteOption[],
     options: readonly StopAutocompleteOption[]
   ): CategorizedOriginOptions {
-    if (!recommended.length) {
+    if (!recommended.length && !favorites.length) {
       return Object.freeze({
         recommended: EMPTY_OPTIONS,
+        favorites: EMPTY_OPTIONS,
         others: options
       });
     }
@@ -597,21 +729,22 @@ export class RouteSearchFormComponent implements OnChanges {
     const matchingRecommended = this.deduplicateOptions(
       recommended.filter((option) => resultIds.has(option.id))
     );
-
-    if (!matchingRecommended.length) {
-      return Object.freeze({
-        recommended: EMPTY_OPTIONS,
-        others: options
-      });
-    }
-
     const recommendedIds = new Set(matchingRecommended.map((option) => option.id));
+    const matchingFavorites = this.deduplicateOptions(
+      favorites.filter(
+        (option) => resultIds.has(option.id) && !recommendedIds.has(option.id)
+      )
+    );
+    const favoriteIds = new Set(matchingFavorites.map((option) => option.id));
     const remaining = Object.freeze(
-      options.filter((option) => !recommendedIds.has(option.id))
+      options.filter(
+        (option) => !recommendedIds.has(option.id) && !favoriteIds.has(option.id)
+      )
     );
 
     return Object.freeze({
       recommended: matchingRecommended,
+      favorites: matchingFavorites,
       others: remaining
     });
   }
@@ -666,6 +799,22 @@ export class RouteSearchFormComponent implements OnChanges {
 
     const excludedIds = new Set(excluded.map((option) => option.id));
     return options.filter((option) => !excludedIds.has(option.id));
+  }
+
+  private toViewOptions(
+    options: readonly StopAutocompleteOption[],
+    favoriteIds: ReadonlySet<string>
+  ): readonly StopAutocompleteViewOption[] {
+    if (!options.length) {
+      return EMPTY_VIEW_OPTIONS;
+    }
+
+    return Object.freeze(
+      options.map((option) => ({
+        ...option,
+        isFavorite: favoriteIds.has(option.id)
+      }))
+    );
   }
 
   private toStopSignaturesFromOptions(

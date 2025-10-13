@@ -1,6 +1,12 @@
 <h2 class="confirm-dialog__title">{{ data.titleKey | translate }}</h2>
 <div class="confirm-dialog__content">
   <p class="confirm-dialog__message">{{ data.messageKey | translate }}</p>
+  <ul *ngIf="data.details?.length" class="confirm-dialog__details" role="list">
+    <li *ngFor="let detail of data.details" class="confirm-dialog__detail">
+      <span class="confirm-dialog__detail-label">{{ detail.labelKey | translate }}</span>
+      <span class="confirm-dialog__detail-value">{{ detail.value }}</span>
+    </li>
+  </ul>
 </div>
 <div class="confirm-dialog__actions">
   <button type="button" class="confirm-dialog__button confirm-dialog__button--secondary" (click)="cancel()">

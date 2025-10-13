@@ -134,7 +134,17 @@ export class HomeRecentSearchesComponent {
       titleKey: this.dialogTranslations.remove.title,
       messageKey: this.dialogTranslations.remove.message,
       confirmKey: this.dialogTranslations.remove.confirm,
-      cancelKey: this.dialogTranslations.remove.cancel
+      cancelKey: this.dialogTranslations.remove.cancel,
+      details: [
+        {
+          labelKey: this.dialogTranslations.remove.details.origin,
+          value: item.originName
+        },
+        {
+          labelKey: this.dialogTranslations.remove.details.destination,
+          value: item.destinationName
+        }
+      ]
     });
 
     if (!confirmed) {
@@ -149,7 +159,13 @@ export class HomeRecentSearchesComponent {
       titleKey: this.dialogTranslations.clearAll.title,
       messageKey: this.dialogTranslations.clearAll.message,
       confirmKey: this.dialogTranslations.clearAll.confirm,
-      cancelKey: this.dialogTranslations.clearAll.cancel
+      cancelKey: this.dialogTranslations.clearAll.cancel,
+      details: [
+        {
+          labelKey: this.dialogTranslations.clearAll.details.count,
+          value: this.items().length.toString()
+        }
+      ]
     });
 
     if (!confirmed) {
