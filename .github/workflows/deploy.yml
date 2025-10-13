@@ -33,14 +33,8 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Export app version
-        run: |
-          NG_APP_VERSION=$(node -p "require('./package.json').version")
-          echo "NG_APP_VERSION=$NG_APP_VERSION" >> "$GITHUB_ENV"
-      - name: Build application
-        run: npm run build:prod
-      - name: Create single-page fallback
-        run: cp "$DIST_PATH/index.html" "$DIST_PATH/404.html"
+      - name: Prepare deploy artifact
+        run: npm run deploy:prepare
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

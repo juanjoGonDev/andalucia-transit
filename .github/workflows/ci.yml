@@ -52,9 +52,9 @@ jobs:
           - label: Test angular
             command: |
               npm run test:angular -- --watch=false --browsers=ChromeHeadlessNoSandbox
-          - label: Build
+          - label: Deploy pipeline
             command: |
-              npm run build:prod
+              npm run test:deploy
     steps:
       - name: Checkout
         uses: actions/checkout@v4

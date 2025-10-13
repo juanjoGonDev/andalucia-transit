@@ -9,6 +9,7 @@ Run `npm run setup:environment` to install dependencies, validate formatting, ru
 Use targeted commands when a full setup pass is unnecessary:
 
 - Run `npm run lint:workflows` after editing `.github/workflows` files or other GitHub Actions resources.
+- Run `npm run test:deploy` whenever deployment workflows or files inside `scripts/deploy/` change.
 - Run `npm run test:scripts` and `npm run snapshot` when modifying files under `scripts/` or `tools/`.
 - Run `npm run test:angular -- --watch=false` together with `npm run build` whenever Angular source files in `src/` change or when tests are added or updated.
 - Run `npm run format:check` whenever formatting rules might be affected, such as when editing configuration under the project root.
