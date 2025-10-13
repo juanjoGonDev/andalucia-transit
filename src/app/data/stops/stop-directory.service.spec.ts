@@ -313,15 +313,15 @@ describe('StopDirectoryService', () => {
     const option = await promise;
 
     expect(option).toEqual({
-      id: '7:02',
-      code: '02',
+      id: '7:02B',
+      code: '02B',
       name: 'Hospital Provincial',
       municipality: 'Jaén',
-      municipalityId: 'mun-02',
+      municipalityId: 'mun-02B',
       nucleus: 'Jaén Centro',
       nucleusId: 'nuc-j-02',
       consortiumId: 7,
-      stopIds: ['02', '02B']
+      stopIds: ['02B', '02']
     } satisfies StopDirectoryOption);
   });
 
