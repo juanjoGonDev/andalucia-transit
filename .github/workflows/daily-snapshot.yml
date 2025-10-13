@@ -26,6 +26,7 @@ jobs:
       SNAPSHOT_TITLE: 'task: refresh transport snapshots'
       SNAPSHOT_LABEL: automation
       SNAPSHOT_REVIEW_BODY: I'm **approving** this pull request because **it includes a daily snapshot refresh**
+      SNAPSHOT_AUTOMATION_ACTOR: github-actions[bot]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
