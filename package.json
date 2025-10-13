@@ -22,7 +22,9 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "deploy:prepare": "tsx scripts/deploy/run.ts",
+    "test:deploy": "npm run deploy:prepare"
   },
   "prettier": {
     "printWidth": 100,
