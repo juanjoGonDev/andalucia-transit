@@ -194,11 +194,19 @@ export class StopDirectoryService {
           return null;
         }
 
+        const key = buildEntryKey(entry.consortiumId, stopId);
+        const option = index.optionsByComposite.get(key);
+
+        if (option) {
+          return option;
+        }
+
         const groupKey = buildGroupKey(entry);
         const members = index.groups.get(groupKey) ?? [entry];
-        const primaryEntry = members[0] ?? entry;
+        const primaryEntry = members.find((member) => member.stopId === stopId) ?? entry;
+        const orderedMembers = orderGroupMembers(members, primaryEntry);
 
-        return toOption(primaryEntry, members);
+        return toOption(primaryEntry, orderedMembers);
       })
     );
   }
@@ -208,26 +216,7 @@ export class StopDirectoryService {
     stopId: string
   ): Observable<StopDirectoryOption | null> {
     return this.index$.pipe(
-      map((index) => {
-        const key = buildEntryKey(consortiumId, stopId);
-        const option = index.optionsByComposite.get(key);
-
-        if (option) {
-          return option;
-        }
-
-        const entry = index.compositeEntries.get(key);
-
-        if (!entry) {
-          return null;
-        }
-
-        const groupKey = buildGroupKey(entry);
-        const members = index.groups.get(groupKey) ?? [entry];
-        const primaryEntry = members[0] ?? entry;
-
-        return toOption(primaryEntry, members);
-      })
+      map((index) => index.optionsByComposite.get(buildEntryKey(consortiumId, stopId)) ?? null)
     );
   }
 
@@ -453,17 +442,9 @@ function buildCompositeOptionMap(
   const entries = new Map<string, StopDirectoryOption>();
 
   groups.forEach((members) => {
-    const primary = members[0];
-
-    if (!primary) {
-      return;
-    }
-
-    const option = toOption(primary, members);
-    const primaryStopId = option.stopIds[0] ?? primary.stopId;
-    entries.set(buildEntryKey(primary.consortiumId, primaryStopId), option);
-
     members.forEach((member) => {
+      const orderedMembers = orderGroupMembers(members, member);
+      const option = toOption(member, orderedMembers);
       entries.set(buildEntryKey(member.consortiumId, member.stopId), option);
     });
   });
@@ -530,6 +511,18 @@ function normalize(value: string): string {
     .normalize(NORMALIZE_FORM)
     .replace(DIACRITIC_MATCHER, '')
     .toLocaleLowerCase(SEARCH_LOCALE);
+}
+
+function orderGroupMembers(
+  members: readonly StopDirectorySearchEntry[],
+  primary: StopDirectorySearchEntry
+): readonly StopDirectorySearchEntry[] {
+  if (!members.length || members[0] === primary) {
+    return members;
+  }
+
+  const remaining = members.filter((member) => member !== primary);
+  return Object.freeze([primary, ...remaining]);
 }
 
 const EMPTY_OPTIONS: readonly StopDirectoryOption[] = Object.freeze([] as StopDirectoryOption[]);
