@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   snapshot:
@@ -90,9 +91,10 @@ jobs:
           labels: ${{ env.SNAPSHOT_LABEL }}
       - name: ✅ Approve PR
         if: steps.diff.outputs.changed == 'true' && steps.create-pr.outputs.pull-request-operation != 'none' && (github.actor == github.repository_owner || github.event_name == 'schedule')
+        # Use the GitHub Actions token to keep approval ownership with github-actions[bot].
         run: gh pr review ${{ steps.create-pr.outputs.pull-request-url }} --approve -b "$SNAPSHOT_REVIEW_BODY"
         env:
-          GH_TOKEN: ${{ secrets.PAT_FINE }}
+          GH_TOKEN: ${{ github.token }}
       - name: Enable Pull Request Automerge
         if: steps.diff.outputs.changed == 'true' && steps.create-pr.outputs.pull-request-operation != 'none' && (github.actor == github.repository_owner || github.event_name == 'schedule')
         run: gh pr merge --squash --auto "${{ steps.create-pr.outputs.pull-request-number }}"
