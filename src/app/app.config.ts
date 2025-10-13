@@ -13,6 +13,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { TranslateModule } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatNativeDateModule } from '@angular/material/core';
 
 import { routes } from './app.routes';
 import { APP_CONFIG } from './core/config';
@@ -26,6 +27,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimationsAsync(),
     importProvidersFrom(MatDialogModule),
+    importProvidersFrom(MatNativeDateModule),
     importProvidersFrom(
       TranslateModule.forRoot({
         defaultLanguage: APP_CONFIG.locales.default
