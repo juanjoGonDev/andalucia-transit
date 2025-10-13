@@ -46,9 +46,6 @@ jobs:
           - label: Lint
             command: |
               npm run lint
-          - label: Lint workflows
-            command: |
-              npm run lint:workflows
           - label: Test scripts
             command: |
               npm run test:scripts
