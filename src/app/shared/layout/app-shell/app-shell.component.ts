@@ -20,6 +20,7 @@ import { buildNavigationCommands } from '../../navigation/navigation.util';
 })
 export class AppShellComponent {
   private static readonly HOME_ICON: MaterialSymbolName = 'home';
+  private static readonly FAVORITES_ICON: MaterialSymbolName = APP_CONFIG.homeData.favoriteStops.icon;
   private static readonly MAP_ICON: MaterialSymbolName = 'map';
   private static readonly LINES_ICON: MaterialSymbolName = 'route';
   private static readonly SETTINGS_ICON: MaterialSymbolName = 'settings';
@@ -31,6 +32,11 @@ export class AppShellComponent {
       labelKey: this.navigationKeys.home,
       icon: AppShellComponent.HOME_ICON,
       commands: buildNavigationCommands(APP_CONFIG.routes.home)
+    },
+    {
+      labelKey: this.navigationKeys.favorites,
+      icon: AppShellComponent.FAVORITES_ICON,
+      commands: buildNavigationCommands(APP_CONFIG.routes.favorites)
     },
     {
       labelKey: this.navigationKeys.map,

@@ -18,6 +18,7 @@ const HOLIDAY_COUNTRY_CODE = 'ES' as const;
 const HOLIDAY_REGION_CODES = ['ES-AN'] as const;
 const ROUTE_SEARCH_HISTORY_STORAGE_KEY = 'andalucia-transit.routeSearchHistory' as const;
 const ROUTE_SEARCH_PREFERENCES_STORAGE_KEY = 'andalucia-transit.routeSearchPreferences' as const;
+const STOP_FAVORITES_STORAGE_KEY = 'andalucia-transit.stopFavorites' as const;
 const ROUTE_SEARCH_SCHEDULE_ACCURACY_THRESHOLD_DAYS = 30 as const;
 const LOCALE_ES_STANDARD = 'es-ES' as const;
 const LOCALE_EN_STANDARD = 'en-GB' as const;
@@ -73,7 +74,8 @@ export const APP_CONFIG = {
     routeSearchResultPattern:
       `${ROUTE_SEARCH_BASE_SEGMENT}/:${ROUTE_SEARCH_ORIGIN_PARAM}/${ROUTE_SEARCH_CONNECTOR_SEGMENT}/:${ROUTE_SEARCH_DESTINATION_PARAM}/${ROUTE_SEARCH_DATE_SEGMENT}/:${ROUTE_SEARCH_DATE_PARAM}` as const,
     map: 'map' as const,
-    settings: 'settings' as const
+    settings: 'settings' as const,
+    favorites: 'favorites' as const
   },
   routeSegments: {
     routeSearch: {
@@ -100,7 +102,8 @@ export const APP_CONFIG = {
       map: 'navigation.map',
       settings: 'navigation.settings',
       language: 'navigation.language',
-      lines: 'navigation.lines'
+      lines: 'navigation.lines',
+      favorites: 'navigation.favorites'
     },
     languages: {
       es: 'languages.es',
@@ -123,7 +126,10 @@ export const APP_CONFIG = {
           swapLabel: 'home.sections.search.swapLabel',
           noRoutes: 'home.sections.search.noRoutes',
           nearbyGroupLabel: 'home.sections.search.nearbyGroupLabel',
-          originLocationActionLabel: 'home.sections.search.originLocationActionLabel'
+          originLocationActionLabel: 'home.sections.search.originLocationActionLabel',
+          favoritesGroupLabel: 'home.sections.search.favoritesGroupLabel',
+          addFavoriteLabel: 'home.sections.search.addFavoriteLabel',
+          removeFavoriteLabel: 'home.sections.search.removeFavoriteLabel'
         },
         recentStops: {
           title: 'home.sections.recentStops.title',
@@ -147,16 +153,9 @@ export const APP_CONFIG = {
         },
         favorites: {
           title: 'home.sections.favorites.title',
-          items: [
-            {
-              title: 'home.sections.favorites.items.uptown.title',
-              subtitle: 'home.sections.favorites.items.uptown.subtitle'
-            },
-            {
-              title: 'home.sections.favorites.items.eastMarket.title',
-              subtitle: 'home.sections.favorites.items.eastMarket.subtitle'
-            }
-          ] as const
+          description: 'home.sections.favorites.description',
+          action: 'home.sections.favorites.action',
+          empty: 'home.sections.favorites.empty'
         }
       },
       dialogs: {
@@ -180,13 +179,20 @@ export const APP_CONFIG = {
             title: 'home.dialogs.recentStops.remove.title',
             message: 'home.dialogs.recentStops.remove.message',
             confirm: 'home.dialogs.recentStops.remove.confirm',
-            cancel: 'home.dialogs.recentStops.remove.cancel'
+            cancel: 'home.dialogs.recentStops.remove.cancel',
+            details: {
+              origin: 'home.dialogs.recentStops.remove.details.origin',
+              destination: 'home.dialogs.recentStops.remove.details.destination'
+            }
           },
           clearAll: {
             title: 'home.dialogs.recentStops.clearAll.title',
             message: 'home.dialogs.recentStops.clearAll.message',
             confirm: 'home.dialogs.recentStops.clearAll.confirm',
-            cancel: 'home.dialogs.recentStops.clearAll.cancel'
+            cancel: 'home.dialogs.recentStops.clearAll.cancel',
+            details: {
+              count: 'home.dialogs.recentStops.clearAll.details.count'
+            }
           }
         }
       }
@@ -280,6 +286,40 @@ export const APP_CONFIG = {
           versionLabel: 'settings.sections.application.versionLabel'
         }
       }
+    },
+    favorites: {
+      title: 'favorites.title',
+      description: 'favorites.description',
+      searchLabel: 'favorites.search.label',
+      searchPlaceholder: 'favorites.search.placeholder',
+      empty: 'favorites.empty',
+      list: {
+        code: 'favorites.list.code',
+        nucleus: 'favorites.list.nucleus'
+      },
+      actions: {
+        clearAll: 'favorites.actions.clearAll',
+        remove: 'favorites.actions.remove'
+      },
+      dialogs: {
+        remove: {
+          title: 'favorites.dialogs.remove.title',
+          message: 'favorites.dialogs.remove.message',
+          confirm: 'favorites.dialogs.remove.confirm',
+          cancel: 'favorites.dialogs.remove.cancel'
+        },
+        clearAll: {
+          title: 'favorites.dialogs.clearAll.title',
+          message: 'favorites.dialogs.clearAll.message',
+          confirm: 'favorites.dialogs.clearAll.confirm',
+          cancel: 'favorites.dialogs.clearAll.cancel'
+        },
+        details: {
+          name: 'favorites.dialogs.details.name',
+          code: 'favorites.dialogs.details.code',
+          count: 'favorites.dialogs.details.count'
+        }
+      }
     }
   },
   homeData: {
@@ -325,20 +365,12 @@ export const APP_CONFIG = {
       ] as const
     },
     favoriteStops: {
-      items: [
-        {
-          id: 'stop-uptown-terminal',
-          titleKey: 'home.sections.favorites.items.uptown.title',
-          subtitleKey: 'home.sections.favorites.items.uptown.subtitle',
-          leadingIcon: 'directions_bus'
-        },
-        {
-          id: 'stop-east-market',
-          titleKey: 'home.sections.favorites.items.eastMarket.title',
-          subtitleKey: 'home.sections.favorites.items.eastMarket.subtitle',
-          leadingIcon: 'mail'
-        }
-      ] as const
+      storageKey: STOP_FAVORITES_STORAGE_KEY,
+      icon: 'star' as const,
+      activeIcon: 'star' as const,
+      inactiveIcon: 'star_border' as const,
+      removeIcon: 'delete' as const,
+      homePreviewLimit: 3
     }
   }
 } as const;

@@ -4,6 +4,7 @@ import { APP_CONFIG } from './core/config';
 import { HomeComponent } from './features/home/home.component';
 import { RouteSearchComponent } from './features/route-search/route-search.component';
 import { MapComponent } from './features/map/map.component';
+import { FavoritesComponent } from './features/favorites/favorites.component';
 import { AppShellComponent } from './shared/layout/app-shell/app-shell.component';
 
 export const routes: Routes = [
@@ -15,6 +16,11 @@ export const routes: Routes = [
         path: APP_CONFIG.routes.home,
         component: HomeComponent,
         title: APP_CONFIG.translationKeys.navigation.home
+      },
+      {
+        path: APP_CONFIG.routes.favorites,
+        component: FavoritesComponent,
+        title: APP_CONFIG.translationKeys.navigation.favorites
       },
       {
         path: APP_CONFIG.routes.stopDetailPattern,

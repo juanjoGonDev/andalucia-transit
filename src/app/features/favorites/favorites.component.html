@@ -1,0 +1,55 @@
+<div class="favorites">
+  <app-section [titleKey]="titleKey">
+    <div class="favorites__header">
+      <p class="favorites__description">{{ descriptionKey | translate }}</p>
+      <div class="favorites__controls">
+        <label class="favorites__search">
+          <span class="favorites__search-label">{{ searchLabelKey | translate }}</span>
+          <input
+            type="search"
+            class="favorites__search-input"
+            [formControl]="searchControl"
+            [placeholder]="searchPlaceholderKey | translate"
+          />
+        </label>
+        <button
+          type="button"
+          class="favorites__clear"
+          (click)="clearAll()"
+          [disabled]="!hasFavorites()"
+        >
+          <span class="material-symbols-outlined favorites__clear-icon">{{ removeIcon() }}</span>
+          {{ clearAllLabelKey | translate }}
+        </button>
+      </div>
+    </div>
+  </app-section>
+
+  <div *ngIf="!hasResults()" class="favorites__empty">
+    <p class="favorites__empty-message">{{ emptyKey | translate }}</p>
+  </div>
+
+  <div *ngIf="hasResults()" class="favorites__groups">
+    <section class="favorites__group" *ngFor="let group of groups(); trackBy: trackGroup">
+      <h3 class="favorites__group-title">{{ group.municipality }}</h3>
+      <ul class="favorites__list" role="list">
+        <li class="favorites__item" *ngFor="let stop of group.stops; trackBy: trackStop">
+          <button type="button" class="favorites__item-main" (click)="openStop(stop)">
+            <span class="material-symbols-outlined favorites__item-icon">{{ favoriteIcon() }}</span>
+            <span class="favorites__item-text">
+              <span class="favorites__item-name">{{ stop.name }}</span>
+              <span class="favorites__item-meta">
+                {{ codeLabelKey | translate }}: {{ stop.code }} ·
+                {{ nucleusLabelKey | translate }}: {{ stop.nucleus }}
+              </span>
+            </span>
+          </button>
+          <button type="button" class="favorites__remove" (click)="remove(stop)">
+            <span class="material-symbols-outlined favorites__remove-icon">{{ removeIcon() }}</span>
+            {{ removeLabelKey | translate }}
+          </button>
+        </li>
+      </ul>
+    </section>
+  </div>
+</div>

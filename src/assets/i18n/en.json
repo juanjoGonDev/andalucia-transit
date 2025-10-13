@@ -6,7 +6,8 @@
     "map": "Map",
     "settings": "Settings",
     "language": "Language",
-    "lines": "Lines"
+    "lines": "Lines",
+    "favorites": "Favorites"
   },
   "languages": {
     "es": "Spanish",
@@ -29,7 +30,10 @@
         "swapLabel": "Swap origin and destination",
         "noRoutes": "No direct routes are available between these stops.",
         "nearbyGroupLabel": "Near you",
-        "originLocationActionLabel": "Find stops near your location"
+        "originLocationActionLabel": "Find stops near your location",
+        "favoritesGroupLabel": "Favorites",
+        "addFavoriteLabel": "Add to favorites",
+        "removeFavoriteLabel": "Remove from favorites"
       },
       "recentStops": {
         "title": "Recent searches",
@@ -52,17 +56,10 @@
         "action": "Use My Location"
       },
       "favorites": {
-        "title": "Favorites",
-        "items": {
-          "uptown": {
-            "title": "Uptown Transit Center",
-            "subtitle": "Stop ID: 7821"
-          },
-          "eastMarket": {
-            "title": "East Market",
-            "subtitle": "Stop ID: 3455"
-          }
-        }
+        "title": "Favorite stops",
+        "description": "Save the stops you visit most to reach them faster.",
+        "action": "Open favorite stops",
+        "empty": "You have not saved any favorite stops yet."
       }
     },
     "dialogs": {
@@ -86,14 +83,57 @@
           "title": "Remove search?",
           "message": "This search will be removed from your recent list.",
           "confirm": "Remove",
-          "cancel": "Cancel"
+          "cancel": "Cancel",
+          "details": {
+            "origin": "Origin",
+            "destination": "Destination"
+          }
         },
         "clearAll": {
           "title": "Clear history?",
           "message": "All recent searches will be deleted.",
           "confirm": "Clear",
-          "cancel": "Cancel"
+          "cancel": "Cancel",
+          "details": {
+            "count": "Saved searches"
+          }
         }
+      }
+    }
+  },
+  "favorites": {
+    "title": "Favorite stops",
+    "description": "Organize your favorite stops and jump straight to their details.",
+    "search": {
+      "label": "Search",
+      "placeholder": "Filter by name, code, or municipality"
+    },
+    "empty": "You have not added any favorite stops yet.",
+    "actions": {
+      "clearAll": "Remove all",
+      "remove": "Remove from favorites"
+    },
+    "list": {
+      "code": "Code",
+      "nucleus": "District"
+    },
+    "dialogs": {
+      "remove": {
+        "title": "Remove stop?",
+        "message": "This stop will be removed from your favorites.",
+        "confirm": "Remove",
+        "cancel": "Cancel"
+      },
+      "clearAll": {
+        "title": "Remove all favorites?",
+        "message": "All saved favorite stops will be deleted.",
+        "confirm": "Remove all",
+        "cancel": "Cancel"
+      },
+      "details": {
+        "name": "Name",
+        "code": "Code",
+        "count": "Stops to remove"
       }
     }
   },

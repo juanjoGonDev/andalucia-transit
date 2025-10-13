@@ -1,6 +1,6 @@
 import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
-import { firstValueFrom, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, of } from 'rxjs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { RouteSearchFormComponent } from './route-search-form.component';
@@ -25,6 +25,7 @@ import {
 } from '../../../core/services/nearby-stop-options.service';
 import { GeolocationService } from '../../../core/services/geolocation.service';
 import { APP_CONFIG } from '../../../core/config';
+import { StopFavoritesService, StopFavorite } from '../../../domain/stops/stop-favorites.service';
 
 const ORIGIN_OPTION: StopDirectoryOption = {
   id: '7:origin-stop',
@@ -155,6 +156,11 @@ class NearbyStopOptionsStub {
   }
 }
 
+class FavoritesStub {
+  readonly favorites$ = new BehaviorSubject<readonly StopFavorite[]>([]);
+  toggle = jasmine.createSpy('toggle');
+}
+
 class TranslateLoaderStub implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
     return of({});
@@ -168,12 +174,14 @@ describe('RouteSearchFormComponent', () => {
   let geolocation: GeolocationStub;
   let nearbyStops: NearbyStopsStub;
   let nearbyStopOptions: NearbyStopOptionsStub;
+  let favorites: FavoritesStub;
 
   beforeEach(async () => {
     connections = new ConnectionsStub();
     geolocation = new GeolocationStub();
     nearbyStops = new NearbyStopsStub();
     nearbyStopOptions = new NearbyStopOptionsStub();
+    favorites = new FavoritesStub();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -187,7 +195,8 @@ describe('RouteSearchFormComponent', () => {
         { provide: StopConnectionsService, useValue: connections },
         { provide: GeolocationService, useValue: geolocation },
         { provide: NearbyStopsService, useValue: nearbyStops },
-        { provide: NearbyStopOptionsService, useValue: nearbyStopOptions }
+        { provide: NearbyStopOptionsService, useValue: nearbyStopOptions },
+        { provide: StopFavoritesService, useValue: favorites }
       ]
     }).compileComponents();
 

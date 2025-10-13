@@ -33,17 +33,32 @@
               group.translateLabel ? (group.municipality | translate) : group.municipality
             "
           >
-            <mat-option
-              *ngFor="let option of group.options; trackBy: trackOption"
-              [value]="option"
-            >
-              <span class="route-search-form__option-name">{{ option.name }}</span>
-              <span
-                *ngIf="option.distanceLabel as distance"
-                class="route-search-form__option-distance"
-              >
-                {{ distance.translationKey | translate: { value: distance.value } }}
-              </span>
+          <mat-option
+            *ngFor="let option of group.options; trackBy: trackOption"
+            [value]="option"
+          >
+              <div class="route-search-form__option">
+                <div class="route-search-form__option-text">
+                  <span class="route-search-form__option-name">{{ option.name }}</span>
+                  <span
+                    *ngIf="option.distanceLabel as distance"
+                    class="route-search-form__option-distance"
+                  >
+                    {{ distance.translationKey | translate: { value: distance.value } }}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  class="route-search-form__favorite-button"
+                  (click)="toggleFavorite(option, $event)"
+                  [attr.aria-label]="favoriteToggleLabel(option) | translate"
+                  [attr.data-active]="option.isFavorite ? 'true' : null"
+                >
+                  <span class="material-symbols-outlined route-search-form__favorite-icon">
+                    {{ favoriteToggleIcon(option) }}
+                  </span>
+                </button>
+              </div>
             </mat-option>
           </mat-optgroup>
         </ng-container>
@@ -82,17 +97,32 @@
               group.translateLabel ? (group.municipality | translate) : group.municipality
             "
           >
-            <mat-option
-              *ngFor="let option of group.options; trackBy: trackOption"
-              [value]="option"
-            >
-              <span class="route-search-form__option-name">{{ option.name }}</span>
-              <span
-                *ngIf="option.distanceLabel as distance"
-                class="route-search-form__option-distance"
-              >
-                {{ distance.translationKey | translate: { value: distance.value } }}
-              </span>
+          <mat-option
+            *ngFor="let option of group.options; trackBy: trackOption"
+            [value]="option"
+          >
+              <div class="route-search-form__option">
+                <div class="route-search-form__option-text">
+                  <span class="route-search-form__option-name">{{ option.name }}</span>
+                  <span
+                    *ngIf="option.distanceLabel as distance"
+                    class="route-search-form__option-distance"
+                  >
+                    {{ distance.translationKey | translate: { value: distance.value } }}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  class="route-search-form__favorite-button"
+                  (click)="toggleFavorite(option, $event)"
+                  [attr.aria-label]="favoriteToggleLabel(option) | translate"
+                  [attr.data-active]="option.isFavorite ? 'true' : null"
+                >
+                  <span class="material-symbols-outlined route-search-form__favorite-icon">
+                    {{ favoriteToggleIcon(option) }}
+                  </span>
+                </button>
+              </div>
             </mat-option>
           </mat-optgroup>
         </ng-container>

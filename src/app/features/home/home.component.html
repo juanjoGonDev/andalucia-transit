@@ -53,18 +53,41 @@
         ></app-card-list-item>
       </app-section>
       <app-section [titleKey]="favoritesTitleKey">
-        <div class="home__list">
-          <app-stop-navigation-item
-            *ngFor="let stop of favoriteStops"
-            [stopId]="stop.id"
-            [leadingIcon]="stop.leadingIcon"
-            [titleKey]="stop.titleKey"
-            [subtitleKey]="stop.subtitleKey"
-            [layout]="stop.layout"
-            [iconVariant]="stop.iconVariant"
-            [trailingIcon]="stop.trailingIcon"
-            [ariaLabelKey]="stop.ariaLabelKey"
-          ></app-stop-navigation-item>
+        <div class="home__favorites">
+          <p class="home__favorites-description">{{ favoritesDescriptionKey | translate }}</p>
+          <ng-container *ngIf="hasFavorites(); else favoritesEmpty">
+            <ul class="home__favorites-list" role="list">
+              <li
+                class="home__favorites-item"
+                *ngFor="let favorite of favoritePreview(); trackBy: trackFavorite"
+              >
+                <button
+                  type="button"
+                  class="home__favorites-button"
+                  (click)="openFavorite(favorite)"
+                >
+                  <span class="material-symbols-outlined home__favorites-icon">{{ favoriteIcon() }}</span>
+                  <span class="home__favorites-text">
+                    <span class="home__favorites-name">{{ favorite.name }}</span>
+                    <span class="home__favorites-meta">
+                      {{ favoritesCodeLabelKey | translate }}: {{ favorite.code }} · {{ favorite.municipality }}
+                    </span>
+                  </span>
+                </button>
+              </li>
+            </ul>
+          </ng-container>
+          <ng-template #favoritesEmpty>
+            <p class="home__favorites-empty">{{ favoritesEmptyKey | translate }}</p>
+          </ng-template>
+          <app-card-list-item
+            [leadingIcon]="favoriteIcon()"
+            [titleKey]="favoritesActionKey"
+            [layout]="locationActionLayout"
+            [iconVariant]="locationActionIconVariant"
+            [trailingIcon]="trailingIcon"
+            [commands]="favoritesCommands"
+          ></app-card-list-item>
         </div>
       </app-section>
     </main>
