@@ -26,7 +26,11 @@ import {
   RouteSearchHistoryEntry,
   RouteSearchHistoryService
 } from '../../../domain/route-search/route-search-history.service';
-import { RouteSearchPreviewService, RouteSearchPreview } from '../../../domain/route-search/route-search-preview.service';
+import {
+  RouteSearchPreviewService,
+  RouteSearchPreview,
+  RouteSearchPreviewDeparture
+} from '../../../domain/route-search/route-search-preview.service';
 import { RouteSearchExecutionService } from '../../../domain/route-search/route-search-execution.service';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import { createRouteSearchSelection } from '../../../domain/route-search/route-search-selection.util';
@@ -38,43 +42,19 @@ import { APP_CONFIG_TOKEN } from '../../../core/tokens/app-config.token';
 import { AppConfig } from '../../../core/config';
 import { RouteSearchPreferencesService } from '../../../domain/route-search/route-search-preferences.service';
 
-interface PreviewStateLoading {
-  readonly status: 'loading';
-}
-
-interface PreviewStateError {
-  readonly status: 'error';
-}
-
-interface PreviewStateReady {
-  readonly status: 'ready';
-  readonly preview: RouteSearchPreview;
-}
-
-interface PreviewStateDisabled {
-  readonly status: 'disabled';
-}
-
-type PreviewState =
-  | PreviewStateLoading
-  | PreviewStateError
-  | PreviewStateReady
-  | PreviewStateDisabled;
-
-interface RecentSearchItem {
-  readonly id: string;
-  readonly originName: string;
-  readonly destinationName: string;
-  readonly effectiveSelection: RouteSearchSelection;
-  readonly effectiveQueryDate: Date;
-  readonly showTodayNotice: boolean;
-  readonly preview: PreviewState;
-}
+import {
+  PreviewEntryKind,
+  PreviewRelativeLabel,
+  RecentSearchItem,
+  RecentSearchPreviewEntry,
+  RecentSearchPreviewState
+} from './recent-searches.models';
+import { RecentSearchCardComponent } from './ui/recent-search-card/recent-search-card.component';
 
 @Component({
   selector: 'app-home-recent-searches',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, RecentSearchCardComponent],
   templateUrl: './home-recent-searches.component.html',
   styleUrl: './home-recent-searches.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -96,12 +76,9 @@ export class HomeRecentSearchesComponent {
 
   protected readonly items = signal<readonly RecentSearchItem[]>([]);
   protected readonly hasItems = computed(() => this.items().length > 0);
-  protected readonly titleKey = this.translations.title;
   protected readonly emptyKey = this.translations.empty;
   protected readonly searchDateKey = this.translations.searchDate;
   protected readonly searchDateTodayKey = this.translations.searchDateToday;
-  protected readonly nextLabelKey = this.translations.next;
-  protected readonly previousLabelKey = this.translations.previous;
   protected readonly loadingKey = this.translations.previewLoading;
   protected readonly errorKey = this.translations.previewError;
   protected readonly noPreviewKey = this.translations.noPreview;
@@ -175,22 +152,6 @@ export class HomeRecentSearchesComponent {
     this.history.clear();
   }
 
-  protected isLoading(state: PreviewState): state is PreviewStateLoading {
-    return state.status === 'loading';
-  }
-
-  protected isError(state: PreviewState): state is PreviewStateError {
-    return state.status === 'error';
-  }
-
-  protected isReady(state: PreviewState): state is PreviewStateReady {
-    return state.status === 'ready';
-  }
-
-  protected isDisabled(state: PreviewState): state is PreviewStateDisabled {
-    return state.status === 'disabled';
-  }
-
   private syncEntries(entries: readonly RouteSearchHistoryEntry[]): void {
     const previousItems = this.items();
     const previousMap = new Map(previousItems.map((item) => [item.id, item]));
@@ -217,7 +178,7 @@ export class HomeRecentSearchesComponent {
 
     mapped.forEach((item) => {
       const previous = previousMap.get(item.id);
-      const previousState: PreviewState = previous?.preview ?? { status: 'loading' };
+      const previousState: RecentSearchPreviewState = previous?.preview ?? { status: 'loading' };
       const needsReload =
         !previous ||
         !this.sameSelection(previous.effectiveSelection, item.effectiveSelection) ||
@@ -269,16 +230,13 @@ export class HomeRecentSearchesComponent {
       .pipe(
         switchMap((enabled) => {
           if (!enabled) {
-            return of<PreviewState>({ status: 'disabled' });
+            return of<RecentSearchPreviewState>({ status: 'disabled' });
           }
 
           return this.preview.loadPreview(item.effectiveSelection).pipe(
-            map<RouteSearchPreview, PreviewState>((value) => ({
-              status: 'ready',
-              preview: value
-            })),
-            startWith<PreviewState>({ status: 'loading' }),
-            catchError(() => of<PreviewState>({ status: 'error' }))
+            map<RouteSearchPreview, RecentSearchPreviewState>((value) => this.mapPreview(value)),
+            startWith<RecentSearchPreviewState>({ status: 'loading' }),
+            catchError(() => of<RecentSearchPreviewState>({ status: 'error' }))
           );
         })
       )
@@ -287,13 +245,13 @@ export class HomeRecentSearchesComponent {
     this.previewSubscriptions.set(item.id, subscription);
   }
 
-  private setPreviewState(id: string, state: PreviewState): void {
+  private setPreviewState(id: string, state: RecentSearchPreviewState): void {
     this.items.update((current) =>
       current.map((item) => (item.id === id ? { ...item, preview: state } : item))
     );
   }
 
-  private shouldReload(state: PreviewState): boolean {
+  private shouldReload(state: RecentSearchPreviewState): boolean {
     return state.status !== 'ready' && state.status !== 'disabled';
   }
 
@@ -310,6 +268,40 @@ export class HomeRecentSearchesComponent {
       subscription.unsubscribe();
     }
     this.previewSubscriptions.clear();
+  }
+
+  private mapPreview(preview: RouteSearchPreview): RecentSearchPreviewState {
+    const entries: RecentSearchPreviewEntry[] = [];
+
+    if (preview.previous) {
+      entries.push(this.mapDeparture(preview.previous, 'previous'));
+    }
+
+    if (preview.next) {
+      entries.push(this.mapDeparture(preview.next, 'next'));
+    }
+
+    return { status: 'ready', entries };
+  }
+
+  private mapDeparture(
+    departure: RouteSearchPreviewDeparture,
+    kind: PreviewEntryKind
+  ): RecentSearchPreviewEntry {
+    return {
+      id: departure.id,
+      kind,
+      lineCode: departure.lineCode,
+      departureTime: departure.arrivalTime,
+      relativeLabel: departure.relativeLabel
+        ? this.mapRelativeLabel(kind, departure.relativeLabel)
+        : null
+    } satisfies RecentSearchPreviewEntry;
+  }
+
+  private mapRelativeLabel(kind: PreviewEntryKind, value: string): PreviewRelativeLabel {
+    const key = kind === 'next' ? this.upcomingTranslation : this.pastTranslation;
+    return { key, params: { time: value } } satisfies PreviewRelativeLabel;
   }
 
   private async confirm(data: ConfirmDialogData): Promise<boolean> {
