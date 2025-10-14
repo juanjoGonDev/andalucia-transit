@@ -8,95 +8,24 @@
     {{ emptyKey | translate }}
   </p>
   <ul class="home-recent__list" *ngIf="hasItems()">
-    <li class="home-recent__list-item" *ngFor="let item of items(); trackBy: trackById">
-      <button type="button" class="home-recent__main" (click)="open(item)">
-        <span class="material-symbols-outlined home-recent__icon">{{ iconName }}</span>
-        <span class="home-recent__route">
-          <span class="home-recent__origin">{{ item.originName }}</span>
-          <span class="home-recent__arrow" aria-hidden="true">→</span>
-          <span class="home-recent__destination">{{ item.destinationName }}</span>
-        </span>
-        <span class="home-recent__date">
-          {{ searchDateKey | translate:{ date: (item.effectiveQueryDate | date:'longDate') } }}
-          <span *ngIf="item.showTodayNotice" class="home-recent__today">
-            {{ searchDateTodayKey | translate }}
-          </span>
-        </span>
-        <span class="home-recent__preview" *ngIf="item.preview as preview">
-          <ng-container *ngIf="isLoading(preview)">
-            <div class="home-recent__preview-loading" role="status" aria-live="polite">
-              <span class="home-recent__visually-hidden">{{ loadingKey | translate }}</span>
-              <span
-                class="home-recent__preview-skeleton home-recent__preview-skeleton--wide"
-                aria-hidden="true"
-              ></span>
-              <span class="home-recent__preview-skeleton" aria-hidden="true"></span>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="isError(preview)">
-            <span class="home-recent__preview-status home-recent__preview-status--error">
-              {{ errorKey | translate }}
-            </span>
-          </ng-container>
-          <ng-container *ngIf="isDisabled(preview)">
-            <span class="home-recent__preview-status home-recent__preview-status--disabled">
-              {{ previewDisabledKey | translate }}
-            </span>
-          </ng-container>
-          <ng-container *ngIf="isReady(preview)">
-            <ng-container *ngIf="preview.preview as previewData">
-              <ng-container *ngIf="previewEntries(previewData) as entries">
-                <ng-container *ngIf="entries.length > 0; else noPreview">
-                  <div
-                    *ngFor="let entry of entries; let last = last; trackBy: trackByPreview"
-                    class="home-recent__preview-entry"
-                    [class.home-recent__preview-entry--previous]="entry.kind === 'previous'"
-                    [class.home-recent__preview-entry--next]="entry.kind === 'next'"
-                  >
-                    <div class="home-recent__preview-track" aria-hidden="true">
-                      <span class="home-recent__preview-node"></span>
-                      <span class="home-recent__preview-connector" *ngIf="!last"></span>
-                    </div>
-                    <div class="home-recent__preview-body">
-                      <div class="home-recent__preview-header">
-                        <span class="home-recent__preview-label">{{ entry.labelKey | translate }}</span>
-                        <span
-                          class="home-recent__preview-time"
-                          [class.home-recent__preview-time--previous]="entry.kind === 'previous'"
-                          [class.home-recent__preview-time--next]="entry.kind === 'next'"
-                        >
-                          {{ entry.departure.arrivalTime | date:'HH:mm' }}
-                        </span>
-                      </div>
-                      <div class="home-recent__preview-meta">
-                        <span class="home-recent__preview-line">{{ entry.departure.lineCode }}</span>
-                        <ng-container *ngIf="relativeLabel(entry) as relative">
-                          <span class="home-recent__preview-relative">
-                            {{ relative.key | translate: relative.params }}
-                          </span>
-                        </ng-container>
-                      </div>
-                    </div>
-                  </div>
-                </ng-container>
-              </ng-container>
-            </ng-container>
-          </ng-container>
-          <ng-template #noPreview>
-            <div class="home-recent__preview-empty">
-              {{ noPreviewKey | translate }}
-            </div>
-          </ng-template>
-        </span>
-      </button>
-      <button
-        type="button"
-        class="home-recent__remove"
-        (click)="remove(item)"
-        [attr.aria-label]="removeActionKey | translate"
-      >
-        <span class="material-symbols-outlined">close</span>
-      </button>
+    <li class="home-recent__item" *ngFor="let item of items(); trackBy: trackById">
+      <app-recent-search-card
+        [iconName]="iconName"
+        [originName]="item.originName"
+        [destinationName]="item.destinationName"
+        [searchDate]="item.effectiveQueryDate"
+        [showTodayNotice]="item.showTodayNotice"
+        [searchDateKey]="searchDateKey"
+        [searchDateTodayKey]="searchDateTodayKey"
+        [loadingKey]="loadingKey"
+        [errorKey]="errorKey"
+        [noPreviewKey]="noPreviewKey"
+        [previewDisabledKey]="previewDisabledKey"
+        [removeActionKey]="removeActionKey"
+        [preview]="item.preview"
+        (open)="open(item)"
+        (remove)="remove(item)"
+      ></app-recent-search-card>
     </li>
   </ul>
 </div>
