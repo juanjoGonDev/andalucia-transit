@@ -1,5 +1,10 @@
 <section class="section" [ngClass]="hostClassMap">
-  <h2 class="section__title">{{ titleKey | translate }}</h2>
+  <header class="section__header">
+    <h2 class="section__title">{{ titleKey | translate }}</h2>
+    <div class="section__actions" *ngIf="actionsTemplate">
+      <ng-container *ngTemplateOutlet="actionsTemplate"></ng-container>
+    </div>
+  </header>
   <div class="section__content">
     <ng-content></ng-content>
   </div>

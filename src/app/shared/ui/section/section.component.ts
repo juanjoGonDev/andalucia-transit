@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -13,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class SectionComponent {
   @Input({ required: true }) titleKey!: string;
   @Input() appearance: 'default' | 'card' = 'default';
+  @Input() actionsTemplate?: TemplateRef<unknown>;
 
   protected get hostClassMap(): Record<string, boolean> {
     return {

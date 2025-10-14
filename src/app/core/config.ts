@@ -332,7 +332,6 @@ export const APP_CONFIG = {
       nearbyGroupId: 'nearby' as const
     },
     recentStops: {
-      icon: 'pin_drop' as const,
       maxItems: 10,
       storageKey: ROUTE_SEARCH_HISTORY_STORAGE_KEY,
       preferences: {
