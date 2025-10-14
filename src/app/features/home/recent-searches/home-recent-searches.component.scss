@@ -4,31 +4,6 @@
   gap: 1rem;
 }
 
-.home-recent__actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.home-recent__clear {
-  border: none;
-  background: transparent;
-  color: var(--color-primary);
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-full);
-  transition: background-color 0.2s ease;
-}
-
-.home-recent__clear:hover {
-  background-color: var(--color-primary-soft);
-}
-
-.home-recent__clear:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
 .home-recent__empty {
   margin: 0;
   color: var(--color-text-muted);

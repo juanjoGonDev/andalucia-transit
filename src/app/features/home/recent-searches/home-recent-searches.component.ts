@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  EventEmitter,
+  Output,
   computed,
   inject,
   signal
@@ -74,8 +76,8 @@ export class HomeRecentSearchesComponent {
   private readonly icon = this.config.homeData.recentStops.icon;
   private readonly previewSubscriptions = new Map<string, Subscription>();
 
-  protected readonly items = signal<readonly RecentSearchItem[]>([]);
-  protected readonly hasItems = computed(() => this.items().length > 0);
+  readonly items = signal<readonly RecentSearchItem[]>([]);
+  readonly hasItems = computed(() => this.items().length > 0);
   protected readonly emptyKey = this.translations.empty;
   protected readonly searchDateKey = this.translations.searchDate;
   protected readonly searchDateTodayKey = this.translations.searchDateToday;
@@ -84,10 +86,11 @@ export class HomeRecentSearchesComponent {
   protected readonly noPreviewKey = this.translations.noPreview;
   protected readonly previewDisabledKey = this.translations.previewDisabled;
   protected readonly removeActionKey = this.translations.actions.remove;
-  protected readonly clearAllActionKey = this.translations.actions.clearAll;
   protected readonly upcomingTranslation = this.config.translationKeys.routeSearch.upcomingLabel;
   protected readonly pastTranslation = this.config.translationKeys.routeSearch.pastLabel;
   protected readonly iconName = this.icon;
+
+  @Output() readonly itemsStateChange = new EventEmitter<boolean>();
 
   constructor() {
     this.history.entries$
@@ -131,7 +134,7 @@ export class HomeRecentSearchesComponent {
     this.history.remove(item.id);
   }
 
-  protected async clearAll(): Promise<void> {
+  async clearAll(): Promise<void> {
     const confirmed = await this.confirm({
       titleKey: this.dialogTranslations.clearAll.title,
       messageKey: this.dialogTranslations.clearAll.message,
@@ -167,6 +170,7 @@ export class HomeRecentSearchesComponent {
     });
 
     this.items.set(mapped);
+    this.itemsStateChange.emit(mapped.length > 0);
 
     const ids = new Set(mapped.map((item) => item.id));
     for (const [id, subscription] of this.previewSubscriptions.entries()) {

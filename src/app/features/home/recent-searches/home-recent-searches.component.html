@@ -1,9 +1,4 @@
 <div class="home-recent">
-  <div class="home-recent__actions" *ngIf="hasItems()">
-    <button type="button" class="home-recent__clear" (click)="clearAll()">
-      {{ clearAllActionKey | translate }}
-    </button>
-  </div>
   <p class="home-recent__empty" *ngIf="!hasItems()">
     {{ emptyKey | translate }}
   </p>

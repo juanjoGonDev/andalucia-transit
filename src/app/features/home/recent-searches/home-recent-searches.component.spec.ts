@@ -66,7 +66,9 @@ class RouteSearchHistoryStub {
 }
 
 class RouteSearchPreviewStub {
-  loadPreview = jasmine.createSpy('loadPreview');
+  loadPreview = jasmine
+    .createSpy('loadPreview')
+    .and.returnValue(of<RouteSearchPreview>({ next: null, previous: null }));
 }
 
 class RouteSearchExecutionStub {
@@ -335,11 +337,25 @@ describe('HomeRecentSearchesComponent', () => {
     tick();
     fixture.detectChanges();
 
-    const clearButton = fixture.debugElement.query(By.css('.home-recent__clear'));
-    clearButton.nativeElement.click();
-    tick();
+    fixture.componentInstance.clearAll();
+    flushMicrotasks();
 
     expect(history.clear).toHaveBeenCalled();
+  }));
+
+  it('emits items state changes when entries update', fakeAsync(() => {
+    const states: boolean[] = [];
+    fixture.componentInstance.itemsStateChange.subscribe((state) => states.push(state));
+
+    history.emit([buildEntry('entry-5', new Date('2025-01-01T00:00:00Z'))]);
+    tick();
+    fixture.detectChanges();
+
+    history.emit([]);
+    tick();
+    fixture.detectChanges();
+
+    expect(states).toEqual([true, false]);
   }));
 
   function buildEntry(id: string, queryDate: Date): RouteSearchHistoryEntry {

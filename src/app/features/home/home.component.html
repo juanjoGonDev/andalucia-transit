@@ -26,9 +26,25 @@
           </div>
         }
       </app-section>
-      <app-section [titleKey]="recentStopsTitleKey">
+      <app-section
+        [titleKey]="recentStopsTitleKey"
+        [actionsTemplate]="recentStopsActions"
+      >
+        <ng-template #recentStopsActions>
+          <button
+            type="button"
+            class="home__section-action"
+            *ngIf="recentClearActionVisible()"
+            (click)="onClearRecentSearches()"
+          >
+            {{ recentStopsClearKey | translate }}
+          </button>
+        </ng-template>
         @defer (on viewport) {
-          <app-home-recent-searches></app-home-recent-searches>
+          <app-home-recent-searches
+            #recentSearches
+            (itemsStateChange)="onRecentItemsStateChange($event)"
+          ></app-home-recent-searches>
         } @placeholder {
           <ul class="home-recent-placeholder" aria-hidden="true">
             <li

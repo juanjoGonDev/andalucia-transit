@@ -15,11 +15,24 @@
   box-shadow: var(--shadow-sm);
 }
 
+.section__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .section__title {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--color-text-strong);
+}
+
+.section__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
 }
 
 .section__content {
