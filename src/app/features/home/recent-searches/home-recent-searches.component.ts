@@ -26,7 +26,11 @@ import {
   RouteSearchHistoryEntry,
   RouteSearchHistoryService
 } from '../../../domain/route-search/route-search-history.service';
-import { RouteSearchPreviewService, RouteSearchPreview } from '../../../domain/route-search/route-search-preview.service';
+import {
+  RouteSearchPreviewService,
+  RouteSearchPreview,
+  RouteSearchPreviewDeparture
+} from '../../../domain/route-search/route-search-preview.service';
 import { RouteSearchExecutionService } from '../../../domain/route-search/route-search-execution.service';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import { createRouteSearchSelection } from '../../../domain/route-search/route-search-selection.util';
@@ -60,6 +64,19 @@ type PreviewState =
   | PreviewStateError
   | PreviewStateReady
   | PreviewStateDisabled;
+
+type PreviewEntryKind = 'previous' | 'next';
+
+interface PreviewEntry {
+  readonly kind: PreviewEntryKind;
+  readonly labelKey: string;
+  readonly departure: RouteSearchPreviewDeparture;
+}
+
+interface PreviewRelativeLabel {
+  readonly key: string;
+  readonly params: { readonly time: string };
+}
 
 interface RecentSearchItem {
   readonly id: string;
@@ -189,6 +206,41 @@ export class HomeRecentSearchesComponent {
 
   protected isDisabled(state: PreviewState): state is PreviewStateDisabled {
     return state.status === 'disabled';
+  }
+
+  protected previewEntries(preview: RouteSearchPreview): readonly PreviewEntry[] {
+    const entries: PreviewEntry[] = [];
+
+    if (preview.previous) {
+      entries.push({
+        kind: 'previous',
+        labelKey: this.previousLabelKey,
+        departure: preview.previous
+      });
+    }
+
+    if (preview.next) {
+      entries.push({
+        kind: 'next',
+        labelKey: this.nextLabelKey,
+        departure: preview.next
+      });
+    }
+
+    return entries;
+  }
+
+  protected trackByPreview(_: number, entry: PreviewEntry): string {
+    return `${entry.kind}-${entry.departure.id}`;
+  }
+
+  protected relativeLabel(entry: PreviewEntry): PreviewRelativeLabel | null {
+    if (!entry.departure.relativeLabel) {
+      return null;
+    }
+
+    const key = entry.kind === 'next' ? this.upcomingTranslation : this.pastTranslation;
+    return { key, params: { time: entry.departure.relativeLabel } } satisfies PreviewRelativeLabel;
   }
 
   private syncEntries(entries: readonly RouteSearchHistoryEntry[]): void {

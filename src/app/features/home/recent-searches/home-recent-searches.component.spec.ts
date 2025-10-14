@@ -175,6 +175,48 @@ describe('HomeRecentSearchesComponent', () => {
     expect(route.nativeElement.textContent).toContain('Origin');
     const previewContainer = fixture.debugElement.query(By.css('.home-recent__preview'));
     expect(previewContainer).not.toBeNull();
+    const line = fixture.debugElement.query(By.css('.home-recent__preview-line'));
+    expect(line.nativeElement.textContent.trim()).toBe('L1');
+  }));
+
+  it('shows the previous preview before the upcoming preview', fakeAsync(() => {
+    const entry = buildEntry('entry-order', new Date('2025-01-01T00:00:00Z'));
+    preview.loadPreview.and.returnValue(
+      of<RouteSearchPreview>({
+        next: {
+          id: 'next-order',
+          lineCode: 'L2',
+          destination: 'Destination next',
+          arrivalTime: new Date('2025-01-01T11:30:00Z'),
+          relativeLabel: 'in 2 min',
+          kind: 'upcoming'
+        },
+        previous: {
+          id: 'previous-order',
+          lineCode: 'L1',
+          destination: 'Destination previous',
+          arrivalTime: new Date('2025-01-01T11:00:00Z'),
+          relativeLabel: '3 min ago',
+          kind: 'past'
+        }
+      })
+    );
+
+    history.emit([entry]);
+    flushMicrotasks();
+    fixture.detectChanges();
+    flushMicrotasks();
+    fixture.detectChanges();
+
+    const entriesDebug = fixture.debugElement
+      .queryAll(By.css('.home-recent__preview-entry'))
+      .filter((debugElement) =>
+        !debugElement.nativeElement.classList.contains('home-recent__preview-entry--empty')
+      );
+
+    expect(entriesDebug.length).toBe(2);
+    expect(entriesDebug[0]?.nativeElement.classList).toContain('home-recent__preview-entry--previous');
+    expect(entriesDebug[1]?.nativeElement.classList).toContain('home-recent__preview-entry--next');
   }));
 
   it('shows a disabled message when preview calculations are turned off', fakeAsync(() => {
