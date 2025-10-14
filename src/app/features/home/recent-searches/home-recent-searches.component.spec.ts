@@ -19,8 +19,8 @@ import { RouteSearchPreferencesService } from '../../../domain/route-search/rout
 type PreviewState =
   | { readonly status: 'loading' }
   | { readonly status: 'error' }
-  | { readonly status: 'ready'; readonly preview: RouteSearchPreview }
-  | { readonly status: 'disabled' };
+  | { readonly status: 'disabled' }
+  | { readonly status: 'ready'; readonly entries: readonly { readonly id: string }[] };
 
 interface ComponentStateItem {
   readonly preview: PreviewState;
@@ -166,19 +166,19 @@ describe('HomeRecentSearchesComponent', () => {
     expect(previewState).toBeDefined();
     expect(previewState?.status).toBe('ready');
     if (previewState?.status === 'ready') {
-      expect(previewState.preview.next).not.toBeNull();
+      expect(previewState.entries.length).toBeGreaterThan(0);
     }
 
     fixture.detectChanges();
 
-    const route = fixture.debugElement.query(By.css('.home-recent__route'));
+    const route = fixture.debugElement.query(By.css('.recent-card__route'));
     expect(route.nativeElement.textContent).toContain('Origin');
-    const previewContainer = fixture.debugElement.query(By.css('.home-recent__preview'));
+    const previewContainer = fixture.debugElement.query(By.css('.recent-card__preview'));
     expect(previewContainer).not.toBeNull();
-    const line = fixture.debugElement.query(By.css('.home-recent__preview-line'));
+    const line = fixture.debugElement.query(By.css('.recent-preview-entry__line'));
     expect(line.nativeElement.textContent.trim()).toBe('L1');
-    const time = fixture.debugElement.query(By.css('.home-recent__preview-time'));
-    expect(time.nativeElement.classList).toContain('home-recent__preview-time--next');
+    const time = fixture.debugElement.query(By.css('.recent-preview-entry__time'));
+    expect(time.nativeElement.classList).toContain('recent-preview-entry__time--next');
   }));
 
   it('shows the previous preview before the upcoming preview', fakeAsync(() => {
@@ -210,17 +210,17 @@ describe('HomeRecentSearchesComponent', () => {
     flushMicrotasks();
     fixture.detectChanges();
 
-    const entriesDebug = fixture.debugElement.queryAll(By.css('.home-recent__preview-entry'));
+    const entriesDebug = fixture.debugElement.queryAll(By.css('.recent-preview-entry'));
 
     expect(entriesDebug.length).toBe(2);
-    expect(entriesDebug[0]?.nativeElement.classList).toContain('home-recent__preview-entry--previous');
-    expect(entriesDebug[1]?.nativeElement.classList).toContain('home-recent__preview-entry--next');
-    const previousTime = entriesDebug[0]?.query(By.css('.home-recent__preview-time'));
-    const nextTime = entriesDebug[1]?.query(By.css('.home-recent__preview-time'));
+    expect(entriesDebug[0]?.nativeElement.classList).toContain('recent-preview-entry--previous');
+    expect(entriesDebug[1]?.nativeElement.classList).toContain('recent-preview-entry--next');
+    const previousTime = entriesDebug[0]?.query(By.css('.recent-preview-entry__time'));
+    const nextTime = entriesDebug[1]?.query(By.css('.recent-preview-entry__time'));
     expect(previousTime).toBeTruthy();
     expect(nextTime).toBeTruthy();
-    expect(previousTime?.nativeElement.classList).toContain('home-recent__preview-time--previous');
-    expect(nextTime?.nativeElement.classList).toContain('home-recent__preview-time--next');
+    expect(previousTime?.nativeElement.classList).toContain('recent-preview-entry__time--previous');
+    expect(nextTime?.nativeElement.classList).toContain('recent-preview-entry__time--next');
   }));
 
   it('shows a disabled message when preview calculations are turned off', fakeAsync(() => {
@@ -234,7 +234,7 @@ describe('HomeRecentSearchesComponent', () => {
     flushMicrotasks();
     fixture.detectChanges();
 
-    const status = fixture.debugElement.query(By.css('.home-recent__preview-status--disabled'));
+    const status = fixture.debugElement.query(By.css('.recent-card__status--disabled'));
     expect(status).not.toBeNull();
     expect(preview.loadPreview).not.toHaveBeenCalled();
   }));
@@ -269,7 +269,7 @@ describe('HomeRecentSearchesComponent', () => {
 
     expect(previewState?.status).toBe('ready');
     if (previewState?.status === 'ready') {
-      expect(previewState.preview.next?.id).toBe('next-1');
+      expect(previewState.entries[0]?.id).toBe('next-1');
     }
 
     stream.next({
@@ -293,7 +293,7 @@ describe('HomeRecentSearchesComponent', () => {
 
     expect(previewState?.status).toBe('ready');
     if (previewState?.status === 'ready') {
-      expect(previewState.preview.next?.id).toBe('next-2');
+      expect(previewState.entries[0]?.id).toBe('next-2');
     }
 
     stream.complete();
@@ -306,7 +306,7 @@ describe('HomeRecentSearchesComponent', () => {
     tick();
     fixture.detectChanges();
 
-    const button = fixture.debugElement.query(By.css('.home-recent__main'));
+    const button = fixture.debugElement.query(By.css('.recent-card__body'));
     button.nativeElement.click();
     tick();
 
@@ -321,7 +321,7 @@ describe('HomeRecentSearchesComponent', () => {
     tick();
     fixture.detectChanges();
 
-    const removeButton = fixture.debugElement.query(By.css('.home-recent__remove'));
+    const removeButton = fixture.debugElement.query(By.css('.recent-card__remove'));
     removeButton.nativeElement.click();
     tick();
 
