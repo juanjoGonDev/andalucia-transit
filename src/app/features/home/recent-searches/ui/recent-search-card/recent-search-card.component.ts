@@ -17,7 +17,6 @@ import { RecentSearchPreviewEntryComponent } from '../recent-search-preview-entr
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecentSearchCardComponent {
-  @Input({ required: true }) iconName!: string;
   @Input({ required: true }) originName!: string;
   @Input({ required: true }) destinationName!: string;
   @Input({ required: true }) searchDate!: Date;

@@ -5,7 +5,6 @@
   <ul class="home-recent__list" *ngIf="hasItems()">
     <li class="home-recent__item" *ngFor="let item of items(); trackBy: trackById">
       <app-recent-search-card
-        [iconName]="iconName"
         [originName]="item.originName"
         [destinationName]="item.destinationName"
         [searchDate]="item.effectiveQueryDate"

@@ -73,7 +73,6 @@ export class HomeRecentSearchesComponent {
   private readonly timezone = this.config.data.timezone;
   private readonly translations = this.config.translationKeys.home.sections.recentStops;
   private readonly dialogTranslations = this.config.translationKeys.home.dialogs.recentStops;
-  private readonly icon = this.config.homeData.recentStops.icon;
   private readonly previewSubscriptions = new Map<string, Subscription>();
 
   readonly items = signal<readonly RecentSearchItem[]>([]);
@@ -88,7 +87,6 @@ export class HomeRecentSearchesComponent {
   protected readonly removeActionKey = this.translations.actions.remove;
   protected readonly upcomingTranslation = this.config.translationKeys.routeSearch.upcomingLabel;
   protected readonly pastTranslation = this.config.translationKeys.routeSearch.pastLabel;
-  protected readonly iconName = this.icon;
 
   @Output() readonly itemsStateChange = new EventEmitter<boolean>();
 
