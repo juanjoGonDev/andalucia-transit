@@ -59,12 +59,10 @@
       </app-section>
       <app-section [titleKey]="findNearbyTitleKey">
         <app-card-list-item
-          [leadingIcon]="locationAction.leadingIcon"
-          [titleKey]="locationAction.titleKey"
+          [titleKey]="findNearbyActionKey"
           [layout]="locationActionLayout"
-          [iconVariant]="locationActionIconVariant"
           [trailingIcon]="trailingIcon"
-          [ariaLabelKey]="locationAction.ariaLabelKey"
+          [ariaLabelKey]="findNearbyActionKey"
           (action)="openNearbyStopsDialog()"
         ></app-card-list-item>
       </app-section>
@@ -100,7 +98,7 @@
             [leadingIcon]="favoriteIcon()"
             [titleKey]="favoritesActionKey"
             [layout]="locationActionLayout"
-            [iconVariant]="locationActionIconVariant"
+            [iconVariant]="actionCardIconVariant"
             [trailingIcon]="trailingIcon"
             [commands]="favoritesCommands"
           ></app-card-list-item>

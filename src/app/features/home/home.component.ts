@@ -16,13 +16,6 @@ import { RouteSearchFormComponent } from '../route-search/route-search-form/rout
 import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
 import { buildNavigationCommands } from '../../shared/navigation/navigation.util';
 
-interface ActionListItem {
-  titleKey: string;
-  subtitleKey?: string;
-  leadingIcon: MaterialSymbolName;
-  ariaLabelKey?: string;
-}
-
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -48,7 +41,6 @@ export class HomeComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly translation = APP_CONFIG.translationKeys.home;
-  private readonly locationIcon: MaterialSymbolName = 'my_location';
   private readonly favoriteIconName: MaterialSymbolName = APP_CONFIG.homeData.favoriteStops.icon;
   private readonly favoritePreviewLimit = APP_CONFIG.homeData.favoriteStops.homePreviewLimit;
 
@@ -69,13 +61,8 @@ export class HomeComponent {
   protected readonly trailingIcon: MaterialSymbolName = 'chevron_right';
   protected readonly favoritesCommands = buildNavigationCommands(APP_CONFIG.routes.favorites);
 
-  protected readonly locationAction: ActionListItem = {
-    titleKey: this.findNearbyActionKey,
-    leadingIcon: this.locationIcon,
-    ariaLabelKey: this.findNearbyActionKey
-  };
   protected readonly locationActionLayout = 'action' as const;
-  protected readonly locationActionIconVariant = 'soft' as const;
+  protected readonly actionCardIconVariant = 'soft' as const;
 
   protected readonly recentClearActionVisible = signal(false);
 

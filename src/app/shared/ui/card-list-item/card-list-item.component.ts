@@ -17,7 +17,7 @@ export type IconVariant = 'plain' | 'soft';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CardListItemComponent {
-  @Input({ required: true }) leadingIcon!: MaterialSymbolName;
+  @Input() leadingIcon: MaterialSymbolName | null = null;
   @Input({ required: true }) titleKey!: string;
   @Input() subtitleKey?: string;
   @Input() trailingIcon: MaterialSymbolName | null = 'chevron_right';
