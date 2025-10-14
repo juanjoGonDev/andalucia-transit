@@ -44,31 +44,49 @@
             </span>
           </ng-container>
           <ng-container *ngIf="isReady(preview)">
-            <div class="home-recent__preview-entry" *ngIf="preview.preview.next as next">
-              <span class="home-recent__preview-label">{{ nextLabelKey | translate }}</span>
-              <span class="home-recent__preview-time">{{ next.arrivalTime | date:'HH:mm' }}</span>
-              <span class="home-recent__preview-line">{{ next.lineCode }} · {{ next.destination }}</span>
-              <span *ngIf="next.relativeLabel" class="home-recent__preview-relative">
-                {{ upcomingTranslation | translate:{ time: next.relativeLabel } }}
-              </span>
-            </div>
-            <div class="home-recent__preview-entry" *ngIf="preview.preview.previous as previous">
-              <span class="home-recent__preview-label">{{ previousLabelKey | translate }}</span>
-              <span class="home-recent__preview-time">{{ previous.arrivalTime | date:'HH:mm' }}</span>
-              <span class="home-recent__preview-line">
-                {{ previous.lineCode }} · {{ previous.destination }}
-              </span>
-              <span *ngIf="previous.relativeLabel" class="home-recent__preview-relative">
-                {{ pastTranslation | translate:{ time: previous.relativeLabel } }}
-              </span>
-            </div>
-            <div
-              class="home-recent__preview-entry home-recent__preview-entry--empty"
-              *ngIf="!preview.preview.next && !preview.preview.previous"
-            >
+            <ng-container *ngIf="preview.preview as previewData">
+              <ng-container *ngIf="previewEntries(previewData) as entries">
+                <ng-container *ngIf="entries.length > 0; else noPreview">
+                  <div
+                    *ngFor="let entry of entries; let last = last; trackBy: trackByPreview"
+                    class="home-recent__preview-entry"
+                    [class.home-recent__preview-entry--previous]="entry.kind === 'previous'"
+                    [class.home-recent__preview-entry--next]="entry.kind === 'next'"
+                  >
+                    <div class="home-recent__preview-track" aria-hidden="true">
+                      <span class="home-recent__preview-node"></span>
+                      <span class="home-recent__preview-connector" *ngIf="!last"></span>
+                    </div>
+                    <div class="home-recent__preview-body">
+                      <div class="home-recent__preview-header">
+                        <span class="home-recent__preview-label">{{ entry.labelKey | translate }}</span>
+                        <span
+                          class="home-recent__preview-time"
+                          [class.home-recent__preview-time--previous]="entry.kind === 'previous'"
+                          [class.home-recent__preview-time--next]="entry.kind === 'next'"
+                        >
+                          {{ entry.departure.arrivalTime | date:'HH:mm' }}
+                        </span>
+                      </div>
+                      <div class="home-recent__preview-meta">
+                        <span class="home-recent__preview-line">{{ entry.departure.lineCode }}</span>
+                        <ng-container *ngIf="relativeLabel(entry) as relative">
+                          <span class="home-recent__preview-relative">
+                            {{ relative.key | translate: relative.params }}
+                          </span>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+          <ng-template #noPreview>
+            <div class="home-recent__preview-empty">
               {{ noPreviewKey | translate }}
             </div>
-          </ng-container>
+          </ng-template>
         </span>
       </button>
       <button
