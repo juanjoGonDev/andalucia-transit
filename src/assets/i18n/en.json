@@ -15,8 +15,42 @@
   },
   "home": {
     "header": {
-      "title": "Bus Timetables",
+      "title": "Plan your next ride",
+      "tagline": "Book your best trip now",
       "infoLabel": "View application information"
+    },
+    "hero": {
+      "eyebrow": "Andalusian journeys",
+      "description": "Search routes, manage your favorites, and explore the CTAN network with ease.",
+      "action": "Start planning"
+    },
+    "topBar": {
+      "settingsLabel": "Open settings",
+      "menuLabel": "Open feature menu",
+      "mapLabel": "Open interactive map"
+    },
+    "tabs": {
+      "search": "Search",
+      "recent": "Recents",
+      "favorites": "Favorites",
+      "nearby": "Nearby",
+      "settings": "Settings"
+    },
+    "menu": {
+      "recent": "Recent searches",
+      "favorites": "Favorite stops",
+      "news": "News",
+      "nearby": "Nearby stops",
+      "settings": "Settings",
+      "inProgress": "In progress"
+    },
+    "summary": {
+      "lastSearch": "Your last searches",
+      "seeAll": "See all",
+      "empty": "Start a search to see it here."
+    },
+    "quickActions": {
+      "nearby": "Use my location"
     },
     "sections": {
       "search": {
@@ -37,7 +71,7 @@
       },
       "recentStops": {
         "title": "Recent searches",
-        "empty": "Your recent searches will appear here.",
+        "empty": "Start a search to see it here.",
         "searchDate": "We will search for {{date}}",
         "searchDateToday": "Updated to today",
         "next": "Next",
@@ -53,13 +87,21 @@
       },
       "findNearby": {
         "title": "Find Nearby",
-        "action": "Use My Location"
+        "description": "Allow the app to detect stops close to you and get quick directions.",
+        "action": "Use My Location",
+        "hint": "We only request your location when you ask for nearby stops."
       },
       "favorites": {
         "title": "Favorite stops",
         "description": "Save the stops you visit most to reach them faster.",
         "action": "Open favorite stops",
         "empty": "You have not saved any favorite stops yet."
+      },
+      "settings": {
+        "title": "Configuration",
+        "description": "Adjust your language preferences, manage data usage, and review accessibility options.",
+        "action": "Open settings",
+        "hint": "Your preferences stay on this device."
       }
     },
     "dialogs": {

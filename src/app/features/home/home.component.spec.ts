@@ -8,7 +8,6 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HomeComponent } from './home.component';
 import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
 import { MatDialog } from '@angular/material/dialog';
-import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-item.component';
 import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
 import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
 import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
@@ -180,14 +179,14 @@ describe('HomeComponent', () => {
     expect(navigateSpy).toHaveBeenCalled();
   }));
 
-  it('opens the nearby stops dialog when clicking the action card', async () => {
+  it('opens the nearby stops dialog when clicking the quick action button', async () => {
     const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
     const openSpy = spyOn(component, 'openNearbyStopsDialog').and.callThrough();
-    const button = fixture.debugElement
-      .query(By.css('.home__main app-section:nth-of-type(3) app-card-list-item'))
-      .componentInstance as CardListItemComponent;
+    const buttonDebug = fixture.debugElement.query(By.css('.home__quick-action'));
+    expect(buttonDebug).not.toBeNull();
+    const button = buttonDebug!.nativeElement as HTMLButtonElement;
 
-    button.action.emit();
+    button.click();
     expect(openSpy).toHaveBeenCalled();
     await openSpy.calls.mostRecent().returnValue;
     expect(dialogStub.open).toHaveBeenCalled();
@@ -196,8 +195,8 @@ describe('HomeComponent', () => {
   it('renders the recent searches component', async () => {
     await fixture.whenStable();
     fixture.detectChanges();
-    const recent = fixture.debugElement.query(By.directive(HomeRecentSearchesStubComponent));
-    expect(recent).not.toBeNull();
+    const recent = fixture.debugElement.queryAll(By.directive(HomeRecentSearchesStubComponent));
+    expect(recent.length).toBeGreaterThan(0);
   });
 });
 

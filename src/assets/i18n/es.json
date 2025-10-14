@@ -15,8 +15,42 @@
   },
   "home": {
     "header": {
-      "title": "Horarios de Autobuses",
+      "title": "Planifica tu próximo viaje",
+      "tagline": "Reserva tu mejor ruta hoy",
       "infoLabel": "Ver información de la aplicación"
+    },
+    "hero": {
+      "eyebrow": "Viajes andaluces",
+      "description": "Busca horarios, gestiona tus favoritas y explora la red del CTAN sin complicaciones.",
+      "action": "Comenzar ahora"
+    },
+    "topBar": {
+      "settingsLabel": "Abrir ajustes",
+      "menuLabel": "Abrir menú de apartados",
+      "mapLabel": "Abrir mapa interactivo"
+    },
+    "tabs": {
+      "search": "Buscador",
+      "recent": "Recientes",
+      "favorites": "Favoritas",
+      "nearby": "Cercanas",
+      "settings": "Configuración"
+    },
+    "menu": {
+      "recent": "Búsquedas recientes",
+      "favorites": "Paradas favoritas",
+      "news": "Noticias",
+      "nearby": "Paradas cercanas",
+      "settings": "Configuración",
+      "inProgress": "En progreso"
+    },
+    "summary": {
+      "lastSearch": "Tus últimas búsquedas",
+      "seeAll": "Ver todas",
+      "empty": "Empieza una búsqueda para verla aquí."
+    },
+    "quickActions": {
+      "nearby": "Usar mi ubicación"
     },
     "sections": {
       "search": {
@@ -37,7 +71,7 @@
       },
       "recentStops": {
         "title": "Paradas recientes",
-        "empty": "Las búsquedas que hagas aparecerán aquí.",
+        "empty": "Empieza una búsqueda para verla aquí.",
         "searchDate": "Buscaremos para {{date}}",
         "searchDateToday": "Actualizado a hoy",
         "next": "Próximo",
@@ -53,13 +87,21 @@
       },
       "findNearby": {
         "title": "Buscar cercanas",
-        "action": "Usar mi ubicación"
+        "description": "Permite que la app detecte las paradas cerca de ti y obtén rutas rápidas.",
+        "action": "Usar mi ubicación",
+        "hint": "Solo pedimos tu ubicación cuando buscas paradas cercanas."
       },
       "favorites": {
         "title": "Paradas favoritas",
         "description": "Guarda tus paradas habituales y consúltalas desde cualquier lugar.",
         "action": "Abrir paradas favoritas",
         "empty": "Todavía no has guardado ninguna parada favorita."
+      },
+      "settings": {
+        "title": "Configuración",
+        "description": "Ajusta tu idioma preferido, gestiona el uso de datos y revisa las opciones de accesibilidad.",
+        "action": "Abrir configuración",
+        "hint": "Tus preferencias se guardan solo en este dispositivo."
       }
     },
     "dialogs": {

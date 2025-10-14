@@ -112,7 +112,41 @@ export const APP_CONFIG = {
     home: {
       header: {
         title: 'home.header.title',
+        tagline: 'home.header.tagline',
         infoLabel: 'home.header.infoLabel'
+      },
+      hero: {
+        eyebrow: 'home.hero.eyebrow',
+        description: 'home.hero.description',
+        action: 'home.hero.action'
+      },
+      topBar: {
+        settingsLabel: 'home.topBar.settingsLabel',
+        menuLabel: 'home.topBar.menuLabel',
+        mapLabel: 'home.topBar.mapLabel'
+      },
+      tabs: {
+        search: 'home.tabs.search',
+        recent: 'home.tabs.recent',
+        favorites: 'home.tabs.favorites',
+        nearby: 'home.tabs.nearby',
+        settings: 'home.tabs.settings'
+      },
+      menu: {
+        recent: 'home.menu.recent',
+        favorites: 'home.menu.favorites',
+        news: 'home.menu.news',
+        nearby: 'home.menu.nearby',
+        settings: 'home.menu.settings',
+        inProgress: 'home.menu.inProgress'
+      },
+      summary: {
+        lastSearch: 'home.summary.lastSearch',
+        seeAll: 'home.summary.seeAll',
+        empty: 'home.summary.empty'
+      },
+      quickActions: {
+        nearby: 'home.quickActions.nearby'
       },
       sections: {
         search: {
@@ -149,13 +183,21 @@ export const APP_CONFIG = {
         },
         findNearby: {
           title: 'home.sections.findNearby.title',
-          action: 'home.sections.findNearby.action'
+          description: 'home.sections.findNearby.description',
+          action: 'home.sections.findNearby.action',
+          hint: 'home.sections.findNearby.hint'
         },
         favorites: {
           title: 'home.sections.favorites.title',
           description: 'home.sections.favorites.description',
           action: 'home.sections.favorites.action',
           empty: 'home.sections.favorites.empty'
+        },
+        settings: {
+          title: 'home.sections.settings.title',
+          description: 'home.sections.settings.description',
+          action: 'home.sections.settings.action',
+          hint: 'home.sections.settings.hint'
         }
       },
       dialogs: {
