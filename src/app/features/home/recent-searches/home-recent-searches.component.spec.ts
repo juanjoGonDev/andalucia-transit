@@ -177,6 +177,8 @@ describe('HomeRecentSearchesComponent', () => {
     expect(previewContainer).not.toBeNull();
     const line = fixture.debugElement.query(By.css('.home-recent__preview-line'));
     expect(line.nativeElement.textContent.trim()).toBe('L1');
+    const time = fixture.debugElement.query(By.css('.home-recent__preview-time'));
+    expect(time.nativeElement.classList).toContain('home-recent__preview-time--next');
   }));
 
   it('shows the previous preview before the upcoming preview', fakeAsync(() => {
@@ -208,15 +210,17 @@ describe('HomeRecentSearchesComponent', () => {
     flushMicrotasks();
     fixture.detectChanges();
 
-    const entriesDebug = fixture.debugElement
-      .queryAll(By.css('.home-recent__preview-entry'))
-      .filter((debugElement) =>
-        !debugElement.nativeElement.classList.contains('home-recent__preview-entry--empty')
-      );
+    const entriesDebug = fixture.debugElement.queryAll(By.css('.home-recent__preview-entry'));
 
     expect(entriesDebug.length).toBe(2);
     expect(entriesDebug[0]?.nativeElement.classList).toContain('home-recent__preview-entry--previous');
     expect(entriesDebug[1]?.nativeElement.classList).toContain('home-recent__preview-entry--next');
+    const previousTime = entriesDebug[0]?.query(By.css('.home-recent__preview-time'));
+    const nextTime = entriesDebug[1]?.query(By.css('.home-recent__preview-time'));
+    expect(previousTime).toBeTruthy();
+    expect(nextTime).toBeTruthy();
+    expect(previousTime?.nativeElement.classList).toContain('home-recent__preview-time--previous');
+    expect(nextTime?.nativeElement.classList).toContain('home-recent__preview-time--next');
   }));
 
   it('shows a disabled message when preview calculations are turned off', fakeAsync(() => {

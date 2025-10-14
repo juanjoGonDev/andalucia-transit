@@ -54,11 +54,11 @@
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-areas:
-    'icon route remove'
-    'icon date remove'
-    'icon preview remove';
+    'icon route'
+    'icon date'
+    'icon preview';
   column-gap: 0.75rem;
-  row-gap: 0.25rem;
+  row-gap: 0.35rem;
   align-items: center;
   padding: 0.75rem 1rem;
   border: none;
@@ -122,12 +122,12 @@
   font-size: 0.75rem;
 }
 
-.home-recent__preview { 
+.home-recent__preview {
   grid-area: preview;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  font-size: 0.85rem;
+  gap: 0.5rem;
+  font-size: 0.9rem;
   color: var(--color-text-muted);
 }
 
@@ -183,26 +183,72 @@
   }
 }
 
+
 .home-recent__preview-entry {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  --home-recent-preview-color: rgba(0, 0, 0, 0.6);
+  --home-recent-preview-ring: rgba(0, 0, 0, 0.08);
+  --home-recent-preview-connector: rgba(0, 0, 0, 0.08);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.75rem;
+  align-items: flex-start;
   padding: 0.25rem 0;
-  border-radius: var(--radius-lg);
 }
 
 .home-recent__preview-entry--previous {
-  opacity: 0.75;
+  --home-recent-preview-color: var(--mat-sys-error, #ba1a1a);
+  --home-recent-preview-ring: rgba(186, 26, 26, 0.16);
+  --home-recent-preview-connector: rgba(186, 26, 26, 0.16);
 }
 
 .home-recent__preview-entry--next {
-  background: rgba(19, 127, 236, 0.08);
-  box-shadow: 0 0 0 1px var(--mat-sys-primary, #137fec);
-  padding: 0.35rem 0.75rem;
+  --home-recent-preview-color: var(--mat-sys-primary, #137fec);
+  --home-recent-preview-ring: rgba(19, 127, 236, 0.18);
+  --home-recent-preview-connector: rgba(19, 127, 236, 0.18);
 }
 
-.home-recent__preview-entry--empty {
+.home-recent__preview-track {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.home-recent__preview-node {
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: var(--radius-full);
+  background: var(--home-recent-preview-color);
+  box-shadow: 0 0 0 0.25rem var(--home-recent-preview-ring);
+}
+
+.home-recent__preview-connector {
+  flex: 1;
+  width: 0.15rem;
+  border-radius: var(--radius-full);
+  background: var(--home-recent-preview-connector);
+}
+
+.home-recent__preview-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.home-recent__preview-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.home-recent__preview-empty {
+  padding: 0.25rem 0;
   font-style: italic;
   color: var(--color-text-muted);
 }
@@ -213,8 +259,24 @@
 }
 
 .home-recent__preview-time {
-  font-weight: 600;
-  color: var(--color-text-strong);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.home-recent__preview-time--previous {
+  color: var(--mat-sys-error, #ba1a1a);
+}
+
+.home-recent__preview-time--next {
+  color: var(--mat-sys-primary, #137fec);
+}
+
+.home-recent__preview-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.85rem;
 }
 
 .home-recent__preview-line {
@@ -232,15 +294,7 @@
 
 .home-recent__preview-relative {
   font-weight: 500;
-  font-size: 0.85rem;
-}
-
-.home-recent__preview-relative--previous {
-  color: rgba(0, 0, 0, 0.6);
-}
-
-.home-recent__preview-relative--next {
-  color: var(--mat-sys-primary, #137fec);
+  color: var(--color-text-muted);
 }
 
 .home-recent__preview-status {
@@ -274,6 +328,38 @@
 .home-recent__remove:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+@media (min-width: 48rem) {
+  .home-recent__main {
+    grid-template-columns: auto minmax(14rem, 1fr) minmax(16rem, 1fr);
+    grid-template-areas:
+      'icon route preview'
+      'icon date preview';
+    column-gap: 1.25rem;
+    row-gap: 0.5rem;
+    align-items: start;
+  }
+
+  .home-recent__preview {
+    align-self: stretch;
+  }
+}
+
+@media (min-width: 62rem) {
+  .home-recent__preview {
+    gap: 0.75rem;
+  }
+
+  .home-recent__preview-body {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .home-recent__preview-meta {
+    justify-content: flex-end;
+  }
 }
 
 @media (max-width: 768px) {
