@@ -37,14 +37,17 @@
   <div appDialogActions>
     <button
       *ngIf="!isLoading && state !== 'success'"
-      mat-stroked-button
-      color="primary"
       type="button"
+      class="app-button app-button--ghost app-button--block-mobile"
       (click)="retry()"
     >
       {{ retryKey | translate }}
     </button>
-    <button mat-flat-button color="primary" type="button" (click)="close()">
+    <button
+      type="button"
+      class="app-button app-button--primary app-button--block-mobile"
+      (click)="close()"
+    >
       {{ closeKey | translate }}
     </button>
   </div>

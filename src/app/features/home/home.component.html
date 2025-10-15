@@ -84,7 +84,11 @@
                 (selectionConfirmed)="onSelectionConfirmed($event)"
               ></app-route-search-form>
               <div class="home__quick-actions">
-                <button type="button" class="home__quick-action" (click)="openNearbyStopsDialog()">
+                <button
+                  type="button"
+                  class="app-button app-button--secondary app-button--pill home__quick-action"
+                  (click)="openNearbyStopsDialog()"
+                >
                   <span class="material-symbols-outlined">explore</span>
                   <span>{{ quickActionNearbyKey | translate }}</span>
                 </button>
@@ -97,7 +101,7 @@
                 </div>
                 <button
                   type="button"
-                  class="home__panel-action"
+                  class="app-button app-button--ghost home__panel-action"
                   *ngIf="recentClearActionVisible()"
                   (click)="onClearRecentSearches()"
                 >
@@ -114,7 +118,11 @@
                 <div class="home__panel-heading home__stack">
                   <h3 class="home__panel-title">{{ favoritesTitleKey | translate }}</h3>
                 </div>
-                <button type="button" class="home__panel-action" (click)="openFavoritesView()">
+                <button
+                  type="button"
+                  class="app-button app-button--ghost home__panel-action"
+                  (click)="openFavoritesView()"
+                >
                   {{ favoritesActionKey | translate }}
                 </button>
               </header>
@@ -148,7 +156,11 @@
                   <h3 class="home__panel-title">{{ findNearbyTitleKey | translate }}</h3>
                   <p class="home__panel-description">{{ findNearbyDescriptionKey | translate }}</p>
                 </div>
-                <button type="button" class="home__panel-action home__panel-action--primary" (click)="openNearbyStopsDialog()">
+                <button
+                  type="button"
+                  class="app-button app-button--primary app-button--pill home__panel-action home__panel-action--primary"
+                  (click)="openNearbyStopsDialog()"
+                >
                   <span class="material-symbols-outlined home__panel-action-icon">my_location</span>
                   <span>{{ findNearbyActionKey | translate }}</span>
                 </button>
@@ -178,7 +190,11 @@
               </div>
               <div class="home__panel-footer">
                 <p class="home__panel-hint">{{ settingsHintKey | translate }}</p>
-                <button type="button" class="home__panel-action home__panel-action--primary" (click)="openSettings()">
+                <button
+                  type="button"
+                  class="app-button app-button--primary app-button--pill home__panel-action home__panel-action--primary"
+                  (click)="openSettings()"
+                >
                   {{ settingsActionKey | translate }}
                 </button>
               </div>
@@ -197,7 +213,11 @@
               {{ summaryEmptyKey | translate }}
             </p>
           </div>
-          <button type="button" class="home__panel-action" (click)="selectTab('recent')">
+          <button
+            type="button"
+            class="app-button app-button--ghost home__panel-action"
+            (click)="selectTab('recent')"
+          >
             {{ summarySeeAllKey | translate }}
           </button>
         </header>
