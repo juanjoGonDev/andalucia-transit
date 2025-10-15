@@ -9,7 +9,7 @@
   --home-glass: rgba(255, 255, 255, 0.12);
   --home-text-soft: rgba(241, 243, 244, 0.85);
   --home-ink-soft: rgba(6, 15, 43, 0.6);
-  --home-actions-top: clamp(1rem, 4vw, 1.5rem);
+  --home-actions-offset: clamp(1.25rem, 4vw, 1.75rem);
   --home-actions-radius: 1.75rem;
   --home-actions-padding: clamp(0.5rem, 2vw, 0.75rem);
   --home-actions-surface: rgba(255, 255, 255, 0.12);
@@ -19,7 +19,8 @@
   padding-bottom: clamp(2.5rem, 6vw, 4rem);
   background: linear-gradient(160deg, var(--home-blue) 0%, var(--home-navy) 70%);
   color: #ffffff;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .home::before,
@@ -65,10 +66,11 @@
 
 .home__actions-sticky {
   position: sticky;
-  top: calc(env(safe-area-inset-top, 0px) + var(--home-actions-top));
+  top: calc(env(safe-area-inset-top, 0px) + var(--home-actions-offset));
   z-index: 10;
   align-self: flex-end;
   display: inline-flex;
+  margin-top: calc(var(--home-actions-offset) * -1);
 }
 
 .home__actions-shell {
