@@ -20,8 +20,8 @@
       "infoLabel": "View application information"
     },
     "hero": {
-      "eyebrow": "Andalusian journeys",
-      "description": "Search routes, manage your favorites, and explore the CTAN network with ease.",
+      "eyebrow": "Andalusian Buses",
+      "description": "Find the best way to get around",
       "action": "Start planning"
     },
     "topBar": {
