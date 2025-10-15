@@ -5,13 +5,14 @@
         <div class="shell-actions__menu">
           <button
             type="button"
-            class="shell-actions__button"
+            class="shell-actions__button shell-actions__button--menu"
+            [class.shell-actions__button--active]="menuOpen()"
             (click)="toggleMenu()"
             [attr.aria-label]="menuLabelKey | translate"
             [attr.aria-expanded]="menuOpen() ? 'true' : 'false'"
             (keydown.escape)="closeMenu()"
           >
-            <span class="material-symbols-outlined">menu</span>
+            <span class="material-symbols-outlined shell-actions__button-icon">menu</span>
           </button>
           <div class="shell-actions__panel" *ngIf="menuOpen()">
             <ul class="shell-actions__list" role="menu">

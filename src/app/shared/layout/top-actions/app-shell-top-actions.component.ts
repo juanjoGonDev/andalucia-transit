@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  computed,
+  inject,
+  signal
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -28,6 +36,7 @@ interface ShellMenuEntry {
 })
 export class AppShellTopActionsComponent {
   private readonly router = inject(Router);
+  private readonly host = inject(ElementRef<HTMLElement>);
 
   private readonly config = APP_CONFIG.home;
   private readonly translation = APP_CONFIG.translationKeys.home;
@@ -82,6 +91,19 @@ export class AppShellTopActionsComponent {
 
   protected closeMenu(): void {
     this.menuOpen.set(false);
+  }
+
+  @HostListener('document:click', ['$event'])
+  protected handleDocumentClick(event: MouseEvent): void {
+    if (!this.menuOpen()) {
+      return;
+    }
+
+    const target = event.target;
+
+    if (target instanceof Node && !this.host.nativeElement.contains(target)) {
+      this.closeMenu();
+    }
   }
 
   protected async openSettings(): Promise<void> {
