@@ -85,8 +85,14 @@
                     class="home__favorites-item"
                     *ngFor="let favorite of favoritePreview(); trackBy: trackFavorite"
                   >
-                    <button type="button" class="home__favorites-button" (click)="openFavorite(favorite)">
-                      <span class="material-symbols-outlined home__favorites-icon">{{ favoriteIcon() }}</span>
+                    <button
+                      type="button"
+                      class="home__favorites-button"
+                      (click)="openFavorite(favorite)"
+                    >
+                      <span class="material-symbols-outlined home__favorites-icon">{{
+                        favoriteIcon()
+                      }}</span>
                       <span class="home__favorites-text home__stack">
                         <span class="home__favorites-name">{{ favorite.name }}</span>
                         <span class="home__favorites-meta">
@@ -152,31 +158,6 @@
               </div>
             </div>
           </ng-container>
-        </div>
-      </section>
-
-      <section class="home__card home__card--summary home__stack" aria-labelledby="homeSummaryTitle">
-        <header class="home__panel-header">
-          <div class="home__stack home__panel-heading">
-            <h2 id="homeSummaryTitle" class="home__card-title">
-              {{ summaryTitleKey | translate }}
-            </h2>
-            <p class="home__card-subtitle" *ngIf="!recentClearActionVisible()">
-              {{ summaryEmptyKey | translate }}
-            </p>
-          </div>
-          <button
-            type="button"
-            class="app-button app-button--ghost home__panel-action"
-            (click)="selectTab('recent')"
-          >
-            {{ summarySeeAllKey | translate }}
-          </button>
-        </header>
-        <div class="home__recent-summary">
-          <app-home-recent-searches
-            (itemsStateChange)="onRecentItemsStateChange($event)"
-          ></app-home-recent-searches>
         </div>
       </section>
     </main>
