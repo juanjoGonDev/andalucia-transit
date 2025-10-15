@@ -31,7 +31,11 @@
   height: clamp(12rem, 40vw, 22rem);
   top: -6rem;
   right: -4rem;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 70%);
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
 }
 
 .home::after {
@@ -63,7 +67,7 @@
 
 .home__intro {
   --home-gap: 0.75rem;
-  max-width: 28rem;
+  max-width: 75vw;
 }
 
 .home__eyebrow {
@@ -181,7 +185,6 @@
   font-size: 1.05rem;
   font-weight: 700;
 }
-
 
 .home__panel-action {
   font-weight: 600;
