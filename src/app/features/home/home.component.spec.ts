@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { HomeComponent } from './home.component';
@@ -12,6 +12,8 @@ import { RouteSearchFormComponent } from '../route-search/route-search-form/rout
 import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
 import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
 import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
+import { APP_CONFIG } from '../../core/config';
+import { HomeTabId } from './home.types';
 
 class ImmediateIntersectionObserver implements IntersectionObserver {
   readonly root: Element | Document | null = null;
@@ -71,6 +73,26 @@ class RouteSearchExecutionStub {
   prepare = jasmine.createSpy('prepare').and.returnValue(['', 'routes']);
 }
 
+class RouterStub {
+  navigate = jasmine.createSpy('navigate').and.resolveTo(true);
+}
+
+class ActivatedRouteStub {
+  private readonly subject = new BehaviorSubject(convertToParamMap({}));
+
+  queryParamMap = this.subject.asObservable();
+
+  snapshot = { queryParamMap: convertToParamMap({}) };
+
+  setQueryParams(params: Record<string, string | null>): void {
+    const sanitizedEntries = Object.entries(params).filter(([, value]) => value !== null && value !== undefined);
+    const sanitized = Object.fromEntries(sanitizedEntries) as Record<string, string>;
+    const map = convertToParamMap(sanitized);
+    this.snapshot = { queryParamMap: map };
+    this.subject.next(map);
+  }
+}
+
 @Component({
   selector: 'app-route-search-form',
   standalone: true,
@@ -91,8 +113,9 @@ class HomeRecentSearchesStubComponent {}
 
 describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
-  let router: Router;
+  let router: RouterStub;
   let execution: RouteSearchExecutionStub;
+  let routeStub: ActivatedRouteStub;
   let originalIntersectionObserver: typeof IntersectionObserver | undefined;
   const dialogStub = { open: jasmine.createSpy('open') };
   const originOption: StopDirectoryOption = {
@@ -128,7 +151,8 @@ describe('HomeComponent', () => {
         })
       ],
       providers: [
-        provideRouter([]),
+        { provide: Router, useClass: RouterStub },
+        { provide: ActivatedRoute, useClass: ActivatedRouteStub },
         { provide: MatDialog, useValue: dialogStub },
         { provide: RouteSearchStateService, useClass: RouteSearchStateStub },
         { provide: RouteSearchExecutionService, useClass: RouteSearchExecutionStub }
@@ -148,8 +172,9 @@ describe('HomeComponent', () => {
       ImmediateIntersectionObserver;
 
     fixture = TestBed.createComponent(HomeComponent);
-    router = TestBed.inject(Router);
+    router = TestBed.inject(Router) as unknown as RouterStub;
     execution = TestBed.inject(RouteSearchExecutionService) as unknown as RouteSearchExecutionStub;
+    routeStub = TestBed.inject(ActivatedRoute) as unknown as ActivatedRouteStub;
     dialogStub.open.calls.reset();
     fixture.detectChanges();
   });
@@ -164,7 +189,7 @@ describe('HomeComponent', () => {
   });
 
   it('navigates to the route results page when the form emits a selection', fakeAsync(() => {
-    const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
+    const navigateSpy = router.navigate.and.resolveTo(true);
     const selection: RouteSearchSelection = {
       origin: originOption,
       destination: destinationOption,
@@ -198,9 +223,43 @@ describe('HomeComponent', () => {
     const recent = fixture.debugElement.queryAll(By.directive(HomeRecentSearchesStubComponent));
     expect(recent.length).toBeGreaterThan(0);
   });
+
+  it('activates the requested tab from the query parameters', async () => {
+    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
+    routeStub.setQueryParams({ [APP_CONFIG.home.queryParams.tab]: 'recent' });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(component.isTabActive('recent')).toBeTrue();
+  });
+
+  it('clears the tab query parameter when selecting the default tab', () => {
+    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
+    component.selectTab('recent');
+    router.navigate.calls.reset();
+    component.selectTab('search');
+    expect(router.navigate).toHaveBeenCalledWith([], jasmine.objectContaining({
+      queryParams: jasmine.objectContaining({ [APP_CONFIG.home.queryParams.tab]: null })
+    }));
+  });
+
+  it('opens the nearby dialog when the intent query parameter matches nearby', async () => {
+    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
+    const openSpy = spyOn(component, 'openNearbyStopsDialog').and.returnValue(Promise.resolve());
+    routeStub.setQueryParams({
+      [APP_CONFIG.home.queryParams.intent]: APP_CONFIG.home.intents.nearby
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(openSpy).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith([], jasmine.objectContaining({
+      queryParams: jasmine.objectContaining({ [APP_CONFIG.home.queryParams.intent]: null })
+    }));
+  });
 });
 
 interface HomeComponentTestingApi {
   onSelectionConfirmed(selection: RouteSearchSelection): Promise<void>;
   openNearbyStopsDialog(): Promise<void>;
+  isTabActive(tab: HomeTabId): boolean;
+  selectTab(tab: HomeTabId): void;
 }

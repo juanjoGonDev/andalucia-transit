@@ -9,7 +9,9 @@
   background: linear-gradient(135deg, rgba(0, 97, 254, 1) 0%, rgba(6, 15, 43, 0.9) 100%);
   color: #ffffff;
   box-shadow: 0 22px 40px rgba(6, 15, 43, 0.28);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .recent-card__body {
@@ -24,6 +26,7 @@
   background: transparent;
   color: inherit;
   text-align: left;
+  cursor: pointer;
 }
 
 .recent-card__body:focus-visible {
@@ -100,7 +103,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+  cursor: pointer;
 }
 
 .recent-card__remove:hover {

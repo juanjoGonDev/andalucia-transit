@@ -8,7 +8,7 @@ import {
   signal
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -24,25 +24,11 @@ import { StopFavoritesService, StopFavorite } from '../../domain/stops/stop-favo
 import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
 import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
 import { buildNavigationCommands, NavigationCommands } from '../../shared/navigation/navigation.util';
-
-type HomeTabId = 'search' | 'recent' | 'favorites' | 'nearby' | 'settings';
-
-type MenuEntryAction =
-  | { readonly kind: 'tab'; readonly tab: HomeTabId }
-  | { readonly kind: 'dialog' }
-  | { readonly kind: 'navigation'; readonly commands: NavigationCommands }
-  | { readonly kind: 'placeholder' };
+import { HomeTabId, isHomeTabId } from './home.types';
 
 interface HomeTabOption {
   readonly id: HomeTabId;
   readonly labelKey: string;
-}
-
-interface HomeMenuEntry {
-  readonly id: string;
-  readonly labelKey: string;
-  readonly action: MenuEntryAction;
-  readonly state: 'available' | 'inProgress';
 }
 
 interface SettingsPreviewEntry {
@@ -61,6 +47,7 @@ interface SettingsPreviewEntry {
 })
 export class HomeComponent {
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly dialog = inject(MatDialog);
   private readonly routeSearchState = inject(RouteSearchStateService);
   private readonly execution = inject(RouteSearchExecutionService);
@@ -72,17 +59,15 @@ export class HomeComponent {
   private readonly favoritePreviewLimit = APP_CONFIG.homeData.favoriteStops.homePreviewLimit;
 
   private readonly settingsCommands = buildNavigationCommands(APP_CONFIG.routes.settings);
-  private readonly mapCommands = buildNavigationCommands(APP_CONFIG.routes.map);
   private readonly favoritesCommands = buildNavigationCommands(APP_CONFIG.routes.favorites);
+  private readonly homeQueryParams = APP_CONFIG.home.queryParams;
+  private readonly homeIntents = APP_CONFIG.home.intents;
 
   protected readonly headerTitleKey = this.translation.header.title;
   protected readonly headerTaglineKey = this.translation.header.tagline;
   protected readonly heroEyebrowKey = this.translation.hero.eyebrow;
   protected readonly heroDescriptionKey = this.translation.hero.description;
   protected readonly heroActionKey = this.translation.hero.action;
-  protected readonly topBarSettingsLabelKey = this.translation.topBar.settingsLabel;
-  protected readonly topBarMenuLabelKey = this.translation.topBar.menuLabel;
-  protected readonly topBarMapLabelKey = this.translation.topBar.mapLabel;
   protected readonly tabs: readonly HomeTabOption[] = [
     { id: 'search', labelKey: this.translation.tabs.search },
     { id: 'recent', labelKey: this.translation.tabs.recent },
@@ -90,19 +75,6 @@ export class HomeComponent {
     { id: 'nearby', labelKey: this.translation.tabs.nearby },
     { id: 'settings', labelKey: this.translation.tabs.settings }
   ];
-  protected readonly menuEntries: readonly HomeMenuEntry[] = [
-    { id: 'recent', labelKey: this.translation.menu.recent, action: { kind: 'tab', tab: 'recent' }, state: 'available' },
-    { id: 'favorites', labelKey: this.translation.menu.favorites, action: { kind: 'tab', tab: 'favorites' }, state: 'available' },
-    { id: 'nearby', labelKey: this.translation.menu.nearby, action: { kind: 'dialog' }, state: 'available' },
-    {
-      id: 'settings',
-      labelKey: this.translation.menu.settings,
-      action: { kind: 'navigation', commands: this.settingsCommands },
-      state: 'available'
-    },
-    { id: 'news', labelKey: this.translation.menu.news, action: { kind: 'placeholder' }, state: 'inProgress' }
-  ];
-  protected readonly menuInProgressKey = this.translation.menu.inProgress;
   protected readonly summaryTitleKey = this.translation.summary.lastSearch;
   protected readonly summarySeeAllKey = this.translation.summary.seeAll;
   protected readonly summaryEmptyKey = this.translation.summary.empty;
@@ -125,7 +97,6 @@ export class HomeComponent {
   protected readonly settingsHintKey = this.translation.sections.settings.hint;
 
   protected readonly activeTab = signal<HomeTabId>('search');
-  protected readonly menuOpen = signal(false);
   protected readonly recentClearActionVisible = signal(false);
 
   @ViewChild('recentSearches')
@@ -159,48 +130,20 @@ export class HomeComponent {
 
   constructor() {
     this.observeFavorites();
+    this.observeRouteState();
   }
 
   protected selectTab(tab: HomeTabId): void {
+    if (this.activeTab() === tab) {
+      return;
+    }
+
     this.activeTab.set(tab);
+    void this.updateTabQueryParam(tab);
   }
 
   protected isTabActive(tab: HomeTabId): boolean {
     return this.activeTab() === tab;
-  }
-
-  protected toggleMenu(): void {
-    this.menuOpen.update((open) => !open);
-  }
-
-  protected closeMenu(): void {
-    this.menuOpen.set(false);
-  }
-
-  protected isMenuEntryDisabled(entry: HomeMenuEntry): boolean {
-    return entry.state === 'inProgress';
-  }
-
-  protected async handleMenuEntry(entry: HomeMenuEntry): Promise<void> {
-    if (this.isMenuEntryDisabled(entry)) {
-      return;
-    }
-
-    switch (entry.action.kind) {
-      case 'tab':
-        this.selectTab(entry.action.tab);
-        break;
-      case 'dialog':
-        await this.openNearbyStopsDialog();
-        break;
-      case 'navigation':
-        await this.navigate(entry.action.commands);
-        break;
-      case 'placeholder':
-        break;
-    }
-
-    this.closeMenu();
   }
 
   protected async openNearbyStopsDialog(): Promise<void> {
@@ -253,10 +196,6 @@ export class HomeComponent {
     await this.navigate(this.settingsCommands);
   }
 
-  protected async openMap(): Promise<void> {
-    await this.navigate(this.mapCommands);
-  }
-
   private async navigate(commands: NavigationCommands): Promise<void> {
     await this.router.navigate(commands);
   }
@@ -265,5 +204,48 @@ export class HomeComponent {
     this.favoritesService.favorites$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((favorites) => this.favorites.set(favorites));
+  }
+
+  private observeRouteState(): void {
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const tabParam = params.get(this.homeQueryParams.tab);
+        if (isHomeTabId(tabParam) && this.activeTab() !== tabParam) {
+          this.activeTab.set(tabParam);
+        }
+
+        const intentParam = params.get(this.homeQueryParams.intent);
+        if (intentParam === this.homeIntents.nearby) {
+          void this.openNearbyStopsDialog();
+          void this.clearIntentQueryParam();
+        }
+      });
+  }
+
+  private async updateTabQueryParam(tab: HomeTabId): Promise<void> {
+    const currentTab = this.route.snapshot.queryParamMap.get(this.homeQueryParams.tab);
+
+    if (currentTab === tab) {
+      return;
+    }
+
+    const queryParams: Record<string, string | null> = {
+      [this.homeQueryParams.tab]: tab === 'search' ? null : tab
+    };
+
+    await this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  private async clearIntentQueryParam(): Promise<void> {
+    await this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { [this.homeQueryParams.intent]: null },
+      queryParamsHandling: 'merge'
+    });
   }
 }
