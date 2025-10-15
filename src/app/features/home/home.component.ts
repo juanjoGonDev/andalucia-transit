@@ -24,6 +24,7 @@ import { RouteSearchFormComponent } from '../route-search/route-search-form/rout
 import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
 import { buildNavigationCommands, NavigationCommands } from '../../shared/navigation/navigation.util';
 import { HomeTabId } from './home.types';
+import { HomeListCardComponent } from './shared/home-list-card/home-list-card.component';
 
 interface HomeTabOption {
   readonly id: HomeTabId;
@@ -33,7 +34,13 @@ interface HomeTabOption {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RouteSearchFormComponent, HomeRecentSearchesComponent],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    RouteSearchFormComponent,
+    HomeRecentSearchesComponent,
+    HomeListCardComponent
+  ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -97,7 +104,13 @@ export class HomeComponent {
       return [] as readonly StopFavorite[];
     }
 
-    return current.slice(0, Math.max(this.favoritePreviewLimit, 0));
+    const limit = Math.max(this.favoritePreviewLimit, 0);
+
+    if (limit === 0) {
+      return [] as readonly StopFavorite[];
+    }
+
+    return current.slice(0, limit);
   });
   protected readonly hasFavorites = computed(() => this.favorites().length > 0);
 

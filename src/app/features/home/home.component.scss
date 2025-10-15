@@ -145,6 +145,8 @@
   padding: 0.3rem;
   border-radius: 999px;
   background: var(--home-light);
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .home__tab {
@@ -154,6 +156,7 @@
   background: transparent;
   font-weight: 600;
   color: var(--home-ink-soft);
+  flex: 1 0 auto;
 }
 
 .home__tab[aria-selected='true'] {

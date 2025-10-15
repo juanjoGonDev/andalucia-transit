@@ -1,51 +1,45 @@
-<div class="recent-card">
-  <button type="button" class="recent-card__body" (click)="onOpen()">
-    <div class="recent-card__content">
-      <div class="recent-card__route">
-        <span class="recent-card__origin">{{ originName }}</span>
-        <span class="recent-card__arrow" aria-hidden="true">→</span>
-        <span class="recent-card__destination">{{ destinationName }}</span>
-      </div>
-      <div class="recent-card__date">
-        {{ searchDateKey | translate: { date: (searchDate | date: 'longDate') } }}
-      </div>
-      <div class="recent-card__preview" [ngSwitch]="preview.status">
-        <div *ngSwitchCase="'loading'" class="recent-card__loading" role="status" aria-live="polite">
-          <span class="recent-card__visually-hidden">{{ loadingKey | translate }}</span>
-          <span class="recent-card__skeleton recent-card__skeleton--wide" aria-hidden="true"></span>
-          <span class="recent-card__skeleton" aria-hidden="true"></span>
-        </div>
-        <div *ngSwitchCase="'error'" class="recent-card__status recent-card__status--error">
-          {{ errorKey | translate }}
-        </div>
-        <div *ngSwitchCase="'disabled'" class="recent-card__status recent-card__status--disabled">
-          {{ previewDisabledKey | translate }}
-        </div>
-        <ng-container *ngSwitchCase="'ready'">
-          <ng-container *ngIf="hasEntries(preview); else noPreview">
-            <app-recent-search-preview-entry
-              *ngFor="let entry of entries(preview); trackBy: trackByEntry"
-              [entry]="entry"
-            ></app-recent-search-preview-entry>
-          </ng-container>
-        </ng-container>
-        <ng-template #noPreview>
-          <div class="recent-card__status recent-card__status--empty">
-            {{ noPreviewKey | translate }}
-          </div>
-        </ng-template>
-      </div>
-      <div *ngIf="showTodayNotice" class="recent-card__today">
-        {{ searchDateTodayKey | translate }}
-      </div>
+<app-home-list-card
+  [removeAriaLabel]="removeActionKey | translate"
+  (primaryAction)="onOpen()"
+  (removeAction)="onRemove()"
+>
+  <div class="recent-card__content">
+    <div class="recent-card__route">
+      <span class="recent-card__origin">{{ originName }}</span>
+      <span class="recent-card__arrow" aria-hidden="true">→</span>
+      <span class="recent-card__destination">{{ destinationName }}</span>
     </div>
-  </button>
-  <button
-    type="button"
-    class="recent-card__remove"
-    (click)="onRemove($event)"
-    [attr.aria-label]="removeActionKey | translate"
-  >
-    <span class="material-symbols-outlined">close</span>
-  </button>
-</div>
+    <div class="recent-card__date">
+      {{ searchDateKey | translate: { date: (searchDate | date: 'longDate') } }}
+    </div>
+    <div class="recent-card__preview" [ngSwitch]="preview.status">
+      <div *ngSwitchCase="'loading'" class="recent-card__loading" role="status" aria-live="polite">
+        <span class="recent-card__visually-hidden">{{ loadingKey | translate }}</span>
+        <span class="recent-card__skeleton recent-card__skeleton--wide" aria-hidden="true"></span>
+        <span class="recent-card__skeleton" aria-hidden="true"></span>
+      </div>
+      <div *ngSwitchCase="'error'" class="recent-card__status recent-card__status--error">
+        {{ errorKey | translate }}
+      </div>
+      <div *ngSwitchCase="'disabled'" class="recent-card__status recent-card__status--disabled">
+        {{ previewDisabledKey | translate }}
+      </div>
+      <ng-container *ngSwitchCase="'ready'">
+        <ng-container *ngIf="hasEntries(preview); else noPreview">
+          <app-recent-search-preview-entry
+            *ngFor="let entry of entries(preview); trackBy: trackByEntry"
+            [entry]="entry"
+          ></app-recent-search-preview-entry>
+        </ng-container>
+      </ng-container>
+      <ng-template #noPreview>
+        <div class="recent-card__status recent-card__status--empty">
+          {{ noPreviewKey | translate }}
+        </div>
+      </ng-template>
+    </div>
+    <div *ngIf="showTodayNotice" class="recent-card__today">
+      {{ searchDateTodayKey | translate }}
+    </div>
+  </div>
+</app-home-list-card>

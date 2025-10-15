@@ -71,29 +71,23 @@
               <ng-container *ngIf="hasFavorites(); else favoritesEmpty">
                 <ul class="home-recent__list" role="list">
                   <li class="home-recent__item" *ngFor="let favorite of favoritePreview(); trackBy: trackFavorite">
-                    <div class="recent-card">
-                      <button
-                        type="button"
-                        class="recent-card__body"
-                        (click)="openFavorite(favorite)"
-                      >
-                        <div class="recent-card__content">
-                          <div class="recent-card__route">
-                            <span class="recent-card__origin">{{ favorite.name }}</span>
-                            <span class="recent-card__arrow" aria-hidden="true">→</span>
-                            <span class="recent-card__destination">{{ favorite.municipality }}</span>
-                          </div>
-                          <div class="recent-card__date">
+                    <app-home-list-card (primaryAction)="openFavorite(favorite)">
+                      <div class="recent-card__content">
+                        <div class="recent-card__route">
+                          <span class="recent-card__origin">{{ favorite.name }}</span>
+                          <span class="recent-card__arrow" aria-hidden="true">→</span>
+                          <span class="recent-card__destination">{{ favorite.municipality }}</span>
+                        </div>
+                        <div class="recent-card__preview">
+                          <div class="recent-card__status recent-card__status--empty">
                             {{ favoritesCodeLabelKey | translate }} {{ favorite.code }}
                           </div>
-                          <div class="recent-card__preview">
-                            <div class="recent-card__status recent-card__status--empty">
-                              {{ favoritesNucleusLabelKey | translate }} {{ favorite.nucleus }}
-                            </div>
+                          <div class="recent-card__status recent-card__status--empty">
+                            {{ favoritesNucleusLabelKey | translate }} {{ favorite.nucleus }}
                           </div>
                         </div>
-                      </button>
-                    </div>
+                      </div>
+                    </app-home-list-card>
                   </li>
                 </ul>
               </ng-container>

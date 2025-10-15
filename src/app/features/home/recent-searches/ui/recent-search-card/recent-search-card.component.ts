@@ -7,13 +7,13 @@ import {
   RecentSearchPreviewState
 } from '../../recent-searches.models';
 import { RecentSearchPreviewEntryComponent } from '../recent-search-preview-entry/recent-search-preview-entry.component';
+import { HomeListCardComponent } from '../../../shared/home-list-card/home-list-card.component';
 
 @Component({
   selector: 'app-recent-search-card',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RecentSearchPreviewEntryComponent],
+  imports: [CommonModule, TranslateModule, RecentSearchPreviewEntryComponent, HomeListCardComponent],
   templateUrl: './recent-search-card.component.html',
-  styleUrl: './recent-search-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecentSearchCardComponent {
@@ -41,8 +41,7 @@ export class RecentSearchCardComponent {
     this.open.emit();
   }
 
-  protected onRemove(event: MouseEvent): void {
-    event.stopPropagation();
+  protected onRemove(): void {
     this.remove.emit();
   }
 

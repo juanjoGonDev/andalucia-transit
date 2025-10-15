@@ -167,28 +167,35 @@
   }
 }
 
-.home__panel--recent .recent-card {
+:host-context(.home__panel--recent) .recent-card,
+:host-context(.home__panel--favorites) .recent-card {
   background: rgba(241, 243, 244, 0.95);
   color: #060f2b;
   box-shadow: 0 16px 32px rgba(6, 15, 43, 0.15);
 }
 
-.home__panel--recent .recent-card__date,
-.home__panel--recent .recent-card__status,
-.home__panel--recent .recent-card__today {
+:host-context(.home__panel--recent) .recent-card__date,
+:host-context(.home__panel--recent) .recent-card__status,
+:host-context(.home__panel--recent) .recent-card__today,
+:host-context(.home__panel--favorites) .recent-card__date,
+:host-context(.home__panel--favorites) .recent-card__status,
+:host-context(.home__panel--favorites) .recent-card__today {
   color: rgba(6, 15, 43, 0.6);
 }
 
-.home__panel--recent .recent-card__remove {
+:host-context(.home__panel--recent) .recent-card__remove,
+:host-context(.home__panel--favorites) .recent-card__remove {
   background: rgba(0, 97, 254, 0.12);
   color: #0061fe;
 }
 
-.home__panel--recent .recent-card__remove:hover {
+:host-context(.home__panel--recent) .recent-card__remove:hover,
+:host-context(.home__panel--favorites) .recent-card__remove:hover {
   background: rgba(0, 97, 254, 0.2);
 }
 
-.home__panel--recent .recent-card__remove:focus-visible {
+:host-context(.home__panel--recent) .recent-card__remove:focus-visible,
+:host-context(.home__panel--favorites) .recent-card__remove:focus-visible {
   outline: 2px solid #0061fe;
 }
 
