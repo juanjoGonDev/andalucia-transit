@@ -1,13 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { BehaviorSubject, of } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { HomeComponent } from './home.component';
 import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
-import { MatDialog } from '@angular/material/dialog';
 import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
 import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
 import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
@@ -75,21 +74,21 @@ class RouteSearchExecutionStub {
 
 class RouterStub {
   navigate = jasmine.createSpy('navigate').and.resolveTo(true);
+  private readonly eventsSubject = new Subject<NavigationEnd>();
+  readonly events = this.eventsSubject.asObservable();
+
+  emitNavigation(path: string): void {
+    this.eventsSubject.next(new NavigationEnd(1, path, path));
+  }
 }
 
 class ActivatedRouteStub {
-  private readonly subject = new BehaviorSubject(convertToParamMap({}));
+  private currentPath: string = APP_CONFIG.routes.home;
+  snapshot: { routeConfig: { path: string } } = { routeConfig: { path: this.currentPath } };
 
-  queryParamMap = this.subject.asObservable();
-
-  snapshot = { queryParamMap: convertToParamMap({}) };
-
-  setQueryParams(params: Record<string, string | null>): void {
-    const sanitizedEntries = Object.entries(params).filter(([, value]) => value !== null && value !== undefined);
-    const sanitized = Object.fromEntries(sanitizedEntries) as Record<string, string>;
-    const map = convertToParamMap(sanitized);
-    this.snapshot = { queryParamMap: map };
-    this.subject.next(map);
+  setPath(path: string): void {
+    this.currentPath = path;
+    this.snapshot = { routeConfig: { path } };
   }
 }
 
@@ -117,7 +116,6 @@ describe('HomeComponent', () => {
   let execution: RouteSearchExecutionStub;
   let routeStub: ActivatedRouteStub;
   let originalIntersectionObserver: typeof IntersectionObserver | undefined;
-  const dialogStub = { open: jasmine.createSpy('open') };
   const originOption: StopDirectoryOption = {
     id: 'origin',
     code: '001',
@@ -153,17 +151,13 @@ describe('HomeComponent', () => {
       providers: [
         { provide: Router, useClass: RouterStub },
         { provide: ActivatedRoute, useClass: ActivatedRouteStub },
-        { provide: MatDialog, useValue: dialogStub },
         { provide: RouteSearchStateService, useClass: RouteSearchStateStub },
         { provide: RouteSearchExecutionService, useClass: RouteSearchExecutionStub }
       ]
     })
       .overrideComponent(HomeComponent, {
         remove: { imports: [RouteSearchFormComponent, HomeRecentSearchesComponent] },
-        add: {
-          imports: [RouteSearchFormStubComponent, HomeRecentSearchesStubComponent],
-          providers: [{ provide: MatDialog, useValue: dialogStub }]
-        }
+        add: { imports: [RouteSearchFormStubComponent, HomeRecentSearchesStubComponent] }
       })
       .compileComponents();
 
@@ -175,7 +169,6 @@ describe('HomeComponent', () => {
     router = TestBed.inject(Router) as unknown as RouterStub;
     execution = TestBed.inject(RouteSearchExecutionService) as unknown as RouteSearchExecutionStub;
     routeStub = TestBed.inject(ActivatedRoute) as unknown as ActivatedRouteStub;
-    dialogStub.open.calls.reset();
     fixture.detectChanges();
   });
 
@@ -204,62 +197,41 @@ describe('HomeComponent', () => {
     expect(navigateSpy).toHaveBeenCalled();
   }));
 
-  it('opens the nearby stops dialog when clicking the quick action button', async () => {
-    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
-    const openSpy = spyOn(component, 'openNearbyStopsDialog').and.callThrough();
-    const buttonDebug = fixture.debugElement.query(By.css('.home__quick-action'));
-    expect(buttonDebug).not.toBeNull();
-    const button = buttonDebug!.nativeElement as HTMLButtonElement;
-
-    button.click();
-    expect(openSpy).toHaveBeenCalled();
-    await openSpy.calls.mostRecent().returnValue;
-    expect(dialogStub.open).toHaveBeenCalled();
-  });
-
   it('renders the recent searches component', async () => {
+    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
+    router.navigate.calls.reset();
+    component.selectTab('recent');
     await fixture.whenStable();
     fixture.detectChanges();
     const recent = fixture.debugElement.queryAll(By.directive(HomeRecentSearchesStubComponent));
     expect(recent.length).toBeGreaterThan(0);
   });
 
-  it('activates the requested tab from the query parameters', async () => {
+  it('activates the requested tab when the route path changes', () => {
     const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
-    routeStub.setQueryParams({ [APP_CONFIG.home.queryParams.tab]: 'recent' });
+    routeStub.setPath(APP_CONFIG.routes.homeRecent);
+    router.emitNavigation(APP_CONFIG.routes.homeRecent);
     fixture.detectChanges();
-    await fixture.whenStable();
     expect(component.isTabActive('recent')).toBeTrue();
   });
 
-  it('clears the tab query parameter when selecting the default tab', () => {
+  it('navigates to the recent route when selecting the recent tab', () => {
     const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
-    component.selectTab('recent');
     router.navigate.calls.reset();
-    component.selectTab('search');
-    expect(router.navigate).toHaveBeenCalledWith([], jasmine.objectContaining({
-      queryParams: jasmine.objectContaining({ [APP_CONFIG.home.queryParams.tab]: null })
-    }));
+    component.selectTab('recent');
+    expect(router.navigate).toHaveBeenCalledWith(['/', APP_CONFIG.routes.homeRecent]);
   });
 
-  it('opens the nearby dialog when the intent query parameter matches nearby', async () => {
+  it('navigates to the favorites route when selecting the favorites tab', () => {
     const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
-    const openSpy = spyOn(component, 'openNearbyStopsDialog').and.returnValue(Promise.resolve());
-    routeStub.setQueryParams({
-      [APP_CONFIG.home.queryParams.intent]: APP_CONFIG.home.intents.nearby
-    });
-    fixture.detectChanges();
-    await fixture.whenStable();
-    expect(openSpy).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith([], jasmine.objectContaining({
-      queryParams: jasmine.objectContaining({ [APP_CONFIG.home.queryParams.intent]: null })
-    }));
+    router.navigate.calls.reset();
+    component.selectTab('favorites');
+    expect(router.navigate).toHaveBeenCalledWith(['/', APP_CONFIG.routes.homeFavorites]);
   });
 });
 
 interface HomeComponentTestingApi {
   onSelectionConfirmed(selection: RouteSearchSelection): Promise<void>;
-  openNearbyStopsDialog(): Promise<void>;
   isTabActive(tab: HomeTabId): boolean;
   selectTab(tab: HomeTabId): void;
 }

@@ -15,13 +15,11 @@ import { APP_CONFIG } from '../../../core/config';
 import { HomeTabId } from '../../../features/home/home.types';
 import { buildNavigationCommands, NavigationCommands } from '../../navigation/navigation.util';
 
-type HomeIntent = (typeof APP_CONFIG.home.intents)[keyof typeof APP_CONFIG.home.intents];
-
 interface ShellMenuEntry {
   readonly id: string;
   readonly labelKey: string;
   readonly action:
-    | { readonly kind: 'home'; readonly tab: HomeTabId; readonly intent?: HomeIntent }
+    | { readonly kind: 'home'; readonly tab: HomeTabId }
     | { readonly kind: 'navigation'; readonly commands: NavigationCommands };
   readonly disabled: boolean;
 }
@@ -38,11 +36,18 @@ export class AppShellTopActionsComponent {
   private readonly router = inject(Router);
   private readonly host = inject(ElementRef<HTMLElement>);
 
-  private readonly config = APP_CONFIG.home;
   private readonly translation = APP_CONFIG.translationKeys.home;
   private readonly homeCommands = buildNavigationCommands(APP_CONFIG.routes.home);
+  private readonly homeRecentCommands = buildNavigationCommands(APP_CONFIG.routes.homeRecent);
+  private readonly homeFavoritesCommands = buildNavigationCommands(APP_CONFIG.routes.homeFavorites);
   private readonly settingsCommands = buildNavigationCommands(APP_CONFIG.routes.settings);
   private readonly mapCommands = buildNavigationCommands(APP_CONFIG.routes.map);
+
+  private readonly homeTabCommands: ReadonlyMap<HomeTabId, NavigationCommands> = new Map([
+    ['search', this.homeCommands],
+    ['recent', this.homeRecentCommands],
+    ['favorites', this.homeFavoritesCommands]
+  ]);
 
   protected readonly settingsLabelKey = this.translation.topBar.settingsLabel;
   protected readonly menuLabelKey = this.translation.topBar.menuLabel;
@@ -60,12 +65,6 @@ export class AppShellTopActionsComponent {
       id: 'favorites',
       labelKey: this.translation.menu.favorites,
       action: { kind: 'home', tab: 'favorites' },
-      disabled: false
-    },
-    {
-      id: 'nearby',
-      labelKey: this.translation.menu.nearby,
-      action: { kind: 'home', tab: 'nearby', intent: 'nearby' },
       disabled: false
     },
     {
@@ -126,12 +125,7 @@ export class AppShellTopActionsComponent {
       return;
     }
 
-    const queryParams: Record<string, string> = { [this.config.queryParams.tab]: entry.action.tab };
-
-    if (entry.action.intent) {
-      queryParams[this.config.queryParams.intent] = entry.action.intent;
-    }
-
-    await this.router.navigate(this.homeCommands, { queryParams });
+    const commands = this.homeTabCommands.get(entry.action.tab) ?? this.homeCommands;
+    await this.router.navigate(commands);
   }
 }

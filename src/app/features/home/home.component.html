@@ -35,16 +35,6 @@
                 [initialSelection]="currentSelection$ | async"
                 (selectionConfirmed)="onSelectionConfirmed($event)"
               ></app-route-search-form>
-              <div class="home__quick-actions">
-                <button
-                  type="button"
-                  class="app-button app-button--secondary app-button--pill home__quick-action"
-                  (click)="openNearbyStopsDialog()"
-                >
-                  <span class="material-symbols-outlined">explore</span>
-                  <span>{{ quickActionNearbyKey | translate }}</span>
-                </button>
-              </div>
             </div>
             <div *ngSwitchCase="'recent'" class="home__panel home__panel--recent home__stack">
               <header class="home__panel-header">
@@ -78,84 +68,38 @@
                   {{ favoritesActionKey | translate }}
                 </button>
               </header>
-              <p class="home__panel-description">{{ favoritesDescriptionKey | translate }}</p>
               <ng-container *ngIf="hasFavorites(); else favoritesEmpty">
-                <ul class="home__favorites-list home__stack" role="list">
-                  <li
-                    class="home__favorites-item"
-                    *ngFor="let favorite of favoritePreview(); trackBy: trackFavorite"
-                  >
-                    <button
-                      type="button"
-                      class="home__favorites-button"
-                      (click)="openFavorite(favorite)"
-                    >
-                      <span class="material-symbols-outlined home__favorites-icon">{{
-                        favoriteIcon()
-                      }}</span>
-                      <span class="home__favorites-text home__stack">
-                        <span class="home__favorites-name">{{ favorite.name }}</span>
-                        <span class="home__favorites-meta">
-                          {{ favoritesCodeLabelKey | translate }} {{ favorite.code }}
-                        </span>
-                        <span class="home__favorites-meta">{{ favorite.municipality }}</span>
-                      </span>
-                    </button>
+                <ul class="home-recent__list" role="list">
+                  <li class="home-recent__item" *ngFor="let favorite of favoritePreview(); trackBy: trackFavorite">
+                    <div class="recent-card">
+                      <button
+                        type="button"
+                        class="recent-card__body"
+                        (click)="openFavorite(favorite)"
+                      >
+                        <div class="recent-card__content">
+                          <div class="recent-card__route">
+                            <span class="recent-card__origin">{{ favorite.name }}</span>
+                            <span class="recent-card__arrow" aria-hidden="true">→</span>
+                            <span class="recent-card__destination">{{ favorite.municipality }}</span>
+                          </div>
+                          <div class="recent-card__date">
+                            {{ favoritesCodeLabelKey | translate }} {{ favorite.code }}
+                          </div>
+                          <div class="recent-card__preview">
+                            <div class="recent-card__status recent-card__status--empty">
+                              {{ favoritesNucleusLabelKey | translate }} {{ favorite.nucleus }}
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
                   </li>
                 </ul>
               </ng-container>
               <ng-template #favoritesEmpty>
-                <p class="home__favorites-empty">{{ favoritesEmptyKey | translate }}</p>
+                <p class="home-recent__empty">{{ favoritesEmptyKey | translate }}</p>
               </ng-template>
-            </div>
-            <div *ngSwitchCase="'nearby'" class="home__panel home__panel--nearby home__stack">
-              <header class="home__panel-header">
-                <div class="home__panel-heading home__stack">
-                  <h3 class="home__panel-title">{{ findNearbyTitleKey | translate }}</h3>
-                  <p class="home__panel-description">{{ findNearbyDescriptionKey | translate }}</p>
-                </div>
-                <button
-                  type="button"
-                  class="app-button app-button--primary app-button--pill home__panel-action home__panel-action--primary"
-                  (click)="openNearbyStopsDialog()"
-                >
-                  <span class="material-symbols-outlined home__panel-action-icon">my_location</span>
-                  <span>{{ findNearbyActionKey | translate }}</span>
-                </button>
-              </header>
-              <div class="home__panel-content home__stack">
-                <div class="home__panel-illustration">
-                  <span class="material-symbols-outlined">route</span>
-                </div>
-                <p class="home__panel-hint">{{ findNearbyHintKey | translate }}</p>
-              </div>
-            </div>
-            <div *ngSwitchCase="'settings'" class="home__panel home__panel--settings home__stack">
-              <header class="home__panel-header">
-                <div class="home__panel-heading home__stack">
-                  <h3 class="home__panel-title">{{ settingsTitleKey | translate }}</h3>
-                  <p class="home__panel-description">{{ settingsDescriptionKey | translate }}</p>
-                </div>
-              </header>
-              <div class="home__settings-preview">
-                <article
-                  *ngFor="let entry of settingsPreviewEntries; trackBy: trackSettingsPreview"
-                  class="home__settings-card home__stack"
-                >
-                  <h4 class="home__settings-card-title">{{ entry.titleKey | translate }}</h4>
-                  <p class="home__settings-card-text">{{ entry.descriptionKey | translate }}</p>
-                </article>
-              </div>
-              <div class="home__panel-footer">
-                <p class="home__panel-hint">{{ settingsHintKey | translate }}</p>
-                <button
-                  type="button"
-                  class="app-button app-button--primary app-button--pill home__panel-action home__panel-action--primary"
-                  (click)="openSettings()"
-                >
-                  {{ settingsActionKey | translate }}
-                </button>
-              </div>
             </div>
           </ng-container>
         </div>
