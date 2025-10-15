@@ -15,21 +15,7 @@
   flex-direction: column;
 }
 
-.app-shell__footer {
-  position: sticky;
-  bottom: 0;
-  padding: 0.75rem 1.5rem;
-  background-color: var(--color-surface-hover);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
 :host-context(.dark) .app-shell {
   background-color: var(--color-background-dark);
 }
 
-:host-context(.dark) .app-shell__footer {
-  background-color: var(--color-surface-dark);
-}

@@ -1,58 +1,63 @@
 <section class="home">
   <div class="home__container home__stack">
+    <div class="home__actions-sticky">
+      <div class="home__actions-shell">
+        <div class="home__actions">
+          <button
+            type="button"
+            class="home__action-button"
+            (click)="openSettings()"
+            [attr.aria-label]="topBarSettingsLabelKey | translate"
+          >
+            <span class="material-symbols-outlined">settings</span>
+          </button>
+          <div class="home__menu">
+            <button
+              type="button"
+              class="home__action-button"
+              (click)="toggleMenu()"
+              [attr.aria-label]="topBarMenuLabelKey | translate"
+              [attr.aria-expanded]="menuOpen() ? 'true' : 'false'"
+              (keydown.escape)="closeMenu()"
+            >
+              <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div class="home__menu-panel" *ngIf="menuOpen()">
+              <ul class="home__menu-list" role="menu">
+                <li class="home__menu-item" *ngFor="let entry of menuEntries">
+                  <button
+                    type="button"
+                    role="menuitem"
+                    class="home__menu-button"
+                    [disabled]="isMenuEntryDisabled(entry)"
+                    (click)="handleMenuEntry(entry)"
+                  >
+                    <span class="home__menu-label">{{ entry.labelKey | translate }}</span>
+                    <span *ngIf="isMenuEntryDisabled(entry)" class="home__menu-status">
+                      {{ menuInProgressKey | translate }}
+                    </span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="home__action-button"
+            (click)="openMap()"
+            [attr.aria-label]="topBarMapLabelKey | translate"
+          >
+            <span class="material-symbols-outlined">map</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <header class="home__header home__stack">
       <div class="home__intro home__stack">
         <p class="home__eyebrow">{{ heroEyebrowKey | translate }}</p>
         <h1 class="home__headline">{{ headerTaglineKey | translate }}</h1>
         <p class="home__description">{{ heroDescriptionKey | translate }}</p>
-      </div>
-      <div class="home__actions">
-        <button
-          type="button"
-          class="home__action-button"
-          (click)="openSettings()"
-          [attr.aria-label]="topBarSettingsLabelKey | translate"
-        >
-          <span class="material-symbols-outlined">settings</span>
-        </button>
-        <div class="home__menu">
-          <button
-            type="button"
-            class="home__action-button"
-            (click)="toggleMenu()"
-            [attr.aria-label]="topBarMenuLabelKey | translate"
-            [attr.aria-expanded]="menuOpen() ? 'true' : 'false'"
-            (keydown.escape)="closeMenu()"
-          >
-            <span class="material-symbols-outlined">menu</span>
-          </button>
-          <div class="home__menu-panel" *ngIf="menuOpen()">
-            <ul class="home__menu-list" role="menu">
-              <li class="home__menu-item" *ngFor="let entry of menuEntries">
-                <button
-                  type="button"
-                  role="menuitem"
-                  class="home__menu-button"
-                  [disabled]="isMenuEntryDisabled(entry)"
-                  (click)="handleMenuEntry(entry)"
-                >
-                  <span class="home__menu-label">{{ entry.labelKey | translate }}</span>
-                  <span *ngIf="isMenuEntryDisabled(entry)" class="home__menu-status">
-                    {{ menuInProgressKey | translate }}
-                  </span>
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <button
-          type="button"
-          class="home__action-button"
-          (click)="openMap()"
-          [attr.aria-label]="topBarMapLabelKey | translate"
-        >
-          <span class="material-symbols-outlined">map</span>
-        </button>
       </div>
     </header>
 
@@ -84,7 +89,11 @@
                 (selectionConfirmed)="onSelectionConfirmed($event)"
               ></app-route-search-form>
               <div class="home__quick-actions">
-                <button type="button" class="home__quick-action" (click)="openNearbyStopsDialog()">
+                <button
+                  type="button"
+                  class="app-button app-button--secondary app-button--pill home__quick-action"
+                  (click)="openNearbyStopsDialog()"
+                >
                   <span class="material-symbols-outlined">explore</span>
                   <span>{{ quickActionNearbyKey | translate }}</span>
                 </button>
@@ -97,7 +106,7 @@
                 </div>
                 <button
                   type="button"
-                  class="home__panel-action"
+                  class="app-button app-button--ghost home__panel-action"
                   *ngIf="recentClearActionVisible()"
                   (click)="onClearRecentSearches()"
                 >
@@ -114,7 +123,11 @@
                 <div class="home__panel-heading home__stack">
                   <h3 class="home__panel-title">{{ favoritesTitleKey | translate }}</h3>
                 </div>
-                <button type="button" class="home__panel-action" (click)="openFavoritesView()">
+                <button
+                  type="button"
+                  class="app-button app-button--ghost home__panel-action"
+                  (click)="openFavoritesView()"
+                >
                   {{ favoritesActionKey | translate }}
                 </button>
               </header>
@@ -148,7 +161,11 @@
                   <h3 class="home__panel-title">{{ findNearbyTitleKey | translate }}</h3>
                   <p class="home__panel-description">{{ findNearbyDescriptionKey | translate }}</p>
                 </div>
-                <button type="button" class="home__panel-action home__panel-action--primary" (click)="openNearbyStopsDialog()">
+                <button
+                  type="button"
+                  class="app-button app-button--primary app-button--pill home__panel-action home__panel-action--primary"
+                  (click)="openNearbyStopsDialog()"
+                >
                   <span class="material-symbols-outlined home__panel-action-icon">my_location</span>
                   <span>{{ findNearbyActionKey | translate }}</span>
                 </button>
@@ -178,7 +195,11 @@
               </div>
               <div class="home__panel-footer">
                 <p class="home__panel-hint">{{ settingsHintKey | translate }}</p>
-                <button type="button" class="home__panel-action home__panel-action--primary" (click)="openSettings()">
+                <button
+                  type="button"
+                  class="app-button app-button--primary app-button--pill home__panel-action home__panel-action--primary"
+                  (click)="openSettings()"
+                >
                   {{ settingsActionKey | translate }}
                 </button>
               </div>
@@ -197,7 +218,11 @@
               {{ summaryEmptyKey | translate }}
             </p>
           </div>
-          <button type="button" class="home__panel-action" (click)="selectTab('recent')">
+          <button
+            type="button"
+            class="app-button app-button--ghost home__panel-action"
+            (click)="selectTab('recent')"
+          >
             {{ summarySeeAllKey | translate }}
           </button>
         </header>

@@ -8,8 +8,8 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [CommonModule, MatDialogModule, TranslateModule],
   templateUrl: './dialog-layout.component.html',
-  styleUrl: './dialog-layout.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'app-dialog' }
 })
 export class DialogLayoutComponent {
   @Input({ required: true }) titleKey!: string;

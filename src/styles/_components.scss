@@ -1,0 +1,291 @@
+.app-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-text-strong);
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.app-button:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+.app-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  box-shadow: none;
+  transform: none;
+}
+
+.app-button--primary {
+  border-color: transparent;
+  color: var(--color-button-text);
+  background-image: linear-gradient(
+    135deg,
+    var(--color-primary-gradient-start),
+    var(--color-primary-gradient-end)
+  );
+  box-shadow: var(--shadow-button);
+}
+
+.app-button--primary:not(:disabled):hover,
+.app-button--primary:not(:disabled):focus-visible {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-primary-gradient-start-strong),
+    var(--color-primary-stronger)
+  );
+  box-shadow: var(--shadow-button);
+  transform: translateY(-1px);
+}
+
+.app-button--primary:disabled {
+  background-image: none;
+  background-color: var(--color-border-subtle);
+  color: var(--color-text-muted);
+}
+
+.app-button--secondary {
+  background-color: var(--color-button-secondary-fill);
+  border-color: var(--color-button-secondary-border);
+  color: var(--color-text-strong);
+  backdrop-filter: blur(12px);
+}
+
+.app-button--secondary:not(:disabled):hover,
+.app-button--secondary:not(:disabled):focus-visible {
+  background-color: var(--color-button-secondary-hover);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.app-button--ghost {
+  border-color: transparent;
+  background-color: transparent;
+  color: var(--color-text-muted);
+}
+
+.app-button--ghost:not(:disabled):hover,
+.app-button--ghost:not(:disabled):focus-visible {
+  background-color: var(--color-button-ghost-hover);
+  color: var(--color-text-strong);
+}
+
+.app-button--ghost:not(:disabled):active {
+  background-color: var(--color-button-ghost-active);
+}
+
+.app-button--icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border-radius: var(--radius-full);
+}
+
+.app-button--pill {
+  border-radius: var(--radius-full);
+}
+
+.app-button--block {
+  width: 100%;
+}
+
+.app-button--lg {
+  padding: 0.85rem 1.75rem;
+  font-size: 1rem;
+}
+
+.app-button--sm {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.875rem;
+}
+
+.dark .app-button {
+  color: var(--color-text-strong-dark);
+}
+
+.dark .app-button--secondary {
+  color: var(--color-text-strong-dark);
+}
+
+.dark .app-button--secondary:not(:disabled):hover,
+.dark .app-button--secondary:not(:disabled):focus-visible {
+  color: var(--color-primary-light);
+  border-color: var(--color-primary-light);
+}
+
+.dark .app-button--primary:disabled {
+  background-color: var(--color-border-subtle-dark);
+  color: var(--color-text-muted-dark);
+}
+
+.dark .app-button--ghost {
+  color: var(--color-text-muted-dark);
+}
+
+.dark .app-button--ghost:not(:disabled):hover,
+.dark .app-button--ghost:not(:disabled):focus-visible {
+  color: var(--color-text-strong-dark);
+}
+
+.app-field {
+  --app-field-background: var(--color-input-surface);
+  --app-field-background-hover: var(--color-input-surface-hover);
+  --app-field-border: var(--color-input-border);
+  --app-field-border-active: var(--color-input-border-active);
+}
+
+.app-field .mat-mdc-text-field-wrapper {
+  border-radius: var(--radius-xl);
+  background-color: var(--app-field-background);
+  border: 1px solid var(--app-field-border);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.app-field:hover .mat-mdc-text-field-wrapper {
+  background-color: var(--app-field-background-hover);
+}
+
+.app-field.mat-focused .mat-mdc-text-field-wrapper {
+  border-color: var(--app-field-border-active);
+  background-color: var(--color-input-surface-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.app-field .mat-mdc-form-field-focus-overlay {
+  opacity: 0;
+}
+
+.app-field .mat-mdc-form-field-infix {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.app-field .mat-mdc-input-element {
+  padding: 0;
+}
+
+.app-field .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.app-field .mat-mdc-floating-label {
+  color: var(--color-text-muted);
+}
+
+.app-field.mat-focused .mat-mdc-floating-label {
+  color: var(--color-primary);
+}
+
+.dark .app-field .mat-mdc-floating-label {
+  color: var(--color-text-muted-dark);
+}
+
+.dark .app-field.mat-focused .mat-mdc-floating-label {
+  color: var(--color-primary-light);
+}
+
+.mat-mdc-dialog-container {
+  padding: 0;
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 1.5rem;
+  background-color: var(--color-dialog-surface);
+  box-shadow: var(--shadow-dialog);
+  padding: 0;
+}
+
+.dark .mat-mdc-dialog-container .mdc-dialog__surface {
+  box-shadow: var(--shadow-dialog);
+}
+
+.app-dialog {
+  display: flex;
+  flex-direction: column;
+  max-width: min(90vw, 28rem);
+}
+
+.app-dialog__title {
+  margin: 0;
+  padding: 1.5rem 1.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.app-dialog__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0.5rem 1.5rem 0;
+  padding-right: calc(1.5rem - 0.4rem / 2);
+  max-height: min(70vh, 24rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+
+.app-dialog__content::-webkit-scrollbar {
+  width: 0.4rem;
+}
+
+.app-dialog__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-dialog__content::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.app-dialog__description {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.app-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem 1.5rem;
+  flex-wrap: wrap;
+}
+
+.dark .app-dialog__title {
+  color: var(--color-text-strong-dark);
+}
+
+.dark .app-dialog__description {
+  color: var(--color-text-muted-dark);
+}
+
+.dark .app-dialog__content::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-subtle-dark);
+}
+
+@media (max-width: 480px) {
+  .app-dialog__actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .app-button.app-button--block-mobile {
+    width: 100%;
+  }
+}

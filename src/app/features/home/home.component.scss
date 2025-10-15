@@ -9,6 +9,11 @@
   --home-glass: rgba(255, 255, 255, 0.12);
   --home-text-soft: rgba(241, 243, 244, 0.85);
   --home-ink-soft: rgba(6, 15, 43, 0.6);
+  --home-actions-top: clamp(1rem, 4vw, 1.5rem);
+  --home-actions-radius: 1.75rem;
+  --home-actions-padding: clamp(0.5rem, 2vw, 0.75rem);
+  --home-actions-surface: rgba(255, 255, 255, 0.12);
+  --home-actions-shadow: 0 18px 36px rgba(6, 15, 43, 0.28);
   position: relative;
   min-height: 100dvh;
   padding-bottom: clamp(2.5rem, 6vw, 4rem);
@@ -58,6 +63,30 @@
   --home-gap: clamp(1.75rem, 4vw, 3rem);
 }
 
+.home__actions-sticky {
+  position: sticky;
+  top: calc(env(safe-area-inset-top, 0px) + var(--home-actions-top));
+  z-index: 10;
+  align-self: flex-end;
+  display: inline-flex;
+}
+
+.home__actions-shell {
+  display: flex;
+  align-items: center;
+  padding: var(--home-actions-padding);
+  border-radius: var(--home-actions-radius);
+  background: var(--home-actions-surface);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--home-actions-shadow);
+}
+
+.home__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .home__header {
   --home-gap: clamp(1rem, 3vw, 1.75rem);
 }
@@ -87,13 +116,6 @@
   margin: 0;
   font-size: clamp(1rem, 1.6vw, 1.15rem);
   color: var(--home-text-soft);
-}
-
-.home__actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  align-self: flex-end;
 }
 
 .home__action-button {
@@ -269,12 +291,8 @@
   font-weight: 700;
 }
 
+
 .home__panel-action {
-  border: none;
-  border-radius: 999px;
-  padding: 0.45rem 1.1rem;
-  background: rgba(0, 97, 254, 0.1);
-  color: var(--home-blue);
   font-weight: 600;
 }
 
@@ -282,10 +300,15 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 1.4rem;
-  background: linear-gradient(135deg, var(--home-blue) 0%, rgba(0, 97, 254, 0.75) 100%);
-  color: #ffffff;
-  box-shadow: 0 16px 28px rgba(0, 40, 120, 0.28);
+}
+
+.home__panel-action.app-button--ghost {
+  color: var(--color-primary);
+}
+
+.home__panel-action.app-button--ghost:hover,
+.home__panel-action.app-button--ghost:focus-visible {
+  color: var(--color-primary-stronger);
 }
 
 .home__panel-action-icon {
@@ -338,12 +361,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 0.9rem;
-  background: linear-gradient(135deg, var(--home-blue) 0%, rgba(0, 97, 254, 0.7) 100%);
-  color: #ffffff;
   font-weight: 600;
+  color: var(--home-blue);
 }
 
 .home__favorites-list {

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
+import { DialogLayoutComponent } from '../dialog/dialog-layout.component';
+
 export interface ConfirmDialogData {
   readonly titleKey: string;
   readonly messageKey: string;
@@ -19,7 +21,7 @@ export interface ConfirmDialogDetail {
 @Component({
   selector: 'app-confirm-dialog',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, DialogLayoutComponent],
   templateUrl: './confirm-dialog.component.html',
   styleUrl: './confirm-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
