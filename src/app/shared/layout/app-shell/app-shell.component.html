@@ -1,8 +1,10 @@
 <div class="app-shell">
+  <header class="app-shell__header">
+    <div class="app-shell__navigation">
+      <app-bottom-navigation [items]="bottomNavigationItems"></app-bottom-navigation>
+    </div>
+  </header>
   <section class="app-shell__section">
     <router-outlet></router-outlet>
   </section>
-  <footer class="app-shell__footer">
-    <app-bottom-navigation [items]="bottomNavigationItems"></app-bottom-navigation>
-  </footer>
 </div>

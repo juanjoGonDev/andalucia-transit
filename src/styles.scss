@@ -59,6 +59,10 @@ $theme: mat.define-theme(
   --color-header-surface-dark: rgba(16, 25, 34, 0.88);
   --color-footer-surface: rgba(246, 247, 248, 0.92);
   --color-footer-surface-dark: rgba(16, 25, 34, 0.92);
+  --color-navigation-surface: rgba(15, 23, 42, 0.92);
+  --color-navigation-item: #ffffff;
+  --color-navigation-item-muted: rgba(255, 255, 255, 0.78);
+  --color-navigation-pill: rgba(255, 255, 255, 0.16);
   --color-border-subtle: rgba(148, 163, 184, 0.35);
   --color-border-subtle-dark: rgba(94, 108, 132, 0.45);
   --color-input-surface: #ffffff;
@@ -72,6 +76,7 @@ $theme: mat.define-theme(
   --shadow-dark: 0 1px 2px rgba(2, 6, 23, 0.65);
   --shadow-dark-strong: 0 16px 28px rgba(2, 6, 23, 0.5);
   --shadow-dark-stronger: 0 12px 24px rgba(2, 6, 23, 0.6);
+  --shadow-navigation: 0 20px 45px rgba(15, 23, 42, 0.25);
   --shadow-button: 0 18px 30px rgba(19, 127, 236, 0.25);
   --shadow-button-dark: 0 18px 30px rgba(11, 83, 148, 0.32);
   --shadow-dialog: 0 30px 60px rgba(15, 23, 42, 0.2);
@@ -107,6 +112,11 @@ $theme: mat.define-theme(
   --shadow-button: var(--shadow-button-dark);
   --shadow-dialog: var(--shadow-dialog-dark);
   --color-focus-ring: rgba(82, 168, 255, 0.65);
+  --color-navigation-surface: rgba(16, 25, 34, 0.9);
+  --color-navigation-item: var(--color-text-strong-dark);
+  --color-navigation-item-muted: rgba(203, 213, 225, 0.78);
+  --color-navigation-pill: rgba(148, 163, 184, 0.22);
+  --shadow-navigation: var(--shadow-dark-stronger);
 }
 
 *, *::before, *::after {

@@ -5,31 +5,59 @@
 
 .bottom-navigation {
   display: flex;
-  justify-content: space-around;
-  gap: 0.5rem;
+  justify-content: center;
   width: 100%;
 }
 
-.bottom-navigation__item {
+.bottom-navigation__list {
+  list-style: none;
   display: flex;
-  flex: 1 1 0;
-  flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
   gap: 0.25rem;
-  color: var(--color-icon-muted);
-  text-decoration: none;
-  transition: color 0.2s ease;
-  padding: 0.5rem 0.25rem;
+  padding: 0.5rem;
+  margin: 0;
+  width: 100%;
+  max-width: 26rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-navigation-surface);
+  box-shadow: var(--shadow-navigation);
+  backdrop-filter: blur(18px);
 }
 
-.bottom-navigation__item:hover {
-  color: var(--color-primary);
+.bottom-navigation__list-item {
+  display: flex;
 }
 
-.bottom-navigation__item--active {
-  color: var(--color-primary);
+.bottom-navigation__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-full);
+  color: var(--color-navigation-item-muted);
+  font-size: 0.9rem;
   font-weight: 600;
+  line-height: 1.1;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  min-width: 3rem;
+}
+
+.bottom-navigation__link:hover,
+.bottom-navigation__link:focus-visible {
+  color: var(--color-navigation-item);
+  background-color: var(--color-navigation-pill);
+}
+
+.bottom-navigation__link:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.bottom-navigation__link--active {
+  background-color: var(--color-surface-light);
+  color: var(--color-primary-stronger);
+  box-shadow: var(--shadow-sm);
 }
 
 .bottom-navigation__icon {
@@ -37,21 +65,11 @@
 }
 
 .bottom-navigation__label {
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
+  white-space: nowrap;
 }
 
-:host-context(.dark) .bottom-navigation__item {
-  color: var(--color-icon-muted-dark);
-}
-
-:host-context(.dark) .bottom-navigation__item:hover,
-:host-context(.dark) .bottom-navigation__item--active {
+:host-context(.dark) .bottom-navigation__link--active {
+  background-color: var(--color-surface-dark);
   color: var(--color-primary-light);
-}
-
-:host-context(.dark) .bottom-navigation__label {
-  color: var(--color-text-muted-dark);
+  box-shadow: var(--shadow-dark);
 }

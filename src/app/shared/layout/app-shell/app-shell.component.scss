@@ -9,27 +9,37 @@
   background-color: var(--color-background-light);
 }
 
+.app-shell__header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  padding: 1rem 1.5rem;
+  background-color: var(--color-header-surface);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.app-shell__navigation {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  max-width: 640px;
+  width: 100%;
+}
+
 .app-shell__section {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
 }
 
-.app-shell__footer {
-  position: sticky;
-  bottom: 0;
-  padding: 0.75rem 1.5rem;
-  background-color: var(--color-surface-hover);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
 :host-context(.dark) .app-shell {
   background-color: var(--color-background-dark);
 }
 
-:host-context(.dark) .app-shell__footer {
-  background-color: var(--color-surface-dark);
+:host-context(.dark) .app-shell__header {
+  background-color: var(--color-header-surface-dark);
+  border-bottom-color: var(--color-border-subtle-dark);
 }
