@@ -1,12 +1,7 @@
 <section class="home">
   <div class="home__container home__stack">
-    <header class="home__header home__stack">
-      <div class="home__intro home__stack">
-        <p class="home__eyebrow">{{ heroEyebrowKey | translate }}</p>
-        <h1 class="home__headline">{{ headerTaglineKey | translate }}</h1>
-        <p class="home__description">{{ heroDescriptionKey | translate }}</p>
-      </div>
-      <div class="home__actions-container">
+    <div class="home__actions-sticky">
+      <div class="home__actions-shell">
         <div class="home__actions">
           <button
             type="button"
@@ -55,6 +50,14 @@
             <span class="material-symbols-outlined">map</span>
           </button>
         </div>
+      </div>
+    </div>
+
+    <header class="home__header home__stack">
+      <div class="home__intro home__stack">
+        <p class="home__eyebrow">{{ heroEyebrowKey | translate }}</p>
+        <h1 class="home__headline">{{ headerTaglineKey | translate }}</h1>
+        <p class="home__description">{{ heroDescriptionKey | translate }}</p>
       </div>
     </header>
 

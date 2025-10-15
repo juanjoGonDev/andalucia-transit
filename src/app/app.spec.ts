@@ -76,6 +76,6 @@ describe('AppComponent', () => {
     expect(instance).toBeInstanceOf(AppShellComponent);
     const rendered = harness.routeNativeElement as HTMLElement;
     expect(rendered.querySelector('.home')).not.toBeNull();
-    expect(rendered.querySelector('.home__actions-container')).not.toBeNull();
+    expect(rendered.querySelector('.home__actions-sticky')).not.toBeNull();
   });
 });

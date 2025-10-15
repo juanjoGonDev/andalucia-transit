@@ -63,6 +63,30 @@
   --home-gap: clamp(1.75rem, 4vw, 3rem);
 }
 
+.home__actions-sticky {
+  position: sticky;
+  top: calc(env(safe-area-inset-top, 0px) + var(--home-actions-top));
+  z-index: 10;
+  align-self: flex-end;
+  display: inline-flex;
+}
+
+.home__actions-shell {
+  display: flex;
+  align-items: center;
+  padding: var(--home-actions-padding);
+  border-radius: var(--home-actions-radius);
+  background: var(--home-actions-surface);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--home-actions-shadow);
+}
+
+.home__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .home__header {
   --home-gap: clamp(1rem, 3vw, 1.75rem);
 }
@@ -92,26 +116,6 @@
   margin: 0;
   font-size: clamp(1rem, 1.6vw, 1.15rem);
   color: var(--home-text-soft);
-}
-
-.home__actions-container {
-  position: sticky;
-  top: calc(env(safe-area-inset-top, 0px) + var(--home-actions-top));
-  z-index: 10;
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  padding: var(--home-actions-padding);
-  border-radius: var(--home-actions-radius);
-  background: var(--home-actions-surface);
-  backdrop-filter: blur(18px);
-  box-shadow: var(--home-actions-shadow);
-}
-
-.home__actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
 }
 
 .home__action-button {
