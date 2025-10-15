@@ -6,53 +6,55 @@
         <h1 class="home__headline">{{ headerTaglineKey | translate }}</h1>
         <p class="home__description">{{ heroDescriptionKey | translate }}</p>
       </div>
-      <div class="home__actions">
-        <button
-          type="button"
-          class="home__action-button"
-          (click)="openSettings()"
-          [attr.aria-label]="topBarSettingsLabelKey | translate"
-        >
-          <span class="material-symbols-outlined">settings</span>
-        </button>
-        <div class="home__menu">
+      <div class="home__actions-container">
+        <div class="home__actions">
           <button
             type="button"
             class="home__action-button"
-            (click)="toggleMenu()"
-            [attr.aria-label]="topBarMenuLabelKey | translate"
-            [attr.aria-expanded]="menuOpen() ? 'true' : 'false'"
-            (keydown.escape)="closeMenu()"
+            (click)="openSettings()"
+            [attr.aria-label]="topBarSettingsLabelKey | translate"
           >
-            <span class="material-symbols-outlined">menu</span>
+            <span class="material-symbols-outlined">settings</span>
           </button>
-          <div class="home__menu-panel" *ngIf="menuOpen()">
-            <ul class="home__menu-list" role="menu">
-              <li class="home__menu-item" *ngFor="let entry of menuEntries">
-                <button
-                  type="button"
-                  role="menuitem"
-                  class="home__menu-button"
-                  [disabled]="isMenuEntryDisabled(entry)"
-                  (click)="handleMenuEntry(entry)"
-                >
-                  <span class="home__menu-label">{{ entry.labelKey | translate }}</span>
-                  <span *ngIf="isMenuEntryDisabled(entry)" class="home__menu-status">
-                    {{ menuInProgressKey | translate }}
-                  </span>
-                </button>
-              </li>
-            </ul>
+          <div class="home__menu">
+            <button
+              type="button"
+              class="home__action-button"
+              (click)="toggleMenu()"
+              [attr.aria-label]="topBarMenuLabelKey | translate"
+              [attr.aria-expanded]="menuOpen() ? 'true' : 'false'"
+              (keydown.escape)="closeMenu()"
+            >
+              <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div class="home__menu-panel" *ngIf="menuOpen()">
+              <ul class="home__menu-list" role="menu">
+                <li class="home__menu-item" *ngFor="let entry of menuEntries">
+                  <button
+                    type="button"
+                    role="menuitem"
+                    class="home__menu-button"
+                    [disabled]="isMenuEntryDisabled(entry)"
+                    (click)="handleMenuEntry(entry)"
+                  >
+                    <span class="home__menu-label">{{ entry.labelKey | translate }}</span>
+                    <span *ngIf="isMenuEntryDisabled(entry)" class="home__menu-status">
+                      {{ menuInProgressKey | translate }}
+                    </span>
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
+          <button
+            type="button"
+            class="home__action-button"
+            (click)="openMap()"
+            [attr.aria-label]="topBarMapLabelKey | translate"
+          >
+            <span class="material-symbols-outlined">map</span>
+          </button>
         </div>
-        <button
-          type="button"
-          class="home__action-button"
-          (click)="openMap()"
-          [attr.aria-label]="topBarMapLabelKey | translate"
-        >
-          <span class="material-symbols-outlined">map</span>
-        </button>
       </div>
     </header>
 

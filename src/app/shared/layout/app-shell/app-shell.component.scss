@@ -9,26 +9,6 @@
   background-color: var(--color-background-light);
 }
 
-.app-shell__sticky-menu {
-  position: sticky;
-  top: calc(env(safe-area-inset-top, 0px));
-  z-index: 30;
-  display: flex;
-  justify-content: center;
-  padding: calc(0.75rem + env(safe-area-inset-top, 0px)) 1.5rem 0.75rem;
-  background-color: var(--color-header-surface);
-  backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--color-border-subtle);
-}
-
-.app-shell__navigation {
-  flex: 1 1 auto;
-  display: flex;
-  justify-content: center;
-  max-width: 640px;
-  width: 100%;
-}
-
 .app-shell__section {
   flex: 1 1 auto;
   display: flex;
@@ -39,7 +19,3 @@
   background-color: var(--color-background-dark);
 }
 
-:host-context(.dark) .app-shell__sticky-menu {
-  background-color: var(--color-header-surface-dark);
-  border-bottom-color: var(--color-border-subtle-dark);
-}
