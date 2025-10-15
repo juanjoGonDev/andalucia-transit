@@ -9,13 +9,13 @@
   background-color: var(--color-background-light);
 }
 
-.app-shell__header {
+.app-shell__sticky-menu {
   position: sticky;
-  top: 0;
-  z-index: 20;
+  top: calc(env(safe-area-inset-top, 0px));
+  z-index: 30;
   display: flex;
   justify-content: center;
-  padding: 1rem 1.5rem;
+  padding: calc(0.75rem + env(safe-area-inset-top, 0px)) 1.5rem 0.75rem;
   background-color: var(--color-header-surface);
   backdrop-filter: blur(18px);
   border-bottom: 1px solid var(--color-border-subtle);
@@ -39,7 +39,7 @@
   background-color: var(--color-background-dark);
 }
 
-:host-context(.dark) .app-shell__header {
+:host-context(.dark) .app-shell__sticky-menu {
   background-color: var(--color-header-surface-dark);
   border-bottom-color: var(--color-border-subtle-dark);
 }
