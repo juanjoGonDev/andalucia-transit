@@ -36,6 +36,8 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Redirect legacy standalone routes to the new structure without altering visible URLs or triggering reinitialization.
 - Each feature route must provide its own localized title resolver; `AppLayoutComponent` handles shared chrome only.
 
+  - 2025-10-16: Updated `app.routes.ts` to register `AppLayoutComponent` as the layout host for all feature child routes while preserving the existing route structure and layout metrics.
+
 ### 1.3 Content projection contract
 
 - Define `AppLayoutContentDirective` under `src/app/shared/layout/` as the projection anchor for content within the layout body.
