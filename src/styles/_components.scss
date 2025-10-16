@@ -1,27 +1,50 @@
-:where([appAccessibleButton],
-  .app-button,
-  .app-icon-button,
-  .app-list-button,
-  .app-outline-button,
-  .app-solid-button) {
+a,
+button,
+[role='button'],
+[tabindex]:not([tabindex='-1']),
+[appAccessibleButton],
+.app-button,
+.app-icon-button,
+.app-list-button,
+.app-outline-button,
+.app-solid-button {
   -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-:where([appAccessibleButton],
-  .app-button,
-  .app-icon-button,
-  .app-list-button,
-  .app-outline-button,
-  .app-solid-button):focus {
+a *,
+button *,
+[role='button'] *,
+[tabindex]:not([tabindex='-1']) *,
+[appAccessibleButton] *,
+.app-button *,
+.app-icon-button *,
+.app-list-button *,
+.app-outline-button *,
+.app-solid-button * {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible),
+[role='button']:focus:not(:focus-visible),
+[tabindex]:not([tabindex='-1']):focus:not(:focus-visible),
+[appAccessibleButton]:focus:not(:focus-visible),
+.app-button:focus:not(:focus-visible),
+.app-icon-button:focus:not(:focus-visible),
+.app-list-button:focus:not(:focus-visible),
+.app-outline-button:focus:not(:focus-visible),
+.app-solid-button:focus:not(:focus-visible) {
   outline: none;
 }
 
-:where([appAccessibleButton],
-  .app-button,
-  .app-icon-button,
-  .app-list-button,
-  .app-outline-button,
-  .app-solid-button):focus-visible {
+[appAccessibleButton]:focus-visible,
+.app-button:focus-visible,
+.app-icon-button:focus-visible,
+.app-list-button:focus-visible,
+.app-outline-button:focus-visible,
+.app-solid-button:focus-visible {
   outline: 3px solid var(--color-focus-ring);
   outline-offset: 3px;
 }
