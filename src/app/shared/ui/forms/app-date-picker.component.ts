@@ -9,6 +9,7 @@ import {
   Input,
   Output,
   ViewChild,
+  inject,
   forwardRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -129,7 +130,7 @@ export class AppDatePickerComponent implements ControlValueAccessor, AfterViewIn
   @ViewChild(AppTextFieldComponent)
   private textField?: AppTextFieldComponent;
 
-  constructor(private readonly changeDetectorRef: ChangeDetectorRef) {}
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   private onChange: (value: Date | null) => void = NOOP_DATE_CALLBACK;
   private onTouched: () => void = NOOP_VOID_CALLBACK;

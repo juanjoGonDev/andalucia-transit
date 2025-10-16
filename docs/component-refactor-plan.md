@@ -71,6 +71,8 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Replace all data-service dependencies in presentation components with domain-facing facades.
 - Remove Angular Material service usage (e.g., `MatDialog`) and rewire through shared overlay abstractions.
 
+  - 2025-10-16: Added `RecentSearchesFacade` to coordinate route search history, preview, execution, and preference flows for the home recent searches component without altering UI behavior or timing.
+
 ---
 
 ## 3. Consolidation & Renaming Plan

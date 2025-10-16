@@ -11,15 +11,11 @@ import {
 } from '../../../shared/ui/dialog/overlay-dialog.service';
 
 import { HomeRecentSearchesComponent } from './home-recent-searches.component';
-import {
-  RouteSearchHistoryEntry,
-  RouteSearchHistoryService
-} from '../../../domain/route-search/route-search-history.service';
-import { RouteSearchPreviewService, RouteSearchPreview } from '../../../domain/route-search/route-search-preview.service';
-import { RouteSearchExecutionService } from '../../../domain/route-search/route-search-execution.service';
+import { RouteSearchHistoryEntry } from '../../../domain/route-search/route-search-history.service';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import { StopDirectoryOption } from '../../../data/stops/stop-directory.service';
-import { RouteSearchPreferencesService } from '../../../domain/route-search/route-search-preferences.service';
+import { RouteSearchPreview } from '../../../domain/route-search/route-search-preview.service';
+import { RecentSearchesFacade } from '../../../domain/route-search/recent-searches.facade';
 
 type PreviewState =
   | { readonly status: 'loading' }
@@ -59,38 +55,30 @@ class FakeTranslateLoader implements TranslateLoader {
   }
 }
 
-class RouteSearchHistoryStub {
-  private readonly subject = new BehaviorSubject<readonly RouteSearchHistoryEntry[]>([]);
-  readonly entries$ = this.subject.asObservable();
-  readonly remove = jasmine.createSpy('remove');
-  readonly clear = jasmine.createSpy('clear');
+class RecentSearchesFacadeStub {
+  private readonly entriesSubject = new BehaviorSubject<readonly RouteSearchHistoryEntry[]>([]);
+  private readonly previewEnabledSubject = new BehaviorSubject<boolean>(true);
 
-  emit(entries: readonly RouteSearchHistoryEntry[]): void {
-    this.subject.next(entries);
-  }
-}
-
-class RouteSearchPreviewStub {
-  loadPreview = jasmine
+  readonly entries$ = this.entriesSubject.asObservable();
+  readonly previewEnabled$ = this.previewEnabledSubject.asObservable();
+  readonly prepareNavigation = jasmine
+    .createSpy('prepareNavigation')
+    .and.returnValue(['', 'routes']);
+  readonly loadPreview = jasmine
     .createSpy('loadPreview')
     .and.returnValue(of<RouteSearchPreview>({ next: null, previous: null }));
-}
+  readonly remove = jasmine.createSpy('remove');
+  readonly clear = jasmine.createSpy('clear');
+  readonly previewEnabled = jasmine
+    .createSpy('previewEnabled')
+    .and.callFake(() => this.previewEnabledSubject.value);
 
-class RouteSearchExecutionStub {
-  prepare = jasmine.createSpy('prepare').and.returnValue(['', 'routes']);
-}
-
-class RouteSearchPreferencesStub {
-  private readonly subject = new BehaviorSubject<boolean>(true);
-
-  readonly previewEnabled$ = this.subject.asObservable();
-
-  previewEnabled(): boolean {
-    return this.subject.value;
+  emitEntries(entries: readonly RouteSearchHistoryEntry[]): void {
+    this.entriesSubject.next(entries);
   }
 
   setPreviewEnabled(enabled: boolean): void {
-    this.subject.next(enabled);
+    this.previewEnabledSubject.next(enabled);
   }
 }
 
@@ -113,19 +101,13 @@ class OverlayDialogServiceStub {
 
 describe('HomeRecentSearchesComponent', () => {
   let fixture: ComponentFixture<HomeRecentSearchesComponent>;
-  let history: RouteSearchHistoryStub;
-  let preview: RouteSearchPreviewStub;
-  let execution: RouteSearchExecutionStub;
-  let preferences: RouteSearchPreferencesStub;
+  let facade: RecentSearchesFacadeStub;
   let dialog: OverlayDialogServiceStub;
   const navigateSpy = jasmine.createSpy('navigate').and.resolveTo(true);
   const routerStub = { navigate: navigateSpy } as unknown as Router;
 
   beforeEach(async () => {
-    history = new RouteSearchHistoryStub();
-    preview = new RouteSearchPreviewStub();
-    execution = new RouteSearchExecutionStub();
-    preferences = new RouteSearchPreferencesStub();
+    facade = new RecentSearchesFacadeStub();
     dialog = new OverlayDialogServiceStub();
 
     TestBed.configureTestingModule({
@@ -134,12 +116,9 @@ describe('HomeRecentSearchesComponent', () => {
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: FakeTranslateLoader } })
       ],
       providers: [
-        { provide: RouteSearchHistoryService, useValue: history },
-        { provide: RouteSearchPreviewService, useValue: preview },
-        { provide: RouteSearchExecutionService, useValue: execution },
         { provide: OverlayDialogService, useValue: dialog },
         { provide: Router, useValue: routerStub },
-        { provide: RouteSearchPreferencesService, useValue: preferences }
+        { provide: RecentSearchesFacade, useValue: facade }
       ]
     });
 
@@ -162,7 +141,7 @@ describe('HomeRecentSearchesComponent', () => {
 
   it('renders a recent entry with preview information', fakeAsync(() => {
     const entry = buildEntry('entry-1', new Date('2025-01-01T00:00:00Z'));
-    preview.loadPreview.and.returnValue(of<RouteSearchPreview>({
+    facade.loadPreview.and.returnValue(of<RouteSearchPreview>({
       next: {
         id: 'next',
         lineCode: 'L1',
@@ -174,7 +153,7 @@ describe('HomeRecentSearchesComponent', () => {
       previous: null
     }));
 
-    history.emit([entry]);
+    facade.emitEntries([entry]);
     flushMicrotasks();
     fixture.detectChanges();
     flushMicrotasks();
@@ -205,7 +184,7 @@ describe('HomeRecentSearchesComponent', () => {
 
   it('shows the previous preview before the upcoming preview', fakeAsync(() => {
     const entry = buildEntry('entry-order', new Date('2025-01-01T00:00:00Z'));
-    preview.loadPreview.and.returnValue(
+    facade.loadPreview.and.returnValue(
       of<RouteSearchPreview>({
         next: {
           id: 'next-order',
@@ -226,7 +205,7 @@ describe('HomeRecentSearchesComponent', () => {
       })
     );
 
-    history.emit([entry]);
+    facade.emitEntries([entry]);
     flushMicrotasks();
     fixture.detectChanges();
     flushMicrotasks();
@@ -246,11 +225,11 @@ describe('HomeRecentSearchesComponent', () => {
   }));
 
   it('shows a disabled message when preview calculations are turned off', fakeAsync(() => {
-    preferences.setPreviewEnabled(false);
+    facade.setPreviewEnabled(false);
     const entry = buildEntry('entry-disabled', new Date('2025-01-01T00:00:00Z'));
-    preview.loadPreview.and.returnValue(of<RouteSearchPreview>({ next: null, previous: null }));
+    facade.loadPreview.and.returnValue(of<RouteSearchPreview>({ next: null, previous: null }));
 
-    history.emit([entry]);
+    facade.emitEntries([entry]);
     flushMicrotasks();
     fixture.detectChanges();
     flushMicrotasks();
@@ -258,15 +237,15 @@ describe('HomeRecentSearchesComponent', () => {
 
     const status = fixture.debugElement.query(By.css('.recent-card__status--disabled'));
     expect(status).not.toBeNull();
-    expect(preview.loadPreview).not.toHaveBeenCalled();
+    expect(facade.loadPreview).not.toHaveBeenCalled();
   }));
 
   it('updates the preview when the stream emits new departures', fakeAsync(() => {
     const entry = buildEntry('entry-stream', new Date('2025-01-01T00:00:00Z'));
     const stream = new Subject<RouteSearchPreview>();
-    preview.loadPreview.and.returnValue(stream.asObservable());
+    facade.loadPreview.and.returnValue(stream.asObservable());
 
-    history.emit([entry]);
+    facade.emitEntries([entry]);
     flushMicrotasks();
     fixture.detectChanges();
 
@@ -323,8 +302,8 @@ describe('HomeRecentSearchesComponent', () => {
 
   it('navigates when selecting an entry', fakeAsync(() => {
     const entry = buildEntry('entry-2', new Date('2025-01-01T00:00:00Z'));
-    preview.loadPreview.and.returnValue(of({ next: null, previous: null }));
-    history.emit([entry]);
+    facade.loadPreview.and.returnValue(of({ next: null, previous: null }));
+    facade.emitEntries([entry]);
     tick();
     fixture.detectChanges();
 
@@ -332,14 +311,14 @@ describe('HomeRecentSearchesComponent', () => {
     button.nativeElement.click();
     tick();
 
-    expect(execution.prepare).toHaveBeenCalled();
+    expect(facade.prepareNavigation).toHaveBeenCalled();
     expect(navigateSpy).toHaveBeenCalled();
   }));
 
   it('removes an entry after confirmation', fakeAsync(() => {
     const entry = buildEntry('entry-3', new Date('2025-01-01T00:00:00Z'));
-    preview.loadPreview.and.returnValue(of({ next: null, previous: null }));
-    history.emit([entry]);
+    facade.loadPreview.and.returnValue(of({ next: null, previous: null }));
+    facade.emitEntries([entry]);
     tick();
     fixture.detectChanges();
 
@@ -348,30 +327,30 @@ describe('HomeRecentSearchesComponent', () => {
     tick();
 
     expect(dialog.open).toHaveBeenCalled();
-    expect(history.remove).toHaveBeenCalledWith('entry-3');
+    expect(facade.remove).toHaveBeenCalledWith('entry-3');
   }));
 
   it('clears all entries after confirmation', fakeAsync(() => {
-    preview.loadPreview.and.returnValue(of({ next: null, previous: null }));
-    history.emit([buildEntry('entry-4', new Date('2025-01-01T00:00:00Z'))]);
+    facade.loadPreview.and.returnValue(of({ next: null, previous: null }));
+    facade.emitEntries([buildEntry('entry-4', new Date('2025-01-01T00:00:00Z'))]);
     tick();
     fixture.detectChanges();
 
     fixture.componentInstance.clearAll();
     flushMicrotasks();
 
-    expect(history.clear).toHaveBeenCalled();
+    expect(facade.clear).toHaveBeenCalled();
   }));
 
   it('emits items state changes when entries update', fakeAsync(() => {
     const states: boolean[] = [];
     fixture.componentInstance.itemsStateChange.subscribe((state) => states.push(state));
 
-    history.emit([buildEntry('entry-5', new Date('2025-01-01T00:00:00Z'))]);
+    facade.emitEntries([buildEntry('entry-5', new Date('2025-01-01T00:00:00Z'))]);
     tick();
     fixture.detectChanges();
 
-    history.emit([]);
+    facade.emitEntries([]);
     tick();
     fixture.detectChanges();
 

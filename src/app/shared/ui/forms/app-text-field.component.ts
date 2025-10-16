@@ -8,6 +8,7 @@ import {
   HostBinding,
   Input,
   Output,
+  inject,
   forwardRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -48,7 +49,7 @@ export type TextFieldType = 'text' | 'search' | 'email' | 'tel' | 'url' | 'passw
 export class AppTextFieldComponent implements ControlValueAccessor {
   private static idCounter = 0;
 
-  constructor(private readonly changeDetectorRef: ChangeDetectorRef) {}
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   @Input({ required: true }) label = '';
   @Input() placeholder = '';
