@@ -42,6 +42,7 @@
     - [x] Favorites styles migrated to palette tokens
       - [x] Favorites visuals aligned with the reference theme after QA review
     - [ ] Verify remaining feature styling
+      - [x] Load design tokens globally to preserve legacy theme visuals
       - [x] Home dashboard surfaces restyled with palette tokens
         - [x] Legacy hero aesthetics preserved while retaining refactored structure
       - [ ] Review route search layout tokens

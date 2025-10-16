@@ -35,7 +35,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/styles/ui.css"
             ]
           },
           "configurations": {
@@ -101,7 +102,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/styles/ui.css"
             ]
           }
         },
