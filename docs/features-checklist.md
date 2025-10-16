@@ -26,9 +26,10 @@
     - [x] Convert RouteSearch interactive controls to accessible containers and shared aliases (computed styles matched for `.route-search-form__location-button`, `.route-search-form__favorite-button`, `.route-search-form__swap`, `.route-search-form__submit`, `.route-search__back-button`, `.route-search__notice-button`, and `.route-search__empty-button`).
     - [x] Align shell menu, home tabs, card list entries, confirm dialog actions, settings toggles, and map call-to-action with the accessible button directive (computed styles matched for `.shell-actions__button`, `.shell-actions__menu-button`, `.home__tab`, `.home__panel-action`, `.recent-card__body`, `.recent-card__remove`, `.card-list-item`, `.confirm-dialog__actions .app-button`, `.settings__language-button`, `.settings__toggle`, and `.map-card a[mat-stroked-button]`).
     - [x] Standardize accessible button directive usage across templates by relying on directive host listeners for activation (computed styles verified for `.home__tab`, `.route-search-form__submit`, `.route-search__notice-button`, `.confirm-dialog__actions .app-button`, `.settings__toggle`, and `.shell-actions__menu-button`).
-- [ ] Ensure consistency with existing home theme (colors, typography, spacing).
+- [x] Ensure consistency with existing home theme (colors, typography, spacing).
   - [x] Map Favorites layout spacing and surfaces to shared tokens (computed styles matched for `.favorites`, `.favorites__item`, and `.favorites__groups`).
   - [x] Centralize Home recent card overlays and skeleton hues into shared tokens (computed styles matched for `.recent-card`, `.recent-card__remove`, `.recent-card__skeleton`).
   - [x] Align map layout spacing with shared tokens (computed styles matched for `.map`, `.map-card`, `.map-placeholder`).
+  - [x] Align Settings layout spacing and typography with shared tokens (computed styles matched for `.settings`, `.settings__language-button`, and `.settings__toggle`).
 - [ ] Maintain translation keys and accessibility attributes.
   - [x] Migrate Favorites interactions to the accessible button directive while preserving aria bindings (computed styles matched for `.favorites__clear`, `.favorites__item-main`, and `.favorites__remove`).
