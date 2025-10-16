@@ -90,6 +90,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-16: Added `OverlayDialogService` that currently bridges MatDialog while consolidating confirm dialog entry points under a single abstraction to prepare for the custom overlay implementation.
   - 2025-10-16: Introduced overlay dialog ref provider and injector helpers so dialog components can remove direct `MatDialogRef` dependencies without altering runtime behavior or visuals.
   - 2025-10-16: Updated Home nearby stops dialog to rely on the overlay dialog ref provider, keeping navigation and dismissal behavior unchanged.
+  - 2025-10-16: Removed Angular Material dialog structural directives from `DialogLayoutComponent`, preserving the same markup sections and typography while preparing the layout for the custom overlay host.
 
 ### 3.3 Form controls
 
