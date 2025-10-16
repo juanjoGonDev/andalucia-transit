@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { AccessibleButtonDirective } from './accessible-button.directive';
+import { AccessibleButtonDirective, AccessibleButtonPopupToken } from './accessible-button.directive';
 
 @Component({
   standalone: true,
@@ -14,6 +14,8 @@ import { AccessibleButtonDirective } from './accessible-button.directive';
       [appAccessibleButtonRole]="role"
       [appAccessibleButtonPressed]="pressed"
       [appAccessibleButtonChecked]="checked"
+      [appAccessibleButtonExpanded]="expanded"
+      [appAccessibleButtonHasPopup]="hasPopup"
       (appAccessibleButtonActivated)="onActivated($event)"
     >
       Action
@@ -25,6 +27,8 @@ class HostComponent {
   role: string | null = null;
   pressed: boolean | null = null;
   checked: boolean | null = null;
+  expanded: boolean | null = null;
+  hasPopup: boolean | AccessibleButtonPopupToken | null = null;
   readonly onActivated: jasmine.Spy<(event: MouseEvent) => void> = jasmine.createSpy();
 }
 
@@ -110,6 +114,51 @@ describe('AccessibleButtonDirective', () => {
     fixture.detectChanges();
 
     expect(nativeElement.hasAttribute('aria-checked')).toBeFalse();
+  });
+
+  it('should expose expanded state when provided', () => {
+    hostComponent.expanded = true;
+    fixture.detectChanges();
+
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    expect(nativeElement.getAttribute('aria-expanded')).toBe('true');
+
+    hostComponent.expanded = false;
+    fixture.detectChanges();
+
+    expect(nativeElement.getAttribute('aria-expanded')).toBe('false');
+
+    hostComponent.expanded = null;
+    fixture.detectChanges();
+
+    expect(nativeElement.hasAttribute('aria-expanded')).toBeFalse();
+  });
+
+  it('should expose popup role when provided', () => {
+    hostComponent.hasPopup = true;
+    fixture.detectChanges();
+
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    expect(nativeElement.getAttribute('aria-haspopup')).toBe('true');
+
+    hostComponent.hasPopup = false;
+    fixture.detectChanges();
+
+    expect(nativeElement.getAttribute('aria-haspopup')).toBe('false');
+
+    hostComponent.hasPopup = 'menu';
+    fixture.detectChanges();
+
+    expect(nativeElement.getAttribute('aria-haspopup')).toBe('menu');
+
+    hostComponent.hasPopup = null;
+    fixture.detectChanges();
+
+    expect(nativeElement.hasAttribute('aria-haspopup')).toBeFalse();
   });
 
   it('should emit activation on pointer click when enabled', () => {

@@ -1,5 +1,8 @@
 import { Directive, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
 
+export type AccessibleButtonPopupToken = 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
+type AccessibleButtonPopupValue = boolean | AccessibleButtonPopupToken;
+
 const KEYBOARD_ENTER = 'Enter' as const;
 const KEYBOARD_SPACE = ' ' as const;
 const ARIA_TRUE = 'true' as const;
@@ -15,6 +18,8 @@ export class AccessibleButtonDirective {
   @Input() appAccessibleButtonRole: string | null = null;
   @Input() appAccessibleButtonPressed: boolean | null = null;
   @Input() appAccessibleButtonChecked: boolean | null = null;
+  @Input() appAccessibleButtonExpanded: boolean | null = null;
+  @Input() appAccessibleButtonHasPopup: AccessibleButtonPopupValue | null = null;
   @Output() readonly appAccessibleButtonActivated = new EventEmitter<MouseEvent>();
 
   @HostBinding('attr.role')
@@ -48,6 +53,28 @@ export class AccessibleButtonDirective {
     }
 
     return this.appAccessibleButtonChecked ? ARIA_TRUE : ARIA_FALSE;
+  }
+
+  @HostBinding('attr.aria-expanded')
+  get ariaExpanded(): 'true' | 'false' | null {
+    if (this.appAccessibleButtonExpanded === null) {
+      return null;
+    }
+
+    return this.appAccessibleButtonExpanded ? ARIA_TRUE : ARIA_FALSE;
+  }
+
+  @HostBinding('attr.aria-haspopup')
+  get ariaHasPopup(): AccessibleButtonPopupToken | 'true' | 'false' | null {
+    if (this.appAccessibleButtonHasPopup === null) {
+      return null;
+    }
+
+    if (typeof this.appAccessibleButtonHasPopup === 'boolean') {
+      return this.appAccessibleButtonHasPopup ? ARIA_TRUE : ARIA_FALSE;
+    }
+
+    return this.appAccessibleButtonHasPopup;
   }
 
   @HostListener('keydown', ['$event'])

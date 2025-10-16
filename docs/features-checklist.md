@@ -31,8 +31,10 @@
   - [x] Centralize Home recent card overlays and skeleton hues into shared tokens (computed styles matched for `.recent-card`, `.recent-card__remove`, `.recent-card__skeleton`).
   - [x] Align map layout spacing with shared tokens (computed styles matched for `.map`, `.map-card`, `.map-placeholder`).
   - [x] Align Settings layout spacing and typography with shared tokens (computed styles matched for `.settings`, `.settings__language-button`, and `.settings__toggle`).
-- [ ] Maintain translation keys and accessibility attributes.
+- [x] Maintain translation keys and accessibility attributes.
   - [x] Migrate Favorites interactions to the accessible button directive while preserving aria bindings (computed styles matched for `.favorites__clear`, `.favorites__item-main`, and `.favorites__remove`).
   - [x] Guard accessible button semantics with regression tests to preserve ARIA roles and keyboard activation behavior across neutral containers.
   - [x] Standardize pressed and checked states via accessible button directive bindings (selectors verified: `.route-search-form__favorite-button`, `.settings__language-button`, `.settings__toggle`).
   - [x] Reflect shell menu toggle state through accessible button pressed bindings (selector verified: `.shell-actions__button--menu`).
+  - [x] Verified translation key coverage and aria-label propagation for accessible containers across home and shell controls (selectors verified: `.home__tab`, `.home__panel-action`, `.shell-actions__button--menu`).
+  - [x] Surface shell menu expanded and popup semantics through accessible button directive inputs (selectors verified: `.shell-actions__button--menu`, `.shell-actions__menu-button`).

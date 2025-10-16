@@ -8,10 +8,11 @@
             class="shell-actions__button shell-actions__button--menu"
             [class.shell-actions__button--active]="menuOpen()"
             [appAccessibleButtonPressed]="menuOpen()"
+            [appAccessibleButtonExpanded]="menuOpen()"
+            [appAccessibleButtonHasPopup]="menuPopupRole"
             (appAccessibleButtonActivated)="toggleMenu()"
             [attr.aria-label]="menuLabelKey | translate"
-            [attr.aria-expanded]="menuOpen() ? 'true' : 'false'"
-            [attr.tabindex]="0"
+            [attr.tabindex]="focusableTabIndex"
             (keydown.escape)="closeMenu()"
           >
             <span class="material-symbols-outlined shell-actions__button-icon">menu</span>
@@ -24,7 +25,7 @@
                   class="shell-actions__menu-button"
                   [appAccessibleButtonDisabled]="entry.disabled"
                   appAccessibleButtonRole="menuitem"
-                  [attr.tabindex]="entry.disabled ? -1 : 0"
+                  [attr.tabindex]="entry.disabled ? disabledTabIndex : focusableTabIndex"
                   (appAccessibleButtonActivated)="handleMenuEntry(entry)"
                 >
                   <span class="shell-actions__menu-label">{{ entry.labelKey | translate }}</span>

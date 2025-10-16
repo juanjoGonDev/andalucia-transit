@@ -14,7 +14,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '../../../core/config';
 import { HomeTabId } from '../../../features/home/home.types';
 import { buildNavigationCommands, NavigationCommands } from '../../navigation/navigation.util';
-import { AccessibleButtonDirective } from '../../a11y/accessible-button.directive';
+import {
+  AccessibleButtonDirective,
+  AccessibleButtonPopupToken
+} from '../../a11y/accessible-button.directive';
 
 interface ShellMenuEntry {
   readonly id: string;
@@ -24,6 +27,10 @@ interface ShellMenuEntry {
     | { readonly kind: 'navigation'; readonly commands: NavigationCommands };
   readonly disabled: boolean;
 }
+
+const MENU_POPUP_ROLE: AccessibleButtonPopupToken = 'menu';
+const FOCUSABLE_TAB_INDEX = 0;
+const DISABLED_TAB_INDEX = -1;
 
 @Component({
   selector: 'app-app-shell-top-actions',
@@ -84,6 +91,9 @@ export class AppShellTopActionsComponent {
 
   protected readonly menuEntries = computed(() => this.entries());
   protected readonly menuOpen = signal(false);
+  protected readonly menuPopupRole = MENU_POPUP_ROLE;
+  protected readonly focusableTabIndex = FOCUSABLE_TAB_INDEX;
+  protected readonly disabledTabIndex = DISABLED_TAB_INDEX;
 
   protected toggleMenu(): void {
     this.menuOpen.update((open) => !open);
