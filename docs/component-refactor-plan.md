@@ -106,6 +106,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-16: Extended `AppTextFieldComponent` with value and focus outputs to coordinate overlay-driven form primitives while maintaining identical input metrics.
   - 2025-10-16: Combined hint and external described-by identifiers within `AppTextFieldComponent` so migrated inputs preserve their accessibility relationships without affecting layout.
   - 2025-10-16: Scaffolded `AppAutocompleteComponent` with projected panel structure, keyboard navigation, and selection events to mirror existing autocomplete interactions while keeping the text field surface unchanged.
+  - 2025-10-16: Scaffolded `AppDatePickerComponent` with ISO parsing and formatting hooks layered on the shared text field to prepare date inputs without modifying baseline metrics.
 
 ### 3.4 Directory structure & naming
 

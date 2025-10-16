@@ -58,12 +58,13 @@ This phase is purely structural and organizational — no aesthetic changes are 
   - [x] Rewire Home nearby stops dialog to consume the overlay dialog ref provider with unchanged interactions.
   - [x] Remove Angular Material dialog structural directives from the shared dialog layout while keeping semantics and visuals unchanged.
   - [x] Replace the Material dialog host with a custom CDK overlay container that mirrors focus handling, backdrop styling, and geometry while keeping visuals identical.
-- [ ] Build shared form primitives (text field, autocomplete, date picker) inside `shared/ui/forms/` replicating the current field metrics and interaction behavior — identical typography, borders, radius, hover/focus states, and spacing.
+- [x] Build shared form primitives (text field, autocomplete, date picker) inside `shared/ui/forms/` replicating the current field metrics and interaction behavior — identical typography, borders, radius, hover/focus states, and spacing.
   - [x] Scaffold `AppTextFieldComponent` with prefix, suffix, and hint slots plus ControlValueAccessor support ready for migration.
       No change to visual hierarchy or proportions is allowed.
   - [x] Expose text field interaction outputs so upcoming autocomplete primitives can orchestrate focus and value changes without altering layout.
   - [x] Merge hint and external described-by metadata on `AppTextFieldComponent` so accessibility cues remain intact during migration.
   - [x] Scaffold `AppAutocompleteComponent` with keyboard navigation, selection outputs, and projected panel structure while maintaining baseline text field metrics.
+  - [x] Scaffold `AppDatePickerComponent` with parsing and formatting hooks backed by the shared text field while preserving baseline metrics.
 - [ ] Introduce domain facades to abstract data services from presentation components, ensuring no change in rendering, timing, or layout stability.
 - [ ] Consolidate duplicated card components (`HomeListCardComponent`, `CardListItemComponent`, etc.) into a single reusable `InteractiveCardComponent` that maintains identical computed dimensions, typography, shadow, and spacing.  
       Validate visual parity against the baseline grid.

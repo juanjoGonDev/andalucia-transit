@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ContentChild,
   EventEmitter,
@@ -46,6 +47,8 @@ export type TextFieldType = 'text' | 'search' | 'email' | 'tel' | 'url' | 'passw
 })
 export class AppTextFieldComponent implements ControlValueAccessor {
   private static idCounter = 0;
+
+  constructor(private readonly changeDetectorRef: ChangeDetectorRef) {}
 
   @Input({ required: true }) label = '';
   @Input() placeholder = '';
@@ -128,6 +131,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
   writeValue(value: string | null | undefined): void {
     this.value = value ?? '';
+    this.changeDetectorRef.markForCheck();
   }
 
   registerOnChange(fn: (value: string) => void): void {
@@ -140,6 +144,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
+    this.changeDetectorRef.markForCheck();
   }
 
   handleFocus(): void {
