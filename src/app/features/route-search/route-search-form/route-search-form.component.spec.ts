@@ -25,7 +25,7 @@ import {
 } from '../../../core/services/nearby-stop-options.service';
 import { GeolocationService } from '../../../core/services/geolocation.service';
 import { APP_CONFIG } from '../../../core/config';
-import { StopFavoritesService, StopFavorite } from '../../../domain/stops/stop-favorites.service';
+import { FavoritesFacade, StopFavorite } from '../../../domain/stops/favorites.facade';
 
 const ORIGIN_OPTION: StopDirectoryOption = {
   id: '7:origin-stop',
@@ -156,9 +156,68 @@ class NearbyStopOptionsStub {
   }
 }
 
-class FavoritesStub {
-  readonly favorites$ = new BehaviorSubject<readonly StopFavorite[]>([]);
-  toggle = jasmine.createSpy('toggle');
+class FavoritesFacadeStub {
+  private favoritesIndex = new Map<string, StopFavorite>();
+  private readonly favoritesSubject = new BehaviorSubject<readonly StopFavorite[]>([]);
+  readonly favorites$ = this.favoritesSubject.asObservable();
+
+  add(option: StopDirectoryOption): void {
+    if (this.favoritesIndex.has(option.id)) {
+      return;
+    }
+
+    const next = [...this.favoritesSubject.value, this.toFavorite(option)];
+    this.setFavorites(next);
+  }
+
+  remove(id: StopFavorite['id']): void {
+    if (!this.favoritesIndex.has(id)) {
+      return;
+    }
+
+    const next = this.favoritesSubject.value.filter((favorite) => favorite.id !== id);
+    this.setFavorites(next);
+  }
+
+  clear(): void {
+    if (!this.favoritesSubject.value.length) {
+      return;
+    }
+
+    this.setFavorites([]);
+  }
+
+  toggle(option: StopDirectoryOption): void {
+    if (this.favoritesIndex.has(option.id)) {
+      this.remove(option.id);
+      return;
+    }
+
+    this.add(option);
+  }
+
+  isFavorite(id: StopFavorite['id']): boolean {
+    return this.favoritesIndex.has(id);
+  }
+
+  private setFavorites(favorites: readonly StopFavorite[]): void {
+    this.favoritesIndex = new Map(favorites.map((favorite) => [favorite.id, favorite] as const));
+    this.favoritesSubject.next(favorites);
+  }
+
+  private toFavorite(option: StopDirectoryOption): StopFavorite {
+    return {
+      id: option.id,
+      code: option.code,
+      name: option.name,
+      municipality: option.municipality,
+      municipalityId: option.municipalityId,
+      nucleus: option.nucleus,
+      nucleusId: option.nucleusId,
+      consortiumId: option.consortiumId,
+      stopIds: option.stopIds
+    } satisfies StopFavorite;
+  }
 }
 
 class TranslateLoaderStub implements TranslateLoader {
@@ -174,14 +233,14 @@ describe('RouteSearchFormComponent', () => {
   let geolocation: GeolocationStub;
   let nearbyStops: NearbyStopsStub;
   let nearbyStopOptions: NearbyStopOptionsStub;
-  let favorites: FavoritesStub;
+  let favorites: FavoritesFacadeStub;
 
   beforeEach(async () => {
     connections = new ConnectionsStub();
     geolocation = new GeolocationStub();
     nearbyStops = new NearbyStopsStub();
     nearbyStopOptions = new NearbyStopOptionsStub();
-    favorites = new FavoritesStub();
+    favorites = new FavoritesFacadeStub();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -196,7 +255,7 @@ describe('RouteSearchFormComponent', () => {
         { provide: GeolocationService, useValue: geolocation },
         { provide: NearbyStopsService, useValue: nearbyStops },
         { provide: NearbyStopOptionsService, useValue: nearbyStopOptions },
-        { provide: StopFavoritesService, useValue: favorites }
+        { provide: FavoritesFacade, useValue: favorites }
       ]
     }).compileComponents();
 

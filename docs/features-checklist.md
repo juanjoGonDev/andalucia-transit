@@ -71,7 +71,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
   - [x] Provide a stop schedule facade so stop detail presentation loads schedules through the domain layer without modifying UI rendering.
   - [ ] Adopt the favorites facade across all presentation components currently depending on stop favorites services.
     - [x] Home dashboard favorites preview relies on the favorites facade stream instead of the stop favorites service.
-    - [ ] Route search form favorites shortcuts use the favorites facade rather than injecting the stop favorites service.
+    - [x] Route search form favorites shortcuts use the favorites facade rather than injecting the stop favorites service.
 - [ ] Consolidate duplicated card components (`HomeListCardComponent`, `CardListItemComponent`, etc.) into a single reusable `InteractiveCardComponent` that maintains identical computed dimensions, typography, shadow, and spacing.  
       Validate visual parity against the baseline grid.
 - [ ] Review orphaned or redundant components (e.g., dialog variants, navigation items) and remove or reassign them only after confirming **no visual or spacing shifts** occur across any layout.

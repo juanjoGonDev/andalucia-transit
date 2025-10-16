@@ -63,7 +63,7 @@ import {
   collectRouteLineMatches,
   createRouteSearchSelection
 } from '../../../domain/route-search/route-search-selection.util';
-import { StopFavoritesService, StopFavorite } from '../../../domain/stops/stop-favorites.service';
+import { FavoritesFacade, StopFavorite } from '../../../domain/stops/favorites.facade';
 import { MaterialSymbolName } from '../../../shared/ui/types/material-symbol-name';
 import { GeolocationService } from '../../../core/services/geolocation.service';
 import {
@@ -157,7 +157,7 @@ export class RouteSearchFormComponent implements OnChanges {
   private readonly stopDirectory = inject(StopDirectoryService);
   private readonly nearbyStopOptions = inject(NearbyStopOptionsService);
   private readonly stopConnections = inject(StopConnectionsService);
-  private readonly favoritesService = inject(StopFavoritesService);
+  private readonly favorites = inject(FavoritesFacade);
   private readonly destroyRef = inject(DestroyRef);
   private readonly geolocation = inject(GeolocationService);
   private readonly nearbyStops = inject(NearbyStopsService);
@@ -269,12 +269,12 @@ export class RouteSearchFormComponent implements OnChanges {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  private readonly favoriteOptions$ = this.favoritesService.favorites$.pipe(
+  private readonly favoriteOptions$ = this.favorites.favorites$.pipe(
     map((favorites) => favorites.map((favorite) => this.fromFavorite(favorite))),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  private readonly favoriteIds$ = this.favoritesService.favorites$.pipe(
+  private readonly favoriteIds$ = this.favorites.favorites$.pipe(
     map((favorites) => new Set(favorites.map((favorite) => favorite.id))),
     shareReplay({ bufferSize: 1, refCount: true })
   );
@@ -381,7 +381,7 @@ export class RouteSearchFormComponent implements OnChanges {
     event.preventDefault();
     event.stopPropagation();
 
-    this.favoritesService.toggle(option);
+    this.favorites.toggle(option);
   }
 
   constructor() {
