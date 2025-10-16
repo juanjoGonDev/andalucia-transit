@@ -51,7 +51,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
       The resulting component must render identically to the current baseline layout before any routing changes.
 - [x] Reconfigure `app.routes.ts` so `AppLayoutComponent` hosts all feature child routes via a nested router outlet, ensuring **zero visual drift** (same DOM hierarchy, computed sizes, and offsets).
       Verify using snapshot comparison or automated DOM diffing.
-- [ ] Provide a shared layout context (directive + injection token) allowing feature modules to project content or update tab states **without modifying layout dimensions** or introducing new structural wrappers.
+- [x] Provide a shared layout context (directive + injection token) allowing feature modules to project content or update tab states **without modifying layout dimensions** or introducing new structural wrappers.
 - [ ] Replace all Angular Material dialog usage with a custom overlay dialog service while preserving the exact overlay geometry, padding, elevation, focus behavior, and backdrop styling.
 - [ ] Build shared form primitives (text field, autocomplete, date picker) inside `shared/ui/forms/` replicating the current field metrics and interaction behavior — identical typography, borders, radius, hover/focus states, and spacing.  
       No change to visual hierarchy or proportions is allowed.
