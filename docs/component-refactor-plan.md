@@ -25,12 +25,18 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Extract dashboard logic into a standalone `DashboardComponent` registered as one of the routed children, operating inside the unified layout without altering the shared shell.
 - Define a layout-level interaction contract (signals or inputs) for section or tab activation, avoiding duplicated router subscriptions.
 
+  - 2025-10-16: Introduced `AppLayoutComponent` to wrap the shell top actions and project routed content via `<ng-content>`, keeping existing shell metrics unchanged while `AppShellComponent` delegates rendering to it.
+  - 2025-10-16: Routed all feature views through `AppLayoutComponent` directly in `app.routes.ts`, preserving the layout host as the router entry while maintaining the prior shell structure and metrics.
+  - 2025-10-16: Added `AppLayoutContentDirective` and `APP_LAYOUT_CONTEXT` with a layout context store so routed features can register content and tab configuration without altering the host layout structure.
+
 ### 1.2 Route hierarchy updates
 
 - Nest all feature routes (`dashboard`, `favorites`, `route-search`, `stop-detail`, `settings`, `map`, etc.) under `AppLayoutComponent` while keeping **existing slugs identical**.
 - Configure the router with a `path: ''` entry pointing to `AppLayoutComponent` as the global layout host.
 - Redirect legacy standalone routes to the new structure without altering visible URLs or triggering reinitialization.
 - Each feature route must provide its own localized title resolver; `AppLayoutComponent` handles shared chrome only.
+
+  - 2025-10-16: Updated `app.routes.ts` to register `AppLayoutComponent` as the layout host for all feature child routes while preserving the existing route structure and layout metrics.
 
 ### 1.3 Content projection contract
 
