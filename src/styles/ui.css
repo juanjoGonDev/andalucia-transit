@@ -652,3 +652,114 @@ body {
   color: var(--color-text);
   box-shadow: var(--shadow-md);
 }
+
+.dialog-backdrop {
+  background-color: var(--dialog-backdrop-color);
+}
+
+.dialog-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+@media (max-width: 40rem) {
+  .dialog-panel {
+    padding: var(--space-3);
+  }
+}
+
+.dialog-panel--sm {
+  width: min(100vw, var(--dialog-max-width-sm));
+}
+
+.dialog-panel--md {
+  width: min(100vw, var(--dialog-max-width-md));
+}
+
+.dialog-panel--lg {
+  width: min(100vw, var(--dialog-max-width-lg));
+}
+
+.dialog-panel--xl {
+  width: min(100vw, var(--dialog-max-width-xl));
+}
+
+.dialog {
+  width: 100%;
+  max-height: var(--dialog-max-height);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  overflow: hidden;
+}
+
+.dialog:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-lg), 0 0 0 var(--focus-ring-size) var(--focus-ring-color);
+}
+
+.dialog__surface {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+}
+
+@media (max-width: 40rem) {
+  .dialog__surface {
+    padding: var(--space-4);
+    gap: var(--space-3);
+  }
+}
+
+.dialog__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.dialog__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+}
+
+.dialog__description {
+  margin: 0;
+  color: var(--color-text-subtle);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.dialog__content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.dialog__footer-content {
+  display: contents;
+}

@@ -98,6 +98,12 @@
   --control-radio-dot-size-md: 0.625rem;
   --control-radio-dot-size-lg: 0.75rem;
   --control-indicator-mark-thickness: 2px;
+  --dialog-max-width-sm: 24rem;
+  --dialog-max-width-md: 32rem;
+  --dialog-max-width-lg: 40rem;
+  --dialog-max-width-xl: 52rem;
+  --dialog-max-height: calc(100vh - (2 * var(--space-4)));
+  --dialog-backdrop-color: rgba(20, 24, 33, 0.55);
   --z-index-base: 0;
   --z-index-sticky: 100;
   --z-index-dropdown: 400;
