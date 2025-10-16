@@ -21,6 +21,7 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData
 } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
+import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 
 interface FavoriteListItem {
   readonly id: string;
@@ -40,13 +41,16 @@ interface FavoriteGroupView {
 const QUERY_LOCALE = 'es-ES' as const;
 const NORMALIZE_FORM = 'NFD' as const;
 const DIACRITIC_PATTERN = /\p{M}/gu;
-const KEYBOARD_ENTER = 'Enter' as const;
-const KEYBOARD_SPACE = ' ' as const;
-
 @Component({
   selector: 'app-favorites',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, SectionComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    SectionComponent,
+    AccessibleButtonDirective
+  ],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -148,45 +152,15 @@ export class FavoritesComponent {
     this.favoritesService.clear();
   }
 
-  protected async onClearAllClick(event: MouseEvent): Promise<void> {
-    await this.tryClearAll(event);
-  }
-
-  protected async onClearAllKeydown(event: KeyboardEvent): Promise<void> {
-    if (!this.isActivationKey(event)) {
+  protected async onClearAllActivated(): Promise<void> {
+    if (!this.hasFavorites()) {
       return;
     }
 
-    await this.tryClearAll(event);
+    await this.clearAll();
   }
 
-  protected async onFavoriteKeydown(
-    event: KeyboardEvent,
-    item: FavoriteListItem
-  ): Promise<void> {
-    if (!this.isActivationKey(event)) {
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-    await this.openStop(item);
-  }
-
-  protected async onRemoveClick(event: MouseEvent, item: FavoriteListItem): Promise<void> {
-    event.preventDefault();
-    event.stopPropagation();
-    await this.remove(item);
-  }
-
-  protected async onRemoveKeydown(
-    event: KeyboardEvent,
-    item: FavoriteListItem
-  ): Promise<void> {
-    if (!this.isActivationKey(event)) {
-      return;
-    }
-
+  protected async onRemoveActivated(event: MouseEvent, item: FavoriteListItem): Promise<void> {
     event.preventDefault();
     event.stopPropagation();
     await this.remove(item);
@@ -196,20 +170,6 @@ export class FavoritesComponent {
     this.favoritesService.favorites$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((favorites) => this.favorites.set(favorites));
-  }
-
-  private async tryClearAll(event: Event): Promise<void> {
-    if (!this.hasFavorites()) {
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-    await this.clearAll();
-  }
-
-  private isActivationKey(event: KeyboardEvent): boolean {
-    return event.key === KEYBOARD_ENTER || event.key === KEYBOARD_SPACE;
   }
 
   private observeSearch(): void {

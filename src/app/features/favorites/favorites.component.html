@@ -13,13 +13,11 @@
           />
         </label>
         <div
+          appAccessibleButton
           class="app-outline-button favorites__clear"
-          role="button"
-          [attr.tabindex]="hasFavorites() ? 0 : -1"
-          [attr.aria-disabled]="hasFavorites() ? null : 'true'"
+          [appAccessibleButtonDisabled]="!hasFavorites()"
           [class.is-disabled]="!hasFavorites()"
-          (click)="onClearAllClick($event)"
-          (keydown)="onClearAllKeydown($event)"
+          (appAccessibleButtonActivated)="onClearAllActivated()"
         >
           <span class="material-symbols-outlined favorites__clear-icon">{{ removeIcon() }}</span>
           {{ clearAllLabelKey | translate }}
@@ -38,11 +36,9 @@
       <ul class="favorites__list" role="list">
         <li class="favorites__item" *ngFor="let stop of group.stops; trackBy: trackStop">
           <div
+            appAccessibleButton
             class="favorites__item-main"
-            role="button"
-            tabindex="0"
-            (click)="openStop(stop)"
-            (keydown)="onFavoriteKeydown($event, stop)"
+            (appAccessibleButtonActivated)="openStop(stop)"
           >
             <span class="material-symbols-outlined favorites__item-icon">{{ favoriteIcon() }}</span>
             <span class="favorites__item-text">
@@ -54,11 +50,9 @@
             </span>
           </div>
           <div
+            appAccessibleButton
             class="app-solid-button favorites__remove"
-            role="button"
-            tabindex="0"
-            (click)="onRemoveClick($event, stop)"
-            (keydown)="onRemoveKeydown($event, stop)"
+            (appAccessibleButtonActivated)="onRemoveActivated($event, stop)"
           >
             <span class="material-symbols-outlined favorites__remove-icon">{{ removeIcon() }}</span>
             {{ removeLabelKey | translate }}

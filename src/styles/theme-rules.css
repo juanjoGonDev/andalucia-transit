@@ -33,6 +33,7 @@
   --color-primary-soft: rgba(0, 97, 254, 0.12);
   --color-primary-soft-strong: rgba(0, 97, 254, 0.2);
   --color-secondary: #060f2b;
+  --color-secondary-overlay-strong: rgba(6, 15, 43, 0.9);
   --color-accent: #52a8ff;
   --color-success: #0f9d58;
   --color-success-soft: rgba(15, 157, 88, 0.16);
@@ -45,6 +46,7 @@
   --color-surface: #ffffff;
   --color-surface-light: var(--color-surface);
   --color-surface-muted: #f1f3f4;
+  --color-surface-muted-veil: rgba(241, 243, 244, 0.95);
   --color-surface-hover: #f8fafc;
   --color-text-primary: #060f2b;
   --color-text-strong: var(--color-text-primary);
@@ -53,6 +55,9 @@
   --color-text-tertiary: rgba(6, 15, 43, 0.5);
   --color-text-soft: rgba(6, 15, 43, 0.7);
   --color-text-inverse: #ffffff;
+  --color-text-inverse-soft-strong: rgba(241, 243, 244, 0.75);
+  --color-text-inverse-overlay-soft: rgba(241, 243, 244, 0.12);
+  --color-text-inverse-overlay-strong: rgba(241, 243, 244, 0.2);
   --color-text-inverse-soft: rgba(241, 243, 244, 0.85);
   --color-text-inverse-muted: rgba(203, 213, 225, 0.78);
   --color-icon-default: #475569;
@@ -81,6 +86,9 @@
   --color-button-secondary-hover: rgba(19, 127, 236, 0.12);
   --color-button-ghost-hover: rgba(15, 23, 42, 0.08);
   --color-button-ghost-active: rgba(15, 23, 42, 0.12);
+  --color-focus-ring: rgba(82, 168, 255, 0.5);
+  --color-skeleton-base: rgba(241, 243, 244, 0.15);
+  --color-skeleton-highlight: rgba(241, 243, 244, 0.35);
   --color-input-surface: #ffffff;
   --color-input-surface-hover: #f1f5ff;
   --color-input-border: rgba(148, 163, 184, 0.35);
@@ -93,6 +101,9 @@
   --shadow-card: 0 12px 32px rgba(6, 15, 43, 0.08);
   --shadow-navigation: 0 20px 45px rgba(15, 23, 42, 0.25);
   --shadow-button: 0 18px 30px rgba(19, 127, 236, 0.25);
+  --shadow-hero-card: 0 22px 40px rgba(6, 15, 43, 0.28);
+  --shadow-hero-card-hover: 0 30px 50px rgba(6, 15, 43, 0.35);
+  --shadow-recent-card: 0 16px 32px rgba(6, 15, 43, 0.15);
   --shadow-dialog: 0 30px 60px rgba(15, 23, 42, 0.2);
   --shadow-focus-ring: 0 0 0 3px rgba(82, 168, 255, 0.5);
   --space-none: 0;
