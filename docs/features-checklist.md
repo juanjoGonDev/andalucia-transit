@@ -38,3 +38,15 @@
   - [x] Reflect shell menu toggle state through accessible button pressed bindings (selector verified: `.shell-actions__button--menu`).
   - [x] Verified translation key coverage and aria-label propagation for accessible containers across home and shell controls (selectors verified: `.home__tab`, `.home__panel-action`, `.shell-actions__button--menu`).
   - [x] Surface shell menu expanded and popup semantics through accessible button directive inputs (selectors verified: `.shell-actions__button--menu`, `.shell-actions__menu-button`).
+
+### Component Refactor Plan (2025-10-16)
+- [ ] Extract `HomeLayoutComponent` from the existing home feature and move dashboard-specific logic into `HomeDashboardComponent` while preserving the hero and card scaffold.
+- [ ] Reconfigure `app.routes.ts` so `HomeLayoutComponent` hosts all feature child routes via a nested router outlet without altering existing friendly paths.
+- [ ] Provide a shared layout context (directive + injection token) that allows child features to project content and request tab state updates without accessing router internals.
+- [ ] Replace Angular Material dialog usage with a custom overlay dialog service and migrate `ConfirmDialogComponent` and `HomeNearbyStopsDialogComponent` to the new infrastructure.
+- [ ] Build shared form primitives (text field, autocomplete, date picker) and refactor `RouteSearchFormComponent` to consume them while maintaining current accessibility behavior.
+- [ ] Introduce domain facades that expose stop directory and schedule data to presentation components, removing direct data-layer dependencies from UI classes.
+- [ ] Consolidate `HomeListCardComponent` and `CardListItemComponent` into a shared `InteractiveListCardComponent`, updating recent searches, favorites, and any stop navigation entries accordingly.
+- [ ] Decide on the fate of orphaned components (`HomeNearbyStopsDialogComponent`, `stop-navigation-item`) and remove or reintegrate them once the new layout is in place.
+- [ ] Align favorites, route search, stop detail, settings, and map views with the home layout stack classes to guarantee visual parity inside the shared body container.
+- [ ] Expand unit and integration test coverage for the new layout host, dialog service, and form primitives; run `npm run lint`, `npm run test`, and `npm run build` to confirm stability.
