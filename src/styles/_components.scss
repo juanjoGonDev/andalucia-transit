@@ -1,3 +1,31 @@
+:where([appAccessibleButton],
+  .app-button,
+  .app-icon-button,
+  .app-list-button,
+  .app-outline-button,
+  .app-solid-button) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where([appAccessibleButton],
+  .app-button,
+  .app-icon-button,
+  .app-list-button,
+  .app-outline-button,
+  .app-solid-button):focus {
+  outline: none;
+}
+
+:where([appAccessibleButton],
+  .app-button,
+  .app-icon-button,
+  .app-list-button,
+  .app-outline-button,
+  .app-solid-button):focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
 .app-button {
   display: inline-flex;
   align-items: center;
@@ -15,11 +43,6 @@
   color: var(--color-text-strong);
   text-decoration: none;
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-.app-button:focus-visible {
-  outline: 3px solid var(--color-focus-ring);
-  outline-offset: 3px;
 }
 
 .app-button:disabled,
