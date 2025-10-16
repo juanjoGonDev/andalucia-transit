@@ -125,6 +125,10 @@ body {
   font-size: var(--font-size-md);
 }
 
+.btn--pill {
+  border-radius: var(--radius-pill);
+}
+
 .btn--block {
   width: 100%;
 }
@@ -132,6 +136,43 @@ body {
 .btn--loading {
   pointer-events: none;
   opacity: 0.7;
+}
+
+.segmented-control {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-neutral-100);
+}
+
+.segmented-control__button {
+  border-radius: var(--radius-pill);
+  border-color: transparent;
+  background-color: transparent;
+  color: var(--color-neutral-600);
+  font-weight: var(--font-weight-semibold);
+  flex: 1 0 auto;
+  min-width: fit-content;
+  transition: background-color var(--transition-base), color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.segmented-control__button:hover {
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-800);
+}
+
+.segmented-control__button:focus-visible {
+  box-shadow: 0 0 0 var(--focus-ring-size) var(--focus-ring-color);
+}
+
+.segmented-control__button[aria-selected="true"],
+.segmented-control__button[aria-pressed="true"],
+.segmented-control__button.is-active {
+  background-image: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-sm);
 }
 
 .field {

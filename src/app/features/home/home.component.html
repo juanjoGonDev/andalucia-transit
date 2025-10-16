@@ -15,14 +15,13 @@
             <h2 id="homeCardTitle" class="home__card-title">{{ headerTitleKey | translate }}</h2>
             <p class="home__card-subtitle">{{ heroActionKey | translate }}</p>
           </div>
-          <div class="home__tabs" role="tablist">
+          <div class="home__tabs segmented-control" role="tablist">
             <button
               type="button"
               role="tab"
               *ngFor="let tab of tabs"
-              class="btn btn--ghost btn--sm home__tab"
+              class="btn btn--ghost btn--sm btn--pill segmented-control__button home__tab"
               [attr.aria-selected]="isTabActive(tab.id)"
-              [class.home__tab--active]="isTabActive(tab.id)"
               (click)="selectTab(tab.id)"
             >
               {{ tab.labelKey | translate }}

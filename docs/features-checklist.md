@@ -21,6 +21,7 @@
     - [x] Favorites view migrated to FormField, Input, and button utilities
     - [ ] Migrate remaining home, search, and stop detail forms
       - [x] Home dashboard actions migrated to shared button utilities and palette tokens
+        - [x] Polished hero layout and segmented controls after QA feedback
       - [ ] Refactor route search form to use shared primitives
       - [ ] Update stop detail filters to shared primitives
   - [ ] Remove deprecated component implementations
