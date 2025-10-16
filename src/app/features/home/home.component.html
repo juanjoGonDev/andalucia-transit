@@ -20,8 +20,9 @@
               type="button"
               role="tab"
               *ngFor="let tab of tabs"
-              class="home__tab"
+              class="btn btn--ghost btn--sm home__tab"
               [attr.aria-selected]="isTabActive(tab.id)"
+              [class.home__tab--active]="isTabActive(tab.id)"
               (click)="selectTab(tab.id)"
             >
               {{ tab.labelKey | translate }}
@@ -43,7 +44,7 @@
                 </div>
                 <button
                   type="button"
-                  class="app-button app-button--ghost home__panel-action"
+                  class="btn btn--ghost btn--sm home__panel-action"
                   *ngIf="recentClearActionVisible()"
                   (click)="onClearRecentSearches()"
                 >
@@ -62,7 +63,7 @@
                 </div>
                 <button
                   type="button"
-                  class="app-button app-button--ghost home__panel-action"
+                  class="btn btn--ghost btn--sm home__panel-action"
                   (click)="openFavoritesView()"
                 >
                   {{ favoritesActionKey | translate }}
