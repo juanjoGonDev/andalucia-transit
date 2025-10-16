@@ -88,6 +88,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Ensure overlay visuals match the current baseline exactly (same opacity, shadow depth, and radii).
 
   - 2025-10-16: Added `OverlayDialogService` that currently bridges MatDialog while consolidating confirm dialog entry points under a single abstraction to prepare for the custom overlay implementation.
+  - 2025-10-16: Introduced overlay dialog ref provider and injector helpers so dialog components can remove direct `MatDialogRef` dependencies without altering runtime behavior or visuals.
 
 ### 3.3 Form controls
 

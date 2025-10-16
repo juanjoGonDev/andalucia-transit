@@ -1,10 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { DialogLayoutComponent } from '../dialog/dialog-layout.component';
 import { AccessibleButtonDirective } from '../../a11y/accessible-button.directive';
+import {
+  injectOverlayDialogRef,
+  provideOverlayDialogRef
+} from '../dialog/overlay-dialog.service';
 
 export interface ConfirmDialogData {
   readonly titleKey: string;
@@ -25,11 +29,12 @@ export interface ConfirmDialogDetail {
   imports: [CommonModule, TranslateModule, DialogLayoutComponent, AccessibleButtonDirective],
   templateUrl: './confirm-dialog.component.html',
   styleUrl: './confirm-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [provideOverlayDialogRef<ConfirmDialogComponent, boolean>()]
 })
 export class ConfirmDialogComponent {
   protected readonly data: ConfirmDialogData = inject(MAT_DIALOG_DATA);
-  private readonly dialogRef = inject(MatDialogRef<ConfirmDialogComponent, boolean>);
+  private readonly dialogRef = injectOverlayDialogRef<boolean>();
 
   protected confirm(): void {
     this.dialogRef.close(true);

@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, InjectionToken, Provider, inject } from '@angular/core';
 import { ComponentType } from '@angular/cdk/overlay';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
@@ -32,6 +32,10 @@ export interface OverlayDialogRef<TResult> {
   afterClosed(): Observable<TResult | undefined>;
   close(value?: TResult): void;
 }
+
+const OVERLAY_DIALOG_REF = new InjectionToken<OverlayDialogRef<unknown>>(
+  'OVERLAY_DIALOG_REF'
+);
 
 class MatOverlayDialogRef<TResult> implements OverlayDialogRef<TResult> {
   constructor(private readonly ref: MatDialogRef<unknown, TResult>) {}
@@ -70,3 +74,13 @@ export class OverlayDialogService {
     return new MatOverlayDialogRef<TResult>(ref as MatDialogRef<unknown, TResult>);
   }
 }
+
+export const provideOverlayDialogRef = <TComponent, TResult>(): Provider => ({
+  provide: OVERLAY_DIALOG_REF,
+  deps: [MatDialogRef],
+  useFactory: (ref: MatDialogRef<TComponent, TResult>) =>
+    new MatOverlayDialogRef<TResult>(ref as MatDialogRef<unknown, TResult>)
+});
+
+export const injectOverlayDialogRef = <TResult>(): OverlayDialogRef<TResult> =>
+  inject(OVERLAY_DIALOG_REF) as OverlayDialogRef<TResult>;

@@ -54,6 +54,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
 - [x] Provide a shared layout context (directive + injection token) allowing feature modules to project content or update tab states **without modifying layout dimensions** or introducing new structural wrappers.
 - [ ] Replace all Angular Material dialog usage with a custom overlay dialog service while preserving the exact overlay geometry, padding, elevation, focus behavior, and backdrop styling.
   - [x] Introduce `OverlayDialogService` abstraction and reroute existing confirm dialog callers through it without altering rendering.
+  - [x] Provide overlay dialog ref injection so dialog components no longer depend on `MatDialogRef` directly while retaining identical behavior.
 - [ ] Build shared form primitives (text field, autocomplete, date picker) inside `shared/ui/forms/` replicating the current field metrics and interaction behavior — identical typography, borders, radius, hover/focus states, and spacing.  
       No change to visual hierarchy or proportions is allowed.
 - [ ] Introduce domain facades to abstract data services from presentation components, ensuring no change in rendering, timing, or layout stability.
