@@ -29,5 +29,6 @@
 - [ ] Ensure consistency with existing home theme (colors, typography, spacing).
   - [x] Map Favorites layout spacing and surfaces to shared tokens (computed styles matched for `.favorites`, `.favorites__item`, and `.favorites__groups`).
   - [x] Centralize Home recent card overlays and skeleton hues into shared tokens (computed styles matched for `.recent-card`, `.recent-card__remove`, `.recent-card__skeleton`).
+  - [x] Align map layout spacing with shared tokens (computed styles matched for `.map`, `.map-card`, `.map-placeholder`).
 - [ ] Maintain translation keys and accessibility attributes.
   - [x] Migrate Favorites interactions to the accessible button directive while preserving aria bindings (computed styles matched for `.favorites__clear`, `.favorites__item-main`, and `.favorites__remove`).
