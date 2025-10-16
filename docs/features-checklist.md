@@ -52,11 +52,12 @@ This phase is purely structural and organizational — no aesthetic changes are 
 - [x] Reconfigure `app.routes.ts` so `AppLayoutComponent` hosts all feature child routes via a nested router outlet, ensuring **zero visual drift** (same DOM hierarchy, computed sizes, and offsets).
       Verify using snapshot comparison or automated DOM diffing.
 - [x] Provide a shared layout context (directive + injection token) allowing feature modules to project content or update tab states **without modifying layout dimensions** or introducing new structural wrappers.
-- [ ] Replace all Angular Material dialog usage with a custom overlay dialog service while preserving the exact overlay geometry, padding, elevation, focus behavior, and backdrop styling.
+- [x] Replace all Angular Material dialog usage with a custom overlay dialog service while preserving the exact overlay geometry, padding, elevation, focus behavior, and backdrop styling.
   - [x] Introduce `OverlayDialogService` abstraction and reroute existing confirm dialog callers through it without altering rendering.
   - [x] Provide overlay dialog ref injection so dialog components no longer depend on `MatDialogRef` directly while retaining identical behavior.
   - [x] Rewire Home nearby stops dialog to consume the overlay dialog ref provider with unchanged interactions.
   - [x] Remove Angular Material dialog structural directives from the shared dialog layout while keeping semantics and visuals unchanged.
+  - [x] Replace the Material dialog host with a custom CDK overlay container that mirrors focus handling, backdrop styling, and geometry while keeping visuals identical.
 - [ ] Build shared form primitives (text field, autocomplete, date picker) inside `shared/ui/forms/` replicating the current field metrics and interaction behavior — identical typography, borders, radius, hover/focus states, and spacing.  
       No change to visual hierarchy or proportions is allowed.
 - [ ] Introduce domain facades to abstract data services from presentation components, ensuring no change in rendering, timing, or layout stability.

@@ -1,7 +1,14 @@
-import { Injectable, InjectionToken, Provider, inject } from '@angular/core';
-import { ComponentType } from '@angular/cdk/overlay';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Injectable, InjectionToken, Injector, inject } from '@angular/core';
+import {
+  Overlay,
+  OverlayConfig,
+  OverlayRef,
+  ComponentType
+} from '@angular/cdk/overlay';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { Observable, Subject } from 'rxjs';
+
+import { OverlayDialogContainerComponent } from './overlay-dialog-container.component';
 
 export type OverlayDialogRole = 'dialog' | 'alertdialog';
 
@@ -18,16 +25,6 @@ export interface OverlayDialogConfig<TData> {
   readonly maxWidth?: string;
 }
 
-const toClassList = (
-  value: string | readonly string[] | undefined
-): string | string[] | undefined => {
-  if (typeof value === 'string' || value === undefined) {
-    return value;
-  }
-
-  return Array.from(value);
-};
-
 export interface OverlayDialogRef<TResult> {
   afterClosed(): Observable<TResult | undefined>;
   close(value?: TResult): void;
@@ -36,51 +33,143 @@ export interface OverlayDialogRef<TResult> {
 const OVERLAY_DIALOG_REF = new InjectionToken<OverlayDialogRef<unknown>>(
   'OVERLAY_DIALOG_REF'
 );
+const OVERLAY_DIALOG_DATA = new InjectionToken<unknown>('OVERLAY_DIALOG_DATA');
 
-class MatOverlayDialogRef<TResult> implements OverlayDialogRef<TResult> {
-  constructor(private readonly ref: MatDialogRef<unknown, TResult>) {}
+const DEFAULT_BACKDROP_CLASS = 'cdk-overlay-dark-backdrop';
+
+const toArray = (
+  value: string | readonly string[] | undefined
+): string[] | undefined => {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (typeof value === 'string') {
+    return [value];
+  }
+
+  return Array.from(value);
+};
+
+class CdkOverlayDialogRef<TResult> implements OverlayDialogRef<TResult> {
+  private readonly closed$ = new Subject<TResult | undefined>();
+  private container: OverlayDialogContainerComponent | null = null;
+  private isClosed = false;
+  private result: TResult | undefined;
+
+  constructor(private readonly overlayRef: OverlayRef) {
+    this.overlayRef.detachments().subscribe(() => {
+      if (this.isClosed) {
+        return;
+      }
+
+      this.isClosed = true;
+      this.container?.restoreFocus();
+      this.closed$.next(undefined);
+      this.closed$.complete();
+    });
+  }
+
+  registerContainer(container: OverlayDialogContainerComponent): void {
+    this.container = container;
+  }
 
   afterClosed(): Observable<TResult | undefined> {
-    return this.ref.afterClosed();
+    return this.closed$.asObservable();
   }
 
   close(value?: TResult): void {
-    this.ref.close(value);
+    if (this.isClosed) {
+      return;
+    }
+
+    this.result = value;
+    this.isClosed = true;
+    this.overlayRef.dispose();
+    this.container?.restoreFocus();
+    this.closed$.next(this.result);
+    this.closed$.complete();
   }
 }
 
 @Injectable({ providedIn: 'root' })
 export class OverlayDialogService {
-  private readonly dialog = inject(MatDialog);
+  private readonly overlay = inject(Overlay);
+  private readonly injector = inject(Injector);
 
   open<TComponent, TData, TResult>(
     component: ComponentType<TComponent>,
     config: OverlayDialogConfig<TData> = {}
   ): OverlayDialogRef<TResult> {
-    const dialogConfig: MatDialogConfig<TData> = {
-      autoFocus: config.autoFocus ?? true,
-      role: config.role,
-      panelClass: toClassList(config.panelClass),
-      backdropClass: toClassList(config.backdropClass),
-      disableClose: config.disableClose,
-      hasBackdrop: config.hasBackdrop,
-      closeOnNavigation: config.closeOnNavigation,
-      width: config.width,
-      maxWidth: config.maxWidth,
-      data: config.data ?? null
-    };
+    const overlayRef = this.overlay.create(this.buildConfig(config));
+    overlayRef.addPanelClass('mat-mdc-dialog-panel');
 
-    const ref = this.dialog.open(component, dialogConfig);
-    return new MatOverlayDialogRef<TResult>(ref as MatDialogRef<unknown, TResult>);
+    for (const panelClass of toArray(config.panelClass) ?? []) {
+      overlayRef.addPanelClass(panelClass);
+    }
+
+    if (config.width || config.maxWidth) {
+      overlayRef.updateSize({
+        width: config.width,
+        maxWidth: config.maxWidth
+      });
+    }
+
+    const dialogRef = new CdkOverlayDialogRef<TResult>(overlayRef);
+
+    const portalInjector = Injector.create({
+      parent: this.injector,
+      providers: [
+        { provide: OVERLAY_DIALOG_REF, useValue: dialogRef },
+        { provide: OVERLAY_DIALOG_DATA, useValue: config.data ?? null }
+      ]
+    });
+
+    const containerPortal = new ComponentPortal(
+      OverlayDialogContainerComponent,
+      null,
+      portalInjector
+    );
+    const containerRef = overlayRef.attach(containerPortal);
+    containerRef.instance.initialize(config.role ?? 'dialog', config.autoFocus ?? true);
+
+    const contentPortal = new ComponentPortal(component, null, portalInjector);
+    containerRef.instance.attachComponent(contentPortal);
+    dialogRef.registerContainer(containerRef.instance);
+
+    if (!(config.disableClose ?? false)) {
+      overlayRef.backdropClick().subscribe(() => dialogRef.close());
+      overlayRef.keydownEvents().subscribe((event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          dialogRef.close();
+        }
+      });
+    }
+
+    return dialogRef;
+  }
+
+  private buildConfig<TData>(config: OverlayDialogConfig<TData>): OverlayConfig {
+    const backdropClasses = toArray(config.backdropClass) ?? [DEFAULT_BACKDROP_CLASS];
+    const hasBackdrop = config.hasBackdrop ?? true;
+
+    return {
+      hasBackdrop,
+      backdropClass: hasBackdrop ? backdropClasses : undefined,
+      disposeOnNavigation: config.closeOnNavigation ?? true,
+      scrollStrategy: this.overlay.scrollStrategies.block(),
+      positionStrategy: this.overlay
+        .position()
+        .global()
+        .centerHorizontally()
+        .centerVertically()
+    } satisfies OverlayConfig;
   }
 }
 
-export const provideOverlayDialogRef = <TComponent, TResult>(): Provider => ({
-  provide: OVERLAY_DIALOG_REF,
-  deps: [MatDialogRef],
-  useFactory: (ref: MatDialogRef<TComponent, TResult>) =>
-    new MatOverlayDialogRef<TResult>(ref as MatDialogRef<unknown, TResult>)
-});
-
 export const injectOverlayDialogRef = <TResult>(): OverlayDialogRef<TResult> =>
   inject(OVERLAY_DIALOG_REF) as OverlayDialogRef<TResult>;
+
+export const injectOverlayDialogData = <TData>(): TData =>
+  inject(OVERLAY_DIALOG_DATA) as TData;

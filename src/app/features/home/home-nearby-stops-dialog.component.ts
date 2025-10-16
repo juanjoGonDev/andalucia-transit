@@ -15,10 +15,7 @@ import { buildDistanceDisplay } from '../../domain/utils/distance-display.util';
 import { DialogLayoutComponent } from '../../shared/ui/dialog/dialog-layout.component';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 import { buildStopSlug } from '../../domain/route-search/route-search-url.util';
-import {
-  injectOverlayDialogRef,
-  provideOverlayDialogRef
-} from '../../shared/ui/dialog/overlay-dialog.service';
+import { injectOverlayDialogRef } from '../../shared/ui/dialog/overlay-dialog.service';
 
 type NearbyDialogState = 'loading' | 'success' | 'permissionDenied' | 'notSupported' | 'unknown';
 
@@ -40,8 +37,7 @@ const GEOLOCATION_TIMEOUT = 3;
   imports: [CommonModule, TranslateModule, DialogLayoutComponent, AccessibleButtonDirective],
   templateUrl: './home-nearby-stops-dialog.component.html',
   styleUrl: './home-nearby-stops-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [provideOverlayDialogRef<HomeNearbyStopsDialogComponent, void>()]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeNearbyStopsDialogComponent implements OnInit {
   private readonly dialogRef = injectOverlayDialogRef<void>();

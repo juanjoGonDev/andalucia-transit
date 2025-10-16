@@ -64,6 +64,7 @@
     "@angular/compiler-cli": "^20.3.0",
     "@cypress/schematic": "^4.1.4",
     "@eslint/js": "^9.15.0",
+    "@playwright/test": "^1.56.0",
     "@types/jasmine": "~5.1.0",
     "@types/luxon": "^3.7.1",
     "actionlint": "^2.0.6",
