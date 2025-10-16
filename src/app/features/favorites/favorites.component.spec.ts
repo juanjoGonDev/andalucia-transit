@@ -5,9 +5,10 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { OverlayDialogConfig, OverlayDialogRef, OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
 
 import { FavoritesComponent } from './favorites.component';
-import { StopFavorite, StopFavoritesService } from '../../domain/stops/stop-favorites.service';
+import { StopFavorite } from '../../domain/stops/stop-favorites.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { APP_CONFIG } from '../../core/config';
+import { FavoritesFacade } from '../../domain/stops/favorites.facade';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {
@@ -15,11 +16,14 @@ class FakeTranslateLoader implements TranslateLoader {
   }
 }
 
-class StopFavoritesServiceStub {
+class FavoritesFacadeStub {
   private readonly subject = new BehaviorSubject<readonly StopFavorite[]>([]);
   readonly favorites$ = this.subject.asObservable();
   readonly remove = jasmine.createSpy('remove');
   readonly clear = jasmine.createSpy('clear');
+  readonly add = jasmine.createSpy('add');
+  readonly toggle = jasmine.createSpy('toggle');
+  readonly isFavorite = jasmine.createSpy('isFavorite');
 
   emit(favorites: readonly StopFavorite[]): void {
     this.subject.next(favorites);
@@ -114,12 +118,12 @@ const FAVORITES: readonly StopFavorite[] = [
 describe('FavoritesComponent', () => {
   let fixture: ComponentFixture<FavoritesComponent>;
   let component: FavoritesComponent;
-  let favoritesService: StopFavoritesServiceStub;
+  let favoritesFacade: FavoritesFacadeStub;
   let dialog: OverlayDialogServiceStub;
   let router: RouterStub;
 
   beforeEach(async () => {
-    favoritesService = new StopFavoritesServiceStub();
+    favoritesFacade = new FavoritesFacadeStub();
     dialog = new OverlayDialogServiceStub();
     router = new RouterStub();
 
@@ -129,7 +133,7 @@ describe('FavoritesComponent', () => {
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: FakeTranslateLoader } })
       ],
       providers: [
-        { provide: StopFavoritesService, useValue: favoritesService },
+        { provide: FavoritesFacade, useValue: favoritesFacade },
         { provide: OverlayDialogService, useValue: dialog },
         { provide: Router, useValue: router }
       ]
@@ -140,7 +144,7 @@ describe('FavoritesComponent', () => {
   });
 
   it('renders favorites grouped by municipality', () => {
-    favoritesService.emit(FAVORITES);
+    favoritesFacade.emit(FAVORITES);
     fixture.detectChanges();
 
     const titleElements = fixture.nativeElement.querySelectorAll('.favorites__group-title') as NodeListOf<HTMLElement>;
@@ -160,7 +164,7 @@ describe('FavoritesComponent', () => {
   });
 
   it('filters favorites by search term', () => {
-    favoritesService.emit(FAVORITES);
+    favoritesFacade.emit(FAVORITES);
     fixture.detectChanges();
 
     const access = accessProtected(component);
@@ -191,7 +195,7 @@ describe('FavoritesComponent', () => {
     const access = accessProtected(component);
     await access.remove.call(component, toListItem(favorite));
 
-    expect(favoritesService.remove).toHaveBeenCalledWith('sevilla-001');
+    expect(favoritesFacade.remove).toHaveBeenCalledWith('sevilla-001');
     expect(dialog.lastData()).toEqual(
       jasmine.objectContaining({
         details: jasmine.arrayContaining([
@@ -209,18 +213,18 @@ describe('FavoritesComponent', () => {
     const access = accessProtected(component);
     await access.remove.call(component, toListItem(favorite));
 
-    expect(favoritesService.remove).not.toHaveBeenCalled();
+    expect(favoritesFacade.remove).not.toHaveBeenCalled();
   });
 
   it('clears all favorites after confirmation', async () => {
-    favoritesService.emit(FAVORITES);
+    favoritesFacade.emit(FAVORITES);
     fixture.detectChanges();
     dialog.setResponse(true);
 
     const access = accessProtected(component);
     await access.clearAll.call(component);
 
-    expect(favoritesService.clear).toHaveBeenCalled();
+    expect(favoritesFacade.clear).toHaveBeenCalled();
     expect(dialog.lastData()).toEqual(
       jasmine.objectContaining({
         details: jasmine.arrayContaining([
@@ -236,6 +240,6 @@ describe('FavoritesComponent', () => {
     const access = accessProtected(component);
     await access.clearAll.call(component);
 
-    expect(favoritesService.clear).not.toHaveBeenCalled();
+    expect(favoritesFacade.clear).not.toHaveBeenCalled();
   });
 });

@@ -18,7 +18,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { APP_CONFIG } from '../../core/config';
-import { StopScheduleService } from '../../data/services/stop-schedule.service';
+import { StopScheduleFacade } from '../../domain/stop-schedule/stop-schedule.facade';
 import {
   buildStopScheduleUiModel,
   StopScheduleUiModel
@@ -48,7 +48,7 @@ export class StopDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly stopScheduleService = inject(StopScheduleService);
+  private readonly stopScheduleFacade = inject(StopScheduleFacade);
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.stopDetail;
   protected readonly destinationControl = new FormControl<string>(ALL_DESTINATIONS_OPTION, {
@@ -69,7 +69,7 @@ export class StopDetailComponent {
 
   private readonly scheduleState$: Observable<ScheduleState> = this.stopId$.pipe(
     switchMap((stopId) =>
-      this.stopScheduleService.getStopSchedule(stopId).pipe(
+      this.stopScheduleFacade.loadStopSchedule(stopId).pipe(
         map((result) => ({ status: 'success', result }) as const),
         startWith({ status: 'loading' } as const),
         catchError(() => of({ status: 'error' } as const))

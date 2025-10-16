@@ -5,7 +5,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { APP_CONFIG } from '../../core/config';
 import { StopSchedule, StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
-import { StopScheduleService } from '../../data/services/stop-schedule.service';
+import { StopScheduleFacade } from '../../domain/stop-schedule/stop-schedule.facade';
 import { StopDetailComponent } from './stop-detail.component';
 
 class FakeTranslateLoader implements TranslateLoader {
@@ -17,15 +17,15 @@ class FakeTranslateLoader implements TranslateLoader {
 describe('StopDetailComponent', () => {
   let fixture: ComponentFixture<StopDetailComponent>;
   let router: Router;
-  let scheduleService: jasmine.SpyObj<StopScheduleService>;
+  let scheduleFacade: jasmine.SpyObj<StopScheduleFacade>;
   let paramMapSubject: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
 
   beforeEach(async () => {
     paramMapSubject = new BehaviorSubject(convertToParamMap({ stopId: 'stop-main-street' }));
-    scheduleService = jasmine.createSpyObj<StopScheduleService>('StopScheduleService', [
-      'getStopSchedule'
+    scheduleFacade = jasmine.createSpyObj<StopScheduleFacade>('StopScheduleFacade', [
+      'loadStopSchedule'
     ]);
-    scheduleService.getStopSchedule.and.callFake((stopId: string) => of(createResult(stopId)));
+    scheduleFacade.loadStopSchedule.and.callFake((stopId: string) => of(createResult(stopId)));
     const routerStub = jasmine.createSpyObj<Router>('Router', ['navigate']);
     routerStub.navigate.and.resolveTo(true);
 
@@ -37,7 +37,7 @@ describe('StopDetailComponent', () => {
         })
       ],
       providers: [
-        { provide: StopScheduleService, useValue: scheduleService },
+        { provide: StopScheduleFacade, useValue: scheduleFacade },
         { provide: ActivatedRoute, useValue: { paramMap: paramMapSubject.asObservable() } },
         { provide: Router, useValue: routerStub }
       ]
@@ -51,7 +51,7 @@ describe('StopDetailComponent', () => {
     fixture.detectChanges();
     tick();
 
-    expect(scheduleService.getStopSchedule).toHaveBeenCalledWith('stop-main-street');
+    expect(scheduleFacade.loadStopSchedule).toHaveBeenCalledWith('stop-main-street');
   }));
 
   it('redirects to home when the stop identifier is missing', fakeAsync(() => {
@@ -67,11 +67,11 @@ describe('StopDetailComponent', () => {
       '/',
       APP_CONFIG.routes.home
     ]);
-    expect(scheduleService.getStopSchedule).not.toHaveBeenCalled();
+    expect(scheduleFacade.loadStopSchedule).not.toHaveBeenCalled();
   }));
 
   it('shows an error message when the schedule request fails', fakeAsync(() => {
-    scheduleService.getStopSchedule.and.returnValue(throwError(() => new Error('Network error')));
+    scheduleFacade.loadStopSchedule.and.returnValue(throwError(() => new Error('Network error')));
 
     fixture = TestBed.createComponent(StopDetailComponent);
     fixture.detectChanges();
@@ -83,7 +83,7 @@ describe('StopDetailComponent', () => {
   }));
 
   it('recovers from errors when navigating to a different stop', fakeAsync(() => {
-    scheduleService.getStopSchedule.and.returnValues(
+    scheduleFacade.loadStopSchedule.and.returnValues(
       throwError(() => new Error('Unavailable')),
       of(createResult('stop-avenue-center'))
     );
@@ -92,13 +92,13 @@ describe('StopDetailComponent', () => {
     fixture.detectChanges();
     tick();
 
-    expect(scheduleService.getStopSchedule).toHaveBeenCalledTimes(1);
+    expect(scheduleFacade.loadStopSchedule).toHaveBeenCalledTimes(1);
 
     paramMapSubject.next(convertToParamMap({ stopId: 'stop-avenue-center' }));
     tick();
 
-    expect(scheduleService.getStopSchedule).toHaveBeenCalledTimes(2);
-    expect(scheduleService.getStopSchedule).toHaveBeenCalledWith('stop-avenue-center');
+    expect(scheduleFacade.loadStopSchedule).toHaveBeenCalledTimes(2);
+    expect(scheduleFacade.loadStopSchedule).toHaveBeenCalledWith('stop-avenue-center');
   }));
 });
 

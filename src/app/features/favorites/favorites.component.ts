@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { APP_CONFIG } from '../../core/config';
-import { StopFavoritesService, StopFavorite } from '../../domain/stops/stop-favorites.service';
+import { StopFavorite } from '../../domain/stops/stop-favorites.service';
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import {
   ConfirmDialogComponent,
@@ -22,6 +22,7 @@ import {
 } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
+import { FavoritesFacade } from '../../domain/stops/favorites.facade';
 
 interface FavoriteListItem {
   readonly id: string;
@@ -56,7 +57,7 @@ const DIACRITIC_PATTERN = /\p{M}/gu;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FavoritesComponent {
-  private readonly favoritesService = inject(StopFavoritesService);
+  private readonly favoritesFacade = inject(FavoritesFacade);
   private readonly dialog = inject(OverlayDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly formBuilder = inject(FormBuilder);
@@ -128,7 +129,7 @@ export class FavoritesComponent {
       return;
     }
 
-    this.favoritesService.remove(item.id);
+    this.favoritesFacade.remove(item.id);
   }
 
   protected async clearAll(): Promise<void> {
@@ -149,7 +150,7 @@ export class FavoritesComponent {
       return;
     }
 
-    this.favoritesService.clear();
+    this.favoritesFacade.clear();
   }
 
   protected async onClearAllActivated(): Promise<void> {
@@ -167,7 +168,7 @@ export class FavoritesComponent {
   }
 
   private observeFavorites(): void {
-    this.favoritesService.favorites$
+    this.favoritesFacade.favorites$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((favorites) => this.favorites.set(favorites));
   }

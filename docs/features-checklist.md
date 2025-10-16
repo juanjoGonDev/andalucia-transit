@@ -67,6 +67,8 @@ This phase is purely structural and organizational — no aesthetic changes are 
   - [x] Scaffold `AppDatePickerComponent` with parsing and formatting hooks backed by the shared text field while preserving baseline metrics.
 - [ ] Introduce domain facades to abstract data services from presentation components, ensuring no change in rendering, timing, or layout stability.
   - [x] Provide a recent searches facade combining history, preview, execution, and preferences coordination for the home dashboard.
+  - [x] Provide a favorites facade that encapsulates favorites persistence and exposes presentation-ready streams without altering UI behavior.
+  - [x] Provide a stop schedule facade so stop detail presentation loads schedules through the domain layer without modifying UI rendering.
 - [ ] Consolidate duplicated card components (`HomeListCardComponent`, `CardListItemComponent`, etc.) into a single reusable `InteractiveCardComponent` that maintains identical computed dimensions, typography, shadow, and spacing.  
       Validate visual parity against the baseline grid.
 - [ ] Review orphaned or redundant components (e.g., dialog variants, navigation items) and remove or reassign them only after confirming **no visual or spacing shifts** occur across any layout.
