@@ -3,8 +3,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   ContentChild,
+  EventEmitter,
   HostBinding,
   Input,
+  Output,
   forwardRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -48,6 +50,10 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   @Input() type: TextFieldType = DEFAULT_TEXT_FIELD_TYPE;
   @Input() readonly = false;
   @Input() name?: string;
+
+  @Output() readonly valueChange = new EventEmitter<string>();
+  @Output() readonly focusChange = new EventEmitter<boolean>();
+  @Output() readonly keydownEvent = new EventEmitter<KeyboardEvent>();
 
   @ContentChild(AppTextFieldPrefixDirective) prefix?: AppTextFieldPrefixDirective;
   @ContentChild(AppTextFieldSuffixDirective) suffix?: AppTextFieldSuffixDirective;
@@ -113,11 +119,13 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
   handleFocus(): void {
     this.isFocused = true;
+    this.focusChange.emit(true);
   }
 
   handleBlur(): void {
     this.isFocused = false;
     this.onTouched();
+    this.focusChange.emit(false);
   }
 
   handleInput(event: Event): void {
@@ -129,6 +137,11 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
     this.value = target.value;
     this.onChange(this.value);
+    this.valueChange.emit(this.value);
+  }
+
+  handleKeydown(event: KeyboardEvent): void {
+    this.keydownEvent.emit(event);
   }
 
   private buildFieldId(): string {

@@ -103,6 +103,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Use CDK overlays or native inputs where possible; **no `<button>` elements** permitted inside primitives.
 
   - 2025-10-16: Scaffolded `AppTextFieldComponent` with slot directives and ControlValueAccessor wiring to replace Material text fields without altering upcoming form visuals.
+  - 2025-10-16: Extended `AppTextFieldComponent` with value and focus outputs to coordinate overlay-driven form primitives while maintaining identical input metrics.
 
 ### 3.4 Directory structure & naming
 

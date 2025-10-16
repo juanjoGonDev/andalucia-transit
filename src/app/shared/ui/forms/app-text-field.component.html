@@ -24,6 +24,7 @@
       (focus)="handleFocus()"
       (blur)="handleBlur()"
       (input)="handleInput($event)"
+      (keydown)="handleKeydown($event)"
     />
     <span class="app-text-field__suffix" *ngIf="hasSuffix">
       <ng-content select="[appTextFieldSuffix]"></ng-content>
