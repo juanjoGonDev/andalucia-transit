@@ -12,7 +12,7 @@
             class="settings__language-button"
             [class.settings__language-button--active]="item.isActive"
             (appAccessibleButtonActivated)="onLanguageSelected(item.code)"
-            [attr.aria-pressed]="item.isActive"
+            [appAccessibleButtonPressed]="item.isActive"
             [attr.aria-label]="languageActionLabelKey | translate: { language: (item.labelKey | translate) }"
           >
             <span class="settings__language-label">{{ item.labelKey | translate }}</span>
@@ -32,7 +32,7 @@
           appAccessibleButton
           class="settings__toggle"
           [appAccessibleButtonRole]="'switch'"
-          [attr.aria-checked]="previewEnabled()"
+          [appAccessibleButtonChecked]="previewEnabled()"
           (appAccessibleButtonActivated)="togglePreview()"
         >
           <span

@@ -53,6 +53,7 @@
                   appAccessibleButton
                   class="route-search-form__favorite-button"
                   (appAccessibleButtonActivated)="toggleFavorite(option, $event)"
+                  [appAccessibleButtonPressed]="option.isFavorite"
                   [attr.aria-label]="favoriteToggleLabel(option) | translate"
                   [attr.data-active]="option.isFavorite ? 'true' : null"
                 >
@@ -120,6 +121,7 @@
                   appAccessibleButton
                   class="route-search-form__favorite-button"
                   (appAccessibleButtonActivated)="toggleFavorite(option, $event)"
+                  [appAccessibleButtonPressed]="option.isFavorite"
                   [attr.aria-label]="favoriteToggleLabel(option) | translate"
                   [attr.data-active]="option.isFavorite ? 'true' : null"
                 >

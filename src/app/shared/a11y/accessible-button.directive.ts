@@ -2,6 +2,8 @@ import { Directive, EventEmitter, HostBinding, HostListener, Input, Output } fro
 
 const KEYBOARD_ENTER = 'Enter' as const;
 const KEYBOARD_SPACE = ' ' as const;
+const ARIA_TRUE = 'true' as const;
+const ARIA_FALSE = 'false' as const;
 
 @Directive({
   selector: '[appAccessibleButton]',
@@ -11,6 +13,8 @@ const KEYBOARD_SPACE = ' ' as const;
 export class AccessibleButtonDirective {
   @Input() appAccessibleButtonDisabled = false;
   @Input() appAccessibleButtonRole: string | null = null;
+  @Input() appAccessibleButtonPressed: boolean | null = null;
+  @Input() appAccessibleButtonChecked: boolean | null = null;
   @Output() readonly appAccessibleButtonActivated = new EventEmitter<MouseEvent>();
 
   @HostBinding('attr.role')
@@ -26,6 +30,24 @@ export class AccessibleButtonDirective {
   @HostBinding('attr.aria-disabled')
   get ariaDisabled(): 'true' | null {
     return this.appAccessibleButtonDisabled ? 'true' : null;
+  }
+
+  @HostBinding('attr.aria-pressed')
+  get ariaPressed(): 'true' | 'false' | null {
+    if (this.appAccessibleButtonPressed === null) {
+      return null;
+    }
+
+    return this.appAccessibleButtonPressed ? ARIA_TRUE : ARIA_FALSE;
+  }
+
+  @HostBinding('attr.aria-checked')
+  get ariaChecked(): 'true' | 'false' | null {
+    if (this.appAccessibleButtonChecked === null) {
+      return null;
+    }
+
+    return this.appAccessibleButtonChecked ? ARIA_TRUE : ARIA_FALSE;
   }
 
   @HostListener('keydown', ['$event'])

@@ -12,6 +12,8 @@ import { AccessibleButtonDirective } from './accessible-button.directive';
       appAccessibleButton
       [appAccessibleButtonDisabled]="disabled"
       [appAccessibleButtonRole]="role"
+      [appAccessibleButtonPressed]="pressed"
+      [appAccessibleButtonChecked]="checked"
       (appAccessibleButtonActivated)="onActivated($event)"
     >
       Action
@@ -21,6 +23,8 @@ import { AccessibleButtonDirective } from './accessible-button.directive';
 class HostComponent {
   disabled = false;
   role: string | null = null;
+  pressed: boolean | null = null;
+  checked: boolean | null = null;
   readonly onActivated: jasmine.Spy<(event: MouseEvent) => void> = jasmine.createSpy();
 }
 
@@ -66,6 +70,46 @@ describe('AccessibleButtonDirective', () => {
 
     expect(nativeElement.getAttribute('tabindex')).toBe('-1');
     expect(nativeElement.getAttribute('aria-disabled')).toBe('true');
+  });
+
+  it('should expose pressed state when provided', () => {
+    hostComponent.pressed = true;
+    fixture.detectChanges();
+
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    expect(nativeElement.getAttribute('aria-pressed')).toBe('true');
+
+    hostComponent.pressed = false;
+    fixture.detectChanges();
+
+    expect(nativeElement.getAttribute('aria-pressed')).toBe('false');
+
+    hostComponent.pressed = null;
+    fixture.detectChanges();
+
+    expect(nativeElement.hasAttribute('aria-pressed')).toBeFalse();
+  });
+
+  it('should expose checked state when provided', () => {
+    hostComponent.checked = true;
+    fixture.detectChanges();
+
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    expect(nativeElement.getAttribute('aria-checked')).toBe('true');
+
+    hostComponent.checked = false;
+    fixture.detectChanges();
+
+    expect(nativeElement.getAttribute('aria-checked')).toBe('false');
+
+    hostComponent.checked = null;
+    fixture.detectChanges();
+
+    expect(nativeElement.hasAttribute('aria-checked')).toBeFalse();
   });
 
   it('should emit activation on pointer click when enabled', () => {

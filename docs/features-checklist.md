@@ -34,3 +34,5 @@
 - [ ] Maintain translation keys and accessibility attributes.
   - [x] Migrate Favorites interactions to the accessible button directive while preserving aria bindings (computed styles matched for `.favorites__clear`, `.favorites__item-main`, and `.favorites__remove`).
   - [x] Guard accessible button semantics with regression tests to preserve ARIA roles and keyboard activation behavior across neutral containers.
+  - [x] Standardize pressed and checked states via accessible button directive bindings (selectors verified: `.route-search-form__favorite-button`, `.settings__language-button`, `.settings__toggle`).
+  - [x] Reflect shell menu toggle state through accessible button pressed bindings (selector verified: `.shell-actions__button--menu`).
