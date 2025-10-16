@@ -4,7 +4,13 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
 import {
-  CONTROL_BASE_CLASS,
+  CONTROL_CHOICE_CLASS,
+  CONTROL_CHOICE_DISABLED_CLASS,
+  CONTROL_CHOICE_INPUT_CLASS,
+  CONTROL_CHOICE_LABEL_CLASS,
+  CONTROL_INDICATOR_CHECKBOX_CLASS,
+  CONTROL_INDICATOR_CLASS,
+  CONTROL_INDICATOR_MARK_CLASS,
   CONTROL_SIZE_CLASS_MAP,
   CONTROL_TONE_CLASS_MAP,
   CONTROL_VARIANT_CLASS_MAP,
@@ -14,63 +20,60 @@ import {
 } from '../control/control.options';
 import { TranslationParams } from '../types/translation-params';
 
-export type SelectValue = string | null;
-export type SelectTranslationParams = TranslationParams;
-
-export interface SelectOption {
-  readonly value: string;
-  readonly labelKey: string;
-  readonly labelParams?: SelectTranslationParams;
-  readonly disabled?: boolean;
-}
-
-const EMPTY_VALUE = '';
+const ARIA_CHECKED_TRUE = 'true';
+const ARIA_CHECKED_FALSE = 'false';
 
 @Component({
-  selector: 'app-select',
+  selector: 'app-checkbox',
   standalone: true,
   imports: [CommonModule, TranslateModule],
-  templateUrl: './select.component.html',
+  templateUrl: './checkbox.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: SelectComponent
+      useExisting: CheckboxComponent
     }
   ]
 })
-export class SelectComponent implements ControlValueAccessor {
+export class CheckboxComponent implements ControlValueAccessor {
   private readonly variantSignal = signal<ControlVariant>('outline');
   private readonly sizeSignal = signal<ControlSize>('md');
   private readonly toneSignal = signal<ControlTone>('neutral');
-  private readonly optionsSignal = signal<readonly SelectOption[]>([]);
+  private readonly disabledSignal = signal(false);
 
-  readonly optionList = this.optionsSignal.asReadonly();
-  readonly classList = computed(() => [
-    CONTROL_BASE_CLASS,
+  readonly indicatorClasses = computed(() => [
+    CONTROL_INDICATOR_CLASS,
+    CONTROL_INDICATOR_CHECKBOX_CLASS,
     CONTROL_VARIANT_CLASS_MAP[this.variantSignal()],
     CONTROL_SIZE_CLASS_MAP[this.sizeSignal()],
     CONTROL_TONE_CLASS_MAP[this.toneSignal()]
   ]);
-  readonly emptyValue = EMPTY_VALUE;
 
-  private onChange: (value: SelectValue) => void = () => undefined;
+  readonly hostClasses = computed(() => {
+    const classes: string[] = [CONTROL_CHOICE_CLASS];
+    if (this.disabledSignal()) {
+      classes.push(CONTROL_CHOICE_DISABLED_CLASS);
+    }
+    return classes;
+  });
+
+  readonly inputClass = CONTROL_CHOICE_INPUT_CLASS;
+  readonly labelClass = CONTROL_CHOICE_LABEL_CLASS;
+  readonly indicatorMarkClass = CONTROL_INDICATOR_MARK_CLASS;
+
+  private onChange: (value: boolean) => void = () => undefined;
   private onTouched: () => void = () => undefined;
-  private isDisabled = false;
-  private viewValue = EMPTY_VALUE;
+  private viewValue = false;
 
   @Input() id?: string;
   @Input() name?: string;
-  @Input() placeholderKey?: string;
+  @Input() labelKey?: string;
+  @Input() labelParams?: TranslationParams;
   @Input() describedBy?: string;
   @Input() required = false;
   @Input() invalid = false;
-
-  @Input()
-  set options(value: readonly SelectOption[] | undefined) {
-    this.optionsSignal.set(value ?? []);
-  }
 
   @Input()
   set variant(value: ControlVariant) {
@@ -87,15 +90,19 @@ export class SelectComponent implements ControlValueAccessor {
     this.toneSignal.set(value);
   }
 
-  get value(): SelectValue {
-    return this.viewValue === EMPTY_VALUE ? null : this.viewValue;
+  get value(): boolean {
+    return this.viewValue;
   }
 
-  writeValue(value: SelectValue): void {
-    this.viewValue = value ?? EMPTY_VALUE;
+  get disabled(): boolean {
+    return this.disabledSignal();
   }
 
-  registerOnChange(callback: (value: SelectValue) => void): void {
+  writeValue(value: boolean | null): void {
+    this.viewValue = Boolean(value);
+  }
+
+  registerOnChange(callback: (value: boolean) => void): void {
     this.onChange = callback;
   }
 
@@ -104,23 +111,23 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.disabledSignal.set(isDisabled);
   }
 
   handleChange(event: Event): void {
-    const target = event.target as HTMLSelectElement | null;
+    const target = event.target as HTMLInputElement | null;
     if (!target) {
       return;
     }
-    this.viewValue = target.value;
-    this.onChange(this.value);
+    this.viewValue = target.checked;
+    this.onChange(this.viewValue);
   }
 
   handleBlur(): void {
     this.onTouched();
   }
 
-  get disabled(): boolean {
-    return this.isDisabled;
+  get ariaChecked(): string {
+    return this.viewValue ? ARIA_CHECKED_TRUE : ARIA_CHECKED_FALSE;
   }
 }

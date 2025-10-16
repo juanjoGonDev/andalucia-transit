@@ -1,0 +1,20 @@
+<label [ngClass]="hostClasses()">
+  <input
+    type="checkbox"
+    [id]="id"
+    [name]="name"
+    [ngClass]="inputClass"
+    [checked]="value"
+    [disabled]="disabled"
+    [required]="required"
+    [attr.aria-checked]="ariaChecked"
+    [attr.aria-invalid]="invalid ? 'true' : null"
+    [attr.aria-describedby]="describedBy ?? null"
+    (change)="handleChange($event)"
+    (blur)="handleBlur()"
+  />
+  <span [ngClass]="indicatorClasses()" aria-hidden="true">
+    <span [class]="indicatorMarkClass"></span>
+  </span>
+  <span *ngIf="labelKey" [class]="labelClass">{{ labelKey | translate: labelParams }}</span>
+</label>

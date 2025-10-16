@@ -11,12 +11,12 @@
 - [x] Define theme tokens and global CSS utilities (buttons, forms, surfaces)
 - [ ] Replace old UI components with unified primitives
   - [x] Introduce FormField and Input primitives with ControlValueAccessor support
-  - [ ] Implement remaining primitives (Textarea, Select, Checkbox, Radio, Switch, etc.)
+  - [x] Implement remaining primitives (Textarea, Select, Checkbox, Radio, Switch, etc.)
     - [x] Add Textarea primitive with ControlValueAccessor support
     - [x] Implement Select primitive with shared control tokens
-    - [ ] Implement Checkbox primitive with shared control tokens
-    - [ ] Implement Radio primitive with shared control tokens
-    - [ ] Implement Switch primitive with shared control tokens
+    - [x] Implement Checkbox primitive with shared control tokens
+    - [x] Implement Radio primitive with shared control tokens
+    - [x] Implement Switch primitive with shared control tokens
   - [ ] Replace feature screens to use unified primitives
   - [ ] Remove deprecated component implementations
 - [ ] Remove duplicated buttons, inputs, and modals

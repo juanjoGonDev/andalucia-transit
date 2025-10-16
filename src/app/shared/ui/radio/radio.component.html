@@ -1,0 +1,28 @@
+<div
+  [ngClass]="groupClasses()"
+  [attr.role]="groupRole"
+  [attr.aria-describedby]="describedBy ?? null"
+  [attr.aria-invalid]="invalid ? 'true' : null"
+>
+  <label
+    *ngFor="let option of optionList(); trackBy: trackByOption"
+    [ngClass]="optionLabelClasses(option.disabled)"
+  >
+    <input
+      type="radio"
+      [name]="name"
+      [value]="option.value"
+      [ngClass]="inputClass"
+      [checked]="value === option.value"
+      [disabled]="disabled || option.disabled"
+      [required]="required"
+      [attr.aria-checked]="value === option.value ? 'true' : 'false'"
+      (change)="selectOption(option.value)"
+      (blur)="handleBlur()"
+    />
+    <span [ngClass]="indicatorClasses()" aria-hidden="true">
+      <span [class]="indicatorDotClass"></span>
+    </span>
+    <span [class]="labelClass">{{ option.labelKey | translate: option.labelParams }}</span>
+  </label>
+</div>
