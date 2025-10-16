@@ -25,6 +25,8 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Extract dashboard logic into a standalone `DashboardComponent` registered as one of the routed children, operating inside the unified layout without altering the shared shell.
 - Define a layout-level interaction contract (signals or inputs) for section or tab activation, avoiding duplicated router subscriptions.
 
+  - 2025-10-16: Introduced `AppLayoutComponent` to wrap the shell top actions and project routed content via `<ng-content>`, keeping existing shell metrics unchanged while `AppShellComponent` delegates rendering to it.
+
 ### 1.2 Route hierarchy updates
 
 - Nest all feature routes (`dashboard`, `favorites`, `route-search`, `stop-detail`, `settings`, `map`, etc.) under `AppLayoutComponent` while keeping **existing slugs identical**.

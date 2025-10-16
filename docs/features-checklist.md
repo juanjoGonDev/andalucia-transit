@@ -47,7 +47,7 @@ All layout, spacing, typography, color, shape, shadow, and positioning values mu
 The existing home layout serves as the **visual baseline**. Any deviation in spacing, font weight, hue, border radius, alignment, or visual hierarchy constitutes a regression.  
 This phase is purely structural and organizational — no aesthetic changes are allowed.
 
-- [ ] Extract a global `AppLayoutComponent` from the existing layout structure, preserving every exact visual metric: container width, corner radius, background gradients, shadows, typography scale, and spacing values.  
+- [x] Extract a global `AppLayoutComponent` from the existing layout structure, preserving every exact visual metric: container width, corner radius, background gradients, shadows, typography scale, and spacing values.
       The resulting component must render identically to the current baseline layout before any routing changes.
 - [ ] Reconfigure `app.routes.ts` so `AppLayoutComponent` hosts all feature child routes via a nested router outlet, ensuring **zero visual drift** (same DOM hierarchy, computed sizes, and offsets).  
       Verify using snapshot comparison or automated DOM diffing.
