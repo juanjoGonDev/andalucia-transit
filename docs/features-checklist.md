@@ -62,6 +62,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
   - [x] Scaffold `AppTextFieldComponent` with prefix, suffix, and hint slots plus ControlValueAccessor support ready for migration.
       No change to visual hierarchy or proportions is allowed.
   - [x] Expose text field interaction outputs so upcoming autocomplete primitives can orchestrate focus and value changes without altering layout.
+  - [x] Merge hint and external described-by metadata on `AppTextFieldComponent` so accessibility cues remain intact during migration.
 - [ ] Introduce domain facades to abstract data services from presentation components, ensuring no change in rendering, timing, or layout stability.
 - [ ] Consolidate duplicated card components (`HomeListCardComponent`, `CardListItemComponent`, etc.) into a single reusable `InteractiveCardComponent` that maintains identical computed dimensions, typography, shadow, and spacing.  
       Validate visual parity against the baseline grid.

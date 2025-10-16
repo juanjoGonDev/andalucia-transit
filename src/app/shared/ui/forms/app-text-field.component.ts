@@ -21,6 +21,9 @@ const TEXT_FIELD_ID_SEPARATOR = '-';
 const TEXT_FIELD_HINT_SEGMENT = 'hint';
 const DEFAULT_TEXT_FIELD_TYPE: TextFieldType = 'text';
 const DEFAULT_AUTOCOMPLETE_ATTRIBUTE = 'off';
+const ARIA_ATTRIBUTE_SEPARATOR = ' ';
+const EMPTY_STRING = '';
+const DESCRIBED_BY_SEPARATOR_PATTERN = /\s+/u;
 const NOOP_VALUE_CALLBACK = (_value: string): void => undefined;
 const NOOP_VOID_CALLBACK = (): void => undefined;
 
@@ -50,6 +53,10 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   @Input() type: TextFieldType = DEFAULT_TEXT_FIELD_TYPE;
   @Input() readonly = false;
   @Input() name?: string;
+  @Input()
+  set describedBy(value: string | readonly string[] | undefined) {
+    this.additionalDescribedByIds = AppTextFieldComponent.normalizeDescribedByInput(value);
+  }
 
   @Output() readonly valueChange = new EventEmitter<string>();
   @Output() readonly focusChange = new EventEmitter<boolean>();
@@ -64,6 +71,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
   private providedFieldId?: string;
   private readonly generatedFieldId = this.buildFieldId();
+  private additionalDescribedByIds: readonly string[] = [];
 
   value = '';
   isDisabled = false;
@@ -87,6 +95,23 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     }
 
     return `${this.inputId}${TEXT_FIELD_ID_SEPARATOR}${TEXT_FIELD_HINT_SEGMENT}`;
+  }
+
+  get ariaDescribedByAttribute(): string | null {
+    const collectedIds: string[] = [];
+    const hintIdentifier = this.hintId;
+
+    if (hintIdentifier) {
+      collectedIds.push(hintIdentifier);
+    }
+
+    collectedIds.push(...this.additionalDescribedByIds);
+
+    if (collectedIds.length === 0) {
+      return null;
+    }
+
+    return collectedIds.join(ARIA_ATTRIBUTE_SEPARATOR);
   }
 
   get hasPrefix(): boolean {
@@ -149,5 +174,32 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     AppTextFieldComponent.idCounter += 1;
 
     return `${TEXT_FIELD_ID_PREFIX}${TEXT_FIELD_ID_SEPARATOR}${currentId}`;
+  }
+
+  private static normalizeDescribedByInput(
+    value: string | readonly string[] | undefined,
+  ): string[] {
+    if (!value) {
+      return [];
+    }
+
+    if (typeof value === 'string') {
+      return AppTextFieldComponent.splitDescribedByString(value);
+    }
+
+    return value.map((identifier) => identifier.trim()).filter((identifier) => identifier !== EMPTY_STRING);
+  }
+
+  private static splitDescribedByString(value: string): string[] {
+    const trimmedValue = value.trim();
+
+    if (trimmedValue === EMPTY_STRING) {
+      return [];
+    }
+
+    return trimmedValue
+      .split(DESCRIBED_BY_SEPARATOR_PATTERN)
+      .map((identifier) => identifier.trim())
+      .filter((identifier) => identifier !== EMPTY_STRING);
   }
 }
