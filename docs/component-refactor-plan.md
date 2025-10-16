@@ -1,27 +1,43 @@
 # Component Refactor Plan
 
+## 0. Design Integrity Policy
+
+The current UI serves as the **visual baseline** for the entire refactor.  
+All modifications must maintain _pixel-identical_ rendering across the following attributes:
+
+- Layout dimensions, padding, margins, and grid spacing.
+- Typography scale, weights, and alignment.
+- Colors, gradients, elevation, and shadows.
+- Border radii, component shapes, and visual hierarchy.
+- DOM nesting depth and relative element offsets.
+
+This plan is **structural only** — no visual, typographic, or stylistic changes are permitted.  
+Each iteration must produce screenshot evidence showing identical computed output compared to the baseline.
+
+---
+
 ## 1. Unified Layout Integration Strategy
 
 ### 1.1 Global layout host realignment
 
-- Promote the current `HomeComponent` structure into a new **global layout host** named `AppLayoutComponent`, preserving its shell, header, navigation tabs, and card scaffold.
-- Expose a projected content outlet inside the existing main container (previously `.home__card-body`) to serve as the insertion point for all feature routes.
-- Extract the previous home dashboard logic into a dedicated `DashboardComponent` (or equivalent) registered as one of the routed children, ensuring it operates within the unified layout without re-instantiating shared shell logic.
-- Define a layout-level interaction contract (signals or inputs) for section/tab activation, allowing any feature route to request active state changes without duplicating router listeners or referencing the layout directly.
+- Promote the existing `HomeComponent` structure into a new **global layout host** named `AppLayoutComponent`, preserving all container dimensions, spacing, and surface relationships.
+- Expose a projected content outlet within the main body container to serve as the insertion point for all feature routes.
+- Extract dashboard logic into a standalone `DashboardComponent` registered as one of the routed children, operating inside the unified layout without altering the shared shell.
+- Define a layout-level interaction contract (signals or inputs) for section or tab activation, avoiding duplicated router subscriptions.
 
 ### 1.2 Route hierarchy updates
 
-- Nest all feature routes (`dashboard`, `favorites`, `route-search`, `stop-detail`, `settings`, `map`, etc.) under the new `AppLayoutComponent` while maintaining current friendly slugs.
-- Configure the router with a `path: ''` entry that loads `AppLayoutComponent` as the global layout, ensuring consistent rendering across the application.
-- Redirect legacy standalone views to the new child routes to maintain deep-link compatibility and avoid double initialization.
-- Each child route must provide its own title resolver; the layout host handles shared chrome and navigation only.
+- Nest all feature routes (`dashboard`, `favorites`, `route-search`, `stop-detail`, `settings`, `map`, etc.) under `AppLayoutComponent` while keeping **existing slugs identical**.
+- Configure the router with a `path: ''` entry pointing to `AppLayoutComponent` as the global layout host.
+- Redirect legacy standalone routes to the new structure without altering visible URLs or triggering reinitialization.
+- Each feature route must provide its own localized title resolver; `AppLayoutComponent` handles shared chrome only.
 
 ### 1.3 Content projection contract
 
-- Create a neutral directive, `AppLayoutContentDirective`, under `src/app/shared/layout/`, defining the projection slot within the main content container.
-- Any feature view must declare its root section using this directive to ensure spacing, typography, and hierarchy consistency.
-- Provide an `AppLayoutContext` injection token for features that need to trigger layout-level affordances (e.g., highlight tab, show/hide quick actions) without breaking hexagonal boundaries.
-- Preserve SSR and hydration safety by keeping layout interactions declarative through Angular signals.
+- Define `AppLayoutContentDirective` under `src/app/shared/layout/` as the projection anchor for content within the layout body.
+- Require all feature roots to use this directive, ensuring consistent spacing, typography, and hierarchy.
+- Provide an `AppLayoutContext` injection token enabling feature-level control of layout affordances (tabs, quick actions) without violating hexagonal separation.
+- Maintain SSR and hydration safety through declarative signal-based state.
 
 ---
 
@@ -29,25 +45,25 @@
 
 ### 2.1 Feature components
 
-- Inventory all feature components currently under `src/app/features/`, marking usage, dependencies, and routing context.
-- Identify presentation components leaking data or domain dependencies (e.g., services from `data/` layer) and plan their replacement with domain facades (e.g., `RouteDirectoryFacade`, `StopScheduleFacade`).
-- Flag any unused dialogs or feature widgets for removal or integration into the shared UI library.
+- Audit all components under `src/app/features/`, recording usage, dependencies, and routing contexts.
+- Identify any presentation-to-data layer leaks (e.g., direct `StopDirectoryService` usage) and plan replacements using domain facades (`RouteDirectoryFacade`, `StopScheduleFacade`).
+- Flag unused dialogs, forms, or temporary widgets for removal or migration to shared UI.
 
 ### 2.2 Shared UI components
 
-- Consolidate and normalize all shared UI under `src/app/shared/ui/`.
-- Review current UI primitives (`card-list-item`, `section`, `confirm-dialog`, etc.) and document their usage across features.
-- Flag redundant or orphaned components for removal or integration into new generic counterparts (e.g., `InteractiveCardComponent`, `DialogFrameComponent`, `FormFieldComponent`).
+- Consolidate all reusable primitives under `src/app/shared/ui/`.
+- Map existing primitives (`card-list-item`, `section`, `confirm-dialog`, etc.) and document usage frequency.
+- Mark redundant or overlapping components for merge into unified, context-neutral counterparts (`InteractiveCardComponent`, `DialogFrameComponent`, `FormFieldComponent`).
 
 ### 2.3 Usage detection summary
 
-- Confirm where each shared component is imported and whether it remains referenced after layout migration.
-- Document orphaned or duplicate components (e.g., `stop-navigation-item`, `home-nearby-stops-dialog`) and schedule cleanup.
+- Confirm all import paths and references; record orphaned items for removal after validation.
+- Verify that all shared UI remains referenced; otherwise, schedule deletion after visual confirmation.
 
 ### 2.4 Cross-layer dependency leaks
 
-- Replace data-layer dependencies in presentation components with domain-level facades.
-- Remove direct use of Angular Material services (`MatDialog`, etc.) and replace them with custom overlay ports exposed through shared infrastructure interfaces.
+- Replace all data-service dependencies in presentation components with domain-facing facades.
+- Remove Angular Material service usage (e.g., `MatDialog`) and rewire through shared overlay abstractions.
 
 ---
 
@@ -55,32 +71,33 @@
 
 ### 3.1 Generic card patterns
 
-- Merge `HomeListCardComponent` and `CardListItemComponent` into a single reusable `InteractiveCardComponent` under `shared/ui/cards/`, with configurable action slots and state bindings.
-- Update all features (recent searches, favorites, stop listings) to use this unified component.
-- Ensure consistent application of the `AccessibleButtonDirective` for interaction.
+- Merge `HomeListCardComponent` and `CardListItemComponent` into `InteractiveCardComponent` under `shared/ui/cards/`.
+- Maintain identical computed metrics (width, height, padding, shadow, and radius).
+- Apply `AccessibleButtonDirective` consistently for interactive behavior.
 
 ### 3.2 Dialog abstractions
 
-- Replace Angular Material dialogs with a custom `OverlayDialogService` under `shared/ui/dialog/`.
-- Use a generic `DialogFrameComponent` for structure and focus management, with feature-specific dialogs projected inside.
-- Ensure consistent overlay styling through shared tokens; remove `MatDialogRef` and related Material dependencies.
+- Implement `OverlayDialogService` in `shared/ui/dialog/` to replace Material dialogs.
+- Create a `DialogFrameComponent` handling structure, padding, focus trapping, and overlay layering using shared tokens.
+- Ensure overlay visuals match the current baseline exactly (same opacity, shadow depth, and radii).
 
 ### 3.3 Form controls
 
-- Create custom reusable primitives under `shared/ui/forms/`:
+- Introduce new primitives under `shared/ui/forms/`:
   - `AppTextFieldComponent`
   - `AppAutocompleteComponent`
   - `AppDatePickerComponent`
-- These must replicate current functionality using CDK overlays or native controls, styled only with global tokens, and must not use `<button>` elements.
+- Components must visually and interactively mirror the current UI (identical borders, radii, hover/focus states).
+- Use CDK overlays or native inputs where possible; **no `<button>` elements** permitted inside primitives.
 
 ### 3.4 Directory structure & naming
 
-- Standardize naming for clarity:
+- Maintain consistent neutral naming:
   - Global layout → `AppLayoutComponent`
-  - Shared UI primitives → under `shared/ui/`
+  - UI primitives → under `shared/ui/`
   - Feature views → under `features/<feature-name>/view/`
-- Avoid contextual names tied to “home”, “recent”, or “favorites”; prefer functional names like `InteractiveCard`, `OverlayDialog`, `AppSection`, etc.
-- Update barrel exports in `shared/ui/index.ts` for the new consolidated components.
+- Avoid context-specific prefixes (`home`, `recent`, `favorites`); prefer functional descriptors.
+- Update all barrel exports and aliases accordingly.
 
 ---
 
@@ -88,49 +105,76 @@
 
 ### 4.1 Verification checklist
 
-- Enforce exclusive use of `var(--color-*)`, `var(--spacing-*)`, and other global tokens from `src/styles/theme-rules.css`.
-- Remove all feature-scoped aliases (e.g., `--home-blue`, `--home-navy`).
-- Add linting rule or script to disallow custom `--feature-*` variables.
-- Maintain existing computed styles via class-based refactors only.
+- Enforce the use of global tokens from `src/styles/theme-rules.css` only (`--color-*`, `--spacing-*`, `--radius-*`, etc.).
+- Remove feature-scoped CSS variables (e.g., `--home-blue`).
+- Introduce a lint rule or CI check disallowing `--feature-*` variables.
+- Maintain identical visual results through refactor (verified by computed style comparison).
 
 ### 4.2 Style migration
 
-- Ensure each feature aligns with global layout spacing and typography rules.
-- Document and justify any new alias added to global tokens (only if absolutely necessary).
+- Align all SCSS with shared theme tokens.
+- Document any new semantic alias in `theme-rules.css` and justify its scope.
+- No new color, spacing, or typography definitions allowed.
 
 ---
 
 ## 5. Accessibility & Interaction
 
-- Replace all interactive controls with neutral containers using `AccessibleButtonDirective`.
-- Verify proper keyboard navigation, focus handling, and ARIA roles.
-- Ensure form primitives expose correct combobox, date, and input semantics with keyboard support and no visual regressions.
+- Replace interactive controls with neutral containers using `AccessibleButtonDirective`.
+- Validate tab order, focus rings, pressed/expanded states, and ARIA bindings.
+- Ensure all new form controls maintain full keyboard and screen-reader parity with current behavior.
+- Run automated a11y audits (axe-core, Lighthouse) after each major migration step.
 
 ---
 
 ## 6. Dependencies & Cleanup
 
-- Remove **all** Angular Material dependencies (`@angular/material/*`), related CSS, and providers.
-- Clean up orphaned components, redundant services, and outdated route declarations.
-- Update `tsconfig` paths and barrel exports to reflect the new structure.
+- Remove **all** Angular Material imports, providers, and CSS dependencies.
+- Replace any Material tokens or mixins with shared equivalents.
+- Delete orphaned components or obsolete services only after confirming that layout and spacing remain unchanged.
+- Update `tsconfig` paths, imports, and barrel exports to match the new directory structure.
 
 ---
 
 ## 7. Quality Gates & Validation
 
-- Preserve unit test coverage.
-- Add integration tests for layout projection, custom dialogs, and form primitives.
-- Run `npm run lint`, `npm run test`, and `npm run build` before commit.
-- Perform visual regression testing using Storybook or Cypress to confirm identical rendering.
+### 7.1 Build & linting
+
+- Maintain zero lint errors and full type safety (`npm run lint`, `npm run test`, `npm run build`).
+- Any style or snapshot diff fails the refactor stage.
+
+### 7.2 Visual regression testing
+
+- Use Storybook or Cypress image snapshots to confirm **pixel parity** with the baseline UI.
+- Run snapshot diffs for every route and feature view under both language contexts.
+- Screenshots must be attached and reviewed for every iteration.
+
+### 7.3 Test coverage
+
+- Expand test suites for:
+  - Layout projection and routing hierarchy.
+  - Overlay dialog service and focus behavior.
+  - Custom form control behavior and validation.
+- Maintain or exceed existing coverage metrics.
 
 ---
 
 ## 8. Compliance Confirmation
 
-This refactor plan adheres fully to `AGENTS.md`:
+This plan conforms to `AGENTS.md` and the enforced Design Integrity Policy:
 
-- Maintains **hexagonal layering** (UI → domain → data).
-- Uses **friendly URLs** under the unified global layout.
-- Enforces **accessibility**, **translation**, and **token-based styling**.
-- Eliminates **Angular Material** and avoids feature-scoped styling.
-- Establishes a reusable **global layout** (`AppLayoutComponent`) and shared component library consistent across the entire app.
+- Preserves **hexagonal architecture** (UI → domain → data separation).
+- Keeps **friendly URLs** and the PWA shell intact.
+- Guarantees **accessibility**, **translation**, and **token-based theming**.
+- Prohibits any **visual or behavioral drift** from the baseline.
+- Removes Angular Material entirely.
+- Establishes a reusable, visually consistent **global layout** (`AppLayoutComponent`) and a unified shared UI library.
+
+---
+
+🖼 **Verification Requirement:**  
+Every commit performing changes under this plan must include:
+
+- At least one browser screenshot URL demonstrating identical rendering.
+- A recorded comparison result (0 px diff) from the visual regression tool.
+- Updated checklist progress in `docs/features-checklist.md`.

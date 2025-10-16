@@ -42,13 +42,32 @@
 
 ### Component Refactor Plan (2025-10-16)
 
-- [ ] Extract a new `AppLayoutComponent` from the existing home feature and move dashboard-specific logic into a dedicated `DashboardComponent` while preserving the shared shell, navigation, and card scaffold.
-- [ ] Reconfigure `app.routes.ts` so `AppLayoutComponent` acts as the global layout host for all feature child routes via a nested router outlet, keeping current friendly URLs intact.
-- [ ] Provide a shared layout context (directive + injection token) that allows feature views to project content and request layout or tab state updates without directly accessing router internals.
-- [ ] Replace all Angular Material dialog usage with a custom overlay dialog service and migrate existing dialogs (confirmations, nearby stops, etc.) to the new shared infrastructure.
-- [ ] Build shared form primitives (text field, autocomplete, date picker) inside `shared/ui/forms/` and refactor `RouteSearchFormComponent` and related features to consume them while maintaining accessibility and identical computed styles.
-- [ ] Introduce domain facades exposing stop directory and schedule data to presentation components, removing any direct data-layer dependencies from UI classes.
-- [ ] Consolidate duplicated card patterns (`HomeListCardComponent`, `CardListItemComponent`, etc.) into a single reusable `InteractiveCardComponent`, updating recent searches, favorites, and navigation entries to use it.
-- [ ] Review orphaned or redundant components (e.g., nearby stops dialog, stop navigation item) and either remove them or reintegrate them under the new shared layout.
-- [ ] Align all views (favorites, route search, stop detail, settings, map, etc.) with the unified layout structure and spacing classes to ensure consistent visuals inside the shared body container.
-- [ ] Expand unit and integration test coverage for the global layout host, dialog service, and form primitives; verify accessibility and run `npm run lint`, `npm run test`, and `npm run build` to confirm full stability.
+⚠️ **Design Integrity Requirement:**  
+All layout, spacing, typography, color, shape, shadow, and positioning values must remain pixel-identical to the current baseline UI.  
+The existing home layout serves as the **visual baseline**. Any deviation in spacing, font weight, hue, border radius, alignment, or visual hierarchy constitutes a regression.  
+This phase is purely structural and organizational — no aesthetic changes are allowed.
+
+- [ ] Extract a global `AppLayoutComponent` from the existing layout structure, preserving every exact visual metric: container width, corner radius, background gradients, shadows, typography scale, and spacing values.  
+      The resulting component must render identically to the current baseline layout before any routing changes.
+- [ ] Reconfigure `app.routes.ts` so `AppLayoutComponent` hosts all feature child routes via a nested router outlet, ensuring **zero visual drift** (same DOM hierarchy, computed sizes, and offsets).  
+      Verify using snapshot comparison or automated DOM diffing.
+- [ ] Provide a shared layout context (directive + injection token) allowing feature modules to project content or update tab states **without modifying layout dimensions** or introducing new structural wrappers.
+- [ ] Replace all Angular Material dialog usage with a custom overlay dialog service while preserving the exact overlay geometry, padding, elevation, focus behavior, and backdrop styling.
+- [ ] Build shared form primitives (text field, autocomplete, date picker) inside `shared/ui/forms/` replicating the current field metrics and interaction behavior — identical typography, borders, radius, hover/focus states, and spacing.  
+      No change to visual hierarchy or proportions is allowed.
+- [ ] Introduce domain facades to abstract data services from presentation components, ensuring no change in rendering, timing, or layout stability.
+- [ ] Consolidate duplicated card components (`HomeListCardComponent`, `CardListItemComponent`, etc.) into a single reusable `InteractiveCardComponent` that maintains identical computed dimensions, typography, shadow, and spacing.  
+      Validate visual parity against the baseline grid.
+- [ ] Review orphaned or redundant components (e.g., dialog variants, navigation items) and remove or reassign them only after confirming **no visual or spacing shifts** occur across any layout.
+- [ ] Align all feature views (favorites, route search, stop detail, settings, map, etc.) with the unified layout structure using the shared spacing and typography tokens while maintaining pixel parity with the current layout.  
+      Automated screenshot comparison must confirm zero differences.
+- [ ] Expand unit and integration tests to cover:
+  - Layout pixel parity (visual regression checks via Storybook or Cypress snapshots).
+  - Dialog overlay focus and accessibility behavior.
+  - Form primitive keyboard navigation and ARIA labeling.  
+    Execute `npm run lint`, `npm run test`, and `npm run build` after each phase.  
+    The iteration is valid only if **visual comparison reports zero diffs**.
+
+🖼 **Baseline Reference:**  
+The current layout, as rendered in the production build, is the **canonical baseline**.  
+Each iteration of this refactor must include one or more browser screenshots with accessible URLs demonstrating identical visual output to the baseline.
