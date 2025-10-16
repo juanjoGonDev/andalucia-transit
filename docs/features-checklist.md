@@ -33,3 +33,4 @@
   - [x] Align Settings layout spacing and typography with shared tokens (computed styles matched for `.settings`, `.settings__language-button`, and `.settings__toggle`).
 - [ ] Maintain translation keys and accessibility attributes.
   - [x] Migrate Favorites interactions to the accessible button directive while preserving aria bindings (computed styles matched for `.favorites__clear`, `.favorites__item-main`, and `.favorites__remove`).
+  - [x] Guard accessible button semantics with regression tests to preserve ARIA roles and keyboard activation behavior across neutral containers.

@@ -5,7 +5,12 @@
     <div class="map-placeholder">
       <span>{{ translationKeys.hint | translate }}</span>
     </div>
-    <a appAccessibleButton mat-stroked-button color="primary">
+    <a
+      appAccessibleButton
+      mat-stroked-button
+      color="primary"
+      [attr.aria-label]="translationKeys.openList | translate"
+    >
       {{ translationKeys.openList | translate }}
     </a>
   </mat-card>
