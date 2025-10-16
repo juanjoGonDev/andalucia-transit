@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DateTime } from 'luxon';
 import {
@@ -40,6 +39,7 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData
 } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
+import { OverlayDialogService } from '../../../shared/ui/dialog/overlay-dialog.service';
 import { APP_CONFIG_TOKEN } from '../../../core/tokens/app-config.token';
 import { AppConfig } from '../../../core/config';
 import { RouteSearchPreferencesService } from '../../../domain/route-search/route-search-preferences.service';
@@ -66,7 +66,7 @@ export class HomeRecentSearchesComponent {
   private readonly preview = inject(RouteSearchPreviewService);
   private readonly execution = inject(RouteSearchExecutionService);
   private readonly router = inject(Router);
-  private readonly dialog = inject(MatDialog);
+  private readonly dialog = inject(OverlayDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
   private readonly preferences = inject(RouteSearchPreferencesService);

@@ -87,6 +87,8 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Create a `DialogFrameComponent` handling structure, padding, focus trapping, and overlay layering using shared tokens.
 - Ensure overlay visuals match the current baseline exactly (same opacity, shadow depth, and radii).
 
+  - 2025-10-16: Added `OverlayDialogService` that currently bridges MatDialog while consolidating confirm dialog entry points under a single abstraction to prepare for the custom overlay implementation.
+
 ### 3.3 Form controls
 
 - Introduce new primitives under `shared/ui/forms/`:

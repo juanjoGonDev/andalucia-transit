@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AppLayoutComponent } from '../app-layout/app-layout.component';
-
+import { RouterOutlet } from '@angular/router';
 import { AppLayoutComponent } from '../app-layout/app-layout.component';
 
 @Component({

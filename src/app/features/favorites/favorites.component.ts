@@ -9,7 +9,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -21,6 +20,7 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData
 } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
+import { OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 
 interface FavoriteListItem {
@@ -57,7 +57,7 @@ const DIACRITIC_PATTERN = /\p{M}/gu;
 })
 export class FavoritesComponent {
   private readonly favoritesService = inject(StopFavoritesService);
-  private readonly dialog = inject(MatDialog);
+  private readonly dialog = inject(OverlayDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router);
