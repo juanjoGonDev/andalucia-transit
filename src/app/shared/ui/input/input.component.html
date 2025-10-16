@@ -1,0 +1,18 @@
+<input
+  [id]="id"
+  [name]="name"
+  [ngClass]="classList()"
+  [attr.placeholder]="placeholderKey ? (placeholderKey | translate) : null"
+  [attr.autocomplete]="autocomplete ?? null"
+  [attr.inputmode]="inputMode ?? null"
+  [attr.aria-describedby]="describedBy ?? null"
+  [attr.aria-invalid]="invalid ? 'true' : null"
+  [attr.aria-required]="required ? 'true' : null"
+  [readonly]="readonly"
+  [required]="required"
+  [disabled]="disabled"
+  [type]="type"
+  [value]="value"
+  (input)="handleInput($event)"
+  (blur)="handleBlur()"
+/>

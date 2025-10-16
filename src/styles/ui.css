@@ -201,6 +201,97 @@ body {
   color: var(--color-error-600);
 }
 
+.control--sm {
+  padding: var(--space-1) var(--space-2);
+  min-height: var(--control-height-sm);
+  font-size: var(--font-size-xs);
+}
+
+.control--md {
+  padding: var(--space-2) var(--space-3);
+  min-height: var(--control-height-md);
+  font-size: var(--font-size-sm);
+}
+
+.control--lg {
+  padding: var(--space-3) var(--space-4);
+  min-height: var(--control-height-lg);
+  font-size: var(--font-size-md);
+}
+
+.control--primary {
+  border-color: var(--color-primary-300);
+}
+
+.control--primary:focus-visible {
+  border-color: var(--color-primary-500);
+}
+
+.control--secondary {
+  background-color: var(--color-secondary-50);
+  border-color: var(--color-secondary-200);
+}
+
+.control--secondary:focus-visible {
+  border-color: var(--color-secondary-400);
+}
+
+.control--ghost {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.control--ghost:hover {
+  background-color: var(--color-neutral-100);
+}
+
+.control--outline {
+  border-color: var(--color-primary-200);
+  background-color: var(--color-surface);
+}
+
+.control--outline:hover {
+  border-color: var(--color-primary-300);
+}
+
+.control--destructive {
+  border-color: var(--color-error-500);
+  background-color: var(--color-error-50);
+}
+
+.control--destructive:focus-visible {
+  border-color: var(--color-error-600);
+}
+
+.control--subtle {
+  background-color: var(--color-neutral-100);
+  border-color: var(--color-neutral-200);
+}
+
+.control--tone-neutral {
+  border-color: var(--color-neutral-300);
+}
+
+.control--tone-info {
+  border-color: var(--color-primary-400);
+  background-color: var(--color-primary-50);
+}
+
+.control--tone-success {
+  border-color: var(--color-success-500);
+  background-color: var(--color-success-50);
+}
+
+.control--tone-warning {
+  border-color: var(--color-warning-500);
+  background-color: var(--color-warning-50);
+}
+
+.control--tone-error {
+  border-color: var(--color-error-500);
+  background-color: var(--color-error-50);
+}
+
 .card {
   background-color: var(--color-surface);
   border-radius: var(--radius-lg);

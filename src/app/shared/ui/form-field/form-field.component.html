@@ -1,0 +1,10 @@
+<label *ngIf="labelKey" class="label" [attr.for]="controlId" [attr.id]="labelId">
+  {{ labelKey | translate }}
+</label>
+<ng-content></ng-content>
+<p *ngIf="hintKey" class="hint" [attr.id]="resolvedHintId">
+  {{ hintKey | translate }}
+</p>
+<p *ngIf="errorKey" class="error-text" [attr.id]="resolvedErrorId">
+  {{ errorKey | translate }}
+</p>

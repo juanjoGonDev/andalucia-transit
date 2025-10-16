@@ -8,8 +8,12 @@
 - [x] Mirror Andalusian observed holidays by treating Monday as festivo when the official date falls on Sunday.
 
 ## UI Refactor – Unified Design System
-- [ ] Define theme tokens and global CSS utilities (buttons, forms, surfaces)
+- [x] Define theme tokens and global CSS utilities (buttons, forms, surfaces)
 - [ ] Replace old UI components with unified primitives
+  - [x] Introduce FormField and Input primitives with ControlValueAccessor support
+  - [ ] Implement remaining primitives (Textarea, Select, Checkbox, Radio, Switch, etc.)
+  - [ ] Replace feature screens to use unified primitives
+  - [ ] Remove deprecated component implementations
 - [ ] Remove duplicated buttons, inputs, and modals
 - [ ] Implement a single reusable Dialog system
 - [ ] Ensure all components respect the primary palette
