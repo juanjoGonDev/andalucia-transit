@@ -102,6 +102,8 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Components must visually and interactively mirror the current UI (identical borders, radii, hover/focus states).
 - Use CDK overlays or native inputs where possible; **no `<button>` elements** permitted inside primitives.
 
+  - 2025-10-16: Scaffolded `AppTextFieldComponent` with slot directives and ControlValueAccessor wiring to replace Material text fields without altering upcoming form visuals.
+
 ### 3.4 Directory structure & naming
 
 - Maintain consistent neutral naming:
