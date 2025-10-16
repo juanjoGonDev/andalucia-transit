@@ -1,0 +1,24 @@
+<select
+  [id]="id"
+  [name]="name"
+  [ngClass]="classList()"
+  [attr.aria-describedby]="describedBy ?? null"
+  [attr.aria-invalid]="invalid ? 'true' : null"
+  [attr.aria-required]="required ? 'true' : null"
+  [disabled]="disabled"
+  [required]="required"
+  [value]="value ?? emptyValue"
+  (change)="handleChange($event)"
+  (blur)="handleBlur()"
+>
+  <option *ngIf="placeholderKey" [value]="emptyValue" disabled hidden>
+    {{ placeholderKey | translate }}
+  </option>
+  <option
+    *ngFor="let option of optionList()"
+    [value]="option.value"
+    [disabled]="option.disabled ?? false"
+  >
+    {{ option.labelKey | translate: option.labelParams }}
+  </option>
+</select>

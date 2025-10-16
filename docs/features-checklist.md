@@ -13,7 +13,7 @@
   - [x] Introduce FormField and Input primitives with ControlValueAccessor support
   - [ ] Implement remaining primitives (Textarea, Select, Checkbox, Radio, Switch, etc.)
     - [x] Add Textarea primitive with ControlValueAccessor support
-    - [ ] Implement Select primitive with shared control tokens
+    - [x] Implement Select primitive with shared control tokens
     - [ ] Implement Checkbox primitive with shared control tokens
     - [ ] Implement Radio primitive with shared control tokens
     - [ ] Implement Switch primitive with shared control tokens
