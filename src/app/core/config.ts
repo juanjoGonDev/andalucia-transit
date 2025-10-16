@@ -20,9 +20,8 @@ const ROUTE_SEARCH_HISTORY_STORAGE_KEY = 'andalucia-transit.routeSearchHistory' 
 const ROUTE_SEARCH_PREFERENCES_STORAGE_KEY = 'andalucia-transit.routeSearchPreferences' as const;
 const STOP_FAVORITES_STORAGE_KEY = 'andalucia-transit.stopFavorites' as const;
 const ROUTE_SEARCH_SCHEDULE_ACCURACY_THRESHOLD_DAYS = 30 as const;
-const HOME_TAB_QUERY_PARAM = 'tab' as const;
-const HOME_INTENT_QUERY_PARAM = 'intent' as const;
-const HOME_NEARBY_INTENT = 'nearby' as const;
+const HOME_RECENT_ROUTE = 'recents' as const;
+const HOME_FAVORITES_ROUTE = 'favs' as const;
 const LOCALE_ES_STANDARD = 'es-ES' as const;
 const LOCALE_EN_STANDARD = 'en-GB' as const;
 const LANGUAGE_LOCALE_MAP = {
@@ -69,17 +68,11 @@ export const APP_CONFIG = {
       originStopId: ROUTE_SEARCH_ORIGIN_QUERY_PARAM
     }
   },
-  home: {
-    queryParams: {
-      tab: HOME_TAB_QUERY_PARAM,
-      intent: HOME_INTENT_QUERY_PARAM
-    },
-    intents: {
-      nearby: HOME_NEARBY_INTENT
-    }
-  },
+  home: {},
   routes: {
     home: '' as const,
+    homeRecent: HOME_RECENT_ROUTE,
+    homeFavorites: HOME_FAVORITES_ROUTE,
     stopDetailBase: STOP_DETAIL_BASE_SEGMENT,
     stopDetailPattern: `${STOP_DETAIL_BASE_SEGMENT}/:${STOP_ID_ROUTE_PARAM}` as const,
     routeSearch: ROUTE_SEARCH_BASE_SEGMENT,

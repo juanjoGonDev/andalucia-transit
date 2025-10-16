@@ -18,6 +18,16 @@ export const routes: Routes = [
         title: APP_CONFIG.translationKeys.navigation.home
       },
       {
+        path: APP_CONFIG.routes.homeRecent,
+        component: HomeComponent,
+        title: APP_CONFIG.translationKeys.navigation.home
+      },
+      {
+        path: APP_CONFIG.routes.homeFavorites,
+        component: HomeComponent,
+        title: APP_CONFIG.translationKeys.navigation.home
+      },
+      {
         path: APP_CONFIG.routes.favorites,
         component: FavoritesComponent,
         title: APP_CONFIG.translationKeys.navigation.favorites
