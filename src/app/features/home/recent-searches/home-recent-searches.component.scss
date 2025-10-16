@@ -7,7 +7,7 @@
 .home-recent__empty {
   margin: 0;
   font-size: var(--font-size-sm);
-  color: var(--color-text-subtle);
+  color: var(--color-ink-soft);
 }
 
 .home-recent__list {
@@ -24,7 +24,7 @@
 }
 
 .home__panel--recent .home-recent__empty {
-  color: var(--color-text-subtle);
+  color: var(--color-ink-soft);
 }
 
 .home__recent-summary .home-recent {
@@ -35,17 +35,50 @@
   flex-direction: row;
   gap: var(--space-3);
   overflow-x: auto;
-  padding-bottom: var(--space-2);
+  padding-block-end: var(--space-2);
   scroll-snap-type: x mandatory;
 }
 
 .home__recent-summary .home-recent__item {
-  flex: 0 0 min(100%, var(--layout-max-width-sm));
+  flex: 0 0 clamp(14rem, 65vw, 18rem);
   scroll-snap-align: start;
 }
 
 .home__recent-summary .home-recent__empty {
   color: var(--color-text-inverse-subtle);
+}
+
+.home__recent-summary .recent-card {
+  background: linear-gradient(135deg, var(--color-surface-glass-soft) 0%, var(--color-surface-glass-softer) 100%);
+  color: var(--color-text-inverse);
+  box-shadow: none;
+  border: var(--border-width) solid var(--color-surface-glass-outline);
+}
+
+.home__recent-summary .recent-card__body {
+  padding: var(--space-4) var(--space-5);
+}
+
+.home__recent-summary .recent-card__route {
+  color: var(--color-text-inverse);
+}
+
+.home__recent-summary .recent-card__date,
+.home__recent-summary .recent-card__status,
+.home__recent-summary .recent-card__today {
+  color: var(--color-text-inverse-subtle);
+}
+
+.home__recent-summary .recent-card__remove {
+  color: var(--color-text-inverse-subtle);
+}
+
+.home__recent-summary .recent-card__remove:hover {
+  background: var(--color-surface-glass-hover);
+}
+
+.home__recent-summary .recent-card__remove:focus-visible {
+  outline-color: var(--color-text-inverse);
 }
 
 @media (min-width: 56rem) {

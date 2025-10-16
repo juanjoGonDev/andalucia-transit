@@ -19,9 +19,10 @@
     - [x] Implement Switch primitive with shared control tokens
   - [ ] Replace feature screens to use unified primitives
     - [x] Favorites view migrated to FormField, Input, and button utilities
+      - [x] Restore favorites styling parity with the legacy theme using shared tokens
     - [ ] Migrate remaining home, search, and stop detail forms
       - [x] Home dashboard actions migrated to shared button utilities and palette tokens
-        - [x] Polished hero layout and segmented controls after QA feedback
+        - [x] Restore hero card, segmented controls, and recent cards to the original visual theme via tokens
       - [ ] Refactor route search form to use shared primitives
       - [ ] Update stop detail filters to shared primitives
   - [ ] Remove deprecated component implementations
@@ -39,8 +40,10 @@
   - [x] Replace feature dialog usages with the new service
   - [ ] Ensure all components respect the primary palette
     - [x] Favorites styles migrated to palette tokens
+      - [x] Favorites visuals aligned with the reference theme after QA review
     - [ ] Verify remaining feature styling
       - [x] Home dashboard surfaces restyled with palette tokens
+        - [x] Legacy hero aesthetics preserved while retaining refactored structure
       - [ ] Review route search layout tokens
 - [ ] Verify accessibility and translation integration
 - [ ] Update docs/ui-theme.md after completion
