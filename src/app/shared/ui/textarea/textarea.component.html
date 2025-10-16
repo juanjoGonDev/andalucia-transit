@@ -1,0 +1,16 @@
+<textarea
+  [id]="id"
+  [name]="name"
+  [ngClass]="classList()"
+  [attr.placeholder]="placeholderKey ? (placeholderKey | translate) : null"
+  [attr.aria-describedby]="describedBy ?? null"
+  [attr.aria-invalid]="invalid ? 'true' : null"
+  [attr.aria-required]="required ? 'true' : null"
+  [readonly]="readonly"
+  [required]="required"
+  [disabled]="disabled"
+  [rows]="rows"
+  [value]="value"
+  (input)="handleInput($event)"
+  (blur)="handleBlur()"
+></textarea>

@@ -13,53 +13,30 @@ import {
   ControlVariant
 } from '../control/control.options';
 
-type InputType = 'text' | 'email' | 'number' | 'password' | 'search' | 'tel' | 'url';
-type InputValue = string | null;
+type TextareaValue = string | null;
 
-type AutoCompleteAttribute =
-  | 'additional-name'
-  | 'address-line1'
-  | 'address-line2'
-  | 'address-line3'
-  | 'bday'
-  | 'bday-year'
-  | 'country'
-  | 'current-password'
-  | 'email'
-  | 'family-name'
-  | 'given-name'
-  | 'honorific-prefix'
-  | 'honorific-suffix'
-  | 'name'
-  | 'new-password'
-  | 'off'
-  | 'one-time-code'
-  | 'organization'
-  | 'postal-code'
-  | 'street-address'
-  | 'tel'
-  | 'username';
-
-type InputMode = 'decimal' | 'email' | 'none' | 'numeric' | 'search' | 'tel' | 'text' | 'url';
+const DEFAULT_ROWS = 4;
+const MIN_ROWS = 2;
 
 @Component({
-  selector: 'app-input',
+  selector: 'app-textarea',
   standalone: true,
   imports: [CommonModule, TranslateModule],
-  templateUrl: './input.component.html',
+  templateUrl: './textarea.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: InputComponent
+      useExisting: TextareaComponent
     }
   ]
 })
-export class InputComponent implements ControlValueAccessor {
+export class TextareaComponent implements ControlValueAccessor {
   private readonly variantSignal = signal<ControlVariant>('outline');
   private readonly sizeSignal = signal<ControlSize>('md');
   private readonly toneSignal = signal<ControlTone>('neutral');
+  private readonly rowCountSignal = signal<number>(DEFAULT_ROWS);
 
   readonly classList = computed(() => [
     CONTROL_BASE_CLASS,
@@ -68,7 +45,7 @@ export class InputComponent implements ControlValueAccessor {
     CONTROL_TONE_CLASS_MAP[this.toneSignal()]
   ]);
 
-  private onChange: (value: InputValue) => void = () => undefined;
+  private onChange: (value: TextareaValue) => void = () => undefined;
   private onTouched: () => void = () => undefined;
   private isDisabled = false;
   private viewValue = '';
@@ -76,12 +53,9 @@ export class InputComponent implements ControlValueAccessor {
   @Input() id?: string;
   @Input() name?: string;
   @Input() placeholderKey?: string;
-  @Input() autocomplete?: AutoCompleteAttribute;
-  @Input() inputMode?: InputMode;
-  @Input() type: InputType = 'text';
+  @Input() describedBy?: string;
   @Input() readonly = false;
   @Input() required = false;
-  @Input() describedBy?: string;
   @Input() invalid = false;
 
   @Input()
@@ -99,15 +73,25 @@ export class InputComponent implements ControlValueAccessor {
     this.toneSignal.set(value);
   }
 
+  get rows(): number {
+    return this.rowCountSignal();
+  }
+
+  @Input()
+  set rows(value: number | undefined) {
+    const candidate = value ?? DEFAULT_ROWS;
+    this.rowCountSignal.set(candidate < MIN_ROWS ? MIN_ROWS : candidate);
+  }
+
   get value(): string {
     return this.viewValue;
   }
 
-  writeValue(value: InputValue): void {
+  writeValue(value: TextareaValue): void {
     this.viewValue = value ?? '';
   }
 
-  registerOnChange(callback: (value: InputValue) => void): void {
+  registerOnChange(callback: (value: TextareaValue) => void): void {
     this.onChange = callback;
   }
 
@@ -120,7 +104,7 @@ export class InputComponent implements ControlValueAccessor {
   }
 
   handleInput(event: Event): void {
-    const target = event.target as HTMLInputElement | null;
+    const target = event.target as HTMLTextAreaElement | null;
     if (!target) {
       return;
     }
