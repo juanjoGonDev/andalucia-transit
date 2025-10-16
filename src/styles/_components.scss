@@ -1,27 +1,15 @@
 a,
-button,
-[role='button'],
-[tabindex]:not([tabindex='-1']),
-[appAccessibleButton],
-.app-button,
-.app-icon-button,
-.app-list-button,
-.app-outline-button,
-.app-solid-button {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
 a *,
+button,
 button *,
+[role='button'],
 [role='button'] *,
+[tabindex]:not([tabindex='-1']),
 [tabindex]:not([tabindex='-1']) *,
+[appAccessibleButton],
 [appAccessibleButton] *,
-.app-button *,
-.app-icon-button *,
-.app-list-button *,
-.app-outline-button *,
-.app-solid-button * {
+[class*='app-'][class*='button'],
+[class*='app-'][class*='button'] * {
   -webkit-tap-highlight-color: transparent;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
