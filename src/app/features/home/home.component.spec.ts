@@ -13,6 +13,7 @@ import { RouteSearchExecutionService } from '../../domain/route-search/route-sea
 import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
 import { APP_CONFIG } from '../../core/config';
 import { HomeTabId } from './home.types';
+import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
 
 class ImmediateIntersectionObserver implements IntersectionObserver {
   readonly root: Element | Document | null = null;
@@ -70,6 +71,10 @@ class RouteSearchStateStub {
 
 class RouteSearchExecutionStub {
   prepare = jasmine.createSpy('prepare').and.returnValue(['', 'routes']);
+}
+
+class FavoritesFacadeStub {
+  readonly favorites$ = of<readonly StopFavorite[]>([]);
 }
 
 class RouterStub {
@@ -152,7 +157,8 @@ describe('HomeComponent', () => {
         { provide: Router, useClass: RouterStub },
         { provide: ActivatedRoute, useClass: ActivatedRouteStub },
         { provide: RouteSearchStateService, useClass: RouteSearchStateStub },
-        { provide: RouteSearchExecutionService, useClass: RouteSearchExecutionStub }
+        { provide: RouteSearchExecutionService, useClass: RouteSearchExecutionStub },
+        { provide: FavoritesFacade, useClass: FavoritesFacadeStub }
       ]
     })
       .overrideComponent(HomeComponent, {

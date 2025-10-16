@@ -30,3 +30,5 @@ export class FavoritesFacade {
     return this.favorites.isFavorite(id);
   }
 }
+
+export type { StopFavorite } from './stop-favorites.service';

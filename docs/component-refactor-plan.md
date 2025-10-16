@@ -74,6 +74,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-16: Added `RecentSearchesFacade` to coordinate route search history, preview, execution, and preference flows for the home recent searches component without altering UI behavior or timing.
   - 2025-10-16: Added `FavoritesFacade` to proxy stop favorites persistence and expose presentation-safe streams while keeping UI timing and rendering unchanged.
   - 2025-10-16: Added `StopScheduleFacade` so stop detail views request schedule data through the domain layer while preserving presentation timing and layout.
+  - 2025-10-16: Home dashboard favorites preview now consumes `FavoritesFacade` to remove direct stop favorites service dependencies without altering the preview layout or timing.
 
 ---
 

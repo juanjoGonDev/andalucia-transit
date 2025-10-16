@@ -19,7 +19,7 @@ import {
   RouteSearchStateService
 } from '../../domain/route-search/route-search-state.service';
 import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
-import { StopFavoritesService, StopFavorite } from '../../domain/stops/stop-favorites.service';
+import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
 import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
 import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
 import { buildNavigationCommands, NavigationCommands } from '../../shared/navigation/navigation.util';
@@ -52,7 +52,7 @@ export class HomeComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly routeSearchState = inject(RouteSearchStateService);
   private readonly execution = inject(RouteSearchExecutionService);
-  private readonly favoritesService = inject(StopFavoritesService);
+  private readonly favoritesFacade = inject(FavoritesFacade);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly translation = APP_CONFIG.translationKeys.home;
@@ -175,7 +175,7 @@ export class HomeComponent {
   }
 
   private observeFavorites(): void {
-    this.favoritesService.favorites$
+    this.favoritesFacade.favorites$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((favorites) => this.favorites.set(favorites));
   }
