@@ -18,16 +18,22 @@
     - [x] Implement Radio primitive with shared control tokens
     - [x] Implement Switch primitive with shared control tokens
   - [ ] Replace feature screens to use unified primitives
+    - [x] Favorites view migrated to FormField, Input, and button utilities
+    - [ ] Migrate remaining home, search, and stop detail forms
   - [ ] Remove deprecated component implementations
 - [ ] Remove duplicated buttons, inputs, and modals
   - [x] Replace confirm dialog actions with global button classes
   - [x] Remove legacy dialog layout implementation
   - [ ] Audit remaining views for outdated button styles and modal code
+    - [x] Favorites view aligned with global button classes
+    - [ ] Review remaining feature templates
 - [ ] Implement a single reusable Dialog system
   - [x] Build overlay-based dialog service, container, and context primitives
   - [x] Add dialog surface component and section directives styled with tokens
   - [x] Migrate existing dialogs away from Angular Material
   - [x] Replace feature dialog usages with the new service
 - [ ] Ensure all components respect the primary palette
+  - [x] Favorites styles migrated to palette tokens
+  - [ ] Verify remaining feature styling
 - [ ] Verify accessibility and translation integration
 - [ ] Update docs/ui-theme.md after completion

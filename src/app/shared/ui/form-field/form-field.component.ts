@@ -12,6 +12,7 @@ const ERROR_ID_SUFFIX = 'error';
   imports: [CommonModule, TranslateModule],
   templateUrl: './form-field.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  exportAs: 'appFormField',
   host: {
     class: 'field'
   }

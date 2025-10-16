@@ -16,6 +16,8 @@ import { firstValueFrom } from 'rxjs';
 import { APP_CONFIG } from '../../core/config';
 import { StopFavoritesService, StopFavorite } from '../../domain/stops/stop-favorites.service';
 import { SectionComponent } from '../../shared/ui/section/section.component';
+import { FormFieldComponent } from '../../shared/ui/form-field/form-field.component';
+import { InputComponent } from '../../shared/ui/input/input.component';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData
@@ -40,11 +42,19 @@ interface FavoriteGroupView {
 const QUERY_LOCALE = 'es-ES' as const;
 const NORMALIZE_FORM = 'NFD' as const;
 const DIACRITIC_PATTERN = /\p{M}/gu;
+const SEARCH_FIELD_ID = 'favorites-search' as const;
 
 @Component({
   selector: 'app-favorites',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, SectionComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    SectionComponent,
+    FormFieldComponent,
+    InputComponent
+  ],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -64,6 +74,7 @@ export class FavoritesComponent {
   protected readonly descriptionKey = this.translations.description;
   protected readonly searchLabelKey = this.translations.searchLabel;
   protected readonly searchPlaceholderKey = this.translations.searchPlaceholder;
+  protected readonly searchFieldId = SEARCH_FIELD_ID;
   protected readonly emptyKey = this.translations.empty;
   protected readonly clearAllLabelKey = this.translations.actions.clearAll;
   protected readonly removeLabelKey = this.translations.actions.remove;

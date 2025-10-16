@@ -3,18 +3,23 @@
     <div class="favorites__header">
       <p class="favorites__description">{{ descriptionKey | translate }}</p>
       <div class="favorites__controls">
-        <label class="favorites__search">
-          <span class="favorites__search-label">{{ searchLabelKey | translate }}</span>
-          <input
+        <app-form-field
+          #searchField="appFormField"
+          class="favorites__search-field"
+          [controlId]="searchFieldId"
+          [labelKey]="searchLabelKey"
+        >
+          <app-input
+            [id]="searchFieldId"
             type="search"
-            class="favorites__search-input"
             [formControl]="searchControl"
-            [placeholder]="searchPlaceholderKey | translate"
-          />
-        </label>
+            [placeholderKey]="searchPlaceholderKey"
+            [describedBy]="searchField.describedBy ?? undefined"
+          ></app-input>
+        </app-form-field>
         <button
           type="button"
-          class="favorites__clear"
+          class="btn btn--outline btn--md favorites__clear"
           (click)="clearAll()"
           [disabled]="!hasFavorites()"
         >
@@ -34,7 +39,11 @@
       <h3 class="favorites__group-title">{{ group.municipality }}</h3>
       <ul class="favorites__list" role="list">
         <li class="favorites__item" *ngFor="let stop of group.stops; trackBy: trackStop">
-          <button type="button" class="favorites__item-main" (click)="openStop(stop)">
+          <button
+            type="button"
+            class="btn btn--ghost btn--md favorites__item-main"
+            (click)="openStop(stop)"
+          >
             <span class="material-symbols-outlined favorites__item-icon">{{ favoriteIcon() }}</span>
             <span class="favorites__item-text">
               <span class="favorites__item-name">{{ stop.name }}</span>
@@ -44,7 +53,11 @@
               </span>
             </span>
           </button>
-          <button type="button" class="favorites__remove" (click)="remove(stop)">
+          <button
+            type="button"
+            class="btn btn--destructive btn--sm favorites__remove"
+            (click)="remove(stop)"
+          >
             <span class="material-symbols-outlined favorites__remove-icon">{{ removeIcon() }}</span>
             {{ removeLabelKey | translate }}
           </button>
