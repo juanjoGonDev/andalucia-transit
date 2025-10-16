@@ -13,7 +13,7 @@ import {
   StopDirectoryOption,
   StopDirectoryService
 } from './data/stops/stop-directory.service';
-import { AppShellComponent } from './shared/layout/app-shell/app-shell.component';
+import { AppLayoutComponent } from './shared/layout/app-layout/app-layout.component';
 
 class StopDirectoryTestingService {
   searchStops(): Observable<readonly StopDirectoryOption[]> {
@@ -72,8 +72,8 @@ describe('AppComponent', () => {
 
   it('navigates to the home component for the root path', async () => {
     const harness = await RouterTestingHarness.create();
-    const instance = await harness.navigateByUrl('/', AppShellComponent);
-    expect(instance).toBeInstanceOf(AppShellComponent);
+    const instance = await harness.navigateByUrl('/', AppLayoutComponent);
+    expect(instance).toBeInstanceOf(AppLayoutComponent);
     const rendered = harness.routeNativeElement as HTMLElement;
     expect(rendered.querySelector('.home')).not.toBeNull();
     expect(rendered.querySelector('.shell-actions')).not.toBeNull();

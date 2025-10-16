@@ -5,12 +5,12 @@ import { HomeComponent } from './features/home/home.component';
 import { RouteSearchComponent } from './features/route-search/route-search.component';
 import { MapComponent } from './features/map/map.component';
 import { FavoritesComponent } from './features/favorites/favorites.component';
-import { AppShellComponent } from './shared/layout/app-shell/app-shell.component';
+import { AppLayoutComponent } from './shared/layout/app-layout/app-layout.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: AppShellComponent,
+    component: AppLayoutComponent,
     children: [
       {
         path: APP_CONFIG.routes.home,
