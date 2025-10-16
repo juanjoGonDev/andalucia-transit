@@ -4,6 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { DialogLayoutComponent } from '../dialog/dialog-layout.component';
+import { AccessibleButtonDirective } from '../../a11y/accessible-button.directive';
 
 export interface ConfirmDialogData {
   readonly titleKey: string;
@@ -21,7 +22,7 @@ export interface ConfirmDialogDetail {
 @Component({
   selector: 'app-confirm-dialog',
   standalone: true,
-  imports: [CommonModule, TranslateModule, DialogLayoutComponent],
+  imports: [CommonModule, TranslateModule, DialogLayoutComponent, AccessibleButtonDirective],
   templateUrl: './confirm-dialog.component.html',
   styleUrl: './confirm-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

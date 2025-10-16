@@ -20,35 +20,18 @@
   z-index: 10;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1rem, 3vw, 2.5rem) 0.5rem;
+  gap: var(--space-md);
+  padding: clamp(var(--space-sm), 2vw, var(--space-md-plus))
+    clamp(var(--space-md), 3vw, var(--space-2xl))
+    var(--space-xs);
   background-color: var(--color-header-surface);
   backdrop-filter: blur(12px);
-}
-
-.route-search__back-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  border: 1px solid var(--color-border-subtle);
-  background: transparent;
-  color: var(--color-icon-muted);
-  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
-}
-
-.route-search__back-button:hover {
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-  background-color: var(--color-primary-soft);
 }
 
 .route-search__header-titles {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--space-3xs);
 }
 
 .route-search__title {
@@ -67,9 +50,9 @@
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  gap: clamp(1.5rem, 2vw + 1rem, 2.5rem);
-  padding: clamp(1rem, 3vw, 2.5rem);
-  padding-bottom: clamp(1rem, 3vw, 2.5rem);
+  gap: clamp(var(--space-lg), 2vw + var(--space-md), var(--space-2xl));
+  padding: clamp(var(--space-md), 3vw, var(--space-2xl));
+  padding-bottom: clamp(var(--space-md), 3vw, var(--space-2xl));
 }
 
 .route-search__form {
@@ -79,24 +62,15 @@
 .route-search__results {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-}
-
-.dark .route-search {
-  background-color: var(--color-background-dark);
-  color: var(--color-text-strong-dark);
-}
-
-.dark .route-search__header {
-  background-color: var(--color-header-surface-dark);
+  gap: var(--space-lg);
 }
 
 @media (max-width: 768px) {
   .route-search__header {
-    padding-inline: 1rem;
+    padding-inline: var(--space-md);
   }
 
   .route-search__main {
-    padding-inline: 1rem;
+    padding-inline: var(--space-md);
   }
 }

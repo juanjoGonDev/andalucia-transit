@@ -10,7 +10,11 @@
     </div>
     <ul *ngIf="state === 'success' && stops.length" class="nearby-dialog__list">
       <li *ngFor="let stop of stops" class="nearby-dialog__item">
-        <button type="button" class="nearby-dialog__item-button" (click)="selectStop(stop)">
+        <div
+          appAccessibleButton
+          class="app-list-button nearby-dialog__item-button"
+          (appAccessibleButtonActivated)="selectStop(stop)"
+        >
           <span class="material-symbols-outlined nearby-dialog__item-icon">{{ stopIcon }}</span>
           <div class="nearby-dialog__item-body">
             <p class="nearby-dialog__item-title">{{ stop.title }}</p>
@@ -18,7 +22,7 @@
               {{ stop.distanceKey | translate: { value: stop.distanceValue } }}
             </p>
           </div>
-        </button>
+        </div>
       </li>
     </ul>
     <p *ngIf="state === 'success' && !stops.length" class="nearby-dialog__message">
@@ -35,20 +39,20 @@
     </p>
   </div>
   <div appDialogActions>
-    <button
+    <div
       *ngIf="!isLoading && state !== 'success'"
-      type="button"
+      appAccessibleButton
       class="app-button app-button--ghost app-button--block-mobile"
-      (click)="retry()"
+      (appAccessibleButtonActivated)="retry()"
     >
       {{ retryKey | translate }}
-    </button>
-    <button
-      type="button"
+    </div>
+    <div
+      appAccessibleButton
       class="app-button app-button--primary app-button--block-mobile"
-      (click)="close()"
+      (appAccessibleButtonActivated)="close()"
     >
       {{ closeKey | translate }}
-    </button>
+    </div>
   </div>
 </app-dialog-layout>

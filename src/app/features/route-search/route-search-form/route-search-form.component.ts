@@ -25,7 +25,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
-import { MatButtonModule } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
@@ -78,6 +77,7 @@ import {
   NearbyStopOptionsService
 } from '../../../core/services/nearby-stop-options.service';
 import { buildDistanceDisplay } from '../../../domain/utils/distance-display.util';
+import { AccessibleButtonDirective } from '../../../shared/a11y/accessible-button.directive';
 
 interface StopOptionDistanceLabel {
   readonly translationKey: string;
@@ -138,7 +138,7 @@ const EMPTY_ORIGIN_OPTIONS: CategorizedOriginOptions = Object.freeze({
     MatOptionModule,
     MatNativeDateModule,
     MatDatepickerModule,
-    MatButtonModule
+    AccessibleButtonDirective
   ],
   templateUrl: './route-search-form.component.html',
   styleUrl: './route-search-form.component.scss',
@@ -400,6 +400,14 @@ export class RouteSearchFormComponent implements OnChanges {
 
   focusDatePicker(datepicker: MatDatepicker<Date>): void {
     datepicker.open();
+  }
+
+  protected onSubmitTrigger(): void {
+    if (this.searchForm.invalid) {
+      return;
+    }
+
+    void this.submit();
   }
 
   async submit(): Promise<void> {

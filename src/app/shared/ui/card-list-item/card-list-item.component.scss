@@ -86,24 +86,3 @@
   background-color: var(--color-primary-soft);
 }
 
-.dark .card-list-item {
-  background-color: var(--color-surface-dark);
-  box-shadow: var(--shadow-dark);
-}
-
-.dark .card-list-item:hover {
-  background-color: var(--color-surface-dark-hover);
-  box-shadow: var(--shadow-dark-stronger);
-}
-
-.dark .card-list-item__title {
-  color: var(--color-text-strong-dark);
-}
-
-.dark .card-list-item__subtitle {
-  color: var(--color-text-muted-dark);
-}
-
-.dark .card-list-item__trailing {
-  color: var(--color-icon-muted-dark);
-}

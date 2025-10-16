@@ -3,16 +3,16 @@
 }
 
 .home {
-  --home-blue: #0061fe;
-  --home-navy: #060f2b;
-  --home-light: #f1f3f4;
-  --home-text-soft: rgba(241, 243, 244, 0.85);
-  --home-ink-soft: rgba(6, 15, 43, 0.6);
+  --home-blue: var(--color-primary);
+  --home-navy: var(--color-secondary);
+  --home-light: var(--color-surface-muted);
+  --home-text-soft: var(--color-text-inverse-soft);
+  --home-ink-soft: var(--color-text-secondary);
   position: relative;
   min-height: 100dvh;
   padding-bottom: clamp(2.5rem, 6vw, 4rem);
   background: linear-gradient(160deg, var(--home-blue) 0%, var(--home-navy) 70%);
-  color: #ffffff;
+  color: var(--color-text-inverse);
   overflow: hidden;
 }
 
@@ -33,8 +33,8 @@
   right: -4rem;
   background: radial-gradient(
     circle at 30% 30%,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0) 70%
+    color-mix(in srgb, var(--color-surface) 35%, transparent) 0%,
+    transparent 70%
   );
 }
 
@@ -43,7 +43,11 @@
   height: clamp(10rem, 35vw, 18rem);
   bottom: -6rem;
   left: -5rem;
-  background: radial-gradient(circle at 70% 70%, rgba(0, 97, 254, 0.3) 0%, rgba(0, 97, 254, 0) 70%);
+  background: radial-gradient(
+    circle at 70% 70%,
+    color-mix(in srgb, var(--color-primary) 30%, transparent) 0%,
+    transparent 70%
+  );
 }
 
 .home__stack {
@@ -100,13 +104,13 @@
   --home-gap: 1.5rem;
   padding: clamp(1.5rem, 3vw, 2.25rem);
   border-radius: 1.75rem;
-  background: #ffffff;
-  color: var(--home-navy);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
 }
 
 .home__card--summary {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--color-surface) 12%, transparent);
+  color: var(--color-text-inverse);
 }
 
 .home__card--summary .home__panel-header {
@@ -118,8 +122,8 @@
 }
 
 .home__card--summary .home__panel-action {
-  background: #ffffff;
-  color: var(--home-blue);
+  background: var(--color-surface);
+  color: var(--color-primary);
 }
 
 .home__card-header {
@@ -160,8 +164,12 @@
 }
 
 .home__tab[aria-selected='true'] {
-  background: linear-gradient(135deg, var(--home-blue) 0%, rgba(0, 97, 254, 0.75) 100%);
-  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-gradient-start) 0%,
+    color-mix(in srgb, var(--color-primary) 75%, transparent) 100%
+  );
+  color: var(--color-text-inverse);
 }
 
 .home__card-body {
@@ -208,8 +216,8 @@
   gap: 1.25rem;
   padding: clamp(1.3rem, 3vw, 2rem);
   border-radius: 1.75rem;
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--color-surface) 12%, transparent);
+  color: var(--color-text-inverse);
 }
 
 .home__recent-summary-header {
@@ -235,8 +243,8 @@
   border: none;
   border-radius: 999px;
   padding: 0.55rem 1.2rem;
-  background: #ffffff;
-  color: var(--home-blue);
+  background: var(--color-surface);
+  color: var(--color-primary);
   font-weight: 700;
 }
 

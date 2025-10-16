@@ -5,11 +5,12 @@ import { MatCardModule } from '@angular/material/card';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { APP_CONFIG } from '../../core/config';
+import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatCardModule, TranslateModule],
+  imports: [CommonModule, MatButtonModule, MatCardModule, TranslateModule, AccessibleButtonDirective],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

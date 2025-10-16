@@ -1,14 +1,14 @@
 <section class="route-search">
   <div class="route-search__content">
     <header class="route-search__header">
-      <button
-        type="button"
-        class="route-search__back-button"
-        (click)="navigateBack()"
+      <div
+        appAccessibleButton
+        class="app-icon-button route-search__back-button"
+        (appAccessibleButtonActivated)="navigateBack()"
         [attr.aria-label]="translationKeys.backLabel | translate"
       >
         <span class="material-symbols-outlined">arrow_back</span>
-      </button>
+      </div>
       <div class="route-search__header-titles">
         <h1 class="route-search__title">{{ translationKeys.title | translate }}</h1>
         <p class="route-search__description">{{ translationKeys.description | translate }}</p>
@@ -50,9 +50,13 @@
                 <p>{{ translationKeys.pastSearchNotice | translate }}</p>
               </div>
             </div>
-            <button type="button" class="route-search__notice-button" (click)="searchToday()">
+            <div
+              appAccessibleButton
+              class="app-solid-button route-search__notice-button"
+              (appAccessibleButtonActivated)="searchToday()"
+            >
               {{ translationKeys.searchToday | translate }}
-            </button>
+            </div>
           </div>
 
           <section class="route-search__timeline" *ngIf="hasResults(); else noLines">
@@ -180,9 +184,13 @@
 <ng-template #emptyState>
   <section class="route-search__empty">
     <p>{{ translationKeys.sampleResult | translate }}</p>
-    <button type="button" class="route-search__empty-button" (click)="navigateBack()">
+    <div
+      appAccessibleButton
+      class="app-solid-button route-search__empty-button"
+      (appAccessibleButtonActivated)="navigateBack()"
+    >
       {{ translationKeys.backLabel | translate }}
-    </button>
+    </div>
   </section>
 </ng-template>
 

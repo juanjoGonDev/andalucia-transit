@@ -35,6 +35,7 @@ import { SectionComponent } from '../../shared/ui/section/section.component';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
 import { buildNavigationCommands } from '../../shared/navigation/navigation.util';
 import { StopDirectoryService, StopDirectoryOption } from '../../data/stops/stop-directory.service';
+import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 
 @Component({
   selector: 'app-route-search',
@@ -43,7 +44,8 @@ import { StopDirectoryService, StopDirectoryOption } from '../../data/stops/stop
     CommonModule,
     TranslateModule,
     SectionComponent,
-    RouteSearchFormComponent
+    RouteSearchFormComponent,
+    AccessibleButtonDirective
   ],
   templateUrl: './route-search.component.html',
   styleUrls: [

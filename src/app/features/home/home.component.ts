@@ -25,6 +25,7 @@ import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searc
 import { buildNavigationCommands, NavigationCommands } from '../../shared/navigation/navigation.util';
 import { HomeTabId } from './home.types';
 import { HomeListCardComponent } from './shared/home-list-card/home-list-card.component';
+import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 
 interface HomeTabOption {
   readonly id: HomeTabId;
@@ -39,7 +40,8 @@ interface HomeTabOption {
     TranslateModule,
     RouteSearchFormComponent,
     HomeRecentSearchesComponent,
-    HomeListCardComponent
+    HomeListCardComponent,
+    AccessibleButtonDirective
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],

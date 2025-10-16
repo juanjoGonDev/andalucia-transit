@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { AccessibleButtonDirective } from '../../../../shared/a11y/accessible-button.directive';
+
 const HOME_LIST_CARD_REMOVE_ICON = 'close';
 
 @Component({
   selector: 'app-home-list-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AccessibleButtonDirective],
   templateUrl: './home-list-card.component.html',
   styleUrls: ['./home-list-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

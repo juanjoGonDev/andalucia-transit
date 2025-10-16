@@ -6,3 +6,25 @@
 - [ ] Maintain a consistent navigation layout and responsive timeline presentation across all views.
 - [x] Detect Spanish national and Andalusian public holidays to adjust route timetables and highlight festivo coverage.
 - [x] Mirror Andalusian observed holidays by treating Monday as festivo when the official date falls on Sunday.
+
+### UI Theme Refactor (2025-10-16)
+- [x] Define unified color palette and CSS tokens in `src/styles/theme-rules.css`.
+- [x] Convert HomeComponent theme into global rules for all UI.
+  - [x] Load shared tokens globally through `src/styles.scss`.
+  - [x] Align feature components with the shared tokens.
+    - [x] Update HomeComponent styles to consume the shared tokens.
+    - [x] Update StopDetailComponent styles to consume the shared tokens.
+    - [x] Update RouteSearchComponent styles to consume the shared tokens with identical computed values.
+  - [x] Remove legacy overrides duplicated across components.
+- [x] Replace duplicated buttons, modals, and inputs with unified reusable patterns.
+  - [x] Introduce `.app-icon-button` alias and migrate the RouteSearch back control (computed styles matched for `.route-search__back-button`).
+  - [x] Add `.app-list-button` alias and migrate Nearby Stops dialog items (computed styles matched for `.nearby-dialog__item-button`).
+  - [x] Extend reusable button patterns to remaining features.
+    - [x] Map RouteSearch CTA buttons to `.app-solid-button` alias (computed styles matched for `.route-search__notice-button` and `.route-search__empty-button`).
+    - [x] Migrate favorites management buttons to shared aliases and neutral interactive containers (computed styles matched for `.favorites__clear`, `.favorites__item-main`, and `.favorites__remove`).
+    - [x] Replace Home nearby stops dialog buttons with shared aliases and accessible containers (computed styles matched for `.nearby-dialog__item-button`, `.app-button--ghost`, and `.app-button--primary`).
+    - [x] Convert RouteSearch interactive controls to accessible containers and shared aliases (computed styles matched for `.route-search-form__location-button`, `.route-search-form__favorite-button`, `.route-search-form__swap`, `.route-search-form__submit`, `.route-search__back-button`, `.route-search__notice-button`, and `.route-search__empty-button`).
+    - [x] Align shell menu, home tabs, card list entries, confirm dialog actions, settings toggles, and map call-to-action with the accessible button directive (computed styles matched for `.shell-actions__button`, `.shell-actions__menu-button`, `.home__tab`, `.home__panel-action`, `.recent-card__body`, `.recent-card__remove`, `.card-list-item`, `.confirm-dialog__actions .app-button`, `.settings__language-button`, `.settings__toggle`, and `.map-card a[mat-stroked-button]`).
+    - [x] Standardize accessible button directive usage across templates by relying on directive host listeners for activation (computed styles verified for `.home__tab`, `.route-search-form__submit`, `.route-search__notice-button`, `.confirm-dialog__actions .app-button`, `.settings__toggle`, and `.shell-actions__menu-button`).
+- [ ] Ensure consistency with existing home theme (colors, typography, spacing).
+- [ ] Maintain translation keys and accessibility attributes.

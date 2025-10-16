@@ -12,26 +12,27 @@
 </ng-template>
 
 <ng-container *ngIf="commands?.length; else buttonOnly">
-  <button
-    type="button"
+  <div
+    appAccessibleButton
     class="card-list-item"
     [ngClass]="hostClassMap"
     [routerLink]="commands"
+    appAccessibleButtonRole="link"
     [attr.aria-label]="ariaLabelKey ? (ariaLabelKey | translate) : null"
-    (click)="handleClick()"
+    (appAccessibleButtonActivated)="handleClick()"
   >
     <ng-container *ngTemplateOutlet="content"></ng-container>
-  </button>
+  </div>
 </ng-container>
 
 <ng-template #buttonOnly>
-  <button
-    type="button"
+  <div
+    appAccessibleButton
     class="card-list-item"
     [ngClass]="hostClassMap"
     [attr.aria-label]="ariaLabelKey ? (ariaLabelKey | translate) : null"
-    (click)="handleClick()"
+    (appAccessibleButtonActivated)="handleClick()"
   >
     <ng-container *ngTemplateOutlet="content"></ng-container>
-  </button>
+  </div>
 </ng-template>

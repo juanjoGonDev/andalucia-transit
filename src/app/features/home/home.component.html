@@ -16,16 +16,16 @@
             <p class="home__card-subtitle">{{ heroActionKey | translate }}</p>
           </div>
           <div class="home__tabs" role="tablist">
-            <button
-              type="button"
-              role="tab"
+            <div
               *ngFor="let tab of tabs"
+              appAccessibleButton
               class="home__tab"
+              appAccessibleButtonRole="tab"
               [attr.aria-selected]="isTabActive(tab.id)"
-              (click)="selectTab(tab.id)"
+              (appAccessibleButtonActivated)="selectTab(tab.id)"
             >
               {{ tab.labelKey | translate }}
-            </button>
+            </div>
           </div>
         </div>
         <div class="home__card-body home__stack">
@@ -41,14 +41,14 @@
                 <div class="home__panel-heading home__stack">
                   <h3 class="home__panel-title">{{ recentStopsTitleKey | translate }}</h3>
                 </div>
-                <button
-                  type="button"
-                  class="app-button app-button--ghost home__panel-action"
+                <div
                   *ngIf="recentClearActionVisible()"
-                  (click)="onClearRecentSearches()"
+                  appAccessibleButton
+                  class="app-button app-button--ghost home__panel-action"
+                  (appAccessibleButtonActivated)="onClearRecentSearches()"
                 >
                   {{ recentStopsClearKey | translate }}
-                </button>
+                </div>
               </header>
               <app-home-recent-searches
                 #recentSearches
@@ -60,13 +60,13 @@
                 <div class="home__panel-heading home__stack">
                   <h3 class="home__panel-title">{{ favoritesTitleKey | translate }}</h3>
                 </div>
-                <button
-                  type="button"
+                <div
+                  appAccessibleButton
                   class="app-button app-button--ghost home__panel-action"
-                  (click)="openFavoritesView()"
+                  (appAccessibleButtonActivated)="openFavoritesView()"
                 >
                   {{ favoritesActionKey | translate }}
-                </button>
+                </div>
               </header>
               <ng-container *ngIf="hasFavorites(); else favoritesEmpty">
                 <ul class="home-recent__list" role="list">

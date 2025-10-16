@@ -1,6 +1,8 @@
 @use '@angular/material' as mat;
 @use 'styles/components';
 
+@import 'styles/theme-rules.css';
+
 @include mat.core();
 
 $theme: mat.define-theme(
@@ -17,109 +19,11 @@ $theme: mat.define-theme(
 
 :root {
   color-scheme: light;
-  --font-family-display: 'Public Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --color-primary: #137fec;
-  --color-primary-light: #3ea1ff;
-  --color-primary-stronger: #0b6ad8;
-  --color-primary-gradient-start: #52a8ff;
-  --color-primary-gradient-start-strong: #2f8bff;
-  --color-primary-gradient-end: #137fec;
-  --color-primary-soft: rgba(19, 127, 236, 0.12);
-  --color-primary-soft-dark: rgba(19, 127, 236, 0.2);
-  --color-upcoming-strong: #0f9d58;
-  --color-upcoming-soft: rgba(15, 157, 88, 0.16);
-  --color-upcoming-track: rgba(15, 157, 88, 0.25);
-  --color-past-strong: #c2410c;
-  --color-past-soft: rgba(194, 65, 12, 0.18);
-  --color-past-track: rgba(194, 65, 12, 0.26);
-  --color-holiday-strong: #0b7285;
-  --color-holiday-soft: rgba(11, 114, 133, 0.16);
-  --color-background-light: #f6f7f8;
-  --color-background-dark: #101922;
-  --color-surface-light: #ffffff;
-  --color-surface-hover: #f8fafc;
-  --color-surface-dark: #1f2a34;
-  --color-surface-dark-hover: #24313d;
-  --color-text-strong: #1e293b;
-  --color-text-muted: #64748b;
-  --color-text-strong-dark: #f8fafc;
-  --color-text-muted-dark: #cbd5f5;
-  --color-icon-muted: #94a3b8;
-  --color-icon-muted-dark: #8ea4c8;
-  --color-icon-default: #475569;
-  --color-icon-default-dark: #cbd5f5;
-  --color-button-text: #ffffff;
-  --color-button-secondary-border: rgba(15, 23, 42, 0.16);
-  --color-button-secondary-fill: rgba(255, 255, 255, 0.86);
-  --color-button-secondary-hover: rgba(19, 127, 236, 0.12);
-  --color-button-ghost-hover: rgba(15, 23, 42, 0.08);
-  --color-button-ghost-active: rgba(15, 23, 42, 0.12);
-  --color-focus-ring: rgba(82, 168, 255, 0.55);
-  --color-header-surface: rgba(246, 247, 248, 0.88);
-  --color-header-surface-dark: rgba(16, 25, 34, 0.88);
-  --color-footer-surface: rgba(246, 247, 248, 0.92);
-  --color-footer-surface-dark: rgba(16, 25, 34, 0.92);
-  --color-navigation-surface: rgba(15, 23, 42, 0.92);
-  --color-navigation-item: #ffffff;
-  --color-navigation-item-muted: rgba(255, 255, 255, 0.78);
-  --color-navigation-pill: rgba(255, 255, 255, 0.16);
-  --color-border-subtle: rgba(148, 163, 184, 0.35);
-  --color-border-subtle-dark: rgba(94, 108, 132, 0.45);
-  --color-input-surface: #ffffff;
-  --color-input-surface-hover: #f1f5ff;
-  --color-input-border: rgba(148, 163, 184, 0.35);
-  --color-input-border-active: rgba(19, 127, 236, 0.55);
-  --color-dialog-surface: #ffffff;
-  --color-dialog-surface-dark: #1b2733;
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.08);
-  --shadow-md: 0 12px 24px rgba(15, 23, 42, 0.12);
-  --shadow-dark: 0 1px 2px rgba(2, 6, 23, 0.65);
-  --shadow-dark-strong: 0 16px 28px rgba(2, 6, 23, 0.5);
-  --shadow-dark-stronger: 0 12px 24px rgba(2, 6, 23, 0.6);
-  --shadow-navigation: 0 20px 45px rgba(15, 23, 42, 0.25);
-  --shadow-button: 0 18px 30px rgba(19, 127, 236, 0.25);
-  --shadow-button-dark: 0 18px 30px rgba(11, 83, 148, 0.32);
-  --shadow-dialog: 0 30px 60px rgba(15, 23, 42, 0.2);
-  --shadow-dialog-dark: 0 30px 60px rgba(2, 6, 23, 0.65);
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-full: 9999px;
 }
 
-.dark {
-  color-scheme: dark;
-  --color-upcoming-strong: #34d399;
-  --color-upcoming-soft: rgba(52, 211, 153, 0.22);
-  --color-upcoming-track: rgba(52, 211, 153, 0.38);
-  --color-past-strong: #fbbf24;
-  --color-past-soft: rgba(251, 191, 36, 0.28);
-  --color-past-track: rgba(251, 191, 36, 0.42);
-  --color-holiday-strong: #67e8f9;
-  --color-holiday-soft: rgba(103, 232, 249, 0.24);
-  --color-primary-gradient-start: #3ea1ff;
-  --color-primary-gradient-start-strong: #64b6ff;
-  --color-primary-gradient-end: #0b6ad8;
-  --color-button-secondary-border: rgba(148, 163, 184, 0.35);
-  --color-button-secondary-fill: rgba(16, 25, 34, 0.92);
-  --color-button-secondary-hover: rgba(19, 127, 236, 0.22);
-  --color-button-ghost-hover: rgba(241, 245, 249, 0.08);
-  --color-button-ghost-active: rgba(241, 245, 249, 0.16);
-  --color-input-surface: #1f2a34;
-  --color-input-surface-hover: #24313d;
-  --color-input-border: rgba(148, 163, 184, 0.35);
-  --color-input-border-active: rgba(62, 176, 255, 0.55);
-  --color-dialog-surface: var(--color-dialog-surface-dark);
-  --shadow-button: var(--shadow-button-dark);
-  --shadow-dialog: var(--shadow-dialog-dark);
-  --color-focus-ring: rgba(82, 168, 255, 0.65);
-  --color-navigation-surface: rgba(16, 25, 34, 0.9);
-  --color-navigation-item: var(--color-text-strong-dark);
-  --color-navigation-item-muted: rgba(203, 213, 225, 0.78);
-  --color-navigation-pill: rgba(148, 163, 184, 0.22);
-  --shadow-navigation: var(--shadow-dark-stronger);
-}
-
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -130,15 +34,10 @@ body {
 
 body {
   margin: 0;
-  font-family: var(--font-family-display);
-  background-color: var(--color-background-light);
-  color: var(--color-text-strong);
+  font-family: var(--font-family-base);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
-}
-
-body.dark {
-  background-color: var(--color-background-dark);
-  color: var(--color-text-strong-dark);
 }
 
 a {

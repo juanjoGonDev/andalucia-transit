@@ -22,11 +22,13 @@
   outline-offset: 3px;
 }
 
-.app-button:disabled {
+.app-button:disabled,
+.app-button[aria-disabled='true'] {
   cursor: not-allowed;
   opacity: 0.65;
   box-shadow: none;
   transform: none;
+  pointer-events: none;
 }
 
 .app-button--primary {
@@ -51,7 +53,8 @@
   transform: translateY(-1px);
 }
 
-.app-button--primary:disabled {
+.app-button--primary:disabled,
+.app-button--primary[aria-disabled='true'] {
   background-image: none;
   background-color: var(--color-border-subtle);
   color: var(--color-text-muted);
@@ -112,32 +115,96 @@
   font-size: 0.875rem;
 }
 
-.dark .app-button {
-  color: var(--color-text-strong-dark);
+.app-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-2xl);
+  height: var(--space-2xl);
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-subtle);
+  background: transparent;
+  color: var(--color-icon-muted);
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
 
-.dark .app-button--secondary {
-  color: var(--color-text-strong-dark);
+.app-icon-button:hover,
+.app-icon-button:focus-visible {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-soft);
 }
 
-.dark .app-button--secondary:not(:disabled):hover,
-.dark .app-button--secondary:not(:disabled):focus-visible {
-  color: var(--color-primary-light);
-  border-color: var(--color-primary-light);
+.app-list-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-light);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.dark .app-button--primary:disabled {
-  background-color: var(--color-border-subtle-dark);
-  color: var(--color-text-muted-dark);
+.app-list-button:hover,
+.app-list-button:focus-visible {
+  background-color: var(--color-primary-soft);
+  box-shadow: var(--shadow-md);
+  outline: none;
 }
 
-.dark .app-button--ghost {
-  color: var(--color-text-muted-dark);
+.app-outline-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--app-outline-button-gap, 0.5rem);
+  padding: var(--app-outline-button-padding, 0.6rem 1rem);
+  border: 1px solid var(--app-outline-button-border, var(--color-border-subtle));
+  border-radius: var(--app-outline-button-radius, var(--radius-lg));
+  background: var(--app-outline-button-background, transparent);
+  color: var(--app-outline-button-color, var(--color-text-strong));
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
 }
 
-.dark .app-button--ghost:not(:disabled):hover,
-.dark .app-button--ghost:not(:disabled):focus-visible {
-  color: var(--color-text-strong-dark);
+.app-outline-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.app-outline-button.is-disabled,
+.app-outline-button[aria-disabled='true'] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.app-outline-button:not(.is-disabled):hover {
+  border-color: var(--app-outline-button-border-hover, var(--color-primary));
+  color: var(--app-outline-button-color-hover, var(--color-primary));
+  background-color: var(--app-outline-button-background-hover, var(--color-primary-soft));
+}
+
+.app-solid-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--app-solid-button-gap, 0);
+  padding: var(--app-solid-button-padding, 0.75rem 1.5rem);
+  border: none;
+  border-radius: var(--app-solid-button-radius, var(--radius-lg));
+  background: var(--app-solid-button-background, var(--color-primary));
+  color: var(--app-solid-button-color, var(--color-button-text));
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--app-solid-button-transition, none);
 }
 
 .app-field {
@@ -190,14 +257,6 @@
   color: var(--color-primary);
 }
 
-.dark .app-field .mat-mdc-floating-label {
-  color: var(--color-text-muted-dark);
-}
-
-.dark .app-field.mat-focused .mat-mdc-floating-label {
-  color: var(--color-primary-light);
-}
-
 .mat-mdc-dialog-container {
   padding: 0;
 }
@@ -207,10 +266,6 @@
   background-color: var(--color-dialog-surface);
   box-shadow: var(--shadow-dialog);
   padding: 0;
-}
-
-.dark .mat-mdc-dialog-container .mdc-dialog__surface {
-  box-shadow: var(--shadow-dialog);
 }
 
 .app-dialog {
@@ -264,18 +319,6 @@
   gap: 0.75rem;
   padding: 1rem 1.5rem 1.5rem;
   flex-wrap: wrap;
-}
-
-.dark .app-dialog__title {
-  color: var(--color-text-strong-dark);
-}
-
-.dark .app-dialog__description {
-  color: var(--color-text-muted-dark);
-}
-
-.dark .app-dialog__content::-webkit-scrollbar-thumb {
-  background-color: var(--color-border-subtle-dark);
 }
 
 @media (max-width: 480px) {

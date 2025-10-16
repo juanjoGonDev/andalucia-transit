@@ -9,6 +9,7 @@ import { APP_CONFIG, SupportedLanguage } from '../../core/config';
 import { LanguageOption } from '../../core/interfaces/language-option.interface';
 import { APP_VERSION } from '../../core/tokens/app-version.token';
 import { RouteSearchPreferencesService } from '../../domain/route-search/route-search-preferences.service';
+import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 
 interface LanguageItem extends LanguageOption {
   readonly isActive: boolean;
@@ -17,7 +18,7 @@ interface LanguageItem extends LanguageOption {
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, TranslateModule, SectionComponent],
+  imports: [CommonModule, TranslateModule, SectionComponent, AccessibleButtonDirective],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

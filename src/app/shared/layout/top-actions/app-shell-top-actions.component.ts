@@ -14,6 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '../../../core/config';
 import { HomeTabId } from '../../../features/home/home.types';
 import { buildNavigationCommands, NavigationCommands } from '../../navigation/navigation.util';
+import { AccessibleButtonDirective } from '../../a11y/accessible-button.directive';
 
 interface ShellMenuEntry {
   readonly id: string;
@@ -27,7 +28,7 @@ interface ShellMenuEntry {
 @Component({
   selector: 'app-app-shell-top-actions',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, AccessibleButtonDirective],
   templateUrl: './app-shell-top-actions.component.html',
   styleUrl: './app-shell-top-actions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

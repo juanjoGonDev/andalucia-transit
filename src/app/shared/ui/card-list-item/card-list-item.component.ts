@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { MaterialSymbolName } from '../types/material-symbol-name';
+import { AccessibleButtonDirective } from '../../a11y/accessible-button.directive';
 
 export type CardListLayout = 'list' | 'action';
 export type IconVariant = 'plain' | 'soft';
@@ -11,7 +12,7 @@ export type IconVariant = 'plain' | 'soft';
 @Component({
   selector: 'app-card-list-item',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslateModule],
+  imports: [CommonModule, RouterLink, TranslateModule, AccessibleButtonDirective],
   templateUrl: './card-list-item.component.html',
   styleUrl: './card-list-item.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
