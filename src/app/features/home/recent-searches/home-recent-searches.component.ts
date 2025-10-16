@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DateTime } from 'luxon';
 import {
@@ -43,6 +42,7 @@ import {
 import { APP_CONFIG_TOKEN } from '../../../core/tokens/app-config.token';
 import { AppConfig } from '../../../core/config';
 import { RouteSearchPreferencesService } from '../../../domain/route-search/route-search-preferences.service';
+import { DialogService } from '../../../shared/ui/dialog/dialog.service';
 
 import {
   PreviewEntryKind,
@@ -66,7 +66,7 @@ export class HomeRecentSearchesComponent {
   private readonly preview = inject(RouteSearchPreviewService);
   private readonly execution = inject(RouteSearchExecutionService);
   private readonly router = inject(Router);
-  private readonly dialog = inject(MatDialog);
+  private readonly dialog = inject(DialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
   private readonly preferences = inject(RouteSearchPreferencesService);
@@ -307,11 +307,11 @@ export class HomeRecentSearchesComponent {
   }
 
   private async confirm(data: ConfirmDialogData): Promise<boolean> {
-    const dialogRef = this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
+    const dialogRef = this.dialog.open<ConfirmDialogComponent, boolean, ConfirmDialogData>(
       ConfirmDialogComponent,
       {
         data,
-        autoFocus: false
+        size: 'sm'
       }
     );
 

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
-import { MatDialog } from '@angular/material/dialog';
+import { ComponentType } from '@angular/cdk/portal';
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -15,6 +15,10 @@ import { RouteSearchExecutionService } from '../../../domain/route-search/route-
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import { StopDirectoryOption } from '../../../data/stops/stop-directory.service';
 import { RouteSearchPreferencesService } from '../../../domain/route-search/route-search-preferences.service';
+import { ConfirmDialogData } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
+import { DialogService } from '../../../shared/ui/dialog/dialog.service';
+import { DialogConfig } from '../../../shared/ui/dialog/dialog.config';
+import { DialogRef } from '../../../shared/ui/dialog/dialog-ref';
 
 type PreviewState =
   | { readonly status: 'loading' }
@@ -89,16 +93,36 @@ class RouteSearchPreferencesStub {
   }
 }
 
+class DialogServiceStub {
+  private response$ = of(true);
+  private lastConfig: DialogConfig<ConfirmDialogData> | undefined;
+
+  readonly open = jasmine
+    .createSpy('open')
+    .and.callFake(<TComponent>(_: ComponentType<TComponent>, config?: DialogConfig<ConfirmDialogData>) => {
+      this.lastConfig = config;
+      const ref: Partial<DialogRef<boolean>> = {
+        afterClosed: () => this.response$
+      };
+      return ref as DialogRef<boolean>;
+    });
+
+  setResponse(value: boolean): void {
+    this.response$ = of(value);
+  }
+
+  lastData(): ConfirmDialogData | undefined {
+    return this.lastConfig?.data;
+  }
+}
+
 describe('HomeRecentSearchesComponent', () => {
   let fixture: ComponentFixture<HomeRecentSearchesComponent>;
   let history: RouteSearchHistoryStub;
   let preview: RouteSearchPreviewStub;
   let execution: RouteSearchExecutionStub;
   let preferences: RouteSearchPreferencesStub;
-  const dialogOpenSpy = jasmine
-    .createSpy('open')
-    .and.returnValue({ afterClosed: () => of(true) });
-  const dialogStub = { open: dialogOpenSpy } as unknown as MatDialog;
+  const dialog = new DialogServiceStub();
   const navigateSpy = jasmine.createSpy('navigate').and.resolveTo(true);
   const routerStub = { navigate: navigateSpy } as unknown as Router;
 
@@ -117,13 +141,13 @@ describe('HomeRecentSearchesComponent', () => {
         { provide: RouteSearchHistoryService, useValue: history },
         { provide: RouteSearchPreviewService, useValue: preview },
         { provide: RouteSearchExecutionService, useValue: execution },
-        { provide: MatDialog, useValue: dialogStub },
+        { provide: DialogService, useValue: dialog },
         { provide: Router, useValue: routerStub },
         { provide: RouteSearchPreferencesService, useValue: preferences }
       ]
     });
 
-    TestBed.overrideProvider(MatDialog, { useValue: dialogStub });
+    TestBed.overrideProvider(DialogService, { useValue: dialog });
     TestBed.overrideProvider(Router, { useValue: routerStub });
 
     await TestBed.compileComponents();
@@ -131,7 +155,7 @@ describe('HomeRecentSearchesComponent', () => {
     fixture = TestBed.createComponent(HomeRecentSearchesComponent);
     TestBed.inject(TranslateService).use('en');
     fixture.detectChanges();
-    dialogOpenSpy.calls.reset();
+    dialog.open.calls.reset();
     navigateSpy.calls.reset();
   });
 
@@ -327,7 +351,7 @@ describe('HomeRecentSearchesComponent', () => {
     removeButton.nativeElement.click();
     tick();
 
-    expect(dialogOpenSpy).toHaveBeenCalled();
+    expect(dialog.open).toHaveBeenCalled();
     expect(history.remove).toHaveBeenCalledWith('entry-3');
   }));
 

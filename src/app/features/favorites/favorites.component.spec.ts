@@ -2,12 +2,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { ComponentType } from '@angular/cdk/portal';
 
 import { FavoritesComponent } from './favorites.component';
 import { StopFavorite, StopFavoritesService } from '../../domain/stops/stop-favorites.service';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogData } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { APP_CONFIG } from '../../core/config';
+import { DialogService } from '../../shared/ui/dialog/dialog.service';
+import { DialogConfig } from '../../shared/ui/dialog/dialog.config';
+import { DialogRef } from '../../shared/ui/dialog/dialog-ref';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {
@@ -26,18 +29,18 @@ class StopFavoritesServiceStub {
   }
 }
 
-class MatDialogStub {
+class DialogServiceStub {
   private response$: Observable<boolean | undefined> = of(true);
-  private lastConfig: MatDialogConfig<ConfirmDialogData> | undefined;
+  private lastConfig: DialogConfig<ConfirmDialogData> | undefined;
 
   readonly open = jasmine
     .createSpy('open')
-    .and.callFake((_: typeof ConfirmDialogComponent, config?: MatDialogConfig<ConfirmDialogData>) => {
+    .and.callFake(<TComponent>(_: ComponentType<TComponent>, config?: DialogConfig<ConfirmDialogData>) => {
       this.lastConfig = config;
-      const ref: Partial<MatDialogRef<ConfirmDialogComponent, boolean>> = {
+      const ref: Partial<DialogRef<boolean>> = {
         afterClosed: () => this.response$
       };
-      return ref as MatDialogRef<ConfirmDialogComponent, boolean>;
+      return ref as DialogRef<boolean>;
     });
 
   setResponse(value: boolean): void {
@@ -45,8 +48,7 @@ class MatDialogStub {
   }
 
   lastData(): ConfirmDialogData | undefined {
-    const data = this.lastConfig?.data ?? undefined;
-    return data === null ? undefined : data;
+    return this.lastConfig?.data;
   }
 }
 
@@ -115,12 +117,12 @@ describe('FavoritesComponent', () => {
   let fixture: ComponentFixture<FavoritesComponent>;
   let component: FavoritesComponent;
   let favoritesService: StopFavoritesServiceStub;
-  let dialog: MatDialogStub;
+  let dialog: DialogServiceStub;
   let router: RouterStub;
 
   beforeEach(async () => {
     favoritesService = new StopFavoritesServiceStub();
-    dialog = new MatDialogStub();
+    dialog = new DialogServiceStub();
     router = new RouterStub();
 
     await TestBed.configureTestingModule({
@@ -130,7 +132,7 @@ describe('FavoritesComponent', () => {
       ],
       providers: [
         { provide: StopFavoritesService, useValue: favoritesService },
-        { provide: MatDialog, useValue: dialog },
+        { provide: DialogService, useValue: dialog },
         { provide: Router, useValue: router }
       ]
     }).compileComponents();

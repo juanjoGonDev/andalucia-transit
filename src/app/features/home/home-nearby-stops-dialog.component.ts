@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
@@ -13,8 +12,12 @@ import { MaterialSymbolName } from '../../shared/ui/types/material-symbol-name';
 import { GEOLOCATION_REQUEST_OPTIONS } from '../../core/services/geolocation-request.options';
 import { NearbyStopOptionsService, NearbyStopOption } from '../../core/services/nearby-stop-options.service';
 import { buildDistanceDisplay } from '../../domain/utils/distance-display.util';
-import { DialogLayoutComponent } from '../../shared/ui/dialog/dialog-layout.component';
 import { buildStopSlug } from '../../domain/route-search/route-search-url.util';
+import { DialogRef } from '../../shared/ui/dialog/dialog-ref';
+import { DialogSurfaceComponent } from '../../shared/ui/dialog/dialog-surface.component';
+import { DialogTitleDirective } from '../../shared/ui/dialog/dialog-title.directive';
+import { DialogDescriptionDirective } from '../../shared/ui/dialog/dialog-description.directive';
+import { DialogFooterDirective } from '../../shared/ui/dialog/dialog-footer.directive';
 
 type NearbyDialogState = 'loading' | 'success' | 'permissionDenied' | 'notSupported' | 'unknown';
 
@@ -33,13 +36,20 @@ const GEOLOCATION_TIMEOUT = 3;
 @Component({
   selector: 'app-home-nearby-stops-dialog',
   standalone: true,
-  imports: [CommonModule, TranslateModule, DialogLayoutComponent],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    DialogSurfaceComponent,
+    DialogTitleDirective,
+    DialogDescriptionDirective,
+    DialogFooterDirective
+  ],
   templateUrl: './home-nearby-stops-dialog.component.html',
   styleUrl: './home-nearby-stops-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeNearbyStopsDialogComponent implements OnInit {
-  private readonly dialogRef = inject(MatDialogRef<HomeNearbyStopsDialogComponent>);
+  private readonly dialogRef = inject(DialogRef<void>);
   private readonly geolocationService = inject(GeolocationService);
   private readonly nearbyStopsService = inject(NearbyStopsService);
   private readonly router = inject(Router);

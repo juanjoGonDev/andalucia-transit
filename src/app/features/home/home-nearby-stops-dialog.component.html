@@ -1,14 +1,14 @@
-<app-dialog-layout [titleKey]="titleKey" [descriptionKey]="descriptionKey">
-  <div
-    appDialogBody
-    class="nearby-dialog__body"
-    [attr.aria-busy]="isLoading ? 'true' : 'false'"
-  >
+<ui-dialog-surface>
+  <h2 uiDialogTitle>{{ titleKey | translate }}</h2>
+  <p *ngIf="descriptionKey" uiDialogDescription class="nearby-dialog__description">
+    {{ descriptionKey | translate }}
+  </p>
+  <div class="nearby-dialog__body" [attr.aria-busy]="isLoading ? 'true' : 'false'">
     <div *ngIf="isLoading" class="nearby-dialog__loading">
       <span class="nearby-dialog__spinner" aria-hidden="true"></span>
       <p class="nearby-dialog__loading-text">{{ loadingKey | translate }}</p>
     </div>
-    <ul *ngIf="state === 'success' && stops.length" class="nearby-dialog__list">
+    <ul *ngIf="state === 'success' && stops.length" class="nearby-dialog__list" role="list">
       <li *ngFor="let stop of stops" class="nearby-dialog__item">
         <button type="button" class="nearby-dialog__item-button" (click)="selectStop(stop)">
           <span class="material-symbols-outlined nearby-dialog__item-icon">{{ stopIcon }}</span>
@@ -34,21 +34,17 @@
       {{ unknownErrorKey | translate }}
     </p>
   </div>
-  <div appDialogActions>
+  <div uiDialogFooter class="nearby-dialog__actions">
     <button
       *ngIf="!isLoading && state !== 'success'"
       type="button"
-      class="app-button app-button--ghost app-button--block-mobile"
+      class="btn btn--ghost btn--md"
       (click)="retry()"
     >
       {{ retryKey | translate }}
     </button>
-    <button
-      type="button"
-      class="app-button app-button--primary app-button--block-mobile"
-      (click)="close()"
-    >
+    <button type="button" class="btn btn--primary btn--md" (click)="close()">
       {{ closeKey | translate }}
     </button>
   </div>
-</app-dialog-layout>
+</ui-dialog-surface>

@@ -9,7 +9,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -21,6 +20,7 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData
 } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
+import { DialogService } from '../../shared/ui/dialog/dialog.service';
 
 interface FavoriteListItem {
   readonly id: string;
@@ -51,7 +51,7 @@ const DIACRITIC_PATTERN = /\p{M}/gu;
 })
 export class FavoritesComponent {
   private readonly favoritesService = inject(StopFavoritesService);
-  private readonly dialog = inject(MatDialog);
+  private readonly dialog = inject(DialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router);
@@ -252,11 +252,11 @@ export class FavoritesComponent {
   }
 
   private async confirm(data: ConfirmDialogData): Promise<boolean> {
-    const dialogRef = this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
+    const dialogRef = this.dialog.open<ConfirmDialogComponent, boolean, ConfirmDialogData>(
       ConfirmDialogComponent,
       {
         data,
-        autoFocus: false
+        size: 'sm'
       }
     );
 

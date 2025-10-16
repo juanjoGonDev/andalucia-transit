@@ -20,11 +20,14 @@
   - [ ] Replace feature screens to use unified primitives
   - [ ] Remove deprecated component implementations
 - [ ] Remove duplicated buttons, inputs, and modals
+  - [x] Replace confirm dialog actions with global button classes
+  - [x] Remove legacy dialog layout implementation
+  - [ ] Audit remaining views for outdated button styles and modal code
 - [ ] Implement a single reusable Dialog system
   - [x] Build overlay-based dialog service, container, and context primitives
   - [x] Add dialog surface component and section directives styled with tokens
-  - [ ] Migrate existing dialogs away from Angular Material
-  - [ ] Replace feature dialog usages with the new service
+  - [x] Migrate existing dialogs away from Angular Material
+  - [x] Replace feature dialog usages with the new service
 - [ ] Ensure all components respect the primary palette
 - [ ] Verify accessibility and translation integration
 - [ ] Update docs/ui-theme.md after completion
