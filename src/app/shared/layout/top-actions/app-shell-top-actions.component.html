@@ -25,6 +25,7 @@
                   class="shell-actions__menu-button"
                   [appAccessibleButtonDisabled]="entry.disabled"
                   appAccessibleButtonRole="menuitem"
+                  [attr.aria-current]="entry.isActive ? 'page' : null"
                   [attr.tabindex]="entry.disabled ? disabledTabIndex : focusableTabIndex"
                   (appAccessibleButtonActivated)="handleMenuEntry(entry)"
                 >

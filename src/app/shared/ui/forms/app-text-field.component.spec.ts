@@ -7,7 +7,11 @@ import { AppTextFieldHintDirective } from './app-text-field-slots.directive';
 type DescribedByInput = string | readonly string[] | undefined;
 
 const INPUT_SELECTOR = 'input';
+const LABEL_SELECTOR = 'label';
 const MISSING_INPUT_ERROR_MESSAGE = 'Input element not found';
+const MISSING_LABEL_ERROR_MESSAGE = 'Label element not found';
+const KEYDOWN_EVENT_TYPE = 'keydown';
+const SAMPLE_KEY = 'A';
 
 @Component({
   selector: 'app-text-field-host',
@@ -19,6 +23,7 @@ const MISSING_INPUT_ERROR_MESSAGE = 'Input element not found';
       [placeholder]="placeholder"
       [describedBy]="describedBy"
       [fieldId]="fieldId"
+      (keydownEvent)="recordKey($event)"
     >
       <span *ngIf="showHint" appTextFieldHint>{{ hintText }}</span>
     </app-text-field>
@@ -31,6 +36,11 @@ class AppTextFieldHostComponent {
   showHint = false;
   readonly fieldId = 'custom-field';
   readonly hintText = 'Hint';
+  readonly recordedKeys: string[] = [];
+
+  recordKey(event: KeyboardEvent): void {
+    this.recordedKeys.push(event.key);
+  }
 }
 
 describe('AppTextFieldComponent', () => {
@@ -57,6 +67,17 @@ describe('AppTextFieldComponent', () => {
     return element;
   }
 
+  function queryLabel(): HTMLLabelElement {
+    fixture.detectChanges();
+    const element = fixture.nativeElement.querySelector(LABEL_SELECTOR) as HTMLLabelElement | null;
+
+    if (!element) {
+      throw new Error(MISSING_LABEL_ERROR_MESSAGE);
+    }
+
+    return element;
+  }
+
   it('combines hint and describedBy identifiers', () => {
     host.describedBy = 'external-description';
     host.showHint = true;
@@ -78,5 +99,21 @@ describe('AppTextFieldComponent', () => {
     const input = queryInput();
 
     expect(input.getAttribute('aria-describedby')).toBeNull();
+  });
+
+  it('associates the label with the generated input identifier', () => {
+    const input = queryInput();
+    const label = queryLabel();
+
+    expect(label.getAttribute('for')).toBe(input.id);
+  });
+
+  it('emits keyboard events through the keydown output', () => {
+    const input = queryInput();
+
+    input.dispatchEvent(new KeyboardEvent(KEYDOWN_EVENT_TYPE, { key: SAMPLE_KEY }));
+    fixture.detectChanges();
+
+    expect(host.recordedKeys).toEqual([SAMPLE_KEY]);
   });
 });

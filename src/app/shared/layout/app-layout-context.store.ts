@@ -5,6 +5,7 @@ import {
   AppLayoutContentRegistration,
   AppLayoutContext,
   AppLayoutContextSnapshot,
+  AppLayoutNavigationKey,
   AppLayoutTabIdentifier,
   AppLayoutTabRegistration
 } from './app-layout-context.token';
@@ -14,18 +15,30 @@ export class AppLayoutContextStore implements AppLayoutContext {
   private readonly activeContent = signal<AppLayoutContentIdentifier | null>(null);
   private readonly tabs = signal<readonly AppLayoutTabRegistration[]>([]);
   private readonly activeTab = signal<AppLayoutTabIdentifier | null>(null);
+  private readonly navigationKeys = signal<
+    ReadonlyMap<AppLayoutContentIdentifier, AppLayoutNavigationKey | null>
+  >(new Map());
 
   private readonly currentSnapshot: Signal<AppLayoutContextSnapshot> = computed(() => ({
     activeContent: this.activeContent(),
+    activeNavigationKey: this.resolveActiveNavigationKey(),
     tabs: this.tabs(),
     activeTab: this.activeTab()
   }));
 
   registerContent(registration: AppLayoutContentRegistration): void {
+    const nextNavigation = new Map(this.navigationKeys());
+    const navigationKey = registration.navigationKey ?? null;
+    nextNavigation.set(registration.identifier, navigationKey);
+    this.navigationKeys.set(nextNavigation);
     this.activeContent.set(registration.identifier);
   }
 
   unregisterContent(identifier: AppLayoutContentIdentifier): void {
+    const nextNavigation = new Map(this.navigationKeys());
+    nextNavigation.delete(identifier);
+    this.navigationKeys.set(nextNavigation);
+
     if (this.activeContent() !== identifier) {
       return;
     }
@@ -66,5 +79,15 @@ export class AppLayoutContextStore implements AppLayoutContext {
 
   snapshot(): AppLayoutContextSnapshot {
     return this.currentSnapshot();
+  }
+
+  private resolveActiveNavigationKey(): AppLayoutNavigationKey | null {
+    const activeIdentifier = this.activeContent();
+
+    if (!activeIdentifier) {
+      return null;
+    }
+
+    return this.navigationKeys().get(activeIdentifier) ?? null;
   }
 }

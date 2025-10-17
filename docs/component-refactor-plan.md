@@ -27,6 +27,14 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-16: Introduced `AppLayoutComponent` to wrap the shell top actions and project routed content via `<ng-content>`, keeping existing shell metrics unchanged while `AppShellComponent` delegates rendering to it.
   - 2025-10-16: Routed all feature views through `AppLayoutComponent` directly in `app.routes.ts`, preserving the layout host as the router entry while maintaining the prior shell structure and metrics.
   - 2025-10-16: Added `AppLayoutContentDirective` and `APP_LAYOUT_CONTEXT` with a layout context store so routed features can register content and tab configuration without altering the host layout structure.
+  - 2025-10-17: Favorites view now applies `AppLayoutContentDirective` at its root container to register with the shared layout host without changing rendered markup or spacing.
+  - 2025-10-17: Route search view now applies `AppLayoutContentDirective` to its root section so the shared layout host tracks the page content without affecting any rendered structure.
+  - 2025-10-17: Stop detail view now applies `AppLayoutContentDirective` to its root container so the layout host registers the schedule page without altering the rendered hierarchy or spacing.
+  - 2025-10-17: Settings view now applies `AppLayoutContentDirective` to its root container so the layout host recognizes the configuration page without changing any rendered structure or spacing.
+  - 2025-10-17: Map view now applies `AppLayoutContentDirective` to its root container so the layout host registers the map section without altering the rendered hierarchy or spacing.
+  - 2025-10-17: Home dashboard now applies `AppLayoutContentDirective` to its root section so the shared layout host registers the page while keeping the rendered structure and spacing identical.
+  - 2025-10-17: Layout context captures navigation keys from each routed view so the shared shell can reflect the active page without changing markup or computed styles.
+  - 2025-10-17: Stop detail timeline now configures layout context tabs for upcoming and past panels, keeping the responsive schedule layout intact while exposing navigation metadata to the shared shell.
 
 ### 1.2 Route hierarchy updates
 
@@ -89,6 +97,8 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-16: Added attribute-based `InteractiveCardComponent` under `shared/ui/cards/` and rewired `HomeListCardComponent` to delegate markup rendering to it while preserving the existing DOM structure and styling hooks.
   - 2025-10-16: Updated `CardListItemComponent` to consume `InteractiveCardComponent`, extending the shared card to support router navigation and aria labeling without changing the rendered layout.
   - 2025-10-17: Collapsed `StopNavigationItemComponent` into `InteractiveCardComponent`, removing the redundant card list wrapper while preserving the same classes and DOM hierarchy.
+  - 2025-10-17: Removed the obsolete `StopNavigationItemComponent` files after validating that navigation cards now resolve exclusively through `InteractiveCardComponent` with unchanged visuals.
+  - 2025-10-17: Removed `HomeListCardComponent` by projecting favorites and recent search cards through `InteractiveCardComponent` directly while centralizing the shared styles under the global stylesheet to maintain pixel-identical rendering.
 
 ### 3.2 Dialog abstractions
 
@@ -158,6 +168,8 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Replace any Material tokens or mixins with shared equivalents.
 - Delete orphaned components or obsolete services only after confirming that layout and spacing remain unchanged.
 - Update `tsconfig` paths, imports, and barrel exports to match the new directory structure.
+  - 2025-10-17: Removed the unused `HomeNearbyStopsDialogComponent` after confirming the nearby quick action now routes through the autocomplete recommendations without altering visible flows.
+  - 2025-10-17: Audited shared and feature components to confirm all remaining dialog, card, and navigation implementations still have active entry points with unchanged visuals after recent removals.
 
 ---
 
@@ -173,6 +185,11 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Use Storybook or Cypress image snapshots to confirm **pixel parity** with the baseline UI.
 - Run snapshot diffs for every route and feature view under both language contexts.
 - Screenshots must be attached and reviewed for every iteration.
+  - 2025-10-17: Extended the Cypress visual regression spec with deterministic fixtures for stop detail so Spanish and English timelines capture zero-diff snapshots.
+  - 2025-10-17: Added map layout snapshots for Spanish and English locales to the Cypress visual regression spec, enforcing zero diff results.
+  - 2025-10-17: Added settings layout snapshots for Spanish and English locales to the Cypress visual regression spec, enforcing zero diff results.
+  - 2025-10-17: Ignored Cypress visual baseline artifacts so snapshot files remain local while diffs continue enforcing zero-pixel tolerance.
+  - 2025-10-17: Centralized Cypress visual regression directory constants to remove duplicated literals while keeping zero-diff enforcement intact.
 
 ### 7.3 Test coverage
 
@@ -181,6 +198,8 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - Overlay dialog service and focus behavior.
   - Custom form control behavior and validation.
 - Maintain or exceed existing coverage metrics.
+  - 2025-10-17: Added unit tests exercising overlay dialog focus trapping, role assignment, and focus restoration to document accessibility verification for the custom dialog host.
+  - 2025-10-17: Extended form primitive unit tests to assert combobox ARIA metadata, keyboard navigation, and text field label association for the shared controls.
 
 ---
 
@@ -194,6 +213,10 @@ This plan conforms to `AGENTS.md` and the enforced Design Integrity Policy:
 - Prohibits any **visual or behavioral drift** from the baseline.
 - Removes Angular Material entirely.
 - Establishes a reusable, visually consistent **global layout** (`AppLayoutComponent`) and a unified shared UI library.
+- 2025-10-17: Added a Cypress visual regression spec ensuring Spanish and English home layouts match baseline snapshots with a zero-pixel diff threshold.
+- 2025-10-17: Extended the Cypress visual regression coverage to the favorites view for Spanish and English locales, maintaining a zero-pixel diff requirement.
+- 2025-10-17: Expanded the Cypress visual regression coverage to the route search view for Spanish and English locales, keeping the zero-pixel diff enforcement in place.
+- 2025-10-17: Introduced the `test:visual` npm script to execute the Cypress visual regression suite headlessly with zero-pixel tolerance.
 
 ---
 

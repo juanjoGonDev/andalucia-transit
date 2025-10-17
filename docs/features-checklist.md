@@ -3,7 +3,9 @@
 - [x] Display route search results as a unified list of bus departures after submitting the form.
 - [x] Return accurate schedules for future dates without falsely reporting missing services.
 - [x] Keep the route search form populated on the results view so travelers can refine queries in place.
-- [ ] Maintain a consistent navigation layout and responsive timeline presentation across all views.
+- [x] Maintain a consistent navigation layout and responsive timeline presentation across all views.
+  - [x] Register layout navigation keys for each routed view so the shared shell can reflect the active page without altering markup.
+  - [x] Preserve the responsive stop timeline layout while wiring it through the shared navigation context.
 - [x] Detect Spanish national and Andalusian public holidays to adjust route timetables and highlight festivo coverage.
 - [x] Mirror Andalusian observed holidays by treating Monday as festivo when the official date falls on Sunday.
 
@@ -76,16 +78,34 @@ This phase is purely structural and organizational — no aesthetic changes are 
   - [x] Route search components resolve stop directory data through a dedicated facade instead of injecting the stop directory service.
   - [x] Route search form resolves stop connections through a dedicated facade instead of injecting the stop connections data service.
   - [x] Route search selection resolver loads stop directory options and connections through the domain facades while preserving its output contract.
-- [ ] Consolidate duplicated card components (`HomeListCardComponent`, `CardListItemComponent`, etc.) into a single reusable `InteractiveCardComponent` that maintains identical computed dimensions, typography, shadow, and spacing.
-      Validate visual parity against the baseline grid. - [x] Scaffold `InteractiveCardComponent` and migrate `HomeListCardComponent` to consume it without altering rendered markup. - [x] Migrate `CardListItemComponent` to delegate to `InteractiveCardComponent` while retaining identical accessible behavior and styling hooks. - [x] Collapse `StopNavigationItemComponent` into `InteractiveCardComponent`, retaining the existing card list markup and styling classes.
+- [x] Consolidate duplicated card components (`HomeListCardComponent`, `CardListItemComponent`, etc.) into a single reusable `InteractiveCardComponent` that maintains identical computed dimensions, typography, shadow, and spacing.
+      Validate visual parity against the baseline grid. - [x] Scaffold `InteractiveCardComponent` and migrate `HomeListCardComponent` to consume it without altering rendered markup. - [x] Migrate `CardListItemComponent` to delegate to `InteractiveCardComponent` while retaining identical accessible behavior and styling hooks. - [x] Collapse `StopNavigationItemComponent` into `InteractiveCardComponent`, retaining the existing card list markup and styling classes. - [x] Remove the legacy `HomeListCardComponent` wrapper so features rely on `InteractiveCardComponent` directly while preserving the rendered markup and styles.
       - [x] Restore Home recent search cards to the baseline visuals while relying on `InteractiveCardComponent` (selectors: `.recent-card`, `.recent-card__body`, `.recent-card__remove`).
-- [ ] Review orphaned or redundant components (e.g., dialog variants, navigation items) and remove or reassign them only after confirming **no visual or spacing shifts** occur across any layout.
-- [ ] Align all feature views (favorites, route search, stop detail, settings, map, etc.) with the unified layout structure using the shared spacing and typography tokens while maintaining pixel parity with the current layout.  
+- [x] Review orphaned or redundant components (e.g., dialog variants, navigation items) and remove or reassign them only after confirming **no visual or spacing shifts** occur across any layout.
+  - [x] Verified remaining shared and feature components still have active entry points after removing dialog and navigation wrappers.
+  - [x] Remove unused StopNavigationItemComponent after confirming InteractiveCardComponent now serves every former usage without altering layout metrics.
+  - [x] Remove unused HomeNearbyStopsDialogComponent after verifying no entry points remain and route search nearby recommendations cover the former flow.
+- [x] Align all feature views (favorites, route search, stop detail, settings, map, etc.) with the unified layout structure using the shared spacing and typography tokens while maintaining pixel parity with the current layout.
        Automated screenshot comparison must confirm zero differences.
-- [ ] Expand unit and integration tests to cover:
-  - Layout pixel parity (visual regression checks via Storybook or Cypress snapshots).
-  - Dialog overlay focus and accessibility behavior.
-  - Form primitive keyboard navigation and ARIA labeling.  
+  - [x] Favorites view registers its layout content region with the shared host while preserving pixel-identical rendering.
+  - [x] Home dashboard registers its layout content region with the shared host while preserving pixel-identical rendering.
+  - [x] Route search view registers its layout content region with the shared host while preserving pixel-identical rendering.
+  - [x] Stop detail view registers its layout content region with the shared host while preserving pixel-identical rendering.
+  - [x] Settings view registers its layout content region with the shared host while preserving pixel-identical rendering.
+  - [x] Map view registers its layout content region with the shared host while preserving pixel-identical rendering.
+- [x] Expand unit and integration tests to cover:
+  - [x] Layout pixel parity (visual regression checks via Storybook or Cypress snapshots).
+    - [x] Home layout snapshots (es/en) validated through Cypress visual regression spec.
+    - [x] Favorites layout snapshots (es/en) validated through Cypress visual regression spec.
+    - [x] Route search layout snapshots (es/en) validated through Cypress visual regression spec.
+    - [x] Stop detail layout snapshots (es/en) validated through Cypress visual regression spec.
+    - [x] Map layout snapshots (es/en) validated through Cypress visual regression spec.
+    - [x] Settings layout snapshots (es/en) validated through Cypress visual regression spec.
+    - [x] Provide an npm script to run the Cypress visual regression suite headlessly with zero-diff enforcement.
+    - [x] Keep Cypress visual baseline artifacts out of version control to preserve local-only snapshots.
+    - [x] Centralize visual regression path configuration to eliminate duplicated directory literals.
+  - [x] Dialog overlay focus and accessibility behavior.
+  - [x] Form primitive keyboard navigation and ARIA labeling.
     Execute `npm run lint`, `npm run test`, and `npm run build` after each phase.  
     The iteration is valid only if **visual comparison reports zero diffs**.
 
