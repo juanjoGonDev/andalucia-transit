@@ -79,14 +79,13 @@ This phase is purely structural and organizational — no aesthetic changes are 
   - [x] Route search form resolves stop connections through a dedicated facade instead of injecting the stop connections data service.
   - [x] Route search selection resolver loads stop directory options and connections through the domain facades while preserving its output contract.
 - [x] Consolidate duplicated card components (`HomeListCardComponent`, `CardListItemComponent`, etc.) into a single reusable `InteractiveCardComponent` that maintains identical computed dimensions, typography, shadow, and spacing.
-      Validate visual parity against the baseline grid. - [x] Scaffold `InteractiveCardComponent` and migrate `HomeListCardComponent` to consume it without altering rendered markup. - [x] Migrate `CardListItemComponent` to delegate to `InteractiveCardComponent` while retaining identical accessible behavior and styling hooks. - [x] Collapse `StopNavigationItemComponent` into `InteractiveCardComponent`, retaining the existing card list markup and styling classes. - [x] Remove the legacy `HomeListCardComponent` wrapper so features rely on `InteractiveCardComponent` directly while preserving the rendered markup and styles.
-      - [x] Restore Home recent search cards to the baseline visuals while relying on `InteractiveCardComponent` (selectors: `.recent-card`, `.recent-card__body`, `.recent-card__remove`).
+      Validate visual parity against the baseline grid. - [x] Scaffold `InteractiveCardComponent` and migrate `HomeListCardComponent` to consume it without altering rendered markup. - [x] Migrate `CardListItemComponent` to delegate to `InteractiveCardComponent` while retaining identical accessible behavior and styling hooks. - [x] Collapse `StopNavigationItemComponent` into `InteractiveCardComponent`, retaining the existing card list markup and styling classes. - [x] Remove the legacy `HomeListCardComponent` wrapper so features rely on `InteractiveCardComponent` directly while preserving the rendered markup and styles. - [x] Restore Home recent search cards to the baseline visuals while relying on `InteractiveCardComponent` (selectors: `.recent-card`, `.recent-card__body`, `.recent-card__remove`).
 - [x] Review orphaned or redundant components (e.g., dialog variants, navigation items) and remove or reassign them only after confirming **no visual or spacing shifts** occur across any layout.
   - [x] Verified remaining shared and feature components still have active entry points after removing dialog and navigation wrappers.
   - [x] Remove unused StopNavigationItemComponent after confirming InteractiveCardComponent now serves every former usage without altering layout metrics.
   - [x] Remove unused HomeNearbyStopsDialogComponent after verifying no entry points remain and route search nearby recommendations cover the former flow.
 - [x] Align all feature views (favorites, route search, stop detail, settings, map, etc.) with the unified layout structure using the shared spacing and typography tokens while maintaining pixel parity with the current layout.
-       Automated screenshot comparison must confirm zero differences.
+      Automated screenshot comparison must confirm zero differences.
   - [x] Favorites view registers its layout content region with the shared host while preserving pixel-identical rendering.
   - [x] Home dashboard registers its layout content region with the shared host while preserving pixel-identical rendering.
   - [x] Route search view registers its layout content region with the shared host while preserving pixel-identical rendering.
@@ -108,8 +107,8 @@ This phase is purely structural and organizational — no aesthetic changes are 
       - [x] Share Cypress visual regression task payload and result types between the config and spec to prevent duplication while maintaining the zero-diff assertion.
   - [x] Dialog overlay focus and accessibility behavior.
   - [x] Form primitive keyboard navigation and ARIA labeling.
-    Execute `npm run lint`, `npm run test`, and `npm run build` after each phase.  
-    The iteration is valid only if **visual comparison reports zero diffs**.
+        Execute `npm run lint`, `npm run test`, and `npm run build` after each phase.  
+        The iteration is valid only if **visual comparison reports zero diffs**.
 
 🖼 **Baseline Reference:**  
 The current layout, as rendered in the production build, is the **canonical baseline**.  

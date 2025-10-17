@@ -6,7 +6,7 @@ import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 import {
   CompareSnapshotPayload,
-  CompareSnapshotResult
+  CompareSnapshotResult,
 } from './cypress/support/visual-regression/types';
 
 const PNG_EXTENSION = '.png';
@@ -25,7 +25,7 @@ const createCompareSnapshotTask = () => {
   return async ({
     specName,
     snapshotName,
-    threshold = ZERO_DIFF_THRESHOLD
+    threshold = ZERO_DIFF_THRESHOLD,
   }: CompareSnapshotPayload): Promise<CompareSnapshotResult> => {
     const specDirectory = specName.replace(SPEC_EXTENSION_PATTERN, '');
     const baselineDirectory = path.join(baselineRoot, specDirectory);
@@ -37,7 +37,7 @@ const createCompareSnapshotTask = () => {
       cypressRoot,
       SCREENSHOTS_DIRECTORY_NAME,
       specName,
-      `${snapshotName}${PNG_EXTENSION}`
+      `${snapshotName}${PNG_EXTENSION}`,
     );
     const baselinePath = path.join(baselineDirectory, `${snapshotName}${PNG_EXTENSION}`);
     const diffPath = path.join(diffDirectory, `${snapshotName}${PNG_EXTENSION}`);
@@ -51,13 +51,13 @@ const createCompareSnapshotTask = () => {
       return {
         diffPixels: 0,
         diffPath,
-        baselineCreated: true
+        baselineCreated: true,
       };
     }
 
     const [baselineBuffer, screenshotBuffer] = await Promise.all([
       readFile(baselinePath),
-      readFile(screenshotPath)
+      readFile(screenshotPath),
     ]);
     const baselinePng = PNG.sync.read(baselineBuffer);
     const screenshotPng = PNG.sync.read(screenshotBuffer);
@@ -73,14 +73,14 @@ const createCompareSnapshotTask = () => {
       diffPng.data,
       baselinePng.width,
       baselinePng.height,
-      { threshold }
+      { threshold },
     );
     await writeFile(diffPath, PNG.sync.write(diffPng));
 
     return {
       diffPixels,
       diffPath,
-      baselineCreated: false
+      baselineCreated: false,
     };
   };
 };
@@ -90,16 +90,16 @@ export default defineConfig({
     baseUrl: 'http://localhost:4200',
     setupNodeEvents(on) {
       on('task', {
-        compareSnapshot: createCompareSnapshotTask()
+        compareSnapshot: createCompareSnapshotTask(),
       });
       return undefined;
-    }
+    },
   },
   component: {
     devServer: {
       framework: 'angular',
-      bundler: 'webpack'
+      bundler: 'webpack',
     },
-    specPattern: '**/*.cy.ts'
-  }
+    specPattern: '**/*.cy.ts',
+  },
 });

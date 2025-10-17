@@ -15,7 +15,8 @@ const STOP_DIRECTORY_INDEX_MATCHER = '**/assets/data/stop-directory/index.json' 
 const STOP_DIRECTORY_CHUNK_ID = 'sample-chunk' as const;
 const STOP_DIRECTORY_CHUNK_MATCHER =
   `**/assets/data/stop-directory/chunks/${STOP_DIRECTORY_CHUNK_ID}.json` as const;
-const STOP_SERVICES_SNAPSHOT_MATCHER = '**/assets/data/snapshots/stop-services/latest.json' as const;
+const STOP_SERVICES_SNAPSHOT_MATCHER =
+  '**/assets/data/snapshots/stop-services/latest.json' as const;
 const STOP_DIRECTORY_INDEX_FIXTURE = 'visual-regression/stop-directory-index.json' as const;
 const STOP_DIRECTORY_CHUNK_FIXTURE = 'visual-regression/stop-directory-chunk.json' as const;
 const STOP_SCHEDULE_SNAPSHOT_FIXTURE = 'visual-regression/stop-schedule-snapshot.json' as const;
@@ -45,7 +46,7 @@ const PIXEL_DIFF_THRESHOLD = 0;
 
 const LOCALE_VARIANTS = [
   { key: 'es', languageParam: undefined },
-  { key: 'en', languageParam: ENGLISH_LANGUAGE }
+  { key: 'en', languageParam: ENGLISH_LANGUAGE },
 ] as const;
 
 type LocaleKey = (typeof LOCALE_VARIANTS)[number]['key'];
@@ -81,13 +82,13 @@ const buildPath = (routeSegment: string, queryParams: QueryParams = {}): string 
 const createScenario = (
   name: string,
   routeSegment: string,
-  options: ScenarioOptions = {}
+  options: ScenarioOptions = {},
 ): SnapshotScenario => ({
   name,
   path: buildPath(routeSegment, options.queryParams),
   readySelector: options.readySelector ?? SHELL_ACTIONS_SELECTOR,
   clockTime: options.clockTime,
-  onBeforeVisit: options.onBeforeVisit
+  onBeforeVisit: options.onBeforeVisit,
 });
 
 const removeUndefinedQueryParams = (queryParams: QueryParams): QueryParams => {
@@ -98,11 +99,11 @@ const removeUndefinedQueryParams = (queryParams: QueryParams): QueryParams => {
 const buildLocalizedQueryParams = (
   baseQueryParams: QueryParams | undefined,
   localizedQueryParams: QueryParams | undefined,
-  languageParam: string | undefined
+  languageParam: string | undefined,
 ): QueryParams | undefined => {
   const mergedEntries: QueryParams = {
     ...(baseQueryParams ?? {}),
-    ...(localizedQueryParams ?? {})
+    ...(localizedQueryParams ?? {}),
   };
   if (languageParam !== undefined) {
     mergedEntries[LANGUAGE_QUERY_PARAM] = languageParam;
@@ -117,7 +118,7 @@ const createLocalizedScenarios = (
   baseName: string,
   routeSegment: string,
   baseOptions: ScenarioOptions = {},
-  localeOverrides: LocalizedScenarioOverrides = {}
+  localeOverrides: LocalizedScenarioOverrides = {},
 ): readonly SnapshotScenario[] =>
   LOCALE_VARIANTS.map((locale) => {
     const localizedOptions = localeOverrides[locale.key] ?? {};
@@ -129,8 +130,8 @@ const createLocalizedScenarios = (
       queryParams: buildLocalizedQueryParams(
         baseQueryParams,
         localizedQueryParams,
-        locale.languageParam
-      )
+        locale.languageParam,
+      ),
     };
     const localizedName = `${baseName}-${locale.key}`;
     return createScenario(localizedName, routeSegment, combinedOptions);
@@ -140,51 +141,36 @@ describe('Visual regression', () => {
   const specName = Cypress.spec.name;
   beforeEach(() => {
     cy.intercept('GET', STOP_DIRECTORY_INDEX_MATCHER, {
-      fixture: STOP_DIRECTORY_INDEX_FIXTURE
+      fixture: STOP_DIRECTORY_INDEX_FIXTURE,
     });
     cy.intercept('GET', STOP_DIRECTORY_CHUNK_MATCHER, {
-      fixture: STOP_DIRECTORY_CHUNK_FIXTURE
+      fixture: STOP_DIRECTORY_CHUNK_FIXTURE,
     });
     cy.intercept('GET', STOP_SERVICES_SNAPSHOT_MATCHER, {
-      fixture: STOP_SCHEDULE_SNAPSHOT_FIXTURE
+      fixture: STOP_SCHEDULE_SNAPSHOT_FIXTURE,
     });
   });
   const scenarios: readonly SnapshotScenario[] = [
     ...createLocalizedScenarios(HOME_LAYOUT_SNAPSHOT_BASE, APP_CONFIG.routes.home),
-    ...createLocalizedScenarios(
-      FAVORITES_LAYOUT_SNAPSHOT_BASE,
-      APP_CONFIG.routes.favorites
-    ),
-    ...createLocalizedScenarios(
-      SETTINGS_LAYOUT_SNAPSHOT_BASE,
-      APP_CONFIG.routes.settings,
-      {
-        readySelector: SETTINGS_SELECTOR
-      }
-    ),
-    ...createLocalizedScenarios(
-      ROUTE_SEARCH_LAYOUT_SNAPSHOT_BASE,
-      APP_CONFIG.routes.routeSearch,
-      {
-        readySelector: ROUTE_SEARCH_SELECTOR
-      }
-    ),
-    ...createLocalizedScenarios(
-      MAP_LAYOUT_SNAPSHOT_BASE,
-      APP_CONFIG.routes.map,
-      {
-        readySelector: MAP_SELECTOR
-      }
-    ),
+    ...createLocalizedScenarios(FAVORITES_LAYOUT_SNAPSHOT_BASE, APP_CONFIG.routes.favorites),
+    ...createLocalizedScenarios(SETTINGS_LAYOUT_SNAPSHOT_BASE, APP_CONFIG.routes.settings, {
+      readySelector: SETTINGS_SELECTOR,
+    }),
+    ...createLocalizedScenarios(ROUTE_SEARCH_LAYOUT_SNAPSHOT_BASE, APP_CONFIG.routes.routeSearch, {
+      readySelector: ROUTE_SEARCH_SELECTOR,
+    }),
+    ...createLocalizedScenarios(MAP_LAYOUT_SNAPSHOT_BASE, APP_CONFIG.routes.map, {
+      readySelector: MAP_SELECTOR,
+    }),
     ...createLocalizedScenarios(
       STOP_DETAIL_LAYOUT_SNAPSHOT_BASE,
       buildStopDetailRouteSegment(STOP_DETAIL_SAMPLE_STOP_ID),
       {
         readySelector: STOP_DETAIL_SELECTOR,
         clockTime: FIXED_CURRENT_TIME,
-        onBeforeVisit: enableSnapshotMode
-      }
-    )
+        onBeforeVisit: enableSnapshotMode,
+      },
+    ),
   ];
 
   const captureAndAssert = ({
@@ -192,7 +178,7 @@ describe('Visual regression', () => {
     path,
     readySelector,
     clockTime,
-    onBeforeVisit
+    onBeforeVisit,
   }: SnapshotScenario) => {
     cy.viewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
     if (typeof clockTime === 'number') {
@@ -200,7 +186,7 @@ describe('Visual regression', () => {
     }
     if (onBeforeVisit) {
       cy.visit(path, {
-        onBeforeLoad: onBeforeVisit
+        onBeforeLoad: onBeforeVisit,
       });
     } else {
       cy.visit(path);
@@ -210,7 +196,7 @@ describe('Visual regression', () => {
     cy.task<CompareSnapshotResult>('compareSnapshot', {
       specName,
       snapshotName: name,
-      threshold: PIXEL_DIFF_THRESHOLD
+      threshold: PIXEL_DIFF_THRESHOLD,
     }).then((result) => {
       expect(result.diffPixels).to.equal(PIXEL_DIFF_THRESHOLD);
     });
