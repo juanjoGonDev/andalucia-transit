@@ -161,6 +161,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Delete orphaned components or obsolete services only after confirming that layout and spacing remain unchanged.
 - Update `tsconfig` paths, imports, and barrel exports to match the new directory structure.
   - 2025-10-17: Removed the unused `HomeNearbyStopsDialogComponent` after confirming the nearby quick action now routes through the autocomplete recommendations without altering visible flows.
+  - 2025-10-17: Audited shared and feature components to confirm all remaining dialog, card, and navigation implementations still have active entry points with unchanged visuals after recent removals.
 
 ---
 
