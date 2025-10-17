@@ -33,6 +33,7 @@ yarn-error.log
 /cypress/screenshots
 /cypress/videos
 /cypress/visual-diff
+/cypress/visual-baseline
 .sass-cache/
 /connect.lock
 /coverage

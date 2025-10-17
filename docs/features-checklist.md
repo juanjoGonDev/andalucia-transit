@@ -102,6 +102,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
     - [x] Map layout snapshots (es/en) validated through Cypress visual regression spec.
     - [x] Settings layout snapshots (es/en) validated through Cypress visual regression spec.
     - [x] Provide an npm script to run the Cypress visual regression suite headlessly with zero-diff enforcement.
+    - [x] Keep Cypress visual baseline artifacts out of version control to preserve local-only snapshots.
   - [x] Dialog overlay focus and accessibility behavior.
   - [x] Form primitive keyboard navigation and ARIA labeling.
     Execute `npm run lint`, `npm run test`, and `npm run build` after each phase.  

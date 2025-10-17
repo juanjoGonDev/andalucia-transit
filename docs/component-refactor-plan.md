@@ -188,6 +188,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-17: Extended the Cypress visual regression spec with deterministic fixtures for stop detail so Spanish and English timelines capture zero-diff snapshots.
   - 2025-10-17: Added map layout snapshots for Spanish and English locales to the Cypress visual regression spec, enforcing zero diff results.
   - 2025-10-17: Added settings layout snapshots for Spanish and English locales to the Cypress visual regression spec, enforcing zero diff results.
+  - 2025-10-17: Ignored Cypress visual baseline artifacts so snapshot files remain local while diffs continue enforcing zero-pixel tolerance.
 
 ### 7.3 Test coverage
 
