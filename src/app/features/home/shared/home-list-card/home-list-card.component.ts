@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewEncapsulation
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { InteractiveCardComponent } from '../../../../shared/ui/cards/interactive-card/interactive-card.component';
@@ -13,7 +20,8 @@ const HOME_CARD_REMOVE_CLASS = 'recent-card__remove';
   imports: [CommonModule, InteractiveCardComponent],
   templateUrl: './home-list-card.component.html',
   styleUrls: ['./home-list-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class HomeListCardComponent {
   @Input() removeAriaLabel: string | null = null;

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -22,7 +22,8 @@ const CARD_LIST_ITEM_TRAILING_ICON_NAME: MaterialSymbolName = 'chevron_right';
   imports: [CommonModule, TranslateModule, InteractiveCardComponent],
   templateUrl: './stop-navigation-item.component.html',
   styleUrl: './stop-navigation-item.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class StopNavigationItemComponent {
   private static readonly ROOT_COMMAND = '/' as const;
