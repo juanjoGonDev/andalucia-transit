@@ -87,6 +87,8 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Maintain identical computed metrics (width, height, padding, shadow, and radius).
 - Apply `AccessibleButtonDirective` consistently for interactive behavior.
 
+  - 2025-10-16: Added attribute-based `InteractiveCardComponent` under `shared/ui/cards/` and rewired `HomeListCardComponent` to delegate markup rendering to it while preserving the existing DOM structure and styling hooks.
+
 ### 3.2 Dialog abstractions
 
 - Implement `OverlayDialogService` in `shared/ui/dialog/` to replace Material dialogs.

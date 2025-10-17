@@ -1,18 +1,10 @@
-<div class="recent-card">
-  <div
-    appAccessibleButton
-    class="recent-card__body"
-    (appAccessibleButtonActivated)="onPrimaryClick()"
-  >
-    <ng-content></ng-content>
-  </div>
-  <div
-    *ngIf="removeAriaLabel"
-    appAccessibleButton
-    class="recent-card__remove"
-    (appAccessibleButtonActivated)="onRemoveClick($event)"
-    [attr.aria-label]="removeAriaLabel"
-  >
-    <span class="material-symbols-outlined">{{ removeIcon }}</span>
-  </div>
-</div>
+<app-interactive-card
+  [ngClass]="cardClasses"
+  [bodyClasses]="bodyClasses"
+  [removeClasses]="removeClasses"
+  [removeAriaLabel]="removeAriaLabel"
+  (primaryActivated)="handlePrimaryActivated()"
+  (removeActivated)="handleRemoveActivated()"
+>
+  <ng-content></ng-content>
+</app-interactive-card>
