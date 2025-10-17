@@ -1,4 +1,8 @@
-<section class="map">
+<section
+  class="map"
+  appLayoutContent
+  [appLayoutContentNavigationKey]="layoutNavigationKey"
+>
   <mat-card appearance="outlined" class="map-card">
     <h1>{{ translationKeys.title | translate }}</h1>
     <p>{{ translationKeys.description | translate }}</p>

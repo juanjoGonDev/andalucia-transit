@@ -1,4 +1,4 @@
-<div class="favorites" appLayoutContent>
+<div class="favorites" appLayoutContent [appLayoutContentNavigationKey]="layoutNavigationKey">
   <app-section [titleKey]="titleKey">
     <div class="favorites__header">
       <p class="favorites__description">{{ descriptionKey | translate }}</p>
@@ -44,8 +44,8 @@
             <span class="favorites__item-text">
               <span class="favorites__item-name">{{ stop.name }}</span>
               <span class="favorites__item-meta">
-                {{ codeLabelKey | translate }}: {{ stop.code }} ·
-                {{ nucleusLabelKey | translate }}: {{ stop.nucleus }}
+                {{ codeLabelKey | translate }}: {{ stop.code }} · {{ nucleusLabelKey | translate }}:
+                {{ stop.nucleus }}
               </span>
             </span>
           </div>
