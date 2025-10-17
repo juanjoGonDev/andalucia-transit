@@ -203,6 +203,7 @@ This plan conforms to `AGENTS.md` and the enforced Design Integrity Policy:
 - Prohibits any **visual or behavioral drift** from the baseline.
 - Removes Angular Material entirely.
 - Establishes a reusable, visually consistent **global layout** (`AppLayoutComponent`) and a unified shared UI library.
+- 2025-10-17: Added a Cypress visual regression spec ensuring Spanish and English home layouts match baseline snapshots with a zero-pixel diff threshold.
 
 ---
 
