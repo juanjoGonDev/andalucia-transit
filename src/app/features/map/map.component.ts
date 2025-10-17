@@ -6,11 +6,19 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { APP_CONFIG } from '../../core/config';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatCardModule, TranslateModule, AccessibleButtonDirective],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatCardModule,
+    TranslateModule,
+    AccessibleButtonDirective,
+    AppLayoutContentDirective
+  ],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
