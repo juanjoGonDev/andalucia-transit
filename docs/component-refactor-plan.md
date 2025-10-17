@@ -160,6 +160,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Replace any Material tokens or mixins with shared equivalents.
 - Delete orphaned components or obsolete services only after confirming that layout and spacing remain unchanged.
 - Update `tsconfig` paths, imports, and barrel exports to match the new directory structure.
+  - 2025-10-17: Removed the unused `HomeNearbyStopsDialogComponent` after confirming the nearby quick action now routes through the autocomplete recommendations without altering visible flows.
 
 ---
 
