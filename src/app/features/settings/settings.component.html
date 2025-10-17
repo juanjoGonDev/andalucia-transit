@@ -1,4 +1,8 @@
-<div class="settings" appLayoutContent>
+<div
+  class="settings"
+  appLayoutContent
+  [appLayoutContentNavigationKey]="layoutNavigationKey"
+>
   <app-section [titleKey]="languageSectionTitleKey" appearance="card">
     <div class="settings__section">
       <p class="settings__description">{{ languageDescriptionKey | translate }}</p>

@@ -27,6 +27,7 @@ import { HomeTabId } from './home.types';
 import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
+import { AppLayoutNavigationKey } from '../../shared/layout/app-layout-context.token';
 import {
   RECENT_CARD_BODY_CLASSES,
   RECENT_CARD_HOST_CLASSES
@@ -75,6 +76,11 @@ export class HomeComponent {
     [APP_CONFIG.routes.homeRecent, 'recent'],
     [APP_CONFIG.routes.homeFavorites, 'favorites']
   ]);
+  private readonly homeNavigationKeys = new Map<string, AppLayoutNavigationKey>([
+    [APP_CONFIG.routes.home, APP_CONFIG.routes.home],
+    [APP_CONFIG.routes.homeRecent, APP_CONFIG.routes.homeRecent],
+    [APP_CONFIG.routes.homeFavorites, APP_CONFIG.routes.homeFavorites]
+  ]);
 
   protected readonly headerTitleKey = this.translation.header.title;
   protected readonly headerTaglineKey = this.translation.header.tagline;
@@ -102,6 +108,7 @@ export class HomeComponent {
 
   protected readonly activeTab = signal<HomeTabId>('search');
   protected readonly recentClearActionVisible = signal(false);
+  protected readonly layoutNavigationKey = signal<AppLayoutNavigationKey>(APP_CONFIG.routes.home);
 
   @ViewChild('recentSearches')
   private recentSearchesComponent?: HomeRecentSearchesComponent;
@@ -196,20 +203,31 @@ export class HomeComponent {
       )
       .subscribe(() => {
         const nextTab = this.resolveTabFromRoute();
+        const nextNavigationKey = this.resolveNavigationKeyFromRoute();
 
         if (this.activeTab() !== nextTab) {
           this.activeTab.set(nextTab);
+        }
+
+        if (this.layoutNavigationKey() !== nextNavigationKey) {
+          this.layoutNavigationKey.set(nextNavigationKey);
         }
       });
   }
 
   private syncActiveTabWithRoute(): void {
     this.activeTab.set(this.resolveTabFromRoute());
+    this.layoutNavigationKey.set(this.resolveNavigationKeyFromRoute());
   }
 
   private resolveTabFromRoute(): HomeTabId {
     const path = this.route.snapshot.routeConfig?.path ?? APP_CONFIG.routes.home;
     return this.homeTabRoutes.get(path) ?? 'search';
+  }
+
+  private resolveNavigationKeyFromRoute(): AppLayoutNavigationKey {
+    const path = this.route.snapshot.routeConfig?.path ?? APP_CONFIG.routes.home;
+    return this.homeNavigationKeys.get(path) ?? APP_CONFIG.routes.home;
   }
 
   private async navigateToTab(tab: HomeTabId): Promise<void> {

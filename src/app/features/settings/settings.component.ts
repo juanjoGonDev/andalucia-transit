@@ -36,6 +36,7 @@ export class SettingsComponent {
   private readonly routeSearchPreferences = inject(RouteSearchPreferencesService);
 
   private readonly translation = APP_CONFIG.translationKeys.settings;
+  protected readonly layoutNavigationKey = APP_CONFIG.routes.settings;
 
   protected readonly languageSectionTitleKey = this.translation.sections.language.title;
   protected readonly languageDescriptionKey = this.translation.sections.language.description;

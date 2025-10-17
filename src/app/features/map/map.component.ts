@@ -25,4 +25,5 @@ import { AppLayoutContentDirective } from '../../shared/layout/app-layout-conten
 })
 export class MapComponent {
   protected readonly translationKeys = APP_CONFIG.translationKeys.map;
+  protected readonly layoutNavigationKey = APP_CONFIG.routes.map;
 }

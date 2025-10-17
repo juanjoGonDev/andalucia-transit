@@ -57,6 +57,7 @@ export class StopDetailComponent {
   private readonly stopScheduleFacade = inject(StopScheduleFacade);
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.stopDetail;
+  protected readonly layoutNavigationKey = APP_CONFIG.routes.stopDetailBase;
   protected readonly destinationControl = new FormControl<string>(ALL_DESTINATIONS_OPTION, {
     nonNullable: true
   });

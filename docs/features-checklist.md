@@ -4,6 +4,8 @@
 - [x] Return accurate schedules for future dates without falsely reporting missing services.
 - [x] Keep the route search form populated on the results view so travelers can refine queries in place.
 - [ ] Maintain a consistent navigation layout and responsive timeline presentation across all views.
+  - [x] Register layout navigation keys for each routed view so the shared shell can reflect the active page without altering markup.
+  - [ ] Preserve the responsive stop timeline layout while wiring it through the shared navigation context.
 - [x] Detect Spanish national and Andalusian public holidays to adjust route timetables and highlight festivo coverage.
 - [x] Mirror Andalusian observed holidays by treating Monday as festivo when the official date falls on Sunday.
 

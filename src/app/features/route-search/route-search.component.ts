@@ -82,6 +82,7 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly routeSegments = APP_CONFIG.routeSegments.routeSearch;
   protected readonly formTitleKey = this.translationKeys.action;
   protected readonly scheduleAccuracyWarningKey = this.translationKeys.scheduleAccuracyWarning;
+  protected readonly layoutNavigationKey = APP_CONFIG.routes.routeSearch;
 
   protected readonly selection = signal<RouteSearchSelection | null>(this.state.getSelection());
   protected readonly results = signal<RouteSearchResultsViewModel>({

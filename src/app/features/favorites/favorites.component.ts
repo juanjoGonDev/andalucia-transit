@@ -67,6 +67,7 @@ export class FavoritesComponent {
   private readonly translations = APP_CONFIG.translationKeys.favorites;
   private readonly favoriteIconName = APP_CONFIG.homeData.favoriteStops.icon;
   private readonly removeIconName = APP_CONFIG.homeData.favoriteStops.removeIcon;
+  protected readonly layoutNavigationKey = APP_CONFIG.routes.favorites;
 
   protected readonly titleKey = this.translations.title;
   protected readonly descriptionKey = this.translations.description;
