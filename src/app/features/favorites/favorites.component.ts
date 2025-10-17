@@ -14,7 +14,6 @@ import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { APP_CONFIG } from '../../core/config';
-import { StopFavorite } from '../../domain/stops/stop-favorites.service';
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import {
   ConfirmDialogComponent,
@@ -22,7 +21,7 @@ import {
 } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
-import { FavoritesFacade } from '../../domain/stops/favorites.facade';
+import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
 
 interface FavoriteListItem {
   readonly id: string;

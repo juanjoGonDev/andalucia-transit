@@ -5,10 +5,9 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { OverlayDialogConfig, OverlayDialogRef, OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
 
 import { FavoritesComponent } from './favorites.component';
-import { StopFavorite } from '../../domain/stops/stop-favorites.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { APP_CONFIG } from '../../core/config';
-import { FavoritesFacade } from '../../domain/stops/favorites.facade';
+import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {
