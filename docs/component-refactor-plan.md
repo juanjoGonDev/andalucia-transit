@@ -92,6 +92,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 
   - 2025-10-16: Added attribute-based `InteractiveCardComponent` under `shared/ui/cards/` and rewired `HomeListCardComponent` to delegate markup rendering to it while preserving the existing DOM structure and styling hooks.
   - 2025-10-16: Updated `CardListItemComponent` to consume `InteractiveCardComponent`, extending the shared card to support router navigation and aria labeling without changing the rendered layout.
+  - 2025-10-17: Collapsed `StopNavigationItemComponent` into `InteractiveCardComponent`, removing the redundant card list wrapper while preserving the same classes and DOM hierarchy.
 
 ### 3.2 Dialog abstractions
 
