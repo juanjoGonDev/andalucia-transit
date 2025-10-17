@@ -24,7 +24,6 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Expose a projected content outlet within the main body container to serve as the insertion point for all feature routes.
 - Extract dashboard logic into a standalone `DashboardComponent` registered as one of the routed children, operating inside the unified layout without altering the shared shell.
 - Define a layout-level interaction contract (signals or inputs) for section or tab activation, avoiding duplicated router subscriptions.
-
   - 2025-10-16: Introduced `AppLayoutComponent` to wrap the shell top actions and project routed content via `<ng-content>`, keeping existing shell metrics unchanged while `AppShellComponent` delegates rendering to it.
   - 2025-10-16: Routed all feature views through `AppLayoutComponent` directly in `app.routes.ts`, preserving the layout host as the router entry while maintaining the prior shell structure and metrics.
   - 2025-10-16: Added `AppLayoutContentDirective` and `APP_LAYOUT_CONTEXT` with a layout context store so routed features can register content and tab configuration without altering the host layout structure.
@@ -35,7 +34,6 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Configure the router with a `path: ''` entry pointing to `AppLayoutComponent` as the global layout host.
 - Redirect legacy standalone routes to the new structure without altering visible URLs or triggering reinitialization.
 - Each feature route must provide its own localized title resolver; `AppLayoutComponent` handles shared chrome only.
-
   - 2025-10-16: Updated `app.routes.ts` to register `AppLayoutComponent` as the layout host for all feature child routes while preserving the existing route structure and layout metrics.
 
 ### 1.3 Content projection contract
@@ -70,7 +68,6 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 
 - Replace all data-service dependencies in presentation components with domain-facing facades.
 - Remove Angular Material service usage (e.g., `MatDialog`) and rewire through shared overlay abstractions.
-
   - 2025-10-16: Added `RecentSearchesFacade` to coordinate route search history, preview, execution, and preference flows for the home recent searches component without altering UI behavior or timing.
   - 2025-10-16: Added `FavoritesFacade` to proxy stop favorites persistence and expose presentation-safe streams while keeping UI timing and rendering unchanged.
   - 2025-10-16: Added `StopScheduleFacade` so stop detail views request schedule data through the domain layer while preserving presentation timing and layout.
@@ -89,7 +86,6 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Merge `HomeListCardComponent` and `CardListItemComponent` into `InteractiveCardComponent` under `shared/ui/cards/`.
 - Maintain identical computed metrics (width, height, padding, shadow, and radius).
 - Apply `AccessibleButtonDirective` consistently for interactive behavior.
-
   - 2025-10-16: Added attribute-based `InteractiveCardComponent` under `shared/ui/cards/` and rewired `HomeListCardComponent` to delegate markup rendering to it while preserving the existing DOM structure and styling hooks.
   - 2025-10-16: Updated `CardListItemComponent` to consume `InteractiveCardComponent`, extending the shared card to support router navigation and aria labeling without changing the rendered layout.
   - 2025-10-17: Collapsed `StopNavigationItemComponent` into `InteractiveCardComponent`, removing the redundant card list wrapper while preserving the same classes and DOM hierarchy.
@@ -99,7 +95,6 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Implement `OverlayDialogService` in `shared/ui/dialog/` to replace Material dialogs.
 - Create a `DialogFrameComponent` handling structure, padding, focus trapping, and overlay layering using shared tokens.
 - Ensure overlay visuals match the current baseline exactly (same opacity, shadow depth, and radii).
-
   - 2025-10-16: Added `OverlayDialogService` that currently bridges MatDialog while consolidating confirm dialog entry points under a single abstraction to prepare for the custom overlay implementation.
   - 2025-10-16: Introduced overlay dialog ref provider and injector helpers so dialog components can remove direct `MatDialogRef` dependencies without altering runtime behavior or visuals.
   - 2025-10-16: Updated Home nearby stops dialog to rely on the overlay dialog ref provider, keeping navigation and dismissal behavior unchanged.
@@ -114,7 +109,6 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - `AppDatePickerComponent`
 - Components must visually and interactively mirror the current UI (identical borders, radii, hover/focus states).
 - Use CDK overlays or native inputs where possible; **no `<button>` elements** permitted inside primitives.
-
   - 2025-10-16: Scaffolded `AppTextFieldComponent` with slot directives and ControlValueAccessor wiring to replace Material text fields without altering upcoming form visuals.
   - 2025-10-16: Extended `AppTextFieldComponent` with value and focus outputs to coordinate overlay-driven form primitives while maintaining identical input metrics.
   - 2025-10-16: Combined hint and external described-by identifiers within `AppTextFieldComponent` so migrated inputs preserve their accessibility relationships without affecting layout.

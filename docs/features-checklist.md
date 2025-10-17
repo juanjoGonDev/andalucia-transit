@@ -60,7 +60,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
   - [x] Replace the Material dialog host with a custom CDK overlay container that mirrors focus handling, backdrop styling, and geometry while keeping visuals identical.
 - [x] Build shared form primitives (text field, autocomplete, date picker) inside `shared/ui/forms/` replicating the current field metrics and interaction behavior — identical typography, borders, radius, hover/focus states, and spacing.
   - [x] Scaffold `AppTextFieldComponent` with prefix, suffix, and hint slots plus ControlValueAccessor support ready for migration.
-      No change to visual hierarchy or proportions is allowed.
+        No change to visual hierarchy or proportions is allowed.
   - [x] Expose text field interaction outputs so upcoming autocomplete primitives can orchestrate focus and value changes without altering layout.
   - [x] Merge hint and external described-by metadata on `AppTextFieldComponent` so accessibility cues remain intact during migration.
   - [x] Scaffold `AppAutocompleteComponent` with keyboard navigation, selection outputs, and projected panel structure while maintaining baseline text field metrics.
@@ -77,13 +77,10 @@ This phase is purely structural and organizational — no aesthetic changes are 
   - [x] Route search form resolves stop connections through a dedicated facade instead of injecting the stop connections data service.
   - [x] Route search selection resolver loads stop directory options and connections through the domain facades while preserving its output contract.
 - [ ] Consolidate duplicated card components (`HomeListCardComponent`, `CardListItemComponent`, etc.) into a single reusable `InteractiveCardComponent` that maintains identical computed dimensions, typography, shadow, and spacing.
-      Validate visual parity against the baseline grid.
-      - [x] Scaffold `InteractiveCardComponent` and migrate `HomeListCardComponent` to consume it without altering rendered markup.
-      - [x] Migrate `CardListItemComponent` to delegate to `InteractiveCardComponent` while retaining identical accessible behavior and styling hooks.
-      - [x] Collapse `StopNavigationItemComponent` into `InteractiveCardComponent`, retaining the existing card list markup and styling classes.
+      Validate visual parity against the baseline grid. - [x] Scaffold `InteractiveCardComponent` and migrate `HomeListCardComponent` to consume it without altering rendered markup. - [x] Migrate `CardListItemComponent` to delegate to `InteractiveCardComponent` while retaining identical accessible behavior and styling hooks. - [x] Collapse `StopNavigationItemComponent` into `InteractiveCardComponent`, retaining the existing card list markup and styling classes.
 - [ ] Review orphaned or redundant components (e.g., dialog variants, navigation items) and remove or reassign them only after confirming **no visual or spacing shifts** occur across any layout.
 - [ ] Align all feature views (favorites, route search, stop detail, settings, map, etc.) with the unified layout structure using the shared spacing and typography tokens while maintaining pixel parity with the current layout.  
-      Automated screenshot comparison must confirm zero differences.
+       Automated screenshot comparison must confirm zero differences.
 - [ ] Expand unit and integration tests to cover:
   - Layout pixel parity (visual regression checks via Storybook or Cypress snapshots).
   - Dialog overlay focus and accessibility behavior.
