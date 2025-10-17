@@ -12,10 +12,13 @@ const FAVORITES_LAYOUT_ES_SNAPSHOT = 'favorites-layout-es' as const;
 const FAVORITES_LAYOUT_EN_SNAPSHOT = 'favorites-layout-en' as const;
 const ROUTE_SEARCH_LAYOUT_ES_SNAPSHOT = 'route-search-layout-es' as const;
 const ROUTE_SEARCH_LAYOUT_EN_SNAPSHOT = 'route-search-layout-en' as const;
+const MAP_LAYOUT_ES_SNAPSHOT = 'map-layout-es' as const;
+const MAP_LAYOUT_EN_SNAPSHOT = 'map-layout-en' as const;
 const STOP_DETAIL_LAYOUT_ES_SNAPSHOT = 'stop-detail-layout-es' as const;
 const STOP_DETAIL_LAYOUT_EN_SNAPSHOT = 'stop-detail-layout-en' as const;
 const ROUTE_SEARCH_SELECTOR = '.route-search' as const;
 const STOP_DETAIL_SELECTOR = '.stop-detail' as const;
+const MAP_SELECTOR = '.map' as const;
 const STOP_DIRECTORY_INDEX_MATCHER = '**/assets/data/stop-directory/index.json' as const;
 const STOP_DIRECTORY_CHUNK_ID = 'sample-chunk' as const;
 const STOP_DIRECTORY_CHUNK_MATCHER =
@@ -123,6 +126,19 @@ describe('Visual regression', () => {
           [LANGUAGE_QUERY_PARAM]: ENGLISH_LANGUAGE
         },
         readySelector: ROUTE_SEARCH_SELECTOR
+      }
+    ),
+    createScenario(MAP_LAYOUT_ES_SNAPSHOT, APP_CONFIG.routes.map, {
+      readySelector: MAP_SELECTOR
+    }),
+    createScenario(
+      MAP_LAYOUT_EN_SNAPSHOT,
+      APP_CONFIG.routes.map,
+      {
+        queryParams: {
+          [LANGUAGE_QUERY_PARAM]: ENGLISH_LANGUAGE
+        },
+        readySelector: MAP_SELECTOR
       }
     ),
     createScenario(

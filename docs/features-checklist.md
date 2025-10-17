@@ -99,6 +99,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
     - [x] Favorites layout snapshots (es/en) validated through Cypress visual regression spec.
     - [x] Route search layout snapshots (es/en) validated through Cypress visual regression spec.
     - [x] Stop detail layout snapshots (es/en) validated through Cypress visual regression spec.
+    - [x] Map layout snapshots (es/en) validated through Cypress visual regression spec.
   - [x] Dialog overlay focus and accessibility behavior.
   - [x] Form primitive keyboard navigation and ARIA labeling.
     Execute `npm run lint`, `npm run test`, and `npm run build` after each phase.  

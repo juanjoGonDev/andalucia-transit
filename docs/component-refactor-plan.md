@@ -186,6 +186,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Run snapshot diffs for every route and feature view under both language contexts.
 - Screenshots must be attached and reviewed for every iteration.
   - 2025-10-17: Extended the Cypress visual regression spec with deterministic fixtures for stop detail so Spanish and English timelines capture zero-diff snapshots.
+  - 2025-10-17: Added map layout snapshots for Spanish and English locales to the Cypress visual regression spec, enforcing zero diff results.
 
 ### 7.3 Test coverage
 
