@@ -80,6 +80,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
       Validate visual parity against the baseline grid. - [x] Scaffold `InteractiveCardComponent` and migrate `HomeListCardComponent` to consume it without altering rendered markup. - [x] Migrate `CardListItemComponent` to delegate to `InteractiveCardComponent` while retaining identical accessible behavior and styling hooks. - [x] Collapse `StopNavigationItemComponent` into `InteractiveCardComponent`, retaining the existing card list markup and styling classes.
       - [x] Restore Home recent search cards to the baseline visuals while relying on `InteractiveCardComponent` (selectors: `.recent-card`, `.recent-card__body`, `.recent-card__remove`).
 - [ ] Review orphaned or redundant components (e.g., dialog variants, navigation items) and remove or reassign them only after confirming **no visual or spacing shifts** occur across any layout.
+  - [x] Remove unused StopNavigationItemComponent after confirming InteractiveCardComponent now serves every former usage without altering layout metrics.
 - [ ] Align all feature views (favorites, route search, stop detail, settings, map, etc.) with the unified layout structure using the shared spacing and typography tokens while maintaining pixel parity with the current layout.  
        Automated screenshot comparison must confirm zero differences.
 - [ ] Expand unit and integration tests to cover:
