@@ -86,6 +86,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
 - [x] Align all feature views (favorites, route search, stop detail, settings, map, etc.) with the unified layout structure using the shared spacing and typography tokens while maintaining pixel parity with the current layout.
        Automated screenshot comparison must confirm zero differences.
   - [x] Favorites view registers its layout content region with the shared host while preserving pixel-identical rendering.
+  - [x] Home dashboard registers its layout content region with the shared host while preserving pixel-identical rendering.
   - [x] Route search view registers its layout content region with the shared host while preserving pixel-identical rendering.
   - [x] Stop detail view registers its layout content region with the shared host while preserving pixel-identical rendering.
   - [x] Settings view registers its layout content region with the shared host while preserving pixel-identical rendering.

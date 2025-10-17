@@ -26,6 +26,7 @@ import { buildNavigationCommands, NavigationCommands } from '../../shared/naviga
 import { HomeTabId } from './home.types';
 import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
 import {
   RECENT_CARD_BODY_CLASSES,
   RECENT_CARD_HOST_CLASSES
@@ -45,7 +46,8 @@ interface HomeTabOption {
     RouteSearchFormComponent,
     HomeRecentSearchesComponent,
     InteractiveCardComponent,
-    AccessibleButtonDirective
+    AccessibleButtonDirective,
+    AppLayoutContentDirective
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],

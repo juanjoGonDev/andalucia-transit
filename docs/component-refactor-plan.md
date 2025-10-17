@@ -32,6 +32,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-17: Stop detail view now applies `AppLayoutContentDirective` to its root container so the layout host registers the schedule page without altering the rendered hierarchy or spacing.
   - 2025-10-17: Settings view now applies `AppLayoutContentDirective` to its root container so the layout host recognizes the configuration page without changing any rendered structure or spacing.
   - 2025-10-17: Map view now applies `AppLayoutContentDirective` to its root container so the layout host registers the map section without altering the rendered hierarchy or spacing.
+  - 2025-10-17: Home dashboard now applies `AppLayoutContentDirective` to its root section so the shared layout host registers the page while keeping the rendered structure and spacing identical.
 
 ### 1.2 Route hierarchy updates
 
