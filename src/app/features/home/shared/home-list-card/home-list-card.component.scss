@@ -3,6 +3,7 @@
 }
 
 .recent-card {
+  --interactive-card-display: flex;
   position: relative;
   display: flex;
   border-radius: 1.75rem;
@@ -21,8 +22,10 @@
   align-items: start;
   width: 100%;
   padding: 1.25rem 3.75rem 1.25rem 1.5rem;
+  border: none;
   border-radius: 1.75rem;
   background: transparent;
+  color: inherit;
   text-align: left;
   cursor: pointer;
 }
@@ -97,6 +100,7 @@
   border: none;
   border-radius: 1rem;
   background: var(--color-text-inverse-overlay-soft);
+  color: var(--color-text-inverse);
   display: inline-flex;
   align-items: center;
   justify-content: center;

@@ -1,5 +1,5 @@
 :host {
-  display: block;
+  display: var(--interactive-card-display, block);
 }
 
 .interactive-card__body {
