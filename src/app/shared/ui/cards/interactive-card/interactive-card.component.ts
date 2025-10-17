@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -14,6 +20,7 @@ const LINK_ROLE = 'link';
   standalone: true,
   imports: [CommonModule, RouterLink, AccessibleButtonDirective],
   templateUrl: './interactive-card.component.html',
+  styleUrl: './interactive-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InteractiveCardComponent {
