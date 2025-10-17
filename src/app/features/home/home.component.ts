@@ -5,7 +5,7 @@ import {
   ViewChild,
   computed,
   inject,
-  signal
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -16,22 +16,22 @@ import { filter } from 'rxjs';
 import { APP_CONFIG } from '../../core/config';
 import {
   RouteSearchSelection,
-  RouteSearchStateService
+  RouteSearchStateService,
 } from '../../domain/route-search/route-search-state.service';
 import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
 import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
 import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
 import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
-import { buildNavigationCommands, NavigationCommands } from '../../shared/navigation/navigation.util';
+import {
+  buildNavigationCommands,
+  NavigationCommands,
+} from '../../shared/navigation/navigation.util';
 import { HomeTabId } from './home.types';
 import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
 import { AppLayoutNavigationKey } from '../../shared/layout/app-layout-context.token';
-import {
-  RECENT_CARD_BODY_CLASSES,
-  RECENT_CARD_HOST_CLASSES
-} from './shared/recent-card-classes';
+import { RECENT_CARD_BODY_CLASSES, RECENT_CARD_HOST_CLASSES } from './shared/recent-card-classes';
 
 interface HomeTabOption {
   readonly id: HomeTabId;
@@ -48,11 +48,11 @@ interface HomeTabOption {
     HomeRecentSearchesComponent,
     InteractiveCardComponent,
     AccessibleButtonDirective,
-    AppLayoutContentDirective
+    AppLayoutContentDirective,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
   private readonly router = inject(Router);
@@ -69,17 +69,17 @@ export class HomeComponent {
   private readonly homeTabCommands: ReadonlyMap<HomeTabId, NavigationCommands> = new Map([
     ['search', buildNavigationCommands(APP_CONFIG.routes.home)],
     ['recent', buildNavigationCommands(APP_CONFIG.routes.homeRecent)],
-    ['favorites', buildNavigationCommands(APP_CONFIG.routes.homeFavorites)]
+    ['favorites', buildNavigationCommands(APP_CONFIG.routes.homeFavorites)],
   ]);
   private readonly homeTabRoutes = new Map<string, HomeTabId>([
     [APP_CONFIG.routes.home, 'search'],
     [APP_CONFIG.routes.homeRecent, 'recent'],
-    [APP_CONFIG.routes.homeFavorites, 'favorites']
+    [APP_CONFIG.routes.homeFavorites, 'favorites'],
   ]);
   private readonly homeNavigationKeys = new Map<string, AppLayoutNavigationKey>([
     [APP_CONFIG.routes.home, APP_CONFIG.routes.home],
     [APP_CONFIG.routes.homeRecent, APP_CONFIG.routes.homeRecent],
-    [APP_CONFIG.routes.homeFavorites, APP_CONFIG.routes.homeFavorites]
+    [APP_CONFIG.routes.homeFavorites, APP_CONFIG.routes.homeFavorites],
   ]);
 
   protected readonly headerTitleKey = this.translation.header.title;
@@ -90,7 +90,7 @@ export class HomeComponent {
   protected readonly tabs: readonly HomeTabOption[] = [
     { id: 'search', labelKey: this.translation.tabs.search },
     { id: 'recent', labelKey: this.translation.tabs.recent },
-    { id: 'favorites', labelKey: this.translation.tabs.favorites }
+    { id: 'favorites', labelKey: this.translation.tabs.favorites },
   ];
   protected readonly summaryTitleKey = this.translation.summary.lastSearch;
   protected readonly summarySeeAllKey = this.translation.summary.seeAll;
@@ -199,7 +199,7 @@ export class HomeComponent {
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
         const nextTab = this.resolveTabFromRoute();
