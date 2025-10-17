@@ -6,7 +6,12 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '../../core/config';
 import { StopSchedule, StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
 import { StopScheduleFacade } from '../../domain/stop-schedule/stop-schedule.facade';
-import { StopDetailComponent } from './stop-detail.component';
+import {
+  STOP_TIMELINE_PAST_TAB_ID,
+  STOP_TIMELINE_UPCOMING_TAB_ID,
+  StopDetailComponent
+} from './stop-detail.component';
+import { APP_LAYOUT_CONTEXT, AppLayoutContext } from '../../shared/layout/app-layout-context.token';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
@@ -19,6 +24,7 @@ describe('StopDetailComponent', () => {
   let router: Router;
   let scheduleFacade: jasmine.SpyObj<StopScheduleFacade>;
   let paramMapSubject: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
+  let layoutContext: jasmine.SpyObj<AppLayoutContext>;
 
   beforeEach(async () => {
     paramMapSubject = new BehaviorSubject(convertToParamMap({ stopId: 'stop-main-street' }));
@@ -28,6 +34,20 @@ describe('StopDetailComponent', () => {
     scheduleFacade.loadStopSchedule.and.callFake((stopId: string) => of(createResult(stopId)));
     const routerStub = jasmine.createSpyObj<Router>('Router', ['navigate']);
     routerStub.navigate.and.resolveTo(true);
+    layoutContext = jasmine.createSpyObj<AppLayoutContext>('AppLayoutContext', [
+      'registerContent',
+      'unregisterContent',
+      'configureTabs',
+      'setActiveTab',
+      'clearTabs',
+      'snapshot'
+    ]);
+    layoutContext.snapshot.and.returnValue({
+      activeContent: null,
+      activeNavigationKey: null,
+      tabs: [],
+      activeTab: null
+    });
 
     await TestBed.configureTestingModule({
       imports: [
@@ -39,7 +59,8 @@ describe('StopDetailComponent', () => {
       providers: [
         { provide: StopScheduleFacade, useValue: scheduleFacade },
         { provide: ActivatedRoute, useValue: { paramMap: paramMapSubject.asObservable() } },
-        { provide: Router, useValue: routerStub }
+        { provide: Router, useValue: routerStub },
+        { provide: APP_LAYOUT_CONTEXT, useValue: layoutContext }
       ]
     }).compileComponents();
 
@@ -99,6 +120,45 @@ describe('StopDetailComponent', () => {
 
     expect(scheduleFacade.loadStopSchedule).toHaveBeenCalledTimes(2);
     expect(scheduleFacade.loadStopSchedule).toHaveBeenCalledWith('stop-avenue-center');
+  }));
+
+  it('configures timeline tabs through the layout context', fakeAsync(() => {
+    fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+    tick();
+
+    expect(layoutContext.configureTabs).toHaveBeenCalledWith([
+      {
+        identifier: STOP_TIMELINE_UPCOMING_TAB_ID,
+        labelKey: APP_CONFIG.translationKeys.stopDetail.schedule.upcomingTitle
+      },
+      {
+        identifier: STOP_TIMELINE_PAST_TAB_ID,
+        labelKey: APP_CONFIG.translationKeys.stopDetail.schedule.pastTitle
+      }
+    ]);
+  }));
+
+  it('marks the past timeline tab active when no upcoming services remain', fakeAsync(() => {
+    fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+    tick();
+
+    const lastCall = layoutContext.setActiveTab.calls.mostRecent();
+
+    expect(lastCall?.args[0]).toBe(STOP_TIMELINE_PAST_TAB_ID);
+  }));
+
+  it('clears timeline tabs on destroy', fakeAsync(() => {
+    fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+    tick();
+
+    layoutContext.clearTabs.calls.reset();
+
+    fixture.destroy();
+
+    expect(layoutContext.clearTabs).toHaveBeenCalledTimes(1);
   }));
 });
 

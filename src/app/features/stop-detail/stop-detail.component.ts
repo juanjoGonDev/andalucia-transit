@@ -25,8 +25,15 @@ import {
 } from '../../domain/stop-schedule/stop-schedule.transform';
 import { StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
 import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
+import {
+  APP_LAYOUT_CONTEXT,
+  AppLayoutContext,
+  AppLayoutTabRegistration
+} from '../../shared/layout/app-layout-context.token';
 
 const ALL_DESTINATIONS_OPTION = 'all';
+export const STOP_TIMELINE_UPCOMING_TAB_ID = 'stop-detail-timeline-upcoming' as const;
+export const STOP_TIMELINE_PAST_TAB_ID = 'stop-detail-timeline-past' as const;
 
 type ScheduleItem = StopScheduleUiModel['upcoming'][number] | StopScheduleUiModel['past'][number];
 
@@ -55,12 +62,23 @@ export class StopDetailComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly stopScheduleFacade = inject(StopScheduleFacade);
+  private readonly layoutContext: AppLayoutContext = inject(APP_LAYOUT_CONTEXT);
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.stopDetail;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.stopDetailBase;
   protected readonly destinationControl = new FormControl<string>(ALL_DESTINATIONS_OPTION, {
     nonNullable: true
   });
+  private readonly timelineTabs: readonly AppLayoutTabRegistration[] = [
+    {
+      identifier: STOP_TIMELINE_UPCOMING_TAB_ID,
+      labelKey: this.translationKeys.schedule.upcomingTitle
+    },
+    {
+      identifier: STOP_TIMELINE_PAST_TAB_ID,
+      labelKey: this.translationKeys.schedule.pastTitle
+    }
+  ];
 
   private readonly stopIdParam$: Observable<string | null> = this.route.paramMap.pipe(
     map((params) => params.get(APP_CONFIG.routeParams.stopId)),
@@ -119,6 +137,10 @@ export class StopDetailComponent {
   protected readonly trackByServiceId = (_: number, item: ScheduleItem): string => item.serviceId;
 
   constructor() {
+    this.layoutContext.configureTabs(this.timelineTabs);
+    this.layoutContext.setActiveTab(STOP_TIMELINE_UPCOMING_TAB_ID);
+    this.destroyRef.onDestroy(() => this.layoutContext.clearTabs());
+
     this.stopIdParam$
       .pipe(
         filter((stopId): stopId is null => stopId === null),
@@ -126,12 +148,29 @@ export class StopDetailComponent {
       )
       .subscribe(() => this.redirectToHome());
 
+    this.scheduleState$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((state) => {
+        if (state.status !== 'success') {
+          this.layoutContext.setActiveTab(STOP_TIMELINE_UPCOMING_TAB_ID);
+        }
+      });
+
     this.viewModel$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe();
+      .subscribe((viewModel) => this.syncTimelineTab(viewModel));
   }
 
   private redirectToHome(): void {
     void this.router.navigate([StopDetailComponent.ROOT_COMMAND, APP_CONFIG.routes.home]);
+  }
+
+  private syncTimelineTab(viewModel: StopScheduleUiModel): void {
+    const nextActive =
+      viewModel.upcoming.length > 0
+        ? STOP_TIMELINE_UPCOMING_TAB_ID
+        : STOP_TIMELINE_PAST_TAB_ID;
+
+    this.layoutContext.setActiveTab(nextActive);
   }
 }

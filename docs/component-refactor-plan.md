@@ -34,6 +34,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-17: Map view now applies `AppLayoutContentDirective` to its root container so the layout host registers the map section without altering the rendered hierarchy or spacing.
   - 2025-10-17: Home dashboard now applies `AppLayoutContentDirective` to its root section so the shared layout host registers the page while keeping the rendered structure and spacing identical.
   - 2025-10-17: Layout context captures navigation keys from each routed view so the shared shell can reflect the active page without changing markup or computed styles.
+  - 2025-10-17: Stop detail timeline now configures layout context tabs for upcoming and past panels, keeping the responsive schedule layout intact while exposing navigation metadata to the shared shell.
 
 ### 1.2 Route hierarchy updates
 
