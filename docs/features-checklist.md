@@ -65,7 +65,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
   - [x] Merge hint and external described-by metadata on `AppTextFieldComponent` so accessibility cues remain intact during migration.
   - [x] Scaffold `AppAutocompleteComponent` with keyboard navigation, selection outputs, and projected panel structure while maintaining baseline text field metrics.
   - [x] Scaffold `AppDatePickerComponent` with parsing and formatting hooks backed by the shared text field while preserving baseline metrics.
-- [ ] Introduce domain facades to abstract data services from presentation components, ensuring no change in rendering, timing, or layout stability.
+- [x] Introduce domain facades to abstract data services from presentation components, ensuring no change in rendering, timing, or layout stability.
   - [x] Provide a recent searches facade combining history, preview, execution, and preferences coordination for the home dashboard.
   - [x] Provide a favorites facade that encapsulates favorites persistence and exposes presentation-ready streams without altering UI behavior.
   - [x] Provide a stop schedule facade so stop detail presentation loads schedules through the domain layer without modifying UI rendering.
@@ -75,6 +75,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
     - [x] Favorites view consumes the favorites facade exclusively, avoiding direct references to the stop favorites service.
   - [x] Route search components resolve stop directory data through a dedicated facade instead of injecting the stop directory service.
   - [x] Route search form resolves stop connections through a dedicated facade instead of injecting the stop connections data service.
+  - [x] Route search selection resolver loads stop directory options and connections through the domain facades while preserving its output contract.
 - [ ] Consolidate duplicated card components (`HomeListCardComponent`, `CardListItemComponent`, etc.) into a single reusable `InteractiveCardComponent` that maintains identical computed dimensions, typography, shadow, and spacing.
       Validate visual parity against the baseline grid.
       - [x] Scaffold `InteractiveCardComponent` and migrate `HomeListCardComponent` to consume it without altering rendered markup.

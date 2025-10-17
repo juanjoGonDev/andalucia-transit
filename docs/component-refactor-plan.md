@@ -78,6 +78,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-16: Route search form favorites shortcuts now rely on `FavoritesFacade`, keeping shortcut behavior identical while removing the direct stop favorites service injection.
   - 2025-10-16: Route search components now obtain stop directory data via `StopDirectoryFacade`, decoupling presentation from the data service without altering runtime behavior.
   - 2025-10-16: Route search form now consumes `StopConnectionsFacade` so stop connection lookups flow through the domain layer without changing UI behavior or timing.
+  - 2025-10-17: Route search selection resolver now requests stop options and connection maps through the domain facades, keeping slug resolution logic intact while removing data-service injections.
 
 ---
 
