@@ -190,6 +190,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - Overlay dialog service and focus behavior.
   - Custom form control behavior and validation.
 - Maintain or exceed existing coverage metrics.
+  - 2025-10-17: Added unit tests exercising overlay dialog focus trapping, role assignment, and focus restoration to document accessibility verification for the custom dialog host.
 
 ---
 

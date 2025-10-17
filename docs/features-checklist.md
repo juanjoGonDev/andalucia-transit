@@ -93,7 +93,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
 - [ ] Expand unit and integration tests to cover:
   - [x] Layout pixel parity (visual regression checks via Storybook or Cypress snapshots).
     - [x] Home layout snapshots (es/en) validated through Cypress visual regression spec.
-  - Dialog overlay focus and accessibility behavior.
+  - [x] Dialog overlay focus and accessibility behavior.
   - Form primitive keyboard navigation and ARIA labeling.
     Execute `npm run lint`, `npm run test`, and `npm run build` after each phase.  
     The iteration is valid only if **visual comparison reports zero diffs**.
