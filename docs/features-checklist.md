@@ -104,6 +104,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
     - [x] Provide an npm script to run the Cypress visual regression suite headlessly with zero-diff enforcement.
     - [x] Keep Cypress visual baseline artifacts out of version control to preserve local-only snapshots.
     - [x] Centralize visual regression path configuration to eliminate duplicated directory literals.
+    - [x] Generate bilingual snapshot scenarios through a shared helper to remove duplication while maintaining zero-diff enforcement in the Cypress spec.
       - [x] Share Cypress visual regression task payload and result types between the config and spec to prevent duplication while maintaining the zero-diff assertion.
   - [x] Dialog overlay focus and accessibility behavior.
   - [x] Form primitive keyboard navigation and ARIA labeling.

@@ -190,6 +190,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-17: Added settings layout snapshots for Spanish and English locales to the Cypress visual regression spec, enforcing zero diff results.
   - 2025-10-17: Ignored Cypress visual baseline artifacts so snapshot files remain local while diffs continue enforcing zero-pixel tolerance.
   - 2025-10-17: Centralized Cypress visual regression directory constants to remove duplicated literals while keeping zero-diff enforcement intact.
+  - 2025-10-17: Localized snapshot scenarios now derive from a shared helper to remove duplication while keeping bilingual zero-diff enforcement consistent across the Cypress spec.
   - 2025-10-17: Shared Cypress visual regression task payload and result types between the config and spec to avoid duplication while preserving the zero-diff contract.
 
 ### 7.3 Test coverage
