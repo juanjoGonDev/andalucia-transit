@@ -185,6 +185,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Use Storybook or Cypress image snapshots to confirm **pixel parity** with the baseline UI.
 - Run snapshot diffs for every route and feature view under both language contexts.
 - Screenshots must be attached and reviewed for every iteration.
+  - 2025-10-17: Extended the Cypress visual regression spec with deterministic fixtures for stop detail so Spanish and English timelines capture zero-diff snapshots.
 
 ### 7.3 Test coverage
 
