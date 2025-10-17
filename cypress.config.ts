@@ -4,39 +4,43 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
+import {
+  CompareSnapshotPayload,
+  CompareSnapshotResult,
+} from './cypress/support/visual-regression/types';
 
-interface CompareSnapshotPayload {
-  readonly specName: string;
-  readonly snapshotName: string;
-  readonly threshold?: number;
-}
-
-interface CompareSnapshotResult {
-  readonly diffPixels: number;
-  readonly diffPath: string;
-  readonly baselineCreated: boolean;
-}
+const PNG_EXTENSION = '.png';
+const CYPRESS_DIRECTORY_NAME = 'cypress';
+const SCREENSHOTS_DIRECTORY_NAME = 'screenshots';
+const VISUAL_BASELINE_DIRECTORY_NAME = 'visual-baseline';
+const VISUAL_DIFF_DIRECTORY_NAME = 'visual-diff';
+const ZERO_DIFF_THRESHOLD = 0;
+const SPEC_EXTENSION_PATTERN = /\.[^.]+$/u;
 
 const createCompareSnapshotTask = () => {
-  const baselineRoot = path.resolve(__dirname, 'cypress', 'visual-baseline');
-  const diffRoot = path.resolve(__dirname, 'cypress', 'visual-diff');
+  const cypressRoot = path.resolve(__dirname, CYPRESS_DIRECTORY_NAME);
+  const baselineRoot = path.join(cypressRoot, VISUAL_BASELINE_DIRECTORY_NAME);
+  const diffRoot = path.join(cypressRoot, VISUAL_DIFF_DIRECTORY_NAME);
 
-  return async ({ specName, snapshotName, threshold = 0 }: CompareSnapshotPayload): Promise<CompareSnapshotResult> => {
-    const specDirectory = specName.replace(/\.[^.]+$/u, '');
+  return async ({
+    specName,
+    snapshotName,
+    threshold = ZERO_DIFF_THRESHOLD,
+  }: CompareSnapshotPayload): Promise<CompareSnapshotResult> => {
+    const specDirectory = specName.replace(SPEC_EXTENSION_PATTERN, '');
     const baselineDirectory = path.join(baselineRoot, specDirectory);
     const diffDirectory = path.join(diffRoot, specDirectory);
     await mkdir(baselineDirectory, { recursive: true });
     await mkdir(diffDirectory, { recursive: true });
 
-    const screenshotPath = path.resolve(
-      __dirname,
-      'cypress',
-      'screenshots',
+    const screenshotPath = path.join(
+      cypressRoot,
+      SCREENSHOTS_DIRECTORY_NAME,
       specName,
-      `${snapshotName}.png`
+      `${snapshotName}${PNG_EXTENSION}`,
     );
-    const baselinePath = path.join(baselineDirectory, `${snapshotName}.png`);
-    const diffPath = path.join(diffDirectory, `${snapshotName}.png`);
+    const baselinePath = path.join(baselineDirectory, `${snapshotName}${PNG_EXTENSION}`);
+    const diffPath = path.join(diffDirectory, `${snapshotName}${PNG_EXTENSION}`);
 
     if (!existsSync(screenshotPath)) {
       throw new Error(`Screenshot not found at ${screenshotPath}`);
@@ -47,13 +51,13 @@ const createCompareSnapshotTask = () => {
       return {
         diffPixels: 0,
         diffPath,
-        baselineCreated: true
+        baselineCreated: true,
       };
     }
 
     const [baselineBuffer, screenshotBuffer] = await Promise.all([
       readFile(baselinePath),
-      readFile(screenshotPath)
+      readFile(screenshotPath),
     ]);
     const baselinePng = PNG.sync.read(baselineBuffer);
     const screenshotPng = PNG.sync.read(screenshotBuffer);
@@ -69,14 +73,14 @@ const createCompareSnapshotTask = () => {
       diffPng.data,
       baselinePng.width,
       baselinePng.height,
-      { threshold }
+      { threshold },
     );
     await writeFile(diffPath, PNG.sync.write(diffPng));
 
     return {
       diffPixels,
       diffPath,
-      baselineCreated: false
+      baselineCreated: false,
     };
   };
 };
@@ -86,16 +90,16 @@ export default defineConfig({
     baseUrl: 'http://localhost:4200',
     setupNodeEvents(on) {
       on('task', {
-        compareSnapshot: createCompareSnapshotTask()
+        compareSnapshot: createCompareSnapshotTask(),
       });
       return undefined;
-    }
+    },
   },
   component: {
     devServer: {
       framework: 'angular',
-      bundler: 'webpack'
+      bundler: 'webpack',
     },
-    specPattern: '**/*.cy.ts'
-  }
+    specPattern: '**/*.cy.ts',
+  },
 });
