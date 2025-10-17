@@ -1,6 +1,5 @@
 <div
   appAccessibleButton
-  class="interactive-card__body"
   [ngClass]="bodyClasses"
   [appAccessibleButtonRole]="computedPrimaryRole"
   [routerLink]="computedPrimaryCommands"
@@ -12,10 +11,9 @@
 <div
   *ngIf="removeAriaLabel"
   appAccessibleButton
-  class="interactive-card__remove"
   [ngClass]="removeClasses"
   [attr.aria-label]="removeAriaLabel"
   (appAccessibleButtonActivated)="handleRemoveActivated($event)"
 >
-  <span class="interactive-card__remove-icon" [ngClass]="removeIconClass">{{ removeIconName }}</span>
+  <span [ngClass]="removeIconClass">{{ removeIconName }}</span>
 </div>

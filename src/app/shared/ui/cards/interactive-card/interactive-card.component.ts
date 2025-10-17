@@ -20,7 +20,6 @@ const LINK_ROLE = 'link';
   standalone: true,
   imports: [CommonModule, RouterLink, AccessibleButtonDirective],
   templateUrl: './interactive-card.component.html',
-  styleUrl: './interactive-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InteractiveCardComponent {
