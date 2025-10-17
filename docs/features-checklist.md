@@ -74,6 +74,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
     - [x] Route search form favorites shortcuts use the favorites facade rather than injecting the stop favorites service.
     - [x] Favorites view consumes the favorites facade exclusively, avoiding direct references to the stop favorites service.
   - [x] Route search components resolve stop directory data through a dedicated facade instead of injecting the stop directory service.
+  - [x] Route search form resolves stop connections through a dedicated facade instead of injecting the stop connections data service.
 - [ ] Consolidate duplicated card components (`HomeListCardComponent`, `CardListItemComponent`, etc.) into a single reusable `InteractiveCardComponent` that maintains identical computed dimensions, typography, shadow, and spacing.
       Validate visual parity against the baseline grid.
       - [x] Scaffold `InteractiveCardComponent` and migrate `HomeListCardComponent` to consume it without altering rendered markup.

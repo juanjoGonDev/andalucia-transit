@@ -12,11 +12,12 @@ import {
 } from '../../../domain/stops/stop-directory.facade';
 import {
   StopConnection,
-  StopConnectionsService,
+  StopConnectionsFacade,
   STOP_CONNECTION_DIRECTION,
   StopConnectionDirection,
-  buildStopConnectionKey
-} from '../../../data/route-search/stop-connections.service';
+  buildStopConnectionKey,
+  mergeStopConnectionMaps
+} from '../../../domain/route-search/stop-connections.facade';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import { NearbyStopResult, NearbyStopsService } from '../../../core/services/nearby-stops.service';
 import {
@@ -110,6 +111,12 @@ class ConnectionsStub {
   ) {
     const key = this.buildKey(signatures, direction);
     return of(this.responses.get(key) ?? new Map());
+  }
+
+  mergeConnections(
+    maps: readonly ReadonlyMap<string, StopConnection>[]
+  ): ReadonlyMap<string, StopConnection> {
+    return mergeStopConnectionMaps(maps);
   }
 
   private buildKey(
@@ -259,7 +266,7 @@ describe('RouteSearchFormComponent', () => {
       ],
       providers: [
         { provide: StopDirectoryFacade, useClass: DirectoryStub },
-        { provide: StopConnectionsService, useValue: connections },
+        { provide: StopConnectionsFacade, useValue: connections },
         { provide: GeolocationService, useValue: geolocation },
         { provide: NearbyStopsService, useValue: nearbyStops },
         { provide: NearbyStopOptionsService, useValue: nearbyStopOptions },

@@ -77,6 +77,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-16: Home dashboard favorites preview now consumes `FavoritesFacade` to remove direct stop favorites service dependencies without altering the preview layout or timing.
   - 2025-10-16: Route search form favorites shortcuts now rely on `FavoritesFacade`, keeping shortcut behavior identical while removing the direct stop favorites service injection.
   - 2025-10-16: Route search components now obtain stop directory data via `StopDirectoryFacade`, decoupling presentation from the data service without altering runtime behavior.
+  - 2025-10-16: Route search form now consumes `StopConnectionsFacade` so stop connection lookups flow through the domain layer without changing UI behavior or timing.
 
 ---
 

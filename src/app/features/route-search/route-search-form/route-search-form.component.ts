@@ -52,12 +52,11 @@ import {
   StopSearchRequest
 } from '../../../domain/stops/stop-directory.facade';
 import {
-  StopConnectionsService,
+  StopConnectionsFacade,
   StopConnection,
   STOP_CONNECTION_DIRECTION,
-  buildStopConnectionKey,
-  mergeStopConnectionMaps
-} from '../../../data/route-search/stop-connections.service';
+  buildStopConnectionKey
+} from '../../../domain/route-search/stop-connections.facade';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import {
   collectRouteLineMatches,
@@ -156,7 +155,7 @@ export class RouteSearchFormComponent implements OnChanges {
   private readonly formBuilder = inject(FormBuilder);
   private readonly stopDirectory = inject(StopDirectoryFacade);
   private readonly nearbyStopOptions = inject(NearbyStopOptionsService);
-  private readonly stopConnections = inject(StopConnectionsService);
+  private readonly stopConnections = inject(StopConnectionsFacade);
   private readonly favorites = inject(FavoritesFacade);
   private readonly destroyRef = inject(DestroyRef);
   private readonly geolocation = inject(GeolocationService);
@@ -1060,7 +1059,7 @@ export class RouteSearchFormComponent implements OnChanges {
     return forkJoin([
       this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Forward),
       this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Backward)
-    ]).pipe(map((connections) => mergeStopConnectionMaps(connections)));
+    ]).pipe(map((connections) => this.stopConnections.mergeConnections(connections)));
   }
 }
 
