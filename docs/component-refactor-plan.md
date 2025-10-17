@@ -90,6 +90,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-16: Updated `CardListItemComponent` to consume `InteractiveCardComponent`, extending the shared card to support router navigation and aria labeling without changing the rendered layout.
   - 2025-10-17: Collapsed `StopNavigationItemComponent` into `InteractiveCardComponent`, removing the redundant card list wrapper while preserving the same classes and DOM hierarchy.
   - 2025-10-17: Removed the obsolete `StopNavigationItemComponent` files after validating that navigation cards now resolve exclusively through `InteractiveCardComponent` with unchanged visuals.
+  - 2025-10-17: Removed `HomeListCardComponent` by projecting favorites and recent search cards through `InteractiveCardComponent` directly while centralizing the shared styles under the global stylesheet to maintain pixel-identical rendering.
 
 ### 3.2 Dialog abstractions
 

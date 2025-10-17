@@ -1,7 +1,10 @@
-<app-home-list-card
+<app-interactive-card
+  [ngClass]="recentCardHostClasses"
+  [bodyClasses]="recentCardBodyClasses"
+  [removeClasses]="recentCardRemoveClasses"
   [removeAriaLabel]="removeActionKey | translate"
-  (primaryAction)="onOpen()"
-  (removeAction)="onRemove()"
+  (primaryActivated)="onOpen()"
+  (removeActivated)="onRemove()"
 >
   <div class="recent-card__content">
     <div class="recent-card__route">
@@ -42,4 +45,4 @@
       {{ searchDateTodayKey | translate }}
     </div>
   </div>
-</app-home-list-card>
+</app-interactive-card>
