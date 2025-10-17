@@ -5,18 +5,19 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { RouteSearchFormComponent } from './route-search-form.component';
 import {
+  StopDirectoryFacade,
   StopDirectoryOption,
-  StopDirectoryService,
   StopDirectoryStopSignature,
   StopSearchRequest
-} from '../../../data/stops/stop-directory.service';
+} from '../../../domain/stops/stop-directory.facade';
 import {
   StopConnection,
-  StopConnectionsService,
+  StopConnectionsFacade,
   STOP_CONNECTION_DIRECTION,
   StopConnectionDirection,
-  buildStopConnectionKey
-} from '../../../data/route-search/stop-connections.service';
+  buildStopConnectionKey,
+  mergeStopConnectionMaps
+} from '../../../domain/route-search/stop-connections.facade';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import { NearbyStopResult, NearbyStopsService } from '../../../core/services/nearby-stops.service';
 import {
@@ -83,6 +84,14 @@ class DirectoryStub {
   getOptionByStopId(stopId: string) {
     return of(this.options.get(stopId) ?? null);
   }
+
+  getOptionByStopSignature(consortiumId: number, stopId: string) {
+    const match = Array.from(this.options.values()).find(
+      (option) => option.consortiumId === consortiumId && option.stopIds.includes(stopId)
+    );
+
+    return of(match ?? null);
+  }
 }
 
 class ConnectionsStub {
@@ -102,6 +111,12 @@ class ConnectionsStub {
   ) {
     const key = this.buildKey(signatures, direction);
     return of(this.responses.get(key) ?? new Map());
+  }
+
+  mergeConnections(
+    maps: readonly ReadonlyMap<string, StopConnection>[]
+  ): ReadonlyMap<string, StopConnection> {
+    return mergeStopConnectionMaps(maps);
   }
 
   private buildKey(
@@ -250,8 +265,8 @@ describe('RouteSearchFormComponent', () => {
         })
       ],
       providers: [
-        { provide: StopDirectoryService, useClass: DirectoryStub },
-        { provide: StopConnectionsService, useValue: connections },
+        { provide: StopDirectoryFacade, useClass: DirectoryStub },
+        { provide: StopConnectionsFacade, useValue: connections },
         { provide: GeolocationService, useValue: geolocation },
         { provide: NearbyStopsService, useValue: nearbyStops },
         { provide: NearbyStopOptionsService, useValue: nearbyStopOptions },

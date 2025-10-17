@@ -1,10 +1,16 @@
-<app-card-list-item
-  [leadingIcon]="leadingIcon"
-  [titleKey]="titleKey"
-  [subtitleKey]="subtitleKey"
-  [layout]="layout"
-  [iconVariant]="iconVariant"
-  [trailingIcon]="trailingIcon"
-  [commands]="navigationCommands"
-  [ariaLabelKey]="ariaLabelKey ?? titleKey"
-></app-card-list-item>
+<app-interactive-card
+  [bodyClasses]="bodyClassList"
+  [primaryCommands]="navigationCommands"
+  [primaryAriaLabel]="computedAriaLabelKey ? (computedAriaLabelKey | translate) : null"
+>
+  <div *ngIf="leadingIcon" class="card-list-item__leading" [ngClass]="leadingClassMap">
+    <span class="material-symbols-outlined">{{ leadingIcon }}</span>
+  </div>
+  <div class="card-list-item__body">
+    <p class="card-list-item__title">{{ titleKey | translate }}</p>
+    <p *ngIf="subtitleKey" class="card-list-item__subtitle">{{ subtitleKey | translate }}</p>
+  </div>
+  <span *ngIf="trailingIcon" class="material-symbols-outlined card-list-item__trailing">
+    {{ trailingIcon }}
+  </span>
+</app-interactive-card>

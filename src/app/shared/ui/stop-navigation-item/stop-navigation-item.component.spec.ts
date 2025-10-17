@@ -5,7 +5,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 
 import { APP_CONFIG } from '../../../core/config';
-import { CardListItemComponent } from '../card-list-item/card-list-item.component';
+import { InteractiveCardComponent } from '../cards/interactive-card/interactive-card.component';
 import { StopNavigationItemComponent } from './stop-navigation-item.component';
 
 class FakeTranslateLoader implements TranslateLoader {
@@ -38,11 +38,11 @@ describe('StopNavigationItemComponent', () => {
   });
 
   it('builds router commands targeting the stop detail route', () => {
-    const cardItem = fixture.debugElement
-      .query(By.directive(CardListItemComponent))
-      .componentInstance as CardListItemComponent;
+    const card = fixture.debugElement
+      .query(By.directive(InteractiveCardComponent))
+      .componentInstance as InteractiveCardComponent;
 
-    expect(cardItem.commands).toEqual([
+    expect(card.primaryCommands).toEqual([
       '/',
       APP_CONFIG.routes.stopDetailBase,
       'stop-main-street'

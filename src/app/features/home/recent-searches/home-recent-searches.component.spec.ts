@@ -13,7 +13,7 @@ import {
 import { HomeRecentSearchesComponent } from './home-recent-searches.component';
 import { RouteSearchHistoryEntry } from '../../../domain/route-search/route-search-history.service';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
-import { StopDirectoryOption } from '../../../data/stops/stop-directory.service';
+import { StopDirectoryOption } from '../../../domain/stops/stop-directory.facade';
 import { RouteSearchPreview } from '../../../domain/route-search/route-search-preview.service';
 import { RecentSearchesFacade } from '../../../domain/route-search/recent-searches.facade';
 
