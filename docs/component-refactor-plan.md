@@ -191,6 +191,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - Custom form control behavior and validation.
 - Maintain or exceed existing coverage metrics.
   - 2025-10-17: Added unit tests exercising overlay dialog focus trapping, role assignment, and focus restoration to document accessibility verification for the custom dialog host.
+  - 2025-10-17: Extended form primitive unit tests to assert combobox ARIA metadata, keyboard navigation, and text field label association for the shared controls.
 
 ---
 
