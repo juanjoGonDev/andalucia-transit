@@ -87,7 +87,7 @@ This phase is purely structural and organizational — no aesthetic changes are 
        Automated screenshot comparison must confirm zero differences.
   - [x] Favorites view registers its layout content region with the shared host while preserving pixel-identical rendering.
   - [x] Route search view registers its layout content region with the shared host while preserving pixel-identical rendering.
-  - [ ] Stop detail view registers its layout content region with the shared host while preserving pixel-identical rendering.
+  - [x] Stop detail view registers its layout content region with the shared host while preserving pixel-identical rendering.
   - [ ] Settings view registers its layout content region with the shared host while preserving pixel-identical rendering.
   - [ ] Map view registers its layout content region with the shared host while preserving pixel-identical rendering.
 - [ ] Expand unit and integration tests to cover:

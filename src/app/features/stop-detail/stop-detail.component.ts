@@ -24,6 +24,7 @@ import {
   StopScheduleUiModel
 } from '../../domain/stop-schedule/stop-schedule.transform';
 import { StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
+import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
 
 const ALL_DESTINATIONS_OPTION = 'all';
 
@@ -37,7 +38,12 @@ type ScheduleState =
 @Component({
   selector: 'app-stop-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    AppLayoutContentDirective
+  ],
   templateUrl: './stop-detail.component.html',
   styleUrls: ['./stop-detail.component.scss', './stop-detail.component-list.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
