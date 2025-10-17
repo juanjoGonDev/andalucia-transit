@@ -34,7 +34,7 @@ import { RouteSearchExecutionService } from '../../domain/route-search/route-sea
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
 import { buildNavigationCommands } from '../../shared/navigation/navigation.util';
-import { StopDirectoryService, StopDirectoryOption } from '../../data/stops/stop-directory.service';
+import { StopDirectoryFacade, StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 
 @Component({
@@ -69,7 +69,7 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly resultsService = inject(RouteSearchResultsService);
   private readonly selectionResolver = inject(RouteSearchSelectionResolverService);
   private readonly execution = inject(RouteSearchExecutionService);
-  private readonly stopDirectory = inject(StopDirectoryService);
+  private readonly stopDirectory = inject(StopDirectoryFacade);
   private readonly timezone = APP_CONFIG.data.timezone;
   private readonly scheduleAccuracyThresholdDays =
     APP_CONFIG.routeSearchData.scheduleAccuracy.warningThresholdDays;

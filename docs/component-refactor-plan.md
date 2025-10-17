@@ -76,6 +76,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-16: Added `StopScheduleFacade` so stop detail views request schedule data through the domain layer while preserving presentation timing and layout.
   - 2025-10-16: Home dashboard favorites preview now consumes `FavoritesFacade` to remove direct stop favorites service dependencies without altering the preview layout or timing.
   - 2025-10-16: Route search form favorites shortcuts now rely on `FavoritesFacade`, keeping shortcut behavior identical while removing the direct stop favorites service injection.
+  - 2025-10-16: Route search components now obtain stop directory data via `StopDirectoryFacade`, decoupling presentation from the data service without altering runtime behavior.
 
 ---
 
@@ -86,6 +87,9 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Merge `HomeListCardComponent` and `CardListItemComponent` into `InteractiveCardComponent` under `shared/ui/cards/`.
 - Maintain identical computed metrics (width, height, padding, shadow, and radius).
 - Apply `AccessibleButtonDirective` consistently for interactive behavior.
+
+  - 2025-10-16: Added attribute-based `InteractiveCardComponent` under `shared/ui/cards/` and rewired `HomeListCardComponent` to delegate markup rendering to it while preserving the existing DOM structure and styling hooks.
+  - 2025-10-16: Updated `CardListItemComponent` to consume `InteractiveCardComponent`, extending the shared card to support router navigation and aria labeling without changing the rendered layout.
 
 ### 3.2 Dialog abstractions
 

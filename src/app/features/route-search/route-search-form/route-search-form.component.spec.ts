@@ -5,11 +5,11 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { RouteSearchFormComponent } from './route-search-form.component';
 import {
+  StopDirectoryFacade,
   StopDirectoryOption,
-  StopDirectoryService,
   StopDirectoryStopSignature,
   StopSearchRequest
-} from '../../../data/stops/stop-directory.service';
+} from '../../../domain/stops/stop-directory.facade';
 import {
   StopConnection,
   StopConnectionsService,
@@ -82,6 +82,14 @@ class DirectoryStub {
 
   getOptionByStopId(stopId: string) {
     return of(this.options.get(stopId) ?? null);
+  }
+
+  getOptionByStopSignature(consortiumId: number, stopId: string) {
+    const match = Array.from(this.options.values()).find(
+      (option) => option.consortiumId === consortiumId && option.stopIds.includes(stopId)
+    );
+
+    return of(match ?? null);
   }
 }
 
@@ -250,7 +258,7 @@ describe('RouteSearchFormComponent', () => {
         })
       ],
       providers: [
-        { provide: StopDirectoryService, useClass: DirectoryStub },
+        { provide: StopDirectoryFacade, useClass: DirectoryStub },
         { provide: StopConnectionsService, useValue: connections },
         { provide: GeolocationService, useValue: geolocation },
         { provide: NearbyStopsService, useValue: nearbyStops },

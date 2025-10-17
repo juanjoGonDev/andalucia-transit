@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { AccessibleButtonDirective } from '../../../../shared/a11y/accessible-button.directive';
+import { InteractiveCardComponent } from '../../../../shared/ui/cards/interactive-card/interactive-card.component';
 
-const HOME_LIST_CARD_REMOVE_ICON = 'close';
+const HOME_CARD_CLASS = 'recent-card';
+const HOME_CARD_BODY_CLASS = 'recent-card__body';
+const HOME_CARD_REMOVE_CLASS = 'recent-card__remove';
 
 @Component({
   selector: 'app-home-list-card',
   standalone: true,
-  imports: [CommonModule, AccessibleButtonDirective],
+  imports: [CommonModule, InteractiveCardComponent],
   templateUrl: './home-list-card.component.html',
   styleUrls: ['./home-list-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -19,14 +21,15 @@ export class HomeListCardComponent {
   @Output() readonly primaryAction = new EventEmitter<void>();
   @Output() readonly removeAction = new EventEmitter<void>();
 
-  protected readonly removeIcon = HOME_LIST_CARD_REMOVE_ICON;
+  protected readonly cardClasses: readonly string[] = [HOME_CARD_CLASS];
+  protected readonly bodyClasses: readonly string[] = [HOME_CARD_BODY_CLASS];
+  protected readonly removeClasses: readonly string[] = [HOME_CARD_REMOVE_CLASS];
 
-  protected onPrimaryClick(): void {
+  protected handlePrimaryActivated(): void {
     this.primaryAction.emit();
   }
 
-  protected onRemoveClick(event: MouseEvent): void {
-    event.stopPropagation();
+  protected handleRemoveActivated(): void {
     this.removeAction.emit();
   }
 }

@@ -46,11 +46,11 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { APP_CONFIG } from '../../../core/config';
 import {
+  StopDirectoryFacade,
   StopDirectoryOption,
-  StopDirectoryService,
   StopDirectoryStopSignature,
   StopSearchRequest
-} from '../../../data/stops/stop-directory.service';
+} from '../../../domain/stops/stop-directory.facade';
 import {
   StopConnectionsService,
   StopConnection,
@@ -154,7 +154,7 @@ export class RouteSearchFormComponent implements OnChanges {
   private static readonly SORT_LOCALE = 'es-ES' as const;
 
   private readonly formBuilder = inject(FormBuilder);
-  private readonly stopDirectory = inject(StopDirectoryService);
+  private readonly stopDirectory = inject(StopDirectoryFacade);
   private readonly nearbyStopOptions = inject(NearbyStopOptionsService);
   private readonly stopConnections = inject(StopConnectionsService);
   private readonly favorites = inject(FavoritesFacade);
