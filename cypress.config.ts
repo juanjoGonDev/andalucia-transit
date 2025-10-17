@@ -4,18 +4,10 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
-
-interface CompareSnapshotPayload {
-  readonly specName: string;
-  readonly snapshotName: string;
-  readonly threshold?: number;
-}
-
-interface CompareSnapshotResult {
-  readonly diffPixels: number;
-  readonly diffPath: string;
-  readonly baselineCreated: boolean;
-}
+import {
+  CompareSnapshotPayload,
+  CompareSnapshotResult
+} from './cypress/support/visual-regression/types';
 
 const PNG_EXTENSION = '.png';
 const CYPRESS_DIRECTORY_NAME = 'cypress';

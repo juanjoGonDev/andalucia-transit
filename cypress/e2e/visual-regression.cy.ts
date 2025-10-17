@@ -1,10 +1,5 @@
-interface CompareSnapshotResult {
-  readonly diffPixels: number;
-  readonly diffPath: string;
-  readonly baselineCreated: boolean;
-}
-
 import { APP_CONFIG } from '../../src/app/core/config';
+import { CompareSnapshotResult } from '../support/visual-regression/types';
 
 const HOME_LAYOUT_ES_SNAPSHOT = 'home-layout-es' as const;
 const HOME_LAYOUT_EN_SNAPSHOT = 'home-layout-en' as const;
