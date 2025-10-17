@@ -214,6 +214,7 @@ This plan conforms to `AGENTS.md` and the enforced Design Integrity Policy:
 - 2025-10-17: Added a Cypress visual regression spec ensuring Spanish and English home layouts match baseline snapshots with a zero-pixel diff threshold.
 - 2025-10-17: Extended the Cypress visual regression coverage to the favorites view for Spanish and English locales, maintaining a zero-pixel diff requirement.
 - 2025-10-17: Expanded the Cypress visual regression coverage to the route search view for Spanish and English locales, keeping the zero-pixel diff enforcement in place.
+- 2025-10-17: Introduced the `test:visual` npm script to execute the Cypress visual regression suite headlessly with zero-pixel tolerance.
 
 ---
 

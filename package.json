@@ -21,6 +21,7 @@
     "e2e": "ng e2e",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
+    "test:visual": "cypress run --spec cypress/e2e/visual-regression.cy.ts --browser chrome --headless",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "deploy:prepare": "tsx scripts/deploy/run.ts",
