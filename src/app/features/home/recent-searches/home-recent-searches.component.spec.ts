@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@an
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   OverlayDialogConfig,
@@ -109,6 +109,7 @@ describe('HomeRecentSearchesComponent', () => {
   beforeEach(async () => {
     facade = new RecentSearchesFacadeStub();
     dialog = new OverlayDialogServiceStub();
+    const activatedRouteStub = { snapshot: {}, url: of([]) } as unknown as ActivatedRoute;
 
     TestBed.configureTestingModule({
       imports: [
@@ -118,12 +119,14 @@ describe('HomeRecentSearchesComponent', () => {
       providers: [
         { provide: OverlayDialogService, useValue: dialog },
         { provide: Router, useValue: routerStub },
+        { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: RecentSearchesFacade, useValue: facade }
       ]
     });
 
     TestBed.overrideProvider(OverlayDialogService, { useValue: dialog });
     TestBed.overrideProvider(Router, { useValue: routerStub });
+    TestBed.overrideProvider(ActivatedRoute, { useValue: activatedRouteStub });
 
     await TestBed.compileComponents();
 

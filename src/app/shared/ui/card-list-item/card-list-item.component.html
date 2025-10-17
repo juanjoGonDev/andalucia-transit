@@ -1,4 +1,9 @@
-<ng-template #content>
+<app-interactive-card
+  [bodyClasses]="bodyClassList"
+  [primaryCommands]="commands ?? null"
+  [primaryAriaLabel]="ariaLabelKey ? (ariaLabelKey | translate) : null"
+  (primaryActivated)="handlePrimaryActivated()"
+>
   <div *ngIf="leadingIcon" class="card-list-item__leading" [ngClass]="leadingClassMap">
     <span class="material-symbols-outlined">{{ leadingIcon }}</span>
   </div>
@@ -9,30 +14,4 @@
   <span *ngIf="trailingIcon" class="material-symbols-outlined card-list-item__trailing">
     {{ trailingIcon }}
   </span>
-</ng-template>
-
-<ng-container *ngIf="commands?.length; else buttonOnly">
-  <div
-    appAccessibleButton
-    class="card-list-item"
-    [ngClass]="hostClassMap"
-    [routerLink]="commands"
-    appAccessibleButtonRole="link"
-    [attr.aria-label]="ariaLabelKey ? (ariaLabelKey | translate) : null"
-    (appAccessibleButtonActivated)="handleClick()"
-  >
-    <ng-container *ngTemplateOutlet="content"></ng-container>
-  </div>
-</ng-container>
-
-<ng-template #buttonOnly>
-  <div
-    appAccessibleButton
-    class="card-list-item"
-    [ngClass]="hostClassMap"
-    [attr.aria-label]="ariaLabelKey ? (ariaLabelKey | translate) : null"
-    (appAccessibleButtonActivated)="handleClick()"
-  >
-    <ng-container *ngTemplateOutlet="content"></ng-container>
-  </div>
-</ng-template>
+</app-interactive-card>

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
+import { provideRouter } from '@angular/router';
+
 import { HomeListCardComponent } from './home-list-card.component';
 
 describe('HomeListCardComponent', () => {
@@ -9,7 +11,8 @@ describe('HomeListCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomeListCardComponent]
+      imports: [HomeListCardComponent],
+      providers: [provideRouter([])]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeListCardComponent);

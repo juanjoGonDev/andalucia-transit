@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 
 import { InteractiveCardComponent } from './interactive-card.component';
 
@@ -10,6 +11,9 @@ const REMOVE_CLASS = 'card-remove';
 const REMOVE_LABEL = 'Remove item';
 const DEFAULT_REMOVE_ICON = 'close';
 const MATERIAL_SYMBOLS_OUTLINED = 'material-symbols-outlined';
+const PRIMARY_ARIA_LABEL = 'Open item';
+const LINK_ROLE = 'link';
+const ROUTER_COMMAND: readonly string[] = ['/home'];
 
 @Component({
   selector: 'app-host-card',
@@ -23,6 +27,9 @@ const MATERIAL_SYMBOLS_OUTLINED = 'material-symbols-outlined';
       [removeAriaLabel]="removeAriaLabel"
       [removeIconName]="removeIconName"
       [removeIconClass]="removeIconClass"
+      [primaryAriaLabel]="primaryAriaLabel"
+      [primaryRole]="primaryRole"
+      [primaryCommands]="primaryCommands"
       (primaryActivated)="primary.emit()"
       (removeActivated)="remove.emit()"
     >
@@ -37,6 +44,9 @@ class HostCardComponent {
   @Input() removeAriaLabel: string | null = null;
   @Input() removeIconName = DEFAULT_REMOVE_ICON;
   @Input() removeIconClass = MATERIAL_SYMBOLS_OUTLINED;
+  @Input() primaryAriaLabel: string | null = null;
+  @Input() primaryRole: string | null = null;
+  @Input() primaryCommands: readonly string[] | null = null;
   @Output() readonly primary = new EventEmitter<void>();
   @Output() readonly remove = new EventEmitter<void>();
 }
@@ -47,7 +57,8 @@ describe('InteractiveCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HostCardComponent]
+      imports: [HostCardComponent],
+      providers: [provideRouter([])]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HostCardComponent);
@@ -91,5 +102,27 @@ describe('InteractiveCardComponent', () => {
     removeButton!.nativeElement.click();
 
     expect(removeSpy).toHaveBeenCalled();
+  });
+
+  it('applies the provided aria label to the primary section', () => {
+    host.primaryAriaLabel = PRIMARY_ARIA_LABEL;
+    host.bodyClasses = [BODY_CLASS];
+
+    fixture.detectChanges();
+
+    const primary = fixture.debugElement.query(By.css(`.${BODY_CLASS}`));
+
+    expect(primary.attributes['aria-label']).toBe(PRIMARY_ARIA_LABEL);
+  });
+
+  it('assigns link role when router commands are supplied', () => {
+    host.primaryCommands = ROUTER_COMMAND;
+    host.bodyClasses = [BODY_CLASS];
+
+    fixture.detectChanges();
+
+    const primary = fixture.debugElement.query(By.css(`.${BODY_CLASS}`));
+
+    expect(primary.attributes['role']).toBe(LINK_ROLE);
   });
 });

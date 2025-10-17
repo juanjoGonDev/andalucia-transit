@@ -1,6 +1,9 @@
 <div
   appAccessibleButton
   [ngClass]="bodyClasses"
+  [appAccessibleButtonRole]="computedPrimaryRole"
+  [routerLink]="computedPrimaryCommands"
+  [attr.aria-label]="primaryAriaLabel"
   (appAccessibleButtonActivated)="handlePrimaryActivated()"
 >
   <ng-content></ng-content>
