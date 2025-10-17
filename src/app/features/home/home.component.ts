@@ -24,8 +24,12 @@ import { RouteSearchFormComponent } from '../route-search/route-search-form/rout
 import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
 import { buildNavigationCommands, NavigationCommands } from '../../shared/navigation/navigation.util';
 import { HomeTabId } from './home.types';
-import { HomeListCardComponent } from './shared/home-list-card/home-list-card.component';
+import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
+import {
+  RECENT_CARD_BODY_CLASSES,
+  RECENT_CARD_HOST_CLASSES
+} from './shared/recent-card-classes';
 
 interface HomeTabOption {
   readonly id: HomeTabId;
@@ -40,7 +44,7 @@ interface HomeTabOption {
     TranslateModule,
     RouteSearchFormComponent,
     HomeRecentSearchesComponent,
-    HomeListCardComponent,
+    InteractiveCardComponent,
     AccessibleButtonDirective
   ],
   templateUrl: './home.component.html',
@@ -91,6 +95,8 @@ export class HomeComponent {
   protected readonly favoritesEmptyKey = this.translation.sections.favorites.empty;
   protected readonly favoritesCodeLabelKey = APP_CONFIG.translationKeys.favorites.list.code;
   protected readonly favoritesNucleusLabelKey = APP_CONFIG.translationKeys.favorites.list.nucleus;
+  protected readonly recentCardHostClasses = RECENT_CARD_HOST_CLASSES;
+  protected readonly recentCardBodyClasses = RECENT_CARD_BODY_CLASSES;
 
   protected readonly activeTab = signal<HomeTabId>('search');
   protected readonly recentClearActionVisible = signal(false);
