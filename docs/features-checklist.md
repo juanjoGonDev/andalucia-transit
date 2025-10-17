@@ -83,8 +83,13 @@ This phase is purely structural and organizational — no aesthetic changes are 
   - [x] Verified remaining shared and feature components still have active entry points after removing dialog and navigation wrappers.
   - [x] Remove unused StopNavigationItemComponent after confirming InteractiveCardComponent now serves every former usage without altering layout metrics.
   - [x] Remove unused HomeNearbyStopsDialogComponent after verifying no entry points remain and route search nearby recommendations cover the former flow.
-- [ ] Align all feature views (favorites, route search, stop detail, settings, map, etc.) with the unified layout structure using the shared spacing and typography tokens while maintaining pixel parity with the current layout.  
+- [ ] Align all feature views (favorites, route search, stop detail, settings, map, etc.) with the unified layout structure using the shared spacing and typography tokens while maintaining pixel parity with the current layout.
        Automated screenshot comparison must confirm zero differences.
+  - [x] Favorites view registers its layout content region with the shared host while preserving pixel-identical rendering.
+  - [ ] Route search view registers its layout content region with the shared host while preserving pixel-identical rendering.
+  - [ ] Stop detail view registers its layout content region with the shared host while preserving pixel-identical rendering.
+  - [ ] Settings view registers its layout content region with the shared host while preserving pixel-identical rendering.
+  - [ ] Map view registers its layout content region with the shared host while preserving pixel-identical rendering.
 - [ ] Expand unit and integration tests to cover:
   - Layout pixel parity (visual regression checks via Storybook or Cypress snapshots).
   - Dialog overlay focus and accessibility behavior.

@@ -21,6 +21,7 @@ import {
 } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
 import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
 
 interface FavoriteListItem {
@@ -49,7 +50,8 @@ const DIACRITIC_PATTERN = /\p{M}/gu;
     ReactiveFormsModule,
     TranslateModule,
     SectionComponent,
-    AccessibleButtonDirective
+    AccessibleButtonDirective,
+    AppLayoutContentDirective
   ],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.scss',

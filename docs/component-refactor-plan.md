@@ -27,6 +27,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
   - 2025-10-16: Introduced `AppLayoutComponent` to wrap the shell top actions and project routed content via `<ng-content>`, keeping existing shell metrics unchanged while `AppShellComponent` delegates rendering to it.
   - 2025-10-16: Routed all feature views through `AppLayoutComponent` directly in `app.routes.ts`, preserving the layout host as the router entry while maintaining the prior shell structure and metrics.
   - 2025-10-16: Added `AppLayoutContentDirective` and `APP_LAYOUT_CONTEXT` with a layout context store so routed features can register content and tab configuration without altering the host layout structure.
+  - 2025-10-17: Favorites view now applies `AppLayoutContentDirective` at its root container to register with the shared layout host without changing rendered markup or spacing.
 
 ### 1.2 Route hierarchy updates
 
