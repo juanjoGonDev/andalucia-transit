@@ -46,6 +46,7 @@ const DESCRIBED_BY_SEPARATOR_PATTERN = /\s+/u;
 const NOOP_VALUE_CALLBACK = (_value: string): void => undefined;
 const NOOP_VOID_CALLBACK = (): void => undefined;
 const DEFAULT_CONTROL_STATUS: FormControlStatus = 'VALID';
+const PENDING_CONTROL_STATUS: FormControlStatus = 'PENDING';
 
 export type TextFieldType = 'text' | 'search' | 'email' | 'tel' | 'url' | 'password';
 
@@ -196,6 +197,10 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     return this.isRequired ? (ARIA_TRUE as 'true') : null;
   }
 
+  get ariaBusyAttribute(): 'true' | null {
+    return this.isControlPending(this.resolveControl()) ? (ARIA_TRUE as 'true') : null;
+  }
+
   get ariaErrormessageAttribute(): string | null {
     return this.errorId;
   }
@@ -235,7 +240,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
       errors,
       dirty: Boolean(control?.dirty),
       touched: Boolean(control?.touched),
-      pending: Boolean(control?.pending),
+      pending: this.isControlPending(control),
       status,
     };
   }
@@ -479,6 +484,14 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     }
 
     return this.ngControl?.control ?? null;
+  }
+
+  private isControlPending(control: AbstractControl | null): boolean {
+    if (!control) {
+      return false;
+    }
+
+    return control.pending || control.status === PENDING_CONTROL_STATUS;
   }
 
   private teardownExternalControlSubscriptions(): void {

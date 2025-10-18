@@ -528,6 +528,43 @@ describe('AppTextFieldComponent', () => {
     expect(input.getAttribute('aria-invalid')).toBeNull();
   });
 
+  it('reflects pending control state through aria-busy metadata', fakeAsync(() => {
+    const reactiveFixture = TestBed.createComponent(AppTextFieldReactiveHostComponent);
+    reactiveFixture.detectChanges();
+
+    const textFieldDebugElement = reactiveFixture.debugElement.query(By.directive(AppTextFieldComponent));
+
+    if (!textFieldDebugElement) {
+      throw new Error('Text field component not found');
+    }
+
+    const textFieldInstance = textFieldDebugElement.componentInstance as AppTextFieldComponent;
+    const manualControl = new FormControl('', { nonNullable: true });
+
+    textFieldInstance.registerExternalControl(manualControl);
+    manualControl.markAsPending();
+    flush();
+    reactiveFixture.detectChanges();
+
+    const input = reactiveFixture.nativeElement.querySelector(INPUT_SELECTOR) as HTMLInputElement | null;
+
+    if (!input) {
+      throw new Error(MISSING_INPUT_ERROR_MESSAGE);
+    }
+
+    expect(manualControl.status).toBe('PENDING');
+    expect(input.getAttribute('aria-busy')).toBe('true');
+
+    manualControl.setValue('resolved');
+    manualControl.updateValueAndValidity();
+    flush();
+    reactiveFixture.detectChanges();
+
+    expect(manualControl.status).not.toBe('PENDING');
+    expect(textFieldInstance.ariaBusyAttribute).toBeNull();
+    expect(input.getAttribute('aria-busy')).toBeNull();
+  }));
+
   it('projects error content and updates describedBy metadata when the control is invalid', () => {
     const reactiveFixture = TestBed.createComponent(AppTextFieldReactiveHostComponent);
     const reactiveHost = reactiveFixture.componentInstance;
