@@ -150,6 +150,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
 - [ ] Token compliance audit (B1) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-18 Replaced recent preview entry feature-scoped CSS variables with global tokens while preserving pixel parity.
   - [x] Screenshot (Home recent preview — desktop): https://browser.buildwithfern.com/invocations/argurclo/artifacts/artifacts/recent-preview-tokens.png
+  - [x] 2025-10-19 Replaced Home view feature-scoped custom properties with shared layout and color tokens while preserving responsive stack spacing.
+  - [x] Screenshot (Home view — desktop): https://browser.buildwithfern.com/invocations/dizffnry/artifacts/artifacts/home-token-audit.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
 - [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
 - [ ] Accessibility verification sweep (B4) — attach public screenshot URL(s); visual diff must be 0px.
