@@ -25,6 +25,7 @@ const KEYDOWN_EVENT_TYPE = 'keydown';
 const SAMPLE_KEY = 'A';
 const FOCUSED_CLASS = 'app-text-field--focused';
 const INVALID_CLASS = 'app-text-field--invalid';
+const ARIA_INVALID_ATTRIBUTE = 'aria-invalid';
 
 @Component({
   selector: 'app-text-field-host',
@@ -493,7 +494,7 @@ describe('AppTextFieldComponent', () => {
 
     expect(field).not.toBeNull();
     expect(field?.classList).not.toContain(INVALID_CLASS);
-    expect(input.getAttribute('aria-invalid')).toBe('false');
+    expect(input.hasAttribute(ARIA_INVALID_ATTRIBUTE)).toBeFalse();
 
     input.dispatchEvent(new FocusEvent('focus'));
     reactiveFixture.detectChanges();
@@ -501,7 +502,7 @@ describe('AppTextFieldComponent', () => {
     reactiveFixture.detectChanges();
 
     expect(field?.classList).toContain(INVALID_CLASS);
-    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(input.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBe('true');
   });
 
   it('clears invalid state once the control becomes valid', () => {
@@ -525,7 +526,7 @@ describe('AppTextFieldComponent', () => {
     reactiveFixture.detectChanges();
 
     expect(field?.classList).not.toContain(INVALID_CLASS);
-    expect(input.getAttribute('aria-invalid')).toBe('false');
+    expect(input.hasAttribute(ARIA_INVALID_ATTRIBUTE)).toBeFalse();
   });
 
   it('reflects pending control state through aria-busy metadata', fakeAsync(() => {
