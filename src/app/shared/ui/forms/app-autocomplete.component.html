@@ -1,3 +1,15 @@
+<ng-template #prefixContent>
+  <ng-content select="[appTextFieldPrefix]"></ng-content>
+</ng-template>
+<ng-template #suffixContent>
+  <ng-content select="[appTextFieldSuffix]"></ng-content>
+</ng-template>
+<ng-template #hintContent>
+  <ng-content select="[appTextFieldHint]"></ng-content>
+</ng-template>
+<ng-template #errorContent>
+  <ng-content select="[appTextFieldError]"></ng-content>
+</ng-template>
 <app-text-field
   [label]="label"
   [placeholder]="placeholder"
@@ -15,10 +27,10 @@
   (focusChange)="handleFocusChange($event)"
   (keydownEvent)="handleKeydown($event)"
 >
-  <ng-content select="[appTextFieldPrefix]"></ng-content>
-  <ng-content select="[appTextFieldSuffix]"></ng-content>
-  <ng-content select="[appTextFieldHint]"></ng-content>
-  <ng-content select="[appTextFieldError]"></ng-content>
+  <ng-container *ngTemplateOutlet="prefixContent"></ng-container>
+  <ng-container *ngTemplateOutlet="suffixContent"></ng-container>
+  <ng-container *ngTemplateOutlet="hintContent"></ng-container>
+  <ng-container *ngTemplateOutlet="errorContent"></ng-container>
 </app-text-field>
 <div
   *ngIf="isPanelOpen"

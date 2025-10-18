@@ -1,15 +1,24 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
+  ContentChild,
+  DestroyRef,
   EventEmitter,
   HostBinding,
   Input,
   Output,
+  ViewChild,
   forwardRef,
+  inject,
+  Injector,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AppTextFieldComponent } from './app-text-field.component';
+import { AppTextFieldErrorDirective } from './app-text-field-slots.directive';
 
 const DEFAULT_AUTOCOMPLETE_ATTRIBUTE = 'off';
 const EMPTY_STRING = '';
@@ -45,6 +54,7 @@ export interface AppAutocompleteSelection<T> {
   imports: [
     CommonModule,
     AppTextFieldComponent,
+    AppTextFieldErrorDirective,
   ],
   templateUrl: './app-autocomplete.component.html',
   styleUrls: ['./app-autocomplete.component.scss'],
@@ -57,11 +67,28 @@ export interface AppAutocompleteSelection<T> {
     },
   ],
 })
-export class AppAutocompleteComponent<T> implements ControlValueAccessor {
+export class AppAutocompleteComponent<T> implements ControlValueAccessor, AfterViewInit {
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
   private static instanceCounter = 0;
   private readonly generatedPanelId = this.createPanelId();
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly injector = inject(Injector);
+  private readonly destroyRef = inject(DestroyRef);
+  private ngControl: NgControl | null = null;
+  private projectedError: AppTextFieldErrorDirective | null = null;
+  private lastProjectedErrorElement: HTMLElement | null = null;
+
+  @ViewChild(AppTextFieldComponent)
+  private textField?: AppTextFieldComponent;
+  @ContentChild(AppTextFieldErrorDirective, { descendants: true })
+  set projectedErrorSlot(value: AppTextFieldErrorDirective | undefined) {
+    this.projectedError = value ?? null;
+    if (value) {
+      this.lastProjectedErrorElement = value.elementRef.nativeElement;
+    }
+    this.applyTextFieldState();
+  }
 
   @Input({ required: true }) label = EMPTY_STRING;
   @Input() placeholder = EMPTY_STRING;
@@ -90,8 +117,28 @@ export class AppAutocompleteComponent<T> implements ControlValueAccessor {
   readonly optionRole = AUTOCOMPLETE_OPTION_ROLE;
   readonly ariaAutocomplete = ARIA_AUTOCOMPLETE_LIST;
 
+  ngAfterViewInit(): void {
+    this.ngControl = this.injector.get(NgControl, null, { optional: true, self: true });
+    const control = this.ngControl?.control ?? null;
+
+    if (control?.statusChanges) {
+      control.statusChanges
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.applyTextFieldState());
+    }
+
+    if (control?.valueChanges) {
+      control.valueChanges
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.applyTextFieldState());
+    }
+
+    this.applyTextFieldState();
+  }
+
   writeValue(value: string | null | undefined): void {
     this.value = value ?? EMPTY_STRING;
+    this.applyTextFieldState();
   }
 
   registerOnChange(fn: (value: string) => void): void {
@@ -104,12 +151,14 @@ export class AppAutocompleteComponent<T> implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
+    this.applyTextFieldState();
   }
 
   handleValueChange(nextValue: string): void {
     this.value = nextValue;
     this.onChange(this.value);
     this.valueChange.emit(this.value);
+    this.applyTextFieldState();
   }
 
   handleFocusChange(isFocused: boolean): void {
@@ -187,6 +236,28 @@ export class AppAutocompleteComponent<T> implements ControlValueAccessor {
 
   get ariaExpanded(): boolean {
     return this.isPanelOpen;
+  }
+
+  private applyTextFieldState(): void {
+    if (!this.textField) {
+      return;
+    }
+
+    this.textField.writeValue(this.value);
+    this.textField.setDisabledState(this.isDisabled);
+    this.textField.registerExternalControl(this.ngControl?.control ?? null);
+    const textFieldError = this.textField.error ?? null;
+
+    if (textFieldError) {
+      this.textField.registerProjectedErrorSlot(true, null);
+      this.changeDetectorRef.markForCheck();
+      return;
+    }
+
+    const projectedElement = this.projectedError?.elementRef.nativeElement ?? this.lastProjectedErrorElement;
+
+    this.textField.registerProjectedErrorSlot(Boolean(projectedElement), projectedElement ?? null);
+    this.changeDetectorRef.markForCheck();
   }
 
   private openPanel(): void {

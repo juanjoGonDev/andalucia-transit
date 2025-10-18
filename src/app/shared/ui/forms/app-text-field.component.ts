@@ -435,9 +435,19 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   registerProjectedErrorSlot(hasErrorSlot: boolean, projectedElement: HTMLElement | null): void {
     this.hasProjectedErrorSlot = hasErrorSlot;
     this.pendingProjectedErrorElement = projectedElement;
-    queueMicrotask(() => this.applyProjectedErrorElement());
+    setTimeout(() => this.applyProjectedErrorElement());
 
     this.changeDetectorRef.markForCheck();
+  }
+
+  private static cloneProjectedErrorElement(element: HTMLElement): HTMLElement {
+    const clone = element.cloneNode(true) as HTMLElement;
+
+    if (clone.hasAttribute('id')) {
+      clone.removeAttribute('id');
+    }
+
+    return clone;
   }
 
   private applyProjectedErrorElement(): void {
@@ -451,8 +461,12 @@ export class AppTextFieldComponent implements ControlValueAccessor {
       container.removeChild(container.firstChild);
     }
 
-    if (this.pendingProjectedErrorElement) {
-      container.appendChild(this.pendingProjectedErrorElement);
+    const projectedElement = this.pendingProjectedErrorElement;
+
+    if (projectedElement) {
+      const clone = AppTextFieldComponent.cloneProjectedErrorElement(projectedElement);
+
+      container.appendChild(clone);
     }
   }
 
