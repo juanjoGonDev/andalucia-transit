@@ -1,4 +1,8 @@
-<section class="home">
+<section
+  class="home"
+  appLayoutContent
+  [appLayoutContentNavigationKey]="layoutNavigationKey()"
+>
   <div class="home__container home__stack">
     <header class="home__header home__stack">
       <div class="home__intro home__stack">
@@ -71,7 +75,11 @@
               <ng-container *ngIf="hasFavorites(); else favoritesEmpty">
                 <ul class="home-recent__list" role="list">
                   <li class="home-recent__item" *ngFor="let favorite of favoritePreview(); trackBy: trackFavorite">
-                    <app-home-list-card (primaryAction)="openFavorite(favorite)">
+                    <app-interactive-card
+                      [ngClass]="recentCardHostClasses"
+                      [bodyClasses]="recentCardBodyClasses"
+                      (primaryActivated)="openFavorite(favorite)"
+                    >
                       <div class="recent-card__content">
                         <div class="recent-card__route">
                           <span class="recent-card__origin">{{ favorite.name }}</span>
@@ -87,7 +95,7 @@
                           </div>
                         </div>
                       </div>
-                    </app-home-list-card>
+                    </app-interactive-card>
                   </li>
                 </ul>
               </ng-container>
