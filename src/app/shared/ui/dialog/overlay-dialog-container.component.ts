@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -35,6 +36,7 @@ export class OverlayDialogContainerComponent implements AfterViewInit, OnDestroy
   @ViewChild(CdkPortalOutlet, { static: true })
   private portalOutlet!: CdkPortalOutlet;
   private readonly elementRef = inject(ElementRef<HTMLElement>);
+  private readonly documentRef = inject(DOCUMENT);
   private readonly focusTrapFactory = inject(FocusTrapFactory);
 
   private focusTrap: FocusTrap | null = null;
@@ -67,12 +69,17 @@ export class OverlayDialogContainerComponent implements AfterViewInit, OnDestroy
   }
 
   restoreFocus(): void {
-    this.previouslyFocusedElement?.focus();
+    if (!this.previouslyFocusedElement || !this.previouslyFocusedElement.isConnected) {
+      return;
+    }
+
+    this.previouslyFocusedElement.focus();
   }
 
   ngAfterViewInit(): void {
+    const activeElement = this.documentRef?.activeElement ?? null;
     this.previouslyFocusedElement =
-      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      activeElement instanceof HTMLElement ? activeElement : null;
     this.focusTrap = this.focusTrapFactory.create(this.elementRef.nativeElement);
 
     if (this.autoFocus) {
