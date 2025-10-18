@@ -22,6 +22,8 @@ import {
 import { OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
+import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
+import { AppTextFieldComponent, TextFieldType } from '../../shared/ui/forms/app-text-field.component';
 import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
 
 interface FavoriteListItem {
@@ -42,6 +44,11 @@ interface FavoriteGroupView {
 const QUERY_LOCALE = 'es-ES' as const;
 const NORMALIZE_FORM = 'NFD' as const;
 const DIACRITIC_PATTERN = /\p{M}/gu;
+const FAVORITES_CARD_HOST_CLASSES: readonly string[] = ['favorites-card'];
+const FAVORITES_CARD_BODY_CLASSES: readonly string[] = ['favorites-card__body'];
+const FAVORITES_CARD_REMOVE_CLASSES: readonly string[] = ['favorites-card__remove'];
+const SEARCH_TEXT_FIELD_TYPE: TextFieldType = 'search';
+const SEARCH_AUTOCOMPLETE_ATTRIBUTE = 'off';
 @Component({
   selector: 'app-favorites',
   standalone: true,
@@ -51,7 +58,9 @@ const DIACRITIC_PATTERN = /\p{M}/gu;
     TranslateModule,
     SectionComponent,
     AccessibleButtonDirective,
-    AppLayoutContentDirective
+    AppLayoutContentDirective,
+    InteractiveCardComponent,
+    AppTextFieldComponent
   ],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.scss',
@@ -73,11 +82,16 @@ export class FavoritesComponent {
   protected readonly descriptionKey = this.translations.description;
   protected readonly searchLabelKey = this.translations.searchLabel;
   protected readonly searchPlaceholderKey = this.translations.searchPlaceholder;
+  protected readonly searchFieldType = SEARCH_TEXT_FIELD_TYPE;
+  protected readonly searchAutocompleteAttribute = SEARCH_AUTOCOMPLETE_ATTRIBUTE;
   protected readonly emptyKey = this.translations.empty;
   protected readonly clearAllLabelKey = this.translations.actions.clearAll;
   protected readonly removeLabelKey = this.translations.actions.remove;
   protected readonly codeLabelKey = this.translations.list.code;
   protected readonly nucleusLabelKey = this.translations.list.nucleus;
+  protected readonly favoritesCardHostClasses = FAVORITES_CARD_HOST_CLASSES;
+  protected readonly favoritesCardBodyClasses = FAVORITES_CARD_BODY_CLASSES;
+  protected readonly favoritesCardRemoveClasses = FAVORITES_CARD_REMOVE_CLASSES;
 
   protected readonly searchControl = this.formBuilder.nonNullable.control('');
 
@@ -163,9 +177,7 @@ export class FavoritesComponent {
     await this.clearAll();
   }
 
-  protected async onRemoveActivated(event: MouseEvent, item: FavoriteListItem): Promise<void> {
-    event.preventDefault();
-    event.stopPropagation();
+  protected async onRemoveActivated(item: FavoriteListItem): Promise<void> {
     await this.remove(item);
   }
 

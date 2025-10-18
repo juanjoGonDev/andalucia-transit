@@ -55,6 +55,13 @@ describe('AccessibleButtonDirective', () => {
     expect(nativeElement.getAttribute('aria-disabled')).toBeNull();
   });
 
+  it('should set pointer cursor when enabled', () => {
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    expect(nativeElement.style.cursor).toBe('pointer');
+  });
+
   it('should apply configured role when provided', () => {
     hostComponent.role = 'menuitem';
     fixture.detectChanges();
@@ -74,6 +81,16 @@ describe('AccessibleButtonDirective', () => {
 
     expect(nativeElement.getAttribute('tabindex')).toBe('-1');
     expect(nativeElement.getAttribute('aria-disabled')).toBe('true');
+  });
+
+  it('should set not-allowed cursor when disabled', () => {
+    hostComponent.disabled = true;
+    fixture.detectChanges();
+
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    expect(nativeElement.style.cursor).toBe('not-allowed');
   });
 
   it('should expose pressed state when provided', () => {

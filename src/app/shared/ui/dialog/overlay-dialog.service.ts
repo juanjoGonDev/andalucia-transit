@@ -102,7 +102,6 @@ export class OverlayDialogService {
     config: OverlayDialogConfig<TData> = {}
   ): OverlayDialogRef<TResult> {
     const overlayRef = this.overlay.create(this.buildConfig(config));
-    overlayRef.addPanelClass('mat-mdc-dialog-panel');
 
     for (const panelClass of toArray(config.panelClass) ?? []) {
       overlayRef.addPanelClass(panelClass);
