@@ -13,7 +13,13 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { ControlValueAccessor, NgControl, Validators } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  FormControl,
+  NgControl,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AppTextFieldHintDirective,
@@ -46,6 +52,9 @@ export type TextFieldType = 'text' | 'search' | 'email' | 'tel' | 'url' | 'passw
 })
 export class AppTextFieldComponent implements ControlValueAccessor {
   private static idCounter = 0;
+  private static readonly requiredValidatorProbe = new FormControl<string>(EMPTY_STRING, {
+    nonNullable: true,
+  });
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
@@ -295,21 +304,13 @@ export class AppTextFieldComponent implements ControlValueAccessor {
       return false;
     }
 
-    if (typeof control.hasValidator === 'function' && control.hasValidator(Validators.required)) {
-      return true;
+    if (typeof control.hasValidator === 'function') {
+      if (control.hasValidator(Validators.required) || control.hasValidator(Validators.requiredTrue)) {
+        return true;
+      }
     }
 
-    if (!control.validator) {
-      return false;
-    }
-
-    const validationResult = control.validator(control);
-
-    if (!validationResult) {
-      return false;
-    }
-
-    return REQUIRED_ERROR_KEY in validationResult;
+    return AppTextFieldComponent.validatorIncludesRequired(control.validator);
   }
 
   private initializeNgControl(): void {
@@ -324,5 +325,23 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     this.ngControl.valueChanges
       ?.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.changeDetectorRef.markForCheck());
+  }
+
+  private static validatorIncludesRequired(validator: ValidatorFn | null): boolean {
+    if (!validator) {
+      return false;
+    }
+
+    try {
+      AppTextFieldComponent.requiredValidatorProbe.setValue(EMPTY_STRING, {
+        emitEvent: false,
+        onlySelf: true,
+      });
+      const validationResult = validator(AppTextFieldComponent.requiredValidatorProbe);
+
+      return Boolean(validationResult && REQUIRED_ERROR_KEY in validationResult);
+    } catch {
+      return false;
+    }
   }
 }

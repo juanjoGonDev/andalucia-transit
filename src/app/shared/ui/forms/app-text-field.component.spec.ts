@@ -5,6 +5,7 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { AppTextFieldComponent } from './app-text-field.component';
@@ -247,6 +248,39 @@ describe('AppTextFieldComponent', () => {
 
   it('derives required semantics from the reactive control validator', () => {
     const reactiveFixture = TestBed.createComponent(AppTextFieldReactiveHostComponent);
+    reactiveFixture.detectChanges();
+
+    const input = reactiveFixture.nativeElement.querySelector(INPUT_SELECTOR) as HTMLInputElement | null;
+
+    expect(input).not.toBeNull();
+    expect(input?.required).toBeTrue();
+    expect(input?.getAttribute('aria-required')).toBe('true');
+  });
+
+  it('keeps required semantics when the control lacks hasValidator', () => {
+    const reactiveFixture = TestBed.createComponent(AppTextFieldReactiveHostComponent);
+    reactiveFixture.detectChanges();
+
+    const hostComponent = reactiveFixture.componentInstance;
+    const control = hostComponent.form.get('field') as FormControl<string> | null;
+
+    expect(control).not.toBeNull();
+
+    if (!control) {
+      throw new Error('Form control not found');
+    }
+
+    control.setValue('content', { emitEvent: false });
+
+    const overrideTarget: FormControl<string> & {
+      hasValidator?: ((validator: ValidatorFn) => boolean) | undefined;
+    } = control as FormControl<string> & {
+      hasValidator?: ((validator: ValidatorFn) => boolean) | undefined;
+    };
+
+    Reflect.deleteProperty(overrideTarget, 'hasValidator');
+    overrideTarget.updateValueAndValidity({ emitEvent: false });
+
     reactiveFixture.detectChanges();
 
     const input = reactiveFixture.nativeElement.querySelector(INPUT_SELECTOR) as HTMLInputElement | null;
