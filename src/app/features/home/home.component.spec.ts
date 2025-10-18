@@ -8,7 +8,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HomeComponent } from './home.component';
 import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
 import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
-import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
+import { StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
 import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
 import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
 import { APP_CONFIG } from '../../core/config';

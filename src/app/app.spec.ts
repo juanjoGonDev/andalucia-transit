@@ -23,6 +23,14 @@ class StopDirectoryTestingService {
   getStopById(): Observable<null> {
     return of(null);
   }
+
+  getOptionByStopId(): Observable<StopDirectoryOption | null> {
+    return of(null);
+  }
+
+  getOptionByStopSignature(): Observable<StopDirectoryOption | null> {
+    return of(null);
+  }
 }
 
 class TranslateTestingLoader implements TranslateLoader {

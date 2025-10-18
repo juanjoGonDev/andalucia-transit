@@ -1,0 +1,54 @@
+{
+  "metadata": {
+    "generatedAt": "2024-04-30T10:00:00.000Z",
+    "timezone": "Europe/Madrid"
+  },
+  "stops": [
+    {
+      "consortiumId": 1,
+      "stopId": "4101",
+      "stopCode": "4101",
+      "stopName": "Prado de San Sebastián",
+      "municipality": "Sevilla",
+      "nucleus": "Sevilla",
+      "location": {
+        "latitude": 37.377222,
+        "longitude": -5.986944
+      },
+      "services": [
+        {
+          "lineId": "1",
+          "lineCode": "01",
+          "lineName": "Circular",
+          "destination": "San Bernardo",
+          "scheduledTime": "2024-05-01T12:05:00.000Z",
+          "direction": 1,
+          "stopType": 1
+        },
+        {
+          "lineId": "2",
+          "lineCode": "02",
+          "lineName": "Universidad",
+          "destination": "Universidad de Sevilla",
+          "scheduledTime": "2024-05-01T11:40:00.000Z",
+          "direction": 1,
+          "stopType": 3
+        },
+        {
+          "lineId": "3",
+          "lineCode": "03",
+          "lineName": "Barqueta",
+          "destination": "Barqueta",
+          "scheduledTime": "2024-05-01T12:20:00.000Z",
+          "direction": 1,
+          "stopType": 0
+        }
+      ],
+      "query": {
+        "requestedAt": "2024-05-01T09:00:00.000Z",
+        "startTime": "2024-05-01T00:00:00.000Z",
+        "endTime": "2024-05-02T00:00:00.000Z"
+      }
+    }
+  ]
+}

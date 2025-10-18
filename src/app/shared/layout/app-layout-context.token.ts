@@ -4,8 +4,11 @@ const APP_LAYOUT_CONTEXT_TOKEN_DESCRIPTION = 'app-layout-context';
 
 export type AppLayoutContentIdentifier = symbol;
 
+export type AppLayoutNavigationKey = string;
+
 export interface AppLayoutContentRegistration {
   readonly identifier: AppLayoutContentIdentifier;
+  readonly navigationKey?: AppLayoutNavigationKey | null;
 }
 
 export type AppLayoutTabIdentifier = string;
@@ -17,6 +20,7 @@ export interface AppLayoutTabRegistration {
 
 export interface AppLayoutContextSnapshot {
   readonly activeContent: AppLayoutContentIdentifier | null;
+  readonly activeNavigationKey: AppLayoutNavigationKey | null;
   readonly tabs: readonly AppLayoutTabRegistration[];
   readonly activeTab: AppLayoutTabIdentifier | null;
 }
@@ -33,6 +37,7 @@ export interface AppLayoutContext {
 const createNoopAppLayoutContext = (): AppLayoutContext => {
   const emptySnapshot: AppLayoutContextSnapshot = {
     activeContent: null,
+    activeNavigationKey: null,
     tabs: [],
     activeTab: null
   };

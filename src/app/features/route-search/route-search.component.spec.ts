@@ -13,7 +13,7 @@ import {
   RouteSearchResultsViewModel
 } from '../../domain/route-search/route-search-results.service';
 import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
-import { StopDirectoryOption, StopDirectoryService } from '../../data/stops/stop-directory.service';
+import { StopDirectoryFacade, StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
 import { buildDateSlug, buildStopSlug } from '../../domain/route-search/route-search-url.util';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
@@ -57,7 +57,7 @@ class RouteSearchSelectionResolverServiceStub {
     .and.returnValue(of(null));
 }
 
-class StopDirectoryServiceStub {
+class StopDirectoryFacadeStub {
   private readonly options = new Map<string, StopDirectoryOption>();
 
   setOptions(...options: StopDirectoryOption[]): void {
@@ -119,7 +119,7 @@ describe('RouteSearchComponent', () => {
   let resultsService: RouteSearchResultsServiceStub;
   let resolver: RouteSearchSelectionResolverServiceStub;
   let activatedRoute: ActivatedRouteStub;
-  let directoryService: StopDirectoryServiceStub;
+  let directoryFacade: StopDirectoryFacadeStub;
 
   const origin: StopDirectoryOption = {
     id: 'alpha',
@@ -147,8 +147,8 @@ describe('RouteSearchComponent', () => {
 
   beforeEach(async () => {
     activatedRoute = new ActivatedRouteStub();
-    directoryService = new StopDirectoryServiceStub();
-    directoryService.setOptions(origin, destination);
+    directoryFacade = new StopDirectoryFacadeStub();
+    directoryFacade.setOptions(origin, destination);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -166,7 +166,7 @@ describe('RouteSearchComponent', () => {
           useClass: RouteSearchSelectionResolverServiceStub
         },
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: StopDirectoryService, useValue: directoryService }
+        { provide: StopDirectoryFacade, useValue: directoryFacade }
       ]
     })
       .overrideComponent(RouteSearchComponent, {

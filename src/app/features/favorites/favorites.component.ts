@@ -14,7 +14,6 @@ import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { APP_CONFIG } from '../../core/config';
-import { StopFavorite } from '../../domain/stops/stop-favorites.service';
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import {
   ConfirmDialogComponent,
@@ -22,7 +21,8 @@ import {
 } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
-import { FavoritesFacade } from '../../domain/stops/favorites.facade';
+import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
+import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
 
 interface FavoriteListItem {
   readonly id: string;
@@ -50,7 +50,8 @@ const DIACRITIC_PATTERN = /\p{M}/gu;
     ReactiveFormsModule,
     TranslateModule,
     SectionComponent,
-    AccessibleButtonDirective
+    AccessibleButtonDirective,
+    AppLayoutContentDirective
   ],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.scss',
@@ -66,6 +67,7 @@ export class FavoritesComponent {
   private readonly translations = APP_CONFIG.translationKeys.favorites;
   private readonly favoriteIconName = APP_CONFIG.homeData.favoriteStops.icon;
   private readonly removeIconName = APP_CONFIG.homeData.favoriteStops.removeIcon;
+  protected readonly layoutNavigationKey = APP_CONFIG.routes.favorites;
 
   protected readonly titleKey = this.translations.title;
   protected readonly descriptionKey = this.translations.description;
