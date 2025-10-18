@@ -1,9 +1,11 @@
 .route-search {
-  display: flex;
-  flex-direction: column;
   min-height: max(884px, 100dvh);
-  background-color: var(--color-background-light);
   color: var(--color-text-primary);
+}
+
+.route-search .app-layout__body {
+  --app-layout-body-gap: 0;
+  --app-layout-body-padding-block: 0;
 }
 
 .route-search__content {
