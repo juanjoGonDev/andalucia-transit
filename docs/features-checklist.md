@@ -240,6 +240,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Screenshot (Skip to content control — desktop focus, shared matcher verification): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
     - [x] Screenshot (Favorites dialog confirmation — escape parity check): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Consolidated shared key matcher definitions so accessible buttons and dialogs reuse identical key constant sets without layout changes.
+    - [x] Screenshot (Skip to content control — desktop focus, matcher constants verification): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Screenshot (Favorites dialog confirmation — escape parity check): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
 ### Feature Roadmap (2025-10-18)
 - [ ] News feed view (C1) — attach public screenshot URL(s); visual diff must be 0px.

@@ -9,42 +9,11 @@ import {
   inject
 } from '@angular/core';
 
-import {
-  KeyMatcher,
-  createKeyMatcher,
-  matchesKey
-} from './key-event-matchers';
+import { ENTER_KEY_MATCHER, SPACE_KEY_MATCHER, matchesKey } from './key-event-matchers';
 
 export type AccessibleButtonPopupToken = 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
 type AccessibleButtonPopupValue = boolean | AccessibleButtonPopupToken;
 
-const KEY_VALUE_ENTER = 'Enter' as const;
-const KEY_VALUE_RETURN = 'Return' as const;
-const KEY_VALUE_SPACE = ' ' as const;
-const KEY_VALUE_SPACE_NAME = 'Space' as const;
-const KEY_VALUE_SPACEBAR = 'Spacebar' as const;
-const KEY_IDENTIFIER_ENTER = 'Enter' as const;
-const KEY_IDENTIFIER_ENTER_CODE = 'U+000D' as const;
-const KEY_IDENTIFIER_SPACE = 'U+0020' as const;
-const KEY_IDENTIFIER_SPACEBAR = 'Spacebar' as const;
-const KEY_CODE_ENTER = 13 as const;
-const KEY_CODE_SPACE = 32 as const;
-const KEY_CODE_NAME_ENTER = 'Enter' as const;
-const KEY_CODE_NAME_SPACE = 'Space' as const;
-
-const ENTER_KEY_MATCHER: KeyMatcher = createKeyMatcher({
-  keyValues: [KEY_VALUE_ENTER, KEY_VALUE_RETURN],
-  codeValues: [KEY_CODE_NAME_ENTER],
-  keyCodes: [KEY_CODE_ENTER],
-  keyIdentifiers: [KEY_IDENTIFIER_ENTER, KEY_IDENTIFIER_ENTER_CODE]
-});
-
-const SPACE_KEY_MATCHER: KeyMatcher = createKeyMatcher({
-  keyValues: [KEY_VALUE_SPACE, KEY_VALUE_SPACE_NAME, KEY_VALUE_SPACEBAR],
-  codeValues: [KEY_CODE_NAME_SPACE],
-  keyCodes: [KEY_CODE_SPACE],
-  keyIdentifiers: [KEY_IDENTIFIER_SPACE, KEY_IDENTIFIER_SPACEBAR]
-});
 const ARIA_TRUE = 'true' as const;
 const ARIA_FALSE = 'false' as const;
 const CURSOR_POINTER = 'pointer' as const;

@@ -16,13 +16,57 @@ export interface KeyMatcher {
 
 const MINIMUM_KEY_CODE = 1;
 
+const KEY_VALUE_ENTER = 'Enter' as const;
+const KEY_VALUE_RETURN = 'Return' as const;
+const KEY_VALUE_ESCAPE = 'Escape' as const;
+const KEY_VALUE_ESC = 'Esc' as const;
+const KEY_VALUE_SPACE = ' ' as const;
+const KEY_VALUE_SPACE_NAME = 'Space' as const;
+const KEY_VALUE_SPACEBAR = 'Spacebar' as const;
+const KEY_CODE_ENTER = 13 as const;
+const KEY_CODE_ESCAPE = 27 as const;
+const KEY_CODE_SPACE = 32 as const;
+const KEY_CODE_NAME_ENTER = 'Enter' as const;
+const KEY_CODE_NAME_ESCAPE = 'Escape' as const;
+const KEY_CODE_NAME_SPACE = 'Space' as const;
+const KEY_IDENTIFIER_ENTER = 'Enter' as const;
+const KEY_IDENTIFIER_ENTER_CODE = 'U+000D' as const;
+const KEY_IDENTIFIER_ESCAPE = 'Escape' as const;
+const KEY_IDENTIFIER_ESCAPE_CODE = 'U+001B' as const;
+const KEY_IDENTIFIER_ESC = 'Esc' as const;
+const KEY_IDENTIFIER_SPACE = 'U+0020' as const;
+const KEY_IDENTIFIER_SPACEBAR = 'Spacebar' as const;
+
 export const createKeyMatcher = (definition: KeyMatcherDefinition): KeyMatcher => ({
   keyValues: definition.keyValues ? new Set(definition.keyValues) : undefined,
   codeValues: definition.codeValues ? new Set(definition.codeValues) : undefined,
   keyCodes: definition.keyCodes ? new Set(definition.keyCodes) : undefined,
-  keyIdentifiers: definition.keyIdentifiers
-    ? new Set(definition.keyIdentifiers)
-    : undefined
+  keyIdentifiers: definition.keyIdentifiers ? new Set(definition.keyIdentifiers) : undefined
+});
+
+export const ENTER_KEY_MATCHER: KeyMatcher = createKeyMatcher({
+  keyValues: [KEY_VALUE_ENTER, KEY_VALUE_RETURN],
+  codeValues: [KEY_CODE_NAME_ENTER],
+  keyCodes: [KEY_CODE_ENTER],
+  keyIdentifiers: [KEY_IDENTIFIER_ENTER, KEY_IDENTIFIER_ENTER_CODE]
+});
+
+export const SPACE_KEY_MATCHER: KeyMatcher = createKeyMatcher({
+  keyValues: [KEY_VALUE_SPACE, KEY_VALUE_SPACE_NAME, KEY_VALUE_SPACEBAR],
+  codeValues: [KEY_CODE_NAME_SPACE],
+  keyCodes: [KEY_CODE_SPACE],
+  keyIdentifiers: [KEY_IDENTIFIER_SPACE, KEY_IDENTIFIER_SPACEBAR]
+});
+
+export const ESCAPE_KEY_MATCHER: KeyMatcher = createKeyMatcher({
+  keyValues: [KEY_VALUE_ESCAPE, KEY_VALUE_ESC],
+  codeValues: [KEY_CODE_NAME_ESCAPE],
+  keyCodes: [KEY_CODE_ESCAPE],
+  keyIdentifiers: [
+    KEY_IDENTIFIER_ESCAPE,
+    KEY_IDENTIFIER_ESC,
+    KEY_IDENTIFIER_ESCAPE_CODE
+  ]
 });
 
 export const matchesKey = (event: KeyboardEvent, matcher: KeyMatcher): boolean => {

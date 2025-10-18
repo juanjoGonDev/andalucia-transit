@@ -9,7 +9,7 @@ import { ComponentPortal } from '@angular/cdk/portal';
 import { Observable, Subject } from 'rxjs';
 
 import { OverlayDialogContainerComponent } from './overlay-dialog-container.component';
-import { createKeyMatcher, matchesKey } from '../../a11y/key-event-matchers';
+import { ESCAPE_KEY_MATCHER, matchesKey } from '../../a11y/key-event-matchers';
 
 export type OverlayDialogRole = 'dialog' | 'alertdialog';
 
@@ -35,24 +35,6 @@ const OVERLAY_DIALOG_REF = new InjectionToken<OverlayDialogRef<unknown>>(
   'OVERLAY_DIALOG_REF'
 );
 const OVERLAY_DIALOG_DATA = new InjectionToken<unknown>('OVERLAY_DIALOG_DATA');
-
-const KEY_VALUE_ESCAPE = 'Escape' as const;
-const KEY_VALUE_ESC = 'Esc' as const;
-const KEY_IDENTIFIER_ESCAPE = 'Escape' as const;
-const KEY_IDENTIFIER_ESC = 'Esc' as const;
-const KEY_IDENTIFIER_ESCAPE_CODE = 'U+001B' as const;
-const KEY_CODE_ESCAPE = 27 as const;
-
-const ESCAPE_KEY_MATCHER = createKeyMatcher({
-  keyValues: [KEY_VALUE_ESCAPE, KEY_VALUE_ESC],
-  codeValues: [KEY_VALUE_ESCAPE],
-  keyCodes: [KEY_CODE_ESCAPE],
-  keyIdentifiers: [
-    KEY_IDENTIFIER_ESCAPE,
-    KEY_IDENTIFIER_ESC,
-    KEY_IDENTIFIER_ESCAPE_CODE
-  ]
-});
 
 const DEFAULT_BACKDROP_CLASS = 'cdk-overlay-dark-backdrop';
 
