@@ -493,7 +493,7 @@ describe('AppTextFieldComponent', () => {
 
     expect(field).not.toBeNull();
     expect(field?.classList).not.toContain(INVALID_CLASS);
-    expect(input.getAttribute('aria-invalid')).toBeNull();
+    expect(input.getAttribute('aria-invalid')).toBe('false');
 
     input.dispatchEvent(new FocusEvent('focus'));
     reactiveFixture.detectChanges();
@@ -525,7 +525,7 @@ describe('AppTextFieldComponent', () => {
     reactiveFixture.detectChanges();
 
     expect(field?.classList).not.toContain(INVALID_CLASS);
-    expect(input.getAttribute('aria-invalid')).toBeNull();
+    expect(input.getAttribute('aria-invalid')).toBe('false');
   });
 
   it('reflects pending control state through aria-busy metadata', fakeAsync(() => {
