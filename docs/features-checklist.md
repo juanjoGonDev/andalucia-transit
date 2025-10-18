@@ -115,7 +115,11 @@ The current layout, as rendered in the production build, is the **canonical base
 Each iteration of this refactor must include one or more browser screenshots with accessible URLs demonstrating identical visual output to the baseline.
 
 ### Visual Bug Fixes (2025-10-18)
-- [ ] Favorites cards parity restored (A1) — attach public screenshot URL(s); visual diff must be 0px.
+- [x] Favorites cards parity restored (A1) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-18 Realigned favorites list cards with the shared interactive card primitive, restoring gradient, elevation, and chip hierarchy without layout drift.
+  - [x] Screenshot (Favorites list — desktop): https://browser.buildwithfern.com/invocations/qekfmfwj/artifacts/artifacts/favorites-desktop.png
+  - [x] Screenshot (Favorites list — mobile): https://browser.buildwithfern.com/invocations/qekfmfwj/artifacts/artifacts/favorites-mobile.png
+  - [x] Tests: `npm run lint`; `npm run test` *(aborted while installing Chrome dependencies for the Angular runner)*; `npm run build`.
 - [x] Recent searches time block anchoring (A2) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-18 Reworked recent preview entry layout with flex alignment and non-wrapping time blocks at mobile and desktop widths.
   - [x] Screenshot (Home recent searches — desktop): https://browser.buildwithfern.com/invocations/wdsyzxta/artifacts/artifacts/recent-time.png

@@ -22,6 +22,7 @@ import {
 import { OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
+import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
 import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
 
 interface FavoriteListItem {
@@ -42,6 +43,9 @@ interface FavoriteGroupView {
 const QUERY_LOCALE = 'es-ES' as const;
 const NORMALIZE_FORM = 'NFD' as const;
 const DIACRITIC_PATTERN = /\p{M}/gu;
+const FAVORITES_CARD_HOST_CLASSES: readonly string[] = ['favorites-card'];
+const FAVORITES_CARD_BODY_CLASSES: readonly string[] = ['favorites-card__body'];
+const FAVORITES_CARD_REMOVE_CLASSES: readonly string[] = ['favorites-card__remove'];
 @Component({
   selector: 'app-favorites',
   standalone: true,
@@ -51,7 +55,8 @@ const DIACRITIC_PATTERN = /\p{M}/gu;
     TranslateModule,
     SectionComponent,
     AccessibleButtonDirective,
-    AppLayoutContentDirective
+    AppLayoutContentDirective,
+    InteractiveCardComponent
   ],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.scss',
@@ -78,6 +83,9 @@ export class FavoritesComponent {
   protected readonly removeLabelKey = this.translations.actions.remove;
   protected readonly codeLabelKey = this.translations.list.code;
   protected readonly nucleusLabelKey = this.translations.list.nucleus;
+  protected readonly favoritesCardHostClasses = FAVORITES_CARD_HOST_CLASSES;
+  protected readonly favoritesCardBodyClasses = FAVORITES_CARD_BODY_CLASSES;
+  protected readonly favoritesCardRemoveClasses = FAVORITES_CARD_REMOVE_CLASSES;
 
   protected readonly searchControl = this.formBuilder.nonNullable.control('');
 
@@ -163,9 +171,7 @@ export class FavoritesComponent {
     await this.clearAll();
   }
 
-  protected async onRemoveActivated(event: MouseEvent, item: FavoriteListItem): Promise<void> {
-    event.preventDefault();
-    event.stopPropagation();
+  protected async onRemoveActivated(item: FavoriteListItem): Promise<void> {
     await this.remove(item);
   }
 
