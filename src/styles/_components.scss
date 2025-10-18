@@ -208,6 +208,11 @@ button:focus:not(:focus-visible),
   transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
 }
 
+.app-outline-button--compact {
+  --app-outline-button-gap: var(--space-xs);
+  --app-outline-button-padding: calc(var(--space-sm) - var(--space-5xs) - var(--space-6xs)) var(--space-md);
+}
+
 .app-outline-button:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
@@ -239,6 +244,14 @@ button:focus:not(:focus-visible),
   font-weight: 600;
   cursor: pointer;
   transition: var(--app-solid-button-transition, none);
+}
+
+.app-solid-button--compact {
+  --app-solid-button-gap: var(--space-xs);
+  --app-solid-button-padding: var(--space-xs) var(--space-md);
+  --app-solid-button-radius: var(--radius-full);
+  --app-solid-button-color: var(--color-surface-light);
+  --app-solid-button-transition: background-color 0.2s ease;
 }
 
 .app-field {
@@ -277,6 +290,23 @@ button:focus:not(:focus-visible),
 
 .app-field .mat-mdc-input-element {
   padding: 0;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text-primary);
+}
+
+.app-field .mat-mdc-input-element::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+.app-field .mat-mdc-form-field-flex {
+  align-items: center;
+}
+
+.app-field .mat-mdc-floating-label {
+  transition: none;
 }
 
 .app-field .mat-mdc-form-field-subscript-wrapper {
@@ -291,17 +321,6 @@ button:focus:not(:focus-visible),
   color: var(--color-primary);
 }
 
-.mat-mdc-dialog-container {
-  padding: 0;
-}
-
-.mat-mdc-dialog-container .mdc-dialog__surface {
-  border-radius: 1.5rem;
-  background-color: var(--color-dialog-surface);
-  box-shadow: var(--shadow-dialog);
-  padding: 0;
-}
-
 .app-dialog {
   display: flex;
   flex-direction: column;
@@ -310,18 +329,18 @@ button:focus:not(:focus-visible),
 
 .app-dialog__title {
   margin: 0;
-  padding: 1.5rem 1.5rem 0;
-  font-size: 1.5rem;
-  font-weight: 700;
+  padding: var(--space-lg) var(--space-lg) var(--space-none);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   color: var(--color-text-strong);
 }
 
 .app-dialog__content {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 0.5rem 1.5rem 0;
-  padding-right: calc(1.5rem - 0.4rem / 2);
+  gap: var(--space-lg);
+  padding: var(--space-xs) var(--space-lg) var(--space-none);
+  padding-right: calc(var(--space-lg) - ((var(--space-xs) - var(--space-5xs)) / 2));
   max-height: min(70vh, 24rem);
   overflow-y: auto;
   scrollbar-width: thin;
@@ -330,7 +349,7 @@ button:focus:not(:focus-visible),
 }
 
 .app-dialog__content::-webkit-scrollbar {
-  width: 0.4rem;
+  width: calc(var(--space-xs) - var(--space-5xs));
 }
 
 .app-dialog__content::-webkit-scrollbar-track {
@@ -350,8 +369,8 @@ button:focus:not(:focus-visible),
 .app-dialog__actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 1rem 1.5rem 1.5rem;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg) var(--space-lg);
   flex-wrap: wrap;
 }
 
