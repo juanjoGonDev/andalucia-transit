@@ -145,6 +145,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-18 Enforced pointer cursor host binding on `AccessibleButtonDirective` while preserving disabled affordance semantics.
   - [x] Screenshot (Home interactions — desktop): https://browser.buildwithfern.com/invocations/hftcnxkb/artifacts/artifacts/home-pointer.png
   - [x] Tests: `npm run lint`; `npm run test` (Angular runner blocked by apt.llvm.org 502 while installing Chrome dependencies); `npm run build`.
+  - [x] 2025-10-20 Added legacy space key fallbacks to `AccessibleButtonDirective` so keyboard activation remains reliable across browsers while retaining baseline visuals.
+    - [x] Screenshot (Skip link focus state — desktop): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
 ### Layout & Theming Consistency (2025-10-18)
 - [x] Token compliance audit (B1) — attach public screenshot URL(s); visual diff must be 0px.

@@ -4,6 +4,30 @@ import { By } from '@angular/platform-browser';
 
 import { AccessibleButtonDirective, AccessibleButtonPopupToken } from './accessible-button.directive';
 
+type ExtendedKeyboardEvent = KeyboardEvent & { keyIdentifier?: string };
+
+const SPACE_KEY_CODE = 32 as const;
+const SPACE_CODE = 'Space' as const;
+const SPACE_KEY_IDENTIFIER = 'U+0020' as const;
+
+function setKeyboardEventNumberProperty(
+  event: KeyboardEvent,
+  property: 'keyCode' | 'which',
+  value: number
+): void {
+  Object.defineProperty(event, property, {
+    configurable: true,
+    value
+  });
+}
+
+function setKeyboardEventIdentifier(event: ExtendedKeyboardEvent, value: string): void {
+  Object.defineProperty(event, 'keyIdentifier', {
+    configurable: true,
+    value
+  });
+}
+
 @Component({
   standalone: true,
   imports: [AccessibleButtonDirective],
@@ -266,6 +290,77 @@ describe('AccessibleButtonDirective', () => {
       expect(keyupEvent.defaultPrevented).toBeTrue();
       expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
     }
+  });
+
+  it('should treat space keyboard code as activation trigger when key is empty', () => {
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    hostComponent.onActivated.calls.reset();
+
+    const keydownEvent = new KeyboardEvent('keydown', {
+      key: '',
+      code: SPACE_CODE,
+      cancelable: true
+    });
+    nativeElement.dispatchEvent(keydownEvent);
+
+    expect(keydownEvent.defaultPrevented).toBeTrue();
+    expect(hostComponent.onActivated).not.toHaveBeenCalled();
+
+    const keyupEvent = new KeyboardEvent('keyup', {
+      key: '',
+      code: SPACE_CODE,
+      cancelable: true
+    });
+    nativeElement.dispatchEvent(keyupEvent);
+
+    expect(keyupEvent.defaultPrevented).toBeTrue();
+    expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
+  });
+
+  it('should treat legacy keyCode values as activation triggers', () => {
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    hostComponent.onActivated.calls.reset();
+
+    const keydownEvent = new KeyboardEvent('keydown', { key: '', cancelable: true });
+    setKeyboardEventNumberProperty(keydownEvent, 'keyCode', SPACE_KEY_CODE);
+    setKeyboardEventNumberProperty(keydownEvent, 'which', SPACE_KEY_CODE);
+    nativeElement.dispatchEvent(keydownEvent);
+
+    expect(keydownEvent.defaultPrevented).toBeTrue();
+    expect(hostComponent.onActivated).not.toHaveBeenCalled();
+
+    const keyupEvent = new KeyboardEvent('keyup', { key: '', cancelable: true });
+    setKeyboardEventNumberProperty(keyupEvent, 'keyCode', SPACE_KEY_CODE);
+    setKeyboardEventNumberProperty(keyupEvent, 'which', SPACE_KEY_CODE);
+    nativeElement.dispatchEvent(keyupEvent);
+
+    expect(keyupEvent.defaultPrevented).toBeTrue();
+    expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
+  });
+
+  it('should treat legacy keyIdentifier values as activation triggers', () => {
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    hostComponent.onActivated.calls.reset();
+
+    const keydownEvent = new KeyboardEvent('keydown', { key: '', cancelable: true });
+    setKeyboardEventIdentifier(keydownEvent, SPACE_KEY_IDENTIFIER);
+    nativeElement.dispatchEvent(keydownEvent);
+
+    expect(keydownEvent.defaultPrevented).toBeTrue();
+    expect(hostComponent.onActivated).not.toHaveBeenCalled();
+
+    const keyupEvent = new KeyboardEvent('keyup', { key: '', cancelable: true });
+    setKeyboardEventIdentifier(keyupEvent, SPACE_KEY_IDENTIFIER);
+    nativeElement.dispatchEvent(keyupEvent);
+
+    expect(keyupEvent.defaultPrevented).toBeTrue();
+    expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
   });
 
   it('should prevent default on enter when the host exposes a link role without an href', () => {

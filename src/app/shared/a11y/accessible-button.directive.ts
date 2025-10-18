@@ -11,9 +11,13 @@ import {
 
 export type AccessibleButtonPopupToken = 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
 type AccessibleButtonPopupValue = boolean | AccessibleButtonPopupToken;
+type LegacyKeyboardEvent = KeyboardEvent & { keyIdentifier?: string };
 
 const KEYBOARD_ENTER = 'Enter' as const;
-const SPACE_KEY_VALUES = [' ', 'Space', 'Spacebar'] as const;
+const SPACE_KEY_IDENTIFIERS = [' ', 'Space', 'Spacebar'] as const;
+const SPACE_KEY_IDENTIFIER = 'U+0020' as const;
+const SPACE_CODE = 'Space' as const;
+const SPACE_KEY_CODE = 32 as const;
 const ARIA_TRUE = 'true' as const;
 const ARIA_FALSE = 'false' as const;
 const CURSOR_POINTER = 'pointer' as const;
@@ -198,7 +202,21 @@ export class AccessibleButtonDirective {
   }
 
   private isSpaceKey(event: KeyboardEvent): boolean {
-    return SPACE_KEY_VALUES.some((spaceKey) => spaceKey === event.key);
+    if (SPACE_KEY_IDENTIFIERS.some((identifier) => identifier === event.key)) {
+      return true;
+    }
+
+    if (event.code === SPACE_CODE) {
+      return true;
+    }
+
+    if (event.keyCode === SPACE_KEY_CODE || event.which === SPACE_KEY_CODE) {
+      return true;
+    }
+
+    const legacyEvent = event as LegacyKeyboardEvent;
+
+    return legacyEvent.keyIdentifier === SPACE_KEY_IDENTIFIER;
   }
 
   private isAnchorWithHref(): boolean {
