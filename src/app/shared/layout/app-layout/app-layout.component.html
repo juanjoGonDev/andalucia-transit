@@ -1,4 +1,18 @@
+<div class="app-shell__skip">
+  <div
+    appAccessibleButton
+    class="app-shell__skip-button"
+    [attr.aria-label]="skipLinkLabelKey | translate"
+    (appAccessibleButtonActivated)="focusMainContent()"
+  >
+    {{ skipLinkLabelKey | translate }}
+  </div>
+</div>
 <app-app-shell-top-actions></app-app-shell-top-actions>
-<section class="app-shell__section">
+<section
+  class="app-shell__section"
+  [attr.id]="mainContentId"
+  tabindex="-1"
+>
   <router-outlet></router-outlet>
 </section>
