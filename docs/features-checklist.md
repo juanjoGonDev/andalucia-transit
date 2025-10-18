@@ -124,7 +124,11 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-18 Reworked recent preview entry layout with flex alignment and non-wrapping time blocks at mobile and desktop widths.
   - [x] Screenshot (Home recent searches — desktop): https://browser.buildwithfern.com/invocations/wdsyzxta/artifacts/artifacts/recent-time.png
   - [x] Tests: `npm run lint`; `npm run test` *(aborted during Chrome dependency installation)*; `npm run build` *(aborted while installing Chrome system dependencies)*.
-- [ ] Settings view layout integration (A3) — attach public screenshot URL(s); visual diff must be 0px.
+- [x] Settings view layout integration (A3) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-18 Routed settings through the shared layout surface with the utility container and layout body tokens, ensuring baseline spacing and cards render on the muted surface without ad-hoc padding.
+  - [x] Screenshot (Settings view — desktop): https://browser.buildwithfern.com/invocations/kusjavnh/artifacts/artifacts/settings-desktop.png
+  - [x] Screenshot (Settings view — mobile): https://browser.buildwithfern.com/invocations/kusjavnh/artifacts/artifacts/settings-mobile.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Search form input stability (A4) — attach public screenshot URL(s); visual diff must be 0px.
 - [ ] Route search & stop detail layout adoption (A5) — attach public screenshot URL(s); visual diff must be 0px.
 - [x] Global pointer cursor directive coverage (A6) — attach public screenshot URL(s); visual diff must be 0px.

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { OverlayDialogConfig, OverlayDialogRef, OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
@@ -51,10 +52,6 @@ class OverlayDialogServiceStub {
   lastData(): ConfirmDialogData | undefined {
     return this.lastConfig?.data;
   }
-}
-
-class RouterStub {
-  readonly navigate = jasmine.createSpy('navigate').and.resolveTo(true);
 }
 
 interface FavoritesComponentAccess {
@@ -119,27 +116,28 @@ describe('FavoritesComponent', () => {
   let component: FavoritesComponent;
   let favoritesFacade: FavoritesFacadeStub;
   let dialog: OverlayDialogServiceStub;
-  let router: RouterStub;
+  let router: Router;
+  let navigateSpy: jasmine.Spy<Router['navigate']>;
 
   beforeEach(async () => {
     favoritesFacade = new FavoritesFacadeStub();
     dialog = new OverlayDialogServiceStub();
-    router = new RouterStub();
-
     await TestBed.configureTestingModule({
       imports: [
+        RouterTestingModule,
         FavoritesComponent,
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: FakeTranslateLoader } })
       ],
       providers: [
         { provide: FavoritesFacade, useValue: favoritesFacade },
-        { provide: OverlayDialogService, useValue: dialog },
-        { provide: Router, useValue: router }
+        { provide: OverlayDialogService, useValue: dialog }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FavoritesComponent);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
   });
 
   it('renders favorites grouped by municipality', () => {
@@ -180,7 +178,7 @@ describe('FavoritesComponent', () => {
     const access = accessProtected(component);
     await access.openStop.call(component, toListItem(favorite));
 
-    expect(router.navigate).toHaveBeenCalledWith([
+    expect(navigateSpy).toHaveBeenCalledWith([
       '/',
       APP_CONFIG.routes.stopDetailBase,
       'sevilla:001'
