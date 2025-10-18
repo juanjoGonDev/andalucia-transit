@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AppTextFieldComponent } from './app-text-field.component';
 import { AppTextFieldHintDirective } from './app-text-field-slots.directive';
 
@@ -14,6 +20,7 @@ const MISSING_LABEL_ERROR_MESSAGE = 'Label element not found';
 const KEYDOWN_EVENT_TYPE = 'keydown';
 const SAMPLE_KEY = 'A';
 const FOCUSED_CLASS = 'app-text-field--focused';
+const INVALID_CLASS = 'app-text-field--invalid';
 
 @Component({
   selector: 'app-text-field-host',
@@ -45,13 +52,35 @@ class AppTextFieldHostComponent {
   }
 }
 
+@Component({
+  selector: 'app-text-field-reactive-host',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, AppTextFieldComponent],
+  template: `
+    <form [formGroup]="form">
+      <app-text-field
+        label="Label"
+        formControlName="field"
+        [required]="required"
+      ></app-text-field>
+    </form>
+  `,
+})
+class AppTextFieldReactiveHostComponent {
+  readonly form = new FormGroup({
+    field: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+  });
+
+  required = true;
+}
+
 describe('AppTextFieldComponent', () => {
   let fixture: ComponentFixture<AppTextFieldHostComponent>;
   let host: AppTextFieldHostComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppTextFieldHostComponent],
+      imports: [AppTextFieldHostComponent, AppTextFieldReactiveHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppTextFieldHostComponent);
@@ -204,4 +233,58 @@ describe('AppTextFieldComponent', () => {
     expect(touched).toBeTrue();
     expect(blurSpy).toHaveBeenCalled();
   }));
+
+  it('sets required and aria-required when requested', () => {
+    const reactiveFixture = TestBed.createComponent(AppTextFieldReactiveHostComponent);
+    reactiveFixture.detectChanges();
+
+    const input = reactiveFixture.nativeElement.querySelector(INPUT_SELECTOR) as HTMLInputElement | null;
+
+    expect(input).not.toBeNull();
+    expect(input?.required).toBeTrue();
+    expect(input?.getAttribute('aria-required')).toBe('true');
+  });
+
+  it('exposes invalid state only after the control becomes touched', () => {
+    const reactiveFixture = TestBed.createComponent(AppTextFieldReactiveHostComponent);
+    reactiveFixture.detectChanges();
+
+    const input = reactiveFixture.nativeElement.querySelector(INPUT_SELECTOR) as HTMLInputElement | null;
+    const field = reactiveFixture.nativeElement.querySelector(FIELD_SELECTOR) as HTMLElement | null;
+
+    expect(input).not.toBeNull();
+    expect(field).not.toBeNull();
+    expect(field?.classList).not.toContain(INVALID_CLASS);
+    expect(input?.getAttribute('aria-invalid')).toBeNull();
+
+    input?.dispatchEvent(new FocusEvent('focus'));
+    reactiveFixture.detectChanges();
+    input?.dispatchEvent(new FocusEvent('blur'));
+    reactiveFixture.detectChanges();
+
+    expect(field?.classList).toContain(INVALID_CLASS);
+    expect(input?.getAttribute('aria-invalid')).toBe('true');
+  });
+
+  it('clears invalid state once the control becomes valid', () => {
+    const reactiveFixture = TestBed.createComponent(AppTextFieldReactiveHostComponent);
+    reactiveFixture.detectChanges();
+
+    const input = reactiveFixture.nativeElement.querySelector(INPUT_SELECTOR) as HTMLInputElement | null;
+    const field = reactiveFixture.nativeElement.querySelector(FIELD_SELECTOR) as HTMLElement | null;
+
+    input?.dispatchEvent(new FocusEvent('focus'));
+    reactiveFixture.detectChanges();
+    input?.dispatchEvent(new FocusEvent('blur'));
+    reactiveFixture.detectChanges();
+
+    if (input) {
+      input.value = 'content';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    reactiveFixture.detectChanges();
+
+    expect(field?.classList).not.toContain(INVALID_CLASS);
+    expect(input?.getAttribute('aria-invalid')).toBeNull();
+  });
 });

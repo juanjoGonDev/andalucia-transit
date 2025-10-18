@@ -4,16 +4,19 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChild,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   HostBinding,
   Input,
+  Optional,
   Output,
+  Self,
   ViewChild,
   inject,
-  forwardRef,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AppTextFieldHintDirective,
   AppTextFieldPrefixDirective,
@@ -26,6 +29,7 @@ const TEXT_FIELD_HINT_SEGMENT = 'hint';
 const DEFAULT_TEXT_FIELD_TYPE: TextFieldType = 'text';
 const DEFAULT_AUTOCOMPLETE_ATTRIBUTE = 'off';
 const ARIA_ATTRIBUTE_SEPARATOR = ' ';
+const ARIA_TRUE = 'true';
 const EMPTY_STRING = '';
 const DESCRIBED_BY_SEPARATOR_PATTERN = /\s+/u;
 const NOOP_VALUE_CALLBACK = (_value: string): void => undefined;
@@ -40,13 +44,6 @@ export type TextFieldType = 'text' | 'search' | 'email' | 'tel' | 'url' | 'passw
   templateUrl: './app-text-field.component.html',
   styleUrls: ['./app-text-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => AppTextFieldComponent),
-      multi: true,
-    },
-  ],
 })
 export class AppTextFieldComponent implements ControlValueAccessor {
   private static idCounter = 0;
@@ -58,6 +55,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   @Input() autocomplete: string = DEFAULT_AUTOCOMPLETE_ATTRIBUTE;
   @Input() type: TextFieldType = DEFAULT_TEXT_FIELD_TYPE;
   @Input() readonly = false;
+  @Input() required = false;
   @Input() name?: string;
   @Input()
   set describedBy(value: string | readonly string[] | undefined) {
@@ -84,8 +82,22 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   isDisabled = false;
   isFocused = false;
 
+  private readonly destroyRef = inject(DestroyRef);
+
   private onChange: (value: string) => void = NOOP_VALUE_CALLBACK;
   private onTouched: () => void = NOOP_VOID_CALLBACK;
+
+  constructor(@Self() @Optional() private readonly ngControl: NgControl | null) {
+    if (this.ngControl) {
+      this.ngControl.valueAccessor = this;
+      this.ngControl.statusChanges
+        ?.pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.changeDetectorRef.markForCheck());
+      this.ngControl.valueChanges
+        ?.pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.changeDetectorRef.markForCheck());
+    }
+  }
 
   @Input()
   set fieldId(value: string | undefined) {
@@ -131,6 +143,18 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
   get hasHint(): boolean {
     return Boolean(this.hint);
+  }
+
+  get ariaInvalidAttribute(): 'true' | null {
+    return this.shouldDisplayInvalidState() ? (ARIA_TRUE as 'true') : null;
+  }
+
+  get ariaRequiredAttribute(): 'true' | null {
+    return this.required ? (ARIA_TRUE as 'true') : null;
+  }
+
+  get invalid(): boolean {
+    return this.shouldDisplayInvalidState();
   }
 
   writeValue(value: string | null | undefined): void {
@@ -244,5 +268,19 @@ export class AppTextFieldComponent implements ControlValueAccessor {
       .split(DESCRIBED_BY_SEPARATOR_PATTERN)
       .map((identifier) => identifier.trim())
       .filter((identifier) => identifier !== EMPTY_STRING);
+  }
+
+  private shouldDisplayInvalidState(): boolean {
+    const control = this.ngControl?.control;
+
+    if (!control) {
+      return false;
+    }
+
+    if (!control.invalid) {
+      return false;
+    }
+
+    return control.touched || control.dirty;
   }
 }

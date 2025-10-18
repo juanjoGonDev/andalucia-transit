@@ -2,6 +2,7 @@
   class="app-text-field"
   [class.app-text-field--focused]="isFocused"
   [class.app-text-field--disabled]="isDisabled"
+  [class.app-text-field--invalid]="invalid"
 >
   <label class="app-text-field__label" [attr.for]="inputId">
     <ng-container>{{ label }}</ng-container>
@@ -20,6 +21,9 @@
       [attr.placeholder]="placeholder"
       [attr.readonly]="readonly ? '' : null"
       [attr.aria-describedby]="ariaDescribedByAttribute"
+      [attr.aria-invalid]="ariaInvalidAttribute"
+      [attr.aria-required]="ariaRequiredAttribute"
+      [attr.required]="required ? '' : null"
       [disabled]="isDisabled"
       [value]="value"
       (focus)="handleFocus()"
