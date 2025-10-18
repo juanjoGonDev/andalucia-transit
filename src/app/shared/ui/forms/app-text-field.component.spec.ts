@@ -26,6 +26,8 @@ const SAMPLE_KEY = 'A';
 const FOCUSED_CLASS = 'app-text-field--focused';
 const INVALID_CLASS = 'app-text-field--invalid';
 const ARIA_INVALID_ATTRIBUTE = 'aria-invalid';
+const ARIA_TRUE = 'true';
+const ARIA_FALSE = 'false';
 
 @Component({
   selector: 'app-text-field-host',
@@ -434,7 +436,7 @@ describe('AppTextFieldComponent', () => {
     const input = queryInput();
 
     expect(input.required).toBeTrue();
-    expect(input.getAttribute('aria-required')).toBe('true');
+    expect(input.getAttribute('aria-required')).toBe(ARIA_TRUE);
   });
 
   it('derives required semantics from the reactive control validator', () => {
@@ -445,7 +447,7 @@ describe('AppTextFieldComponent', () => {
 
     expect(input).not.toBeNull();
     expect(input?.required).toBeTrue();
-    expect(input?.getAttribute('aria-required')).toBe('true');
+    expect(input?.getAttribute('aria-required')).toBe(ARIA_TRUE);
   });
 
   it('keeps required semantics when the control lacks hasValidator', () => {
@@ -478,7 +480,7 @@ describe('AppTextFieldComponent', () => {
 
     expect(input).not.toBeNull();
     expect(input?.required).toBeTrue();
-    expect(input?.getAttribute('aria-required')).toBe('true');
+    expect(input?.getAttribute('aria-required')).toBe(ARIA_TRUE);
   });
 
   it('exposes invalid state only after the control becomes touched', () => {
@@ -494,7 +496,7 @@ describe('AppTextFieldComponent', () => {
 
     expect(field).not.toBeNull();
     expect(field?.classList).not.toContain(INVALID_CLASS);
-    expect(input.hasAttribute(ARIA_INVALID_ATTRIBUTE)).toBeFalse();
+    expect(input.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBe(ARIA_FALSE);
 
     input.dispatchEvent(new FocusEvent('focus'));
     reactiveFixture.detectChanges();
@@ -502,7 +504,7 @@ describe('AppTextFieldComponent', () => {
     reactiveFixture.detectChanges();
 
     expect(field?.classList).toContain(INVALID_CLASS);
-    expect(input.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBe('true');
+    expect(input.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBe(ARIA_TRUE);
   });
 
   it('clears invalid state once the control becomes valid', () => {
@@ -526,7 +528,7 @@ describe('AppTextFieldComponent', () => {
     reactiveFixture.detectChanges();
 
     expect(field?.classList).not.toContain(INVALID_CLASS);
-    expect(input.hasAttribute(ARIA_INVALID_ATTRIBUTE)).toBeFalse();
+    expect(input.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBe(ARIA_FALSE);
   });
 
   it('reflects pending control state through aria-busy metadata', fakeAsync(() => {
@@ -554,7 +556,7 @@ describe('AppTextFieldComponent', () => {
     }
 
     expect(manualControl.status).toBe('PENDING');
-    expect(input.getAttribute('aria-busy')).toBe('true');
+    expect(input.getAttribute('aria-busy')).toBe(ARIA_TRUE);
 
     manualControl.setValue('resolved');
     manualControl.updateValueAndValidity();
@@ -563,7 +565,7 @@ describe('AppTextFieldComponent', () => {
 
     expect(manualControl.status).not.toBe('PENDING');
     expect(textFieldInstance.ariaBusyAttribute).toBe('false');
-    expect(input.getAttribute('aria-busy')).toBe('false');
+    expect(input.getAttribute('aria-busy')).toBe(ARIA_FALSE);
   }));
 
   it('projects error content and updates describedBy metadata when the control is invalid', () => {
