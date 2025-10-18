@@ -12,6 +12,9 @@ const ENTER_KEY_IDENTIFIERS = ['Enter', 'U+000D'] as const;
 const SPACE_KEY_CODE = 32 as const;
 const SPACE_CODE = 'Space' as const;
 const SPACE_KEY_IDENTIFIER = 'U+0020' as const;
+const SPACE_KEY_VALUE = ' ' as const;
+const KEYDOWN_EVENT = 'keydown' as const;
+const KEYUP_EVENT = 'keyup' as const;
 
 function setKeyboardEventNumberProperty(
   event: KeyboardEvent,
@@ -196,6 +199,34 @@ describe('AccessibleButtonDirective', () => {
     fixture.detectChanges();
 
     expect(nativeElement.hasAttribute('aria-expanded')).toBeFalse();
+  });
+
+  it('should cancel pending space activation when keyup occurs outside the host', () => {
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    const keydownEvent = new KeyboardEvent(KEYDOWN_EVENT, {
+      key: SPACE_KEY_VALUE,
+      code: SPACE_CODE,
+      bubbles: true
+    });
+    nativeElement.dispatchEvent(keydownEvent);
+
+    const documentKeyupEvent = new KeyboardEvent(KEYUP_EVENT, {
+      key: SPACE_KEY_VALUE,
+      code: SPACE_CODE,
+      bubbles: true
+    });
+    document.dispatchEvent(documentKeyupEvent);
+
+    const hostKeyupEvent = new KeyboardEvent(KEYUP_EVENT, {
+      key: SPACE_KEY_VALUE,
+      code: SPACE_CODE,
+      bubbles: true
+    });
+    nativeElement.dispatchEvent(hostKeyupEvent);
+
+    expect(hostComponent.onActivated).not.toHaveBeenCalled();
   });
 
   it('should expose popup role when provided', () => {

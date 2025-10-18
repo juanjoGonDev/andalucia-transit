@@ -114,7 +114,7 @@ export class AccessibleButtonDirective {
   @HostListener('keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
     if (this.appAccessibleButtonDisabled) {
-      this.spaceActivationPending = false;
+      this.cancelSpaceActivation();
       return;
     }
 
@@ -134,7 +134,7 @@ export class AccessibleButtonDirective {
       }
 
       if (this.role === 'link') {
-        this.spaceActivationPending = false;
+        this.cancelSpaceActivation();
         return;
       }
 
@@ -146,7 +146,7 @@ export class AccessibleButtonDirective {
   @HostListener('keyup', ['$event'])
   onKeyup(event: KeyboardEvent): void {
     if (this.appAccessibleButtonDisabled) {
-      this.spaceActivationPending = false;
+      this.cancelSpaceActivation();
       return;
     }
 
@@ -164,7 +164,7 @@ export class AccessibleButtonDirective {
         return;
       }
 
-      this.spaceActivationPending = false;
+      this.cancelSpaceActivation();
 
       if (this.isAnchorWithHref()) {
         return;
@@ -181,7 +181,25 @@ export class AccessibleButtonDirective {
 
   @HostListener('blur')
   onBlur(): void {
-    this.spaceActivationPending = false;
+    this.cancelSpaceActivation();
+  }
+
+  @HostListener('focusout')
+  onFocusOut(): void {
+    this.cancelSpaceActivation();
+  }
+
+  @HostListener('document:keyup', ['$event'])
+  onDocumentKeyup(event: KeyboardEvent): void {
+    if (!this.spaceActivationPending) {
+      return;
+    }
+
+    if (!this.isSpaceKey(event)) {
+      return;
+    }
+
+    this.cancelSpaceActivation();
   }
 
   @HostListener('click', ['$event'])
@@ -245,5 +263,9 @@ export class AccessibleButtonDirective {
     const element = this.hostElementRef.nativeElement;
 
     return element instanceof HTMLAnchorElement && element.hasAttribute('href');
+  }
+
+  private cancelSpaceActivation(): void {
+    this.spaceActivationPending = false;
   }
 }
