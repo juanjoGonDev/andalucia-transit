@@ -138,11 +138,13 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
     collectedIds.push(...this.additionalDescribedByIds);
 
-    if (collectedIds.length === 0) {
+    const uniqueIdentifiers = AppTextFieldComponent.createUniqueIdentifiers(collectedIds);
+
+    if (uniqueIdentifiers.length === 0) {
       return null;
     }
 
-    return collectedIds.join(ARIA_ATTRIBUTE_SEPARATOR);
+    return uniqueIdentifiers.join(ARIA_ATTRIBUTE_SEPARATOR);
   }
 
   get hasPrefix(): boolean {
@@ -312,6 +314,22 @@ export class AppTextFieldComponent implements ControlValueAccessor {
       .split(DESCRIBED_BY_SEPARATOR_PATTERN)
       .map((identifier) => identifier.trim())
       .filter((identifier) => identifier !== EMPTY_STRING);
+  }
+
+  private static createUniqueIdentifiers(identifiers: readonly string[]): string[] {
+    const seen = new Set<string>();
+    const uniqueIdentifiers: string[] = [];
+
+    identifiers.forEach((identifier) => {
+      if (seen.has(identifier)) {
+        return;
+      }
+
+      seen.add(identifier);
+      uniqueIdentifiers.push(identifier);
+    });
+
+    return uniqueIdentifiers;
   }
 
   private get hasErrorContent(): boolean {

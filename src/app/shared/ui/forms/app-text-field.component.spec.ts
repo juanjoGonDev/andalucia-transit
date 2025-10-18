@@ -8,6 +8,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { AppTextFieldComponent } from './app-text-field.component';
 import { AppTextFieldErrorDirective, AppTextFieldHintDirective } from './app-text-field-slots.directive';
 
@@ -76,6 +77,7 @@ class AppTextFieldHostComponent {
         label="Label"
         formControlName="field"
         [required]="required"
+        [describedBy]="describedBy"
       >
         <span *ngIf="showHint" appTextFieldHint>{{ hintText }}</span>
         <span *ngIf="showError" appTextFieldError>{{ errorText }}</span>
@@ -93,6 +95,7 @@ class AppTextFieldReactiveHostComponent {
   showHint = false;
   readonly errorText = 'Error';
   readonly hintText = 'Hint';
+  describedBy: DescribedByInput;
 }
 
 describe('AppTextFieldComponent', () => {
@@ -177,6 +180,17 @@ describe('AppTextFieldComponent', () => {
     return control;
   }
 
+  function resolveReactiveComponent(): AppTextFieldComponent {
+    reactiveFixture.detectChanges();
+    const debugElement = reactiveFixture.debugElement.query(By.directive(AppTextFieldComponent));
+
+    if (!debugElement) {
+      throw new Error('Reactive text field component not found');
+    }
+
+    return debugElement.componentInstance as AppTextFieldComponent;
+  }
+
   it('combines hint and describedBy identifiers', () => {
     host.describedBy = 'external-description';
     host.showHint = true;
@@ -203,6 +217,21 @@ describe('AppTextFieldComponent', () => {
     const input = queryInput();
 
     expect(input.getAttribute('aria-describedby')).toBe('first-description second-description');
+  });
+
+  it('deduplicates describedBy identifiers while preserving order', () => {
+    host.showHint = true;
+    const hintIdentifier = `${host.fieldId}-hint`;
+    host.describedBy = [
+      hintIdentifier,
+      'external-description',
+      hintIdentifier,
+      'external-description',
+    ];
+
+    const input = queryInput();
+
+    expect(input.getAttribute('aria-describedby')).toBe(`${hintIdentifier} external-description`);
   });
 
   it('removes aria-describedby when no identifiers are available', () => {
@@ -240,6 +269,24 @@ describe('AppTextFieldComponent', () => {
 
     expect(errorIdentifier).toBe(`${input.id}-error`);
     expect(input.getAttribute('aria-describedby')).toBe(errorIdentifier);
+  }));
+
+  it('deduplicates error identifiers when describedBy already references the error', fakeAsync(() => {
+    reactiveHost.showError = true;
+    reactiveFixture.detectChanges();
+    const control = resolveReactiveControl();
+    const componentInstance = resolveReactiveComponent();
+    const errorIdentifier = `${componentInstance.inputId}-error`;
+
+    reactiveHost.describedBy = [errorIdentifier, 'external-info', errorIdentifier];
+    reactiveFixture.detectChanges();
+    control.markAsTouched();
+    reactiveFixture.detectChanges();
+    flush();
+
+    const input = queryReactiveInput();
+
+    expect(input.getAttribute('aria-describedby')).toBe(`${errorIdentifier} external-info`);
   }));
 
   it('removes aria-errormessage when the reactive control becomes valid', fakeAsync(() => {

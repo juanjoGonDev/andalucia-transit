@@ -227,6 +227,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-22 Preserved AppTextField aria-describedby fallbacks so legacy screen readers announce validation errors alongside aria-errormessage without changing visuals.
     - [x] Screenshot (Route search form — desktop, aria fallback parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Removed duplicate AppTextField aria-describedby identifiers so hint, error, and external descriptions remain unique without altering layout.
+    - [x] Screenshot (Route search form — desktop, described-by deduplication parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Accessibility verification sweep (B4) — attach public screenshot URL(s); visual diff must be 0px.
 - [x] 2025-10-20 Added an application-wide skip control that preserves keyboard order and focuses the shared layout body without altering visuals.
     - [x] Screenshot (Skip to content control — desktop focus): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
