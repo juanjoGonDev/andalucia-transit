@@ -561,8 +561,8 @@ describe('AppTextFieldComponent', () => {
     reactiveFixture.detectChanges();
 
     expect(manualControl.status).not.toBe('PENDING');
-    expect(textFieldInstance.ariaBusyAttribute).toBeNull();
-    expect(input.getAttribute('aria-busy')).toBeNull();
+    expect(textFieldInstance.ariaBusyAttribute).toBe('false');
+    expect(input.getAttribute('aria-busy')).toBe('false');
   }));
 
   it('projects error content and updates describedBy metadata when the control is invalid', () => {
