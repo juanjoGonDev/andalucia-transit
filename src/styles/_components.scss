@@ -209,8 +209,8 @@ button:focus:not(:focus-visible),
 }
 
 .app-outline-button--compact {
-  gap: var(--space-xs);
-  padding: calc(var(--space-sm) - var(--space-5xs) - var(--space-6xs)) var(--space-md);
+  --app-outline-button-gap: var(--space-xs);
+  --app-outline-button-padding: calc(var(--space-sm) - var(--space-5xs) - var(--space-6xs)) var(--space-md);
 }
 
 .app-outline-button:focus-visible {
