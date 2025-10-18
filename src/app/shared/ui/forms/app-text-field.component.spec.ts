@@ -32,6 +32,7 @@ const INVALID_CLASS = 'app-text-field--invalid';
       [placeholder]="placeholder"
       [describedBy]="describedBy"
       [fieldId]="fieldId"
+      [required]="required"
       (keydownEvent)="recordKey($event)"
     >
       <span *ngIf="showHint" appTextFieldHint>{{ hintText }}</span>
@@ -46,6 +47,7 @@ class AppTextFieldHostComponent {
   readonly fieldId = 'custom-field';
   readonly hintText = 'Hint';
   readonly recordedKeys: string[] = [];
+  required = false;
 
   recordKey(event: KeyboardEvent): void {
     this.recordedKeys.push(event.key);
@@ -71,7 +73,7 @@ class AppTextFieldReactiveHostComponent {
     field: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
 
-  required = true;
+  required = false;
 }
 
 describe('AppTextFieldComponent', () => {
@@ -234,7 +236,16 @@ describe('AppTextFieldComponent', () => {
     expect(blurSpy).toHaveBeenCalled();
   }));
 
-  it('sets required and aria-required when requested', () => {
+  it('sets required semantics when the input binding requests it', () => {
+    host.required = true;
+
+    const input = queryInput();
+
+    expect(input.required).toBeTrue();
+    expect(input.getAttribute('aria-required')).toBe('true');
+  });
+
+  it('derives required semantics from the reactive control validator', () => {
     const reactiveFixture = TestBed.createComponent(AppTextFieldReactiveHostComponent);
     reactiveFixture.detectChanges();
 

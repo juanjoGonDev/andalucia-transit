@@ -9,13 +9,11 @@ import {
   EventEmitter,
   HostBinding,
   Input,
-  Optional,
   Output,
-  Self,
   ViewChild,
   inject,
 } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { ControlValueAccessor, NgControl, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AppTextFieldHintDirective,
@@ -30,6 +28,7 @@ const DEFAULT_TEXT_FIELD_TYPE: TextFieldType = 'text';
 const DEFAULT_AUTOCOMPLETE_ATTRIBUTE = 'off';
 const ARIA_ATTRIBUTE_SEPARATOR = ' ';
 const ARIA_TRUE = 'true';
+const REQUIRED_ERROR_KEY = 'required';
 const EMPTY_STRING = '';
 const DESCRIBED_BY_SEPARATOR_PATTERN = /\s+/u;
 const NOOP_VALUE_CALLBACK = (_value: string): void => undefined;
@@ -49,6 +48,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   private static idCounter = 0;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly ngControl = inject(NgControl, { optional: true, self: true });
 
   @Input({ required: true }) label = '';
   @Input() placeholder = '';
@@ -87,16 +87,8 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   private onChange: (value: string) => void = NOOP_VALUE_CALLBACK;
   private onTouched: () => void = NOOP_VOID_CALLBACK;
 
-  constructor(@Self() @Optional() private readonly ngControl: NgControl | null) {
-    if (this.ngControl) {
-      this.ngControl.valueAccessor = this;
-      this.ngControl.statusChanges
-        ?.pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(() => this.changeDetectorRef.markForCheck());
-      this.ngControl.valueChanges
-        ?.pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(() => this.changeDetectorRef.markForCheck());
-    }
+  constructor() {
+    this.initializeNgControl();
   }
 
   @Input()
@@ -150,7 +142,11 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   }
 
   get ariaRequiredAttribute(): 'true' | null {
-    return this.required ? (ARIA_TRUE as 'true') : null;
+    return this.isRequired ? (ARIA_TRUE as 'true') : null;
+  }
+
+  get requiredAttribute(): '' | null {
+    return this.isRequired ? EMPTY_STRING : null;
   }
 
   get invalid(): boolean {
@@ -209,6 +205,14 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
   handleKeydown(event: KeyboardEvent): void {
     this.keydownEvent.emit(event);
+  }
+
+  private get isRequired(): boolean {
+    if (this.required) {
+      return true;
+    }
+
+    return this.hasRequiredValidator();
   }
 
   private buildFieldId(): string {
@@ -282,5 +286,43 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     }
 
     return control.touched || control.dirty;
+  }
+
+  private hasRequiredValidator(): boolean {
+    const control = this.ngControl?.control;
+
+    if (!control) {
+      return false;
+    }
+
+    if (typeof control.hasValidator === 'function' && control.hasValidator(Validators.required)) {
+      return true;
+    }
+
+    if (!control.validator) {
+      return false;
+    }
+
+    const validationResult = control.validator(control);
+
+    if (!validationResult) {
+      return false;
+    }
+
+    return REQUIRED_ERROR_KEY in validationResult;
+  }
+
+  private initializeNgControl(): void {
+    if (!this.ngControl) {
+      return;
+    }
+
+    this.ngControl.valueAccessor = this;
+    this.ngControl.statusChanges
+      ?.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.changeDetectorRef.markForCheck());
+    this.ngControl.valueChanges
+      ?.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.changeDetectorRef.markForCheck());
   }
 }
