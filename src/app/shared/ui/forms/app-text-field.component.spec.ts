@@ -199,7 +199,7 @@ describe('AppTextFieldComponent', () => {
 
     expect(field.classList).not.toContain(FOCUSED_CLASS);
     expect(focusChangeSpy).toHaveBeenCalledWith(false);
-    const blurEmissions = (focusChangeSpy.calls.allArgs() as ReadonlyArray<[boolean]>).filter(([isFocused]) => isFocused === false).length;
+    const blurEmissions = (focusChangeSpy.calls.allArgs() as readonly [boolean][]).filter(([isFocused]) => isFocused === false).length;
     expect(blurEmissions).toBe(1);
     expect(touched).toBeTrue();
     expect(blurSpy).toHaveBeenCalled();

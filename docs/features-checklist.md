@@ -153,6 +153,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-19 Replaced Home view feature-scoped custom properties with shared layout and color tokens while preserving responsive stack spacing.
   - [x] Screenshot (Home view — desktop): https://browser.buildwithfern.com/invocations/dizffnry/artifacts/artifacts/home-token-audit.png
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-19 Added a shared outline button compact variant so the favorites clear action no longer defines feature-scoped custom properties while maintaining baseline spacing.
+  - [x] Screenshot (Favorites clear action — desktop): https://browser.buildwithfern.com/invocations/auujufaq/artifacts/artifacts/favorites-outline-button.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
 - [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-19 Migrated favorites search filter to the shared AppTextFieldComponent to align control metrics and focus behavior without altering layout.

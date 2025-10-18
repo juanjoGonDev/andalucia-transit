@@ -208,6 +208,11 @@ button:focus:not(:focus-visible),
   transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
 }
 
+.app-outline-button--compact {
+  gap: var(--space-xs);
+  padding: calc(var(--space-sm) - var(--space-5xs) - var(--space-6xs)) var(--space-md);
+}
+
 .app-outline-button:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;

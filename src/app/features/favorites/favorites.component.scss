@@ -39,15 +39,7 @@
   width: 100%;
 }
 
-.favorites__clear {
-  --app-outline-button-gap: var(--space-xs);
-  --app-outline-button-padding: calc(var(--space-sm) - var(--space-5xs) - var(--space-6xs)) var(--space-md);
-  --app-outline-button-border: var(--color-border-subtle);
-  --app-outline-button-border-hover: var(--color-primary);
-  --app-outline-button-color: var(--color-text-strong);
-  --app-outline-button-color-hover: var(--color-primary);
-  --app-outline-button-background-hover: var(--color-primary-soft);
-}
+
 
 .favorites__clear-icon {
   font-size: calc(var(--font-size-base) + var(--space-3xs));
