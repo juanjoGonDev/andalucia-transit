@@ -1,35 +1,40 @@
+$shell-actions-offset: clamp(var(--space-md-plus), 4vw, calc(var(--space-2xl) - var(--space-sm)));
+$shell-actions-radius: calc(var(--radius-lg) + var(--space-sm));
+$shell-actions-padding: clamp(var(--space-xs), 2vw, var(--space-sm));
+$shell-actions-surface: var(--color-navigation-surface);
+$shell-actions-foreground: var(--color-navigation-item);
+$shell-actions-shadow-elevation: color-mix(in srgb, var(--color-secondary) 28%, transparent);
+$shell-actions-shadow-outline: color-mix(in srgb, var(--color-text-inverse) 24%, transparent);
+$shell-actions-button-base: var(--color-navigation-pill);
+$shell-actions-button-hover: color-mix(in srgb, var(--color-text-inverse) 16%, transparent);
+$shell-actions-button-shadow-inner: color-mix(in srgb, var(--color-text-inverse) 25%, transparent);
+$shell-actions-icon-shadow: 0 0 calc((var(--space-lg) - var(--space-2xs)) * 1 / 2)
+  color-mix(in srgb, var(--color-secondary) 60%, transparent);
+$shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 24%, transparent);
+
 :host {
-  --shell-actions-offset: clamp(1.25rem, 4vw, 1.75rem);
-  --shell-actions-radius: 1.75rem;
-  --shell-actions-padding: clamp(0.5rem, 2vw, 0.75rem);
-  --shell-actions-glass: #1a1b1fe3;
-  --shell-actions-foreground: #ffffff;
-  --shell-actions-shadow: 0 18px 36px rgba(6, 15, 43, 0.28), 0 0 0 1px rgba(6, 15, 43, 0.12);
-  --shell-actions-button-hover: rgba(255, 255, 255, 0.12);
-  --shell-actions-button-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 12px 22px rgba(6, 15, 43, 0.32),
-    0 0 0 1px rgba(6, 15, 43, 0.12);
-  --shell-actions-icon-shadow: 0 0 6px rgba(6, 15, 43, 0.6);
-  --shell-actions-border: rgba(255, 255, 255, 0.24);
   display: block;
   position: sticky;
-  top: calc(env(safe-area-inset-top, 0px) + var(--shell-actions-offset));
+  top: calc(env(safe-area-inset-top, 0px) + #{$shell-actions-offset});
   height: 0;
-  z-index: 20;
+  z-index: var(--z-index-sticky);
 }
 
 .shell-actions {
   position: relative;
   display: flex;
   justify-content: center;
-  margin-top: calc(var(--shell-actions-offset) * -1);
+  margin-top: calc(#{$shell-actions-offset} * -1);
   pointer-events: none;
 }
 
 .shell-actions__container {
   width: min(100%, 64rem);
   margin: 0 0 0 auto;
-  padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 6vw, 4rem) 0;
+  padding:
+    clamp(var(--space-lg), 5vw, var(--space-3xl))
+    clamp(var(--space-md), 6vw, var(--space-4xl))
+    var(--space-none);
   display: flex;
   justify-content: flex-end;
 }
@@ -37,50 +42,59 @@
 .shell-actions__shell {
   display: flex;
   align-items: center;
-  padding: var(--shell-actions-padding);
-  border-radius: var(--shell-actions-radius);
-  background: var(--shell-actions-glass);
-  backdrop-filter: blur(18px);
-  box-shadow: var(--shell-actions-shadow);
-  color: var(--shell-actions-foreground);
+  padding: #{$shell-actions-padding};
+  border-radius: #{$shell-actions-radius};
+  background: $shell-actions-surface;
+  backdrop-filter: blur(calc(var(--space-lg) - var(--space-2xs)));
+  box-shadow:
+    0 calc(var(--space-lg) - var(--space-2xs))
+      calc((var(--space-lg) - var(--space-2xs)) * 2) $shell-actions-shadow-elevation,
+    0 0 0 1px $shell-actions-shadow-outline;
+  color: $shell-actions-foreground;
   pointer-events: auto;
 }
 
 .shell-actions__buttons {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-sm);
 }
 
 .shell-actions__button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  height: 3rem;
+  width: var(--space-3xl);
+  height: var(--space-3xl);
   border: none;
-  border-radius: 1.2rem;
-  background: var(--shell-actions-glass);
-  color: var(--shell-actions-foreground);
-  box-shadow: var(--shell-actions-button-shadow);
-  transition:
-    background 220ms ease,
-    box-shadow 220ms ease;
+  border-radius: calc(var(--space-xl) - var(--space-sm));
+  background: $shell-actions-button-base;
+  color: $shell-actions-foreground;
+  box-shadow:
+    inset 0 1px 0 $shell-actions-button-shadow-inner,
+    0 calc(var(--space-lg) - var(--space-xs))
+      calc((var(--space-lg) - var(--space-xs)) * 11 / 8) color-mix(
+        in srgb,
+        var(--color-secondary) 32%,
+        transparent
+      ),
+    0 0 0 1px $shell-actions-shadow-outline;
+  transition: background-color 220ms ease, box-shadow 220ms ease;
 }
 
 .shell-actions__button:hover,
 .shell-actions__button:focus-visible {
-  background: var(--shell-actions-button-hover);
+  background: $shell-actions-button-hover;
   cursor: pointer;
 }
 
 .shell-actions__button:focus-visible {
-  outline: 2px solid #ffffff;
+  outline: 2px solid var(--color-text-inverse);
   outline-offset: 3px;
 }
 
 .shell-actions__button .material-symbols-outlined {
-  text-shadow: var(--shell-actions-icon-shadow);
+  text-shadow: $shell-actions-icon-shadow;
 }
 
 .shell-actions__button-icon {
@@ -90,11 +104,15 @@
 }
 
 .shell-actions__button--active {
-  background: var(--shell-actions-button-hover);
+  background: $shell-actions-button-hover;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    0 18px 32px rgba(6, 15, 43, 0.4),
-    0 0 0 1px rgba(6, 15, 43, 0.18);
+    inset 0 1px 0 color-mix(in srgb, var(--color-text-inverse) 35%, transparent),
+    0 calc(var(--space-lg) - var(--space-2xs)) var(--space-xl) color-mix(
+      in srgb,
+      var(--color-secondary) 40%,
+      transparent
+    ),
+    0 0 0 1px color-mix(in srgb, var(--color-secondary) 18%, transparent);
 }
 
 .shell-actions__button--active .shell-actions__button-icon {
@@ -107,23 +125,26 @@
 
 .shell-actions__panel {
   position: absolute;
-  top: calc(100% + 0.6rem);
+  top: calc(100% + var(--space-xs) + var(--space-5xs));
   right: 0;
   min-width: clamp(12rem, 30vw, 16rem);
-  padding: 0.85rem;
-  border-radius: 1rem;
-  border: 1px solid var(--shell-actions-border);
-  background: var(--shell-actions-glass);
-  color: var(--shell-actions-foreground);
-  box-shadow: var(--shell-actions-shadow);
-  backdrop-filter: blur(18px);
+  padding: calc(var(--space-sm) + var(--space-5xs));
+  border-radius: var(--radius-lg);
+  border: 1px solid $shell-actions-border;
+  background: $shell-actions-surface;
+  color: $shell-actions-foreground;
+  box-shadow:
+    0 calc(var(--space-lg) - var(--space-2xs))
+      calc((var(--space-lg) - var(--space-2xs)) * 2) $shell-actions-shadow-elevation,
+    0 0 0 1px $shell-actions-shadow-outline;
+  backdrop-filter: blur(calc(var(--space-lg) - var(--space-2xs)));
   pointer-events: auto;
 }
 
 .shell-actions__list {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--space-3xs);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -134,9 +155,9 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0.6rem 0.85rem;
+  padding: calc(var(--space-xs) + var(--space-5xs)) calc(var(--space-sm) + var(--space-5xs));
   border: none;
-  border-radius: 0.8rem;
+  border-radius: calc(var(--space-md) - var(--space-4xs));
   background: transparent;
   font-weight: 600;
   color: inherit;
@@ -145,26 +166,26 @@
 
 .shell-actions__menu-button:not(:disabled):hover,
 .shell-actions__menu-button:not(:disabled):focus-visible {
-  background: rgba(255, 255, 255, 0.16);
+  background: color-mix(in srgb, var(--color-text-inverse) 16%, transparent);
 }
 
 .shell-actions__menu-button:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline: 2px solid color-mix(in srgb, var(--color-text-inverse) 70%, transparent);
   outline-offset: 2px;
 }
 
 .shell-actions__menu-button:disabled {
-  color: rgba(255, 255, 255, 0.55);
+  color: color-mix(in srgb, var(--color-text-inverse) 55%, transparent);
 }
 
 .shell-actions__menu-status {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.75);
+  font-size: calc(var(--font-size-sm) - var(--space-6xs));
+  color: color-mix(in srgb, var(--color-text-inverse) 75%, transparent);
 }
 
 .shell-actions__menu-label {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-xs);
 }
 
