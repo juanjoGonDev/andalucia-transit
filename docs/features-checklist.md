@@ -159,6 +159,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
 - [x] 2025-10-19 Tuned the shared outline button compact modifier to rely on the component’s CSS custom properties so spacing remains token-driven without bypassing the primitive contract.
   - [x] Screenshot (Favorites clear action — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/auujufaq/artifacts/artifacts/favorites-outline-button.png
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Mapped the shell top actions surface and controls to navigation tokens, removing component-scoped CSS variables while preserving glassmorphism metrics.
+    - [x] Screenshot (Shell top actions — desktop parity): https://browser.buildwithfern.com/invocations/fudcemdn/artifacts/artifacts/shell-top-actions.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-19 Replaced dialog spacing and confirm dialog metrics with global tokens so overlay padding, typography, and focus affordances remain baseline-identical.
   - [x] Screenshot (Favorites clear confirmation — desktop): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
