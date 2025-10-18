@@ -3,32 +3,37 @@
     <div class="shell-actions__shell">
       <div class="shell-actions__buttons">
         <div class="shell-actions__menu">
-          <button
-            type="button"
+          <div
+            appAccessibleButton
             class="shell-actions__button shell-actions__button--menu"
             [class.shell-actions__button--active]="menuOpen()"
-            (click)="toggleMenu()"
+            [appAccessibleButtonPressed]="menuOpen()"
+            [appAccessibleButtonExpanded]="menuOpen()"
+            [appAccessibleButtonHasPopup]="menuPopupRole"
+            (appAccessibleButtonActivated)="toggleMenu()"
             [attr.aria-label]="menuLabelKey | translate"
-            [attr.aria-expanded]="menuOpen() ? 'true' : 'false'"
+            [attr.tabindex]="focusableTabIndex"
             (keydown.escape)="closeMenu()"
           >
             <span class="material-symbols-outlined shell-actions__button-icon">menu</span>
-          </button>
+          </div>
           <div class="shell-actions__panel" *ngIf="menuOpen()">
             <ul class="shell-actions__list" role="menu">
               <li class="shell-actions__item" *ngFor="let entry of menuEntries()">
-                <button
-                  type="button"
-                  role="menuitem"
+                <div
+                  appAccessibleButton
                   class="shell-actions__menu-button"
-                  [disabled]="entry.disabled"
-                  (click)="handleMenuEntry(entry)"
+                  [appAccessibleButtonDisabled]="entry.disabled"
+                  appAccessibleButtonRole="menuitem"
+                  [attr.aria-current]="entry.isActive ? 'page' : null"
+                  [attr.tabindex]="entry.disabled ? disabledTabIndex : focusableTabIndex"
+                  (appAccessibleButtonActivated)="handleMenuEntry(entry)"
                 >
                   <span class="shell-actions__menu-label">{{ entry.labelKey | translate }}</span>
                   <span *ngIf="entry.disabled" class="shell-actions__menu-status">
                     {{ menuInProgressKey | translate }}
                   </span>
-                </button>
+                </div>
               </li>
             </ul>
           </div>

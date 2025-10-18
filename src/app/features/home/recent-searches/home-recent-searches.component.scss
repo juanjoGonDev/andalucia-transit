@@ -45,7 +45,7 @@
 }
 
 .home__recent-summary .home-recent__empty {
-  color: rgba(241, 243, 244, 0.85);
+  color: var(--color-text-inverse-soft);
 }
 
 .home__recent-summary .recent-card {
@@ -60,17 +60,17 @@
 }
 
 .home__recent-summary .recent-card__route {
-  color: #ffffff;
+  color: var(--color-text-inverse);
 }
 
 .home__recent-summary .recent-card__date,
 .home__recent-summary .recent-card__status,
 .home__recent-summary .recent-card__today {
-  color: rgba(241, 243, 244, 0.85);
+  color: var(--color-text-inverse-soft);
 }
 
 .home__recent-summary .recent-card__remove {
-  color: rgba(241, 243, 244, 0.85);
+  color: var(--color-text-inverse-soft);
 }
 
 .home__recent-summary .recent-card__remove:hover {
@@ -78,7 +78,7 @@
 }
 
 .home__recent-summary .recent-card__remove:focus-visible {
-  outline-color: #ffffff;
+  outline-color: var(--color-text-inverse);
 }
 
 @media (min-width: 56rem) {

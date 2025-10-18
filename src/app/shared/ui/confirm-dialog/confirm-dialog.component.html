@@ -9,19 +9,19 @@
     </ul>
   </div>
   <div appDialogActions class="confirm-dialog__actions">
-    <button
-      type="button"
+    <div
+      appAccessibleButton
       class="app-button app-button--ghost app-button--block-mobile"
-      (click)="cancel()"
+      (appAccessibleButtonActivated)="cancel()"
     >
       {{ data.cancelKey | translate }}
-    </button>
-    <button
-      type="button"
+    </div>
+    <div
+      appAccessibleButton
       class="app-button app-button--primary app-button--block-mobile"
-      (click)="confirm()"
+      (appAccessibleButtonActivated)="confirm()"
     >
       {{ data.confirmKey | translate }}
-    </button>
+    </div>
   </div>
 </app-dialog-layout>

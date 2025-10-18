@@ -1,18 +1,18 @@
 .map {
-  padding: 1.5rem;
+  padding: var(--space-lg);
 }
 
 .map-card {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 1.5rem;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
 }
 
 .map-placeholder {
   align-items: center;
   border: 1px dashed rgba(0, 0, 0, 0.2);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-md);
   display: flex;
   height: 16rem;
   justify-content: center;

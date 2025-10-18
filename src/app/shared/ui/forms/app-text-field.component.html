@@ -1,0 +1,36 @@
+<div
+  class="app-text-field"
+  [class.app-text-field--focused]="isFocused"
+  [class.app-text-field--disabled]="isDisabled"
+>
+  <label class="app-text-field__label" [attr.for]="inputId">
+    <ng-container>{{ label }}</ng-container>
+  </label>
+  <div class="app-text-field__control">
+    <span class="app-text-field__prefix" *ngIf="hasPrefix">
+      <ng-content select="[appTextFieldPrefix]"></ng-content>
+    </span>
+    <input
+      class="app-text-field__input"
+      [id]="inputId"
+      [attr.name]="name"
+      [attr.type]="type"
+      [attr.autocomplete]="autocomplete"
+      [attr.placeholder]="placeholder"
+      [attr.readonly]="readonly ? '' : null"
+      [attr.aria-describedby]="ariaDescribedByAttribute"
+      [disabled]="isDisabled"
+      [value]="value"
+      (focus)="handleFocus()"
+      (blur)="handleBlur()"
+      (input)="handleInput($event)"
+      (keydown)="handleKeydown($event)"
+    />
+    <span class="app-text-field__suffix" *ngIf="hasSuffix">
+      <ng-content select="[appTextFieldSuffix]"></ng-content>
+    </span>
+  </div>
+  <div class="app-text-field__hint" *ngIf="hasHint" [id]="hintId">
+    <ng-content select="[appTextFieldHint]"></ng-content>
+  </div>
+</div>

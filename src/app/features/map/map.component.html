@@ -1,12 +1,21 @@
-<section class="map">
+<section
+  class="map"
+  appLayoutContent
+  [appLayoutContentNavigationKey]="layoutNavigationKey"
+>
   <mat-card appearance="outlined" class="map-card">
     <h1>{{ translationKeys.title | translate }}</h1>
     <p>{{ translationKeys.description | translate }}</p>
     <div class="map-placeholder">
       <span>{{ translationKeys.hint | translate }}</span>
     </div>
-    <button mat-stroked-button color="primary">
+    <a
+      appAccessibleButton
+      mat-stroked-button
+      color="primary"
+      [attr.aria-label]="translationKeys.openList | translate"
+    >
       {{ translationKeys.openList | translate }}
-    </button>
+    </a>
   </mat-card>
 </section>

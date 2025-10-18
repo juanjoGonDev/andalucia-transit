@@ -1,4 +1,8 @@
-<div class="settings">
+<div
+  class="settings"
+  appLayoutContent
+  [appLayoutContentNavigationKey]="layoutNavigationKey"
+>
   <app-section [titleKey]="languageSectionTitleKey" appearance="card">
     <div class="settings__section">
       <p class="settings__description">{{ languageDescriptionKey | translate }}</p>
@@ -7,19 +11,19 @@
           *ngFor="let item of languageItems(); trackBy: languageTrackBy"
           class="settings__list-item"
         >
-          <button
-            type="button"
+          <div
+            appAccessibleButton
             class="settings__language-button"
             [class.settings__language-button--active]="item.isActive"
-            (click)="onLanguageSelected(item.code)"
-            [attr.aria-pressed]="item.isActive"
+            (appAccessibleButtonActivated)="onLanguageSelected(item.code)"
+            [appAccessibleButtonPressed]="item.isActive"
             [attr.aria-label]="languageActionLabelKey | translate: { language: (item.labelKey | translate) }"
           >
             <span class="settings__language-label">{{ item.labelKey | translate }}</span>
             <span class="settings__language-status" *ngIf="item.isActive">
               {{ languageActiveLabelKey | translate }}
             </span>
-          </button>
+          </div>
         </li>
       </ul>
     </div>
@@ -28,12 +32,12 @@
     <div class="settings__section">
       <p class="settings__description">{{ recentSearchesDescriptionKey | translate }}</p>
       <div class="settings__controls">
-        <button
-          type="button"
+        <div
+          appAccessibleButton
           class="settings__toggle"
-          role="switch"
-          [attr.aria-checked]="previewEnabled()"
-          (click)="togglePreview()"
+          [appAccessibleButtonRole]="'switch'"
+          [appAccessibleButtonChecked]="previewEnabled()"
+          (appAccessibleButtonActivated)="togglePreview()"
         >
           <span
             class="settings__toggle-track"
@@ -43,7 +47,7 @@
             <span class="settings__toggle-thumb"></span>
           </span>
           <span class="settings__toggle-label">{{ previewToggleLabelKey | translate }}</span>
-        </button>
+        </div>
       </div>
     </div>
   </app-section>

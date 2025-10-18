@@ -7,12 +7,17 @@ import {
   RecentSearchPreviewState
 } from '../../recent-searches.models';
 import { RecentSearchPreviewEntryComponent } from '../recent-search-preview-entry/recent-search-preview-entry.component';
-import { HomeListCardComponent } from '../../../shared/home-list-card/home-list-card.component';
+import { InteractiveCardComponent } from '../../../../../shared/ui/cards/interactive-card/interactive-card.component';
+import {
+  RECENT_CARD_BODY_CLASSES,
+  RECENT_CARD_HOST_CLASSES,
+  RECENT_CARD_REMOVE_CLASSES
+} from '../../../shared/recent-card-classes';
 
 @Component({
   selector: 'app-recent-search-card',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RecentSearchPreviewEntryComponent, HomeListCardComponent],
+  imports: [CommonModule, TranslateModule, RecentSearchPreviewEntryComponent, InteractiveCardComponent],
   templateUrl: './recent-search-card.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -32,6 +37,9 @@ export class RecentSearchCardComponent {
 
   @Output() readonly open = new EventEmitter<void>();
   @Output() readonly remove = new EventEmitter<void>();
+  protected readonly recentCardHostClasses = RECENT_CARD_HOST_CLASSES;
+  protected readonly recentCardBodyClasses = RECENT_CARD_BODY_CLASSES;
+  protected readonly recentCardRemoveClasses = RECENT_CARD_REMOVE_CLASSES;
 
   protected trackByEntry(_: number, entry: RecentSearchPreviewEntry): string {
     return entry.id;

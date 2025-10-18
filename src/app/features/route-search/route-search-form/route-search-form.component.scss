@@ -42,18 +42,17 @@
   height: 2.5rem;
   margin-right: 0.5rem;
   border-radius: var(--radius-full);
+  cursor: pointer;
 }
 
-.route-search-form__location-button:disabled {
+.route-search-form__location-button[aria-disabled='true'] {
   opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .route-search-form__icon {
   color: var(--color-icon-muted);
-}
-
-:host-context(.dark) .route-search-form__icon {
-  color: var(--color-icon-muted-dark);
 }
 
 .mat-mdc-optgroup {
@@ -89,6 +88,7 @@
   background: transparent;
   color: var(--color-icon-muted);
   transition: color 0.2s ease, background-color 0.2s ease;
+  cursor: pointer;
 }
 
 .route-search-form__favorite-button[data-active='true'] {
@@ -115,26 +115,6 @@
   color: var(--color-text-muted);
 }
 
-:host-context(.dark) .route-search-form__option-name {
-  color: var(--color-text-strong-dark);
-}
-
-:host-context(.dark) .route-search-form__favorite-button {
-  color: var(--color-icon-muted-dark);
-}
-
-:host-context(.dark) .route-search-form__favorite-button[data-active='true'] {
-  color: var(--color-primary-light);
-}
-
-:host-context(.dark) .route-search-form__favorite-button:hover {
-  background-color: var(--color-surface-dark-hover);
-}
-
-:host-context(.dark) .route-search-form__option-distance {
-  color: var(--color-text-muted-dark);
-}
-
 .route-search-form__swap {
   grid-area: swap;
   display: flex;
@@ -148,21 +128,12 @@
   color: var(--color-primary);
   box-shadow: var(--shadow-sm);
   transition: transform 0.2s ease, background-color 0.2s ease;
+  cursor: pointer;
 }
 
 .route-search-form__swap:hover {
   transform: rotate(180deg);
   background-color: var(--color-primary-soft);
-}
-
-:host-context(.dark) .route-search-form__swap {
-  background: var(--color-surface-dark);
-  color: var(--color-primary-light);
-  box-shadow: var(--shadow-dark);
-}
-
-:host-context(.dark) .route-search-form__swap:hover {
-  background-color: var(--color-surface-dark-hover);
 }
 
 .route-search-form__submit {
@@ -176,10 +147,6 @@
   text-align: center;
   font-size: 0.875rem;
   color: var(--color-primary);
-}
-
-:host-context(.dark) .route-search-form__feedback {
-  color: var(--color-primary-light);
 }
 
 @media (max-width: 768px) {

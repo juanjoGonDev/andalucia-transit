@@ -12,8 +12,9 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatNativeDateModule } from '@angular/material/core';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { A11yModule } from '@angular/cdk/a11y';
 
 import { routes } from './app.routes';
 import { APP_CONFIG } from './core/config';
@@ -26,7 +27,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimationsAsync(),
-    importProvidersFrom(MatDialogModule),
+    importProvidersFrom(OverlayModule),
+    importProvidersFrom(A11yModule),
     importProvidersFrom(MatNativeDateModule),
     importProvidersFrom(
       TranslateModule.forRoot({

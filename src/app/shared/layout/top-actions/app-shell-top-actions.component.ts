@@ -14,20 +14,35 @@ import { TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '../../../core/config';
 import { HomeTabId } from '../../../features/home/home.types';
 import { buildNavigationCommands, NavigationCommands } from '../../navigation/navigation.util';
+import { AppLayoutContextStore } from '../app-layout-context.store';
+import { AppLayoutNavigationKey } from '../app-layout-context.token';
+import {
+  AccessibleButtonDirective,
+  AccessibleButtonPopupToken
+} from '../../a11y/accessible-button.directive';
 
 interface ShellMenuEntry {
   readonly id: string;
   readonly labelKey: string;
+  readonly navigationKey: AppLayoutNavigationKey | null;
   readonly action:
     | { readonly kind: 'home'; readonly tab: HomeTabId }
     | { readonly kind: 'navigation'; readonly commands: NavigationCommands };
   readonly disabled: boolean;
 }
 
+interface ShellMenuViewEntry extends ShellMenuEntry {
+  readonly isActive: boolean;
+}
+
+const MENU_POPUP_ROLE: AccessibleButtonPopupToken = 'menu';
+const FOCUSABLE_TAB_INDEX = 0;
+const DISABLED_TAB_INDEX = -1;
+
 @Component({
   selector: 'app-app-shell-top-actions',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, AccessibleButtonDirective],
   templateUrl: './app-shell-top-actions.component.html',
   styleUrl: './app-shell-top-actions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -35,6 +50,7 @@ interface ShellMenuEntry {
 export class AppShellTopActionsComponent {
   private readonly router = inject(Router);
   private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly layoutContextStore = inject(AppLayoutContextStore);
 
   private readonly translation = APP_CONFIG.translationKeys.home;
   private readonly homeCommands = buildNavigationCommands(APP_CONFIG.routes.home);
@@ -58,31 +74,45 @@ export class AppShellTopActionsComponent {
     {
       id: 'recent',
       labelKey: this.translation.menu.recent,
+      navigationKey: APP_CONFIG.routes.homeRecent,
       action: { kind: 'home', tab: 'recent' },
       disabled: false
     },
     {
       id: 'favorites',
       labelKey: this.translation.menu.favorites,
+      navigationKey: APP_CONFIG.routes.homeFavorites,
       action: { kind: 'home', tab: 'favorites' },
       disabled: false
     },
     {
       id: 'settings',
       labelKey: this.translation.menu.settings,
+      navigationKey: APP_CONFIG.routes.settings,
       action: { kind: 'navigation', commands: this.settingsCommands },
       disabled: false
     },
     {
       id: 'news',
       labelKey: this.translation.menu.news,
+      navigationKey: null,
       action: { kind: 'home', tab: 'search' },
       disabled: true
     }
   ]);
 
-  protected readonly menuEntries = computed(() => this.entries());
+  protected readonly menuEntries = computed<readonly ShellMenuViewEntry[]>(() => {
+    const activeNavigationKey = this.layoutContextStore.snapshot().activeNavigationKey;
+
+    return this.entries().map((entry) => ({
+      ...entry,
+      isActive: entry.navigationKey !== null && entry.navigationKey === activeNavigationKey
+    }));
+  });
   protected readonly menuOpen = signal(false);
+  protected readonly menuPopupRole = MENU_POPUP_ROLE;
+  protected readonly focusableTabIndex = FOCUSABLE_TAB_INDEX;
+  protected readonly disabledTabIndex = DISABLED_TAB_INDEX;
 
   protected toggleMenu(): void {
     this.menuOpen.update((open) => !open);
@@ -113,7 +143,7 @@ export class AppShellTopActionsComponent {
     await this.router.navigate(this.mapCommands);
   }
 
-  protected async handleMenuEntry(entry: ShellMenuEntry): Promise<void> {
+  protected async handleMenuEntry(entry: ShellMenuViewEntry): Promise<void> {
     if (entry.disabled) {
       return;
     }
