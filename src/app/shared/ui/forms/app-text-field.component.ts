@@ -40,6 +40,7 @@ const DEFAULT_TEXT_FIELD_TYPE: TextFieldType = 'text';
 const DEFAULT_AUTOCOMPLETE_ATTRIBUTE = 'off';
 const ARIA_ATTRIBUTE_SEPARATOR = ' ';
 const ARIA_TRUE = 'true';
+const ARIA_FALSE = 'false';
 const REQUIRED_ERROR_KEY = 'required';
 const EMPTY_STRING = '';
 const DESCRIBED_BY_SEPARATOR_PATTERN = /\s+/u;
@@ -197,8 +198,8 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     return this.isRequired ? (ARIA_TRUE as 'true') : null;
   }
 
-  get ariaBusyAttribute(): 'true' | null {
-    return this.isControlPending(this.resolveControl()) ? (ARIA_TRUE as 'true') : null;
+  get ariaBusyAttribute(): 'true' | 'false' {
+    return this.isControlPending(this.resolveControl()) ? (ARIA_TRUE as 'true') : (ARIA_FALSE as 'false');
   }
 
   get ariaErrormessageAttribute(): string | null {
