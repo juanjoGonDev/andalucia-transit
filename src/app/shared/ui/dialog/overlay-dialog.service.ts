@@ -7,7 +7,7 @@ import {
 } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 
 import { OverlayDialogContainerComponent } from './overlay-dialog-container.component';
 import { ESCAPE_KEY_MATCHER, matchesKey } from '../../a11y/key-event-matchers';
@@ -59,13 +59,17 @@ class CdkOverlayDialogRef<TResult> implements OverlayDialogRef<TResult> {
   private isClosed = false;
   private result: TResult | undefined;
 
-  constructor(private readonly overlayRef: OverlayRef) {
+  constructor(
+    private readonly overlayRef: OverlayRef,
+    private readonly release: () => void
+  ) {
     this.overlayRef.detachments().subscribe(() => {
       if (this.isClosed) {
         return;
       }
 
       this.isClosed = true;
+      this.release();
       this.container?.restoreFocus();
       this.closed$.next(undefined);
       this.closed$.complete();
@@ -87,6 +91,7 @@ class CdkOverlayDialogRef<TResult> implements OverlayDialogRef<TResult> {
 
     this.result = value;
     this.isClosed = true;
+    this.release();
     this.overlayRef.dispose();
     this.container?.restoreFocus();
     this.closed$.next(this.result);
@@ -104,7 +109,23 @@ export class OverlayDialogService {
     config: OverlayDialogConfig<TData> = {}
   ): OverlayDialogRef<TResult> {
     const overlayRef = this.overlay.create(this.buildConfig(config));
-    const detachments$ = overlayRef.detachments();
+    const release$ = new Subject<void>();
+    let released = false;
+
+    const release = (): void => {
+      if (released) {
+        return;
+      }
+
+      released = true;
+      release$.next();
+      release$.complete();
+    };
+
+    overlayRef
+      .detachments()
+      .pipe(take(1))
+      .subscribe(() => release());
 
     for (const panelClass of toArray(config.panelClass) ?? []) {
       overlayRef.addPanelClass(panelClass);
@@ -117,7 +138,7 @@ export class OverlayDialogService {
       });
     }
 
-    const dialogRef = new CdkOverlayDialogRef<TResult>(overlayRef);
+    const dialogRef = new CdkOverlayDialogRef<TResult>(overlayRef, release);
 
     const portalInjector = Injector.create({
       parent: this.injector,
@@ -142,11 +163,11 @@ export class OverlayDialogService {
     if (!(config.disableClose ?? false)) {
       overlayRef
         .backdropClick()
-        .pipe(takeUntil(detachments$))
+        .pipe(takeUntil(release$))
         .subscribe(() => dialogRef.close());
       overlayRef
         .keydownEvents()
-        .pipe(takeUntil(detachments$))
+        .pipe(takeUntil(release$))
         .subscribe((event) => {
           if (!matchesKey(event, ESCAPE_KEY_MATCHER)) {
             return;
