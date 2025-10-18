@@ -17,6 +17,8 @@ import { OverlayDialogRole } from './overlay-dialog.service';
 export const OVERLAY_DIALOG_CONTAINER_CLASS = 'app-overlay-dialog__container';
 export const OVERLAY_DIALOG_SURFACE_CLASS = 'app-overlay-dialog__surface';
 
+type ActiveElementContainer = Document | ShadowRoot;
+
 @Component({
   selector: 'app-overlay-dialog-container',
   standalone: true,
@@ -36,7 +38,7 @@ export class OverlayDialogContainerComponent implements AfterViewInit, OnDestroy
   @ViewChild(CdkPortalOutlet, { static: true })
   private portalOutlet!: CdkPortalOutlet;
   private readonly elementRef = inject(ElementRef<HTMLElement>);
-  private readonly documentRef = inject(DOCUMENT);
+  private readonly documentRef = inject(DOCUMENT, { optional: true }) as Document | null;
   private readonly focusTrapFactory = inject(FocusTrapFactory);
 
   private focusTrap: FocusTrap | null = null;
@@ -77,7 +79,7 @@ export class OverlayDialogContainerComponent implements AfterViewInit, OnDestroy
   }
 
   ngAfterViewInit(): void {
-    const activeElement = this.documentRef?.activeElement ?? null;
+    const activeElement = this.resolveActiveElement();
     this.previouslyFocusedElement =
       activeElement instanceof HTMLElement ? activeElement : null;
     this.focusTrap = this.focusTrapFactory.create(this.elementRef.nativeElement);
@@ -89,5 +91,31 @@ export class OverlayDialogContainerComponent implements AfterViewInit, OnDestroy
 
   ngOnDestroy(): void {
     this.focusTrap?.destroy();
+  }
+
+  private resolveActiveElement(): Element | null {
+    const rootNode = this.elementRef.nativeElement.getRootNode();
+
+    if (this.isActiveElementContainer(rootNode)) {
+      return rootNode.activeElement;
+    }
+
+    const ownerDocument = this.elementRef.nativeElement.ownerDocument;
+
+    if (ownerDocument?.activeElement) {
+      return ownerDocument.activeElement;
+    }
+
+    return this.documentRef?.activeElement ?? null;
+  }
+
+  private isActiveElementContainer(
+    candidate: Node | Document | ShadowRoot | null
+  ): candidate is ActiveElementContainer {
+    if (!candidate) {
+      return false;
+    }
+
+    return typeof (candidate as ActiveElementContainer).activeElement !== 'undefined';
   }
 }
