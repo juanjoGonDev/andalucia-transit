@@ -7,8 +7,34 @@ interface OptionValue {
   readonly id: number;
 }
 
+const TEXT_FIELD_SELECTOR = 'app-text-field';
+const PANEL_SELECTOR = '.app-autocomplete__panel';
+const OPTION_SELECTOR = '.app-autocomplete__option';
+const INPUT_SELECTOR = 'input';
+const ROLE_ATTRIBUTE = 'role';
+const ARIA_AUTOCOMPLETE_ATTRIBUTE = 'aria-autocomplete';
+const ARIA_CONTROLS_ATTRIBUTE = 'aria-controls';
+const ARIA_EXPANDED_ATTRIBUTE = 'aria-expanded';
+const ARIA_ACTIVE_DESCENDANT_ATTRIBUTE = 'aria-activedescendant';
+const ARIA_SELECTED_ATTRIBUTE = 'aria-selected';
+const ARIA_DESCRIBEDBY_ATTRIBUTE = 'aria-describedby';
+const COMBOBOX_ROLE = 'combobox';
+const LIST_AUTOCOMPLETE_VALUE = 'list';
+const TRUE_STRING = 'true';
+const FALSE_STRING = 'false';
+const TEXT_FIELD_NOT_FOUND_ERROR_MESSAGE = 'Text field element not found';
+const INPUT_NOT_FOUND_ERROR_MESSAGE = 'Autocomplete input not found';
+const KEYDOWN_EVENT_TYPE = 'keydown';
+const KEY_ARROW_DOWN = 'ArrowDown';
+const KEY_ARROW_UP = 'ArrowUp';
+const KEY_ENTER = 'Enter';
+const KEY_ESCAPE = 'Escape';
+const FIRST_OPTION_INDEX = 0;
+const LAST_OPTION_INDEX = 2;
+const FIRST_OPTION_DESCRIPTION_ID = 'first-description';
+
 const OPTIONS: readonly AppAutocompleteOption<OptionValue>[] = [
-  { value: { id: 1 }, label: 'First' },
+  { value: { id: 1 }, label: 'First', describedByIds: [FIRST_OPTION_DESCRIPTION_ID] },
   { value: { id: 2 }, label: 'Second' },
   { value: { id: 3 }, label: 'Third' },
 ];
@@ -51,6 +77,35 @@ describe('AppAutocompleteComponent', () => {
     component = fixture.debugElement.children[0].componentInstance as AppAutocompleteComponent<OptionValue>;
   });
 
+  function queryTextFieldElement(): HTMLElement {
+    fixture.detectChanges();
+    const element = fixture.nativeElement.querySelector(TEXT_FIELD_SELECTOR) as HTMLElement | null;
+
+    if (!element) {
+      throw new Error(TEXT_FIELD_NOT_FOUND_ERROR_MESSAGE);
+    }
+
+    return element;
+  }
+
+  function queryInputElement(): HTMLInputElement {
+    fixture.detectChanges();
+    const element = fixture.nativeElement.querySelector(INPUT_SELECTOR) as HTMLInputElement | null;
+
+    if (!element) {
+      throw new Error(INPUT_NOT_FOUND_ERROR_MESSAGE);
+    }
+
+    return element;
+  }
+
+  function queryOptionElements(): HTMLElement[] {
+    fixture.detectChanges();
+    const elements = fixture.nativeElement.querySelectorAll(OPTION_SELECTOR) as NodeListOf<HTMLElement>;
+
+    return Array.from(elements);
+  }
+
   it('opens the panel when receiving focus with available options', () => {
     component.handleFocusChange(true);
 
@@ -60,8 +115,8 @@ describe('AppAutocompleteComponent', () => {
 
   it('navigates options with arrow keys and selects the active option on enter', () => {
     component.handleFocusChange(true);
-    component.handleKeydown(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
-    component.handleKeydown(new KeyboardEvent('keydown', { key: 'Enter' }));
+    component.handleKeydown(new KeyboardEvent(KEYDOWN_EVENT_TYPE, { key: KEY_ARROW_DOWN }));
+    component.handleKeydown(new KeyboardEvent(KEYDOWN_EVENT_TYPE, { key: KEY_ENTER }));
 
     expect(host.lastSelection).toBe('First');
     expect(component.value).toBe('First');
@@ -74,5 +129,77 @@ describe('AppAutocompleteComponent', () => {
 
     expect(host.lastSelection).toBe('Second');
     expect(component.value).toBe('Second');
+  });
+
+  it('applies combobox aria metadata to the text field host', () => {
+    let textFieldElement = queryTextFieldElement();
+    const inputElement = queryInputElement();
+
+    expect(textFieldElement.getAttribute(ROLE_ATTRIBUTE)).toBe(COMBOBOX_ROLE);
+    expect(textFieldElement.getAttribute(ARIA_AUTOCOMPLETE_ATTRIBUTE)).toBe(LIST_AUTOCOMPLETE_VALUE);
+    expect(textFieldElement.getAttribute(ARIA_CONTROLS_ATTRIBUTE)).toBe(component.panelId);
+
+    inputElement.dispatchEvent(new Event('focus'));
+    fixture.detectChanges();
+
+    textFieldElement = queryTextFieldElement();
+
+    expect(textFieldElement.getAttribute(ARIA_EXPANDED_ATTRIBUTE)).toBe(TRUE_STRING);
+
+    inputElement.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+
+    textFieldElement = queryTextFieldElement();
+
+    expect(textFieldElement.getAttribute(ARIA_EXPANDED_ATTRIBUTE)).toBe(FALSE_STRING);
+  });
+
+  it('updates aria-activedescendant and option selection while navigating with the keyboard', () => {
+    const inputElement = queryInputElement();
+
+    inputElement.dispatchEvent(new Event('focus'));
+    fixture.detectChanges();
+
+    inputElement.dispatchEvent(new KeyboardEvent(KEYDOWN_EVENT_TYPE, { key: KEY_ARROW_DOWN }));
+    fixture.detectChanges();
+
+    let textFieldElement = queryTextFieldElement();
+    let options = queryOptionElements();
+
+    expect(options.length).toBeGreaterThan(0);
+    expect(textFieldElement.getAttribute(ARIA_ACTIVE_DESCENDANT_ATTRIBUTE)).toBe(component.activeOptionId);
+    expect(options[FIRST_OPTION_INDEX].getAttribute(ARIA_SELECTED_ATTRIBUTE)).toBe(TRUE_STRING);
+    expect(options[FIRST_OPTION_INDEX].getAttribute(ARIA_DESCRIBEDBY_ATTRIBUTE)).toBe(FIRST_OPTION_DESCRIPTION_ID);
+
+    inputElement.dispatchEvent(new KeyboardEvent(KEYDOWN_EVENT_TYPE, { key: KEY_ARROW_UP }));
+    fixture.detectChanges();
+
+    textFieldElement = queryTextFieldElement();
+    options = queryOptionElements();
+
+    expect(component.activeOptionIndex).toBe(LAST_OPTION_INDEX);
+    expect(textFieldElement.getAttribute(ARIA_ACTIVE_DESCENDANT_ATTRIBUTE)).toBe(component.activeOptionId);
+    expect(options[FIRST_OPTION_INDEX].getAttribute(ARIA_SELECTED_ATTRIBUTE)).toBe(FALSE_STRING);
+    expect(options[LAST_OPTION_INDEX].getAttribute(ARIA_SELECTED_ATTRIBUTE)).toBe(TRUE_STRING);
+  });
+
+  it('closes the panel and clears aria-activedescendant when escape is pressed', () => {
+    const inputElement = queryInputElement();
+
+    inputElement.dispatchEvent(new Event('focus'));
+    fixture.detectChanges();
+
+    inputElement.dispatchEvent(new KeyboardEvent(KEYDOWN_EVENT_TYPE, { key: KEY_ARROW_DOWN }));
+    fixture.detectChanges();
+
+    inputElement.dispatchEvent(new KeyboardEvent(KEYDOWN_EVENT_TYPE, { key: KEY_ESCAPE }));
+    fixture.detectChanges();
+
+    const textFieldElement = queryTextFieldElement();
+
+    expect(component.isPanelOpen).toBeFalse();
+    expect(textFieldElement.getAttribute(ARIA_EXPANDED_ATTRIBUTE)).toBe(FALSE_STRING);
+    expect(textFieldElement.getAttribute(ARIA_ACTIVE_DESCENDANT_ATTRIBUTE)).toBeNull();
+    expect(fixture.nativeElement.querySelector(PANEL_SELECTOR)).toBeNull();
   });
 });

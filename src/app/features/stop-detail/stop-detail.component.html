@@ -1,4 +1,8 @@
-<section class="stop-detail">
+<section
+  class="stop-detail"
+  appLayoutContent
+  [appLayoutContentNavigationKey]="layoutNavigationKey"
+>
   <ng-container *ngIf="isLoading$ | async; else scheduleContent">
     <section class="stop-detail__card stop-detail__card--centered">
       <div class="stop-detail__status stop-detail__loading">
