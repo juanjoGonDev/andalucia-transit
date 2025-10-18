@@ -13,14 +13,33 @@ export type AccessibleButtonPopupToken = 'menu' | 'listbox' | 'tree' | 'grid' | 
 type AccessibleButtonPopupValue = boolean | AccessibleButtonPopupToken;
 type LegacyKeyboardEvent = KeyboardEvent & { keyIdentifier?: string };
 
-const ENTER_KEY_VALUES = ['Enter', 'Return'] as const;
-const ENTER_CODE = 'Enter' as const;
-const ENTER_KEY_CODE = 13 as const;
-const ENTER_KEY_IDENTIFIERS = ['Enter', 'U+000D'] as const;
-const SPACE_KEY_VALUES = [' ', 'Space', 'Spacebar'] as const;
-const SPACE_CODE = 'Space' as const;
-const SPACE_KEY_CODE = 32 as const;
-const SPACE_KEY_IDENTIFIERS = ['U+0020', 'Spacebar'] as const;
+interface KeyMatcher {
+  readonly keyValues?: ReadonlySet<string>;
+  readonly codeValues?: ReadonlySet<string>;
+  readonly keyCodes?: ReadonlySet<number>;
+  readonly keyIdentifiers?: ReadonlySet<string>;
+}
+
+const ENTER_KEY_VALUES: ReadonlySet<string> = new Set(['Enter', 'Return']);
+const ENTER_CODE_VALUES: ReadonlySet<string> = new Set(['Enter']);
+const ENTER_KEY_CODES: ReadonlySet<number> = new Set([13]);
+const ENTER_KEY_IDENTIFIERS: ReadonlySet<string> = new Set(['Enter', 'U+000D']);
+const SPACE_KEY_VALUES: ReadonlySet<string> = new Set([' ', 'Space', 'Spacebar']);
+const SPACE_CODE_VALUES: ReadonlySet<string> = new Set(['Space']);
+const SPACE_KEY_CODES: ReadonlySet<number> = new Set([32]);
+const SPACE_KEY_IDENTIFIERS: ReadonlySet<string> = new Set(['U+0020', 'Spacebar']);
+const ENTER_KEY_MATCHER: KeyMatcher = {
+  keyValues: ENTER_KEY_VALUES,
+  codeValues: ENTER_CODE_VALUES,
+  keyCodes: ENTER_KEY_CODES,
+  keyIdentifiers: ENTER_KEY_IDENTIFIERS
+};
+const SPACE_KEY_MATCHER: KeyMatcher = {
+  keyValues: SPACE_KEY_VALUES,
+  codeValues: SPACE_CODE_VALUES,
+  keyCodes: SPACE_KEY_CODES,
+  keyIdentifiers: SPACE_KEY_IDENTIFIERS
+};
 const ARIA_TRUE = 'true' as const;
 const ARIA_FALSE = 'false' as const;
 const CURSOR_POINTER = 'pointer' as const;
@@ -48,15 +67,7 @@ export class AccessibleButtonDirective {
 
   @HostBinding('attr.role')
   get role(): string | null {
-    if (this.appAccessibleButtonRole) {
-      return this.appAccessibleButtonRole;
-    }
-
-    if (this.isAnchorWithHref()) {
-      return null;
-    }
-
-    return ROLE_BUTTON;
+    return this.resolveRole();
   }
 
   @HostBinding('attr.tabindex')
@@ -123,6 +134,8 @@ export class AccessibleButtonDirective {
       return;
     }
 
+    const resolvedRole = this.resolveRole();
+
     if (this.isEnterKey(event)) {
       if (this.isAnchorWithHref()) {
         return;
@@ -138,7 +151,7 @@ export class AccessibleButtonDirective {
         return;
       }
 
-      if (this.role === ROLE_LINK) {
+      if (resolvedRole === ROLE_LINK) {
         this.cancelSpaceActivation();
         return;
       }
@@ -154,6 +167,8 @@ export class AccessibleButtonDirective {
       this.cancelSpaceActivation();
       return;
     }
+
+    const resolvedRole = this.resolveRole();
 
     if (this.isEnterKey(event)) {
       if (this.isAnchorWithHref()) {
@@ -175,7 +190,7 @@ export class AccessibleButtonDirective {
         return;
       }
 
-      if (this.role === ROLE_LINK) {
+      if (resolvedRole === ROLE_LINK) {
         return;
       }
 
@@ -229,39 +244,11 @@ export class AccessibleButtonDirective {
   }
 
   private isEnterKey(event: KeyboardEvent): boolean {
-    if (ENTER_KEY_VALUES.some((value) => value === event.key)) {
-      return true;
-    }
-
-    if (event.code === ENTER_CODE) {
-      return true;
-    }
-
-    if (event.keyCode === ENTER_KEY_CODE || event.which === ENTER_KEY_CODE) {
-      return true;
-    }
-
-    const legacyEvent = event as LegacyKeyboardEvent;
-
-    return ENTER_KEY_IDENTIFIERS.some((identifier) => legacyEvent.keyIdentifier === identifier);
+    return this.matchesKey(event, ENTER_KEY_MATCHER);
   }
 
   private isSpaceKey(event: KeyboardEvent): boolean {
-    if (SPACE_KEY_VALUES.some((identifier) => identifier === event.key)) {
-      return true;
-    }
-
-    if (event.code === SPACE_CODE) {
-      return true;
-    }
-
-    if (event.keyCode === SPACE_KEY_CODE || event.which === SPACE_KEY_CODE) {
-      return true;
-    }
-
-    const legacyEvent = event as LegacyKeyboardEvent;
-
-    return SPACE_KEY_IDENTIFIERS.some((identifier) => legacyEvent.keyIdentifier === identifier);
+    return this.matchesKey(event, SPACE_KEY_MATCHER);
   }
 
   private isAnchorWithHref(): boolean {
@@ -272,5 +259,57 @@ export class AccessibleButtonDirective {
 
   private cancelSpaceActivation(): void {
     this.spaceActivationPending = false;
+  }
+
+  private resolveRole(): string | null {
+    if (this.appAccessibleButtonRole) {
+      return this.appAccessibleButtonRole;
+    }
+
+    if (this.isAnchorWithHref()) {
+      return null;
+    }
+
+    return ROLE_BUTTON;
+  }
+
+  private matchesKey(event: KeyboardEvent, matcher: KeyMatcher): boolean {
+    if (matcher.keyValues && event.key && matcher.keyValues.has(event.key)) {
+      return true;
+    }
+
+    if (matcher.codeValues && event.code && matcher.codeValues.has(event.code)) {
+      return true;
+    }
+
+    if (matcher.keyCodes) {
+      const keyCode = this.resolveKeyCode(event);
+
+      if (keyCode !== null && matcher.keyCodes.has(keyCode)) {
+        return true;
+      }
+    }
+
+    if (matcher.keyIdentifiers) {
+      const legacyEvent = event as LegacyKeyboardEvent;
+
+      if (legacyEvent.keyIdentifier && matcher.keyIdentifiers.has(legacyEvent.keyIdentifier)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private resolveKeyCode(event: KeyboardEvent): number | null {
+    if (typeof event.keyCode === 'number') {
+      return event.keyCode;
+    }
+
+    if (typeof event.which === 'number') {
+      return event.which;
+    }
+
+    return null;
   }
 }

@@ -230,6 +230,7 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Screenshot (Skip to content control — desktop focus, global keyup handling verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] 2025-10-22 Recognized legacy space key identifiers and replaced role/tabindex magic values with shared constants so accessible buttons stay cross-browser without visual drift.
+  - [x] 2025-10-22 Centralized accessible button key descriptors to simplify legacy handling while preserving anchor semantics. Attach public screenshot URL(s); visual diff must be 0px. Evidence: https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
     - [x] Screenshot (Skip to content control — desktop focus, legacy keyIdentifier coverage reconfirmed): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
