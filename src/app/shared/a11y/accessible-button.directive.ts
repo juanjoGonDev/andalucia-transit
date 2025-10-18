@@ -102,23 +102,74 @@ export class AccessibleButtonDirective {
     return this.appAccessibleButtonDisabled ? CURSOR_NOT_ALLOWED : CURSOR_POINTER;
   }
 
+  private spaceActivationPending = false;
+
   @HostListener('keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
-    if (!this.shouldSimulateActivation(event)) {
+    if (this.appAccessibleButtonDisabled) {
+      this.spaceActivationPending = false;
       return;
     }
 
-    event.preventDefault();
-    this.invokeHostClick(event);
+    if (this.isEnterKey(event)) {
+      if (this.isAnchorWithHref()) {
+        return;
+      }
+
+      event.preventDefault();
+      this.invokeHostClick(event);
+      return;
+    }
+
+    if (this.isSpaceKey(event)) {
+      if (this.isAnchorWithHref()) {
+        return;
+      }
+
+      if (this.role === 'link') {
+        this.spaceActivationPending = false;
+        return;
+      }
+
+      event.preventDefault();
+      this.spaceActivationPending = true;
+    }
   }
 
   @HostListener('keyup', ['$event'])
   onKeyup(event: KeyboardEvent): void {
-    if (!this.shouldSimulateActivation(event)) {
+    if (this.appAccessibleButtonDisabled) {
+      this.spaceActivationPending = false;
       return;
     }
 
-    event.preventDefault();
+    if (this.isEnterKey(event)) {
+      if (this.isAnchorWithHref()) {
+        return;
+      }
+
+      event.preventDefault();
+      return;
+    }
+
+    if (this.isSpaceKey(event)) {
+      if (!this.spaceActivationPending) {
+        return;
+      }
+
+      this.spaceActivationPending = false;
+
+      if (this.isAnchorWithHref()) {
+        return;
+      }
+
+      if (this.role === 'link') {
+        return;
+      }
+
+      event.preventDefault();
+      this.invokeHostClick(event);
+    }
   }
 
   @HostListener('click', ['$event'])
@@ -132,30 +183,6 @@ export class AccessibleButtonDirective {
     event.stopPropagation();
   }
 
-  private shouldSimulateActivation(event: KeyboardEvent): boolean {
-    if (this.appAccessibleButtonDisabled) {
-      return false;
-    }
-
-    if (event.key === KEYBOARD_SPACE) {
-      if (this.role === 'link') {
-        return false;
-      }
-
-      return !this.isAnchorWithHref();
-    }
-
-    if (event.key === KEYBOARD_ENTER) {
-      if (this.isAnchorWithHref()) {
-        return false;
-      }
-
-      return true;
-    }
-
-    return false;
-  }
-
   private invokeHostClick(event: KeyboardEvent): void {
     const host = event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
 
@@ -164,6 +191,14 @@ export class AccessibleButtonDirective {
     }
 
     host.click();
+  }
+
+  private isEnterKey(event: KeyboardEvent): boolean {
+    return event.key === KEYBOARD_ENTER;
+  }
+
+  private isSpaceKey(event: KeyboardEvent): boolean {
+    return event.key === KEYBOARD_SPACE;
   }
 
   private isAnchorWithHref(): boolean {

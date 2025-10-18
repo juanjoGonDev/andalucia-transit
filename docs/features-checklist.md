@@ -211,6 +211,8 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Screenshot (Skip to content control — desktop focus, fragment link verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
   - [x] 2025-10-21 Allowed the accessible button directive to keep native link roles when no override is provided so the skip control preserves baseline anchor semantics.
     - [x] Screenshot (Skip to content control — desktop focus, native role preserved): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+  - [x] 2025-10-21 Matched the shared accessible button directive to native button timing so space activates on keyup while protecting anchor and link-role semantics.
+    - [x] Screenshot (Skip to content control — desktop focus, native key timing verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
 ### Feature Roadmap (2025-10-18)

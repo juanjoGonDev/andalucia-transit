@@ -228,15 +228,21 @@ describe('AccessibleButtonDirective', () => {
     expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
   });
 
-  it('should trigger activation on space keydown', () => {
+  it('should trigger activation on space keyup', () => {
     hostComponent.onActivated.calls.reset();
     const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
     const nativeElement = element.nativeElement as HTMLElement;
 
-    const event = new KeyboardEvent('keydown', { key: ' ', cancelable: true });
-    nativeElement.dispatchEvent(event);
+    const keydownEvent = new KeyboardEvent('keydown', { key: ' ', cancelable: true });
+    nativeElement.dispatchEvent(keydownEvent);
 
-    expect(event.defaultPrevented).toBeTrue();
+    expect(keydownEvent.defaultPrevented).toBeTrue();
+    expect(hostComponent.onActivated).not.toHaveBeenCalled();
+
+    const keyupEvent = new KeyboardEvent('keyup', { key: ' ', cancelable: true });
+    nativeElement.dispatchEvent(keyupEvent);
+
+    expect(keyupEvent.defaultPrevented).toBeTrue();
     expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
   });
 
@@ -253,6 +259,27 @@ describe('AccessibleButtonDirective', () => {
 
     expect(event.defaultPrevented).toBeTrue();
     expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not trigger activation on space when the host exposes a link role without an href', () => {
+    hostComponent.onActivated.calls.reset();
+    hostComponent.role = 'link';
+    fixture.detectChanges();
+
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    const spaceDownEvent = new KeyboardEvent('keydown', { key: ' ', cancelable: true });
+    nativeElement.dispatchEvent(spaceDownEvent);
+
+    expect(spaceDownEvent.defaultPrevented).toBeFalse();
+    expect(hostComponent.onActivated).not.toHaveBeenCalled();
+
+    const spaceUpEvent = new KeyboardEvent('keyup', { key: ' ', cancelable: true });
+    nativeElement.dispatchEvent(spaceUpEvent);
+
+    expect(spaceUpEvent.defaultPrevented).toBeFalse();
+    expect(hostComponent.onActivated).not.toHaveBeenCalled();
   });
 });
 
@@ -279,10 +306,15 @@ describe('AccessibleButtonDirective with anchor host', () => {
 
     expect(enterEvent.defaultPrevented).toBeFalse();
 
-    const spaceEvent = new KeyboardEvent('keydown', { key: ' ', cancelable: true });
-    nativeElement.dispatchEvent(spaceEvent);
+    const spaceDownEvent = new KeyboardEvent('keydown', { key: ' ', cancelable: true });
+    nativeElement.dispatchEvent(spaceDownEvent);
 
-    expect(spaceEvent.defaultPrevented).toBeFalse();
+    expect(spaceDownEvent.defaultPrevented).toBeFalse();
+
+    const spaceUpEvent = new KeyboardEvent('keyup', { key: ' ', cancelable: true });
+    nativeElement.dispatchEvent(spaceUpEvent);
+
+    expect(spaceUpEvent.defaultPrevented).toBeFalse();
   });
 
   it('should not override the native link role when not configured', () => {
