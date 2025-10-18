@@ -35,8 +35,16 @@ export class AccessibleButtonDirective {
   @Output() readonly appAccessibleButtonActivated = new EventEmitter<MouseEvent>();
 
   @HostBinding('attr.role')
-  get role(): string {
-    return this.appAccessibleButtonRole ?? 'button';
+  get role(): string | null {
+    if (this.appAccessibleButtonRole) {
+      return this.appAccessibleButtonRole;
+    }
+
+    if (this.isAnchorWithHref()) {
+      return null;
+    }
+
+    return 'button';
   }
 
   @HostBinding('attr.tabindex')

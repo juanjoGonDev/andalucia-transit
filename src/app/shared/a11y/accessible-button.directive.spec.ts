@@ -38,7 +38,6 @@ class HostComponent {
   template: `
     <a
       appAccessibleButton
-      appAccessibleButtonRole="link"
       [attr.href]="href"
       (appAccessibleButtonActivated)="onActivated($event)"
     >
@@ -284,6 +283,13 @@ describe('AccessibleButtonDirective with anchor host', () => {
     nativeElement.dispatchEvent(spaceEvent);
 
     expect(spaceEvent.defaultPrevented).toBeFalse();
+  });
+
+  it('should not override the native link role when not configured', () => {
+    const element = fixture.debugElement.query(By.css('a'));
+    const nativeElement = element.nativeElement as HTMLAnchorElement;
+
+    expect(nativeElement.hasAttribute('role')).toBeFalse();
   });
 
   it('should emit activation when the anchor is clicked', () => {

@@ -209,6 +209,8 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] 2025-10-20 Preserved native anchor semantics for the skip control by refining the accessible button directive to skip keyboard simulation when hosts expose real href targets.
     - [x] Screenshot (Skip to content control — desktop focus, fragment link verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+  - [x] 2025-10-21 Allowed the accessible button directive to keep native link roles when no override is provided so the skip control preserves baseline anchor semantics.
+    - [x] Screenshot (Skip to content control — desktop focus, native role preserved): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
 ### Feature Roadmap (2025-10-18)
