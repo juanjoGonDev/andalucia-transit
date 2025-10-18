@@ -162,6 +162,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-20 Mapped the shell top actions surface and controls to navigation tokens, removing component-scoped CSS variables while preserving glassmorphism metrics.
     - [x] Screenshot (Shell top actions — desktop parity): https://browser.buildwithfern.com/invocations/fudcemdn/artifacts/artifacts/shell-top-actions.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Recalibrated shell top actions spacing, backdrop blur, and dropdown padding to derive exclusively from shared spacing tokens while keeping navigation shadows token-driven.
+    - [x] Screenshot (Shell top actions — desktop parity, spacing tokens): https://browser.buildwithfern.com/invocations/jfqofway/artifacts/artifacts/shell-top-actions-token.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-19 Replaced dialog spacing and confirm dialog metrics with global tokens so overlay padding, typography, and focus affordances remain baseline-identical.
   - [x] Screenshot (Favorites clear confirmation — desktop): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
