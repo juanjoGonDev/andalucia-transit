@@ -184,6 +184,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-20 Resolved dialog focus capture without relying on the injected document token by falling back to the host document so SSR renders remain stable.
   - [x] Screenshot (Favorites clear confirmation — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Linked dialog layout titles and descriptions to the overlay container aria attributes via a shared adapter so assistive tech reads projected content without visual drift.
+    - [x] Screenshot (Favorites clear confirmation — desktop, aria registration): https://browser.buildwithfern.com/invocations/skijdqfg/artifacts/artifacts/dialog-aria.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-19 Migrated favorites search filter to the shared AppTextFieldComponent to align control metrics and focus behavior without altering layout.
   - [x] Screenshot (Favorites search — desktop): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
