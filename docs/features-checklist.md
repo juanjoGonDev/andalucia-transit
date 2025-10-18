@@ -214,6 +214,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-21 Matched the shared accessible button directive to native button timing so space activates on keyup while protecting anchor and link-role semantics.
     - [x] Screenshot (Skip to content control — desktop focus, native key timing verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-21 Extended accessible button space key detection to handle legacy key values while preserving anchor semantics.
+    - [x] Screenshot (Skip to content control — desktop focus, legacy key coverage verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
 ### Feature Roadmap (2025-10-18)
 - [ ] News feed view (C1) — attach public screenshot URL(s); visual diff must be 0px.

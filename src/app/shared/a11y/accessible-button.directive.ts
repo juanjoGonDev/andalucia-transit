@@ -13,7 +13,7 @@ export type AccessibleButtonPopupToken = 'menu' | 'listbox' | 'tree' | 'grid' | 
 type AccessibleButtonPopupValue = boolean | AccessibleButtonPopupToken;
 
 const KEYBOARD_ENTER = 'Enter' as const;
-const KEYBOARD_SPACE = ' ' as const;
+const SPACE_KEY_VALUES = [' ', 'Space', 'Spacebar'] as const;
 const ARIA_TRUE = 'true' as const;
 const ARIA_FALSE = 'false' as const;
 const CURSOR_POINTER = 'pointer' as const;
@@ -198,7 +198,7 @@ export class AccessibleButtonDirective {
   }
 
   private isSpaceKey(event: KeyboardEvent): boolean {
-    return event.key === KEYBOARD_SPACE;
+    return SPACE_KEY_VALUES.some((spaceKey) => spaceKey === event.key);
   }
 
   private isAnchorWithHref(): boolean {

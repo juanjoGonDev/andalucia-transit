@@ -246,6 +246,28 @@ describe('AccessibleButtonDirective', () => {
     expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
   });
 
+  it('should treat alternate space key values as activation triggers', () => {
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+    const alternateKeys: readonly string[] = ['Space', 'Spacebar'];
+
+    for (const key of alternateKeys) {
+      hostComponent.onActivated.calls.reset();
+
+      const keydownEvent = new KeyboardEvent('keydown', { key, cancelable: true });
+      nativeElement.dispatchEvent(keydownEvent);
+
+      expect(keydownEvent.defaultPrevented).toBeTrue();
+      expect(hostComponent.onActivated).not.toHaveBeenCalled();
+
+      const keyupEvent = new KeyboardEvent('keyup', { key, cancelable: true });
+      nativeElement.dispatchEvent(keyupEvent);
+
+      expect(keyupEvent.defaultPrevented).toBeTrue();
+      expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
+    }
+  });
+
   it('should prevent default on enter when the host exposes a link role without an href', () => {
     hostComponent.onActivated.calls.reset();
     hostComponent.role = 'link';
@@ -306,15 +328,19 @@ describe('AccessibleButtonDirective with anchor host', () => {
 
     expect(enterEvent.defaultPrevented).toBeFalse();
 
-    const spaceDownEvent = new KeyboardEvent('keydown', { key: ' ', cancelable: true });
-    nativeElement.dispatchEvent(spaceDownEvent);
+    const spaceKeys: readonly string[] = [' ', 'Space', 'Spacebar'];
 
-    expect(spaceDownEvent.defaultPrevented).toBeFalse();
+    for (const key of spaceKeys) {
+      const spaceDownEvent = new KeyboardEvent('keydown', { key, cancelable: true });
+      nativeElement.dispatchEvent(spaceDownEvent);
 
-    const spaceUpEvent = new KeyboardEvent('keyup', { key: ' ', cancelable: true });
-    nativeElement.dispatchEvent(spaceUpEvent);
+      expect(spaceDownEvent.defaultPrevented).toBeFalse();
 
-    expect(spaceUpEvent.defaultPrevented).toBeFalse();
+      const spaceUpEvent = new KeyboardEvent('keyup', { key, cancelable: true });
+      nativeElement.dispatchEvent(spaceUpEvent);
+
+      expect(spaceUpEvent.defaultPrevented).toBeFalse();
+    }
   });
 
   it('should not override the native link role when not configured', () => {
