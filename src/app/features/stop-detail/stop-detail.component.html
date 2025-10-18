@@ -1,8 +1,10 @@
-<section class="stop-detail">
+<section class="stop-detail" appLayoutContent [appLayoutContentNavigationKey]="layoutNavigationKey">
   <ng-container *ngIf="isLoading$ | async; else scheduleContent">
     <section class="stop-detail__card stop-detail__card--centered">
       <div class="stop-detail__status stop-detail__loading">
-        <span class="material-symbols-outlined stop-detail__status-icon stop-detail__loading-icon">hourglass_top</span>
+        <span class="material-symbols-outlined stop-detail__status-icon stop-detail__loading-icon"
+          >hourglass_top</span
+        >
         <p class="stop-detail__loading-text">{{ translationKeys.loading | translate }}</p>
       </div>
     </section>
@@ -12,9 +14,13 @@
     <ng-container *ngIf="loadError$ | async; else scheduleLoaded">
       <section class="stop-detail__card stop-detail__card--centered">
         <div class="stop-detail__status stop-detail__error">
-          <span class="material-symbols-outlined stop-detail__status-icon stop-detail__error-icon">warning</span>
+          <span class="material-symbols-outlined stop-detail__status-icon stop-detail__error-icon"
+            >warning</span
+          >
           <p class="stop-detail__error-text">{{ translationKeys.error.title | translate }}</p>
-          <p class="stop-detail__error-description">{{ translationKeys.error.description | translate }}</p>
+          <p class="stop-detail__error-description">
+            {{ translationKeys.error.description | translate }}
+          </p>
         </div>
       </section>
     </ng-container>
@@ -31,41 +37,60 @@
           </div>
           <div class="stop-detail__meta">
             <div class="stop-detail__meta-item">
-              <span class="stop-detail__meta-label">{{ translationKeys.header.stopCodeLabel | translate }}</span>
+              <span class="stop-detail__meta-label">{{
+                translationKeys.header.stopCodeLabel | translate
+              }}</span>
               <span class="stop-detail__meta-value">{{ viewModel.stopCode }}</span>
             </div>
             <div class="stop-detail__meta-item">
-              <span class="stop-detail__meta-label">{{ translationKeys.header.scheduleDateLabel | translate }}</span>
-              <span class="stop-detail__meta-value">{{ viewModel.scheduleDate | date: 'fullDate' }}</span>
+              <span class="stop-detail__meta-label">{{
+                translationKeys.header.scheduleDateLabel | translate
+              }}</span>
+              <span class="stop-detail__meta-value">{{
+                viewModel.scheduleDate | date: 'fullDate'
+              }}</span>
             </div>
             <div class="stop-detail__meta-item">
-              <span class="stop-detail__meta-label">{{ translationKeys.header.lastUpdatedLabel | translate }}</span>
-              <span class="stop-detail__meta-value">{{ viewModel.generatedAt | date: 'shortTime' }}</span>
+              <span class="stop-detail__meta-label">{{
+                translationKeys.header.lastUpdatedLabel | translate
+              }}</span>
+              <span class="stop-detail__meta-value">{{
+                viewModel.generatedAt | date: 'shortTime'
+              }}</span>
             </div>
           </div>
           <p class="stop-detail__data-origin" *ngIf="viewModel.dataSource as source">
             <ng-container [ngSwitch]="source.type">
               <span *ngSwitchCase="'api'">
-                {{ translationKeys.source.live | translate:{ provider: source.providerName } }}
+                {{ translationKeys.source.live | translate: { provider: source.providerName } }}
               </span>
               <span *ngSwitchCase="'snapshot'">
-                {{ translationKeys.source.snapshot | translate:{
-                  provider: source.providerName,
-                  date: source.snapshotTime | date: 'fullDate',
-                  time: source.snapshotTime | date: 'shortTime'
-                } }}
+                {{
+                  translationKeys.source.snapshot
+                    | translate
+                      : {
+                          provider: source.providerName,
+                          date: source.snapshotTime | date: 'fullDate',
+                          time: source.snapshotTime | date: 'shortTime',
+                        }
+                }}
               </span>
             </ng-container>
           </p>
         </div>
         <div class="stop-detail__controls">
           <label class="stop-detail__control">
-            <span class="stop-detail__control-label">{{ translationKeys.filters.destinationLabel | translate }}</span>
+            <span class="stop-detail__control-label">{{
+              translationKeys.filters.destinationLabel | translate
+            }}</span>
             <select class="stop-detail__select" [formControl]="destinationControl">
               <option [value]="allDestinationsOption">
                 {{ translationKeys.filters.allDestinations | translate }}
               </option>
-              <option *ngFor="let destination of viewModel.availableDestinations" [value]="destination">
+              <option
+                *ngFor="let destination of viewModel.availableDestinations"
+                [value]="destination"
+              >
                 {{ destination }}
               </option>
             </select>
@@ -77,9 +102,14 @@
         <section class="stop-detail__panel">
           <header class="stop-detail__panel-header">
             <div>
-              <h2 class="stop-detail__panel-title">{{ translationKeys.schedule.upcomingTitle | translate }}</h2>
+              <h2 class="stop-detail__panel-title">
+                {{ translationKeys.schedule.upcomingTitle | translate }}
+              </h2>
               <p class="stop-detail__panel-subtitle">
-                {{ translationKeys.schedule.upcomingSubtitle | translate:{ count: viewModel.upcoming.length } }}
+                {{
+                  translationKeys.schedule.upcomingSubtitle
+                    | translate: { count: viewModel.upcoming.length }
+                }}
               </p>
             </div>
           </header>
@@ -93,16 +123,13 @@
                 <div class="stop-detail__list-main">
                   <div class="stop-detail__time-block">
                     <span class="stop-detail__time">{{ item.arrivalTime | date: 'HH:mm' }}</span>
-                    <span
-                      class="stop-detail__relative"
-                      *ngIf="item.minutesUntilArrival > 0"
-                    >
-                      {{ translationKeys.status.arrivesIn | translate:{ minutes: item.minutesUntilArrival } }}
+                    <span class="stop-detail__relative" *ngIf="item.minutesUntilArrival > 0">
+                      {{
+                        translationKeys.status.arrivesIn
+                          | translate: { minutes: item.minutesUntilArrival }
+                      }}
                     </span>
-                    <span
-                      class="stop-detail__relative"
-                      *ngIf="item.minutesUntilArrival === 0"
-                    >
+                    <span class="stop-detail__relative" *ngIf="item.minutesUntilArrival === 0">
                       {{ translationKeys.status.arrivingNow | translate }}
                     </span>
                   </div>
@@ -139,16 +166,23 @@
             </ul>
           </ng-container>
           <ng-template #emptyUpcoming>
-            <p class="stop-detail__empty">{{ translationKeys.schedule.emptyUpcoming | translate }}</p>
+            <p class="stop-detail__empty">
+              {{ translationKeys.schedule.emptyUpcoming | translate }}
+            </p>
           </ng-template>
         </section>
 
         <section class="stop-detail__panel">
           <header class="stop-detail__panel-header">
             <div>
-              <h2 class="stop-detail__panel-title">{{ translationKeys.schedule.pastTitle | translate }}</h2>
+              <h2 class="stop-detail__panel-title">
+                {{ translationKeys.schedule.pastTitle | translate }}
+              </h2>
               <p class="stop-detail__panel-subtitle">
-                {{ translationKeys.schedule.pastSubtitle | translate:{ count: viewModel.past.length } }}
+                {{
+                  translationKeys.schedule.pastSubtitle
+                    | translate: { count: viewModel.past.length }
+                }}
               </p>
             </div>
           </header>
@@ -162,7 +196,10 @@
                   <div class="stop-detail__time-block">
                     <span class="stop-detail__time">{{ item.arrivalTime | date: 'HH:mm' }}</span>
                     <span class="stop-detail__relative">
-                      {{ translationKeys.status.departedAgo | translate:{ minutes: item.minutesSinceDeparture } }}
+                      {{
+                        translationKeys.status.departedAgo
+                          | translate: { minutes: item.minutesSinceDeparture }
+                      }}
                     </span>
                   </div>
                   <div class="stop-detail__info">

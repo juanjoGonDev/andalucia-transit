@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DateTime } from 'luxon';
 import {
@@ -24,25 +23,21 @@ import {
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import {
-  RouteSearchHistoryEntry,
-  RouteSearchHistoryService
-} from '../../../domain/route-search/route-search-history.service';
-import {
-  RouteSearchPreviewService,
-  RouteSearchPreview,
-  RouteSearchPreviewDeparture
-} from '../../../domain/route-search/route-search-preview.service';
-import { RouteSearchExecutionService } from '../../../domain/route-search/route-search-execution.service';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import { createRouteSearchSelection } from '../../../domain/route-search/route-search-selection.util';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData
 } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
+import { OverlayDialogService } from '../../../shared/ui/dialog/overlay-dialog.service';
 import { APP_CONFIG_TOKEN } from '../../../core/tokens/app-config.token';
 import { AppConfig } from '../../../core/config';
-import { RouteSearchPreferencesService } from '../../../domain/route-search/route-search-preferences.service';
+import { RecentSearchesFacade } from '../../../domain/route-search/recent-searches.facade';
+import type {
+  RouteSearchPreview,
+  RouteSearchPreviewDeparture
+} from '../../../domain/route-search/route-search-preview.service';
+import type { RouteSearchHistoryEntry } from '../../../domain/route-search/route-search-history.service';
 
 import {
   PreviewEntryKind,
@@ -62,14 +57,11 @@ import { RecentSearchCardComponent } from './ui/recent-search-card/recent-search
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeRecentSearchesComponent {
-  private readonly history = inject(RouteSearchHistoryService);
-  private readonly preview = inject(RouteSearchPreviewService);
-  private readonly execution = inject(RouteSearchExecutionService);
+  private readonly facade = inject(RecentSearchesFacade);
   private readonly router = inject(Router);
-  private readonly dialog = inject(MatDialog);
+  private readonly dialog = inject(OverlayDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
-  private readonly preferences = inject(RouteSearchPreferencesService);
   private readonly timezone = this.config.data.timezone;
   private readonly translations = this.config.translationKeys.home.sections.recentStops;
   private readonly dialogTranslations = this.config.translationKeys.home.dialogs.recentStops;
@@ -91,7 +83,7 @@ export class HomeRecentSearchesComponent {
   @Output() readonly itemsStateChange = new EventEmitter<boolean>();
 
   constructor() {
-    this.history.entries$
+    this.facade.entries$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((entries) => this.syncEntries(entries));
 
@@ -103,7 +95,7 @@ export class HomeRecentSearchesComponent {
   }
 
   protected async open(item: RecentSearchItem): Promise<void> {
-    const commands = this.execution.prepare(item.effectiveSelection);
+    const commands = this.facade.prepareNavigation(item.effectiveSelection);
     await this.router.navigate(commands);
   }
 
@@ -129,7 +121,7 @@ export class HomeRecentSearchesComponent {
       return;
     }
 
-    this.history.remove(item.id);
+    this.facade.remove(item.id);
   }
 
   async clearAll(): Promise<void> {
@@ -150,7 +142,7 @@ export class HomeRecentSearchesComponent {
       return;
     }
 
-    this.history.clear();
+    this.facade.clear();
   }
 
   private syncEntries(entries: readonly RouteSearchHistoryEntry[]): void {
@@ -208,7 +200,7 @@ export class HomeRecentSearchesComponent {
       effectiveSelection,
       effectiveQueryDate: resolved.date,
       showTodayNotice: resolved.adjusted,
-      preview: this.preferences.previewEnabled()
+      preview: this.facade.previewEnabled()
         ? { status: 'loading' }
         : { status: 'disabled' }
     } satisfies RecentSearchItem;
@@ -228,14 +220,14 @@ export class HomeRecentSearchesComponent {
   private loadPreview(item: RecentSearchItem): void {
     this.previewSubscriptions.get(item.id)?.unsubscribe();
 
-    const subscription = this.preferences.previewEnabled$
+    const subscription = this.facade.previewEnabled$
       .pipe(
         switchMap((enabled) => {
           if (!enabled) {
             return of<RecentSearchPreviewState>({ status: 'disabled' });
           }
 
-          return this.preview.loadPreview(item.effectiveSelection).pipe(
+          return this.facade.loadPreview(item.effectiveSelection).pipe(
             map<RouteSearchPreview, RecentSearchPreviewState>((value) => this.mapPreview(value)),
             startWith<RecentSearchPreviewState>({ status: 'loading' }),
             catchError(() => of<RecentSearchPreviewState>({ status: 'error' }))

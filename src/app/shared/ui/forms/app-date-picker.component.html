@@ -1,0 +1,17 @@
+<app-text-field
+  [label]="label"
+  [placeholder]="placeholder"
+  [autocomplete]="autocomplete"
+  [readonly]="readonly"
+  [describedBy]="describedBy"
+  [name]="name"
+  [fieldId]="fieldId"
+  [type]="inputType"
+  (valueChange)="handleTextFieldValueChange($event)"
+  (focusChange)="handleFocusChange($event)"
+  (keydownEvent)="handleKeydown($event)"
+>
+  <ng-content select="[appTextFieldPrefix]"></ng-content>
+  <ng-content select="[appTextFieldSuffix]"></ng-content>
+  <ng-content select="[appTextFieldHint]"></ng-content>
+</app-text-field>

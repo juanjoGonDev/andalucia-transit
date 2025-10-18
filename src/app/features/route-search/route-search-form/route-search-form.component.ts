@@ -25,7 +25,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
-import { MatButtonModule } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
@@ -47,24 +46,23 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { APP_CONFIG } from '../../../core/config';
 import {
+  StopDirectoryFacade,
   StopDirectoryOption,
-  StopDirectoryService,
   StopDirectoryStopSignature,
   StopSearchRequest
-} from '../../../data/stops/stop-directory.service';
+} from '../../../domain/stops/stop-directory.facade';
 import {
-  StopConnectionsService,
+  StopConnectionsFacade,
   StopConnection,
   STOP_CONNECTION_DIRECTION,
-  buildStopConnectionKey,
-  mergeStopConnectionMaps
-} from '../../../data/route-search/stop-connections.service';
+  buildStopConnectionKey
+} from '../../../domain/route-search/stop-connections.facade';
 import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import {
   collectRouteLineMatches,
   createRouteSearchSelection
 } from '../../../domain/route-search/route-search-selection.util';
-import { StopFavoritesService, StopFavorite } from '../../../domain/stops/stop-favorites.service';
+import { FavoritesFacade, StopFavorite } from '../../../domain/stops/favorites.facade';
 import { MaterialSymbolName } from '../../../shared/ui/types/material-symbol-name';
 import { GeolocationService } from '../../../core/services/geolocation.service';
 import {
@@ -78,6 +76,7 @@ import {
   NearbyStopOptionsService
 } from '../../../core/services/nearby-stop-options.service';
 import { buildDistanceDisplay } from '../../../domain/utils/distance-display.util';
+import { AccessibleButtonDirective } from '../../../shared/a11y/accessible-button.directive';
 
 interface StopOptionDistanceLabel {
   readonly translationKey: string;
@@ -138,7 +137,7 @@ const EMPTY_ORIGIN_OPTIONS: CategorizedOriginOptions = Object.freeze({
     MatOptionModule,
     MatNativeDateModule,
     MatDatepickerModule,
-    MatButtonModule
+    AccessibleButtonDirective
   ],
   templateUrl: './route-search-form.component.html',
   styleUrl: './route-search-form.component.scss',
@@ -154,10 +153,10 @@ export class RouteSearchFormComponent implements OnChanges {
   private static readonly SORT_LOCALE = 'es-ES' as const;
 
   private readonly formBuilder = inject(FormBuilder);
-  private readonly stopDirectory = inject(StopDirectoryService);
+  private readonly stopDirectory = inject(StopDirectoryFacade);
   private readonly nearbyStopOptions = inject(NearbyStopOptionsService);
-  private readonly stopConnections = inject(StopConnectionsService);
-  private readonly favoritesService = inject(StopFavoritesService);
+  private readonly stopConnections = inject(StopConnectionsFacade);
+  private readonly favorites = inject(FavoritesFacade);
   private readonly destroyRef = inject(DestroyRef);
   private readonly geolocation = inject(GeolocationService);
   private readonly nearbyStops = inject(NearbyStopsService);
@@ -269,12 +268,12 @@ export class RouteSearchFormComponent implements OnChanges {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  private readonly favoriteOptions$ = this.favoritesService.favorites$.pipe(
+  private readonly favoriteOptions$ = this.favorites.favorites$.pipe(
     map((favorites) => favorites.map((favorite) => this.fromFavorite(favorite))),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  private readonly favoriteIds$ = this.favoritesService.favorites$.pipe(
+  private readonly favoriteIds$ = this.favorites.favorites$.pipe(
     map((favorites) => new Set(favorites.map((favorite) => favorite.id))),
     shareReplay({ bufferSize: 1, refCount: true })
   );
@@ -381,7 +380,7 @@ export class RouteSearchFormComponent implements OnChanges {
     event.preventDefault();
     event.stopPropagation();
 
-    this.favoritesService.toggle(option);
+    this.favorites.toggle(option);
   }
 
   constructor() {
@@ -400,6 +399,14 @@ export class RouteSearchFormComponent implements OnChanges {
 
   focusDatePicker(datepicker: MatDatepicker<Date>): void {
     datepicker.open();
+  }
+
+  protected onSubmitTrigger(): void {
+    if (this.searchForm.invalid) {
+      return;
+    }
+
+    void this.submit();
   }
 
   async submit(): Promise<void> {
@@ -1052,7 +1059,7 @@ export class RouteSearchFormComponent implements OnChanges {
     return forkJoin([
       this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Forward),
       this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Backward)
-    ]).pipe(map((connections) => mergeStopConnectionMaps(connections)));
+    ]).pipe(map((connections) => this.stopConnections.mergeConnections(connections)));
   }
 }
 

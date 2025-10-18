@@ -2,12 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
+import { OverlayDialogConfig, OverlayDialogRef, OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
 
 import { FavoritesComponent } from './favorites.component';
-import { StopFavorite, StopFavoritesService } from '../../domain/stops/stop-favorites.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { APP_CONFIG } from '../../core/config';
+import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {
@@ -15,29 +15,33 @@ class FakeTranslateLoader implements TranslateLoader {
   }
 }
 
-class StopFavoritesServiceStub {
+class FavoritesFacadeStub {
   private readonly subject = new BehaviorSubject<readonly StopFavorite[]>([]);
   readonly favorites$ = this.subject.asObservable();
   readonly remove = jasmine.createSpy('remove');
   readonly clear = jasmine.createSpy('clear');
+  readonly add = jasmine.createSpy('add');
+  readonly toggle = jasmine.createSpy('toggle');
+  readonly isFavorite = jasmine.createSpy('isFavorite');
 
   emit(favorites: readonly StopFavorite[]): void {
     this.subject.next(favorites);
   }
 }
 
-class MatDialogStub {
+class OverlayDialogServiceStub {
   private response$: Observable<boolean | undefined> = of(true);
-  private lastConfig: MatDialogConfig<ConfirmDialogData> | undefined;
+  private lastConfig: OverlayDialogConfig<ConfirmDialogData> | undefined;
 
   readonly open = jasmine
     .createSpy('open')
-    .and.callFake((_: typeof ConfirmDialogComponent, config?: MatDialogConfig<ConfirmDialogData>) => {
+    .and.callFake((_: typeof ConfirmDialogComponent, config?: OverlayDialogConfig<ConfirmDialogData>) => {
       this.lastConfig = config;
-      const ref: Partial<MatDialogRef<ConfirmDialogComponent, boolean>> = {
-        afterClosed: () => this.response$
+      const ref: OverlayDialogRef<boolean> = {
+        afterClosed: () => this.response$,
+        close: () => undefined
       };
-      return ref as MatDialogRef<ConfirmDialogComponent, boolean>;
+      return ref;
     });
 
   setResponse(value: boolean): void {
@@ -45,8 +49,7 @@ class MatDialogStub {
   }
 
   lastData(): ConfirmDialogData | undefined {
-    const data = this.lastConfig?.data ?? undefined;
-    return data === null ? undefined : data;
+    return this.lastConfig?.data;
   }
 }
 
@@ -114,13 +117,13 @@ const FAVORITES: readonly StopFavorite[] = [
 describe('FavoritesComponent', () => {
   let fixture: ComponentFixture<FavoritesComponent>;
   let component: FavoritesComponent;
-  let favoritesService: StopFavoritesServiceStub;
-  let dialog: MatDialogStub;
+  let favoritesFacade: FavoritesFacadeStub;
+  let dialog: OverlayDialogServiceStub;
   let router: RouterStub;
 
   beforeEach(async () => {
-    favoritesService = new StopFavoritesServiceStub();
-    dialog = new MatDialogStub();
+    favoritesFacade = new FavoritesFacadeStub();
+    dialog = new OverlayDialogServiceStub();
     router = new RouterStub();
 
     await TestBed.configureTestingModule({
@@ -129,8 +132,8 @@ describe('FavoritesComponent', () => {
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: FakeTranslateLoader } })
       ],
       providers: [
-        { provide: StopFavoritesService, useValue: favoritesService },
-        { provide: MatDialog, useValue: dialog },
+        { provide: FavoritesFacade, useValue: favoritesFacade },
+        { provide: OverlayDialogService, useValue: dialog },
         { provide: Router, useValue: router }
       ]
     }).compileComponents();
@@ -140,7 +143,7 @@ describe('FavoritesComponent', () => {
   });
 
   it('renders favorites grouped by municipality', () => {
-    favoritesService.emit(FAVORITES);
+    favoritesFacade.emit(FAVORITES);
     fixture.detectChanges();
 
     const titleElements = fixture.nativeElement.querySelectorAll('.favorites__group-title') as NodeListOf<HTMLElement>;
@@ -160,7 +163,7 @@ describe('FavoritesComponent', () => {
   });
 
   it('filters favorites by search term', () => {
-    favoritesService.emit(FAVORITES);
+    favoritesFacade.emit(FAVORITES);
     fixture.detectChanges();
 
     const access = accessProtected(component);
@@ -191,7 +194,7 @@ describe('FavoritesComponent', () => {
     const access = accessProtected(component);
     await access.remove.call(component, toListItem(favorite));
 
-    expect(favoritesService.remove).toHaveBeenCalledWith('sevilla-001');
+    expect(favoritesFacade.remove).toHaveBeenCalledWith('sevilla-001');
     expect(dialog.lastData()).toEqual(
       jasmine.objectContaining({
         details: jasmine.arrayContaining([
@@ -209,18 +212,18 @@ describe('FavoritesComponent', () => {
     const access = accessProtected(component);
     await access.remove.call(component, toListItem(favorite));
 
-    expect(favoritesService.remove).not.toHaveBeenCalled();
+    expect(favoritesFacade.remove).not.toHaveBeenCalled();
   });
 
   it('clears all favorites after confirmation', async () => {
-    favoritesService.emit(FAVORITES);
+    favoritesFacade.emit(FAVORITES);
     fixture.detectChanges();
     dialog.setResponse(true);
 
     const access = accessProtected(component);
     await access.clearAll.call(component);
 
-    expect(favoritesService.clear).toHaveBeenCalled();
+    expect(favoritesFacade.clear).toHaveBeenCalled();
     expect(dialog.lastData()).toEqual(
       jasmine.objectContaining({
         details: jasmine.arrayContaining([
@@ -236,6 +239,6 @@ describe('FavoritesComponent', () => {
     const access = accessProtected(component);
     await access.clearAll.call(component);
 
-    expect(favoritesService.clear).not.toHaveBeenCalled();
+    expect(favoritesFacade.clear).not.toHaveBeenCalled();
   });
 });

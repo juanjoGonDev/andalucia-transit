@@ -1,0 +1,40 @@
+<app-text-field
+  [label]="label"
+  [placeholder]="placeholder"
+  [autocomplete]="autocomplete"
+  [readonly]="readonly"
+  [describedBy]="describedBy"
+  [name]="name"
+  [fieldId]="fieldId"
+  [attr.role]="comboboxRole"
+  [attr.aria-autocomplete]="ariaAutocomplete"
+  [attr.aria-controls]="hasOptions ? panelId : null"
+  [attr.aria-expanded]="ariaExpanded"
+  [attr.aria-activedescendant]="activeOptionId"
+  (valueChange)="handleValueChange($event)"
+  (focusChange)="handleFocusChange($event)"
+  (keydownEvent)="handleKeydown($event)"
+>
+  <ng-content select="[appTextFieldPrefix]"></ng-content>
+  <ng-content select="[appTextFieldSuffix]"></ng-content>
+  <ng-content select="[appTextFieldHint]"></ng-content>
+</app-text-field>
+<div
+  *ngIf="isPanelOpen"
+  class="app-autocomplete__panel"
+  [id]="panelId"
+  [attr.role]="panelRole"
+>
+  <div
+    *ngFor="let option of options; let index = index"
+    class="app-autocomplete__option"
+    [class.app-autocomplete__option--active]="index === activeOptionIndex"
+    [id]="getOptionId(index)"
+    [attr.role]="optionRole"
+    [attr.aria-selected]="index === activeOptionIndex"
+    [attr.aria-describedby]="getOptionDescribedBy(option)"
+    (mousedown)="handleOptionClick(option, index)"
+  >
+    {{ resolveOptionLabel(option) }}
+  </div>
+</div>

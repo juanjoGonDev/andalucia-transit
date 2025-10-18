@@ -85,7 +85,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Static analysis: run `npm run lint`, `npm run format:check`, and type-checking in CI; fail builds on lint, test, or coverage regressions.
 - Track Lighthouse scores for performance, accessibility, best practices, and SEO; gate releases on meeting agreed thresholds.
 - Break complex product goals into smaller verifiable tasks and validate each step before progressing to the next.
-- Local development workflow: before completing any task, run and pass `npm run lint`, `npm run test`, `npm run build`, and `npm run snapshot` locally to ensure all checks succeed. Confirm `npm start` launches without compilation errors. Use `npm run verify:all` to execute the full lint, test, build, and snapshot sequence together during development.
+- Local development workflow: before completing any task, run and pass only the necessary checks according to the type of change. For visual or style changes, run npm run lint, npm run test, and npm run build. For logic, data, or API changes, also run npm run snapshot. For deployment or workflow changes, run npm run test:deploy. Confirm npm start launches without compilation errors. Use npm run verify:all only when a full verification is required.
 - Reference `docs/development-environment.md` for targeted command guidance when determining which checks must run for a change.
 
 ## Performance & UX Guardrails

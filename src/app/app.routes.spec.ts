@@ -15,6 +15,8 @@ describe('App Routes', () => {
   it('includes all feature routes', () => {
     const routePaths = collectPaths();
     expect(routePaths).toContain(APP_CONFIG.routes.home);
+    expect(routePaths).toContain(APP_CONFIG.routes.homeRecent);
+    expect(routePaths).toContain(APP_CONFIG.routes.homeFavorites);
     expect(routePaths).toContain(APP_CONFIG.routes.stopDetailPattern);
     expect(routePaths).toContain(APP_CONFIG.routes.routeSearch);
     expect(routePaths).toContain(APP_CONFIG.routes.settings);
