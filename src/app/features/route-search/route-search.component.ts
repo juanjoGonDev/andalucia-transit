@@ -34,8 +34,9 @@ import { RouteSearchExecutionService } from '../../domain/route-search/route-sea
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
 import { buildNavigationCommands } from '../../shared/navigation/navigation.util';
-import { StopDirectoryService, StopDirectoryOption } from '../../data/stops/stop-directory.service';
+import { StopDirectoryFacade, StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
 
 @Component({
   selector: 'app-route-search',
@@ -45,7 +46,8 @@ import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.d
     TranslateModule,
     SectionComponent,
     RouteSearchFormComponent,
-    AccessibleButtonDirective
+    AccessibleButtonDirective,
+    AppLayoutContentDirective
   ],
   templateUrl: './route-search.component.html',
   styleUrls: [
@@ -69,7 +71,7 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly resultsService = inject(RouteSearchResultsService);
   private readonly selectionResolver = inject(RouteSearchSelectionResolverService);
   private readonly execution = inject(RouteSearchExecutionService);
-  private readonly stopDirectory = inject(StopDirectoryService);
+  private readonly stopDirectory = inject(StopDirectoryFacade);
   private readonly timezone = APP_CONFIG.data.timezone;
   private readonly scheduleAccuracyThresholdDays =
     APP_CONFIG.routeSearchData.scheduleAccuracy.warningThresholdDays;
@@ -80,6 +82,7 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly routeSegments = APP_CONFIG.routeSegments.routeSearch;
   protected readonly formTitleKey = this.translationKeys.action;
   protected readonly scheduleAccuracyWarningKey = this.translationKeys.scheduleAccuracyWarning;
+  protected readonly layoutNavigationKey = APP_CONFIG.routes.routeSearch;
 
   protected readonly selection = signal<RouteSearchSelection | null>(this.state.getSelection());
   protected readonly results = signal<RouteSearchResultsViewModel>({

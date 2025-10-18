@@ -5,7 +5,7 @@ import {
   ViewChild,
   computed,
   inject,
-  signal
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -16,16 +16,22 @@ import { filter } from 'rxjs';
 import { APP_CONFIG } from '../../core/config';
 import {
   RouteSearchSelection,
-  RouteSearchStateService
+  RouteSearchStateService,
 } from '../../domain/route-search/route-search-state.service';
 import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
-import { StopFavoritesService, StopFavorite } from '../../domain/stops/stop-favorites.service';
+import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
 import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
 import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
-import { buildNavigationCommands, NavigationCommands } from '../../shared/navigation/navigation.util';
+import {
+  buildNavigationCommands,
+  NavigationCommands,
+} from '../../shared/navigation/navigation.util';
 import { HomeTabId } from './home.types';
-import { HomeListCardComponent } from './shared/home-list-card/home-list-card.component';
+import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
+import { AppLayoutNavigationKey } from '../../shared/layout/app-layout-context.token';
+import { RECENT_CARD_BODY_CLASSES, RECENT_CARD_HOST_CLASSES } from './shared/recent-card-classes';
 
 interface HomeTabOption {
   readonly id: HomeTabId;
@@ -40,19 +46,20 @@ interface HomeTabOption {
     TranslateModule,
     RouteSearchFormComponent,
     HomeRecentSearchesComponent,
-    HomeListCardComponent,
-    AccessibleButtonDirective
+    InteractiveCardComponent,
+    AccessibleButtonDirective,
+    AppLayoutContentDirective,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly routeSearchState = inject(RouteSearchStateService);
   private readonly execution = inject(RouteSearchExecutionService);
-  private readonly favoritesService = inject(StopFavoritesService);
+  private readonly favoritesFacade = inject(FavoritesFacade);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly translation = APP_CONFIG.translationKeys.home;
@@ -62,12 +69,17 @@ export class HomeComponent {
   private readonly homeTabCommands: ReadonlyMap<HomeTabId, NavigationCommands> = new Map([
     ['search', buildNavigationCommands(APP_CONFIG.routes.home)],
     ['recent', buildNavigationCommands(APP_CONFIG.routes.homeRecent)],
-    ['favorites', buildNavigationCommands(APP_CONFIG.routes.homeFavorites)]
+    ['favorites', buildNavigationCommands(APP_CONFIG.routes.homeFavorites)],
   ]);
   private readonly homeTabRoutes = new Map<string, HomeTabId>([
     [APP_CONFIG.routes.home, 'search'],
     [APP_CONFIG.routes.homeRecent, 'recent'],
-    [APP_CONFIG.routes.homeFavorites, 'favorites']
+    [APP_CONFIG.routes.homeFavorites, 'favorites'],
+  ]);
+  private readonly homeNavigationKeys = new Map<string, AppLayoutNavigationKey>([
+    [APP_CONFIG.routes.home, APP_CONFIG.routes.home],
+    [APP_CONFIG.routes.homeRecent, APP_CONFIG.routes.homeRecent],
+    [APP_CONFIG.routes.homeFavorites, APP_CONFIG.routes.homeFavorites],
   ]);
 
   protected readonly headerTitleKey = this.translation.header.title;
@@ -78,7 +90,7 @@ export class HomeComponent {
   protected readonly tabs: readonly HomeTabOption[] = [
     { id: 'search', labelKey: this.translation.tabs.search },
     { id: 'recent', labelKey: this.translation.tabs.recent },
-    { id: 'favorites', labelKey: this.translation.tabs.favorites }
+    { id: 'favorites', labelKey: this.translation.tabs.favorites },
   ];
   protected readonly summaryTitleKey = this.translation.summary.lastSearch;
   protected readonly summarySeeAllKey = this.translation.summary.seeAll;
@@ -91,9 +103,12 @@ export class HomeComponent {
   protected readonly favoritesEmptyKey = this.translation.sections.favorites.empty;
   protected readonly favoritesCodeLabelKey = APP_CONFIG.translationKeys.favorites.list.code;
   protected readonly favoritesNucleusLabelKey = APP_CONFIG.translationKeys.favorites.list.nucleus;
+  protected readonly recentCardHostClasses = RECENT_CARD_HOST_CLASSES;
+  protected readonly recentCardBodyClasses = RECENT_CARD_BODY_CLASSES;
 
   protected readonly activeTab = signal<HomeTabId>('search');
   protected readonly recentClearActionVisible = signal(false);
+  protected readonly layoutNavigationKey = signal<AppLayoutNavigationKey>(APP_CONFIG.routes.home);
 
   @ViewChild('recentSearches')
   private recentSearchesComponent?: HomeRecentSearchesComponent;
@@ -175,7 +190,7 @@ export class HomeComponent {
   }
 
   private observeFavorites(): void {
-    this.favoritesService.favorites$
+    this.favoritesFacade.favorites$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((favorites) => this.favorites.set(favorites));
   }
@@ -184,24 +199,35 @@ export class HomeComponent {
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
         const nextTab = this.resolveTabFromRoute();
+        const nextNavigationKey = this.resolveNavigationKeyFromRoute();
 
         if (this.activeTab() !== nextTab) {
           this.activeTab.set(nextTab);
+        }
+
+        if (this.layoutNavigationKey() !== nextNavigationKey) {
+          this.layoutNavigationKey.set(nextNavigationKey);
         }
       });
   }
 
   private syncActiveTabWithRoute(): void {
     this.activeTab.set(this.resolveTabFromRoute());
+    this.layoutNavigationKey.set(this.resolveNavigationKeyFromRoute());
   }
 
   private resolveTabFromRoute(): HomeTabId {
     const path = this.route.snapshot.routeConfig?.path ?? APP_CONFIG.routes.home;
     return this.homeTabRoutes.get(path) ?? 'search';
+  }
+
+  private resolveNavigationKeyFromRoute(): AppLayoutNavigationKey {
+    const path = this.route.snapshot.routeConfig?.path ?? APP_CONFIG.routes.home;
+    return this.homeNavigationKeys.get(path) ?? APP_CONFIG.routes.home;
   }
 
   private async navigateToTab(tab: HomeTabId): Promise<void> {
