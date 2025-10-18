@@ -147,7 +147,7 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] Tests: `npm run lint`; `npm run test` (Angular runner blocked by apt.llvm.org 502 while installing Chrome dependencies); `npm run build`.
 
 ### Layout & Theming Consistency (2025-10-18)
-- [ ] Token compliance audit (B1) — attach public screenshot URL(s); visual diff must be 0px.
+- [x] Token compliance audit (B1) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-18 Replaced recent preview entry feature-scoped CSS variables with global tokens while preserving pixel parity.
   - [x] Screenshot (Home recent preview — desktop): https://browser.buildwithfern.com/invocations/argurclo/artifacts/artifacts/recent-preview-tokens.png
   - [x] 2025-10-19 Replaced Home view feature-scoped custom properties with shared layout and color tokens while preserving responsive stack spacing.
@@ -164,6 +164,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] 2025-10-20 Recalibrated shell top actions spacing, backdrop blur, and dropdown padding to derive exclusively from shared spacing tokens while keeping navigation shadows token-driven.
     - [x] Screenshot (Shell top actions — desktop parity, spacing tokens): https://browser.buildwithfern.com/invocations/jfqofway/artifacts/artifacts/shell-top-actions-token.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Added a shared solid button compact modifier so the route search notice button relies on global tokens instead of feature-scoped overrides.
+    - [x] Screenshot (Route search notice — desktop parity reconfirmed): https://browser.buildwithfern.com/invocations/njfazjfe/artifacts/artifacts/route-search-layout.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-19 Replaced dialog spacing and confirm dialog metrics with global tokens so overlay padding, typography, and focus affordances remain baseline-identical.

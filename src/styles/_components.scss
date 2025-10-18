@@ -246,6 +246,14 @@ button:focus:not(:focus-visible),
   transition: var(--app-solid-button-transition, none);
 }
 
+.app-solid-button--compact {
+  --app-solid-button-gap: var(--space-xs);
+  --app-solid-button-padding: var(--space-xs) var(--space-md);
+  --app-solid-button-radius: var(--radius-full);
+  --app-solid-button-color: var(--color-surface-light);
+  --app-solid-button-transition: background-color 0.2s ease;
+}
+
 .app-field {
   --app-field-background: var(--color-input-surface);
   --app-field-background-hover: var(--color-input-surface-hover);
