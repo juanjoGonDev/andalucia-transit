@@ -7,6 +7,7 @@ import {
 } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { OverlayDialogContainerComponent } from './overlay-dialog-container.component';
 import { ESCAPE_KEY_MATCHER, matchesKey } from '../../a11y/key-event-matchers';
@@ -103,6 +104,7 @@ export class OverlayDialogService {
     config: OverlayDialogConfig<TData> = {}
   ): OverlayDialogRef<TResult> {
     const overlayRef = this.overlay.create(this.buildConfig(config));
+    const detachments$ = overlayRef.detachments();
 
     for (const panelClass of toArray(config.panelClass) ?? []) {
       overlayRef.addPanelClass(panelClass);
@@ -138,15 +140,21 @@ export class OverlayDialogService {
     dialogRef.registerContainer(containerRef.instance);
 
     if (!(config.disableClose ?? false)) {
-      overlayRef.backdropClick().subscribe(() => dialogRef.close());
-      overlayRef.keydownEvents().subscribe((event) => {
-        if (!matchesKey(event, ESCAPE_KEY_MATCHER)) {
-          return;
-        }
+      overlayRef
+        .backdropClick()
+        .pipe(takeUntil(detachments$))
+        .subscribe(() => dialogRef.close());
+      overlayRef
+        .keydownEvents()
+        .pipe(takeUntil(detachments$))
+        .subscribe((event) => {
+          if (!matchesKey(event, ESCAPE_KEY_MATCHER)) {
+            return;
+          }
 
-        event.preventDefault();
-        dialogRef.close();
-      });
+          event.preventDefault();
+          dialogRef.close();
+        });
     }
 
     return dialogRef;

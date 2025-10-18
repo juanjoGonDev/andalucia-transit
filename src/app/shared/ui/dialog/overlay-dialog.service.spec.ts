@@ -13,6 +13,7 @@ import {
 const CONTAINER_SELECTOR = 'app-overlay-dialog-container';
 const SURFACE_SELECTOR = `.${OVERLAY_DIALOG_SURFACE_CLASS}`;
 const OVERLAY_PANE_SELECTOR = '.cdk-overlay-pane';
+const OVERLAY_BACKDROP_SELECTOR = '.cdk-overlay-backdrop';
 const TRIGGER_SELECTOR = 'button';
 const ALERT_ROLE: OverlayDialogRole = 'alertdialog';
 const DEFAULT_ROLE: OverlayDialogRole = 'dialog';
@@ -170,5 +171,39 @@ describe('OverlayDialogService accessibility', () => {
 
       expect(closedSpy).withContext(JSON.stringify(variant)).toHaveBeenCalledTimes(1);
     }
+  }));
+
+  it('should ignore escape and backdrop interactions when closing is disabled', fakeAsync(() => {
+    const dialogRef = fixture.componentInstance.openDialog({ disableClose: true });
+    fixture.detectChanges();
+    flushMicrotasks();
+    flush();
+
+    const pane = overlayElement.querySelector<HTMLElement>(OVERLAY_PANE_SELECTOR);
+    expect(pane).not.toBeNull();
+
+    const backdrop = overlayElement.querySelector<HTMLElement>(OVERLAY_BACKDROP_SELECTOR);
+    expect(backdrop).not.toBeNull();
+
+    const closedSpy = jasmine.createSpy('closed');
+    dialogRef.afterClosed().subscribe(closedSpy);
+
+    dispatchKeydown(pane as HTMLElement, { key: 'Escape' });
+    flushMicrotasks();
+    flush();
+
+    expect(closedSpy).not.toHaveBeenCalled();
+
+    backdrop?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    flushMicrotasks();
+    flush();
+
+    expect(closedSpy).not.toHaveBeenCalled();
+
+    dialogRef.close();
+    flushMicrotasks();
+    flush();
+
+    expect(closedSpy).toHaveBeenCalledTimes(1);
   }));
 });

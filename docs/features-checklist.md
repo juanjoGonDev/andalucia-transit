@@ -193,6 +193,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-22 Matched overlay dialog escape handling across legacy key variants so keyboard dismissal remains consistent without impacting visuals.
     - [x] Screenshot (Favorites clear confirmation — desktop, escape coverage verified): https://browser.buildwithfern.com/invocations/wgwaccoq/artifacts/artifacts/favorites-dialog-escape.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Bound dialog backdrop and escape listeners to overlay detachments so subscriptions release on close without altering parity.
+    - [x] Screenshot (Favorites clear confirmation — desktop, listener cleanup verified): https://browser.buildwithfern.com/invocations/wgwaccoq/artifacts/artifacts/favorites-dialog-escape.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-19 Migrated favorites search filter to the shared AppTextFieldComponent to align control metrics and focus behavior without altering layout.
   - [x] Screenshot (Favorites search — desktop): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
