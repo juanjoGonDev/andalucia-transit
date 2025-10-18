@@ -12,11 +12,46 @@ import {
 
 const CONTAINER_SELECTOR = 'app-overlay-dialog-container';
 const SURFACE_SELECTOR = `.${OVERLAY_DIALOG_SURFACE_CLASS}`;
+const OVERLAY_PANE_SELECTOR = '.cdk-overlay-pane';
 const TRIGGER_SELECTOR = 'button';
 const ALERT_ROLE: OverlayDialogRole = 'alertdialog';
 const DEFAULT_ROLE: OverlayDialogRole = 'dialog';
 const TRIGGER_LABEL = 'Open dialog';
 const ACTION_LABEL = 'Confirm action';
+
+interface KeyDispatchOptions {
+  readonly key?: string;
+  readonly code?: string;
+  readonly keyCode?: number;
+  readonly which?: number;
+  readonly keyIdentifier?: string;
+}
+
+const dispatchKeydown = (target: HTMLElement, options: KeyDispatchOptions): void => {
+  const event = new KeyboardEvent('keydown', {
+    key: options.key ?? '',
+    code: options.code ?? '',
+    bubbles: true
+  });
+
+  if (options.key !== undefined) {
+    Object.defineProperty(event, 'key', { get: () => options.key as string });
+  }
+
+  if (options.keyCode !== undefined) {
+    Object.defineProperty(event, 'keyCode', { get: () => options.keyCode });
+  }
+
+  if (options.which !== undefined) {
+    Object.defineProperty(event, 'which', { get: () => options.which });
+  }
+
+  if (options.keyIdentifier !== undefined) {
+    Object.defineProperty(event, 'keyIdentifier', { get: () => options.keyIdentifier });
+  }
+
+  target.dispatchEvent(event);
+};
 
 @Component({
   standalone: true,
@@ -105,5 +140,35 @@ describe('OverlayDialogService accessibility', () => {
     flush();
 
     expect(document.activeElement).toBe(trigger);
+  }));
+
+  it('should close the dialog when escape key variants are pressed', fakeAsync(() => {
+    const variants: readonly KeyDispatchOptions[] = [
+      { key: 'Escape' },
+      { key: 'Esc' },
+      { code: 'Escape' },
+      { keyCode: 27 },
+      { which: 27 },
+      { keyIdentifier: 'U+001B' }
+    ];
+
+    for (const variant of variants) {
+      const dialogRef = fixture.componentInstance.openDialog();
+      fixture.detectChanges();
+      flushMicrotasks();
+      flush();
+
+      const pane = overlayElement.querySelector<HTMLElement>(OVERLAY_PANE_SELECTOR);
+      expect(pane).not.toBeNull();
+
+      const closedSpy = jasmine.createSpy('closed');
+      dialogRef.afterClosed().subscribe(closedSpy);
+
+      dispatchKeydown(pane as HTMLElement, variant);
+      flushMicrotasks();
+      flush();
+
+      expect(closedSpy).withContext(JSON.stringify(variant)).toHaveBeenCalledTimes(1);
+    }
   }));
 });

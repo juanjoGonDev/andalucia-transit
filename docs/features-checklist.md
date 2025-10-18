@@ -174,7 +174,7 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-20 Restored compact solid button text contrast by inheriting the shared primitive color tokens while keeping spacing overrides token-driven.
     - [x] Screenshot (Route search past-search notice — desktop): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
-- [ ] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
+- [x] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-19 Replaced dialog spacing and confirm dialog metrics with global tokens so overlay padding, typography, and focus affordances remain baseline-identical.
   - [x] Screenshot (Favorites clear confirmation — desktop): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
@@ -189,6 +189,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] 2025-10-20 Linked dialog layout titles and descriptions to the overlay container aria attributes via a shared adapter so assistive tech reads projected content without visual drift.
     - [x] Screenshot (Favorites clear confirmation — desktop, aria registration): https://browser.buildwithfern.com/invocations/skijdqfg/artifacts/artifacts/dialog-aria.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Matched overlay dialog escape handling across legacy key variants so keyboard dismissal remains consistent without impacting visuals.
+    - [x] Screenshot (Favorites clear confirmation — desktop, escape coverage verified): https://browser.buildwithfern.com/invocations/wgwaccoq/artifacts/artifacts/favorites-dialog-escape.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-19 Migrated favorites search filter to the shared AppTextFieldComponent to align control metrics and focus behavior without altering layout.

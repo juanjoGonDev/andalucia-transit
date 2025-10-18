@@ -35,6 +35,26 @@ const OVERLAY_DIALOG_REF = new InjectionToken<OverlayDialogRef<unknown>>(
 );
 const OVERLAY_DIALOG_DATA = new InjectionToken<unknown>('OVERLAY_DIALOG_DATA');
 
+type LegacyKeyboardEvent = KeyboardEvent & { keyIdentifier?: string };
+
+interface KeyMatcher {
+  readonly keyValues?: ReadonlySet<string>;
+  readonly codeValues?: ReadonlySet<string>;
+  readonly keyCodes?: ReadonlySet<number>;
+  readonly keyIdentifiers?: ReadonlySet<string>;
+}
+
+const ESCAPE_KEY_VALUES: ReadonlySet<string> = new Set(['Escape', 'Esc']);
+const ESCAPE_CODE_VALUES: ReadonlySet<string> = new Set(['Escape']);
+const ESCAPE_KEY_CODES: ReadonlySet<number> = new Set([27]);
+const ESCAPE_KEY_IDENTIFIERS: ReadonlySet<string> = new Set(['Escape', 'Esc', 'U+001B']);
+const ESCAPE_KEY_MATCHER: KeyMatcher = {
+  keyValues: ESCAPE_KEY_VALUES,
+  codeValues: ESCAPE_CODE_VALUES,
+  keyCodes: ESCAPE_KEY_CODES,
+  keyIdentifiers: ESCAPE_KEY_IDENTIFIERS
+};
+
 const DEFAULT_BACKDROP_CLASS = 'cdk-overlay-dark-backdrop';
 
 const toArray = (
@@ -139,10 +159,12 @@ export class OverlayDialogService {
     if (!(config.disableClose ?? false)) {
       overlayRef.backdropClick().subscribe(() => dialogRef.close());
       overlayRef.keydownEvents().subscribe((event) => {
-        if (event.key === 'Escape') {
-          event.preventDefault();
-          dialogRef.close();
+        if (!matchesKey(event, ESCAPE_KEY_MATCHER)) {
+          return;
         }
+
+        event.preventDefault();
+        dialogRef.close();
       });
     }
 
@@ -166,6 +188,46 @@ export class OverlayDialogService {
     } satisfies OverlayConfig;
   }
 }
+
+const matchesKey = (event: KeyboardEvent, matcher: KeyMatcher): boolean => {
+  if (matcher.keyValues && event.key && matcher.keyValues.has(event.key)) {
+    return true;
+  }
+
+  if (matcher.codeValues && event.code && matcher.codeValues.has(event.code)) {
+    return true;
+  }
+
+  if (matcher.keyCodes) {
+    const keyCode = resolveKeyCode(event);
+
+    if (keyCode !== null && matcher.keyCodes.has(keyCode)) {
+      return true;
+    }
+  }
+
+  if (matcher.keyIdentifiers) {
+    const legacyEvent = event as LegacyKeyboardEvent;
+
+    if (legacyEvent.keyIdentifier && matcher.keyIdentifiers.has(legacyEvent.keyIdentifier)) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+const resolveKeyCode = (event: KeyboardEvent): number | null => {
+  if (typeof event.keyCode === 'number' && event.keyCode > 0) {
+    return event.keyCode;
+  }
+
+  if (typeof event.which === 'number' && event.which > 0) {
+    return event.which;
+  }
+
+  return null;
+};
 
 export const injectOverlayDialogRef = <TResult>(): OverlayDialogRef<TResult> =>
   inject(OVERLAY_DIALOG_REF) as OverlayDialogRef<TResult>;
