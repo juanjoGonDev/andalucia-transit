@@ -43,10 +43,12 @@
     role="alert"
     aria-live="polite"
   >
-    <ng-container
-      *ngIf="errorTemplateOutlet"
-      [ngTemplateOutlet]="errorTemplateOutlet"
-    ></ng-container>
+    <ng-container *ngIf="errorTemplateOutlet as template">
+      <ng-container
+        [ngTemplateOutlet]="template"
+        [ngTemplateOutletContext]="errorTemplateContext"
+      ></ng-container>
+    </ng-container>
   </div>
   <div class="app-text-field__hint" *ngIf="shouldDisplayHint" [id]="hintId">
     <ng-content select="[appTextFieldHint]"></ng-content>

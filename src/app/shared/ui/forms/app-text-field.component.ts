@@ -18,7 +18,9 @@ import {
   AbstractControl,
   ControlValueAccessor,
   FormControl,
+  FormControlStatus,
   NgControl,
+  ValidationErrors,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
@@ -43,8 +45,19 @@ const EMPTY_STRING = '';
 const DESCRIBED_BY_SEPARATOR_PATTERN = /\s+/u;
 const NOOP_VALUE_CALLBACK = (_value: string): void => undefined;
 const NOOP_VOID_CALLBACK = (): void => undefined;
+const DEFAULT_CONTROL_STATUS: FormControlStatus = 'VALID';
 
 export type TextFieldType = 'text' | 'search' | 'email' | 'tel' | 'url' | 'password';
+
+interface AppTextFieldErrorContext {
+  readonly $implicit: ValidationErrors | null;
+  readonly control: AbstractControl | null;
+  readonly errors: ValidationErrors | null;
+  readonly dirty: boolean;
+  readonly touched: boolean;
+  readonly pending: boolean;
+  readonly status: FormControlStatus;
+}
 
 @Component({
   selector: 'app-text-field',
@@ -209,6 +222,22 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     }
 
     return this.forwardedErrorTemplate;
+  }
+
+  get errorTemplateContext(): AppTextFieldErrorContext {
+    const control = this.resolveControl();
+    const errors = control?.errors ?? null;
+    const status = control?.status ?? DEFAULT_CONTROL_STATUS;
+
+    return {
+      $implicit: errors,
+      control,
+      errors,
+      dirty: Boolean(control?.dirty),
+      touched: Boolean(control?.touched),
+      pending: Boolean(control?.pending),
+      status,
+    };
   }
 
   get errorId(): string | null {

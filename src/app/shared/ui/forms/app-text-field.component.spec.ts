@@ -102,21 +102,74 @@ class AppTextFieldReactiveHostComponent {
   describedBy: DescribedByInput;
 }
 
+@Component({
+  selector: 'app-text-field-error-context-host',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    AppTextFieldComponent,
+    AppTextFieldHintDirective,
+    AppTextFieldErrorDirective,
+  ],
+  template: `
+    <form [formGroup]="form">
+      <app-text-field label="Label" formControlName="field">
+        <ng-template
+          appTextFieldError
+          let-errors
+          let-control="control"
+          let-dirty="dirty"
+          let-touched="touched"
+        >
+          <span class="context-errors">{{ errors?.required ? 'required' : 'none' }}</span>
+          <span class="context-control-invalid">{{ control?.invalid ? 'invalid' : 'valid' }}</span>
+          <span class="context-dirty">{{ dirty }}</span>
+          <span class="context-touched">{{ touched }}</span>
+        </ng-template>
+      </app-text-field>
+    </form>
+  `,
+})
+class AppTextFieldErrorContextHostComponent {
+  readonly form = new FormGroup({
+    field: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+  });
+
+  get control(): FormControl<string> {
+    const field = this.form.get('field');
+
+    if (!(field instanceof FormControl)) {
+      throw new Error('Control not found');
+    }
+
+    return field;
+  }
+}
+
 describe('AppTextFieldComponent', () => {
   let fixture: ComponentFixture<AppTextFieldHostComponent>;
   let host: AppTextFieldHostComponent;
   let reactiveFixture: ComponentFixture<AppTextFieldReactiveHostComponent>;
   let reactiveHost: AppTextFieldReactiveHostComponent;
+  let errorContextFixture: ComponentFixture<AppTextFieldErrorContextHostComponent>;
+  let errorContextHost: AppTextFieldErrorContextHostComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppTextFieldHostComponent, AppTextFieldReactiveHostComponent],
+      imports: [
+        AppTextFieldHostComponent,
+        AppTextFieldReactiveHostComponent,
+        AppTextFieldErrorContextHostComponent,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppTextFieldHostComponent);
     host = fixture.componentInstance;
     reactiveFixture = TestBed.createComponent(AppTextFieldReactiveHostComponent);
     reactiveHost = reactiveFixture.componentInstance;
+    errorContextFixture = TestBed.createComponent(AppTextFieldErrorContextHostComponent);
+    errorContextHost = errorContextFixture.componentInstance;
   });
 
   function queryInput(): HTMLInputElement {
@@ -522,4 +575,54 @@ describe('AppTextFieldComponent', () => {
     expect(updatedParts).toContain(expectedHintId);
     expect(updatedParts).not.toContain(expectedErrorId);
   });
+
+  it('provides control context to projected error templates', fakeAsync(() => {
+    errorContextFixture.detectChanges();
+    const control = errorContextHost.control;
+    const componentDebugElement = errorContextFixture.debugElement.query(By.directive(AppTextFieldComponent));
+
+    if (!componentDebugElement) {
+      throw new Error('Text field component not found in error context host');
+    }
+
+    const componentInstance = componentDebugElement.componentInstance as AppTextFieldComponent;
+
+    control.markAsPending();
+    errorContextFixture.detectChanges();
+    flush();
+
+    let context = componentInstance.errorTemplateContext;
+
+    expect(context.pending).toBeTrue();
+    expect(context.status).toBe(control.status);
+
+    control.markAsTouched();
+    control.markAsDirty();
+    control.updateValueAndValidity();
+    errorContextFixture.detectChanges();
+    flush();
+
+    context = componentInstance.errorTemplateContext;
+
+    expect(context.errors?.['required']).toBeTrue();
+    expect(context.control).toBe(control);
+    expect(context.dirty).toBeTrue();
+    expect(context.touched).toBeTrue();
+    expect(context.pending).toBeFalse();
+    expect(context.status).toBe(control.status);
+
+    control.setValue('valid');
+    control.updateValueAndValidity();
+    errorContextFixture.detectChanges();
+    flush();
+
+    context = componentInstance.errorTemplateContext;
+
+    expect(context.errors).toBeNull();
+    expect(context.control).toBe(control);
+    expect(context.dirty).toBeTrue();
+    expect(context.touched).toBeTrue();
+    expect(context.pending).toBeFalse();
+    expect(context.status).toBe(control.status);
+  }));
 });
