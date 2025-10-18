@@ -223,6 +223,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-21 Expanded accessible button enter key detection to cover legacy values without impacting anchor semantics.
     - [x] Screenshot (Skip to content control — desktop focus, enter key parity verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-21 Cleared pending space-key activation on blur so accessible buttons do not trigger after focus leaves while preserving baseline visuals.
+    - [x] Screenshot (Skip to content control — desktop focus, blur handling verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
 ### Feature Roadmap (2025-10-18)
 - [ ] News feed view (C1) — attach public screenshot URL(s); visual diff must be 0px.

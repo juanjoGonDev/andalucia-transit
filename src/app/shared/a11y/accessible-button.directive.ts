@@ -179,6 +179,11 @@ export class AccessibleButtonDirective {
     }
   }
 
+  @HostListener('blur')
+  onBlur(): void {
+    this.spaceActivationPending = false;
+  }
+
   @HostListener('click', ['$event'])
   onClick(event: MouseEvent): void {
     if (!this.appAccessibleButtonDisabled) {

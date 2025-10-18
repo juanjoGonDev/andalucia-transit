@@ -273,6 +273,25 @@ describe('AccessibleButtonDirective', () => {
     expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
   });
 
+  it('should clear pending space activation when focus leaves before keyup', () => {
+    hostComponent.onActivated.calls.reset();
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    const keydownEvent = new KeyboardEvent('keydown', { key: ' ', cancelable: true });
+    nativeElement.dispatchEvent(keydownEvent);
+
+    expect(keydownEvent.defaultPrevented).toBeTrue();
+
+    nativeElement.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
+
+    const keyupEvent = new KeyboardEvent('keyup', { key: ' ', cancelable: true });
+    nativeElement.dispatchEvent(keyupEvent);
+
+    expect(keyupEvent.defaultPrevented).toBeFalse();
+    expect(hostComponent.onActivated).not.toHaveBeenCalled();
+  });
+
   it('should treat alternate space key values as activation triggers', () => {
     const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
     const nativeElement = element.nativeElement as HTMLElement;
