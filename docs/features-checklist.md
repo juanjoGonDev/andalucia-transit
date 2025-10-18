@@ -113,3 +113,27 @@ This phase is purely structural and organizational — no aesthetic changes are 
 🖼 **Baseline Reference:**  
 The current layout, as rendered in the production build, is the **canonical baseline**.  
 Each iteration of this refactor must include one or more browser screenshots with accessible URLs demonstrating identical visual output to the baseline.
+
+### Visual Bug Fixes (2025-10-18)
+- [ ] Favorites cards parity restored (A1) — attach public screenshot URL(s); visual diff must be 0px.
+- [ ] Recent searches time block anchoring (A2) — attach public screenshot URL(s); visual diff must be 0px.
+- [ ] Settings view layout integration (A3) — attach public screenshot URL(s); visual diff must be 0px.
+- [ ] Search form input stability (A4) — attach public screenshot URL(s); visual diff must be 0px.
+- [ ] Route search & stop detail layout adoption (A5) — attach public screenshot URL(s); visual diff must be 0px.
+- [ ] Global pointer cursor directive coverage (A6) — attach public screenshot URL(s); visual diff must be 0px.
+
+### Layout & Theming Consistency (2025-10-18)
+- [ ] Token compliance audit (B1) — attach public screenshot URL(s); visual diff must be 0px.
+- [ ] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
+- [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
+- [ ] Accessibility verification sweep (B4) — attach public screenshot URL(s); visual diff must be 0px.
+
+### Feature Roadmap (2025-10-18)
+- [ ] News feed view (C1) — attach public screenshot URL(s); visual diff must be 0px.
+  - [ ] Document CTAN endpoint + caching in `docs/api-reference.md`.
+- [ ] Stop information by consortium + stop number (C2) — attach public screenshot URL(s); visual diff must be 0px.
+  - [ ] Ensure friendly URL contract and offline fallback notes in documentation.
+- [ ] Interactive map with nearby stops (C3) — attach public screenshot URL(s); visual diff must be 0px.
+  - [ ] Record OSM/Leaflet licensing and geolocation consent handling in documentation.
+- [ ] Route overlay on map (C4) — attach public screenshot URL(s); visual diff must be 0px.
+  - [ ] Describe polyline transformation and caching strategy in documentation.
