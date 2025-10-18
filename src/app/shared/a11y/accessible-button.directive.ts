@@ -20,11 +20,16 @@ const ENTER_KEY_IDENTIFIERS = ['Enter', 'U+000D'] as const;
 const SPACE_KEY_VALUES = [' ', 'Space', 'Spacebar'] as const;
 const SPACE_CODE = 'Space' as const;
 const SPACE_KEY_CODE = 32 as const;
-const SPACE_KEY_IDENTIFIER = 'U+0020' as const;
+const SPACE_KEY_IDENTIFIERS = ['U+0020', 'Spacebar'] as const;
 const ARIA_TRUE = 'true' as const;
 const ARIA_FALSE = 'false' as const;
 const CURSOR_POINTER = 'pointer' as const;
 const CURSOR_NOT_ALLOWED = 'not-allowed' as const;
+const ROLE_BUTTON = 'button' as const;
+const ROLE_LINK = 'link' as const;
+const HREF_ATTRIBUTE = 'href' as const;
+const TAB_INDEX_ENABLED = 0 as const;
+const TAB_INDEX_DISABLED = -1 as const;
 
 @Directive({
   selector: '[appAccessibleButton]',
@@ -51,12 +56,12 @@ export class AccessibleButtonDirective {
       return null;
     }
 
-    return 'button';
+    return ROLE_BUTTON;
   }
 
   @HostBinding('attr.tabindex')
   get tabIndex(): number {
-    return this.appAccessibleButtonDisabled ? -1 : 0;
+    return this.appAccessibleButtonDisabled ? TAB_INDEX_DISABLED : TAB_INDEX_ENABLED;
   }
 
   @HostBinding('attr.aria-disabled')
@@ -133,7 +138,7 @@ export class AccessibleButtonDirective {
         return;
       }
 
-      if (this.role === 'link') {
+      if (this.role === ROLE_LINK) {
         this.cancelSpaceActivation();
         return;
       }
@@ -170,7 +175,7 @@ export class AccessibleButtonDirective {
         return;
       }
 
-      if (this.role === 'link') {
+      if (this.role === ROLE_LINK) {
         return;
       }
 
@@ -256,13 +261,13 @@ export class AccessibleButtonDirective {
 
     const legacyEvent = event as LegacyKeyboardEvent;
 
-    return legacyEvent.keyIdentifier === SPACE_KEY_IDENTIFIER;
+    return SPACE_KEY_IDENTIFIERS.some((identifier) => legacyEvent.keyIdentifier === identifier);
   }
 
   private isAnchorWithHref(): boolean {
     const element = this.hostElementRef.nativeElement;
 
-    return element instanceof HTMLAnchorElement && element.hasAttribute('href');
+    return element instanceof HTMLAnchorElement && element.hasAttribute(HREF_ATTRIBUTE);
   }
 
   private cancelSpaceActivation(): void {

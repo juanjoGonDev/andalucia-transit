@@ -229,6 +229,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-22 Cancelled pending space-key activation when keyup occurs outside the host to prevent stray activations while keeping layout and tokens unchanged.
     - [x] Screenshot (Skip to content control — desktop focus, global keyup handling verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Recognized legacy space key identifiers and replaced role/tabindex magic values with shared constants so accessible buttons stay cross-browser without visual drift.
+    - [x] Screenshot (Skip to content control — desktop focus, legacy keyIdentifier coverage reconfirmed): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
 ### Feature Roadmap (2025-10-18)
 - [ ] News feed view (C1) — attach public screenshot URL(s); visual diff must be 0px.

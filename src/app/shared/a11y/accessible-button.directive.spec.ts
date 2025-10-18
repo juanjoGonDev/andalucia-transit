@@ -11,7 +11,7 @@ const ENTER_CODE = 'Enter' as const;
 const ENTER_KEY_IDENTIFIERS = ['Enter', 'U+000D'] as const;
 const SPACE_KEY_CODE = 32 as const;
 const SPACE_CODE = 'Space' as const;
-const SPACE_KEY_IDENTIFIER = 'U+0020' as const;
+const SPACE_KEY_IDENTIFIERS = ['U+0020', 'Spacebar'] as const;
 const SPACE_KEY_VALUE = ' ' as const;
 const KEYDOWN_EVENT = 'keydown' as const;
 const KEYUP_EVENT = 'keyup' as const;
@@ -463,21 +463,23 @@ describe('AccessibleButtonDirective', () => {
     const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
     const nativeElement = element.nativeElement as HTMLElement;
 
-    hostComponent.onActivated.calls.reset();
+    for (const identifier of SPACE_KEY_IDENTIFIERS) {
+      hostComponent.onActivated.calls.reset();
 
-    const keydownEvent = new KeyboardEvent('keydown', { key: '', cancelable: true });
-    setKeyboardEventIdentifier(keydownEvent, SPACE_KEY_IDENTIFIER);
-    nativeElement.dispatchEvent(keydownEvent);
+      const keydownEvent = new KeyboardEvent('keydown', { key: '', cancelable: true });
+      setKeyboardEventIdentifier(keydownEvent, identifier);
+      nativeElement.dispatchEvent(keydownEvent);
 
-    expect(keydownEvent.defaultPrevented).toBeTrue();
-    expect(hostComponent.onActivated).not.toHaveBeenCalled();
+      expect(keydownEvent.defaultPrevented).toBeTrue();
+      expect(hostComponent.onActivated).not.toHaveBeenCalled();
 
-    const keyupEvent = new KeyboardEvent('keyup', { key: '', cancelable: true });
-    setKeyboardEventIdentifier(keyupEvent, SPACE_KEY_IDENTIFIER);
-    nativeElement.dispatchEvent(keyupEvent);
+      const keyupEvent = new KeyboardEvent('keyup', { key: '', cancelable: true });
+      setKeyboardEventIdentifier(keyupEvent, identifier);
+      nativeElement.dispatchEvent(keyupEvent);
 
-    expect(keyupEvent.defaultPrevented).toBeTrue();
-    expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
+      expect(keyupEvent.defaultPrevented).toBeTrue();
+      expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
+    }
   });
 
   it('should prevent default on enter when the host exposes a link role without an href', () => {
