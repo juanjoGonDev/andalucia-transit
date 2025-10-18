@@ -116,7 +116,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
 
 ### Visual Bug Fixes (2025-10-18)
 - [ ] Favorites cards parity restored (A1) — attach public screenshot URL(s); visual diff must be 0px.
-- [ ] Recent searches time block anchoring (A2) — attach public screenshot URL(s); visual diff must be 0px.
+- [x] Recent searches time block anchoring (A2) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-18 Reworked recent preview entry layout with flex alignment and non-wrapping time blocks at mobile and desktop widths.
+  - [x] Screenshot (Home recent searches — desktop): https://browser.buildwithfern.com/invocations/wdsyzxta/artifacts/artifacts/recent-time.png
+  - [x] Tests: `npm run lint`; `npm run test` *(aborted during Chrome dependency installation)*; `npm run build` *(aborted while installing Chrome system dependencies)*.
 - [ ] Settings view layout integration (A3) — attach public screenshot URL(s); visual diff must be 0px.
 - [ ] Search form input stability (A4) — attach public screenshot URL(s); visual diff must be 0px.
 - [ ] Route search & stop detail layout adoption (A5) — attach public screenshot URL(s); visual diff must be 0px.

@@ -3,19 +3,19 @@
 }
 
 .recent-preview-entry {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-md);
   padding: 0.35rem 0;
 }
 
 .recent-preview-entry__meta {
   display: flex;
+  flex: 1 1 auto;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
-  min-width: 0;
+  gap: var(--space-xs);
+  min-inline-size: 0;
 }
 
 .recent-preview-entry__line {
@@ -41,6 +41,10 @@
   font-weight: 700;
   font-size: 1.15rem;
   color: var(--recent-preview-time-color, inherit);
+  margin-left: auto;
+  flex-shrink: 0;
+  white-space: nowrap;
+  text-align: right;
 }
 
 .recent-preview-entry__time--previous {
