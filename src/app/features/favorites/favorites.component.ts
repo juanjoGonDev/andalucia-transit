@@ -23,6 +23,7 @@ import { OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.serv
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
 import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
+import { AppTextFieldComponent, TextFieldType } from '../../shared/ui/forms/app-text-field.component';
 import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
 
 interface FavoriteListItem {
@@ -46,6 +47,8 @@ const DIACRITIC_PATTERN = /\p{M}/gu;
 const FAVORITES_CARD_HOST_CLASSES: readonly string[] = ['favorites-card'];
 const FAVORITES_CARD_BODY_CLASSES: readonly string[] = ['favorites-card__body'];
 const FAVORITES_CARD_REMOVE_CLASSES: readonly string[] = ['favorites-card__remove'];
+const SEARCH_TEXT_FIELD_TYPE: TextFieldType = 'search';
+const SEARCH_AUTOCOMPLETE_ATTRIBUTE = 'off';
 @Component({
   selector: 'app-favorites',
   standalone: true,
@@ -56,7 +59,8 @@ const FAVORITES_CARD_REMOVE_CLASSES: readonly string[] = ['favorites-card__remov
     SectionComponent,
     AccessibleButtonDirective,
     AppLayoutContentDirective,
-    InteractiveCardComponent
+    InteractiveCardComponent,
+    AppTextFieldComponent
   ],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.scss',
@@ -78,6 +82,8 @@ export class FavoritesComponent {
   protected readonly descriptionKey = this.translations.description;
   protected readonly searchLabelKey = this.translations.searchLabel;
   protected readonly searchPlaceholderKey = this.translations.searchPlaceholder;
+  protected readonly searchFieldType = SEARCH_TEXT_FIELD_TYPE;
+  protected readonly searchAutocompleteAttribute = SEARCH_AUTOCOMPLETE_ATTRIBUTE;
   protected readonly emptyKey = this.translations.empty;
   protected readonly clearAllLabelKey = this.translations.actions.clearAll;
   protected readonly removeLabelKey = this.translations.actions.remove;

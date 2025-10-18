@@ -155,6 +155,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
 - [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Migrated favorites search filter to the shared AppTextFieldComponent to align control metrics and focus behavior without altering layout.
+  - [x] Screenshot (Favorites search — desktop): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Accessibility verification sweep (B4) — attach public screenshot URL(s); visual diff must be 0px.
 
 ### Feature Roadmap (2025-10-18)

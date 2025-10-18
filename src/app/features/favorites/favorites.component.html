@@ -3,15 +3,16 @@
     <div class="favorites__header">
       <p class="favorites__description">{{ descriptionKey | translate }}</p>
       <div class="favorites__controls">
-        <label class="favorites__search">
-          <span class="favorites__search-label">{{ searchLabelKey | translate }}</span>
-          <input
-            type="search"
-            class="favorites__search-input"
-            [formControl]="searchControl"
+        <div class="favorites__search">
+          <app-text-field
+            class="favorites__search-field"
+            [label]="searchLabelKey | translate"
             [placeholder]="searchPlaceholderKey | translate"
-          />
-        </label>
+            [type]="searchFieldType"
+            [autocomplete]="searchAutocompleteAttribute"
+            [formControl]="searchControl"
+          ></app-text-field>
+        </div>
         <div
           appAccessibleButton
           class="app-outline-button favorites__clear"
