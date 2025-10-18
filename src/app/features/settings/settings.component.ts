@@ -10,6 +10,7 @@ import { LanguageOption } from '../../core/interfaces/language-option.interface'
 import { APP_VERSION } from '../../core/tokens/app-version.token';
 import { RouteSearchPreferencesService } from '../../domain/route-search/route-search-preferences.service';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
 
 interface LanguageItem extends LanguageOption {
   readonly isActive: boolean;
@@ -18,7 +19,13 @@ interface LanguageItem extends LanguageOption {
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, TranslateModule, SectionComponent, AccessibleButtonDirective],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    SectionComponent,
+    AccessibleButtonDirective,
+    AppLayoutContentDirective
+  ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -29,6 +36,7 @@ export class SettingsComponent {
   private readonly routeSearchPreferences = inject(RouteSearchPreferencesService);
 
   private readonly translation = APP_CONFIG.translationKeys.settings;
+  protected readonly layoutNavigationKey = APP_CONFIG.routes.settings;
 
   protected readonly languageSectionTitleKey = this.translation.sections.language.title;
   protected readonly languageDescriptionKey = this.translation.sections.language.description;
