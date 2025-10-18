@@ -130,6 +130,8 @@ Each iteration of this refactor must include one or more browser screenshots wit
 
 ### Layout & Theming Consistency (2025-10-18)
 - [ ] Token compliance audit (B1) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-18 Replaced recent preview entry feature-scoped CSS variables with global tokens while preserving pixel parity.
+  - [x] Screenshot (Home recent preview — desktop): https://browser.buildwithfern.com/invocations/argurclo/artifacts/artifacts/recent-preview-tokens.png
 - [ ] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
 - [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
 - [ ] Accessibility verification sweep (B4) — attach public screenshot URL(s); visual diff must be 0px.
