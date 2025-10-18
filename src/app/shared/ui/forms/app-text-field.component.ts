@@ -132,7 +132,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
       }
     }
 
-    if (!this.ariaErrormessageAttribute && errorIdentifier) {
+    if (errorIdentifier) {
       collectedIds.push(errorIdentifier);
     }
 

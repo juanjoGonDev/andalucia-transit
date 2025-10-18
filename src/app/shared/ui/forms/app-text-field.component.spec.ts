@@ -239,7 +239,7 @@ describe('AppTextFieldComponent', () => {
     const errorIdentifier = input.getAttribute('aria-errormessage');
 
     expect(errorIdentifier).toBe(`${input.id}-error`);
-    expect(input.getAttribute('aria-describedby')).toBeNull();
+    expect(input.getAttribute('aria-describedby')).toBe(errorIdentifier);
   }));
 
   it('removes aria-errormessage when the reactive control becomes valid', fakeAsync(() => {
@@ -451,7 +451,7 @@ describe('AppTextFieldComponent', () => {
     const expectedErrorId = `${input.id}-error`;
 
     expect(input.getAttribute('aria-errormessage')).toBe(expectedErrorId);
-    expect(input.getAttribute('aria-describedby')).toBeNull();
+    expect(input.getAttribute('aria-describedby')).toBe(expectedErrorId);
 
     input.value = 'content';
     input.dispatchEvent(new Event('input', { bubbles: true }));
