@@ -218,6 +218,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-22 Hardened AppTextField required detection so validator fallbacks preserve aria semantics when control helpers are unavailable.
     - [x] Screenshot (Favorites search — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Limited AppTextField aria-invalid output to invalid states so assistive tech ignores the attribute when controls are healthy without altering layout tokens.
+    - [x] Screenshot (Route search form — desktop, aria metadata parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] 2025-10-22 Added an AppTextField error projection slot so validation messaging surfaces with aria-describedby parity while maintaining baseline styling.
     - [x] Screenshot (Route search form — desktop, error-ready parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
