@@ -9,37 +9,42 @@ import {
   inject
 } from '@angular/core';
 
+import {
+  KeyMatcher,
+  createKeyMatcher,
+  matchesKey
+} from './key-event-matchers';
+
 export type AccessibleButtonPopupToken = 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
 type AccessibleButtonPopupValue = boolean | AccessibleButtonPopupToken;
-type LegacyKeyboardEvent = KeyboardEvent & { keyIdentifier?: string };
 
-interface KeyMatcher {
-  readonly keyValues?: ReadonlySet<string>;
-  readonly codeValues?: ReadonlySet<string>;
-  readonly keyCodes?: ReadonlySet<number>;
-  readonly keyIdentifiers?: ReadonlySet<string>;
-}
+const KEY_VALUE_ENTER = 'Enter' as const;
+const KEY_VALUE_RETURN = 'Return' as const;
+const KEY_VALUE_SPACE = ' ' as const;
+const KEY_VALUE_SPACE_NAME = 'Space' as const;
+const KEY_VALUE_SPACEBAR = 'Spacebar' as const;
+const KEY_IDENTIFIER_ENTER = 'Enter' as const;
+const KEY_IDENTIFIER_ENTER_CODE = 'U+000D' as const;
+const KEY_IDENTIFIER_SPACE = 'U+0020' as const;
+const KEY_IDENTIFIER_SPACEBAR = 'Spacebar' as const;
+const KEY_CODE_ENTER = 13 as const;
+const KEY_CODE_SPACE = 32 as const;
+const KEY_CODE_NAME_ENTER = 'Enter' as const;
+const KEY_CODE_NAME_SPACE = 'Space' as const;
 
-const ENTER_KEY_VALUES: ReadonlySet<string> = new Set(['Enter', 'Return']);
-const ENTER_CODE_VALUES: ReadonlySet<string> = new Set(['Enter']);
-const ENTER_KEY_CODES: ReadonlySet<number> = new Set([13]);
-const ENTER_KEY_IDENTIFIERS: ReadonlySet<string> = new Set(['Enter', 'U+000D']);
-const SPACE_KEY_VALUES: ReadonlySet<string> = new Set([' ', 'Space', 'Spacebar']);
-const SPACE_CODE_VALUES: ReadonlySet<string> = new Set(['Space']);
-const SPACE_KEY_CODES: ReadonlySet<number> = new Set([32]);
-const SPACE_KEY_IDENTIFIERS: ReadonlySet<string> = new Set(['U+0020', 'Spacebar']);
-const ENTER_KEY_MATCHER: KeyMatcher = {
-  keyValues: ENTER_KEY_VALUES,
-  codeValues: ENTER_CODE_VALUES,
-  keyCodes: ENTER_KEY_CODES,
-  keyIdentifiers: ENTER_KEY_IDENTIFIERS
-};
-const SPACE_KEY_MATCHER: KeyMatcher = {
-  keyValues: SPACE_KEY_VALUES,
-  codeValues: SPACE_CODE_VALUES,
-  keyCodes: SPACE_KEY_CODES,
-  keyIdentifiers: SPACE_KEY_IDENTIFIERS
-};
+const ENTER_KEY_MATCHER: KeyMatcher = createKeyMatcher({
+  keyValues: [KEY_VALUE_ENTER, KEY_VALUE_RETURN],
+  codeValues: [KEY_CODE_NAME_ENTER],
+  keyCodes: [KEY_CODE_ENTER],
+  keyIdentifiers: [KEY_IDENTIFIER_ENTER, KEY_IDENTIFIER_ENTER_CODE]
+});
+
+const SPACE_KEY_MATCHER: KeyMatcher = createKeyMatcher({
+  keyValues: [KEY_VALUE_SPACE, KEY_VALUE_SPACE_NAME, KEY_VALUE_SPACEBAR],
+  codeValues: [KEY_CODE_NAME_SPACE],
+  keyCodes: [KEY_CODE_SPACE],
+  keyIdentifiers: [KEY_IDENTIFIER_SPACE, KEY_IDENTIFIER_SPACEBAR]
+});
 const ARIA_TRUE = 'true' as const;
 const ARIA_FALSE = 'false' as const;
 const CURSOR_POINTER = 'pointer' as const;
@@ -244,11 +249,11 @@ export class AccessibleButtonDirective {
   }
 
   private isEnterKey(event: KeyboardEvent): boolean {
-    return this.matchesKey(event, ENTER_KEY_MATCHER);
+    return matchesKey(event, ENTER_KEY_MATCHER);
   }
 
   private isSpaceKey(event: KeyboardEvent): boolean {
-    return this.matchesKey(event, SPACE_KEY_MATCHER);
+    return matchesKey(event, SPACE_KEY_MATCHER);
   }
 
   private isAnchorWithHref(): boolean {
@@ -273,43 +278,4 @@ export class AccessibleButtonDirective {
     return ROLE_BUTTON;
   }
 
-  private matchesKey(event: KeyboardEvent, matcher: KeyMatcher): boolean {
-    if (matcher.keyValues && event.key && matcher.keyValues.has(event.key)) {
-      return true;
-    }
-
-    if (matcher.codeValues && event.code && matcher.codeValues.has(event.code)) {
-      return true;
-    }
-
-    if (matcher.keyCodes) {
-      const keyCode = this.resolveKeyCode(event);
-
-      if (keyCode !== null && matcher.keyCodes.has(keyCode)) {
-        return true;
-      }
-    }
-
-    if (matcher.keyIdentifiers) {
-      const legacyEvent = event as LegacyKeyboardEvent;
-
-      if (legacyEvent.keyIdentifier && matcher.keyIdentifiers.has(legacyEvent.keyIdentifier)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  private resolveKeyCode(event: KeyboardEvent): number | null {
-    if (typeof event.keyCode === 'number') {
-      return event.keyCode;
-    }
-
-    if (typeof event.which === 'number') {
-      return event.which;
-    }
-
-    return null;
-  }
 }

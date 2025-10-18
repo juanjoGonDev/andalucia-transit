@@ -9,6 +9,7 @@ import { ComponentPortal } from '@angular/cdk/portal';
 import { Observable, Subject } from 'rxjs';
 
 import { OverlayDialogContainerComponent } from './overlay-dialog-container.component';
+import { createKeyMatcher, matchesKey } from '../../a11y/key-event-matchers';
 
 export type OverlayDialogRole = 'dialog' | 'alertdialog';
 
@@ -35,25 +36,23 @@ const OVERLAY_DIALOG_REF = new InjectionToken<OverlayDialogRef<unknown>>(
 );
 const OVERLAY_DIALOG_DATA = new InjectionToken<unknown>('OVERLAY_DIALOG_DATA');
 
-type LegacyKeyboardEvent = KeyboardEvent & { keyIdentifier?: string };
+const KEY_VALUE_ESCAPE = 'Escape' as const;
+const KEY_VALUE_ESC = 'Esc' as const;
+const KEY_IDENTIFIER_ESCAPE = 'Escape' as const;
+const KEY_IDENTIFIER_ESC = 'Esc' as const;
+const KEY_IDENTIFIER_ESCAPE_CODE = 'U+001B' as const;
+const KEY_CODE_ESCAPE = 27 as const;
 
-interface KeyMatcher {
-  readonly keyValues?: ReadonlySet<string>;
-  readonly codeValues?: ReadonlySet<string>;
-  readonly keyCodes?: ReadonlySet<number>;
-  readonly keyIdentifiers?: ReadonlySet<string>;
-}
-
-const ESCAPE_KEY_VALUES: ReadonlySet<string> = new Set(['Escape', 'Esc']);
-const ESCAPE_CODE_VALUES: ReadonlySet<string> = new Set(['Escape']);
-const ESCAPE_KEY_CODES: ReadonlySet<number> = new Set([27]);
-const ESCAPE_KEY_IDENTIFIERS: ReadonlySet<string> = new Set(['Escape', 'Esc', 'U+001B']);
-const ESCAPE_KEY_MATCHER: KeyMatcher = {
-  keyValues: ESCAPE_KEY_VALUES,
-  codeValues: ESCAPE_CODE_VALUES,
-  keyCodes: ESCAPE_KEY_CODES,
-  keyIdentifiers: ESCAPE_KEY_IDENTIFIERS
-};
+const ESCAPE_KEY_MATCHER = createKeyMatcher({
+  keyValues: [KEY_VALUE_ESCAPE, KEY_VALUE_ESC],
+  codeValues: [KEY_VALUE_ESCAPE],
+  keyCodes: [KEY_CODE_ESCAPE],
+  keyIdentifiers: [
+    KEY_IDENTIFIER_ESCAPE,
+    KEY_IDENTIFIER_ESC,
+    KEY_IDENTIFIER_ESCAPE_CODE
+  ]
+});
 
 const DEFAULT_BACKDROP_CLASS = 'cdk-overlay-dark-backdrop';
 
@@ -188,46 +187,6 @@ export class OverlayDialogService {
     } satisfies OverlayConfig;
   }
 }
-
-const matchesKey = (event: KeyboardEvent, matcher: KeyMatcher): boolean => {
-  if (matcher.keyValues && event.key && matcher.keyValues.has(event.key)) {
-    return true;
-  }
-
-  if (matcher.codeValues && event.code && matcher.codeValues.has(event.code)) {
-    return true;
-  }
-
-  if (matcher.keyCodes) {
-    const keyCode = resolveKeyCode(event);
-
-    if (keyCode !== null && matcher.keyCodes.has(keyCode)) {
-      return true;
-    }
-  }
-
-  if (matcher.keyIdentifiers) {
-    const legacyEvent = event as LegacyKeyboardEvent;
-
-    if (legacyEvent.keyIdentifier && matcher.keyIdentifiers.has(legacyEvent.keyIdentifier)) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-const resolveKeyCode = (event: KeyboardEvent): number | null => {
-  if (typeof event.keyCode === 'number' && event.keyCode > 0) {
-    return event.keyCode;
-  }
-
-  if (typeof event.which === 'number' && event.which > 0) {
-    return event.which;
-  }
-
-  return null;
-};
 
 export const injectOverlayDialogRef = <TResult>(): OverlayDialogRef<TResult> =>
   inject(OVERLAY_DIALOG_REF) as OverlayDialogRef<TResult>;
