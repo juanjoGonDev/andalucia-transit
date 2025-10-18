@@ -208,6 +208,11 @@ button:focus:not(:focus-visible),
   transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
 }
 
+.app-outline-button--compact {
+  --app-outline-button-gap: var(--space-xs);
+  --app-outline-button-padding: calc(var(--space-sm) - var(--space-5xs) - var(--space-6xs)) var(--space-md);
+}
+
 .app-outline-button:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
@@ -277,6 +282,23 @@ button:focus:not(:focus-visible),
 
 .app-field .mat-mdc-input-element {
   padding: 0;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text-primary);
+}
+
+.app-field .mat-mdc-input-element::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+.app-field .mat-mdc-form-field-flex {
+  align-items: center;
+}
+
+.app-field .mat-mdc-floating-label {
+  transition: none;
 }
 
 .app-field .mat-mdc-form-field-subscript-wrapper {
