@@ -149,14 +149,20 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   }
 
   handleFocus(): void {
+    if (this.isDisabled) {
+      return;
+    }
+
     this.isFocused = true;
     this.focusChange.emit(true);
+    this.changeDetectorRef.markForCheck();
   }
 
   handleBlur(): void {
     this.isFocused = false;
     this.onTouched();
     this.focusChange.emit(false);
+    this.changeDetectorRef.markForCheck();
   }
 
   handleInput(event: Event): void {
@@ -169,6 +175,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     this.value = target.value;
     this.onChange(this.value);
     this.valueChange.emit(this.value);
+    this.changeDetectorRef.markForCheck();
   }
 
   handleKeydown(event: KeyboardEvent): void {
