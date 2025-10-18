@@ -168,6 +168,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-20 Added a shared solid button compact modifier so the route search notice button relies on global tokens instead of feature-scoped overrides.
     - [x] Screenshot (Route search notice — desktop parity reconfirmed): https://browser.buildwithfern.com/invocations/njfazjfe/artifacts/artifacts/route-search-layout.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Restored compact solid button text contrast by inheriting the shared primitive color tokens while keeping spacing overrides token-driven.
+    - [x] Screenshot (Route search past-search notice — desktop): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-19 Replaced dialog spacing and confirm dialog metrics with global tokens so overlay padding, typography, and focus affordances remain baseline-identical.
   - [x] Screenshot (Favorites clear confirmation — desktop): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png

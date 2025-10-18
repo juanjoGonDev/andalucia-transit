@@ -250,8 +250,6 @@ button:focus:not(:focus-visible),
   --app-solid-button-gap: var(--space-xs);
   --app-solid-button-padding: var(--space-xs) var(--space-md);
   --app-solid-button-radius: var(--radius-full);
-  --app-solid-button-color: var(--color-surface-light);
-  --app-solid-button-transition: background-color 0.2s ease;
 }
 
 .app-field {
