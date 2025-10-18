@@ -145,6 +145,13 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
+
+    if (isDisabled && this.isFocused) {
+      this.isFocused = false;
+      this.onTouched();
+      this.focusChange.emit(false);
+    }
+
     this.changeDetectorRef.markForCheck();
   }
 

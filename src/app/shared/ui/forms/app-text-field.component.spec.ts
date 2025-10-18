@@ -177,4 +177,26 @@ describe('AppTextFieldComponent', () => {
 
     expect(field.classList).not.toContain(FOCUSED_CLASS);
   });
+
+  it('clears focus and emits blur semantics when disabling a focused control', () => {
+    const input = queryInput();
+    const field = queryField();
+    const componentInstance = resolveComponent();
+    let touched = false;
+    const focusChangeSpy = spyOn(componentInstance.focusChange, 'emit');
+
+    componentInstance.registerOnTouched(() => {
+      touched = true;
+    });
+
+    input.dispatchEvent(new FocusEvent('focus'));
+    fixture.detectChanges();
+
+    componentInstance.setDisabledState(true);
+    fixture.detectChanges();
+
+    expect(field.classList).not.toContain(FOCUSED_CLASS);
+    expect(focusChangeSpy).toHaveBeenCalledWith(false);
+    expect(touched).toBeTrue();
+  });
 });
