@@ -4,10 +4,12 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChild,
+  ElementRef,
   EventEmitter,
   HostBinding,
   Input,
   Output,
+  ViewChild,
   inject,
   forwardRef,
 } from '@angular/core';
@@ -69,6 +71,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   @ContentChild(AppTextFieldPrefixDirective) prefix?: AppTextFieldPrefixDirective;
   @ContentChild(AppTextFieldSuffixDirective) suffix?: AppTextFieldSuffixDirective;
   @ContentChild(AppTextFieldHintDirective) hint?: AppTextFieldHintDirective;
+  @ViewChild('nativeInput') nativeInput?: ElementRef<HTMLInputElement>;
 
   @HostBinding('class.app-text-field-host')
   readonly hostClass = true;
@@ -145,18 +148,26 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
   setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
+
+    if (isDisabled && this.isFocused) {
+      this.blurInputAfterDisable();
+    }
+
     this.changeDetectorRef.markForCheck();
   }
 
   handleFocus(): void {
+    if (this.isDisabled) {
+      return;
+    }
+
     this.isFocused = true;
     this.focusChange.emit(true);
+    this.changeDetectorRef.markForCheck();
   }
 
   handleBlur(): void {
-    this.isFocused = false;
-    this.onTouched();
-    this.focusChange.emit(false);
+    this.applyBlurState();
   }
 
   handleInput(event: Event): void {
@@ -169,6 +180,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     this.value = target.value;
     this.onChange(this.value);
     this.valueChange.emit(this.value);
+    this.changeDetectorRef.markForCheck();
   }
 
   handleKeydown(event: KeyboardEvent): void {
@@ -180,6 +192,31 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     AppTextFieldComponent.idCounter += 1;
 
     return `${TEXT_FIELD_ID_PREFIX}${TEXT_FIELD_ID_SEPARATOR}${currentId}`;
+  }
+
+  private blurInputAfterDisable(): void {
+    const inputElement = this.nativeInput?.nativeElement ?? null;
+
+    if (inputElement) {
+      inputElement.blur();
+      queueMicrotask(() => {
+        this.applyBlurState();
+      });
+      return;
+    }
+
+    this.applyBlurState();
+  }
+
+  private applyBlurState(): void {
+    if (!this.isFocused) {
+      return;
+    }
+
+    this.isFocused = false;
+    this.onTouched();
+    this.focusChange.emit(false);
+    this.changeDetectorRef.markForCheck();
   }
 
   private static normalizeDescribedByInput(
