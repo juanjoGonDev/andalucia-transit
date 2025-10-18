@@ -38,6 +38,15 @@
   cursor: not-allowed;
 }
 
+.app-text-field--invalid .app-text-field__control {
+  border-color: var(--color-error);
+  background-color: var(--color-error-soft);
+}
+
+.app-text-field--invalid .app-text-field__label {
+  color: var(--color-error);
+}
+
 .app-text-field__input {
   flex: 1;
   min-width: 0;
@@ -65,4 +74,10 @@
   font-size: var(--font-size-xs);
   line-height: var(--line-height-relaxed);
   color: var(--color-text-muted);
+}
+
+.app-text-field__error {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-error);
 }

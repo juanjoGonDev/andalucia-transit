@@ -13,6 +13,9 @@
     "es": "Spanish",
     "en": "English"
   },
+  "layout": {
+    "skipToContent": "Skip to main content"
+  },
   "home": {
     "header": {
       "title": "Plan your next ride",

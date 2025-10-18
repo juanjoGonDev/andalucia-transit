@@ -1,7 +1,13 @@
-<h2 class="app-dialog__title">{{ titleKey | translate }}</h2>
+<h2 class="app-dialog__title" [attr.id]="titleId">{{ titleKey | translate }}</h2>
 
 <div class="app-dialog__content" role="document">
-  <p *ngIf="descriptionKey" class="app-dialog__description">{{ descriptionKey | translate }}</p>
+  <p
+    *ngIf="descriptionKey"
+    class="app-dialog__description"
+    [attr.id]="descriptionId"
+  >
+    {{ descriptionKey | translate }}
+  </p>
   <ng-content select="[appDialogBody]"></ng-content>
 </div>
 

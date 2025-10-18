@@ -10,3 +10,35 @@
   display: flex;
   flex-direction: column;
 }
+
+.app-shell__skip {
+  position: absolute;
+  inset-inline-start: var(--space-lg);
+  top: var(--space-lg);
+  z-index: var(--z-index-dropdown);
+}
+
+.app-shell__skip-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding-block: var(--space-xs);
+  padding-inline: var(--space-sm);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-base);
+  box-shadow: var(--shadow-button);
+  transform: translateY(calc(-1 * var(--space-4xl)));
+  opacity: 0;
+}
+
+.app-shell__skip-button:focus-visible {
+  transform: translateY(0);
+  opacity: 1;
+  box-shadow: var(--shadow-focus-ring);
+}

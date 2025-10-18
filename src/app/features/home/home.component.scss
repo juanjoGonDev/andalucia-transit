@@ -3,15 +3,10 @@
 }
 
 .home {
-  --home-blue: var(--color-primary);
-  --home-navy: var(--color-secondary);
-  --home-light: var(--color-surface-muted);
-  --home-text-soft: var(--color-text-inverse-soft);
-  --home-ink-soft: var(--color-text-secondary);
   position: relative;
   min-height: 100dvh;
-  padding-bottom: clamp(2.5rem, 6vw, 4rem);
-  background: linear-gradient(160deg, var(--home-blue) 0%, var(--home-navy) 70%);
+  padding-bottom: clamp(var(--space-2xl), 6vw, var(--space-4xl));
+  background: linear-gradient(160deg, var(--color-primary) 0%, var(--color-secondary) 70%);
   color: var(--color-text-inverse);
   overflow: hidden;
 }
@@ -53,7 +48,7 @@
 .home__stack {
   display: flex;
   flex-direction: column;
-  gap: var(--home-gap, 1rem);
+  gap: var(--space-md);
 }
 
 .home__container {
@@ -61,16 +56,17 @@
   z-index: 1;
   width: min(100%, 64rem);
   margin: 0 auto;
-  padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 6vw, 4rem) 0;
-  --home-gap: clamp(1.75rem, 4vw, 3rem);
+  padding: clamp(var(--space-lg), 5vw, var(--space-3xl))
+    clamp(var(--space-md), 6vw, var(--space-4xl)) 0;
+  gap: clamp(calc(var(--space-lg) + var(--space-3xs)), 4vw, var(--space-3xl));
 }
 
 .home__header {
-  --home-gap: clamp(1rem, 3vw, 1.75rem);
+  gap: clamp(var(--space-md), 3vw, calc(var(--space-lg) + var(--space-3xs)));
 }
 
 .home__intro {
-  --home-gap: 0.75rem;
+  gap: var(--space-sm);
   max-width: 75vw;
 }
 
@@ -80,7 +76,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--home-text-soft);
+  color: var(--color-text-inverse-soft);
 }
 
 .home__headline {
@@ -93,16 +89,16 @@
 .home__description {
   margin: 0;
   font-size: clamp(1rem, 1.6vw, 1.15rem);
-  color: var(--home-text-soft);
+  color: var(--color-text-inverse-soft);
 }
 
 .home__main {
-  --home-gap: clamp(1.75rem, 4vw, 2.75rem);
+  gap: clamp(calc(var(--space-lg) + var(--space-3xs)), 4vw, calc(var(--space-2xl) + var(--space-3xs)));
 }
 
 .home__card {
-  --home-gap: 1.5rem;
-  padding: clamp(1.5rem, 3vw, 2.25rem);
+  gap: var(--space-lg);
+  padding: clamp(var(--space-lg), 3vw, calc(var(--space-2xl) - var(--space-3xs)));
   border-radius: 1.75rem;
   background: var(--color-surface);
   color: var(--color-text-primary);
@@ -118,7 +114,7 @@
 }
 
 .home__card--summary .home__card-subtitle {
-  color: var(--home-text-soft);
+  color: var(--color-text-inverse-soft);
 }
 
 .home__card--summary .home__panel-action {
@@ -127,7 +123,7 @@
 }
 
 .home__card-header {
-  --home-gap: 1.25rem;
+  gap: var(--space-md-plus);
 }
 
 .home__card-title {
@@ -139,7 +135,7 @@
 .home__card-subtitle {
   margin: 0;
   font-size: 0.95rem;
-  color: var(--home-ink-soft);
+  color: var(--color-text-secondary);
 }
 
 .home__tabs {
@@ -148,7 +144,7 @@
   gap: 0.25rem;
   padding: 0.3rem;
   border-radius: 999px;
-  background: var(--home-light);
+  background: var(--color-surface-muted);
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -159,7 +155,7 @@
   padding: 0.55rem 1.2rem;
   background: transparent;
   font-weight: 600;
-  color: var(--home-ink-soft);
+  color: var(--color-text-secondary);
   flex: 1 0 auto;
 }
 
@@ -173,22 +169,22 @@
 }
 
 .home__card-body {
-  --home-gap: 1.25rem;
+  gap: var(--space-md-plus);
 }
 
 .home__panel {
-  --home-gap: 1.25rem;
+  gap: var(--space-md-plus);
 }
 
 .home__panel-heading {
-  --home-gap: 0.5rem;
+  gap: var(--space-xs);
 }
 
 .home__panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: var(--space-md);
 }
 
 .home__panel-title {
@@ -213,8 +209,8 @@
 .home__recent-summary {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  padding: clamp(1.3rem, 3vw, 2rem);
+  gap: var(--space-md-plus);
+  padding: clamp(calc(var(--space-lg) - var(--space-4xs)), 3vw, var(--space-xl));
   border-radius: 1.75rem;
   background: color-mix(in srgb, var(--color-surface) 12%, transparent);
   color: var(--color-text-inverse);
@@ -224,7 +220,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
+  gap: var(--space-md);
 }
 
 .home__recent-summary-title {
@@ -236,7 +232,7 @@
 .home__recent-summary-subtitle {
   margin: 0.35rem 0 0;
   font-size: 0.95rem;
-  color: var(--home-text-soft);
+  color: var(--color-text-inverse-soft);
 }
 
 .home__recent-summary-action {
