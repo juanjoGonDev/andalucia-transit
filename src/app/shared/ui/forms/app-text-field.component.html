@@ -21,6 +21,7 @@
       [attr.placeholder]="placeholder"
       [attr.readonly]="readonly ? '' : null"
       [attr.aria-describedby]="ariaDescribedByAttribute"
+      [attr.aria-errormessage]="ariaErrormessageAttribute"
       [attr.aria-invalid]="ariaInvalidAttribute"
       [attr.aria-required]="ariaRequiredAttribute"
       [attr.required]="requiredAttribute"
@@ -35,7 +36,13 @@
       <ng-content select="[appTextFieldSuffix]"></ng-content>
     </span>
   </div>
-  <div class="app-text-field__error" *ngIf="shouldDisplayError" [id]="errorId">
+  <div
+    class="app-text-field__error"
+    *ngIf="shouldDisplayError"
+    [id]="errorId"
+    role="alert"
+    aria-live="polite"
+  >
     <ng-content select="[appTextFieldError]"></ng-content>
   </div>
   <div class="app-text-field__hint" *ngIf="shouldDisplayHint" [id]="hintId">

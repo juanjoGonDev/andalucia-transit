@@ -98,6 +98,8 @@ class AppTextFieldReactiveHostComponent {
 describe('AppTextFieldComponent', () => {
   let fixture: ComponentFixture<AppTextFieldHostComponent>;
   let host: AppTextFieldHostComponent;
+  let reactiveFixture: ComponentFixture<AppTextFieldReactiveHostComponent>;
+  let reactiveHost: AppTextFieldReactiveHostComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -106,6 +108,8 @@ describe('AppTextFieldComponent', () => {
 
     fixture = TestBed.createComponent(AppTextFieldHostComponent);
     host = fixture.componentInstance;
+    reactiveFixture = TestBed.createComponent(AppTextFieldReactiveHostComponent);
+    reactiveHost = reactiveFixture.componentInstance;
   });
 
   function queryInput(): HTMLInputElement {
@@ -150,6 +154,27 @@ describe('AppTextFieldComponent', () => {
     }
 
     return debugElement.componentInstance as AppTextFieldComponent;
+  }
+
+  function queryReactiveInput(): HTMLInputElement {
+    reactiveFixture.detectChanges();
+    const element = reactiveFixture.nativeElement.querySelector(INPUT_SELECTOR) as HTMLInputElement | null;
+
+    if (!element) {
+      throw new Error(MISSING_INPUT_ERROR_MESSAGE);
+    }
+
+    return element;
+  }
+
+  function resolveReactiveControl(): FormControl<string> {
+    const control = reactiveHost.form.get('field');
+
+    if (!(control instanceof FormControl)) {
+      throw new Error('Reactive control not found');
+    }
+
+    return control;
   }
 
   it('combines hint and describedBy identifiers', () => {
@@ -201,6 +226,38 @@ describe('AppTextFieldComponent', () => {
 
     expect(host.recordedKeys).toEqual([SAMPLE_KEY]);
   });
+
+  it('exposes aria-errormessage when the reactive control is invalid', fakeAsync(() => {
+    reactiveHost.showError = true;
+
+    const control = resolveReactiveControl();
+    control.markAsTouched();
+    reactiveFixture.detectChanges();
+    flush();
+
+    const input = queryReactiveInput();
+    const errorIdentifier = input.getAttribute('aria-errormessage');
+
+    expect(errorIdentifier).toBe(`${input.id}-error`);
+    expect(input.getAttribute('aria-describedby')).toBeNull();
+  }));
+
+  it('removes aria-errormessage when the reactive control becomes valid', fakeAsync(() => {
+    reactiveHost.showError = true;
+
+    const control = resolveReactiveControl();
+    control.markAsTouched();
+    reactiveFixture.detectChanges();
+    flush();
+
+    control.setValue('value');
+    reactiveFixture.detectChanges();
+    flush();
+
+    const input = queryReactiveInput();
+
+    expect(input.getAttribute('aria-errormessage')).toBeNull();
+  }));
 
   it('adds the focused class when the input gains focus', () => {
     const input = queryInput();
@@ -391,11 +448,10 @@ describe('AppTextFieldComponent', () => {
     expect(errorElement?.textContent?.trim()).toBe(reactiveHost.errorText);
     expect(reactiveFixture.nativeElement.querySelector(HINT_SELECTOR)).toBeNull();
 
-    const describedBy = input.getAttribute('aria-describedby') ?? '';
-    const parts = describedBy.split(' ').filter((part) => part !== '');
     const expectedErrorId = `${input.id}-error`;
 
-    expect(parts).toContain(expectedErrorId);
+    expect(input.getAttribute('aria-errormessage')).toBe(expectedErrorId);
+    expect(input.getAttribute('aria-describedby')).toBeNull();
 
     input.value = 'content';
     input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -407,6 +463,7 @@ describe('AppTextFieldComponent', () => {
     expect(hintElement).not.toBeNull();
     expect(hintElement?.textContent?.trim()).toBe(reactiveHost.hintText);
 
+    expect(input.getAttribute('aria-errormessage')).toBeNull();
     const updatedDescribedBy = input.getAttribute('aria-describedby') ?? '';
     const updatedParts = updatedDescribedBy.split(' ').filter((part) => part !== '');
     const expectedHintId = `${input.id}-hint`;

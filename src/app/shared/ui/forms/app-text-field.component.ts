@@ -124,16 +124,16 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     const collectedIds: string[] = [];
     const errorIdentifier = this.errorId;
 
-    if (errorIdentifier) {
-      collectedIds.push(errorIdentifier);
-    }
-
     if (this.shouldDisplayHint) {
       const hintIdentifier = this.hintId;
 
       if (hintIdentifier) {
         collectedIds.push(hintIdentifier);
       }
+    }
+
+    if (!this.ariaErrormessageAttribute && errorIdentifier) {
+      collectedIds.push(errorIdentifier);
     }
 
     collectedIds.push(...this.additionalDescribedByIds);
@@ -163,6 +163,10 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
   get ariaRequiredAttribute(): 'true' | null {
     return this.isRequired ? (ARIA_TRUE as 'true') : null;
+  }
+
+  get ariaErrormessageAttribute(): string | null {
+    return this.errorId;
   }
 
   get requiredAttribute(): '' | null {
