@@ -6,6 +6,9 @@ import { AccessibleButtonDirective, AccessibleButtonPopupToken } from './accessi
 
 type ExtendedKeyboardEvent = KeyboardEvent & { keyIdentifier?: string };
 
+const ENTER_KEY_CODE = 13 as const;
+const ENTER_CODE = 'Enter' as const;
+const ENTER_KEY_IDENTIFIERS = ['Enter', 'U+000D'] as const;
 const SPACE_KEY_CODE = 32 as const;
 const SPACE_CODE = 'Space' as const;
 const SPACE_KEY_IDENTIFIER = 'U+0020' as const;
@@ -288,6 +291,70 @@ describe('AccessibleButtonDirective', () => {
       nativeElement.dispatchEvent(keyupEvent);
 
       expect(keyupEvent.defaultPrevented).toBeTrue();
+      expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
+    }
+  });
+
+  it('should treat alternate enter key values as activation triggers', () => {
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+    const alternateKeys: readonly string[] = ['Return'];
+
+    for (const key of alternateKeys) {
+      hostComponent.onActivated.calls.reset();
+
+      const keydownEvent = new KeyboardEvent('keydown', { key, cancelable: true });
+      nativeElement.dispatchEvent(keydownEvent);
+
+      expect(keydownEvent.defaultPrevented).toBeTrue();
+      expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
+    }
+  });
+
+  it('should treat enter keyboard code as activation trigger when key is empty', () => {
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    hostComponent.onActivated.calls.reset();
+
+    const keydownEvent = new KeyboardEvent('keydown', {
+      key: '',
+      code: ENTER_CODE,
+      cancelable: true
+    });
+    nativeElement.dispatchEvent(keydownEvent);
+
+    expect(keydownEvent.defaultPrevented).toBeTrue();
+    expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
+  });
+
+  it('should treat legacy enter keyCode values as activation triggers', () => {
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    hostComponent.onActivated.calls.reset();
+
+    const keydownEvent = new KeyboardEvent('keydown', { key: '', cancelable: true });
+    setKeyboardEventNumberProperty(keydownEvent, 'keyCode', ENTER_KEY_CODE);
+    setKeyboardEventNumberProperty(keydownEvent, 'which', ENTER_KEY_CODE);
+    nativeElement.dispatchEvent(keydownEvent);
+
+    expect(keydownEvent.defaultPrevented).toBeTrue();
+    expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
+  });
+
+  it('should treat legacy enter keyIdentifier values as activation triggers', () => {
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    for (const identifier of ENTER_KEY_IDENTIFIERS) {
+      hostComponent.onActivated.calls.reset();
+
+      const keydownEvent = new KeyboardEvent('keydown', { key: '', cancelable: true });
+      setKeyboardEventIdentifier(keydownEvent, identifier);
+      nativeElement.dispatchEvent(keydownEvent);
+
+      expect(keydownEvent.defaultPrevented).toBeTrue();
       expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
     }
   });
