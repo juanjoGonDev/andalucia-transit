@@ -113,3 +113,95 @@ This phase is purely structural and organizational — no aesthetic changes are 
 🖼 **Baseline Reference:**  
 The current layout, as rendered in the production build, is the **canonical baseline**.  
 Each iteration of this refactor must include one or more browser screenshots with accessible URLs demonstrating identical visual output to the baseline.
+
+### Visual Bug Fixes (2025-10-18)
+- [x] Favorites cards parity restored (A1) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-18 Realigned favorites list cards with the shared interactive card primitive, restoring gradient, elevation, and chip hierarchy without layout drift.
+  - [x] Screenshot (Favorites list — desktop): https://browser.buildwithfern.com/invocations/qekfmfwj/artifacts/artifacts/favorites-desktop.png
+  - [x] Screenshot (Favorites list — mobile): https://browser.buildwithfern.com/invocations/qekfmfwj/artifacts/artifacts/favorites-mobile.png
+  - [x] Tests: `npm run lint`; `npm run test` *(aborted while installing Chrome dependencies for the Angular runner)*; `npm run build`.
+- [x] Recent searches time block anchoring (A2) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-18 Reworked recent preview entry layout with flex alignment and non-wrapping time blocks at mobile and desktop widths.
+  - [x] Screenshot (Home recent searches — desktop): https://browser.buildwithfern.com/invocations/wdsyzxta/artifacts/artifacts/recent-time.png
+  - [x] Tests: `npm run lint`; `npm run test` *(aborted during Chrome dependency installation)*; `npm run build` *(aborted while installing Chrome system dependencies)*.
+- [x] Settings view layout integration (A3) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-18 Routed settings through the shared layout surface with the utility container and layout body tokens, ensuring baseline spacing and cards render on the muted surface without ad-hoc padding.
+  - [x] Screenshot (Settings view — desktop): https://browser.buildwithfern.com/invocations/kusjavnh/artifacts/artifacts/settings-desktop.png
+  - [x] Screenshot (Settings view — mobile): https://browser.buildwithfern.com/invocations/kusjavnh/artifacts/artifacts/settings-mobile.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [x] Search form input stability (A4) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-18 Locked route search origin, destination, and date fields to always-floating labels with tokenized input metrics so focus no longer shifts layout and values stay vertically centered.
+  - [x] Screenshot (Route search form — desktop): https://browser.buildwithfern.com/invocations/dqwckahq/artifacts/artifacts/route-search-form.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [x] Route search & stop detail layout adoption (A5) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-18 Routed route search and stop detail through the shared layout surface and body utilities so both views inherit the global spacing and surface tokens without altering card metrics.
+  - [x] Screenshot (Route search view — desktop): https://browser.buildwithfern.com/invocations/njfazjfe/artifacts/artifacts/route-search-layout.png
+  - [x] Screenshot (Stop detail view — desktop): https://browser.buildwithfern.com/invocations/qorpxvbz/artifacts/artifacts/stop-detail-layout.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-19 Removed ad-hoc overrides of layout body spacing on route search so the view now relies on shared app layout tokens while preserving header stickiness and internal padding.
+  - [x] Screenshot (Route search view — desktop, parity confirmed): https://browser.buildwithfern.com/invocations/njfazjfe/artifacts/artifacts/route-search-layout.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [x] Global pointer cursor directive coverage (A6) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-18 Enforced pointer cursor host binding on `AccessibleButtonDirective` while preserving disabled affordance semantics.
+  - [x] Screenshot (Home interactions — desktop): https://browser.buildwithfern.com/invocations/hftcnxkb/artifacts/artifacts/home-pointer.png
+  - [x] Tests: `npm run lint`; `npm run test` (Angular runner blocked by apt.llvm.org 502 while installing Chrome dependencies); `npm run build`.
+
+### Layout & Theming Consistency (2025-10-18)
+- [x] Token compliance audit (B1) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-18 Replaced recent preview entry feature-scoped CSS variables with global tokens while preserving pixel parity.
+  - [x] Screenshot (Home recent preview — desktop): https://browser.buildwithfern.com/invocations/argurclo/artifacts/artifacts/recent-preview-tokens.png
+  - [x] 2025-10-19 Replaced Home view feature-scoped custom properties with shared layout and color tokens while preserving responsive stack spacing.
+  - [x] Screenshot (Home view — desktop): https://browser.buildwithfern.com/invocations/dizffnry/artifacts/artifacts/home-token-audit.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [x] 2025-10-19 Added a shared outline button compact variant so the favorites clear action no longer defines feature-scoped custom properties while maintaining baseline spacing.
+  - [x] Screenshot (Favorites clear action — desktop): https://browser.buildwithfern.com/invocations/auujufaq/artifacts/artifacts/favorites-outline-button.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [x] 2025-10-19 Tuned the shared outline button compact modifier to rely on the component’s CSS custom properties so spacing remains token-driven without bypassing the primitive contract.
+  - [x] Screenshot (Favorites clear action — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/auujufaq/artifacts/artifacts/favorites-outline-button.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Mapped the shell top actions surface and controls to navigation tokens, removing component-scoped CSS variables while preserving glassmorphism metrics.
+    - [x] Screenshot (Shell top actions — desktop parity): https://browser.buildwithfern.com/invocations/fudcemdn/artifacts/artifacts/shell-top-actions.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Recalibrated shell top actions spacing, backdrop blur, and dropdown padding to derive exclusively from shared spacing tokens while keeping navigation shadows token-driven.
+    - [x] Screenshot (Shell top actions — desktop parity, spacing tokens): https://browser.buildwithfern.com/invocations/jfqofway/artifacts/artifacts/shell-top-actions-token.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Added a shared solid button compact modifier so the route search notice button relies on global tokens instead of feature-scoped overrides.
+    - [x] Screenshot (Route search notice — desktop parity reconfirmed): https://browser.buildwithfern.com/invocations/njfazjfe/artifacts/artifacts/route-search-layout.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [ ] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Replaced dialog spacing and confirm dialog metrics with global tokens so overlay padding, typography, and focus affordances remain baseline-identical.
+  - [x] Screenshot (Favorites clear confirmation — desktop): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Removed Material dialog container classes in favor of the shared overlay surface styling so dialogs rely exclusively on global tokens without altering visuals.
+  - [x] Screenshot (Favorites clear confirmation — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Injected the platform `Document` and guarded focus restoration against detached nodes so dialog focus handling stays SSR-safe without impacting visuals.
+  - [x] Screenshot (Favorites clear confirmation — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Resolved dialog focus capture without relying on the injected document token by falling back to the host document so SSR renders remain stable.
+  - [x] Screenshot (Favorites clear confirmation — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Migrated favorites search filter to the shared AppTextFieldComponent to align control metrics and focus behavior without altering layout.
+  - [x] Screenshot (Favorites search — desktop): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-19 Reinforced AppTextField focus state detection so shared inputs retain tokenized styling under OnPush change detection without layout drift.
+  - [x] Screenshot (Favorites search — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-19 Ensured disabling a focused AppTextField clears focus styling, emits blur semantics, and preserves OnPush change detection for harmonized form primitives.
+  - [x] Screenshot (Favorites search — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-19 Requested native blur on disable transitions so shared text fields drop focus both visually and at the DOM level without regressing tokenized styling.
+  - [x] Screenshot (Favorites search — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [ ] Accessibility verification sweep (B4) — attach public screenshot URL(s); visual diff must be 0px.
+
+### Feature Roadmap (2025-10-18)
+- [ ] News feed view (C1) — attach public screenshot URL(s); visual diff must be 0px.
+  - [ ] Document CTAN endpoint + caching in `docs/api-reference.md`.
+- [ ] Stop information by consortium + stop number (C2) — attach public screenshot URL(s); visual diff must be 0px.
+  - [ ] Ensure friendly URL contract and offline fallback notes in documentation.
+- [ ] Interactive map with nearby stops (C3) — attach public screenshot URL(s); visual diff must be 0px.
+  - [ ] Record OSM/Leaflet licensing and geolocation consent handling in documentation.
+- [ ] Route overlay on map (C4) — attach public screenshot URL(s); visual diff must be 0px.
+  - [ ] Describe polyline transformation and caching strategy in documentation.

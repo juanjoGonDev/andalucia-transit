@@ -1,60 +1,64 @@
-<div
-  class="settings"
+<section
+  class="settings app-layout__surface"
   appLayoutContent
   [appLayoutContentNavigationKey]="layoutNavigationKey"
 >
-  <app-section [titleKey]="languageSectionTitleKey" appearance="card">
-    <div class="settings__section">
-      <p class="settings__description">{{ languageDescriptionKey | translate }}</p>
-      <ul class="settings__list" role="list">
-        <li
-          *ngFor="let item of languageItems(); trackBy: languageTrackBy"
-          class="settings__list-item"
-        >
-          <div
-            appAccessibleButton
-            class="settings__language-button"
-            [class.settings__language-button--active]="item.isActive"
-            (appAccessibleButtonActivated)="onLanguageSelected(item.code)"
-            [appAccessibleButtonPressed]="item.isActive"
-            [attr.aria-label]="languageActionLabelKey | translate: { language: (item.labelKey | translate) }"
-          >
-            <span class="settings__language-label">{{ item.labelKey | translate }}</span>
-            <span class="settings__language-status" *ngIf="item.isActive">
-              {{ languageActiveLabelKey | translate }}
-            </span>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </app-section>
-  <app-section [titleKey]="recentSearchesTitleKey" appearance="card">
-    <div class="settings__section">
-      <p class="settings__description">{{ recentSearchesDescriptionKey | translate }}</p>
-      <div class="settings__controls">
-        <div
-          appAccessibleButton
-          class="settings__toggle"
-          [appAccessibleButtonRole]="'switch'"
-          [appAccessibleButtonChecked]="previewEnabled()"
-          (appAccessibleButtonActivated)="togglePreview()"
-        >
-          <span
-            class="settings__toggle-track"
-            aria-hidden="true"
-            [attr.data-active]="previewEnabled() ? 'true' : null"
-          >
-            <span class="settings__toggle-thumb"></span>
-          </span>
-          <span class="settings__toggle-label">{{ previewToggleLabelKey | translate }}</span>
+  <div class="utility-container">
+    <div class="app-layout__body">
+      <app-section [titleKey]="languageSectionTitleKey" appearance="card">
+        <div class="settings__section">
+          <p class="settings__description">{{ languageDescriptionKey | translate }}</p>
+          <ul class="settings__list" role="list">
+            <li
+              *ngFor="let item of languageItems(); trackBy: languageTrackBy"
+              class="settings__list-item"
+            >
+              <div
+                appAccessibleButton
+                class="settings__language-button"
+                [class.settings__language-button--active]="item.isActive"
+                (appAccessibleButtonActivated)="onLanguageSelected(item.code)"
+                [appAccessibleButtonPressed]="item.isActive"
+                [attr.aria-label]="languageActionLabelKey | translate: { language: (item.labelKey | translate) }"
+              >
+                <span class="settings__language-label">{{ item.labelKey | translate }}</span>
+                <span class="settings__language-status" *ngIf="item.isActive">
+                  {{ languageActiveLabelKey | translate }}
+                </span>
+              </div>
+            </li>
+          </ul>
         </div>
-      </div>
+      </app-section>
+      <app-section [titleKey]="recentSearchesTitleKey" appearance="card">
+        <div class="settings__section">
+          <p class="settings__description">{{ recentSearchesDescriptionKey | translate }}</p>
+          <div class="settings__controls">
+            <div
+              appAccessibleButton
+              class="settings__toggle"
+              [appAccessibleButtonRole]="'switch'"
+              [appAccessibleButtonChecked]="previewEnabled()"
+              (appAccessibleButtonActivated)="togglePreview()"
+            >
+              <span
+                class="settings__toggle-track"
+                aria-hidden="true"
+                [attr.data-active]="previewEnabled() ? 'true' : null"
+              >
+                <span class="settings__toggle-thumb"></span>
+              </span>
+              <span class="settings__toggle-label">{{ previewToggleLabelKey | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </app-section>
+      <app-section [titleKey]="applicationSectionTitleKey" appearance="card">
+        <div class="settings__section settings__section--application">
+          <span class="settings__version-label">{{ applicationVersionLabelKey | translate }}</span>
+          <span class="settings__version-value">{{ version }}</span>
+        </div>
+      </app-section>
     </div>
-  </app-section>
-  <app-section [titleKey]="applicationSectionTitleKey" appearance="card">
-    <div class="settings__section settings__section--application">
-      <span class="settings__version-label">{{ applicationVersionLabelKey | translate }}</span>
-      <span class="settings__version-value">{{ version }}</span>
-    </div>
-  </app-section>
-</div>
+  </div>
+</section>

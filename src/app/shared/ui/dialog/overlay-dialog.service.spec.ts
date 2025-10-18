@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, flush, flushMicrotasks } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
+import { OVERLAY_DIALOG_SURFACE_CLASS } from './overlay-dialog-container.component';
 import {
   OverlayDialogConfig,
   OverlayDialogRef,
@@ -10,7 +11,7 @@ import {
 } from './overlay-dialog.service';
 
 const CONTAINER_SELECTOR = 'app-overlay-dialog-container';
-const SURFACE_SELECTOR = '.mdc-dialog__surface';
+const SURFACE_SELECTOR = `.${OVERLAY_DIALOG_SURFACE_CLASS}`;
 const TRIGGER_SELECTOR = 'button';
 const ALERT_ROLE: OverlayDialogRole = 'alertdialog';
 const DEFAULT_ROLE: OverlayDialogRole = 'dialog';
