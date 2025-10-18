@@ -313,17 +313,6 @@ button:focus:not(:focus-visible),
   color: var(--color-primary);
 }
 
-.mat-mdc-dialog-container {
-  padding: 0;
-}
-
-.mat-mdc-dialog-container .mdc-dialog__surface {
-  border-radius: var(--radius-xl);
-  background-color: var(--color-dialog-surface);
-  box-shadow: var(--shadow-dialog);
-  padding: 0;
-}
-
 .app-dialog {
   display: flex;
   flex-direction: column;

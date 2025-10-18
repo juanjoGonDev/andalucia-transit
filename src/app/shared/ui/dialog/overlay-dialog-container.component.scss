@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  padding: 0;
+}
+
+.app-overlay-dialog__surface {
+  display: block;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-dialog-surface);
+  box-shadow: var(--shadow-dialog);
+  padding: 0;
+  overflow: hidden;
+  color: var(--color-text-strong);
+}

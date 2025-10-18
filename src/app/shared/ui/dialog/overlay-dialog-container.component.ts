@@ -13,18 +13,22 @@ import { CdkPortalOutlet, ComponentPortal, PortalModule } from '@angular/cdk/por
 import { FocusTrap, FocusTrapFactory } from '@angular/cdk/a11y';
 import { OverlayDialogRole } from './overlay-dialog.service';
 
+export const OVERLAY_DIALOG_CONTAINER_CLASS = 'app-overlay-dialog__container';
+export const OVERLAY_DIALOG_SURFACE_CLASS = 'app-overlay-dialog__surface';
+
 @Component({
   selector: 'app-overlay-dialog-container',
   standalone: true,
   imports: [PortalModule],
   template: `
-    <div class="mdc-dialog__surface">
+    <div class="${OVERLAY_DIALOG_SURFACE_CLASS}">
       <ng-template cdkPortalOutlet></ng-template>
     </div>
   `,
+  styleUrl: './overlay-dialog-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'mat-mdc-dialog-container'
+    class: OVERLAY_DIALOG_CONTAINER_CLASS
   }
 })
 export class OverlayDialogContainerComponent implements AfterViewInit, OnDestroy {
