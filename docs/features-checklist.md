@@ -120,7 +120,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
 - [ ] Settings view layout integration (A3) — attach public screenshot URL(s); visual diff must be 0px.
 - [ ] Search form input stability (A4) — attach public screenshot URL(s); visual diff must be 0px.
 - [ ] Route search & stop detail layout adoption (A5) — attach public screenshot URL(s); visual diff must be 0px.
-- [ ] Global pointer cursor directive coverage (A6) — attach public screenshot URL(s); visual diff must be 0px.
+- [x] Global pointer cursor directive coverage (A6) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-18 Enforced pointer cursor host binding on `AccessibleButtonDirective` while preserving disabled affordance semantics.
+  - [x] Screenshot (Home interactions — desktop): https://browser.buildwithfern.com/invocations/hftcnxkb/artifacts/artifacts/home-pointer.png
+  - [x] Tests: `npm run lint`; `npm run test` (Angular runner blocked by apt.llvm.org 502 while installing Chrome dependencies); `npm run build`.
 
 ### Layout & Theming Consistency (2025-10-18)
 - [ ] Token compliance audit (B1) — attach public screenshot URL(s); visual diff must be 0px.
