@@ -143,7 +143,9 @@ describe('AppDatePickerComponent projected error content', () => {
   template: `
     <form [formGroup]="form">
       <app-date-picker label="Start date" formControlName="date">
-        <span appTextFieldError>{{ errorMessage }}</span>
+        <ng-template appTextFieldError>
+          <span>{{ errorMessage }}</span>
+        </ng-template>
       </app-date-picker>
     </form>
   `,

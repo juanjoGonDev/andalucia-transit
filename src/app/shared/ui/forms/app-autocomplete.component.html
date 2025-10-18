@@ -7,7 +7,7 @@
 <ng-template #hintContent>
   <ng-content select="[appTextFieldHint]"></ng-content>
 </ng-template>
-<ng-template #errorContent>
+<ng-template #errorProjection>
   <ng-content select="[appTextFieldError]"></ng-content>
 </ng-template>
 <app-text-field
@@ -23,6 +23,7 @@
   [attr.aria-controls]="hasOptions ? panelId : null"
   [attr.aria-expanded]="ariaExpanded"
   [attr.aria-activedescendant]="activeOptionId"
+  [errorTemplate]="errorTemplate"
   (valueChange)="handleValueChange($event)"
   (focusChange)="handleFocusChange($event)"
   (keydownEvent)="handleKeydown($event)"
@@ -30,7 +31,7 @@
   <ng-container *ngTemplateOutlet="prefixContent"></ng-container>
   <ng-container *ngTemplateOutlet="suffixContent"></ng-container>
   <ng-container *ngTemplateOutlet="hintContent"></ng-container>
-  <ng-container *ngTemplateOutlet="errorContent"></ng-container>
+  <ng-container *ngTemplateOutlet="errorProjection"></ng-container>
 </app-text-field>
 <div
   *ngIf="isPanelOpen"

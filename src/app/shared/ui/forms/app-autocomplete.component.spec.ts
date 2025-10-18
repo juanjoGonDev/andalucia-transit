@@ -282,7 +282,9 @@ describe('AppAutocompleteComponent form integration', () => {
   template: `
     <form [formGroup]="form">
       <app-autocomplete label="City" formControlName="city" [options]="options">
-        <span appTextFieldError>{{ errorMessage }}</span>
+        <ng-template appTextFieldError>
+          <span>{{ errorMessage }}</span>
+        </ng-template>
       </app-autocomplete>
     </form>
   `,

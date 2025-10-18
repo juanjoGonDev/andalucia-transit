@@ -40,7 +40,9 @@ const INVALID_CLASS = 'app-text-field--invalid';
       (keydownEvent)="recordKey($event)"
     >
       <span *ngIf="showHint" appTextFieldHint>{{ hintText }}</span>
-      <span *ngIf="showError" appTextFieldError>{{ errorText }}</span>
+      <ng-template appTextFieldError>
+        <span *ngIf="showError">{{ errorText }}</span>
+      </ng-template>
     </app-text-field>
   `,
 })
@@ -80,7 +82,9 @@ class AppTextFieldHostComponent {
         [describedBy]="describedBy"
       >
         <span *ngIf="showHint" appTextFieldHint>{{ hintText }}</span>
-        <span *ngIf="showError" appTextFieldError>{{ errorText }}</span>
+        <ng-template appTextFieldError>
+          <span *ngIf="showError">{{ errorText }}</span>
+        </ng-template>
       </app-text-field>
     </form>
   `,

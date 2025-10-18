@@ -10,6 +10,7 @@ import {
   HostBinding,
   Input,
   Output,
+  TemplateRef,
   ViewChild,
   inject,
 } from '@angular/core';
@@ -76,6 +77,12 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     this.additionalDescribedByIds = AppTextFieldComponent.normalizeDescribedByInput(value);
   }
 
+  @Input()
+  set errorTemplate(value: TemplateRef<unknown> | null | undefined) {
+    this.forwardedErrorTemplate = value ?? null;
+    this.changeDetectorRef.markForCheck();
+  }
+
   @Output() readonly valueChange = new EventEmitter<string>();
   @Output() readonly focusChange = new EventEmitter<boolean>();
   @Output() readonly keydownEvent = new EventEmitter<KeyboardEvent>();
@@ -89,8 +96,6 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   @ContentChild(AppTextFieldErrorDirective, { descendants: true })
   error?: AppTextFieldErrorDirective;
   @ViewChild('nativeInput') nativeInput?: ElementRef<HTMLInputElement>;
-  @ViewChild('projectedErrorContainer', { read: ElementRef })
-  private projectedErrorContainer?: ElementRef<HTMLElement>;
 
   @HostBinding('class.app-text-field-host')
   readonly hostClass = true;
@@ -104,8 +109,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   isFocused = false;
   private externalControl: AbstractControl | null = null;
   private externalControlSubscriptions: Subscription[] = [];
-  private hasProjectedErrorSlot = false;
-  private pendingProjectedErrorElement: HTMLElement | null = null;
+  private forwardedErrorTemplate: TemplateRef<unknown> | null = null;
 
   private onChange: (value: string) => void = NOOP_VALUE_CALLBACK;
   private onTouched: () => void = NOOP_VOID_CALLBACK;
@@ -197,6 +201,14 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
   get shouldDisplayError(): boolean {
     return this.hasErrorContent && this.invalid;
+  }
+
+  get errorTemplateOutlet(): TemplateRef<unknown> | null {
+    if (this.error) {
+      return this.error.templateRef;
+    }
+
+    return this.forwardedErrorTemplate;
   }
 
   get errorId(): string | null {
@@ -345,7 +357,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   }
 
   private get hasErrorContent(): boolean {
-    return Boolean(this.error) || this.hasProjectedErrorSlot;
+    return Boolean(this.errorTemplateOutlet);
   }
 
   private shouldDisplayInvalidState(): boolean {
@@ -430,44 +442,6 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     }
 
     this.changeDetectorRef.markForCheck();
-  }
-
-  registerProjectedErrorSlot(hasErrorSlot: boolean, projectedElement: HTMLElement | null): void {
-    this.hasProjectedErrorSlot = hasErrorSlot;
-    this.pendingProjectedErrorElement = projectedElement;
-    setTimeout(() => this.applyProjectedErrorElement());
-
-    this.changeDetectorRef.markForCheck();
-  }
-
-  private static cloneProjectedErrorElement(element: HTMLElement): HTMLElement {
-    const clone = element.cloneNode(true) as HTMLElement;
-
-    if (clone.hasAttribute('id')) {
-      clone.removeAttribute('id');
-    }
-
-    return clone;
-  }
-
-  private applyProjectedErrorElement(): void {
-    if (!this.projectedErrorContainer) {
-      return;
-    }
-
-    const container = this.projectedErrorContainer.nativeElement;
-
-    while (container.firstChild) {
-      container.removeChild(container.firstChild);
-    }
-
-    const projectedElement = this.pendingProjectedErrorElement;
-
-    if (projectedElement) {
-      const clone = AppTextFieldComponent.cloneProjectedErrorElement(projectedElement);
-
-      container.appendChild(clone);
-    }
   }
 
   private resolveControl(): AbstractControl | null {

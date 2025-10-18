@@ -10,6 +10,7 @@ import {
   HostBinding,
   Input,
   Output,
+  TemplateRef,
   ViewChild,
   inject,
   forwardRef,
@@ -134,13 +135,18 @@ export class AppDatePickerComponent implements ControlValueAccessor, AfterViewIn
 
   @ViewChild(AppTextFieldComponent)
   private textField?: AppTextFieldComponent;
-  @ContentChild(AppTextFieldErrorDirective, { descendants: true })
-  private projectedError?: AppTextFieldErrorDirective;
+
+  @ContentChild(AppTextFieldErrorDirective, { read: TemplateRef, descendants: true })
+  set projectedErrorTemplate(value: TemplateRef<unknown> | null) {
+    this.errorTemplateRef = value ?? null;
+    this.changeDetectorRef.markForCheck();
+  }
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
   private ngControl: NgControl | null = null;
+  private errorTemplateRef: TemplateRef<unknown> | null = null;
 
   private onChange: (value: Date | null) => void = NOOP_DATE_CALLBACK;
   private onTouched: () => void = NOOP_VOID_CALLBACK;
@@ -149,6 +155,10 @@ export class AppDatePickerComponent implements ControlValueAccessor, AfterViewIn
   protected selectedDate: Date | null = null;
   protected isDisabled = false;
   protected readonly inputType: TextFieldType = TEXT_FIELD_INPUT_TYPE;
+
+  protected get errorTemplate(): TemplateRef<unknown> | null {
+    return this.errorTemplateRef;
+  }
 
   ngAfterViewInit(): void {
     this.ngControl = this.injector.get(NgControl, null, { self: true, optional: true });
@@ -239,10 +249,6 @@ export class AppDatePickerComponent implements ControlValueAccessor, AfterViewIn
     this.textField.writeValue(this.displayValue);
     this.textField.setDisabledState(this.isDisabled);
     this.textField.registerExternalControl(this.ngControl?.control ?? null);
-    this.textField.registerProjectedErrorSlot(
-      Boolean(this.projectedError),
-      this.projectedError?.elementRef.nativeElement ?? null,
-    );
     this.changeDetectorRef.markForCheck();
   }
 }

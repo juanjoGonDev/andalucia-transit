@@ -10,6 +10,7 @@ import {
   HostBinding,
   Input,
   Output,
+  TemplateRef,
   ViewChild,
   forwardRef,
   inject,
@@ -54,7 +55,6 @@ export interface AppAutocompleteSelection<T> {
   imports: [
     CommonModule,
     AppTextFieldComponent,
-    AppTextFieldErrorDirective,
   ],
   templateUrl: './app-autocomplete.component.html',
   styleUrls: ['./app-autocomplete.component.scss'],
@@ -76,18 +76,15 @@ export class AppAutocompleteComponent<T> implements ControlValueAccessor, AfterV
   private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
   private ngControl: NgControl | null = null;
-  private projectedError: AppTextFieldErrorDirective | null = null;
-  private lastProjectedErrorElement: HTMLElement | null = null;
+  private errorTemplateRef: TemplateRef<unknown> | null = null;
 
   @ViewChild(AppTextFieldComponent)
   private textField?: AppTextFieldComponent;
-  @ContentChild(AppTextFieldErrorDirective, { descendants: true })
-  set projectedErrorSlot(value: AppTextFieldErrorDirective | undefined) {
-    this.projectedError = value ?? null;
-    if (value) {
-      this.lastProjectedErrorElement = value.elementRef.nativeElement;
-    }
-    this.applyTextFieldState();
+
+  @ContentChild(AppTextFieldErrorDirective, { read: TemplateRef, descendants: true })
+  set projectedErrorTemplate(value: TemplateRef<unknown> | null) {
+    this.errorTemplateRef = value ?? null;
+    this.changeDetectorRef.markForCheck();
   }
 
   @Input({ required: true }) label = EMPTY_STRING;
@@ -116,6 +113,10 @@ export class AppAutocompleteComponent<T> implements ControlValueAccessor, AfterV
   readonly panelRole = AUTOCOMPLETE_PANEL_ROLE;
   readonly optionRole = AUTOCOMPLETE_OPTION_ROLE;
   readonly ariaAutocomplete = ARIA_AUTOCOMPLETE_LIST;
+
+  get errorTemplate(): TemplateRef<unknown> | null {
+    return this.errorTemplateRef;
+  }
 
   ngAfterViewInit(): void {
     this.ngControl = this.injector.get(NgControl, null, { optional: true, self: true });
@@ -246,17 +247,6 @@ export class AppAutocompleteComponent<T> implements ControlValueAccessor, AfterV
     this.textField.writeValue(this.value);
     this.textField.setDisabledState(this.isDisabled);
     this.textField.registerExternalControl(this.ngControl?.control ?? null);
-    const textFieldError = this.textField.error ?? null;
-
-    if (textFieldError) {
-      this.textField.registerProjectedErrorSlot(true, null);
-      this.changeDetectorRef.markForCheck();
-      return;
-    }
-
-    const projectedElement = this.projectedError?.elementRef.nativeElement ?? this.lastProjectedErrorElement;
-
-    this.textField.registerProjectedErrorSlot(Boolean(projectedElement), projectedElement ?? null);
     this.changeDetectorRef.markForCheck();
   }
 

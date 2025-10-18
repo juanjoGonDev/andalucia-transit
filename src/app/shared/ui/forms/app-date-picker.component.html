@@ -7,7 +7,7 @@
 <ng-template #hintContent>
   <ng-content select="[appTextFieldHint]"></ng-content>
 </ng-template>
-<ng-template #errorContent>
+<ng-template #errorProjection>
   <ng-content select="[appTextFieldError]"></ng-content>
 </ng-template>
 <app-text-field
@@ -19,6 +19,7 @@
   [name]="name"
   [fieldId]="fieldId"
   [type]="inputType"
+  [errorTemplate]="errorTemplate"
   (valueChange)="handleTextFieldValueChange($event)"
   (focusChange)="handleFocusChange($event)"
   (keydownEvent)="handleKeydown($event)"
@@ -26,5 +27,5 @@
   <ng-container *ngTemplateOutlet="prefixContent"></ng-container>
   <ng-container *ngTemplateOutlet="suffixContent"></ng-container>
   <ng-container *ngTemplateOutlet="hintContent"></ng-container>
-  <ng-container *ngTemplateOutlet="errorContent"></ng-container>
+  <ng-container *ngTemplateOutlet="errorProjection"></ng-container>
 </app-text-field>
