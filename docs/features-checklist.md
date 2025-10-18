@@ -160,6 +160,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] Screenshot (Favorites clear action — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/auujufaq/artifacts/artifacts/favorites-outline-button.png
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Replaced dialog spacing and confirm dialog metrics with global tokens so overlay padding, typography, and focus affordances remain baseline-identical.
+  - [x] Screenshot (Favorites clear confirmation — desktop): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-19 Migrated favorites search filter to the shared AppTextFieldComponent to align control metrics and focus behavior without altering layout.
   - [x] Screenshot (Favorites search — desktop): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
