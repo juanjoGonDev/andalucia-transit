@@ -1,4 +1,13 @@
-import { Directive, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Input,
+  Output,
+  inject
+} from '@angular/core';
 
 export type AccessibleButtonPopupToken = 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
 type AccessibleButtonPopupValue = boolean | AccessibleButtonPopupToken;
@@ -16,6 +25,7 @@ const CURSOR_NOT_ALLOWED = 'not-allowed' as const;
   exportAs: 'appAccessibleButton'
 })
 export class AccessibleButtonDirective {
+  private readonly hostElementRef = inject(ElementRef<HTMLElement>);
   @Input() appAccessibleButtonDisabled = false;
   @Input() appAccessibleButtonRole: string | null = null;
   @Input() appAccessibleButtonPressed: boolean | null = null;
@@ -86,7 +96,7 @@ export class AccessibleButtonDirective {
 
   @HostListener('keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
-    if (!this.shouldHandleActivation(event)) {
+    if (!this.shouldSimulateActivation(event)) {
       return;
     }
 
@@ -96,7 +106,7 @@ export class AccessibleButtonDirective {
 
   @HostListener('keyup', ['$event'])
   onKeyup(event: KeyboardEvent): void {
-    if (!this.shouldHandleActivation(event)) {
+    if (!this.shouldSimulateActivation(event)) {
       return;
     }
 
@@ -114,12 +124,28 @@ export class AccessibleButtonDirective {
     event.stopPropagation();
   }
 
-  private shouldHandleActivation(event: KeyboardEvent): boolean {
+  private shouldSimulateActivation(event: KeyboardEvent): boolean {
     if (this.appAccessibleButtonDisabled) {
       return false;
     }
 
-    return event.key === KEYBOARD_ENTER || event.key === KEYBOARD_SPACE;
+    if (event.key === KEYBOARD_SPACE) {
+      if (this.role === 'link') {
+        return false;
+      }
+
+      return !this.isAnchorWithHref();
+    }
+
+    if (event.key === KEYBOARD_ENTER) {
+      if (this.isAnchorWithHref()) {
+        return false;
+      }
+
+      return true;
+    }
+
+    return false;
   }
 
   private invokeHostClick(event: KeyboardEvent): void {
@@ -130,5 +156,11 @@ export class AccessibleButtonDirective {
     }
 
     host.click();
+  }
+
+  private isAnchorWithHref(): boolean {
+    const element = this.hostElementRef.nativeElement;
+
+    return element instanceof HTMLAnchorElement && element.hasAttribute('href');
   }
 }

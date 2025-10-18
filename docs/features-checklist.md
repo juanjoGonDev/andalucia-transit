@@ -207,6 +207,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-20 Anchored the skip control to the main content fragment so keyboard activation works without script execution while maintaining OnPush focus guards.
     - [x] Screenshot (Skip to content control — desktop focus, fragment link verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Preserved native anchor semantics for the skip control by refining the accessible button directive to skip keyboard simulation when hosts expose real href targets.
+    - [x] Screenshot (Skip to content control — desktop focus, fragment link verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
 ### Feature Roadmap (2025-10-18)
 - [ ] News feed view (C1) — attach public screenshot URL(s); visual diff must be 0px.

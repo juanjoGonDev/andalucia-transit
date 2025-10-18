@@ -32,6 +32,25 @@ class HostComponent {
   readonly onActivated: jasmine.Spy<(event: MouseEvent) => void> = jasmine.createSpy();
 }
 
+@Component({
+  standalone: true,
+  imports: [AccessibleButtonDirective],
+  template: `
+    <a
+      appAccessibleButton
+      appAccessibleButtonRole="link"
+      [attr.href]="href"
+      (appAccessibleButtonActivated)="onActivated($event)"
+    >
+      Navigate
+    </a>
+  `
+})
+class AnchorHostComponent {
+  href = '#target';
+  readonly onActivated: jasmine.Spy<(event: MouseEvent) => void> = jasmine.createSpy();
+}
+
 describe('AccessibleButtonDirective', () => {
   let fixture: ComponentFixture<HostComponent>;
   let hostComponent: HostComponent;
@@ -219,6 +238,60 @@ describe('AccessibleButtonDirective', () => {
     nativeElement.dispatchEvent(event);
 
     expect(event.defaultPrevented).toBeTrue();
+    expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
+  });
+
+  it('should prevent default on enter when the host exposes a link role without an href', () => {
+    hostComponent.onActivated.calls.reset();
+    hostComponent.role = 'link';
+    fixture.detectChanges();
+
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    const event = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
+    nativeElement.dispatchEvent(event);
+
+    expect(event.defaultPrevented).toBeTrue();
+    expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('AccessibleButtonDirective with anchor host', () => {
+  let fixture: ComponentFixture<AnchorHostComponent>;
+  let hostComponent: AnchorHostComponent;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [AnchorHostComponent]
+    });
+
+    fixture = TestBed.createComponent(AnchorHostComponent);
+    hostComponent = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should not block native navigation keys on anchors with href', () => {
+    const element = fixture.debugElement.query(By.css('a'));
+    const nativeElement = element.nativeElement as HTMLAnchorElement;
+
+    const enterEvent = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
+    nativeElement.dispatchEvent(enterEvent);
+
+    expect(enterEvent.defaultPrevented).toBeFalse();
+
+    const spaceEvent = new KeyboardEvent('keydown', { key: ' ', cancelable: true });
+    nativeElement.dispatchEvent(spaceEvent);
+
+    expect(spaceEvent.defaultPrevented).toBeFalse();
+  });
+
+  it('should emit activation when the anchor is clicked', () => {
+    const element = fixture.debugElement.query(By.css('a'));
+    const nativeElement = element.nativeElement as HTMLAnchorElement;
+
+    nativeElement.click();
+
     expect(hostComponent.onActivated).toHaveBeenCalledTimes(1);
   });
 });
