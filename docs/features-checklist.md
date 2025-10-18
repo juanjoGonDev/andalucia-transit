@@ -129,7 +129,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] Screenshot (Settings view — desktop): https://browser.buildwithfern.com/invocations/kusjavnh/artifacts/artifacts/settings-desktop.png
   - [x] Screenshot (Settings view — mobile): https://browser.buildwithfern.com/invocations/kusjavnh/artifacts/artifacts/settings-mobile.png
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
-- [ ] Search form input stability (A4) — attach public screenshot URL(s); visual diff must be 0px.
+- [x] Search form input stability (A4) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-18 Locked route search origin, destination, and date fields to always-floating labels with tokenized input metrics so focus no longer shifts layout and values stay vertically centered.
+  - [x] Screenshot (Route search form — desktop): https://browser.buildwithfern.com/invocations/dqwckahq/artifacts/artifacts/route-search-form.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Route search & stop detail layout adoption (A5) — attach public screenshot URL(s); visual diff must be 0px.
 - [x] Global pointer cursor directive coverage (A6) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-18 Enforced pointer cursor host binding on `AccessibleButtonDirective` while preserving disabled affordance semantics.
