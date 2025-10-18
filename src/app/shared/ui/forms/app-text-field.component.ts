@@ -14,13 +14,14 @@ import {
   inject,
 } from '@angular/core';
 import {
+  AbstractControl,
   ControlValueAccessor,
   FormControl,
   NgControl,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subscription } from 'rxjs';
 import {
   AppTextFieldErrorDirective,
   AppTextFieldHintDirective,
@@ -61,6 +62,8 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly ngControl = inject(NgControl, { optional: true, self: true });
 
+  private readonly destroyRef = inject(DestroyRef);
+
   @Input({ required: true }) label = '';
   @Input() placeholder = '';
   @Input() autocomplete: string = DEFAULT_AUTOCOMPLETE_ATTRIBUTE;
@@ -77,11 +80,17 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   @Output() readonly focusChange = new EventEmitter<boolean>();
   @Output() readonly keydownEvent = new EventEmitter<KeyboardEvent>();
 
-  @ContentChild(AppTextFieldPrefixDirective) prefix?: AppTextFieldPrefixDirective;
-  @ContentChild(AppTextFieldSuffixDirective) suffix?: AppTextFieldSuffixDirective;
-  @ContentChild(AppTextFieldHintDirective) hint?: AppTextFieldHintDirective;
-  @ContentChild(AppTextFieldErrorDirective) error?: AppTextFieldErrorDirective;
+  @ContentChild(AppTextFieldPrefixDirective, { descendants: true })
+  prefix?: AppTextFieldPrefixDirective;
+  @ContentChild(AppTextFieldSuffixDirective, { descendants: true })
+  suffix?: AppTextFieldSuffixDirective;
+  @ContentChild(AppTextFieldHintDirective, { descendants: true })
+  hint?: AppTextFieldHintDirective;
+  @ContentChild(AppTextFieldErrorDirective, { descendants: true })
+  error?: AppTextFieldErrorDirective;
   @ViewChild('nativeInput') nativeInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('projectedErrorContainer', { read: ElementRef })
+  private projectedErrorContainer?: ElementRef<HTMLElement>;
 
   @HostBinding('class.app-text-field-host')
   readonly hostClass = true;
@@ -93,14 +102,17 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   value = '';
   isDisabled = false;
   isFocused = false;
-
-  private readonly destroyRef = inject(DestroyRef);
+  private externalControl: AbstractControl | null = null;
+  private externalControlSubscriptions: Subscription[] = [];
+  private hasProjectedErrorSlot = false;
+  private pendingProjectedErrorElement: HTMLElement | null = null;
 
   private onChange: (value: string) => void = NOOP_VALUE_CALLBACK;
   private onTouched: () => void = NOOP_VOID_CALLBACK;
 
   constructor() {
     this.initializeNgControl();
+    this.destroyRef.onDestroy(() => this.teardownExternalControlSubscriptions());
   }
 
   @Input()
@@ -333,11 +345,11 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   }
 
   private get hasErrorContent(): boolean {
-    return Boolean(this.error);
+    return Boolean(this.error) || this.hasProjectedErrorSlot;
   }
 
   private shouldDisplayInvalidState(): boolean {
-    const control = this.ngControl?.control;
+    const control = this.resolveControl();
 
     if (!control) {
       return false;
@@ -351,7 +363,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   }
 
   private hasRequiredValidator(): boolean {
-    const control = this.ngControl?.control;
+    const control = this.resolveControl();
 
     if (!control) {
       return false;
@@ -372,12 +384,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     }
 
     this.ngControl.valueAccessor = this;
-    this.ngControl.statusChanges
-      ?.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.changeDetectorRef.markForCheck());
-    this.ngControl.valueChanges
-      ?.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.changeDetectorRef.markForCheck());
+    this.registerExternalControl(this.ngControl.control);
   }
 
   private static validatorIncludesRequired(validator: ValidatorFn | null): boolean {
@@ -396,5 +403,69 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     } catch {
       return false;
     }
+  }
+
+  registerExternalControl(control: AbstractControl | null): void {
+    if (this.externalControl === control) {
+      this.changeDetectorRef.markForCheck();
+      return;
+    }
+
+    this.teardownExternalControlSubscriptions();
+    this.externalControl = control;
+
+    if (!control) {
+      this.changeDetectorRef.markForCheck();
+      return;
+    }
+
+    const statusSubscription = control.statusChanges?.subscribe(() => this.changeDetectorRef.markForCheck());
+    if (statusSubscription) {
+      this.externalControlSubscriptions.push(statusSubscription);
+    }
+
+    const valueSubscription = control.valueChanges?.subscribe(() => this.changeDetectorRef.markForCheck());
+    if (valueSubscription) {
+      this.externalControlSubscriptions.push(valueSubscription);
+    }
+
+    this.changeDetectorRef.markForCheck();
+  }
+
+  registerProjectedErrorSlot(hasErrorSlot: boolean, projectedElement: HTMLElement | null): void {
+    this.hasProjectedErrorSlot = hasErrorSlot;
+    this.pendingProjectedErrorElement = projectedElement;
+    queueMicrotask(() => this.applyProjectedErrorElement());
+
+    this.changeDetectorRef.markForCheck();
+  }
+
+  private applyProjectedErrorElement(): void {
+    if (!this.projectedErrorContainer) {
+      return;
+    }
+
+    const container = this.projectedErrorContainer.nativeElement;
+
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+
+    if (this.pendingProjectedErrorElement) {
+      container.appendChild(this.pendingProjectedErrorElement);
+    }
+  }
+
+  private resolveControl(): AbstractControl | null {
+    if (this.externalControl) {
+      return this.externalControl;
+    }
+
+    return this.ngControl?.control ?? null;
+  }
+
+  private teardownExternalControlSubscriptions(): void {
+    this.externalControlSubscriptions.forEach((subscription) => subscription.unsubscribe());
+    this.externalControlSubscriptions = [];
   }
 }

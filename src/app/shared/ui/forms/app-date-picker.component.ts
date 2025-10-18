@@ -4,16 +4,21 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ContentChild,
   EventEmitter,
+  DestroyRef,
   HostBinding,
   Input,
   Output,
   ViewChild,
   inject,
   forwardRef,
+  Injector,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AppTextFieldComponent, TextFieldType } from './app-text-field.component';
+import { AppTextFieldErrorDirective } from './app-text-field-slots.directive';
 
 const EMPTY_STRING = '';
 const DEFAULT_AUTOCOMPLETE_ATTRIBUTE = 'off';
@@ -129,8 +134,13 @@ export class AppDatePickerComponent implements ControlValueAccessor, AfterViewIn
 
   @ViewChild(AppTextFieldComponent)
   private textField?: AppTextFieldComponent;
+  @ContentChild(AppTextFieldErrorDirective, { descendants: true })
+  private projectedError?: AppTextFieldErrorDirective;
 
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly injector = inject(Injector);
+  private readonly destroyRef = inject(DestroyRef);
+  private ngControl: NgControl | null = null;
 
   private onChange: (value: Date | null) => void = NOOP_DATE_CALLBACK;
   private onTouched: () => void = NOOP_VOID_CALLBACK;
@@ -141,6 +151,21 @@ export class AppDatePickerComponent implements ControlValueAccessor, AfterViewIn
   protected readonly inputType: TextFieldType = TEXT_FIELD_INPUT_TYPE;
 
   ngAfterViewInit(): void {
+    this.ngControl = this.injector.get(NgControl, null, { self: true, optional: true });
+    const control = this.ngControl?.control ?? null;
+
+    if (control?.statusChanges) {
+      control.statusChanges
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.applyTextFieldState());
+    }
+
+    if (control?.valueChanges) {
+      control.valueChanges
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.applyTextFieldState());
+    }
+
     this.applyTextFieldState();
   }
 
@@ -213,6 +238,11 @@ export class AppDatePickerComponent implements ControlValueAccessor, AfterViewIn
 
     this.textField.writeValue(this.displayValue);
     this.textField.setDisabledState(this.isDisabled);
+    this.textField.registerExternalControl(this.ngControl?.control ?? null);
+    this.textField.registerProjectedErrorSlot(
+      Boolean(this.projectedError),
+      this.projectedError?.elementRef.nativeElement ?? null,
+    );
     this.changeDetectorRef.markForCheck();
   }
 }

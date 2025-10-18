@@ -1,9 +1,13 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AppDatePickerComponent } from './app-date-picker.component';
+import { AppTextFieldErrorDirective } from './app-text-field-slots.directive';
 
 const ISO_DATE_EXAMPLE = '2025-01-02';
 const INVALID_DATE_VALUE = '2025-02-30';
 const TRIMMED_EMPTY_VALUE = '   ';
+const REQUIRED_ERROR_MESSAGE = 'This field is required';
 
 const ensureDate = (value: Date | null): Date => {
   if (!value) {
@@ -11,6 +15,14 @@ const ensureDate = (value: Date | null): Date => {
   }
 
   return value;
+};
+
+const ensureElement = <T extends Element>(element: T | null): T => {
+  if (!element) {
+    throw new Error('Expected element');
+  }
+
+  return element;
 };
 
 describe('AppDatePickerComponent', () => {
@@ -85,3 +97,60 @@ describe('AppDatePickerComponent', () => {
     expect(inputElement.disabled).toBeTrue();
   });
 });
+
+describe('AppDatePickerComponent projected error content', () => {
+  let fixture: ComponentFixture<AppDatePickerErrorHostComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [AppDatePickerErrorHostComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(AppDatePickerErrorHostComponent);
+    fixture.detectChanges();
+  });
+
+  it('announces projected errors through accessible attributes', async () => {
+    const control = fixture.componentInstance.form.controls.date;
+
+    control.markAsTouched();
+    control.updateValueAndValidity();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(control.invalid).toBeTrue();
+    expect(control.touched).toBeTrue();
+
+    const inputElement = ensureElement(
+      fixture.nativeElement.querySelector('input') as HTMLInputElement | null,
+    );
+    const errorElement = ensureElement(
+      fixture.nativeElement.querySelector('.app-text-field__error') as HTMLElement | null,
+    );
+    const describedByAttribute = inputElement.getAttribute('aria-describedby');
+
+    expect(errorElement.textContent?.trim()).toBe(REQUIRED_ERROR_MESSAGE);
+    expect(inputElement.getAttribute('aria-errormessage')).toBe(errorElement.id);
+    expect(describedByAttribute).not.toBeNull();
+    expect(describedByAttribute?.split(' ').includes(errorElement.id)).toBeTrue();
+  });
+});
+
+@Component({
+  standalone: true,
+  imports: [ReactiveFormsModule, AppDatePickerComponent, AppTextFieldErrorDirective],
+  template: `
+    <form [formGroup]="form">
+      <app-date-picker label="Start date" formControlName="date">
+        <span appTextFieldError>{{ errorMessage }}</span>
+      </app-date-picker>
+    </form>
+  `,
+})
+class AppDatePickerErrorHostComponent {
+  readonly errorMessage = REQUIRED_ERROR_MESSAGE;
+  readonly form = new FormGroup<{ date: FormControl<Date | null> }>({
+    date: new FormControl<Date | null>(null, { validators: Validators.required }),
+  });
+}
