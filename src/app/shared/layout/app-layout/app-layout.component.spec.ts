@@ -48,6 +48,14 @@ describe('AppLayoutComponent', () => {
     fixture.detectChanges();
   });
 
+  it('links the skip control to the main content fragment', () => {
+    const access = fixture.componentInstance as unknown as AppLayoutComponentAccess;
+    const control = fixture.nativeElement.querySelector('.app-shell__skip-button') as HTMLAnchorElement | null;
+
+    expect(control).not.toBeNull();
+    expect(control?.getAttribute('href')).toBe(`#${access.mainContentId}`);
+  });
+
   it('focuses the main content when the skip control is activated', () => {
     const access = fixture.componentInstance as unknown as AppLayoutComponentAccess;
     const element = fixture.nativeElement.querySelector(`#${access.mainContentId}`) as HTMLElement | null;

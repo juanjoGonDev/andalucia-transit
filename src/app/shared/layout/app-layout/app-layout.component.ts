@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,6 +10,7 @@ import { AccessibleButtonDirective } from '../../a11y/accessible-button.directiv
 
 const MAIN_CONTENT_ID = 'app-main-content';
 const SKIP_LINK_LABEL_KEY = 'layout.skipToContent';
+const FRAGMENT_PREFIX = '#';
 
 @Component({
   selector: 'app-app-layout',
@@ -37,18 +37,18 @@ const SKIP_LINK_LABEL_KEY = 'layout.skipToContent';
 })
 export class AppLayoutComponent {
   private readonly contextStore = inject(AppLayoutContextStore);
-  private readonly documentRef = inject(DOCUMENT);
+  @ViewChild('mainContent', { static: true }) private readonly mainContent?: ElementRef<HTMLElement>;
   protected readonly mainContentId = MAIN_CONTENT_ID;
   protected readonly skipLinkLabelKey = SKIP_LINK_LABEL_KEY;
 
+  protected get mainContentFragment(): string {
+    return `${FRAGMENT_PREFIX}${this.mainContentId}`;
+  }
+
   protected focusMainContent(): void {
-    if (!this.documentRef) {
-      return;
-    }
+    const element = this.mainContent?.nativeElement ?? null;
 
-    const element = this.documentRef.getElementById(this.mainContentId);
-
-    if (!(element instanceof HTMLElement)) {
+    if (!element || !element.isConnected) {
       return;
     }
 
