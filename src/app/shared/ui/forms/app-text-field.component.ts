@@ -4,10 +4,12 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChild,
+  ElementRef,
   EventEmitter,
   HostBinding,
   Input,
   Output,
+  ViewChild,
   inject,
   forwardRef,
 } from '@angular/core';
@@ -69,6 +71,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   @ContentChild(AppTextFieldPrefixDirective) prefix?: AppTextFieldPrefixDirective;
   @ContentChild(AppTextFieldSuffixDirective) suffix?: AppTextFieldSuffixDirective;
   @ContentChild(AppTextFieldHintDirective) hint?: AppTextFieldHintDirective;
+  @ViewChild('nativeInput') nativeInput?: ElementRef<HTMLInputElement>;
 
   @HostBinding('class.app-text-field-host')
   readonly hostClass = true;
@@ -147,9 +150,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     this.isDisabled = isDisabled;
 
     if (isDisabled && this.isFocused) {
-      this.isFocused = false;
-      this.onTouched();
-      this.focusChange.emit(false);
+      this.blurInputAfterDisable();
     }
 
     this.changeDetectorRef.markForCheck();
@@ -166,10 +167,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   }
 
   handleBlur(): void {
-    this.isFocused = false;
-    this.onTouched();
-    this.focusChange.emit(false);
-    this.changeDetectorRef.markForCheck();
+    this.applyBlurState();
   }
 
   handleInput(event: Event): void {
@@ -194,6 +192,31 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     AppTextFieldComponent.idCounter += 1;
 
     return `${TEXT_FIELD_ID_PREFIX}${TEXT_FIELD_ID_SEPARATOR}${currentId}`;
+  }
+
+  private blurInputAfterDisable(): void {
+    const inputElement = this.nativeInput?.nativeElement ?? null;
+
+    if (inputElement) {
+      inputElement.blur();
+      queueMicrotask(() => {
+        this.applyBlurState();
+      });
+      return;
+    }
+
+    this.applyBlurState();
+  }
+
+  private applyBlurState(): void {
+    if (!this.isFocused) {
+      return;
+    }
+
+    this.isFocused = false;
+    this.onTouched();
+    this.focusChange.emit(false);
+    this.changeDetectorRef.markForCheck();
   }
 
   private static normalizeDescribedByInput(

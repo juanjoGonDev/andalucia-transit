@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { AppTextFieldComponent } from './app-text-field.component';
 import { AppTextFieldHintDirective } from './app-text-field-slots.directive';
 
@@ -178,12 +178,13 @@ describe('AppTextFieldComponent', () => {
     expect(field.classList).not.toContain(FOCUSED_CLASS);
   });
 
-  it('clears focus and emits blur semantics when disabling a focused control', () => {
+  it('clears focus and emits blur semantics when disabling a focused control', fakeAsync(() => {
     const input = queryInput();
     const field = queryField();
     const componentInstance = resolveComponent();
     let touched = false;
     const focusChangeSpy = spyOn(componentInstance.focusChange, 'emit');
+    const blurSpy = spyOn(input, 'blur');
 
     componentInstance.registerOnTouched(() => {
       touched = true;
@@ -193,10 +194,14 @@ describe('AppTextFieldComponent', () => {
     fixture.detectChanges();
 
     componentInstance.setDisabledState(true);
+    flush();
     fixture.detectChanges();
 
     expect(field.classList).not.toContain(FOCUSED_CLASS);
     expect(focusChangeSpy).toHaveBeenCalledWith(false);
+    const blurEmissions = (focusChangeSpy.calls.allArgs() as ReadonlyArray<[boolean]>).filter(([isFocused]) => isFocused === false).length;
+    expect(blurEmissions).toBe(1);
     expect(touched).toBeTrue();
-  });
+    expect(blurSpy).toHaveBeenCalled();
+  }));
 });
