@@ -17,3 +17,9 @@ export class AppTextFieldSuffixDirective {}
   standalone: true,
 })
 export class AppTextFieldHintDirective {}
+
+@Directive({
+  selector: '[appTextFieldError]',
+  standalone: true,
+})
+export class AppTextFieldErrorDirective {}

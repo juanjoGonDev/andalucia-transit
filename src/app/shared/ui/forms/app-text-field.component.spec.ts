@@ -9,13 +9,15 @@ import {
   Validators,
 } from '@angular/forms';
 import { AppTextFieldComponent } from './app-text-field.component';
-import { AppTextFieldHintDirective } from './app-text-field-slots.directive';
+import { AppTextFieldErrorDirective, AppTextFieldHintDirective } from './app-text-field-slots.directive';
 
 type DescribedByInput = string | readonly string[] | undefined;
 
 const INPUT_SELECTOR = 'input';
 const LABEL_SELECTOR = 'label';
 const FIELD_SELECTOR = '.app-text-field';
+const ERROR_SELECTOR = '.app-text-field__error';
+const HINT_SELECTOR = '.app-text-field__hint';
 const MISSING_INPUT_ERROR_MESSAGE = 'Input element not found';
 const MISSING_LABEL_ERROR_MESSAGE = 'Label element not found';
 const KEYDOWN_EVENT_TYPE = 'keydown';
@@ -26,7 +28,7 @@ const INVALID_CLASS = 'app-text-field--invalid';
 @Component({
   selector: 'app-text-field-host',
   standalone: true,
-  imports: [CommonModule, AppTextFieldComponent, AppTextFieldHintDirective],
+  imports: [CommonModule, AppTextFieldComponent, AppTextFieldHintDirective, AppTextFieldErrorDirective],
   template: `
     <app-text-field
       [label]="label"
@@ -37,6 +39,7 @@ const INVALID_CLASS = 'app-text-field--invalid';
       (keydownEvent)="recordKey($event)"
     >
       <span *ngIf="showHint" appTextFieldHint>{{ hintText }}</span>
+      <span *ngIf="showError" appTextFieldError>{{ errorText }}</span>
     </app-text-field>
   `,
 })
@@ -45,8 +48,10 @@ class AppTextFieldHostComponent {
   placeholder = 'Placeholder';
   describedBy: DescribedByInput;
   showHint = false;
+  showError = false;
   readonly fieldId = 'custom-field';
   readonly hintText = 'Hint';
+  readonly errorText = 'Error';
   readonly recordedKeys: string[] = [];
   required = false;
 
@@ -58,14 +63,23 @@ class AppTextFieldHostComponent {
 @Component({
   selector: 'app-text-field-reactive-host',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AppTextFieldComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    AppTextFieldComponent,
+    AppTextFieldHintDirective,
+    AppTextFieldErrorDirective,
+  ],
   template: `
     <form [formGroup]="form">
       <app-text-field
         label="Label"
         formControlName="field"
         [required]="required"
-      ></app-text-field>
+      >
+        <span *ngIf="showHint" appTextFieldHint>{{ hintText }}</span>
+        <span *ngIf="showError" appTextFieldError>{{ errorText }}</span>
+      </app-text-field>
     </form>
   `,
 })
@@ -75,6 +89,10 @@ class AppTextFieldReactiveHostComponent {
   });
 
   required = false;
+  showError = false;
+  showHint = false;
+  readonly errorText = 'Error';
+  readonly hintText = 'Hint';
 }
 
 describe('AppTextFieldComponent', () => {
@@ -141,6 +159,17 @@ describe('AppTextFieldComponent', () => {
     const input = queryInput();
 
     expect(input.getAttribute('aria-describedby')).toBe('custom-field-hint external-description');
+  });
+
+  it('renders hint content when provided without error state', () => {
+    host.showHint = true;
+
+    const input = queryInput();
+    const hintElement = fixture.nativeElement.querySelector(HINT_SELECTOR) as HTMLElement | null;
+
+    expect(hintElement).not.toBeNull();
+    expect(hintElement?.textContent?.trim()).toBe(host.hintText);
+    expect(input.getAttribute('aria-describedby')).toBe(`${host.fieldId}-hint`);
   });
 
   it('joins multiple describedBy identifiers provided as an array', () => {
@@ -297,18 +326,21 @@ describe('AppTextFieldComponent', () => {
     const input = reactiveFixture.nativeElement.querySelector(INPUT_SELECTOR) as HTMLInputElement | null;
     const field = reactiveFixture.nativeElement.querySelector(FIELD_SELECTOR) as HTMLElement | null;
 
-    expect(input).not.toBeNull();
+    if (!input) {
+      throw new Error(MISSING_INPUT_ERROR_MESSAGE);
+    }
+
     expect(field).not.toBeNull();
     expect(field?.classList).not.toContain(INVALID_CLASS);
-    expect(input?.getAttribute('aria-invalid')).toBeNull();
+    expect(input.getAttribute('aria-invalid')).toBeNull();
 
-    input?.dispatchEvent(new FocusEvent('focus'));
+    input.dispatchEvent(new FocusEvent('focus'));
     reactiveFixture.detectChanges();
-    input?.dispatchEvent(new FocusEvent('blur'));
+    input.dispatchEvent(new FocusEvent('blur'));
     reactiveFixture.detectChanges();
 
     expect(field?.classList).toContain(INVALID_CLASS);
-    expect(input?.getAttribute('aria-invalid')).toBe('true');
+    expect(input.getAttribute('aria-invalid')).toBe('true');
   });
 
   it('clears invalid state once the control becomes valid', () => {
@@ -318,18 +350,68 @@ describe('AppTextFieldComponent', () => {
     const input = reactiveFixture.nativeElement.querySelector(INPUT_SELECTOR) as HTMLInputElement | null;
     const field = reactiveFixture.nativeElement.querySelector(FIELD_SELECTOR) as HTMLElement | null;
 
+    if (!input) {
+      throw new Error(MISSING_INPUT_ERROR_MESSAGE);
+    }
+
+    input.dispatchEvent(new FocusEvent('focus'));
+    reactiveFixture.detectChanges();
+    input.dispatchEvent(new FocusEvent('blur'));
+    reactiveFixture.detectChanges();
+
+    input.value = 'content';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    reactiveFixture.detectChanges();
+
+    expect(field?.classList).not.toContain(INVALID_CLASS);
+    expect(input.getAttribute('aria-invalid')).toBeNull();
+  });
+
+  it('projects error content and updates describedBy metadata when the control is invalid', () => {
+    const reactiveFixture = TestBed.createComponent(AppTextFieldReactiveHostComponent);
+    const reactiveHost = reactiveFixture.componentInstance;
+    reactiveHost.showHint = true;
+    reactiveHost.showError = true;
+    reactiveFixture.detectChanges();
+
+    const input = reactiveFixture.nativeElement.querySelector(INPUT_SELECTOR) as HTMLInputElement | null;
+
+    if (!input) {
+      throw new Error(MISSING_INPUT_ERROR_MESSAGE);
+    }
+
     input?.dispatchEvent(new FocusEvent('focus'));
     reactiveFixture.detectChanges();
     input?.dispatchEvent(new FocusEvent('blur'));
     reactiveFixture.detectChanges();
 
-    if (input) {
-      input.value = 'content';
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-    }
+    const errorElement = reactiveFixture.nativeElement.querySelector(ERROR_SELECTOR) as HTMLElement | null;
+
+    expect(errorElement).not.toBeNull();
+    expect(errorElement?.textContent?.trim()).toBe(reactiveHost.errorText);
+    expect(reactiveFixture.nativeElement.querySelector(HINT_SELECTOR)).toBeNull();
+
+    const describedBy = input.getAttribute('aria-describedby') ?? '';
+    const parts = describedBy.split(' ').filter((part) => part !== '');
+    const expectedErrorId = `${input.id}-error`;
+
+    expect(parts).toContain(expectedErrorId);
+
+    input.value = 'content';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
     reactiveFixture.detectChanges();
 
-    expect(field?.classList).not.toContain(INVALID_CLASS);
-    expect(input?.getAttribute('aria-invalid')).toBeNull();
+    expect(reactiveFixture.nativeElement.querySelector(ERROR_SELECTOR)).toBeNull();
+    const hintElement = reactiveFixture.nativeElement.querySelector(HINT_SELECTOR) as HTMLElement | null;
+
+    expect(hintElement).not.toBeNull();
+    expect(hintElement?.textContent?.trim()).toBe(reactiveHost.hintText);
+
+    const updatedDescribedBy = input.getAttribute('aria-describedby') ?? '';
+    const updatedParts = updatedDescribedBy.split(' ').filter((part) => part !== '');
+    const expectedHintId = `${input.id}-hint`;
+
+    expect(updatedParts).toContain(expectedHintId);
+    expect(updatedParts).not.toContain(expectedErrorId);
   });
 });

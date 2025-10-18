@@ -75,3 +75,9 @@
   line-height: var(--line-height-relaxed);
   color: var(--color-text-muted);
 }
+
+.app-text-field__error {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-error);
+}

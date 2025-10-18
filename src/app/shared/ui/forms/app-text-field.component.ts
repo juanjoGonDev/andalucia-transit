@@ -22,6 +22,7 @@ import {
 } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
+  AppTextFieldErrorDirective,
   AppTextFieldHintDirective,
   AppTextFieldPrefixDirective,
   AppTextFieldSuffixDirective,
@@ -30,6 +31,7 @@ import {
 const TEXT_FIELD_ID_PREFIX = 'app-text-field';
 const TEXT_FIELD_ID_SEPARATOR = '-';
 const TEXT_FIELD_HINT_SEGMENT = 'hint';
+const TEXT_FIELD_ERROR_SEGMENT = 'error';
 const DEFAULT_TEXT_FIELD_TYPE: TextFieldType = 'text';
 const DEFAULT_AUTOCOMPLETE_ATTRIBUTE = 'off';
 const ARIA_ATTRIBUTE_SEPARATOR = ' ';
@@ -78,6 +80,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   @ContentChild(AppTextFieldPrefixDirective) prefix?: AppTextFieldPrefixDirective;
   @ContentChild(AppTextFieldSuffixDirective) suffix?: AppTextFieldSuffixDirective;
   @ContentChild(AppTextFieldHintDirective) hint?: AppTextFieldHintDirective;
+  @ContentChild(AppTextFieldErrorDirective) error?: AppTextFieldErrorDirective;
   @ViewChild('nativeInput') nativeInput?: ElementRef<HTMLInputElement>;
 
   @HostBinding('class.app-text-field-host')
@@ -119,10 +122,18 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
   get ariaDescribedByAttribute(): string | null {
     const collectedIds: string[] = [];
-    const hintIdentifier = this.hintId;
+    const errorIdentifier = this.errorId;
 
-    if (hintIdentifier) {
-      collectedIds.push(hintIdentifier);
+    if (errorIdentifier) {
+      collectedIds.push(errorIdentifier);
+    }
+
+    if (this.shouldDisplayHint) {
+      const hintIdentifier = this.hintId;
+
+      if (hintIdentifier) {
+        collectedIds.push(hintIdentifier);
+      }
     }
 
     collectedIds.push(...this.additionalDescribedByIds);
@@ -160,6 +171,22 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
   get invalid(): boolean {
     return this.shouldDisplayInvalidState();
+  }
+
+  get shouldDisplayHint(): boolean {
+    return this.hasHint && !this.shouldDisplayError;
+  }
+
+  get shouldDisplayError(): boolean {
+    return this.hasErrorContent && this.invalid;
+  }
+
+  get errorId(): string | null {
+    if (!this.shouldDisplayError) {
+      return null;
+    }
+
+    return `${this.inputId}${TEXT_FIELD_ID_SEPARATOR}${TEXT_FIELD_ERROR_SEGMENT}`;
   }
 
   writeValue(value: string | null | undefined): void {
@@ -281,6 +308,10 @@ export class AppTextFieldComponent implements ControlValueAccessor {
       .split(DESCRIBED_BY_SEPARATOR_PATTERN)
       .map((identifier) => identifier.trim())
       .filter((identifier) => identifier !== EMPTY_STRING);
+  }
+
+  private get hasErrorContent(): boolean {
+    return Boolean(this.error);
   }
 
   private shouldDisplayInvalidState(): boolean {

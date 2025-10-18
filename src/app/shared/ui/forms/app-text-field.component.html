@@ -35,7 +35,10 @@
       <ng-content select="[appTextFieldSuffix]"></ng-content>
     </span>
   </div>
-  <div class="app-text-field__hint" *ngIf="hasHint" [id]="hintId">
+  <div class="app-text-field__error" *ngIf="shouldDisplayError" [id]="errorId">
+    <ng-content select="[appTextFieldError]"></ng-content>
+  </div>
+  <div class="app-text-field__hint" *ngIf="shouldDisplayHint" [id]="hintId">
     <ng-content select="[appTextFieldHint]"></ng-content>
   </div>
 </div>

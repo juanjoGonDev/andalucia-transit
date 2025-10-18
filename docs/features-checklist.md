@@ -218,6 +218,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-22 Hardened AppTextField required detection so validator fallbacks preserve aria semantics when control helpers are unavailable.
     - [x] Screenshot (Favorites search — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Added an AppTextField error projection slot so validation messaging surfaces with aria-describedby parity while maintaining baseline styling.
+    - [x] Screenshot (Route search form — desktop, error-ready parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Accessibility verification sweep (B4) — attach public screenshot URL(s); visual diff must be 0px.
 - [x] 2025-10-20 Added an application-wide skip control that preserves keyboard order and focuses the shared layout body without altering visuals.
     - [x] Screenshot (Skip to content control — desktop focus): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
