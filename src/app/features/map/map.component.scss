@@ -106,6 +106,107 @@
   gap: var(--space-xs);
 }
 
+.map__routes {
+  display: grid;
+  gap: var(--space-sm);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.map__routes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.map__routes-title {
+  margin: 0;
+  font-size: var(--font-size-title-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-strong);
+}
+
+.map__routes-refresh {
+  margin-left: auto;
+}
+
+.map__routes-summary {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.map__routes-message {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.map__routes-message--error {
+  color: var(--color-error);
+  font-weight: var(--font-weight-medium);
+}
+
+.map__route-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.map__route-item {
+  margin: 0;
+}
+
+.map__route-card-body {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.map__route-card-body--active {
+  border: 1px solid var(--color-primary);
+  background-color: var(--color-primary-soft);
+}
+
+.map-route {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.map-route__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.map-route__code {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+}
+
+.map-route__stops {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+.map-route__destination {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-strong);
+}
+
 .map-stop__header {
   display: flex;
   align-items: center;

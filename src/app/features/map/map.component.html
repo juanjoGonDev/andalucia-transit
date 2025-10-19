@@ -72,6 +72,65 @@
           </app-interactive-card>
         </li>
       </ul>
+      <section class="map__routes">
+        <header class="map__routes-header">
+          <h3 class="map__routes-title">{{ translationKeys.routes.title | translate }}</h3>
+          <button
+            type="button"
+            class="app-outline-button app-outline-button--compact map__routes-refresh"
+            appAccessibleButton
+            [disabled]="!hasRouteSelection() || isRouteLoading()"
+            (click)="refreshRoutes()"
+          >
+            {{ translationKeys.routes.refresh | translate }}
+          </button>
+        </header>
+        <p *ngIf="routeSelectionSummary()" class="map__routes-summary">
+          {{
+            translationKeys.routes.summary
+              | translate: {
+                  origin: routeSelectionSummary()?.originName,
+                  destination: routeSelectionSummary()?.destinationName
+                }
+          }}
+        </p>
+        <p *ngIf="!hasRouteSelection()" class="map__routes-message">
+          {{ translationKeys.routes.prompt | translate }}
+        </p>
+        <p *ngIf="isRouteLoading()" class="map__routes-message">
+          {{ translationKeys.routes.loading | translate }}
+        </p>
+        <p *ngIf="routeErrorKey()" class="map__routes-message map__routes-message--error">
+          {{ routeErrorKey() | translate }}
+        </p>
+        <p *ngIf="hasRouteSelection() && !isRouteLoading() && !routeErrorKey() && !hasRouteResults()" class="map__routes-message">
+          {{ translationKeys.routes.empty | translate }}
+        </p>
+        <ul *ngIf="hasRouteResults()" class="map__route-list">
+          <li *ngFor="let route of routes(); trackBy: trackRoute" class="map__route-item">
+            <app-interactive-card
+              [bodyClasses]="routeCardBodyClasses(route.id)"
+              [primaryRole]="routeCardRole"
+              [primaryAriaLabel]="
+                translationKeys.routes.cardAria
+                  | translate: { code: route.lineCode, destination: route.destinationName }
+              "
+              [primaryPressed]="activeRouteId() === route.id"
+              (primaryActivated)="toggleRoute(route.id)"
+            >
+              <div class="map-route">
+                <div class="map-route__header">
+                  <span class="map-route__code">{{ route.lineCode }}</span>
+                  <span class="map-route__stops">
+                    {{ translationKeys.routes.stopCount | translate: { count: route.stopCount } }}
+                  </span>
+                </div>
+                <div class="map-route__destination">{{ route.destinationName }}</div>
+              </div>
+            </app-interactive-card>
+          </li>
+        </ul>
+      </section>
     </aside>
   </div>
 </section>

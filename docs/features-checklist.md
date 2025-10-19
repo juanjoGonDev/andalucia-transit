@@ -428,5 +428,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] Record OSM/Leaflet licensing and geolocation consent handling in documentation.
     - [x] 2025-10-19 Documented mapping data sources, attribution requirements, and explicit geolocation consent flow in `docs/map-data-sources.md`.
-- [ ] Route overlay on map (C4) — attach public screenshot URL(s); visual diff must be 0px.
-  - [ ] Describe polyline transformation and caching strategy in documentation.
+- [x] Route overlay on map (C4) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Connected the map overlay facade to rendered polylines and manual refresh with cached geometry slices for matching routes.
+    - [x] Screenshot (Map route overlay — desktop): https://browser.buildwithfern.com/invocations/frvhinst/artifacts/artifacts/map-overlay-desktop.png
+    - [x] Screenshot (Map route overlay — mobile): https://browser.buildwithfern.com/invocations/frvhinst/artifacts/artifacts/map-overlay-mobile.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] Describe polyline transformation and caching strategy in documentation.

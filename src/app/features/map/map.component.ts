@@ -13,18 +13,31 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { APP_CONFIG } from '../../core/config';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
 import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
-import { LeafletMapService, MapHandle, MapStopMarker } from '../../shared/map/leaflet-map.service';
+import {
+  LeafletMapService,
+  MapHandle,
+  MapRoutePolyline,
+  MapStopMarker
+} from '../../shared/map/leaflet-map.service';
 import { GeolocationService } from '../../core/services/geolocation.service';
 import { GEOLOCATION_REQUEST_OPTIONS } from '../../core/services/geolocation-request.options';
 import { NearbyStopResult, NearbyStopsService } from '../../core/services/nearby-stops.service';
 import { StopDirectoryService } from '../../data/stops/stop-directory.service';
 import { buildDistanceDisplay } from '../../domain/utils/distance-display.util';
 import { GeoCoordinate } from '../../domain/utils/geo-distance.util';
+import {
+  RouteOverlayFacade,
+  RouteOverlayRoute,
+  RouteOverlaySelectionSummary,
+  RouteOverlayState,
+  RouteOverlayStatus
+} from '../../domain/map/route-overlay.facade';
 
 interface MapStopView {
   readonly id: string;
@@ -45,6 +58,12 @@ const MAP_MIN_ZOOM = 6;
 const MAP_MAX_ZOOM = 17;
 const ROOT_ROUTE_SEGMENT = '/' as const;
 const STOP_CARD_BODY_CLASSES: readonly string[] = ['map__stop-card-body'];
+const ROUTE_CARD_BODY_CLASSES: readonly string[] = ['map__route-card-body'];
+const ROUTE_CARD_ACTIVE_BODY_CLASSES: readonly string[] = [
+  'map__route-card-body',
+  'map__route-card-body--active'
+];
+const ROUTE_CARD_ROLE = 'button' as const;
 
 const GEOLOCATION_PERMISSION_DENIED = 1;
 const GEOLOCATION_POSITION_UNAVAILABLE = 2;
@@ -77,10 +96,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly nearbyStops = inject(NearbyStopsService);
   private readonly stopDirectory = inject(StopDirectoryService);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly overlayFacade = inject(RouteOverlayFacade);
 
   private mapHandle: MapHandle | null = null;
   private userCoordinate: GeoCoordinate | null = null;
   private isDestroyed = false;
+  private currentSelectionKey: string | null = null;
+  private hasFittedRoutes = false;
 
   private readonly translations = APP_CONFIG.translationKeys.map;
   private readonly distanceTranslations = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
@@ -89,11 +111,17 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected readonly translationKeys = this.translations;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.map;
   protected readonly stopCardBodyClasses = STOP_CARD_BODY_CLASSES;
+  protected readonly routeCardRole = ROUTE_CARD_ROLE;
 
   protected readonly stops = signal<readonly MapStopView[]>([]);
   protected readonly isLocating = signal(false);
   protected readonly hasAttemptedLocation = signal(false);
   protected readonly errorKey = signal<string | null>(null);
+  protected readonly routeStatus = signal<RouteOverlayStatus>('idle');
+  protected readonly routeErrorKey = signal<string | null>(null);
+  protected readonly routes = signal<readonly RouteOverlayRoute[]>([]);
+  protected readonly activeRouteId = signal<string | null>(null);
+  protected readonly routeSelectionSummary = signal<RouteOverlaySelectionSummary | null>(null);
 
   protected readonly hasStops = computed(() => this.stops().length > 0);
   protected readonly showEmptyState = computed(
@@ -105,6 +133,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   );
   protected readonly showPrompt = computed(
     () => !this.hasAttemptedLocation() && !this.errorKey() && !this.isLocating()
+  );
+  protected readonly hasRouteSelection = computed(
+    () => this.routeStatus() !== 'idle' && this.routeSelectionSummary() !== null
+  );
+  protected readonly isRouteLoading = computed(() => this.routeStatus() === 'loading');
+  protected readonly hasRouteResults = computed(
+    () => this.routeStatus() === 'ready' && this.routes().length > 0
   );
 
   async ngAfterViewInit(): Promise<void> {
@@ -126,6 +161,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     });
 
     await this.invalidateMapSize();
+    this.updateMapRoutes();
   }
 
   ngOnDestroy(): void {
@@ -136,6 +172,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   protected trackStop(_: number, stop: MapStopView): string {
     return stop.id;
+  }
+
+  protected trackRoute(_: number, route: RouteOverlayRoute): string {
+    return route.id;
   }
 
   protected async locate(): Promise<void> {
@@ -200,6 +240,33 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  protected routeCardBodyClasses(routeId: string): readonly string[] {
+    return this.activeRouteId() === routeId
+      ? ROUTE_CARD_ACTIVE_BODY_CLASSES
+      : ROUTE_CARD_BODY_CLASSES;
+  }
+
+  protected toggleRoute(routeId: string): void {
+    if (this.activeRouteId() === routeId) {
+      this.activeRouteId.set(null);
+      this.updateMapRoutes();
+      return;
+    }
+
+    this.activeRouteId.set(routeId);
+    this.updateMapRoutes();
+
+    const selectedRoute = this.routes().find((route) => route.id === routeId);
+
+    if (selectedRoute && selectedRoute.coordinates.length > 0) {
+      this.mapHandle?.fitToCoordinates(selectedRoute.coordinates);
+    }
+  }
+
+  protected refreshRoutes(): void {
+    this.overlayFacade.refresh();
+  }
+
   private async loadStops(
     results: readonly NearbyStopResult[]
   ): Promise<readonly MapStopView[]> {
@@ -254,6 +321,53 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     coordinate: GeoCoordinate
   ): readonly GeoCoordinate[] {
     return Object.freeze([...stopCoordinates, coordinate]);
+  }
+
+  private handleOverlayState(state: RouteOverlayState): void {
+    if (state.selectionKey !== this.currentSelectionKey) {
+      this.currentSelectionKey = state.selectionKey;
+      this.activeRouteId.set(null);
+      this.hasFittedRoutes = false;
+    }
+
+    this.routeStatus.set(state.status);
+    this.routeErrorKey.set(state.errorKey);
+    this.routeSelectionSummary.set(state.selectionSummary);
+    this.routes.set(state.routes);
+    this.updateMapRoutes();
+
+    if (!this.hasFittedRoutes && state.status === 'ready' && state.routes.length > 0) {
+      const allCoordinates = this.collectRouteCoordinates(state.routes);
+
+      if (allCoordinates.length > 0) {
+        this.mapHandle?.fitToCoordinates(allCoordinates);
+        this.hasFittedRoutes = true;
+      }
+    }
+  }
+
+  private collectRouteCoordinates(routes: readonly RouteOverlayRoute[]): readonly GeoCoordinate[] {
+    const coordinates: GeoCoordinate[] = [];
+
+    for (const route of routes) {
+      coordinates.push(...route.coordinates);
+    }
+
+    return Object.freeze(coordinates);
+  }
+
+  private updateMapRoutes(): void {
+    if (!this.mapHandle) {
+      return;
+    }
+
+    const activeRoute = this.activeRouteId();
+    const mappedRoutes: readonly MapRoutePolyline[] = this.routes().map((route) => ({
+      id: route.id,
+      coordinates: route.coordinates
+    }));
+
+    this.mapHandle.renderRoutes(mappedRoutes, activeRoute);
   }
 
   private async invalidateMapSize(): Promise<void> {
@@ -317,5 +431,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private isRunningInBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
+  }
+
+  constructor() {
+    this.overlayFacade
+      .watchOverlay()
+      .pipe(takeUntilDestroyed())
+      .subscribe((state) => this.handleOverlayState(state));
   }
 }

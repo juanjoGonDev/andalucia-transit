@@ -328,6 +328,17 @@ export const APP_CONFIG = {
         timeout: 'map.errors.timeout',
         generic: 'map.errors.generic'
       },
+      routes: {
+        title: 'map.routes.title',
+        refresh: 'map.routes.refresh',
+        summary: 'map.routes.summary',
+        prompt: 'map.routes.prompt',
+        loading: 'map.routes.loading',
+        empty: 'map.routes.empty',
+        cardAria: 'map.routes.cardAria',
+        stopCount: 'map.routes.stopCount',
+        error: 'map.routes.error'
+      },
       openList: 'map.openList',
       hint: 'map.hint'
     },

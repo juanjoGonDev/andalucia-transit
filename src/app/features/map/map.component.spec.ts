@@ -1,18 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
 
 import { MapComponent } from './map.component';
 import {
   LeafletMapService,
   MapCreateOptions,
   MapHandle,
+  MapRoutePolyline,
   MapStopMarker
 } from '../../shared/map/leaflet-map.service';
 import { GeolocationService } from '../../core/services/geolocation.service';
 import { NearbyStopResult, NearbyStopsService } from '../../core/services/nearby-stops.service';
 import { StopDirectoryRecord, StopDirectoryService } from '../../data/stops/stop-directory.service';
+import {
+  RouteOverlayFacade,
+  RouteOverlaySelectionSummary,
+  RouteOverlayState
+} from '../../domain/map/route-overlay.facade';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {
@@ -26,6 +32,7 @@ class MapHandleStub implements MapHandle {
   readonly userLocations: GeoCoordinateStub[] = [];
   readonly renderedStops: readonly MapStopMarker[][] = [];
   readonly focusedPoints: readonly GeoCoordinateStub[][] = [];
+  readonly renderedRoutes: readonly { routes: readonly MapRoutePolyline[]; activeRouteId: string | null }[] = [];
   destroyed = false;
   invalidationCount = 0;
 
@@ -44,6 +51,13 @@ class MapHandleStub implements MapHandle {
 
   fitToCoordinates(points: readonly GeoCoordinateStub[]): void {
     (this.focusedPoints as GeoCoordinateStub[][]).push([...points]);
+  }
+
+  renderRoutes(routes: readonly MapRoutePolyline[], activeRouteId: string | null): void {
+    (this.renderedRoutes as { routes: readonly MapRoutePolyline[]; activeRouteId: string | null }[]).push({
+      routes: [...routes],
+      activeRouteId
+    });
   }
 
   invalidateSize(): void {
@@ -112,10 +126,24 @@ class StopDirectoryServiceStub {
   }
 }
 
+class RouteOverlayFacadeStub {
+  private readonly subject = new Subject<RouteOverlayState>();
+  readonly refresh = jasmine.createSpy('refresh');
+
+  watchOverlay(): Observable<RouteOverlayState> {
+    return this.subject.asObservable();
+  }
+
+  emit(state: RouteOverlayState): void {
+    this.subject.next(state);
+  }
+}
+
 interface MapComponentAccess {
   locate(): Promise<void>;
   stops(): readonly MapStopViewStub[];
   errorKey(): string | null;
+  refreshRoutes(): void;
 }
 
 interface MapStopViewStub {
@@ -170,6 +198,7 @@ describe('MapComponent', () => {
   let geolocation: GeolocationServiceStub;
   let nearbyStops: NearbyStopsServiceStub;
   let stopDirectory: StopDirectoryServiceStub;
+  let overlayFacade: RouteOverlayFacadeStub;
 
   beforeEach(async () => {
     spyOn(window, 'requestAnimationFrame').and.callFake((callback: FrameRequestCallback) => {
@@ -181,6 +210,7 @@ describe('MapComponent', () => {
     geolocation = new GeolocationServiceStub();
     nearbyStops = new NearbyStopsServiceStub();
     stopDirectory = new StopDirectoryServiceStub();
+    overlayFacade = new RouteOverlayFacadeStub();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -192,6 +222,7 @@ describe('MapComponent', () => {
         { provide: GeolocationService, useValue: geolocation },
         { provide: NearbyStopsService, useValue: nearbyStops },
         { provide: StopDirectoryService, useValue: stopDirectory },
+        { provide: RouteOverlayFacade, useValue: overlayFacade },
         { provide: PLATFORM_ID, useValue: 'browser' }
       ]
     }).compileComponents();
@@ -201,6 +232,7 @@ describe('MapComponent', () => {
   });
 
   it('creates the map view on init with default configuration', async () => {
+    emitIdleOverlayState(overlayFacade);
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -234,6 +266,7 @@ describe('MapComponent', () => {
     ];
     stopDirectory.addRecord(stopRecord);
 
+    emitIdleOverlayState(overlayFacade);
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -251,6 +284,7 @@ describe('MapComponent', () => {
   it('surfaces an error key when location permission is denied', async () => {
     geolocation.failWith(permissionDeniedError());
 
+    emitIdleOverlayState(overlayFacade);
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -260,4 +294,70 @@ describe('MapComponent', () => {
     expect(access.errorKey()).toBe('map.errors.permissionDenied');
     expect(mapService.handle.renderedStops.length).toBe(0);
   });
+
+  it('renders route overlays when overlay facade returns routes', async () => {
+    const state = buildRouteOverlayState({
+      status: 'ready',
+      routes: [
+        {
+          id: 'route-1',
+          lineId: 'line-1',
+          lineCode: 'M-111',
+          direction: 1,
+          destinationName: 'Centro',
+          coordinates: [
+            { latitude: 37.2, longitude: -5.9 },
+            { latitude: 37.3, longitude: -6.0 }
+          ],
+          stopCount: 2
+        }
+      ],
+      selectionKey: 'selection-1',
+      errorKey: null
+    });
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    overlayFacade.emit(state);
+    await fixture.whenStable();
+
+    const lastRender = mapService.handle.renderedRoutes.at(-1);
+
+    expect(lastRender).toBeTruthy();
+    expect(lastRender?.routes.length).toBe(1);
+    expect(lastRender?.routes[0]?.id).toBe('route-1');
+  });
+
+  it('refreshes overlay data when refreshRoutes is invoked', () => {
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+
+    const access = component as unknown as MapComponentAccess;
+    access.refreshRoutes();
+
+    expect(overlayFacade.refresh).toHaveBeenCalled();
+  });
 });
+
+function emitIdleOverlayState(facade: RouteOverlayFacadeStub): void {
+  facade.emit(buildRouteOverlayState({ status: 'idle', routes: [], selectionKey: null, errorKey: null }));
+}
+
+function buildRouteOverlayState(
+  overrides: Partial<RouteOverlayState> &
+    Pick<RouteOverlayState, 'status' | 'routes' | 'selectionKey' | 'errorKey'>
+): RouteOverlayState {
+  const summary: RouteOverlaySelectionSummary | null = overrides.status === 'idle'
+    ? null
+    : { originName: 'Origin', destinationName: 'Destination' };
+
+  return {
+    status: overrides.status,
+    routes: overrides.routes,
+    errorKey: overrides.errorKey ?? null,
+    selectionKey: overrides.selectionKey,
+    selectionSummary: overrides.selectionKey ? summary : null
+  } satisfies RouteOverlayState;
+}
