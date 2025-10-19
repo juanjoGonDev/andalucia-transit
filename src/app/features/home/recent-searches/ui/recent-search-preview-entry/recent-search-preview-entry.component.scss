@@ -4,7 +4,7 @@
 
 .recent-preview-entry {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-md);
   padding: 0.35rem 0;
 }
@@ -38,6 +38,10 @@
 }
 
 .recent-preview-entry__time {
+  display: flex;
+  justify-content: flex-end;
+  align-self: flex-start;
+  min-inline-size: var(--space-4xl);
   font-weight: 700;
   font-size: 1.15rem;
   color: var(--color-text-strong);
