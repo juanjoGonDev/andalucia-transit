@@ -347,6 +347,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-22 Restored explicit aria-invalid boolean strings on AppTextField so assistive metadata stays consistent without visual drift.
     - [x] Screenshot (Route search form — desktop, aria-invalid contract verification): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Ensured AppTextField emits explicit aria-invalid boolean values so valid states surface `false` to assistive technology without visual drift.
+    - [x] Screenshot (Route search form — desktop, aria-invalid false-state verification): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
 ### Feature Roadmap (2025-10-18)
 - [ ] News feed view (C1) — attach public screenshot URL(s); visual diff must be 0px.
