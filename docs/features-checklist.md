@@ -124,6 +124,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Screenshot (Favorites list — desktop parity reconfirmed): https://browser.buildwithfern.com/invocations/fdvycuml/artifacts/artifacts/favorites-desktop.png
     - [x] Screenshot (Favorites list — mobile parity reconfirmed): https://browser.buildwithfern.com/invocations/fdvycuml/artifacts/artifacts/favorites-mobile.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-30 Restored favorites list column layout and header alignment to match the baseline across breakpoints.
+    - [x] Screenshot (Favorites list — mobile grid parity): https://browser.buildwithfern.com/invocations/qsuddnum/artifacts/artifacts/favorites-mobile.png
+    - [x] Screenshot (Favorites list — desktop grid parity): https://browser.buildwithfern.com/invocations/qsuddnum/artifacts/artifacts/favorites-desktop.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [x] Recent searches time block anchoring (A2) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-18 Reworked recent preview entry layout with flex alignment and non-wrapping time blocks at mobile and desktop widths.
   - [x] Screenshot (Home recent searches — desktop): https://browser.buildwithfern.com/invocations/wdsyzxta/artifacts/artifacts/recent-time.png

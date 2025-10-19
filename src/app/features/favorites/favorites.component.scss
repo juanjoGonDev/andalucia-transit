@@ -79,9 +79,43 @@
   list-style: none;
   display: grid;
   gap: var(--space-md-plus);
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .favorites__item {
   margin: 0;
+}
+
+@media (min-width: 48rem) {
+  .favorites__header {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-lg);
+  }
+
+  .favorites__description {
+    flex: 1 1 auto;
+  }
+
+  .favorites__controls {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    align-items: flex-start;
+  }
+
+  .favorites__search {
+    flex: 0 1 22rem;
+  }
+
+  .favorites__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .favorites__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 

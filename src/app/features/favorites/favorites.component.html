@@ -42,6 +42,7 @@
             [removeClasses]="favoritesCardRemoveClasses"
             [removeIconName]="removeIcon()"
             [removeAriaLabel]="removeLabelKey | translate"
+            [primaryCommands]="stopDetailCommands(stop)"
             (primaryActivated)="openStop(stop)"
             (removeActivated)="onRemoveActivated(stop)"
           >

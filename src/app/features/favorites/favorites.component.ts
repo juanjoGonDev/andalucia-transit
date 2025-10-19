@@ -49,6 +49,7 @@ const FAVORITES_CARD_BODY_CLASSES: readonly string[] = ['favorites-card__body'];
 const FAVORITES_CARD_REMOVE_CLASSES: readonly string[] = ['favorites-card__remove'];
 const SEARCH_TEXT_FIELD_TYPE: TextFieldType = 'search';
 const SEARCH_AUTOCOMPLETE_ATTRIBUTE = 'off';
+const ROOT_ROUTE_SEGMENT = '/' as const;
 @Component({
   selector: 'app-favorites',
   standalone: true,
@@ -97,6 +98,7 @@ export class FavoritesComponent {
 
   private readonly favorites = signal<readonly StopFavorite[]>([]);
   private readonly searchTerm = signal('');
+  private readonly stopDetailRouteKey = APP_CONFIG.routes.stopDetailBase;
 
   protected readonly hasFavorites = computed(() => this.favorites().length > 0);
   protected readonly groups = computed(() => this.buildGroups(this.favorites(), this.searchTerm()));
@@ -124,9 +126,7 @@ export class FavoritesComponent {
   }
 
   protected async openStop(item: FavoriteListItem): Promise<void> {
-    const stopId = item.stopIds[0] ?? item.id;
-    const commands: readonly string[] = ['/', APP_CONFIG.routes.stopDetailBase, stopId];
-    await this.router.navigate(commands);
+    await this.router.navigate(this.buildStopDetailCommands(item));
   }
 
   protected async remove(item: FavoriteListItem): Promise<void> {
@@ -181,10 +181,19 @@ export class FavoritesComponent {
     await this.remove(item);
   }
 
+  protected stopDetailCommands(item: FavoriteListItem): readonly string[] {
+    return this.buildStopDetailCommands(item);
+  }
+
   private observeFavorites(): void {
     this.favoritesFacade.favorites$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((favorites) => this.favorites.set(favorites));
+  }
+
+  private buildStopDetailCommands(item: FavoriteListItem): readonly string[] {
+    const stopId = item.stopIds[0] ?? item.id;
+    return [ROOT_ROUTE_SEGMENT, this.stopDetailRouteKey, stopId] as const;
   }
 
   private observeSearch(): void {
