@@ -257,6 +257,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-27 Ensured AppTextField only surfaces the aria-invalid attribute when validation errors exist so valid states keep the attribute off without affecting layout.
     - [x] Screenshot (Route search form — desktop, aria-invalid omission parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-19 Reconfirmed AppTextField aria-invalid omission so healthy controls drop the attribute while invalid states retain it, maintaining accessibility without visual drift.
+    - [x] Screenshot (Route search form — desktop, aria-invalid omission parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] 2025-10-22 Extended AppTextField error context to expose pending and status metadata so projected validation templates can reflect async validation without visual drift.
     - [x] Screenshot (Route search form — desktop, error context status parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
