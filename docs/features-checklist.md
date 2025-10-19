@@ -200,6 +200,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Screenshot (Favorites clear confirmation — desktop, cleanup subject parity): https://browser.buildwithfern.com/invocations/wgwaccoq/artifacts/artifacts/favorites-dialog-escape.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-29 Limited AppTextField aria-invalid exposure to invalid controls so healthy fields omit the attribute while preserving baseline layout tokens.
+    - [x] Screenshot (Route search form — desktop, aria-invalid omission parity validated): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] 2025-10-28 Restored AppTextField aria-invalid boolean output so valid controls surface `false` while preserving primitive layout tokens.
     - [x] Screenshot (Route search form — desktop, aria-invalid boolean parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
