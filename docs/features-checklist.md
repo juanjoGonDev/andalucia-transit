@@ -128,6 +128,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Screenshot (Favorites list — mobile grid parity): https://browser.buildwithfern.com/invocations/qsuddnum/artifacts/artifacts/favorites-mobile.png
     - [x] Screenshot (Favorites list — desktop grid parity): https://browser.buildwithfern.com/invocations/qsuddnum/artifacts/artifacts/favorites-desktop.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+    - [x] 2025-10-30 Routed favorites card activation exclusively through router command bindings to prevent duplicate navigation handlers and confirmed layout stability.
+      - [x] Screenshot (Favorites list — desktop routing parity): https://browser.buildwithfern.com/invocations/emnefwby/artifacts/artifacts/favorites-desktop.png
+      - [x] Screenshot (Favorites list — mobile routing parity): https://browser.buildwithfern.com/invocations/emnefwby/artifacts/artifacts/favorites-mobile.png
+      - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [x] Recent searches time block anchoring (A2) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-18 Reworked recent preview entry layout with flex alignment and non-wrapping time blocks at mobile and desktop widths.
   - [x] Screenshot (Home recent searches — desktop): https://browser.buildwithfern.com/invocations/wdsyzxta/artifacts/artifacts/recent-time.png
@@ -135,6 +139,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-19 Reaffirmed recent preview entry trailing time alignment so the time block stays right-aligned on narrow viewports while preserving shared spacing tokens.
     - [x] Screenshot (Home recent searches — mobile alignment locked): https://browser.buildwithfern.com/invocations/rprdmtkl/artifacts/artifacts/home-recent-searches-mobile.png
     - [x] Screenshot (Home recent searches — desktop alignment locked): https://browser.buildwithfern.com/invocations/rprdmtkl/artifacts/artifacts/home-recent-searches-desktop.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-30 Converted recent preview entry layout to a two-column grid so the trailing time block remains anchored without relying on manual margins.
+    - [x] Screenshot (Home recent searches — mobile grid anchoring): https://browser.buildwithfern.com/invocations/emnefwby/artifacts/artifacts/home-recent-mobile.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [x] Settings view layout integration (A3) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-18 Routed settings through the shared layout surface with the utility container and layout body tokens, ensuring baseline spacing and cards render on the muted surface without ad-hoc padding.

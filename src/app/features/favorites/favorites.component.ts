@@ -10,7 +10,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { APP_CONFIG } from '../../core/config';
@@ -72,7 +71,6 @@ export class FavoritesComponent {
   private readonly dialog = inject(OverlayDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly formBuilder = inject(FormBuilder);
-  private readonly router = inject(Router);
 
   private readonly translations = APP_CONFIG.translationKeys.favorites;
   private readonly favoriteIconName = APP_CONFIG.homeData.favoriteStops.icon;
@@ -123,10 +121,6 @@ export class FavoritesComponent {
 
   protected removeIcon(): string {
     return this.removeIconName;
-  }
-
-  protected async openStop(item: FavoriteListItem): Promise<void> {
-    await this.router.navigate(this.buildStopDetailCommands(item));
   }
 
   protected async remove(item: FavoriteListItem): Promise<void> {

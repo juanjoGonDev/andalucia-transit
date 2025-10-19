@@ -3,9 +3,11 @@
 }
 
 .recent-preview-entry {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-md);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--space-md);
+  row-gap: var(--space-xs);
+  align-items: start;
   padding: 0.35rem 0;
 }
 
@@ -45,8 +47,7 @@
   font-weight: 700;
   font-size: 1.15rem;
   color: var(--color-text-strong);
-  margin-left: auto;
-  flex-shrink: 0;
+  justify-self: end;
   white-space: nowrap;
   text-align: right;
 }
