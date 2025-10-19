@@ -239,6 +239,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-22 Passed AppTextField error templates control state context so forwarded validation messaging can react to errors without affecting layout or tokens.
     - [x] Screenshot (Route search form — desktop, error context parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Restored AppTextField aria-invalid metadata to explicit boolean strings so assistive tech reads consistent state cues without changing layout tokens.
+    - [x] Screenshot (Route search form — desktop, aria-invalid parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] 2025-10-22 Extended AppTextField error context to expose pending and status metadata so projected validation templates can reflect async validation without visual drift.
     - [x] Screenshot (Route search form — desktop, error context status parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
