@@ -120,6 +120,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] Screenshot (Favorites list — desktop): https://browser.buildwithfern.com/invocations/qekfmfwj/artifacts/artifacts/favorites-desktop.png
   - [x] Screenshot (Favorites list — mobile): https://browser.buildwithfern.com/invocations/qekfmfwj/artifacts/artifacts/favorites-mobile.png
   - [x] Tests: `npm run lint`; `npm run test` *(aborted while installing Chrome dependencies for the Angular runner)*; `npm run build`.
+  - [x] 2025-10-29 Rebuilt interactive card tokens to lock the favorites gradient, chip contrast, and remove control placement against the baseline.
+    - [x] Screenshot (Favorites list — desktop parity reconfirmed): https://browser.buildwithfern.com/invocations/fdvycuml/artifacts/artifacts/favorites-desktop.png
+    - [x] Screenshot (Favorites list — mobile parity reconfirmed): https://browser.buildwithfern.com/invocations/fdvycuml/artifacts/artifacts/favorites-mobile.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [x] Recent searches time block anchoring (A2) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-18 Reworked recent preview entry layout with flex alignment and non-wrapping time blocks at mobile and desktop widths.
   - [x] Screenshot (Home recent searches — desktop): https://browser.buildwithfern.com/invocations/wdsyzxta/artifacts/artifacts/recent-time.png

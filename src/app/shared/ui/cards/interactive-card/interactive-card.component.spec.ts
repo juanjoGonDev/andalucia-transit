@@ -14,6 +14,10 @@ const MATERIAL_SYMBOLS_OUTLINED = 'material-symbols-outlined';
 const PRIMARY_ARIA_LABEL = 'Open item';
 const LINK_ROLE = 'link';
 const ROUTER_COMMAND: readonly string[] = ['/home'];
+const INTERACTIVE_CARD_SELECTOR = 'app-interactive-card';
+const BASE_HOST_CLASS = 'interactive-card';
+const BASE_BODY_CLASS = 'interactive-card__body';
+const BASE_REMOVE_CLASS = 'interactive-card__remove';
 
 @Component({
   selector: 'app-host-card',
@@ -65,6 +69,16 @@ describe('InteractiveCardComponent', () => {
     host = fixture.componentInstance;
     fixture.detectChanges();
   });
+
+  function queryInteractiveCard(): HTMLElement {
+    const element = fixture.nativeElement.querySelector(INTERACTIVE_CARD_SELECTOR) as HTMLElement | null;
+
+    if (!element) {
+      throw new Error('Interactive card not found');
+    }
+
+    return element;
+  }
 
   it('emits primary activation when the main body is triggered', () => {
     const primarySpy = jasmine.createSpy('primary');
@@ -124,5 +138,26 @@ describe('InteractiveCardComponent', () => {
     const primary = fixture.debugElement.query(By.css(`.${BODY_CLASS}`));
 
     expect(primary.attributes['role']).toBe(LINK_ROLE);
+  });
+
+  it('applies the base classes to the body and remove sections', () => {
+    host.bodyClasses = [BODY_CLASS];
+    host.removeAriaLabel = REMOVE_LABEL;
+    host.removeClasses = [REMOVE_CLASS];
+
+    fixture.detectChanges();
+
+    const body = fixture.debugElement.query(By.css(`.${BODY_CLASS}`));
+    const remove = fixture.debugElement.query(By.css(`.${REMOVE_CLASS}`));
+
+    expect(remove).not.toBeNull();
+    expect(body.nativeElement.classList).toContain(BASE_BODY_CLASS);
+    expect(remove!.nativeElement.classList).toContain(BASE_REMOVE_CLASS);
+  });
+
+  it('decorates the host element with the base class', () => {
+    const card = queryInteractiveCard();
+
+    expect(card.classList).toContain(BASE_HOST_CLASS);
   });
 });
