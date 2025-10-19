@@ -438,3 +438,6 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Screenshot (Map route distance — desktop): https://browser.buildwithfern.com/invocations/xvxxqrhu/artifacts/artifacts/map-route-distance.png
     - [x] Screenshot (Map route distance — mobile): https://browser.buildwithfern.com/invocations/ewwpjinf/artifacts/artifacts/map-route-distance-mobile.png
     - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-03 Corrected route overlay stop count translations to use plural forms so singular cards read naturally in both languages.
+    - [x] Screenshot (Map route panel — pluralization fix): https://browser.buildwithfern.com/invocations/tpflxahh/artifacts/artifacts/map-route-panel.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
