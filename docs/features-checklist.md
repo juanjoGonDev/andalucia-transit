@@ -306,6 +306,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
 - [x] 2025-10-25 Limited AppTextField aria-invalid metadata to invalid controls so valid fields omit the attribute while preserving shared form tokens.
   - [x] Screenshot (Route search form — desktop, aria-invalid omission parity validated): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [x] 2025-10-26 Scoped AppTextField aria-invalid output to render only when controls are invalid so healthy inputs no longer expose redundant metadata.
+  - [x] Screenshot (Route search form — desktop, aria-invalid omission parity reaffirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Accessibility verification sweep (B4) — attach public screenshot URL(s); visual diff must be 0px.
 - [x] 2025-10-20 Added an application-wide skip control that preserves keyboard order and focuses the shared layout body without altering visuals.
     - [x] Screenshot (Skip to content control — desktop focus): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
