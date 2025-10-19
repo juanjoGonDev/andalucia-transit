@@ -389,7 +389,8 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-19 Routed the new News feature through `AppLayoutComponent`, added a cached feed service with domain facade refresh hooks, and styled card listings with shared tokens.
     - [x] Screenshot (News view — desktop): https://browser.buildwithfern.com/invocations/ndveuzdu/artifacts/artifacts/news-view.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
-  - [ ] Document CTAN endpoint + caching in `docs/api-reference.md`.
+  - [x] Document CTAN endpoint + caching in `docs/api-reference.md`.
+    - [x] 2025-10-29 Added a news snapshot feed section covering source attribution, caching behaviour, and article schema details.
 - [ ] Stop information by consortium + stop number (C2) — attach public screenshot URL(s); visual diff must be 0px.
   - [ ] Ensure friendly URL contract and offline fallback notes in documentation.
 - [ ] Interactive map with nearby stops (C3) — attach public screenshot URL(s); visual diff must be 0px.
