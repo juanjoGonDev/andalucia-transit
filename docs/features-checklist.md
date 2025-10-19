@@ -221,6 +221,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-23 Limited AppTextField aria-invalid output to invalid states so assistive tech ignores the attribute when controls are healthy without altering layout tokens.
     - [x] Screenshot (Route search form — desktop, aria metadata parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Scoped AppTextField aria-invalid to emit only when controls are invalid so valid states drop the attribute while preserving baseline styling.
+    - [x] Screenshot (Route search form — desktop, aria metadata parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] 2025-10-22 Added an AppTextField error projection slot so validation messaging surfaces with aria-describedby parity while maintaining baseline styling.
     - [x] Screenshot (Route search form — desktop, error-ready parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
