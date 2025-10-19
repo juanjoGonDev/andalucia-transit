@@ -39,8 +39,8 @@ const TEXT_FIELD_ERROR_SEGMENT = 'error';
 const DEFAULT_TEXT_FIELD_TYPE: TextFieldType = 'text';
 const DEFAULT_AUTOCOMPLETE_ATTRIBUTE = 'off';
 const ARIA_ATTRIBUTE_SEPARATOR = ' ';
-const ARIA_TRUE = 'true';
-const ARIA_FALSE = 'false';
+const ARIA_TRUE = 'true' as const;
+const ARIA_FALSE = 'false' as const;
 const REQUIRED_ERROR_KEY = 'required';
 const EMPTY_STRING = '';
 const DESCRIBED_BY_SEPARATOR_PATTERN = /\s+/u;
@@ -190,8 +190,8 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     return Boolean(this.hint);
   }
 
-  get ariaInvalidAttribute(): 'true' | null {
-    return this.shouldDisplayInvalidState() ? (ARIA_TRUE as 'true') : null;
+  get ariaInvalidAttribute(): 'true' | 'false' {
+    return this.shouldDisplayInvalidState() ? ARIA_TRUE : ARIA_FALSE;
   }
 
   get ariaRequiredAttribute(): 'true' | null {
