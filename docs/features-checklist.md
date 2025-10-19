@@ -421,7 +421,11 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-19 Linked the stop detail actions to the stop information view using directory metadata so users can jump directly to enriched details.
     - [x] Screenshot (Stop detail — desktop, stop info action): https://browser.buildwithfern.com/invocations/xysejzld/artifacts/artifacts/stop-detail-stop-info-action.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
-- [ ] Interactive map with nearby stops (C3) — attach public screenshot URL(s); visual diff must be 0px.
+- [x] Interactive map with nearby stops (C3) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Added a Leaflet-powered map with nearby stop markers, geolocation flow, and responsive panel layout.
+    - [x] Screenshot (Map view — desktop): https://browser.buildwithfern.com/invocations/xzkvrnbx/artifacts/artifacts/map-desktop.png
+    - [x] Screenshot (Map view — mobile): https://browser.buildwithfern.com/invocations/xzkvrnbx/artifacts/artifacts/map-mobile.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [ ] Record OSM/Leaflet licensing and geolocation consent handling in documentation.
 - [ ] Route overlay on map (C4) — attach public screenshot URL(s); visual diff must be 0px.
   - [ ] Describe polyline transformation and caching strategy in documentation.

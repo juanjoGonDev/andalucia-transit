@@ -5,6 +5,7 @@
 @use 'styles/favorites-card';
 
 @import 'styles/theme-rules.css';
+@import 'leaflet/dist/leaflet.css';
 
 @include mat.core();
 

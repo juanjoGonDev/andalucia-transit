@@ -283,6 +283,19 @@
   "map": {
     "title": "Mapa de la red",
     "description": "Explora el mapa y revisa cada parada.",
+    "locate": "Usar mi ubicación",
+    "locating": "Buscando ubicación…",
+    "panelTitle": "Paradas cercanas",
+    "permissionPrompt": "Comparte tu ubicación para ver las paradas cercanas en el mapa.",
+    "accessibleMapLabel": "Mapa de Andalucía con paradas cercanas",
+    "empty": "No encontramos paradas en tu área.",
+    "stopAriaLabel": "Abrir la parada {{code}} en {{municipality}}",
+    "errors": {
+      "permissionDenied": "No tenemos permiso para acceder a tu ubicación.",
+      "positionUnavailable": "No se pudo determinar tu ubicación actual.",
+      "timeout": "La solicitud de ubicación tardó demasiado en completarse.",
+      "generic": "No pudimos cargar las paradas cercanas. Inténtalo de nuevo."
+    },
     "openList": "Ver lista",
     "hint": "Vista previa del mapa"
   },

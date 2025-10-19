@@ -283,6 +283,19 @@
   "map": {
     "title": "Network map",
     "description": "Explore the network map and inspect each stop.",
+    "locate": "Use my location",
+    "locating": "Locating…",
+    "panelTitle": "Nearby stops",
+    "permissionPrompt": "Share your location to see nearby stops on the map.",
+    "accessibleMapLabel": "Andalusia map with nearby stops",
+    "empty": "No nearby stops were found in your area.",
+    "stopAriaLabel": "Open stop {{code}} in {{municipality}}",
+    "errors": {
+      "permissionDenied": "We do not have permission to access your location.",
+      "positionUnavailable": "We could not determine your current location.",
+      "timeout": "The location request took too long to finish.",
+      "generic": "We could not load nearby stops right now. Please try again."
+    },
     "openList": "View list",
     "hint": "Map preview loading"
   },

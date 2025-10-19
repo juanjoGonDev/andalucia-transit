@@ -315,6 +315,19 @@ export const APP_CONFIG = {
     map: {
       title: 'map.title',
       description: 'map.description',
+      locate: 'map.locate',
+      locating: 'map.locating',
+      panelTitle: 'map.panelTitle',
+      permissionPrompt: 'map.permissionPrompt',
+      accessibleMapLabel: 'map.accessibleMapLabel',
+      empty: 'map.empty',
+      stopAriaLabel: 'map.stopAriaLabel',
+      errors: {
+        permissionDenied: 'map.errors.permissionDenied',
+        positionUnavailable: 'map.errors.positionUnavailable',
+        timeout: 'map.errors.timeout',
+        generic: 'map.errors.generic'
+      },
       openList: 'map.openList',
       hint: 'map.hint'
     },
