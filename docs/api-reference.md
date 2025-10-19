@@ -2798,6 +2798,7 @@ Datos de una parada dado su identificador
 - **Permissions:** Todos
 - **Examples:** Ejemplo de uso: `http://api.ctan.es/v1/Consorcios/7/paradas/56`
 - **Source:** v1/recursos/paradas.php
+- **App usage:** La vista de información de parada consulta este recurso añadiendo el parámetro `lang` (`ES` o `EN`) para mostrar el nombre, zona, correspondencias y notas de la parada. Si la petición falla, el cliente reutiliza el snapshot del directorio de paradas para ofrecer los datos básicos en modo sin conexión.
 
 **Parameters**
 

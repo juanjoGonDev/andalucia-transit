@@ -8,7 +8,8 @@
     "language": "Idioma",
     "lines": "Líneas",
     "favorites": "Favoritas",
-    "news": "Noticias"
+    "news": "Noticias",
+    "stopInfo": "Información de parada"
   },
   "languages": {
     "es": "Español",
@@ -220,6 +221,35 @@
     "source": {
       "live": "Estos datos vienen ahora mismo del {{provider}}.",
       "snapshot": "Estos datos provienen de una copia guardada el {{date}} a las {{time}} del {{provider}}."
+    }
+  },
+  "stopInfo": {
+    "title": "Información de la parada",
+    "description": "Consulta los datos principales de la parada, su zona y las líneas que conectan.",
+    "actions": {
+      "refresh": "Actualizar parada"
+    },
+    "status": {
+      "loading": "Cargando información de la parada…",
+      "offline": "Mostrando los datos guardados sin conexión. Se actualizarán al recuperar la red.",
+      "notFound": "No encontramos una parada con ese consorcio y número.",
+      "error": "No pudimos cargar la información de la parada. Inténtalo de nuevo en unos instantes."
+    },
+    "labels": {
+      "stopNumber": "Número de parada",
+      "stopCode": "Código",
+      "municipality": "Municipio",
+      "nucleus": "Distrito",
+      "zone": "Zona",
+      "description": "Descripción",
+      "observations": "Notas",
+      "correspondences": "Correspondencias",
+      "location": "Coordenadas",
+      "status": "Estado"
+    },
+    "tags": {
+      "main": "Parada principal",
+      "inactive": "Inactiva"
     }
   },
   "routeSearch": {

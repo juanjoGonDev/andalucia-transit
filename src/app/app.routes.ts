@@ -39,6 +39,12 @@ export const routes: Routes = [
         title: APP_CONFIG.translationKeys.navigation.news
       },
       {
+        path: APP_CONFIG.routes.stopInfoPattern,
+        loadComponent: () =>
+          import('./features/stop-info/stop-info.component').then((module) => module.StopInfoComponent),
+        title: APP_CONFIG.translationKeys.navigation.stopInfo
+      },
+      {
         path: APP_CONFIG.routes.stopDetailPattern,
         loadComponent: () =>
           import('./features/stop-detail/stop-detail.component').then((module) => module.StopDetailComponent),

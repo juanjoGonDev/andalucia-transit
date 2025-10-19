@@ -1,5 +1,8 @@
 const STOP_DETAIL_BASE_SEGMENT = 'stop-detail' as const;
 const STOP_ID_ROUTE_PARAM = 'stopId' as const;
+const STOP_INFO_BASE_SEGMENT = 'stop-info' as const;
+const STOP_INFO_CONSORTIUM_PARAM = 'consortiumId' as const;
+const STOP_INFO_STOP_PARAM = 'stopNumber' as const;
 const ROUTE_SEARCH_BASE_SEGMENT = 'routes' as const;
 const ROUTE_SEARCH_CONNECTOR_SEGMENT = 'to' as const;
 const ROUTE_SEARCH_DATE_SEGMENT = 'on' as const;
@@ -64,6 +67,8 @@ export const APP_CONFIG = {
     homeFavorites: HOME_FAVORITES_ROUTE,
     stopDetailBase: STOP_DETAIL_BASE_SEGMENT,
     stopDetailPattern: `${STOP_DETAIL_BASE_SEGMENT}/:${STOP_ID_ROUTE_PARAM}` as const,
+    stopInfoBase: STOP_INFO_BASE_SEGMENT,
+    stopInfoPattern: `${STOP_INFO_BASE_SEGMENT}/:${STOP_INFO_CONSORTIUM_PARAM}/:${STOP_INFO_STOP_PARAM}` as const,
     routeSearch: ROUTE_SEARCH_BASE_SEGMENT,
     routeSearchResultPattern:
       `${ROUTE_SEARCH_BASE_SEGMENT}/:${ROUTE_SEARCH_ORIGIN_PARAM}/${ROUTE_SEARCH_CONNECTOR_SEGMENT}/:${ROUTE_SEARCH_DESTINATION_PARAM}/${ROUTE_SEARCH_DATE_SEGMENT}/:${ROUTE_SEARCH_DATE_PARAM}` as const,
@@ -80,6 +85,10 @@ export const APP_CONFIG = {
   },
   routeParams: {
     stopId: STOP_ID_ROUTE_PARAM,
+    stopInfo: {
+      consortiumId: STOP_INFO_CONSORTIUM_PARAM,
+      stopNumber: STOP_INFO_STOP_PARAM
+    },
     routeSearch: {
       origin: ROUTE_SEARCH_ORIGIN_PARAM,
       destination: ROUTE_SEARCH_DESTINATION_PARAM,
@@ -99,7 +108,8 @@ export const APP_CONFIG = {
       language: 'navigation.language',
       lines: 'navigation.lines',
       favorites: 'navigation.favorites',
-      news: 'navigation.news'
+      news: 'navigation.news',
+      stopInfo: 'navigation.stopInfo'
     },
     languages: {
       es: 'languages.es',
@@ -332,6 +342,35 @@ export const APP_CONFIG = {
       readMore: 'news.readMore',
       empty: 'news.empty',
       refresh: 'news.refresh'
+    },
+    stopInfo: {
+      title: 'stopInfo.title',
+      description: 'stopInfo.description',
+      actions: {
+        refresh: 'stopInfo.actions.refresh'
+      },
+      status: {
+        loading: 'stopInfo.status.loading',
+        offline: 'stopInfo.status.offline',
+        notFound: 'stopInfo.status.notFound',
+        error: 'stopInfo.status.error'
+      },
+      labels: {
+        stopNumber: 'stopInfo.labels.stopNumber',
+        stopCode: 'stopInfo.labels.stopCode',
+        municipality: 'stopInfo.labels.municipality',
+        nucleus: 'stopInfo.labels.nucleus',
+        zone: 'stopInfo.labels.zone',
+        description: 'stopInfo.labels.description',
+        observations: 'stopInfo.labels.observations',
+        correspondences: 'stopInfo.labels.correspondences',
+        location: 'stopInfo.labels.location',
+        status: 'stopInfo.labels.status'
+      },
+      tags: {
+        main: 'stopInfo.tags.main',
+        inactive: 'stopInfo.tags.inactive'
+      }
     },
     favorites: {
       title: 'favorites.title',

@@ -395,8 +395,11 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] Document CTAN endpoint + caching in `docs/api-reference.md`.
     - [x] 2025-10-29 Added a news snapshot feed section covering source attribution, caching behaviour, and article schema details.
-- [ ] Stop information by consortium + stop number (C2) — attach public screenshot URL(s); visual diff must be 0px.
-  - [ ] Ensure friendly URL contract and offline fallback notes in documentation.
+- [x] Stop information by consortium + stop number (C2) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Introduced the stop information route with shared layout registration, domain facade, and offline-friendly fallbacks for directory data.
+    - [x] Screenshot (Stop information — desktop): https://browser.buildwithfern.com/invocations/bmicpmgc/artifacts/artifacts/stop-info-desktop.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] Ensure friendly URL contract and offline fallback notes in documentation.
 - [ ] Interactive map with nearby stops (C3) — attach public screenshot URL(s); visual diff must be 0px.
   - [ ] Record OSM/Leaflet licensing and geolocation consent handling in documentation.
 - [ ] Route overlay on map (C4) — attach public screenshot URL(s); visual diff must be 0px.

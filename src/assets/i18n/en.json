@@ -8,7 +8,8 @@
     "language": "Language",
     "lines": "Lines",
     "favorites": "Favorites",
-    "news": "News"
+    "news": "News",
+    "stopInfo": "Stop information"
   },
   "languages": {
     "es": "Spanish",
@@ -220,6 +221,35 @@
     "source": {
       "live": "This information comes right now from the {{provider}}.",
       "snapshot": "This information comes from a copy saved on {{date}} at {{time}} by the {{provider}}."
+    }
+  },
+  "stopInfo": {
+    "title": "Stop information",
+    "description": "Key details for the selected stop, including codes, zone, and available connections.",
+    "actions": {
+      "refresh": "Refresh stop"
+    },
+    "status": {
+      "loading": "Loading stop information…",
+      "offline": "Showing offline snapshot details. Live data will appear when you reconnect.",
+      "notFound": "We couldn't find a stop with that consortium and number.",
+      "error": "We couldn't load the stop information. Try again shortly."
+    },
+    "labels": {
+      "stopNumber": "Stop number",
+      "stopCode": "Stop code",
+      "municipality": "Municipality",
+      "nucleus": "District",
+      "zone": "Zone",
+      "description": "Description",
+      "observations": "Notes",
+      "correspondences": "Connections",
+      "location": "Coordinates",
+      "status": "Status"
+    },
+    "tags": {
+      "main": "Main stop",
+      "inactive": "Inactive"
     }
   },
   "routeSearch": {
