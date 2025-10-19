@@ -19,6 +19,7 @@ import { GeoCoordinate } from '../utils/geo-distance.util';
 import {
   RouteOverlayGeometryRequest,
   buildRouteSegmentCoordinates,
+  calculateRouteLengthInMeters,
   RouteOverlayLineStop
 } from './route-overlay-geometry';
 
@@ -32,6 +33,7 @@ export interface RouteOverlayRoute {
   readonly destinationName: string;
   readonly coordinates: readonly GeoCoordinate[];
   readonly stopCount: number;
+  readonly lengthInMeters: number;
 }
 
 export interface RouteOverlaySelectionSummary {
@@ -197,7 +199,8 @@ export class RouteOverlayFacade {
       direction,
       destinationName,
       coordinates: immutableCoordinates,
-      stopCount: immutableCoordinates.length
+      stopCount: immutableCoordinates.length,
+      lengthInMeters: calculateRouteLengthInMeters(immutableCoordinates)
     } satisfies RouteOverlayRoute;
   }
 }

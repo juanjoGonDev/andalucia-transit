@@ -52,6 +52,15 @@ interface MapStopView {
   readonly commands: readonly string[];
 }
 
+interface MapRouteView {
+  readonly id: string;
+  readonly lineCode: string;
+  readonly destinationName: string;
+  readonly stopCount: number;
+  readonly distanceTranslationKey: string;
+  readonly distanceValue: string;
+}
+
 const DEFAULT_CENTER: GeoCoordinate = Object.freeze({ latitude: 37.389092, longitude: -5.984459 });
 const DEFAULT_ZOOM = 7;
 const MAP_MIN_ZOOM = 6;
@@ -106,6 +115,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private readonly translations = APP_CONFIG.translationKeys.map;
   private readonly distanceTranslations = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
+  private readonly routeDistanceTranslations = APP_CONFIG.translationKeys.map.routes.distance;
   private readonly stopDetailRouteKey = APP_CONFIG.routes.stopDetailBase;
 
   protected readonly translationKeys = this.translations;
@@ -120,6 +130,20 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected readonly routeStatus = signal<RouteOverlayStatus>('idle');
   protected readonly routeErrorKey = signal<string | null>(null);
   protected readonly routes = signal<readonly RouteOverlayRoute[]>([]);
+  protected readonly routeViews = computed<readonly MapRouteView[]>(() =>
+    this.routes().map((route) => {
+      const distance = buildDistanceDisplay(route.lengthInMeters, this.routeDistanceTranslations);
+
+      return {
+        id: route.id,
+        lineCode: route.lineCode,
+        destinationName: route.destinationName,
+        stopCount: route.stopCount,
+        distanceTranslationKey: distance.translationKey,
+        distanceValue: distance.value
+      } satisfies MapRouteView;
+    })
+  );
   protected readonly activeRouteId = signal<string | null>(null);
   protected readonly routeSelectionSummary = signal<RouteOverlaySelectionSummary | null>(null);
 
@@ -174,7 +198,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     return stop.id;
   }
 
-  protected trackRoute(_: number, route: RouteOverlayRoute): string {
+  protected trackRoute(_: number, route: MapRouteView): string {
     return route.id;
   }
 

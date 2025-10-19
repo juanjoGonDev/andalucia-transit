@@ -299,6 +299,10 @@
       "empty": "No hay rutas disponibles para esta búsqueda.",
       "cardAria": "Resaltar la ruta {{code}} hacia {{destination}} en el mapa",
       "stopCount": "{{count}} paradas",
+      "distance": {
+        "meters": "{{value}} m",
+        "kilometers": "{{value}} km"
+      },
       "error": "No pudimos cargar las rutas de esta búsqueda. Inténtalo de nuevo."
     },
     "errors": {

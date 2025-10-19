@@ -183,6 +183,12 @@
   gap: var(--space-sm);
 }
 
+.map-route__metrics {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+}
+
 .map-route__code {
   display: inline-flex;
   align-items: center;
@@ -199,6 +205,12 @@
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   font-weight: var(--font-weight-medium);
+}
+
+.map-route__distance {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-semibold);
 }
 
 .map-route__destination {

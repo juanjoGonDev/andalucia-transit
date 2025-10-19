@@ -434,3 +434,7 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Screenshot (Map route overlay — mobile): https://browser.buildwithfern.com/invocations/frvhinst/artifacts/artifacts/map-overlay-mobile.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] Describe polyline transformation and caching strategy in documentation.
+  - [x] 2025-11-02 Surface route overlay distance summaries in the map panel with shared distance formatting so travelers see stop counts and kilometers at a glance.
+    - [x] Screenshot (Map route distance — desktop): https://browser.buildwithfern.com/invocations/xvxxqrhu/artifacts/artifacts/map-route-distance.png
+    - [x] Screenshot (Map route distance — mobile): https://browser.buildwithfern.com/invocations/ewwpjinf/artifacts/artifacts/map-route-distance-mobile.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.

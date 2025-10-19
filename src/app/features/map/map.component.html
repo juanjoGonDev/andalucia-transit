@@ -107,7 +107,7 @@
           {{ translationKeys.routes.empty | translate }}
         </p>
         <ul *ngIf="hasRouteResults()" class="map__route-list">
-          <li *ngFor="let route of routes(); trackBy: trackRoute" class="map__route-item">
+          <li *ngFor="let route of routeViews(); trackBy: trackRoute" class="map__route-item">
             <app-interactive-card
               [bodyClasses]="routeCardBodyClasses(route.id)"
               [primaryRole]="routeCardRole"
@@ -121,9 +121,14 @@
               <div class="map-route">
                 <div class="map-route__header">
                   <span class="map-route__code">{{ route.lineCode }}</span>
-                  <span class="map-route__stops">
-                    {{ translationKeys.routes.stopCount | translate: { count: route.stopCount } }}
-                  </span>
+                  <div class="map-route__metrics">
+                    <span class="map-route__stops">
+                      {{ translationKeys.routes.stopCount | translate: { count: route.stopCount } }}
+                    </span>
+                    <span class="map-route__distance">
+                      {{ route.distanceTranslationKey | translate: { value: route.distanceValue } }}
+                    </span>
+                  </div>
                 </div>
                 <div class="map-route__destination">{{ route.destinationName }}</div>
               </div>

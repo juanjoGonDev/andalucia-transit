@@ -1,4 +1,4 @@
-import { GeoCoordinate } from '../utils/geo-distance.util';
+import { GeoCoordinate, calculateDistanceInMeters } from '../utils/geo-distance.util';
 
 export interface RouteOverlayLineStop {
   readonly stopId: string;
@@ -16,6 +16,7 @@ export interface RouteOverlayGeometryRequest {
 }
 
 const MINIMUM_COORDINATE_COUNT = 2;
+const INITIAL_LENGTH_IN_METERS = 0;
 
 export function buildRouteSegmentCoordinates(
   request: RouteOverlayGeometryRequest
@@ -57,6 +58,24 @@ export function buildRouteSegmentCoordinates(
   } satisfies GeoCoordinate));
 
   return Object.freeze(coordinates);
+}
+
+export function calculateRouteLengthInMeters(
+  coordinates: readonly GeoCoordinate[]
+): number {
+  if (coordinates.length < MINIMUM_COORDINATE_COUNT) {
+    return INITIAL_LENGTH_IN_METERS;
+  }
+
+  let lengthInMeters = INITIAL_LENGTH_IN_METERS;
+
+  for (let index = 1; index < coordinates.length; index += 1) {
+    const previous = coordinates[index - 1]!;
+    const current = coordinates[index]!;
+    lengthInMeters += calculateDistanceInMeters(previous, current);
+  }
+
+  return Math.round(lengthInMeters);
 }
 
 function resolveOriginOrder(

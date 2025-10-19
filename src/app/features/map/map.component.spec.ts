@@ -151,6 +151,14 @@ interface MapStopViewStub {
   readonly commands: readonly string[];
 }
 
+interface MapRouteViewAccess {
+  routeViews(): readonly {
+    readonly id: string;
+    readonly distanceTranslationKey: string;
+    readonly distanceValue: string;
+  }[];
+}
+
 interface GeoCoordinateStub {
   readonly latitude: number;
   readonly longitude: number;
@@ -158,6 +166,7 @@ interface GeoCoordinateStub {
 
 const DEFAULT_CENTER = { latitude: 37.389092, longitude: -5.984459 };
 const DEFAULT_ZOOM = 7;
+const ROUTE_LENGTH_METERS = 750;
 const MAP_MIN_ZOOM = 6;
 const MAP_MAX_ZOOM = 17;
 const NEARBY_DISTANCE_METERS = 150;
@@ -309,7 +318,8 @@ describe('MapComponent', () => {
             { latitude: 37.2, longitude: -5.9 },
             { latitude: 37.3, longitude: -6.0 }
           ],
-          stopCount: 2
+          stopCount: 2,
+          lengthInMeters: ROUTE_LENGTH_METERS
         }
       ],
       selectionKey: 'selection-1',
@@ -328,6 +338,43 @@ describe('MapComponent', () => {
     expect(lastRender).toBeTruthy();
     expect(lastRender?.routes.length).toBe(1);
     expect(lastRender?.routes[0]?.id).toBe('route-1');
+  });
+
+  it('formats route distance metadata for display', async () => {
+    const state = buildRouteOverlayState({
+      status: 'ready',
+      routes: [
+        {
+          id: 'route-2',
+          lineId: 'line-2',
+          lineCode: 'M-200',
+          direction: 2,
+          destinationName: 'Campus',
+          coordinates: [
+            { latitude: 37.25, longitude: -5.95 },
+            { latitude: 37.26, longitude: -5.96 }
+          ],
+          stopCount: 2,
+          lengthInMeters: ROUTE_LENGTH_METERS
+        }
+      ],
+      selectionKey: 'selection-2',
+      errorKey: null
+    });
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    overlayFacade.emit(state);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteViewAccess;
+    const views = access.routeViews();
+
+    expect(views.length).toBe(1);
+    expect(views[0]?.distanceTranslationKey).toBe('map.routes.distance.meters');
+    expect(views[0]?.distanceValue).toBe('750');
   });
 
   it('refreshes overlay data when refreshRoutes is invoked', () => {

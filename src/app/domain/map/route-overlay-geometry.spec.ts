@@ -1,4 +1,9 @@
-import { buildRouteSegmentCoordinates, RouteOverlayGeometryRequest } from './route-overlay-geometry';
+import {
+  buildRouteSegmentCoordinates,
+  calculateRouteLengthInMeters,
+  RouteOverlayGeometryRequest
+} from './route-overlay-geometry';
+import { calculateDistanceInMeters } from '../utils/geo-distance.util';
 
 const DIRECTION_FORWARD = 1;
 const DIRECTION_BACKWARD = 2;
@@ -60,6 +65,32 @@ describe('buildRouteSegmentCoordinates', () => {
     const result = buildRouteSegmentCoordinates(request);
 
     expect(result).toEqual([]);
+  });
+});
+
+describe('calculateRouteLengthInMeters', () => {
+  it('returns zero length when fewer than two coordinates are provided', () => {
+    expect(calculateRouteLengthInMeters([])).toBe(0);
+    expect(
+      calculateRouteLengthInMeters([
+        { latitude: 37.1, longitude: -5.1 }
+      ])
+    ).toBe(0);
+  });
+
+  it('sums the distances between sequential coordinates and rounds the result', () => {
+    const coordinates = [
+      { latitude: 37.0, longitude: -5.0 },
+      { latitude: 37.1, longitude: -5.1 },
+      { latitude: 37.2, longitude: -5.2 }
+    ] as const;
+
+    const expectedLength = Math.round(
+      calculateDistanceInMeters(coordinates[0], coordinates[1]) +
+        calculateDistanceInMeters(coordinates[1], coordinates[2])
+    );
+
+    expect(calculateRouteLengthInMeters(coordinates)).toBe(expectedLength);
   });
 });
 

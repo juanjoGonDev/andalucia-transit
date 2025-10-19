@@ -8,6 +8,7 @@ import {
   RouteSearchSelection,
   RouteSearchStateService
 } from '../route-search/route-search-state.service';
+import { calculateDistanceInMeters } from '../utils/geo-distance.util';
 
 class RouteSearchStateServiceStub {
   private readonly subject = new BehaviorSubject<RouteSearchSelection | null>(null);
@@ -44,6 +45,16 @@ const QUERY_DATE = new Date('2025-10-19T00:00:00Z');
 const ORIGIN_COORDINATE: [number, number] = [37.389092, -5.984459];
 const MID_COORDINATE: [number, number] = [37.4, -5.99];
 const DESTINATION_COORDINATE: [number, number] = [37.41, -5.995];
+const EXPECTED_ROUTE_LENGTH_METERS = Math.round(
+  calculateDistanceInMeters(
+    { latitude: ORIGIN_COORDINATE[0], longitude: ORIGIN_COORDINATE[1] },
+    { latitude: MID_COORDINATE[0], longitude: MID_COORDINATE[1] }
+  ) +
+    calculateDistanceInMeters(
+      { latitude: MID_COORDINATE[0], longitude: MID_COORDINATE[1] },
+      { latitude: DESTINATION_COORDINATE[0], longitude: DESTINATION_COORDINATE[1] }
+    )
+);
 
 describe('RouteOverlayFacade', () => {
   let facade: RouteOverlayFacade;
@@ -92,6 +103,7 @@ describe('RouteOverlayFacade', () => {
     expect(routeLines.getLineStops).toHaveBeenCalledTimes(1);
     expect(received.at(-1)?.status).toBe('ready');
     expect(received.at(-1)?.routes.length).toBe(1);
+    expect(received.at(-1)?.routes.at(0)?.lengthInMeters).toBe(EXPECTED_ROUTE_LENGTH_METERS);
     expect(received.at(-1)?.routes.at(0)?.lineCode).toBe(LINE_CODE);
 
     routeLines.getLineStops.calls.reset();
