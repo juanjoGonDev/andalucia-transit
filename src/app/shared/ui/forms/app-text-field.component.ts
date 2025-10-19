@@ -190,8 +190,8 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     return Boolean(this.hint);
   }
 
-  get ariaInvalidAttribute(): 'true' | null {
-    return this.shouldDisplayInvalidState() ? (ARIA_TRUE as 'true') : null;
+  get ariaInvalidAttribute(): 'true' | 'false' {
+    return this.shouldDisplayInvalidState() ? ARIA_TRUE : ARIA_FALSE;
   }
 
   get ariaRequiredAttribute(): 'true' | null {
