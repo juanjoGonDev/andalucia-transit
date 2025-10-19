@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { PLATFORM_ID } from '@angular/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 
@@ -190,7 +191,8 @@ describe('MapComponent', () => {
         { provide: LeafletMapService, useValue: mapService },
         { provide: GeolocationService, useValue: geolocation },
         { provide: NearbyStopsService, useValue: nearbyStops },
-        { provide: StopDirectoryService, useValue: stopDirectory }
+        { provide: StopDirectoryService, useValue: stopDirectory },
+        { provide: PLATFORM_ID, useValue: 'browser' }
       ]
     }).compileComponents();
 

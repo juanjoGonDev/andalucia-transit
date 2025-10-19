@@ -4,12 +4,13 @@ import {
   Component,
   ElementRef,
   OnDestroy,
+  PLATFORM_ID,
   ViewChild,
   computed,
   inject,
   signal
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 
@@ -75,6 +76,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly geolocation = inject(GeolocationService);
   private readonly nearbyStops = inject(NearbyStopsService);
   private readonly stopDirectory = inject(StopDirectoryService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   private mapHandle: MapHandle | null = null;
   private userCoordinate: GeoCoordinate | null = null;
@@ -106,6 +108,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   );
 
   async ngAfterViewInit(): Promise<void> {
+    if (!this.isRunningInBrowser()) {
+      return;
+    }
+
     const canvas = this.mapCanvas?.nativeElement;
 
     if (!canvas) {
@@ -119,12 +125,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       maxZoom: MAP_MAX_ZOOM
     });
 
-    await new Promise<void>((resolve) => {
-      requestAnimationFrame(() => {
-        this.mapHandle?.invalidateSize();
-        resolve();
-      });
-    });
+    await this.invalidateMapSize();
   }
 
   ngOnDestroy(): void {
@@ -138,7 +139,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   protected async locate(): Promise<void> {
-    if (this.isLocating()) {
+    if (this.isLocating() || !this.isRunningInBrowser()) {
       return;
     }
 
@@ -255,6 +256,31 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     return Object.freeze([...stopCoordinates, coordinate]);
   }
 
+  private async invalidateMapSize(): Promise<void> {
+    if (!this.mapHandle) {
+      return;
+    }
+
+    const handle = this.mapHandle;
+    const hasAnimationFrame =
+      typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function';
+
+    if (!hasAnimationFrame) {
+      handle.invalidateSize();
+      return;
+    }
+
+    await new Promise<void>((resolve) => {
+      window.requestAnimationFrame(() => {
+        if (!this.isDestroyed) {
+          handle.invalidateSize();
+        }
+
+        resolve();
+      });
+    });
+  }
+
   private resolveErrorKey(error: unknown): string {
     if (this.isPositionError(error)) {
       if (error.code === GEOLOCATION_PERMISSION_DENIED) {
@@ -287,5 +313,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     };
+  }
+
+  private isRunningInBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
   }
 }

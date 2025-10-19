@@ -426,6 +426,7 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Screenshot (Map view — desktop): https://browser.buildwithfern.com/invocations/xzkvrnbx/artifacts/artifacts/map-desktop.png
     - [x] Screenshot (Map view — mobile): https://browser.buildwithfern.com/invocations/xzkvrnbx/artifacts/artifacts/map-mobile.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
-  - [ ] Record OSM/Leaflet licensing and geolocation consent handling in documentation.
+  - [x] Record OSM/Leaflet licensing and geolocation consent handling in documentation.
+    - [x] 2025-10-19 Documented mapping data sources, attribution requirements, and explicit geolocation consent flow in `docs/map-data-sources.md`.
 - [ ] Route overlay on map (C4) — attach public screenshot URL(s); visual diff must be 0px.
   - [ ] Describe polyline transformation and caching strategy in documentation.
