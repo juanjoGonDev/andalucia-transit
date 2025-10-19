@@ -199,7 +199,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-22 Released dialog backdrop and keyboard listeners through a shared cleanup subject triggered before overlay disposal to guarantee teardown without affecting visuals.
     - [x] Screenshot (Favorites clear confirmation — desktop, cleanup subject parity): https://browser.buildwithfern.com/invocations/wgwaccoq/artifacts/artifacts/favorites-dialog-escape.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
-- [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
+- [x] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Locked AppTextField aria-invalid metadata to emit only for invalid controls and synchronized autocomplete and date picker tests to guard the shared behavior.
+    - [x] Screenshot (Route search form — desktop, aria-invalid semantics locked): https://browser.buildwithfern.com/invocations/sjtdgooh/artifacts/artifacts/route-search-form.png
+    - [x] Tests: `npm run test:angular`.
   - [x] 2025-10-29 Limited AppTextField aria-invalid exposure to invalid controls so healthy fields omit the attribute while preserving baseline layout tokens.
     - [x] Screenshot (Route search form — desktop, aria-invalid omission parity validated): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
@@ -382,7 +385,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
 ### Feature Roadmap (2025-10-18)
-- [ ] News feed view (C1) — attach public screenshot URL(s); visual diff must be 0px.
+- [x] News feed view (C1) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Routed the new News feature through `AppLayoutComponent`, added a cached feed service with domain facade refresh hooks, and styled card listings with shared tokens.
+    - [x] Screenshot (News view — desktop): https://browser.buildwithfern.com/invocations/ndveuzdu/artifacts/artifacts/news-view.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [ ] Document CTAN endpoint + caching in `docs/api-reference.md`.
 - [ ] Stop information by consortium + stop number (C2) — attach public screenshot URL(s); visual diff must be 0px.
   - [ ] Ensure friendly URL contract and offline fallback notes in documentation.

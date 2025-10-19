@@ -20,6 +20,7 @@ const ARIA_EXPANDED_ATTRIBUTE = 'aria-expanded';
 const ARIA_ACTIVE_DESCENDANT_ATTRIBUTE = 'aria-activedescendant';
 const ARIA_SELECTED_ATTRIBUTE = 'aria-selected';
 const ARIA_DESCRIBEDBY_ATTRIBUTE = 'aria-describedby';
+const ARIA_INVALID_ATTRIBUTE = 'aria-invalid';
 const COMBOBOX_ROLE = 'combobox';
 const LIST_AUTOCOMPLETE_VALUE = 'list';
 const TRUE_STRING = 'true';
@@ -269,10 +270,46 @@ describe('AppAutocompleteComponent form integration', () => {
     expect(control.invalid).toBeTrue();
     expect(control.touched).toBeTrue();
     expect(errorElement.textContent?.trim()).toBe(REQUIRED_ERROR_MESSAGE);
-    expect(inputElement.getAttribute('aria-invalid')).toBe(TRUE_STRING);
+    expect(inputElement.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBe(TRUE_STRING);
     expect(inputElement.getAttribute('aria-errormessage')).toBe(errorElement.id);
     expect(describedByAttribute).not.toBeNull();
     expect(describedByAttribute?.split(' ').includes(errorElement.id)).toBeTrue();
+  });
+
+  it('reflects control validity through the aria-invalid attribute', async () => {
+    const host = fixture.componentInstance;
+    const control = host.form.controls.city;
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const inputElement = ensureElement(
+      fixture.nativeElement.querySelector(INPUT_SELECTOR) as HTMLInputElement | null,
+      INPUT_NOT_FOUND_ERROR_MESSAGE,
+    );
+
+    expect(control.invalid).toBeTrue();
+    expect(inputElement.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBe(TRUE_STRING);
+
+    control.setValue(OPTIONS[0].label);
+    control.markAsTouched();
+    control.updateValueAndValidity();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(control.valid).toBeTrue();
+    expect(inputElement.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBeNull();
+
+    control.setValue('');
+    control.updateValueAndValidity();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(control.invalid).toBeTrue();
+    expect(inputElement.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBe(TRUE_STRING);
   });
 });
 

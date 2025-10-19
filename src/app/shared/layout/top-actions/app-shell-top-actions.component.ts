@@ -58,6 +58,7 @@ export class AppShellTopActionsComponent {
   private readonly homeFavoritesCommands = buildNavigationCommands(APP_CONFIG.routes.homeFavorites);
   private readonly settingsCommands = buildNavigationCommands(APP_CONFIG.routes.settings);
   private readonly mapCommands = buildNavigationCommands(APP_CONFIG.routes.map);
+  private readonly newsCommands = buildNavigationCommands(APP_CONFIG.routes.news);
 
   private readonly homeTabCommands: ReadonlyMap<HomeTabId, NavigationCommands> = new Map([
     ['search', this.homeCommands],
@@ -95,9 +96,9 @@ export class AppShellTopActionsComponent {
     {
       id: 'news',
       labelKey: this.translation.menu.news,
-      navigationKey: null,
-      action: { kind: 'home', tab: 'search' },
-      disabled: true
+      navigationKey: APP_CONFIG.routes.news,
+      action: { kind: 'navigation', commands: this.newsCommands },
+      disabled: false
     }
   ]);
 

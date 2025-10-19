@@ -7,7 +7,8 @@
     "settings": "Configuración",
     "language": "Idioma",
     "lines": "Líneas",
-    "favorites": "Favoritas"
+    "favorites": "Favoritas",
+    "news": "Noticias"
   },
   "languages": {
     "es": "Español",
@@ -269,6 +270,31 @@
       "application": {
         "title": "Aplicación",
         "versionLabel": "Versión"
+      }
+    }
+  },
+  "news": {
+    "title": "Noticias",
+    "description": "Últimas novedades y avisos oficiales de la red de transporte andaluza.",
+    "updatedLabel": "Actualizado el {{date}}",
+    "readMore": "Leer más",
+    "refresh": "Actualizar",
+    "empty": "No hay noticias disponibles en este momento.",
+    "feed": {
+      "sevillaMetroUpdates": {
+        "title": "Ampliación nocturna del metro de Sevilla",
+        "summary": "El servicio extiende horarios y refuerza frecuencias durante las obras de conexión con el Aeropuerto.",
+        "link": "https://www.ctan.es/noticias/ampliacion-metro-sevilla"
+      },
+      "malagaNightRoutes": {
+        "title": "Refuerzo de líneas nocturnas en Málaga",
+        "summary": "Las líneas N1 y N4 operarán cada 20 minutos los fines de semana para cubrir la temporada alta.",
+        "link": "https://www.ctan.es/noticias/refuerzo-nocturno-malaga"
+      },
+      "cadizDigitalTickets": {
+        "title": "Abono digital para el Consorcio Bahía de Cádiz",
+        "summary": "Nueva tarjeta móvil con recarga online y validación sin contacto para autobuses metropolitanos.",
+        "link": "https://www.ctan.es/noticias/billete-digital-cadiz"
       }
     }
   },

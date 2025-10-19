@@ -7,11 +7,13 @@ const ROUTE_SEARCH_ORIGIN_PARAM = 'originSlug' as const;
 const ROUTE_SEARCH_DESTINATION_PARAM = 'destinationSlug' as const;
 const ROUTE_SEARCH_DATE_PARAM = 'dateSlug' as const;
 const ROUTE_SEARCH_ORIGIN_QUERY_PARAM = 'originStopId' as const;
+const NEWS_ROUTE_SEGMENT = 'news' as const;
 const DATA_PROVIDER_NAME =
   'Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía' as const;
 const DATA_TIMEZONE = 'Europe/Madrid' as const;
 const STOP_SERVICES_SNAPSHOT_PATH = 'assets/data/snapshots/stop-services/latest.json' as const;
 const STOP_DIRECTORY_SNAPSHOT_PATH = 'assets/data/stop-directory/index.json' as const;
+const NEWS_FEED_SNAPSHOT_PATH = 'assets/data/news/feed.json' as const;
 const RUNTIME_FLAGS_PROPERTY = '__ANDALUCIA_TRANSIT_FLAGS__' as const;
 const HOLIDAY_API_BASE_URL = 'https://date.nager.at/api/v3' as const;
 const HOLIDAY_COUNTRY_CODE = 'ES' as const;
@@ -44,19 +46,6 @@ export const APP_CONFIG = {
   formats: {
     isoDate: 'yyyy-MM-dd'
   },
-  data: {
-    providerName: DATA_PROVIDER_NAME,
-    timezone: DATA_TIMEZONE,
-    snapshots: {
-      stopServicesPath: STOP_SERVICES_SNAPSHOT_PATH,
-      stopDirectoryPath: STOP_DIRECTORY_SNAPSHOT_PATH
-    },
-    holidays: {
-      apiBaseUrl: HOLIDAY_API_BASE_URL,
-      countryCode: HOLIDAY_COUNTRY_CODE,
-      regionCodes: HOLIDAY_REGION_CODES
-    }
-  },
   runtime: {
     flagsProperty: RUNTIME_FLAGS_PROPERTY
   },
@@ -80,7 +69,8 @@ export const APP_CONFIG = {
       `${ROUTE_SEARCH_BASE_SEGMENT}/:${ROUTE_SEARCH_ORIGIN_PARAM}/${ROUTE_SEARCH_CONNECTOR_SEGMENT}/:${ROUTE_SEARCH_DESTINATION_PARAM}/${ROUTE_SEARCH_DATE_SEGMENT}/:${ROUTE_SEARCH_DATE_PARAM}` as const,
     map: 'map' as const,
     settings: 'settings' as const,
-    favorites: 'favorites' as const
+    favorites: 'favorites' as const,
+    news: NEWS_ROUTE_SEGMENT
   },
   routeSegments: {
     routeSearch: {
@@ -108,7 +98,8 @@ export const APP_CONFIG = {
       settings: 'navigation.settings',
       language: 'navigation.language',
       lines: 'navigation.lines',
-      favorites: 'navigation.favorites'
+      favorites: 'navigation.favorites',
+      news: 'navigation.news'
     },
     languages: {
       es: 'languages.es',
@@ -334,6 +325,14 @@ export const APP_CONFIG = {
         }
       }
     },
+    news: {
+      title: 'news.title',
+      description: 'news.description',
+      updatedLabel: 'news.updatedLabel',
+      readMore: 'news.readMore',
+      empty: 'news.empty',
+      refresh: 'news.refresh'
+    },
     favorites: {
       title: 'favorites.title',
       description: 'favorites.description',
@@ -417,6 +416,22 @@ export const APP_CONFIG = {
       inactiveIcon: 'star_border' as const,
       removeIcon: 'delete' as const,
       homePreviewLimit: 3
+    }
+  },
+  data: {
+    providerName: DATA_PROVIDER_NAME,
+    timezone: DATA_TIMEZONE,
+    snapshots: {
+      stopServicesPath: STOP_SERVICES_SNAPSHOT_PATH,
+      stopDirectoryPath: STOP_DIRECTORY_SNAPSHOT_PATH
+    },
+    holidays: {
+      apiBaseUrl: HOLIDAY_API_BASE_URL,
+      countryCode: HOLIDAY_COUNTRY_CODE,
+      regionCodes: HOLIDAY_REGION_CODES
+    },
+    news: {
+      feedPath: NEWS_FEED_SNAPSHOT_PATH
     }
   }
 } as const;
