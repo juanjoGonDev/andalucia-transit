@@ -248,6 +248,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-23 Reaffirmed AppTextField aria-invalid boolean output so valid states emit `false` strings while preserving baseline layout and tokens.
     - [x] Screenshot (Route search form — desktop, aria-invalid boolean parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Restated AppTextField aria-invalid contract so valid controls expose the `false` string while keeping invalid states on `true` and maintaining baseline layout.
+    - [x] Screenshot (Route search form — desktop, aria-invalid contract parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] 2025-10-22 Extended AppTextField error context to expose pending and status metadata so projected validation templates can reflect async validation without visual drift.
     - [x] Screenshot (Route search form — desktop, error context status parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
