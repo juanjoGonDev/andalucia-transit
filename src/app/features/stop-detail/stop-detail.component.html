@@ -41,6 +41,21 @@
                 <h1 class="stop-detail__title">{{ viewModel.stopName }}</h1>
                 <p class="stop-detail__subtitle">{{ translationKeys.subtitle | translate }}</p>
               </div>
+              <div
+                class="stop-detail__actions"
+                *ngIf="stopInfoCommands$ | async as stopInfoCommands"
+              >
+                <div
+                  class="app-outline-button app-outline-button--compact stop-detail__action"
+                  appAccessibleButton
+                  (appAccessibleButtonActivated)="openStopInfo(stopInfoCommands)"
+                >
+                  <span class="material-symbols-outlined stop-detail__action-icon" aria-hidden="true">
+                    info
+                  </span>
+                  {{ actionKeys.stopInfo | translate }}
+                </div>
+              </div>
               <div class="stop-detail__meta">
                 <div class="stop-detail__meta-item">
                   <span class="stop-detail__meta-label">{{

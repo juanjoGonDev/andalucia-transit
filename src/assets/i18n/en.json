@@ -188,6 +188,9 @@
     "title": "Stop overview",
     "subtitle": "Live departures with accessibility and university indicators.",
     "loading": "Loading schedule…",
+    "actions": {
+      "stopInfo": "View stop information"
+    },
     "error": {
       "title": "Schedule unavailable",
       "description": "We can't load departures for this stop right now. Try again in a moment."

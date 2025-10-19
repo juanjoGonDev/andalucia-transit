@@ -6,6 +6,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '../../core/config';
 import { StopSchedule, StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
 import { StopScheduleFacade } from '../../domain/stop-schedule/stop-schedule.facade';
+import { StopDirectoryFacade, StopDirectoryRecord } from '../../domain/stops/stop-directory.facade';
 import {
   STOP_TIMELINE_PAST_TAB_ID,
   STOP_TIMELINE_UPCOMING_TAB_ID,
@@ -23,6 +24,7 @@ describe('StopDetailComponent', () => {
   let fixture: ComponentFixture<StopDetailComponent>;
   let router: Router;
   let scheduleFacade: jasmine.SpyObj<StopScheduleFacade>;
+  let directoryFacade: jasmine.SpyObj<StopDirectoryFacade>;
   let paramMapSubject: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
   let layoutContext: jasmine.SpyObj<AppLayoutContext>;
 
@@ -32,6 +34,10 @@ describe('StopDetailComponent', () => {
       'loadStopSchedule'
     ]);
     scheduleFacade.loadStopSchedule.and.callFake((stopId: string) => of(createResult(stopId)));
+    directoryFacade = jasmine.createSpyObj<StopDirectoryFacade>('StopDirectoryFacade', [
+      'getRecordByStopId'
+    ]);
+    directoryFacade.getRecordByStopId.and.returnValue(of(createDirectoryRecord('stop-main-street')));
     const routerStub = jasmine.createSpyObj<Router>('Router', ['navigate']);
     routerStub.navigate.and.resolveTo(true);
     layoutContext = jasmine.createSpyObj<AppLayoutContext>('AppLayoutContext', [
@@ -58,6 +64,7 @@ describe('StopDetailComponent', () => {
       ],
       providers: [
         { provide: StopScheduleFacade, useValue: scheduleFacade },
+        { provide: StopDirectoryFacade, useValue: directoryFacade },
         { provide: ActivatedRoute, useValue: { paramMap: paramMapSubject.asObservable() } },
         { provide: Router, useValue: routerStub },
         { provide: APP_LAYOUT_CONTEXT, useValue: layoutContext }
@@ -108,6 +115,10 @@ describe('StopDetailComponent', () => {
       throwError(() => new Error('Unavailable')),
       of(createResult('stop-avenue-center'))
     );
+    directoryFacade.getRecordByStopId.and.returnValues(
+      of(createDirectoryRecord('stop-main-street')),
+      of(createDirectoryRecord('stop-avenue-center'))
+    );
 
     fixture = TestBed.createComponent(StopDetailComponent);
     fixture.detectChanges();
@@ -120,6 +131,44 @@ describe('StopDetailComponent', () => {
 
     expect(scheduleFacade.loadStopSchedule).toHaveBeenCalledTimes(2);
     expect(scheduleFacade.loadStopSchedule).toHaveBeenCalledWith('stop-avenue-center');
+  }));
+
+  it('navigates to stop information when the action is activated', fakeAsync(() => {
+    fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const navigateSpy = router.navigate as jasmine.Spy;
+    navigateSpy.calls.reset();
+
+    const action = fixture.nativeElement.querySelector('.stop-detail__action') as HTMLElement | null;
+
+    if (!action) {
+      throw new Error('Stop info action not found');
+    }
+
+    action.dispatchEvent(new MouseEvent('click'));
+
+    expect(navigateSpy).toHaveBeenCalledWith([
+      '/',
+      APP_CONFIG.routes.stopInfoBase,
+      '7',
+      'stop-main-street'
+    ]);
+  }));
+
+  it('hides the stop information action when metadata is unavailable', fakeAsync(() => {
+    directoryFacade.getRecordByStopId.and.returnValue(of(null));
+
+    fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const action = fixture.nativeElement.querySelector('.stop-detail__action');
+
+    expect(action).toBeNull();
   }));
 
   it('configures timeline tabs through the layout context', fakeAsync(() => {
@@ -181,5 +230,20 @@ function createResult(stopId: string): StopScheduleResult {
       queryTime: now,
       snapshotTime: null
     }
+  } as const;
+}
+
+function createDirectoryRecord(stopId: string): StopDirectoryRecord {
+  return {
+    consortiumId: 7,
+    stopId,
+    stopCode: '056',
+    name: 'Main Street',
+    municipality: 'Sevilla',
+    municipalityId: 'sevilla',
+    nucleus: 'Sevilla',
+    nucleusId: 'sevilla',
+    zone: 'A',
+    location: { latitude: 37.389, longitude: -5.984 }
   } as const;
 }

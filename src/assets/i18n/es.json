@@ -188,6 +188,9 @@
     "title": "Resumen de la parada",
     "subtitle": "Horarios en vivo con información de accesibilidad y servicios universitarios.",
     "loading": "Cargando horarios…",
+    "actions": {
+      "stopInfo": "Ver información de la parada"
+    },
     "error": {
       "title": "Horario no disponible",
       "description": "No podemos cargar las salidas de esta parada en este momento. Inténtalo de nuevo en unos instantes."

@@ -11,7 +11,7 @@ describe('StopDirectoryFacade', () => {
   beforeEach(() => {
     service = jasmine.createSpyObj<StopDirectoryService>(
       'StopDirectoryService',
-      ['getOptionByStopId', 'getOptionByStopSignature', 'searchStops']
+      ['getOptionByStopId', 'getStopById', 'getOptionByStopSignature', 'searchStops']
     );
 
     TestBed.configureTestingModule({
@@ -32,6 +32,16 @@ describe('StopDirectoryFacade', () => {
 
     expect(result$).toBe(expected$);
     expect(service.getOptionByStopId).toHaveBeenCalledWith('stop-plaza');
+  });
+
+  it('delegates getRecordByStopId to the directory service', () => {
+    const expected$ = of(null);
+    service.getStopById.and.returnValue(expected$);
+
+    const result$ = facade.getRecordByStopId('stop-avenida');
+
+    expect(result$).toBe(expected$);
+    expect(service.getStopById).toHaveBeenCalledWith('stop-avenida');
   });
 
   it('delegates getOptionByStopSignature to the directory service', () => {

@@ -400,6 +400,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Screenshot (Stop information — desktop): https://browser.buildwithfern.com/invocations/bmicpmgc/artifacts/artifacts/stop-info-desktop.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] Ensure friendly URL contract and offline fallback notes in documentation.
+  - [x] 2025-10-19 Linked the stop detail actions to the stop information view using directory metadata so users can jump directly to enriched details.
+    - [x] Screenshot (Stop detail — desktop, stop info action): https://browser.buildwithfern.com/invocations/xysejzld/artifacts/artifacts/stop-detail-stop-info-action.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Interactive map with nearby stops (C3) — attach public screenshot URL(s); visual diff must be 0px.
   - [ ] Record OSM/Leaflet licensing and geolocation consent handling in documentation.
 - [ ] Route overlay on map (C4) — attach public screenshot URL(s); visual diff must be 0px.

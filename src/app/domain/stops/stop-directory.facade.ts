@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import {
+  StopDirectoryRecord,
   StopDirectoryOption,
   StopDirectoryService,
   StopDirectoryStopSignature,
@@ -14,6 +15,10 @@ export class StopDirectoryFacade {
 
   getOptionByStopId(stopId: string): Observable<StopDirectoryOption | null> {
     return this.directory.getOptionByStopId(stopId);
+  }
+
+  getRecordByStopId(stopId: string): Observable<StopDirectoryRecord | null> {
+    return this.directory.getStopById(stopId);
   }
 
   getOptionByStopSignature(
@@ -30,6 +35,7 @@ export class StopDirectoryFacade {
 
 export type {
   StopDirectoryOption,
+  StopDirectoryRecord,
   StopDirectoryStopSignature,
   StopSearchRequest
 };

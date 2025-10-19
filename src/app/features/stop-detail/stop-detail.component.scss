@@ -85,6 +85,23 @@
   gap: var(--space-sm);
 }
 
+.stop-detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.stop-detail__action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  cursor: pointer;
+}
+
+.stop-detail__action-icon {
+  font-size: calc(var(--font-size-base) + var(--space-4xs));
+}
+
 .stop-detail__tag {
   align-self: flex-start;
   padding: var(--space-3xs) var(--space-sm);

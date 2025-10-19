@@ -258,6 +258,9 @@ export const APP_CONFIG = {
         scheduleDateLabel: 'stopDetail.header.scheduleDateLabel',
         lastUpdatedLabel: 'stopDetail.header.lastUpdatedLabel'
       },
+      actions: {
+        stopInfo: 'stopDetail.actions.stopInfo'
+      },
       filters: {
         destinationLabel: 'stopDetail.filters.destinationLabel',
         allDestinations: 'stopDetail.filters.allDestinations'
