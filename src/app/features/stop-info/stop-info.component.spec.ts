@@ -12,6 +12,10 @@ class FakeTranslateLoader implements TranslateLoader {
   }
 }
 
+const STATUS_ROLE = 'status';
+const POLITE_LIVE_REGION = 'polite';
+const ASSERTIVE_LIVE_REGION = 'assertive';
+
 class StopInfoFacadeStub {
   private readonly subject = new BehaviorSubject<StopInformationState>({ status: 'idle' });
   readonly state$ = this.subject.asObservable();
@@ -129,5 +133,50 @@ describe('StopInfoComponent', () => {
     refreshButton.dispatchEvent(new MouseEvent('click'));
 
     expect(facade.refresh).toHaveBeenCalled();
+  }));
+
+  it('announces the loading status as a polite live region', fakeAsync(() => {
+    fixture = TestBed.createComponent(StopInfoComponent);
+    fixture.detectChanges();
+    tick();
+
+    facade.emit({ status: 'loading', fallback: null });
+    fixture.detectChanges();
+
+    const statusElement = fixture.nativeElement.querySelector('.stop-info__status--loading') as HTMLElement | null;
+
+    expect(statusElement).not.toBeNull();
+    expect(statusElement?.getAttribute('role')).toBe(STATUS_ROLE);
+    expect(statusElement?.getAttribute('aria-live')).toBe(POLITE_LIVE_REGION);
+  }));
+
+  it('marks not found status as an assertive live region', fakeAsync(() => {
+    fixture = TestBed.createComponent(StopInfoComponent);
+    fixture.detectChanges();
+    tick();
+
+    facade.emit({ status: 'notFound', fallback: null });
+    fixture.detectChanges();
+
+    const statusElement = fixture.nativeElement.querySelector('.stop-info__status--error') as HTMLElement | null;
+
+    expect(statusElement).not.toBeNull();
+    expect(statusElement?.getAttribute('role')).toBe(STATUS_ROLE);
+    expect(statusElement?.getAttribute('aria-live')).toBe(ASSERTIVE_LIVE_REGION);
+  }));
+
+  it('marks error status as an assertive live region', fakeAsync(() => {
+    fixture = TestBed.createComponent(StopInfoComponent);
+    fixture.detectChanges();
+    tick();
+
+    facade.emit({ status: 'error', fallback: null });
+    fixture.detectChanges();
+
+    const statusElement = fixture.nativeElement.querySelector('.stop-info__status--error') as HTMLElement | null;
+
+    expect(statusElement).not.toBeNull();
+    expect(statusElement?.getAttribute('role')).toBe(STATUS_ROLE);
+    expect(statusElement?.getAttribute('aria-live')).toBe(ASSERTIVE_LIVE_REGION);
   }));
 });

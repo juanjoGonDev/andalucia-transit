@@ -11,6 +11,7 @@ import { AccessibleButtonDirective } from '../../a11y/accessible-button.directiv
 const MAIN_CONTENT_ID = 'app-main-content';
 const SKIP_LINK_LABEL_KEY = 'layout.skipToContent';
 const FRAGMENT_PREFIX = '#';
+const MAIN_ROLE = 'main';
 
 @Component({
   selector: 'app-app-layout',
@@ -40,6 +41,7 @@ export class AppLayoutComponent {
   @ViewChild('mainContent', { static: true }) private readonly mainContent?: ElementRef<HTMLElement>;
   protected readonly mainContentId = MAIN_CONTENT_ID;
   protected readonly skipLinkLabelKey = SKIP_LINK_LABEL_KEY;
+  protected readonly mainContentRole = MAIN_ROLE;
 
   protected get mainContentFragment(): string {
     return `${FRAGMENT_PREFIX}${this.mainContentId}`;

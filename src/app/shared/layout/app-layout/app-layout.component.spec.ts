@@ -27,6 +27,8 @@ interface AppLayoutComponentAccess {
   focusMainContent(): void;
 }
 
+const MAIN_ROLE = 'main';
+
 describe('AppLayoutComponent', () => {
   let fixture: ComponentFixture<AppLayoutComponent>;
 
@@ -54,6 +56,14 @@ describe('AppLayoutComponent', () => {
 
     expect(control).not.toBeNull();
     expect(control?.getAttribute('href')).toBe(`#${access.mainContentId}`);
+  });
+
+  it('exposes the main landmark for routed content', () => {
+    const access = fixture.componentInstance as unknown as AppLayoutComponentAccess;
+    const element = fixture.nativeElement.querySelector(`#${access.mainContentId}`) as HTMLElement | null;
+
+    expect(element).not.toBeNull();
+    expect(element?.getAttribute('role')).toBe(MAIN_ROLE);
   });
 
   it('focuses the main content when the skip control is activated', () => {

@@ -15,7 +15,10 @@ interface StopInfoRouteSelection {
   readonly stopNumber: string;
 }
 
-const STOP_INFO_HOME_REDIRECT = ["/", APP_CONFIG.routes.home] as const;
+const STOP_INFO_HOME_REDIRECT = ['/', APP_CONFIG.routes.home] as const;
+const STATUS_ROLE = 'status';
+const POLITE_LIVE = 'polite';
+const ASSERTIVE_LIVE = 'assertive';
 
 const areSelectionsEqual = (
   left: StopInfoRouteSelection | null,
@@ -105,6 +108,9 @@ export class StopInfoComponent {
   protected readonly statusKeys = this.translation.status;
   protected readonly actionKeys = this.translation.actions;
   protected readonly tagKeys = this.translation.tags;
+  protected readonly statusRole = STATUS_ROLE;
+  protected readonly politeLiveRegion = POLITE_LIVE;
+  protected readonly assertiveLiveRegion = ASSERTIVE_LIVE;
 
   private readonly selection$ = this.route.paramMap.pipe(
     map((params) => toSelection(params)),

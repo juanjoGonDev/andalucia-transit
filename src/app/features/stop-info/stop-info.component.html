@@ -19,7 +19,12 @@
   </header>
 
   <ng-container *ngIf="state$ | async as state">
-    <div *ngIf="isLoading(state)" class="stop-info__status stop-info__status--loading">
+    <div
+      *ngIf="isLoading(state)"
+      class="stop-info__status stop-info__status--loading"
+      [attr.role]="statusRole"
+      [attr.aria-live]="politeLiveRegion"
+    >
       <span class="material-symbols-outlined stop-info__status-icon" aria-hidden="true">
         progress_activity
       </span>
@@ -33,7 +38,11 @@
     </ng-container>
 
     <ng-container *ngIf="isNotFound(state)">
-      <div class="stop-info__status stop-info__status--error">
+      <div
+        class="stop-info__status stop-info__status--error"
+        [attr.role]="statusRole"
+        [attr.aria-live]="assertiveLiveRegion"
+      >
         <span class="material-symbols-outlined stop-info__status-icon" aria-hidden="true">
           search_off
         </span>
@@ -46,7 +55,12 @@
       </ng-container>
     </ng-container>
 
-    <div *ngIf="isError(state)" class="stop-info__status stop-info__status--error">
+    <div
+      *ngIf="isError(state)"
+      class="stop-info__status stop-info__status--error"
+      [attr.role]="statusRole"
+      [attr.aria-live]="assertiveLiveRegion"
+    >
       <span class="material-symbols-outlined stop-info__status-icon" aria-hidden="true">error</span>
       <p class="stop-info__status-text">{{ statusKeys.error | translate }}</p>
     </div>

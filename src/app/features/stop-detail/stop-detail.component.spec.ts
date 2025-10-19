@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
-import { BehaviorSubject, of, throwError } from 'rxjs';
+import { BehaviorSubject, delay, of, throwError } from 'rxjs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { APP_CONFIG } from '../../core/config';
@@ -13,6 +13,10 @@ import {
   StopDetailComponent
 } from './stop-detail.component';
 import { APP_LAYOUT_CONTEXT, AppLayoutContext } from '../../shared/layout/app-layout-context.token';
+
+const STATUS_ROLE = 'status';
+const POLITE_LIVE_REGION = 'polite';
+const ASSERTIVE_LIVE_REGION = 'assertive';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
@@ -82,6 +86,22 @@ describe('StopDetailComponent', () => {
     expect(scheduleFacade.loadStopSchedule).toHaveBeenCalledWith('stop-main-street');
   }));
 
+  it('marks the loading status as a polite live region', fakeAsync(() => {
+    scheduleFacade.loadStopSchedule.and.returnValue(
+      of(createResult('stop-main-street')).pipe(delay(1))
+    );
+    fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+
+    const statusElement = fixture.nativeElement.querySelector('.stop-detail__loading') as HTMLElement | null;
+
+    expect(statusElement).not.toBeNull();
+    expect(statusElement?.getAttribute('role')).toBe(STATUS_ROLE);
+    expect(statusElement?.getAttribute('aria-live')).toBe(POLITE_LIVE_REGION);
+
+    tick();
+  }));
+
   it('redirects to home when the stop identifier is missing', fakeAsync(() => {
     const navigateSpy = router.navigate as jasmine.Spy;
     navigateSpy.calls.reset();
@@ -108,6 +128,12 @@ describe('StopDetailComponent', () => {
 
     const errorText = fixture.nativeElement.querySelector('.stop-detail__error-text');
     expect(errorText?.textContent?.trim()).toBe(APP_CONFIG.translationKeys.stopDetail.error.title);
+
+    const statusElement = fixture.nativeElement.querySelector('.stop-detail__error') as HTMLElement | null;
+
+    expect(statusElement).not.toBeNull();
+    expect(statusElement?.getAttribute('role')).toBe(STATUS_ROLE);
+    expect(statusElement?.getAttribute('aria-live')).toBe(ASSERTIVE_LIVE_REGION);
   }));
 
   it('recovers from errors when navigating to a different stop', fakeAsync(() => {

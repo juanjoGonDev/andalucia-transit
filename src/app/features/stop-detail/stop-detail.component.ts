@@ -34,6 +34,9 @@ import { StopDirectoryFacade } from '../../domain/stops/stop-directory.facade';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 
 const ALL_DESTINATIONS_OPTION = 'all';
+const STATUS_ROLE = 'status';
+const POLITE_LIVE = 'polite';
+const ASSERTIVE_LIVE = 'assertive';
 export const STOP_TIMELINE_UPCOMING_TAB_ID = 'stop-detail-timeline-upcoming' as const;
 export const STOP_TIMELINE_PAST_TAB_ID = 'stop-detail-timeline-past' as const;
 
@@ -98,6 +101,9 @@ export class StopDetailComponent {
   protected readonly destinationControl = new FormControl<string>(ALL_DESTINATIONS_OPTION, {
     nonNullable: true,
   });
+  protected readonly statusRole = STATUS_ROLE;
+  protected readonly politeLiveRegion = POLITE_LIVE;
+  protected readonly assertiveLiveRegion = ASSERTIVE_LIVE;
   private readonly timelineTabs: readonly AppLayoutTabRegistration[] = [
     {
       identifier: STOP_TIMELINE_UPCOMING_TAB_ID,
