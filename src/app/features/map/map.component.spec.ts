@@ -154,6 +154,8 @@ interface MapStopViewStub {
 interface MapRouteViewAccess {
   routeViews(): readonly {
     readonly id: string;
+    readonly stopCountTranslationKey: string;
+    readonly stopCountValue: string;
     readonly distanceTranslationKey: string;
     readonly distanceValue: string;
   }[];
@@ -373,8 +375,47 @@ describe('MapComponent', () => {
     const views = access.routeViews();
 
     expect(views.length).toBe(1);
+    expect(views[0]?.stopCountTranslationKey).toBe('map.routes.stopCount.plural');
+    expect(views[0]?.stopCountValue).toBe('2');
     expect(views[0]?.distanceTranslationKey).toBe('map.routes.distance.meters');
     expect(views[0]?.distanceValue).toBe('750');
+  });
+
+  it('selects the singular stop count translation when only one stop is present', async () => {
+    const state = buildRouteOverlayState({
+      status: 'ready',
+      routes: [
+        {
+          id: 'route-3',
+          lineId: 'line-3',
+          lineCode: 'M-300',
+          direction: 1,
+          destinationName: 'Plaza',
+          coordinates: [
+            { latitude: 37.2, longitude: -5.9 },
+            { latitude: 37.21, longitude: -5.91 }
+          ],
+          stopCount: 1,
+          lengthInMeters: ROUTE_LENGTH_METERS
+        }
+      ],
+      selectionKey: 'selection-3',
+      errorKey: null
+    });
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    overlayFacade.emit(state);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteViewAccess;
+    const views = access.routeViews();
+
+    expect(views.length).toBe(1);
+    expect(views[0]?.stopCountTranslationKey).toBe('map.routes.stopCount.singular');
+    expect(views[0]?.stopCountValue).toBe('1');
   });
 
   it('refreshes overlay data when refreshRoutes is invoked', () => {

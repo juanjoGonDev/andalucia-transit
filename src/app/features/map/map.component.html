@@ -123,7 +123,7 @@
                   <span class="map-route__code">{{ route.lineCode }}</span>
                   <div class="map-route__metrics">
                     <span class="map-route__stops">
-                      {{ translationKeys.routes.stopCount | translate: { count: route.stopCount } }}
+                      {{ route.stopCountTranslationKey | translate: { value: route.stopCountValue } }}
                     </span>
                     <span class="map-route__distance">
                       {{ route.distanceTranslationKey | translate: { value: route.distanceValue } }}

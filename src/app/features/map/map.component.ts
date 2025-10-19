@@ -56,7 +56,8 @@ interface MapRouteView {
   readonly id: string;
   readonly lineCode: string;
   readonly destinationName: string;
-  readonly stopCount: number;
+  readonly stopCountTranslationKey: string;
+  readonly stopCountValue: string;
   readonly distanceTranslationKey: string;
   readonly distanceValue: string;
 }
@@ -116,6 +117,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly translations = APP_CONFIG.translationKeys.map;
   private readonly distanceTranslations = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
   private readonly routeDistanceTranslations = APP_CONFIG.translationKeys.map.routes.distance;
+  private readonly routeStopCountTranslations = APP_CONFIG.translationKeys.map.routes.stopCount;
   private readonly stopDetailRouteKey = APP_CONFIG.routes.stopDetailBase;
 
   protected readonly translationKeys = this.translations;
@@ -133,12 +135,17 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected readonly routeViews = computed<readonly MapRouteView[]>(() =>
     this.routes().map((route) => {
       const distance = buildDistanceDisplay(route.lengthInMeters, this.routeDistanceTranslations);
+      const stopCountTranslationKey =
+        route.stopCount === 1
+          ? this.routeStopCountTranslations.singular
+          : this.routeStopCountTranslations.plural;
 
       return {
         id: route.id,
         lineCode: route.lineCode,
         destinationName: route.destinationName,
-        stopCount: route.stopCount,
+        stopCountTranslationKey,
+        stopCountValue: String(route.stopCount),
         distanceTranslationKey: distance.translationKey,
         distanceValue: distance.value
       } satisfies MapRouteView;
