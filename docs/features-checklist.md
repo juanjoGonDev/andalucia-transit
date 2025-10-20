@@ -468,3 +468,6 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-11-12 Announced map route overlay loading, success, empty, and error states via the live region so screen readers receive context when results change.
     - [x] Screenshot (Map routes panel — status announcements): https://browser.buildwithfern.com/invocations/jpllhjge/artifacts/artifacts/map-route-status.png
     - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-13 Re-announced map route overlay status updates when new selections reuse identical counts so assistive tech hears loading and empty cues every time.
+    - [x] Screenshot (Map routes panel — status announcements parity): https://browser.buildwithfern.com/invocations/jpllhjge/artifacts/artifacts/map-route-status.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.

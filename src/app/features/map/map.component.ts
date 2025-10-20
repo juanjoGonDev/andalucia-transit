@@ -197,6 +197,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private lastRouteStatus: RouteOverlayStatus | null = null;
   private lastRouteCount = -1;
   private lastRouteErrorKey: string | null = null;
+  private lastRouteSelectionKey: string | null = null;
 
   protected readonly hasStops = computed(() => this.stops().length > 0);
   protected readonly showEmptyState = computed(
@@ -498,8 +499,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     const statusChanged = state.status !== this.lastRouteStatus;
     const routeCountChanged = state.routes.length !== this.lastRouteCount;
     const errorChanged = state.errorKey !== this.lastRouteErrorKey;
+    const selectionChanged = state.selectionKey !== this.lastRouteSelectionKey;
 
-    if (!statusChanged && !routeCountChanged && !errorChanged) {
+    if (!statusChanged && !routeCountChanged && !errorChanged && !selectionChanged) {
       return;
     }
 
@@ -508,7 +510,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     } else if (state.status === 'ready') {
       if (state.routes.length > 0) {
         this.announceRoutesLoaded(state.routes.length);
-      } else if (routeCountChanged || statusChanged) {
+      } else if (routeCountChanged || statusChanged || selectionChanged) {
         this.announceRoutesEmpty();
       }
     } else if (state.status === 'error') {
@@ -518,6 +520,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.lastRouteStatus = state.status;
     this.lastRouteCount = state.routes.length;
     this.lastRouteErrorKey = state.errorKey;
+    this.lastRouteSelectionKey = state.selectionKey;
   }
 
   private publishRouteAnnouncement(message: string): void {

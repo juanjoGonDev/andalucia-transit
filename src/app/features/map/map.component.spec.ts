@@ -538,6 +538,40 @@ describe('MapComponent', () => {
     expect(access.routeLiveMessage()).toBe('map.routes.announcements.loading');
   });
 
+  it('re-announces loading status when selection changes without status changes', async () => {
+    const translate = TestBed.inject(TranslateService);
+    const instantSpy = spyOn(translate, 'instant').and.callThrough();
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const firstState = buildRouteOverlayState({
+      status: 'loading',
+      routes: [],
+      selectionKey: 'loading-selection-one',
+      errorKey: null
+    });
+    const secondState = buildRouteOverlayState({
+      status: 'loading',
+      routes: [],
+      selectionKey: 'loading-selection-two',
+      errorKey: null
+    });
+
+    overlayFacade.emit(firstState);
+    await fixture.whenStable();
+
+    expect(instantSpy).toHaveBeenCalledWith('map.routes.announcements.loading');
+
+    instantSpy.calls.reset();
+
+    overlayFacade.emit(secondState);
+    await fixture.whenStable();
+
+    expect(instantSpy).toHaveBeenCalledWith('map.routes.announcements.loading');
+  });
+
   it('announces overlay ready status with pluralized count', async () => {
     emitIdleOverlayState(overlayFacade);
     fixture.detectChanges();
@@ -603,6 +637,40 @@ describe('MapComponent', () => {
     const access = component as unknown as MapRouteSelectionAccess;
 
     expect(access.routeLiveMessage()).toBe('map.routes.announcements.empty');
+  });
+
+  it('re-announces empty state when selection changes with identical counts', async () => {
+    const translate = TestBed.inject(TranslateService);
+    const instantSpy = spyOn(translate, 'instant').and.callThrough();
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const firstState = buildRouteOverlayState({
+      status: 'ready',
+      routes: [],
+      selectionKey: 'ready-empty-one',
+      errorKey: null
+    });
+    const secondState = buildRouteOverlayState({
+      status: 'ready',
+      routes: [],
+      selectionKey: 'ready-empty-two',
+      errorKey: null
+    });
+
+    overlayFacade.emit(firstState);
+    await fixture.whenStable();
+
+    expect(instantSpy).toHaveBeenCalledWith('map.routes.announcements.empty');
+
+    instantSpy.calls.reset();
+
+    overlayFacade.emit(secondState);
+    await fixture.whenStable();
+
+    expect(instantSpy).toHaveBeenCalledWith('map.routes.announcements.empty');
   });
 
   it('announces overlay errors when state enters error status', async () => {
