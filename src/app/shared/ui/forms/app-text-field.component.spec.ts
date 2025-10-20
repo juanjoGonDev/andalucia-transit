@@ -9,8 +9,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { AppTextFieldErrorDirective, AppTextFieldHintDirective } from './app-text-field-slots.directive';
-import { AppTextFieldComponent } from './app-text-field.component';
+import { AppTextFieldErrorDirective, AppTextFieldHintDirective } from '@shared/ui/forms/app-text-field-slots.directive';
+import { AppTextFieldComponent } from '@shared/ui/forms/app-text-field.component';
 
 type DescribedByInput = string | readonly string[] | undefined;
 

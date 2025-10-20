@@ -4,10 +4,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { distinctUntilChanged, map, shareReplay } from 'rxjs';
-import { APP_CONFIG } from '../../core/config';
-import { StopInfoFacade, StopInformationDetail, StopInformationState } from '../../domain/stops/stop-info.facade';
-import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
-import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
+import { APP_CONFIG } from '@core/config';
+import { StopInfoFacade, StopInformationDetail, StopInformationState } from '@domain/stops/stop-info.facade';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 
 interface StopInfoRouteSelection {
   readonly consortiumId: number;

@@ -1,5 +1,5 @@
-import { routes } from './app.routes';
-import { APP_CONFIG } from './core/config';
+import { routes } from '@app/app.routes';
+import { APP_CONFIG } from '@core/config';
 
 const collectPaths = (configuredRoutes = routes): readonly string[] => {
   return configuredRoutes.flatMap((route) => {

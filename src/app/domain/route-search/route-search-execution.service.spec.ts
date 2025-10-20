@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
-import { RouteSearchExecutionService } from './route-search-execution.service';
-import { RouteSearchHistoryService } from './route-search-history.service';
-import { RouteSearchSelection, RouteSearchStateService } from './route-search-state.service';
+import { StopDirectoryOption } from '@data/stops/stop-directory.service';
+import { RouteSearchExecutionService } from '@domain/route-search/route-search-execution.service';
+import { RouteSearchHistoryService } from '@domain/route-search/route-search-history.service';
+import { RouteSearchSelection, RouteSearchStateService } from '@domain/route-search/route-search-state.service';
 
 class RouteSearchStateStub {
   setSelection = jasmine.createSpy('setSelection');

@@ -4,17 +4,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, Subject, of } from 'rxjs';
-import { RecentSearchesFacade } from '../../../domain/route-search/recent-searches.facade';
-import { RouteSearchHistoryEntry } from '../../../domain/route-search/route-search-history.service';
-import { RouteSearchPreview } from '../../../domain/route-search/route-search-preview.service';
-import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
-import { StopDirectoryOption } from '../../../domain/stops/stop-directory.facade';
+import { RecentSearchesFacade } from '@domain/route-search/recent-searches.facade';
+import { RouteSearchHistoryEntry } from '@domain/route-search/route-search-history.service';
+import { RouteSearchPreview } from '@domain/route-search/route-search-preview.service';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
+import { StopDirectoryOption } from '@domain/stops/stop-directory.facade';
+import { HomeRecentSearchesComponent } from '@features/home/recent-searches/home-recent-searches.component';
 import {
   OverlayDialogConfig,
   OverlayDialogRef,
   OverlayDialogService
-} from '../../../shared/ui/dialog/overlay-dialog.service';
-import { HomeRecentSearchesComponent } from './home-recent-searches.component';
+} from '@shared/ui/dialog/overlay-dialog.service';
 
 type PreviewState =
   | { readonly status: 'loading' }

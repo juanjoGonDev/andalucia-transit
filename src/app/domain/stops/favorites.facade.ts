@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import type { StopDirectoryOption } from '../../data/stops/stop-directory.service';
-import { StopFavorite, StopFavoritesService } from './stop-favorites.service';
+import type { StopDirectoryOption } from '@data/stops/stop-directory.service';
+import { StopFavorite, StopFavoritesService } from '@domain/stops/stop-favorites.service';
 
 @Injectable({ providedIn: 'root' })
 export class FavoritesFacade {
@@ -30,4 +30,4 @@ export class FavoritesFacade {
   }
 }
 
-export type { StopFavorite } from './stop-favorites.service';
+export type { StopFavorite } from '@domain/stops/stop-favorites.service';

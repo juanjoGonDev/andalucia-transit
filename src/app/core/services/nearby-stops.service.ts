@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import type { GeoCoordinate } from '../../domain/utils/geo-distance.util';
-import { APP_CONFIG } from '../config';
+import { APP_CONFIG } from '@core/config';
 import type {
   NearbyStopResult as LoaderNearbyStopResult,
   NearbyStopRecord
-} from './nearby-stops.loader';
+} from '@core/services/nearby-stops.loader';
+import type { GeoCoordinate } from '@domain/utils/geo-distance.util';
 
 export type NearbyStopResult = LoaderNearbyStopResult;
 
@@ -61,11 +61,11 @@ export class NearbyStopsService {
 
   private loadLoaderModule(): Promise<NearbyStopsLoaderModule> {
     if (!this.loaderPromise) {
-      this.loaderPromise = import('./nearby-stops.loader');
+      this.loaderPromise = import('@core/services/nearby-stops.loader');
     }
 
     return this.loaderPromise;
   }
 }
 
-type NearbyStopsLoaderModule = typeof import('./nearby-stops.loader');
+type NearbyStopsLoaderModule = typeof import('@core/services/nearby-stops.loader');

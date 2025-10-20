@@ -7,7 +7,7 @@ import {
   AppLayoutNavigationKey,
   AppLayoutTabIdentifier,
   AppLayoutTabRegistration
-} from './app-layout-context.token';
+} from '@shared/layout/app-layout-context.token';
 
 @Injectable()
 export class AppLayoutContextStore implements AppLayoutContext {

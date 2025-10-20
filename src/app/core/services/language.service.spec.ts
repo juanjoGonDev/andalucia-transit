@@ -3,8 +3,8 @@ import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { of } from 'rxjs';
-import { APP_CONFIG } from '../config';
-import { LanguageService } from './language.service';
+import { APP_CONFIG } from '@core/config';
+import { LanguageService } from '@core/services/language.service';
 
 class EmptyTranslateLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {

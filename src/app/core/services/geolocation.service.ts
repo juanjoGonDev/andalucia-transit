@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { APP_CONFIG } from '../config';
+import { APP_CONFIG } from '@core/config';
 
 @Injectable({ providedIn: 'root' })
 export class GeolocationService {

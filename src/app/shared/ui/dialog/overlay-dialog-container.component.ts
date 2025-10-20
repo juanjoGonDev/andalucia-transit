@@ -13,7 +13,7 @@ import {
   ViewChild,
   inject
 } from '@angular/core';
-import { OverlayDialogRole } from './overlay-dialog.service';
+import { OverlayDialogRole } from '@shared/ui/dialog/overlay-dialog.service';
 
 export const OVERLAY_DIALOG_CONTAINER_CLASS = 'app-overlay-dialog__container';
 export const OVERLAY_DIALOG_SURFACE_CLASS = 'app-overlay-dialog__surface';

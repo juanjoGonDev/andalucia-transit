@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
-import * as packageMetadataJson from '../../../../package.json';
-import { PackageMetadata } from '../interfaces/package-metadata.interface';
+import { PackageMetadata } from '@core/interfaces/package-metadata.interface';
+import * as packageMetadataJson from '@root/package.json';
 
 const UNKNOWN_VERSION = '0.0.0' as const;
 const PACKAGE_METADATA = packageMetadataJson as unknown as PackageMetadata;

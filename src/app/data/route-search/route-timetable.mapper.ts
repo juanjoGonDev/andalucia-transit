@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { ApiRouteTimetableResponse } from './route-timetable.api-service';
+import { ApiRouteTimetableResponse } from '@data/route-search/route-timetable.api-service';
 
 export interface RouteTimetableEntry {
   readonly lineId: string;

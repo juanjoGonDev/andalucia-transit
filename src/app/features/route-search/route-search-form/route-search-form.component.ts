@@ -43,39 +43,39 @@ import {
   startWith,
   switchMap
 } from 'rxjs/operators';
-import { APP_CONFIG } from '../../../core/config';
-import { GEOLOCATION_REQUEST_OPTIONS } from '../../../core/services/geolocation-request.options';
-import { GeolocationService } from '../../../core/services/geolocation.service';
+import { APP_CONFIG } from '@core/config';
+import { GEOLOCATION_REQUEST_OPTIONS } from '@core/services/geolocation-request.options';
+import { GeolocationService } from '@core/services/geolocation.service';
 import {
   NearbyStopOption,
   NearbyStopOptionsService
-} from '../../../core/services/nearby-stop-options.service';
+} from '@core/services/nearby-stop-options.service';
 import {
   NearbyStopResult,
   NearbyStopsService
-} from '../../../core/services/nearby-stops.service';
+} from '@core/services/nearby-stops.service';
 import {
   collectRouteLineMatches,
   createRouteSearchSelection
-} from '../../../domain/route-search/route-search-selection.util';
-import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
+} from '@domain/route-search/route-search-selection.util';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 import {
   STOP_CONNECTION_DIRECTION,
   StopConnection,
   StopConnectionsFacade,
   buildStopConnectionKey
-} from '../../../domain/route-search/stop-connections.facade';
-import { FavoritesFacade, StopFavorite } from '../../../domain/stops/favorites.facade';
+} from '@domain/route-search/stop-connections.facade';
+import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
 import {
   StopDirectoryFacade,
   StopDirectoryOption,
   StopDirectoryStopSignature,
   StopSearchRequest
-} from '../../../domain/stops/stop-directory.facade';
-import { buildDistanceDisplay } from '../../../domain/utils/distance-display.util';
-import { GeoCoordinate } from '../../../domain/utils/geo-distance.util';
-import { AccessibleButtonDirective } from '../../../shared/a11y/accessible-button.directive';
-import { MaterialSymbolName } from '../../../shared/ui/types/material-symbol-name';
+} from '@domain/stops/stop-directory.facade';
+import { buildDistanceDisplay } from '@domain/utils/distance-display.util';
+import { GeoCoordinate } from '@domain/utils/geo-distance.util';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { MaterialSymbolName } from '@shared/ui/types/material-symbol-name';
 
 interface StopOptionDistanceLabel {
   readonly translationKey: string;

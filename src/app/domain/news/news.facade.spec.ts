@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
-import { NewsFeedArticle, NewsFeedService } from '../../data/news/news-feed.service';
-import { NewsFacade } from './news.facade';
+import { NewsFeedArticle, NewsFeedService } from '@data/news/news-feed.service';
+import { NewsFacade } from '@domain/news/news.facade';
 
 class NewsFeedServiceStub {
   readonly responses: Subject<readonly NewsFeedArticle[]>[] = [];

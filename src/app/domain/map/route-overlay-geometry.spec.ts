@@ -1,9 +1,9 @@
-import { calculateDistanceInMeters } from '../utils/geo-distance.util';
 import {
   RouteOverlayGeometryRequest,
   buildRouteSegmentCoordinates,
   calculateRouteLengthInMeters
-} from './route-overlay-geometry';
+} from '@domain/map/route-overlay-geometry';
+import { calculateDistanceInMeters } from '@domain/utils/geo-distance.util';
 
 const DIRECTION_FORWARD = 1;
 const DIRECTION_BACKWARD = 2;

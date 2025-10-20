@@ -6,7 +6,7 @@ import {
   StopDirectoryService,
   StopDirectoryStopSignature,
   StopSearchRequest
-} from '../../data/stops/stop-directory.service';
+} from '@data/stops/stop-directory.service';
 
 @Injectable({ providedIn: 'root' })
 export class StopDirectoryFacade {

@@ -5,7 +5,7 @@ import {
   createPluralRules,
   resolveLanguage,
   selectPluralizedTranslationKey
-} from './pluralization';
+} from '@core/i18n/pluralization';
 
 export type PluralRulesFactory = (language: string) => Intl.PluralRules;
 

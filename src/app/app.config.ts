@@ -16,8 +16,8 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { TranslateCompiler, TranslateModule } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
-import { routes } from './app.routes';
-import { APP_CONFIG } from './core/config';
+import { routes } from '@app/app.routes';
+import { APP_CONFIG } from '@core/config';
 
 export const appConfig: ApplicationConfig = {
   providers: [

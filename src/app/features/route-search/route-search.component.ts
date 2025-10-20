@@ -16,26 +16,26 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateTime } from 'luxon';
 import { distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
-import { APP_CONFIG } from '../../core/config';
-import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
+import { APP_CONFIG } from '@core/config';
+import { RouteSearchExecutionService } from '@domain/route-search/route-search-execution.service';
 import {
   RouteSearchDepartureView,
   RouteSearchResultsService,
   RouteSearchResultsViewModel
-} from '../../domain/route-search/route-search-results.service';
-import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
-import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
+} from '@domain/route-search/route-search-results.service';
+import { RouteSearchSelectionResolverService } from '@domain/route-search/route-search-selection-resolver.service';
+import { RouteSearchSelection, RouteSearchStateService } from '@domain/route-search/route-search-state.service';
 import {
   buildDateSlug,
   buildStopSlug,
   parseStopSlug
-} from '../../domain/route-search/route-search-url.util';
-import { StopDirectoryFacade, StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
-import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
-import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
-import { buildNavigationCommands } from '../../shared/navigation/navigation.util';
-import { SectionComponent } from '../../shared/ui/section/section.component';
-import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
+} from '@domain/route-search/route-search-url.util';
+import { StopDirectoryFacade, StopDirectoryOption } from '@domain/stops/stop-directory.facade';
+import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
+import { buildNavigationCommands } from '@shared/navigation/navigation.util';
+import { SectionComponent } from '@shared/ui/section/section.component';
 
 @Component({
   selector: 'app-route-search',

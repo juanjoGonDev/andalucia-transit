@@ -22,7 +22,10 @@ module.exports = tseslint.config(
     },
     settings: {
       'import/resolver': {
-        node: true
+        node: true,
+        typescript: {
+          project: ['./tsconfig.json']
+        }
       }
     },
     rules: {

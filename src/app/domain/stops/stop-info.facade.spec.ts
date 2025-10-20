@@ -3,11 +3,11 @@ import { Signal, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom, of, throwError } from 'rxjs';
 import { filter, skip } from 'rxjs/operators';
-import { SupportedLanguage } from '../../core/config';
-import { LanguageService } from '../../core/services/language.service';
-import { StopDirectoryRecord, StopDirectoryService } from '../../data/stops/stop-directory.service';
-import { StopInfoRecord, StopInfoService } from '../../data/stops/stop-info.service';
-import { StopInfoFacade, StopInformationState } from './stop-info.facade';
+import { SupportedLanguage } from '@core/config';
+import { LanguageService } from '@core/services/language.service';
+import { StopDirectoryRecord, StopDirectoryService } from '@data/stops/stop-directory.service';
+import { StopInfoRecord, StopInfoService } from '@data/stops/stop-info.service';
+import { StopInfoFacade, StopInformationState } from '@domain/stops/stop-info.facade';
 
 class LanguageServiceStub {
   private readonly languageSignal = signal<SupportedLanguage>('es');

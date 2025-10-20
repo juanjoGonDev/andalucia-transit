@@ -30,7 +30,7 @@ import {
   AppTextFieldHintDirective,
   AppTextFieldPrefixDirective,
   AppTextFieldSuffixDirective,
-} from './app-text-field-slots.directive';
+} from '@shared/ui/forms/app-text-field-slots.directive';
 
 const TEXT_FIELD_ID_PREFIX = 'app-text-field';
 const TEXT_FIELD_ID_SEPARATOR = '-';

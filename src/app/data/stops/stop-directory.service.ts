@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map, of, shareReplay, switchMap } from 'rxjs';
-import { AppConfig } from '../../core/config';
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
+import { AppConfig } from '@core/config';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 
 const SEARCH_LOCALE = 'es-ES' as const;
 const MIN_QUERY_LENGTH = 2;

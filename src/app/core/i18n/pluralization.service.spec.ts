@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import * as pluralizationModule from './pluralization';
-import { PluralizedTranslationKeys } from './pluralization';
+import * as pluralizationModule from '@core/i18n/pluralization';
+import { PluralizedTranslationKeys } from '@core/i18n/pluralization';
 import {
   PLURAL_RULES_FACTORY,
   PluralRulesFactory,
   PluralizationService
-} from './pluralization.service';
+} from '@core/i18n/pluralization.service';
 
 describe('PluralizationService', () => {
   let service: PluralizationService;

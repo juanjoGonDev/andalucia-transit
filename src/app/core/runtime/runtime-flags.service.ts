@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { AppConfig } from '../config';
-import { APP_CONFIG_TOKEN } from '../tokens/app-config.token';
+import { AppConfig } from '@core/config';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 
 interface RuntimeFlagsDefinition {
   readonly forceSnapshot?: boolean;

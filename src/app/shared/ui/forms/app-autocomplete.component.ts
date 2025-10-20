@@ -18,8 +18,8 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
-import { AppTextFieldErrorDirective } from './app-text-field-slots.directive';
-import { AppTextFieldComponent } from './app-text-field.component';
+import { AppTextFieldErrorDirective } from '@shared/ui/forms/app-text-field-slots.directive';
+import { AppTextFieldComponent } from '@shared/ui/forms/app-text-field.component';
 
 const DEFAULT_AUTOCOMPLETE_ATTRIBUTE = 'off';
 const EMPTY_STRING = '';

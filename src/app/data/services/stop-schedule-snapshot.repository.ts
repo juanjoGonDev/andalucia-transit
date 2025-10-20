@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map, shareReplay } from 'rxjs';
-import { AppConfig } from '../../core/config';
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
+import { AppConfig } from '@core/config';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 
 export interface StopScheduleSnapshotRecord {
   readonly metadata: SnapshotMetadata;

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AppDatePickerComponent } from './app-date-picker.component';
-import { AppTextFieldErrorDirective } from './app-text-field-slots.directive';
+import { AppDatePickerComponent } from '@shared/ui/forms/app-date-picker.component';
+import { AppTextFieldErrorDirective } from '@shared/ui/forms/app-text-field-slots.directive';
 
 const ISO_DATE_EXAMPLE = '2025-01-02';
 const INVALID_DATE_VALUE = '2025-02-30';

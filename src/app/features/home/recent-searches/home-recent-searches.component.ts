@@ -22,29 +22,29 @@ import {
   startWith,
   switchMap
 } from 'rxjs';
-import { AppConfig } from '../../../core/config';
-import { APP_CONFIG_TOKEN } from '../../../core/tokens/app-config.token';
-import { RecentSearchesFacade } from '../../../domain/route-search/recent-searches.facade';
-import type { RouteSearchHistoryEntry } from '../../../domain/route-search/route-search-history.service';
+import { AppConfig } from '@core/config';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
+import { RecentSearchesFacade } from '@domain/route-search/recent-searches.facade';
+import type { RouteSearchHistoryEntry } from '@domain/route-search/route-search-history.service';
 import type {
   RouteSearchPreview,
   RouteSearchPreviewDeparture
-} from '../../../domain/route-search/route-search-preview.service';
-import { createRouteSearchSelection } from '../../../domain/route-search/route-search-selection.util';
-import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogData
-} from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
-import { OverlayDialogService } from '../../../shared/ui/dialog/overlay-dialog.service';
+} from '@domain/route-search/route-search-preview.service';
+import { createRouteSearchSelection } from '@domain/route-search/route-search-selection.util';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 import {
   PreviewEntryKind,
   PreviewRelativeLabel,
   RecentSearchItem,
   RecentSearchPreviewEntry,
   RecentSearchPreviewState
-} from './recent-searches.models';
-import { RecentSearchCardComponent } from './ui/recent-search-card/recent-search-card.component';
+} from '@features/home/recent-searches/recent-searches.models';
+import { RecentSearchCardComponent } from '@features/home/recent-searches/ui/recent-search-card/recent-search-card.component';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData
+} from '@shared/ui/confirm-dialog/confirm-dialog.component';
+import { OverlayDialogService } from '@shared/ui/dialog/overlay-dialog.service';
 
 @Component({
   selector: 'app-home-recent-searches',

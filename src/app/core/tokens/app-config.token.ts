@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import { APP_CONFIG, AppConfig } from '../config';
+import { APP_CONFIG, AppConfig } from '@core/config';
 
 export const APP_CONFIG_TOKEN = new InjectionToken<AppConfig>('APP_CONFIG_TOKEN', {
   providedIn: 'root',
