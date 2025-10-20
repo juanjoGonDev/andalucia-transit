@@ -387,8 +387,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (!this.hasFittedRoutes && state.status === 'ready' && state.routes.length > 0) {
       const allCoordinates = this.collectRouteCoordinates(state.routes);
 
-      if (allCoordinates.length > 0) {
-        this.mapHandle?.fitToCoordinates(allCoordinates);
+      if (allCoordinates.length > 0 && this.mapHandle) {
+        this.mapHandle.fitToCoordinates(allCoordinates);
         this.hasFittedRoutes = true;
       }
     }
