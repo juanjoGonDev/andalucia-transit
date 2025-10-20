@@ -85,6 +85,13 @@
             {{ translationKeys.routes.refresh | translate }}
           </button>
         </header>
+        <span
+          class="map__routes-announcement app-visually-hidden"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {{ routeLiveMessage() }}
+        </span>
         <p *ngIf="routeSelectionSummary()" class="map__routes-summary">
           {{
             translationKeys.routes.summary

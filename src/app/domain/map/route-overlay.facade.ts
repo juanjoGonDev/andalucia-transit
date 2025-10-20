@@ -164,6 +164,7 @@ export class RouteOverlayFacade {
 
     return forkJoin(requests).pipe(
       map((routes) => routes.filter((route): route is RouteOverlayRoute => route !== null)),
+      map((routes) => sortRoutesByMetrics(routes)),
       map((routes) => Object.freeze(routes.map((route) => ({ ...route } as RouteOverlayRoute))))
     );
   }
@@ -250,4 +251,33 @@ function buildRouteId(
   const originKey = [...originStopIds].sort().join(',');
   const destinationKey = [...destinationStopIds].sort().join(',');
   return [lineId, direction, originKey, destinationKey].join('|');
+}
+
+function sortRoutesByMetrics(
+  routes: readonly RouteOverlayRoute[]
+): readonly RouteOverlayRoute[] {
+  const sortedRoutes = [...routes];
+  sortedRoutes.sort(compareRoutesByMetrics);
+  return Object.freeze(sortedRoutes);
+}
+
+function compareRoutesByMetrics(
+  first: RouteOverlayRoute,
+  second: RouteOverlayRoute
+): number {
+  if (first.lengthInMeters !== second.lengthInMeters) {
+    return first.lengthInMeters - second.lengthInMeters;
+  }
+
+  if (first.stopCount !== second.stopCount) {
+    return first.stopCount - second.stopCount;
+  }
+
+  const lineCodeComparison = first.lineCode.localeCompare(second.lineCode);
+
+  if (lineCodeComparison !== 0) {
+    return lineCodeComparison;
+  }
+
+  return first.id.localeCompare(second.id);
 }

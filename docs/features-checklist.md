@@ -143,6 +143,11 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-30 Converted recent preview entry layout to a two-column grid so the trailing time block remains anchored without relying on manual margins.
     - [x] Screenshot (Home recent searches — mobile grid anchoring): https://browser.buildwithfern.com/invocations/emnefwby/artifacts/artifacts/home-recent-mobile.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [x] “Time ago” wrapping on mobile — keep trailing timeline badges aligned without forcing single-line labels.
+  - [x] 2025-10-31 Reflowed route search timeline time blocks with a primary flex group and trailing badge rail so long “time ago” strings wrap while badges stay right-aligned on small screens.
+    - [x] Screenshot (Route search timeline — mobile alignment): https://browser.buildwithfern.com/invocations/pjapvozo/artifacts/artifacts/route-search-mobile.png
+    - [x] Screenshot (Route search timeline — desktop alignment): https://browser.buildwithfern.com/invocations/pjapvozo/artifacts/artifacts/route-search-desktop.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
 - [x] Settings view layout integration (A3) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-18 Routed settings through the shared layout surface with the utility container and layout body tokens, ensuring baseline spacing and cards render on the muted surface without ad-hoc padding.
   - [x] Screenshot (Settings view — desktop): https://browser.buildwithfern.com/invocations/kusjavnh/artifacts/artifacts/settings-desktop.png
@@ -446,4 +451,28 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
   - [x] 2025-11-05 Applied Intl.PluralRules-driven stop count selection so locale plural categories map to dedicated translation keys without extra compilers.
     - [x] Screenshot (Map route panel — plural rules validation): https://browser.buildwithfern.com/invocations/tpflxahh/artifacts/artifacts/map-route-panel.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-06 Centralized pluralization selection in a shared service that caches Intl.PluralRules per language so map route stop counts react to locale changes without recreating rules in each component.
+    - [x] Screenshot (Map route panel — pluralization service parity): https://browser.buildwithfern.com/invocations/akubfqby/artifacts/artifacts/map-pluralization-service.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-07 Simplified map pluralization to rely on per-view Intl.PluralRules caching and pure utilities so stop count labels react to language changes without a root service.
+    - [x] Screenshot (Map route panel — plural rules cached per view): https://browser.buildwithfern.com/invocations/bqkcovke/artifacts/artifacts/map-route-panel.png
+  - [x] 2025-11-08 Restored shared pluralization caching through a root service so map stop count labels reuse Intl.PluralRules instances across views while responding to locale updates.
+    - [x] Screenshot (Map route panel — shared pluralization service validation): https://browser.buildwithfern.com/invocations/akubfqby/artifacts/artifacts/map-pluralization-service.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-09 Sorted map route overlays by route length with stop-count tie-breakers so the most direct options surface first.
+    - [x] Screenshot (Map routes ordered panel — default selection prompt): https://browser.buildwithfern.com/invocations/duaaoxoa/artifacts/artifacts/map-route-sorting.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-10 Preserved precise route overlay length calculations so sorting no longer collapses ties created by rounding.
+    - [x] Screenshot (Map routes ordered panel — default selection prompt): https://browser.buildwithfern.com/invocations/duaaoxoa/artifacts/artifacts/map-route-sorting.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-11 Added polite live region announcements when toggling map routes so assistive tech reports highlight changes.
+    - [x] Screenshot (Map routes panel — live announcements desktop): https://browser.buildwithfern.com/invocations/dcjwgcpm/artifacts/artifacts/map-routes-desktop.png
+    - [x] Screenshot (Map routes panel — live announcements mobile): https://browser.buildwithfern.com/invocations/dcjwgcpm/artifacts/artifacts/map-routes-mobile.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-12 Announced map route overlay loading, success, empty, and error states via the live region so screen readers receive context when results change.
+    - [x] Screenshot (Map routes panel — status announcements): https://browser.buildwithfern.com/invocations/jpllhjge/artifacts/artifacts/map-route-status.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-13 Re-announced map route overlay status updates when new selections reuse identical counts so assistive tech hears loading and empty cues every time.
+    - [x] Screenshot (Map routes panel — status announcements parity): https://browser.buildwithfern.com/invocations/jpllhjge/artifacts/artifacts/map-route-status.png
     - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.

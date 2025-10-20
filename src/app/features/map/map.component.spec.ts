@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Observable, Subject, of } from 'rxjs';
+
 import { MapComponent } from './map.component';
 import {
   LeafletMapService,
@@ -160,6 +161,12 @@ interface MapRouteViewAccess {
   }[];
 }
 
+interface MapRouteSelectionAccess {
+  toggleRoute(routeId: string): void;
+  activeRouteId(): string | null;
+  routeLiveMessage(): string;
+}
+
 interface GeoCoordinateStub {
   readonly latitude: number;
   readonly longitude: number;
@@ -236,6 +243,10 @@ describe('MapComponent', () => {
         { provide: PLATFORM_ID, useValue: 'browser' }
       ]
     }).compileComponents();
+
+    const translate = TestBed.inject(TranslateService);
+    translate.setDefaultLang('es');
+    translate.use('es');
 
     fixture = TestBed.createComponent(MapComponent);
     component = fixture.componentInstance;
@@ -415,6 +426,271 @@ describe('MapComponent', () => {
     expect(views.length).toBe(1);
     expect(views[0]?.stopCountTranslationKey).toBe('map.routes.stopCount.one');
     expect(views[0]?.stopCountValue).toBe('1');
+  });
+
+  it('announces route selection and clearing when toggled', async () => {
+    const state = buildRouteOverlayState({
+      status: 'ready',
+      routes: [
+        {
+          id: 'announce-route',
+          lineId: 'line-announce',
+          lineCode: 'M-401',
+          direction: 1,
+          destinationName: 'Centro',
+          coordinates: [
+            { latitude: 37.2, longitude: -5.9 },
+            { latitude: 37.25, longitude: -5.95 }
+          ],
+          stopCount: 3,
+          lengthInMeters: ROUTE_LENGTH_METERS
+        }
+      ],
+      selectionKey: 'selection-announce',
+      errorKey: null
+    });
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    overlayFacade.emit(state);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteSelectionAccess;
+    access.toggleRoute('announce-route');
+    await fixture.whenStable();
+
+    expect(access.routeLiveMessage()).toBe('map.routes.announcements.selected');
+
+    access.toggleRoute('announce-route');
+    await fixture.whenStable();
+
+    expect(access.routeLiveMessage()).toBe('map.routes.announcements.cleared');
+  });
+
+  it('announces highlight clearing when overlay selection changes', async () => {
+    const translate = TestBed.inject(TranslateService);
+    const instantSpy = spyOn(translate, 'instant').and.callThrough();
+    const readyState = buildRouteOverlayState({
+      status: 'ready',
+      routes: [
+        {
+          id: 'announce-route',
+          lineId: 'line-announce',
+          lineCode: 'M-401',
+          direction: 1,
+          destinationName: 'Centro',
+          coordinates: [
+            { latitude: 37.2, longitude: -5.9 },
+            { latitude: 37.25, longitude: -5.95 }
+          ],
+          stopCount: 3,
+          lengthInMeters: ROUTE_LENGTH_METERS
+        }
+      ],
+      selectionKey: 'selection-announce',
+      errorKey: null
+    });
+    const loadingState = buildRouteOverlayState({
+      status: 'loading',
+      routes: [],
+      selectionKey: 'selection-new',
+      errorKey: null
+    });
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    overlayFacade.emit(readyState);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteSelectionAccess;
+    access.toggleRoute('announce-route');
+    await fixture.whenStable();
+
+    overlayFacade.emit(loadingState);
+    await fixture.whenStable();
+
+    expect(access.activeRouteId()).toBeNull();
+    expect(access.routeLiveMessage()).toBe('map.routes.announcements.loading');
+    expect(instantSpy).toHaveBeenCalledWith('map.routes.announcements.cleared');
+  });
+
+  it('announces overlay loading status changes', async () => {
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const loadingState = buildRouteOverlayState({
+      status: 'loading',
+      routes: [],
+      selectionKey: 'loading-selection',
+      errorKey: null
+    });
+
+    overlayFacade.emit(loadingState);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteSelectionAccess;
+
+    expect(access.routeLiveMessage()).toBe('map.routes.announcements.loading');
+  });
+
+  it('re-announces loading status when selection changes without status changes', async () => {
+    const translate = TestBed.inject(TranslateService);
+    const instantSpy = spyOn(translate, 'instant').and.callThrough();
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const firstState = buildRouteOverlayState({
+      status: 'loading',
+      routes: [],
+      selectionKey: 'loading-selection-one',
+      errorKey: null
+    });
+    const secondState = buildRouteOverlayState({
+      status: 'loading',
+      routes: [],
+      selectionKey: 'loading-selection-two',
+      errorKey: null
+    });
+
+    overlayFacade.emit(firstState);
+    await fixture.whenStable();
+
+    expect(instantSpy).toHaveBeenCalledWith('map.routes.announcements.loading');
+
+    instantSpy.calls.reset();
+
+    overlayFacade.emit(secondState);
+    await fixture.whenStable();
+
+    expect(instantSpy).toHaveBeenCalledWith('map.routes.announcements.loading');
+  });
+
+  it('announces overlay ready status with pluralized count', async () => {
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const readyState = buildRouteOverlayState({
+      status: 'ready',
+      routes: [
+        {
+          id: 'ready-route-one',
+          lineId: 'line-ready-one',
+          lineCode: 'M-101',
+          direction: 0,
+          destinationName: 'Centro',
+          coordinates: [
+            { latitude: 37.2, longitude: -5.9 },
+            { latitude: 37.22, longitude: -5.92 }
+          ],
+          stopCount: 4,
+          lengthInMeters: ROUTE_LENGTH_METERS
+        },
+        {
+          id: 'ready-route-two',
+          lineId: 'line-ready-two',
+          lineCode: 'M-102',
+          direction: 1,
+          destinationName: 'Santa Justa',
+          coordinates: [
+            { latitude: 37.24, longitude: -5.94 },
+            { latitude: 37.26, longitude: -5.96 }
+          ],
+          stopCount: 5,
+          lengthInMeters: ROUTE_LENGTH_METERS
+        }
+      ],
+      selectionKey: 'ready-selection',
+      errorKey: null
+    });
+
+    overlayFacade.emit(readyState);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteSelectionAccess;
+
+    expect(access.routeLiveMessage()).toBe('map.routes.announcements.loaded.other');
+  });
+
+  it('announces overlay empty state when ready without routes', async () => {
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const emptyState = buildRouteOverlayState({
+      status: 'ready',
+      routes: [],
+      selectionKey: 'ready-empty',
+      errorKey: null
+    });
+
+    overlayFacade.emit(emptyState);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteSelectionAccess;
+
+    expect(access.routeLiveMessage()).toBe('map.routes.announcements.empty');
+  });
+
+  it('re-announces empty state when selection changes with identical counts', async () => {
+    const translate = TestBed.inject(TranslateService);
+    const instantSpy = spyOn(translate, 'instant').and.callThrough();
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const firstState = buildRouteOverlayState({
+      status: 'ready',
+      routes: [],
+      selectionKey: 'ready-empty-one',
+      errorKey: null
+    });
+    const secondState = buildRouteOverlayState({
+      status: 'ready',
+      routes: [],
+      selectionKey: 'ready-empty-two',
+      errorKey: null
+    });
+
+    overlayFacade.emit(firstState);
+    await fixture.whenStable();
+
+    expect(instantSpy).toHaveBeenCalledWith('map.routes.announcements.empty');
+
+    instantSpy.calls.reset();
+
+    overlayFacade.emit(secondState);
+    await fixture.whenStable();
+
+    expect(instantSpy).toHaveBeenCalledWith('map.routes.announcements.empty');
+  });
+
+  it('announces overlay errors when state enters error status', async () => {
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const errorState = buildRouteOverlayState({
+      status: 'error',
+      routes: [],
+      selectionKey: 'error-selection',
+      errorKey: 'map.routes.error'
+    });
+
+    overlayFacade.emit(errorState);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteSelectionAccess;
+
+    expect(access.routeLiveMessage()).toBe('map.routes.error');
   });
 
   it('refreshes overlay data when refreshRoutes is invoked', () => {

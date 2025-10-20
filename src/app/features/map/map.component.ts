@@ -12,8 +12,8 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { firstValueFrom } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { firstValueFrom, map, startWith } from 'rxjs';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { APP_CONFIG } from '../../core/config';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
@@ -28,7 +28,8 @@ import { GeolocationService } from '../../core/services/geolocation.service';
 import { GEOLOCATION_REQUEST_OPTIONS } from '../../core/services/geolocation-request.options';
 import { NearbyStopResult, NearbyStopsService } from '../../core/services/nearby-stops.service';
 import { StopDirectoryService } from '../../data/stops/stop-directory.service';
-import { createPluralRules, selectPluralizedTranslationKey } from '../../core/i18n/pluralization';
+import { PluralizationService } from '../../core/i18n/pluralization.service';
+import { createPluralRules } from '../../core/i18n/pluralization';
 import { buildDistanceDisplay } from '../../domain/utils/distance-display.util';
 import { GeoCoordinate } from '../../domain/utils/geo-distance.util';
 import {
@@ -74,6 +75,7 @@ const ROUTE_CARD_ACTIVE_BODY_CLASSES: readonly string[] = [
   'map__route-card-body--active'
 ];
 const ROUTE_CARD_ROLE = 'button' as const;
+const EMPTY_STRING = '' as const;
 
 const GEOLOCATION_PERMISSION_DENIED = 1;
 const GEOLOCATION_POSITION_UNAVAILABLE = 2;
@@ -108,6 +110,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly overlayFacade = inject(RouteOverlayFacade);
   private readonly translate = inject(TranslateService);
+  private readonly pluralization = inject(PluralizationService);
 
   private readonly stopCountPluralRules = signal(
     createPluralRules(this.resolveLanguage(this.translate.currentLang))
@@ -123,7 +126,39 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly distanceTranslations = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
   private readonly routeDistanceTranslations = APP_CONFIG.translationKeys.map.routes.distance;
   private readonly routeStopCountTranslations = APP_CONFIG.translationKeys.map.routes.stopCount;
+  private readonly routeAnnouncementSelectedKey =
+    APP_CONFIG.translationKeys.map.routes.announcements.selected;
+  private readonly routeAnnouncementClearedKey =
+    APP_CONFIG.translationKeys.map.routes.announcements.cleared;
+  private readonly routeAnnouncementLoadingKey =
+    APP_CONFIG.translationKeys.map.routes.announcements.loading;
+  private readonly routeAnnouncementLoadedTranslations =
+    APP_CONFIG.translationKeys.map.routes.announcements.loaded;
+  private readonly routeAnnouncementEmptyKey =
+    APP_CONFIG.translationKeys.map.routes.announcements.empty;
+  private readonly routeAnnouncementErrorKey =
+    APP_CONFIG.translationKeys.map.routes.announcements.error;
   private readonly stopDetailRouteKey = APP_CONFIG.routes.stopDetailBase;
+
+  private readonly language = toSignal(
+    this.translate.onLangChange.pipe(
+      map(({ lang }) =>
+        this.pluralization.resolveLanguage({
+          current: lang,
+          defaultLanguage: this.translate.defaultLang,
+          fallback: APP_CONFIG.locales.default
+        })
+      ),
+      startWith(
+        this.pluralization.resolveLanguage({
+          current: this.translate.currentLang,
+          defaultLanguage: this.translate.defaultLang,
+          fallback: APP_CONFIG.locales.default
+        })
+      )
+    ),
+    { requireSync: true }
+  );
 
   protected readonly translationKeys = this.translations;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.map;
@@ -137,15 +172,16 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected readonly routeStatus = signal<RouteOverlayStatus>('idle');
   protected readonly routeErrorKey = signal<string | null>(null);
   protected readonly routes = signal<readonly RouteOverlayRoute[]>([]);
+  protected readonly routeLiveMessage = signal<string>(EMPTY_STRING);
   protected readonly routeViews = computed<readonly MapRouteView[]>(() => {
-    const pluralRules = this.stopCountPluralRules();
+    const language = this.language();
 
     return this.routes().map((route) => {
       const distance = buildDistanceDisplay(route.lengthInMeters, this.routeDistanceTranslations);
-      const stopCountTranslationKey = selectPluralizedTranslationKey(
+      const stopCountTranslationKey = this.pluralization.selectKey(
         route.stopCount,
         this.routeStopCountTranslations,
-        pluralRules
+        language
       );
 
       return {
@@ -161,6 +197,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   });
   protected readonly activeRouteId = signal<string | null>(null);
   protected readonly routeSelectionSummary = signal<RouteOverlaySelectionSummary | null>(null);
+
+  private lastRouteStatus: RouteOverlayStatus | null = null;
+  private lastRouteCount = -1;
+  private lastRouteErrorKey: string | null = null;
+  private lastRouteSelectionKey: string | null = null;
 
   protected readonly hasStops = computed(() => this.stops().length > 0);
   protected readonly showEmptyState = computed(
@@ -297,6 +338,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (this.activeRouteId() === routeId) {
       this.activeRouteId.set(null);
       this.updateMapRoutes();
+      this.announceRouteCleared();
       return;
     }
 
@@ -307,6 +349,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     if (selectedRoute && selectedRoute.coordinates.length > 0) {
       this.mapHandle?.fitToCoordinates(selectedRoute.coordinates);
+      this.announceRouteSelected(selectedRoute);
     }
   }
 
@@ -372,9 +415,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private handleOverlayState(state: RouteOverlayState): void {
     if (state.selectionKey !== this.currentSelectionKey) {
+      const hadActiveRoute = this.activeRouteId() !== null;
       this.currentSelectionKey = state.selectionKey;
       this.activeRouteId.set(null);
       this.hasFittedRoutes = false;
+
+      if (hadActiveRoute) {
+        this.announceRouteCleared();
+      }
     }
 
     this.routeStatus.set(state.status);
@@ -382,6 +430,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.routeSelectionSummary.set(state.selectionSummary);
     this.routes.set(state.routes);
     this.updateMapRoutes();
+    this.announceRouteStatusIfNeeded(state);
 
     if (!this.hasFittedRoutes && state.status === 'ready' && state.routes.length > 0) {
       const allCoordinates = this.collectRouteCoordinates(state.routes);
@@ -415,6 +464,88 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }));
 
     this.mapHandle.renderRoutes(mappedRoutes, activeRoute);
+  }
+
+  private announceRouteSelected(route: RouteOverlayRoute): void {
+    const message = this.translate.instant(this.routeAnnouncementSelectedKey, {
+      code: route.lineCode,
+      destination: route.destinationName
+    });
+
+    this.publishRouteAnnouncement(message);
+  }
+
+  private announceRouteCleared(): void {
+    const message = this.translate.instant(this.routeAnnouncementClearedKey);
+    this.publishRouteAnnouncement(message);
+  }
+
+  private announceRoutesLoading(): void {
+    const message = this.translate.instant(this.routeAnnouncementLoadingKey);
+    this.publishRouteAnnouncement(message);
+  }
+
+  private announceRoutesLoaded(count: number): void {
+    const language = this.language();
+    const translationKey = this.pluralization.selectKey(
+      count,
+      this.routeAnnouncementLoadedTranslations,
+      language
+    );
+    const message = this.translate.instant(translationKey, { value: String(count) });
+    this.publishRouteAnnouncement(message);
+  }
+
+  private announceRoutesEmpty(): void {
+    const message = this.translate.instant(this.routeAnnouncementEmptyKey);
+    this.publishRouteAnnouncement(message);
+  }
+
+  private announceRoutesError(errorKey: string | null): void {
+    const translationKey = errorKey ?? this.routeAnnouncementErrorKey;
+    const message = this.translate.instant(translationKey);
+    this.publishRouteAnnouncement(message);
+  }
+
+  private announceRouteStatusIfNeeded(state: RouteOverlayState): void {
+    const statusChanged = state.status !== this.lastRouteStatus;
+    const routeCountChanged = state.routes.length !== this.lastRouteCount;
+    const errorChanged = state.errorKey !== this.lastRouteErrorKey;
+    const selectionChanged = state.selectionKey !== this.lastRouteSelectionKey;
+
+    if (!statusChanged && !routeCountChanged && !errorChanged && !selectionChanged) {
+      return;
+    }
+
+    if (state.status === 'loading') {
+      this.announceRoutesLoading();
+    } else if (state.status === 'ready') {
+      if (state.routes.length > 0) {
+        this.announceRoutesLoaded(state.routes.length);
+      } else if (routeCountChanged || statusChanged || selectionChanged) {
+        this.announceRoutesEmpty();
+      }
+    } else if (state.status === 'error') {
+      this.announceRoutesError(state.errorKey);
+    }
+
+    this.lastRouteStatus = state.status;
+    this.lastRouteCount = state.routes.length;
+    this.lastRouteErrorKey = state.errorKey;
+    this.lastRouteSelectionKey = state.selectionKey;
+  }
+
+  private publishRouteAnnouncement(message: string): void {
+    if (!message) {
+      return;
+    }
+
+    this.routeLiveMessage.set(EMPTY_STRING);
+    queueMicrotask(() => {
+      if (!this.isDestroyed) {
+        this.routeLiveMessage.set(message);
+      }
+    });
   }
 
   private async invalidateMapSize(): Promise<void> {

@@ -75,7 +75,7 @@ export function calculateRouteLengthInMeters(
     lengthInMeters += calculateDistanceInMeters(previous, current);
   }
 
-  return Math.round(lengthInMeters);
+  return lengthInMeters;
 }
 
 function resolveOriginOrder(

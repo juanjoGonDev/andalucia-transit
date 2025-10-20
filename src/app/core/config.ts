@@ -41,6 +41,11 @@ const MAP_ROUTE_STOP_COUNT_TRANSLATIONS: PluralizedTranslationKeys = {
   other: 'map.routes.stopCount.other'
 } as const;
 
+const MAP_ROUTE_ANNOUNCEMENT_LOADED_TRANSLATIONS: PluralizedTranslationKeys = {
+  one: 'map.routes.announcements.loaded.one',
+  other: 'map.routes.announcements.loaded.other'
+} as const;
+
 
 export const APP_CONFIG = {
   appName: 'Andalucia Transit',
@@ -344,6 +349,14 @@ export const APP_CONFIG = {
         loading: 'map.routes.loading',
         empty: 'map.routes.empty',
         cardAria: 'map.routes.cardAria',
+        announcements: {
+          selected: 'map.routes.announcements.selected',
+          cleared: 'map.routes.announcements.cleared',
+          loading: 'map.routes.announcements.loading',
+          loaded: MAP_ROUTE_ANNOUNCEMENT_LOADED_TRANSLATIONS,
+          empty: 'map.routes.announcements.empty',
+          error: 'map.routes.announcements.error'
+        },
         stopCount: MAP_ROUTE_STOP_COUNT_TRANSLATIONS,
         distance: {
           meters: 'map.routes.distance.meters',
