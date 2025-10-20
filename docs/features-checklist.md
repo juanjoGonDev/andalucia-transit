@@ -455,3 +455,6 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-11-08 Restored shared pluralization caching through a root service so map stop count labels reuse Intl.PluralRules instances across views while responding to locale updates.
     - [x] Screenshot (Map route panel — shared pluralization service validation): https://browser.buildwithfern.com/invocations/akubfqby/artifacts/artifacts/map-pluralization-service.png
     - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-09 Sorted map route overlays by route length with stop-count tie-breakers so the most direct options surface first.
+    - [x] Screenshot (Map routes ordered panel — default selection prompt): https://browser.buildwithfern.com/invocations/duaaoxoa/artifacts/artifacts/map-route-sorting.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
