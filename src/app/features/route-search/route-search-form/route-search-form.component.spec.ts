@@ -1,7 +1,8 @@
 import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { BehaviorSubject, firstValueFrom, of } from 'rxjs';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 
 import { RouteSearchFormComponent } from './route-search-form.component';
 import {
@@ -261,7 +262,8 @@ describe('RouteSearchFormComponent', () => {
       imports: [
         RouteSearchFormComponent,
         TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: TranslateLoaderStub }
+          loader: { provide: TranslateLoader, useClass: TranslateLoaderStub },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
         })
       ],
       providers: [

@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { Observable, of } from 'rxjs';
 
 import { AppLayoutComponent } from './app-layout.component';
@@ -37,7 +38,10 @@ describe('AppLayoutComponent', () => {
       imports: [
         RouterTestingModule,
         AppLayoutComponent,
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: FakeTranslateLoader } })
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
+        })
       ]
     })
       .overrideComponent(AppLayoutComponent, {

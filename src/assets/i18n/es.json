@@ -283,6 +283,34 @@
   "map": {
     "title": "Mapa de la red",
     "description": "Explora el mapa y revisa cada parada.",
+    "locate": "Usar mi ubicación",
+    "locating": "Buscando ubicación…",
+    "panelTitle": "Paradas cercanas",
+    "permissionPrompt": "Comparte tu ubicación para ver las paradas cercanas en el mapa.",
+    "accessibleMapLabel": "Mapa de Andalucía con paradas cercanas",
+    "empty": "No encontramos paradas en tu área.",
+    "stopAriaLabel": "Abrir la parada {{code}} en {{municipality}}",
+    "routes": {
+      "title": "Líneas",
+      "refresh": "Actualizar rutas",
+      "summary": "Rutas para {{origin}} → {{destination}}",
+      "prompt": "Realiza una búsqueda de rutas para mostrarlas en el mapa.",
+      "loading": "Cargando recorridos…",
+      "empty": "No hay rutas disponibles para esta búsqueda.",
+      "cardAria": "Resaltar la ruta {{code}} hacia {{destination}} en el mapa",
+      "stopCount": "{value, plural, =0 {# paradas} =1 {# parada} other {# paradas}}",
+      "distance": {
+        "meters": "{{value}} m",
+        "kilometers": "{{value}} km"
+      },
+      "error": "No pudimos cargar las rutas de esta búsqueda. Inténtalo de nuevo."
+    },
+    "errors": {
+      "permissionDenied": "No tenemos permiso para acceder a tu ubicación.",
+      "positionUnavailable": "No se pudo determinar tu ubicación actual.",
+      "timeout": "La solicitud de ubicación tardó demasiado en completarse.",
+      "generic": "No pudimos cargar las paradas cercanas. Inténtalo de nuevo."
+    },
     "openList": "Ver lista",
     "hint": "Vista previa del mapa"
   },

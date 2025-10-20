@@ -4,7 +4,8 @@ import localeEs from '@angular/common/locales/es';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { Observable, of } from 'rxjs';
 
 import { AppComponent } from './app';
@@ -54,7 +55,8 @@ describe('AppComponent', () => {
           loader: {
             provide: TranslateLoader,
             useClass: TranslateTestingLoader
-          }
+          },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
         })
       ],
       providers: [

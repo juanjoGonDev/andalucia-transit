@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { OverlayDialogConfig, OverlayDialogRef, OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
 
@@ -56,9 +56,9 @@ class OverlayDialogServiceStub {
 
 interface FavoritesComponentAccess {
   searchControl: FavoritesComponent['searchControl'];
-  openStop: FavoritesComponent['openStop'];
   remove: FavoritesComponent['remove'];
   clearAll: FavoritesComponent['clearAll'];
+  stopDetailCommands: FavoritesComponent['stopDetailCommands'];
 }
 
 const accessProtected = (instance: FavoritesComponent): FavoritesComponentAccess =>
@@ -116,8 +116,6 @@ describe('FavoritesComponent', () => {
   let component: FavoritesComponent;
   let favoritesFacade: FavoritesFacadeStub;
   let dialog: OverlayDialogServiceStub;
-  let router: Router;
-  let navigateSpy: jasmine.Spy<Router['navigate']>;
 
   beforeEach(async () => {
     favoritesFacade = new FavoritesFacadeStub();
@@ -126,7 +124,10 @@ describe('FavoritesComponent', () => {
       imports: [
         RouterTestingModule,
         FavoritesComponent,
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: FakeTranslateLoader } })
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
+        })
       ],
       providers: [
         { provide: FavoritesFacade, useValue: favoritesFacade },
@@ -173,16 +174,12 @@ describe('FavoritesComponent', () => {
     expect(items[0]?.textContent).toContain('Triana');
   });
 
-  it('navigates to stop detail when selecting a favorite', async () => {
+  it('provides router commands to open stop detail', () => {
     const favorite = FAVORITES[0];
     const access = accessProtected(component);
-    await access.openStop.call(component, toListItem(favorite));
+    const commands = access.stopDetailCommands.call(component, toListItem(favorite));
 
-    expect(navigateSpy).toHaveBeenCalledWith([
-      '/',
-      APP_CONFIG.routes.stopDetailBase,
-      'sevilla:001'
-    ]);
+    expect(commands).toEqual(['/', APP_CONFIG.routes.stopDetailBase, 'sevilla:001']);
   });
 
   it('removes a favorite after confirmation', async () => {

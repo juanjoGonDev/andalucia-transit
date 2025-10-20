@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { Observable, of } from 'rxjs';
 import { DialogLayoutComponent } from './dialog-layout.component';
 import {
@@ -38,7 +39,8 @@ describe('DialogLayoutComponent', () => {
       imports: [
         DialogLayoutComponent,
         TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: EmptyTranslateLoader }
+          loader: { provide: TranslateLoader, useClass: EmptyTranslateLoader },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
         })
       ],
       providers: [

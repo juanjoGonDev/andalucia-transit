@@ -23,6 +23,9 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "allowedCommonJsDependencies": [
+              "leaflet"
+            ],
             "assets": [
               {
                 "glob": "**/*",
@@ -35,7 +38,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "leaflet/dist/leaflet.css"
             ]
           },
           "configurations": {
@@ -43,8 +47,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "520kB",
-                  "maximumError": "1.08MB"
+                  "maximumWarning": "600kB",
+                  "maximumError": "1.2MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -101,7 +105,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "leaflet/dist/leaflet.css"
             ]
           }
         },
