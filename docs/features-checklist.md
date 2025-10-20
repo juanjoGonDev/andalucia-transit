@@ -461,3 +461,7 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-11-10 Preserved precise route overlay length calculations so sorting no longer collapses ties created by rounding.
     - [x] Screenshot (Map routes ordered panel — default selection prompt): https://browser.buildwithfern.com/invocations/duaaoxoa/artifacts/artifacts/map-route-sorting.png
     - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-11 Added polite live region announcements when toggling map routes so assistive tech reports highlight changes.
+    - [x] Screenshot (Map routes panel — live announcements desktop): https://browser.buildwithfern.com/invocations/dcjwgcpm/artifacts/artifacts/map-routes-desktop.png
+    - [x] Screenshot (Map routes panel — live announcements mobile): https://browser.buildwithfern.com/invocations/dcjwgcpm/artifacts/artifacts/map-routes-mobile.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.

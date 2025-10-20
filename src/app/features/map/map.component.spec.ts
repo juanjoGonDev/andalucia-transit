@@ -161,6 +161,12 @@ interface MapRouteViewAccess {
   }[];
 }
 
+interface MapRouteSelectionAccess {
+  toggleRoute(routeId: string): void;
+  activeRouteId(): string | null;
+  routeLiveMessage(): string;
+}
+
 interface GeoCoordinateStub {
   readonly latitude: number;
   readonly longitude: number;
@@ -420,6 +426,93 @@ describe('MapComponent', () => {
     expect(views.length).toBe(1);
     expect(views[0]?.stopCountTranslationKey).toBe('map.routes.stopCount.one');
     expect(views[0]?.stopCountValue).toBe('1');
+  });
+
+  it('announces route selection and clearing when toggled', async () => {
+    const state = buildRouteOverlayState({
+      status: 'ready',
+      routes: [
+        {
+          id: 'announce-route',
+          lineId: 'line-announce',
+          lineCode: 'M-401',
+          direction: 1,
+          destinationName: 'Centro',
+          coordinates: [
+            { latitude: 37.2, longitude: -5.9 },
+            { latitude: 37.25, longitude: -5.95 }
+          ],
+          stopCount: 3,
+          lengthInMeters: ROUTE_LENGTH_METERS
+        }
+      ],
+      selectionKey: 'selection-announce',
+      errorKey: null
+    });
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    overlayFacade.emit(state);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteSelectionAccess;
+    access.toggleRoute('announce-route');
+    await fixture.whenStable();
+
+    expect(access.routeLiveMessage()).toBe('map.routes.announcements.selected');
+
+    access.toggleRoute('announce-route');
+    await fixture.whenStable();
+
+    expect(access.routeLiveMessage()).toBe('map.routes.announcements.cleared');
+  });
+
+  it('announces highlight clearing when overlay selection changes', async () => {
+    const readyState = buildRouteOverlayState({
+      status: 'ready',
+      routes: [
+        {
+          id: 'announce-route',
+          lineId: 'line-announce',
+          lineCode: 'M-401',
+          direction: 1,
+          destinationName: 'Centro',
+          coordinates: [
+            { latitude: 37.2, longitude: -5.9 },
+            { latitude: 37.25, longitude: -5.95 }
+          ],
+          stopCount: 3,
+          lengthInMeters: ROUTE_LENGTH_METERS
+        }
+      ],
+      selectionKey: 'selection-announce',
+      errorKey: null
+    });
+    const loadingState = buildRouteOverlayState({
+      status: 'loading',
+      routes: [],
+      selectionKey: 'selection-new',
+      errorKey: null
+    });
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    overlayFacade.emit(readyState);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteSelectionAccess;
+    access.toggleRoute('announce-route');
+    await fixture.whenStable();
+
+    overlayFacade.emit(loadingState);
+    await fixture.whenStable();
+
+    expect(access.activeRouteId()).toBeNull();
+    expect(access.routeLiveMessage()).toBe('map.routes.announcements.cleared');
   });
 
   it('refreshes overlay data when refreshRoutes is invoked', () => {

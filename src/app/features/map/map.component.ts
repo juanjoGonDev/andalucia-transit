@@ -75,6 +75,7 @@ const ROUTE_CARD_ACTIVE_BODY_CLASSES: readonly string[] = [
   'map__route-card-body--active'
 ];
 const ROUTE_CARD_ROLE = 'button' as const;
+const EMPTY_STRING = '' as const;
 
 const GEOLOCATION_PERMISSION_DENIED = 1;
 const GEOLOCATION_POSITION_UNAVAILABLE = 2;
@@ -121,6 +122,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly distanceTranslations = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
   private readonly routeDistanceTranslations = APP_CONFIG.translationKeys.map.routes.distance;
   private readonly routeStopCountTranslations = APP_CONFIG.translationKeys.map.routes.stopCount;
+  private readonly routeAnnouncementTranslations = APP_CONFIG.translationKeys.map.routes.announcements;
   private readonly stopDetailRouteKey = APP_CONFIG.routes.stopDetailBase;
 
   private readonly language = toSignal(
@@ -155,6 +157,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected readonly routeStatus = signal<RouteOverlayStatus>('idle');
   protected readonly routeErrorKey = signal<string | null>(null);
   protected readonly routes = signal<readonly RouteOverlayRoute[]>([]);
+  protected readonly routeLiveMessage = signal<string>(EMPTY_STRING);
   protected readonly routeViews = computed<readonly MapRouteView[]>(() => {
     const language = this.language();
 
@@ -307,6 +310,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (this.activeRouteId() === routeId) {
       this.activeRouteId.set(null);
       this.updateMapRoutes();
+      this.announceRouteCleared();
       return;
     }
 
@@ -317,6 +321,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     if (selectedRoute && selectedRoute.coordinates.length > 0) {
       this.mapHandle?.fitToCoordinates(selectedRoute.coordinates);
+      this.announceRouteSelected(selectedRoute);
     }
   }
 
@@ -382,9 +387,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private handleOverlayState(state: RouteOverlayState): void {
     if (state.selectionKey !== this.currentSelectionKey) {
+      const hadActiveRoute = this.activeRouteId() !== null;
       this.currentSelectionKey = state.selectionKey;
       this.activeRouteId.set(null);
       this.hasFittedRoutes = false;
+
+      if (hadActiveRoute) {
+        this.announceRouteCleared();
+      }
     }
 
     this.routeStatus.set(state.status);
@@ -425,6 +435,33 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }));
 
     this.mapHandle.renderRoutes(mappedRoutes, activeRoute);
+  }
+
+  private announceRouteSelected(route: RouteOverlayRoute): void {
+    const message = this.translate.instant(this.routeAnnouncementTranslations.selected, {
+      code: route.lineCode,
+      destination: route.destinationName
+    });
+
+    this.publishRouteAnnouncement(message);
+  }
+
+  private announceRouteCleared(): void {
+    const message = this.translate.instant(this.routeAnnouncementTranslations.cleared);
+    this.publishRouteAnnouncement(message);
+  }
+
+  private publishRouteAnnouncement(message: string): void {
+    if (!message) {
+      return;
+    }
+
+    this.routeLiveMessage.set(EMPTY_STRING);
+    queueMicrotask(() => {
+      if (!this.isDestroyed) {
+        this.routeLiveMessage.set(message);
+      }
+    });
   }
 
   private async invalidateMapSize(): Promise<void> {
