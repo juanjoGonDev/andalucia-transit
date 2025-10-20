@@ -662,6 +662,7 @@ async function prepareNetwork(context, page, profile, cpuSlowdown) {
     if (!config) {
       throw new Error('Unsupported throttle profile');
     }
+    await session.send('Network.enable');
     await session.send('Network.emulateNetworkConditions', config);
   }
   return session;
