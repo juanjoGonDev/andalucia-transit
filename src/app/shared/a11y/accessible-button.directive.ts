@@ -7,6 +7,8 @@ const KEYBOARD_ENTER = 'Enter' as const;
 const KEYBOARD_SPACE = ' ' as const;
 const ARIA_TRUE = 'true' as const;
 const ARIA_FALSE = 'false' as const;
+const CURSOR_POINTER = 'pointer' as const;
+const CURSOR_NOT_ALLOWED = 'not-allowed' as const;
 
 @Directive({
   selector: '[appAccessibleButton]',
@@ -75,6 +77,11 @@ export class AccessibleButtonDirective {
     }
 
     return this.appAccessibleButtonHasPopup;
+  }
+
+  @HostBinding('style.cursor')
+  get cursor(): string {
+    return this.appAccessibleButtonDisabled ? CURSOR_NOT_ALLOWED : CURSOR_POINTER;
   }
 
   @HostListener('keydown', ['$event'])

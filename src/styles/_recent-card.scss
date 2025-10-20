@@ -164,12 +164,6 @@
 }
 
 .home__panel--recent .recent-card {
-  --recent-preview-line-background: var(--color-surface-light);
-  --recent-preview-line-color: var(--color-primary-midnight);
-  --recent-preview-relative-color: var(--color-text-inverse-soft);
-  --recent-preview-time-color: var(--color-text-inverse);
-  --recent-preview-time-previous-color: var(--color-error);
-  --recent-preview-time-next-color: var(--color-primary-light);
   background: linear-gradient(
     180deg,
     var(--color-primary-midnight) 0%,
