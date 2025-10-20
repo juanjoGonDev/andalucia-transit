@@ -80,11 +80,6 @@
 
 .route-search__notice-button {
   align-self: flex-start;
-  --app-solid-button-gap: 0.5rem;
-  --app-solid-button-padding: 0.5rem 1rem;
-  --app-solid-button-radius: var(--radius-full);
-  --app-solid-button-color: var(--color-surface-light);
-  --app-solid-button-transition: background-color 0.2s ease;
 }
 
 .route-search__notice-button:hover {
