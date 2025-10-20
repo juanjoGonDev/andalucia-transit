@@ -1,16 +1,14 @@
 import { Routes } from '@angular/router';
-
 import { APP_CONFIG } from './core/config';
+import { FavoritesComponent } from './features/favorites/favorites.component';
 import { HomeComponent } from './features/home/home.component';
 import { RouteSearchComponent } from './features/route-search/route-search.component';
-import { MapComponent } from './features/map/map.component';
-import { FavoritesComponent } from './features/favorites/favorites.component';
-import { AppShellComponent } from './shared/layout/app-shell/app-shell.component';
+import { AppLayoutComponent } from './shared/layout/app-layout/app-layout.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: AppShellComponent,
+    component: AppLayoutComponent,
     children: [
       {
         path: APP_CONFIG.routes.home,
@@ -18,9 +16,31 @@ export const routes: Routes = [
         title: APP_CONFIG.translationKeys.navigation.home
       },
       {
+        path: APP_CONFIG.routes.homeRecent,
+        component: HomeComponent,
+        title: APP_CONFIG.translationKeys.navigation.home
+      },
+      {
+        path: APP_CONFIG.routes.homeFavorites,
+        component: HomeComponent,
+        title: APP_CONFIG.translationKeys.navigation.home
+      },
+      {
         path: APP_CONFIG.routes.favorites,
         component: FavoritesComponent,
         title: APP_CONFIG.translationKeys.navigation.favorites
+      },
+      {
+        path: APP_CONFIG.routes.news,
+        loadComponent: () =>
+          import('./features/news/news.component').then((module) => module.NewsComponent),
+        title: APP_CONFIG.translationKeys.navigation.news
+      },
+      {
+        path: APP_CONFIG.routes.stopInfoPattern,
+        loadComponent: () =>
+          import('./features/stop-info/stop-info.component').then((module) => module.StopInfoComponent),
+        title: APP_CONFIG.translationKeys.navigation.stopInfo
       },
       {
         path: APP_CONFIG.routes.stopDetailPattern,
@@ -46,7 +66,8 @@ export const routes: Routes = [
       },
       {
         path: APP_CONFIG.routes.map,
-        component: MapComponent,
+        loadComponent: () =>
+          import('./features/map/map.component').then((module) => module.MapComponent),
         title: APP_CONFIG.translationKeys.navigation.map
       }
     ]

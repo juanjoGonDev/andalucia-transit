@@ -1,22 +1,22 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { BehaviorSubject, of } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router, convertToParamMap, provideRouter } from '@angular/router';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { DateTime } from 'luxon';
-
-import { RouteSearchComponent } from './route-search.component';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
+import { BehaviorSubject, of } from 'rxjs';
 import {
   RouteSearchDepartureView,
   RouteSearchResultsService,
   RouteSearchResultsViewModel
 } from '../../domain/route-search/route-search-results.service';
-import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
-import { StopDirectoryOption, StopDirectoryService } from '../../data/stops/stop-directory.service';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
+import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
 import { buildDateSlug, buildStopSlug } from '../../domain/route-search/route-search-url.util';
+import { StopDirectoryFacade, StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
+import { RouteSearchComponent } from './route-search.component';
 
 class TranslateTestingLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
@@ -57,7 +57,7 @@ class RouteSearchSelectionResolverServiceStub {
     .and.returnValue(of(null));
 }
 
-class StopDirectoryServiceStub {
+class StopDirectoryFacadeStub {
   private readonly options = new Map<string, StopDirectoryOption>();
 
   setOptions(...options: StopDirectoryOption[]): void {
@@ -119,7 +119,7 @@ describe('RouteSearchComponent', () => {
   let resultsService: RouteSearchResultsServiceStub;
   let resolver: RouteSearchSelectionResolverServiceStub;
   let activatedRoute: ActivatedRouteStub;
-  let directoryService: StopDirectoryServiceStub;
+  let directoryFacade: StopDirectoryFacadeStub;
 
   const origin: StopDirectoryOption = {
     id: 'alpha',
@@ -147,15 +147,16 @@ describe('RouteSearchComponent', () => {
 
   beforeEach(async () => {
     activatedRoute = new ActivatedRouteStub();
-    directoryService = new StopDirectoryServiceStub();
-    directoryService.setOptions(origin, destination);
+    directoryFacade = new StopDirectoryFacadeStub();
+    directoryFacade.setOptions(origin, destination);
 
     await TestBed.configureTestingModule({
       imports: [
         RouteSearchComponent,
         RouteSearchFormStubComponent,
         TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: TranslateTestingLoader }
+          loader: { provide: TranslateLoader, useClass: TranslateTestingLoader },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
         })
       ],
       providers: [
@@ -166,7 +167,7 @@ describe('RouteSearchComponent', () => {
           useClass: RouteSearchSelectionResolverServiceStub
         },
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: StopDirectoryService, useValue: directoryService }
+        { provide: StopDirectoryFacade, useValue: directoryFacade }
       ]
     })
       .overrideComponent(RouteSearchComponent, {

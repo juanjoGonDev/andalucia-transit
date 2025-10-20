@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-
-import { HolidayCalendarService } from './holiday-calendar.service';
-import { HolidayCalendarApiService, ApiPublicHoliday } from './holiday-calendar.api-service';
 import { APP_CONFIG } from '../../core/config';
 import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
+import { ApiPublicHoliday, HolidayCalendarApiService } from './holiday-calendar.api-service';
+import { HolidayCalendarService } from './holiday-calendar.service';
 
 class HolidayCalendarApiServiceStub {
   constructor(private readonly entries: readonly ApiPublicHoliday[], private readonly spy?: jasmine.Spy) {}

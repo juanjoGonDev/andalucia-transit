@@ -1,7 +1,6 @@
 import { DateTime } from 'luxon';
-
-import { mapRouteTimetableResponse } from './route-timetable.mapper';
 import { ApiRouteTimetableResponse } from './route-timetable.api-service';
+import { mapRouteTimetableResponse } from './route-timetable.mapper';
 
 describe('RouteTimetableMapper frequency rules', () => {
   const timezone = 'Europe/Madrid';

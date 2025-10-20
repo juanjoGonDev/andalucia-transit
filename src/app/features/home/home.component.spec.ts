@@ -1,17 +1,18 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { of } from 'rxjs';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-
-import { HomeComponent } from './home.component';
-import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
-import { MatDialog } from '@angular/material/dialog';
-import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-item.component';
-import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
-import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
+import { Subject, of } from 'rxjs';
+import { APP_CONFIG } from '../../core/config';
 import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
+import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
+import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
+import { StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
+import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
+import { HomeComponent } from './home.component';
+import { HomeTabId } from './home.types';
 import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
 
 class ImmediateIntersectionObserver implements IntersectionObserver {
@@ -72,6 +73,30 @@ class RouteSearchExecutionStub {
   prepare = jasmine.createSpy('prepare').and.returnValue(['', 'routes']);
 }
 
+class FavoritesFacadeStub {
+  readonly favorites$ = of<readonly StopFavorite[]>([]);
+}
+
+class RouterStub {
+  navigate = jasmine.createSpy('navigate').and.resolveTo(true);
+  private readonly eventsSubject = new Subject<NavigationEnd>();
+  readonly events = this.eventsSubject.asObservable();
+
+  emitNavigation(path: string): void {
+    this.eventsSubject.next(new NavigationEnd(1, path, path));
+  }
+}
+
+class ActivatedRouteStub {
+  private currentPath: string = APP_CONFIG.routes.home;
+  snapshot: { routeConfig: { path: string } } = { routeConfig: { path: this.currentPath } };
+
+  setPath(path: string): void {
+    this.currentPath = path;
+    this.snapshot = { routeConfig: { path } };
+  }
+}
+
 @Component({
   selector: 'app-route-search-form',
   standalone: true,
@@ -92,10 +117,10 @@ class HomeRecentSearchesStubComponent {}
 
 describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
-  let router: Router;
+  let router: RouterStub;
   let execution: RouteSearchExecutionStub;
+  let routeStub: ActivatedRouteStub;
   let originalIntersectionObserver: typeof IntersectionObserver | undefined;
-  const dialogStub = { open: jasmine.createSpy('open') };
   const originOption: StopDirectoryOption = {
     id: 'origin',
     code: '001',
@@ -125,22 +150,21 @@ describe('HomeComponent', () => {
         HomeComponent,
         RouteSearchFormStubComponent,
         TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
         })
       ],
       providers: [
-        provideRouter([]),
-        { provide: MatDialog, useValue: dialogStub },
+        { provide: Router, useClass: RouterStub },
+        { provide: ActivatedRoute, useClass: ActivatedRouteStub },
         { provide: RouteSearchStateService, useClass: RouteSearchStateStub },
-        { provide: RouteSearchExecutionService, useClass: RouteSearchExecutionStub }
+        { provide: RouteSearchExecutionService, useClass: RouteSearchExecutionStub },
+        { provide: FavoritesFacade, useClass: FavoritesFacadeStub }
       ]
     })
       .overrideComponent(HomeComponent, {
         remove: { imports: [RouteSearchFormComponent, HomeRecentSearchesComponent] },
-        add: {
-          imports: [RouteSearchFormStubComponent, HomeRecentSearchesStubComponent],
-          providers: [{ provide: MatDialog, useValue: dialogStub }]
-        }
+        add: { imports: [RouteSearchFormStubComponent, HomeRecentSearchesStubComponent] }
       })
       .compileComponents();
 
@@ -149,9 +173,9 @@ describe('HomeComponent', () => {
       ImmediateIntersectionObserver;
 
     fixture = TestBed.createComponent(HomeComponent);
-    router = TestBed.inject(Router);
+    router = TestBed.inject(Router) as unknown as RouterStub;
     execution = TestBed.inject(RouteSearchExecutionService) as unknown as RouteSearchExecutionStub;
-    dialogStub.open.calls.reset();
+    routeStub = TestBed.inject(ActivatedRoute) as unknown as ActivatedRouteStub;
     fixture.detectChanges();
   });
 
@@ -165,7 +189,7 @@ describe('HomeComponent', () => {
   });
 
   it('navigates to the route results page when the form emits a selection', fakeAsync(() => {
-    const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
+    const navigateSpy = router.navigate.and.resolveTo(true);
     const selection: RouteSearchSelection = {
       origin: originOption,
       destination: destinationOption,
@@ -180,28 +204,41 @@ describe('HomeComponent', () => {
     expect(navigateSpy).toHaveBeenCalled();
   }));
 
-  it('opens the nearby stops dialog when clicking the action card', async () => {
-    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
-    const openSpy = spyOn(component, 'openNearbyStopsDialog').and.callThrough();
-    const button = fixture.debugElement
-      .query(By.css('.home__main app-section:nth-of-type(3) app-card-list-item'))
-      .componentInstance as CardListItemComponent;
-
-    button.action.emit();
-    expect(openSpy).toHaveBeenCalled();
-    await openSpy.calls.mostRecent().returnValue;
-    expect(dialogStub.open).toHaveBeenCalled();
-  });
-
   it('renders the recent searches component', async () => {
+    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
+    router.navigate.calls.reset();
+    component.selectTab('recent');
     await fixture.whenStable();
     fixture.detectChanges();
-    const recent = fixture.debugElement.query(By.directive(HomeRecentSearchesStubComponent));
-    expect(recent).not.toBeNull();
+    const recent = fixture.debugElement.queryAll(By.directive(HomeRecentSearchesStubComponent));
+    expect(recent.length).toBeGreaterThan(0);
+  });
+
+  it('activates the requested tab when the route path changes', () => {
+    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
+    routeStub.setPath(APP_CONFIG.routes.homeRecent);
+    router.emitNavigation(APP_CONFIG.routes.homeRecent);
+    fixture.detectChanges();
+    expect(component.isTabActive('recent')).toBeTrue();
+  });
+
+  it('navigates to the recent route when selecting the recent tab', () => {
+    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
+    router.navigate.calls.reset();
+    component.selectTab('recent');
+    expect(router.navigate).toHaveBeenCalledWith(['/', APP_CONFIG.routes.homeRecent]);
+  });
+
+  it('navigates to the favorites route when selecting the favorites tab', () => {
+    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
+    router.navigate.calls.reset();
+    component.selectTab('favorites');
+    expect(router.navigate).toHaveBeenCalledWith(['/', APP_CONFIG.routes.homeFavorites]);
   });
 });
 
 interface HomeComponentTestingApi {
   onSelectionConfirmed(selection: RouteSearchSelection): Promise<void>;
-  openNearbyStopsDialog(): Promise<void>;
+  isTabActive(tab: HomeTabId): boolean;
+  selectTab(tab: HomeTabId): void;
 }

@@ -1,17 +1,16 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
 import { DateTime } from 'luxon';
-
-import { StopScheduleService } from './stop-schedule.service';
-import { StopDirectoryService, StopDirectoryRecord } from '../stops/stop-directory.service';
-import {
-  StopScheduleSnapshotRepository,
-  StopScheduleSnapshotRecord
-} from './stop-schedule-snapshot.repository';
-import { StopScheduleApiService, ApiStopInformation, ApiStopServicesResponse } from './stop-schedule.api-service';
+import { of, throwError } from 'rxjs';
 import { RuntimeFlagsService } from '../../core/runtime/runtime-flags.service';
 import { StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
+import { StopDirectoryRecord, StopDirectoryService } from '../stops/stop-directory.service';
+import {
+  StopScheduleSnapshotRecord,
+  StopScheduleSnapshotRepository
+} from './stop-schedule-snapshot.repository';
+import { ApiStopInformation, ApiStopServicesResponse, StopScheduleApiService } from './stop-schedule.api-service';
+import { StopScheduleService } from './stop-schedule.service';
 
 class StopDirectoryStub {
   constructor(private readonly record: StopDirectoryRecord | null) {}

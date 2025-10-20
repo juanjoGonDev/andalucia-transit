@@ -42,9 +42,19 @@
 }
 
 .route-search__item-time {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 0.5rem;
+  row-gap: 0.25rem;
+  align-items: flex-start;
+}
+
+.route-search__item-time-primary {
+  display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
+  min-inline-size: 0;
 }
 
 .route-search__item-clock {
@@ -55,6 +65,8 @@
 .route-search__item-relative {
   font-size: 0.875rem;
   font-weight: 600;
+  flex: 1 1 auto;
+  min-inline-size: 0;
 }
 
 .route-search__item-relative[data-kind='upcoming'] {
@@ -75,8 +87,11 @@
   font-weight: 600;
 }
 
-.route-search__item-badge--align-end {
-  margin-left: auto;
+.route-search__item-time-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  justify-self: end;
 }
 
 .route-search__item-badge--next {

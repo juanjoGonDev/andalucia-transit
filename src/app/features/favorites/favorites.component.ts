@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,21 +7,22 @@ import {
   inject,
   signal
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
-
 import { APP_CONFIG } from '../../core/config';
-import { StopFavoritesService, StopFavorite } from '../../domain/stops/stop-favorites.service';
-import { SectionComponent } from '../../shared/ui/section/section.component';
+import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
+import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
+import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData
 } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
+import { OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
+import { AppTextFieldComponent, TextFieldType } from '../../shared/ui/forms/app-text-field.component';
+import { SectionComponent } from '../../shared/ui/section/section.component';
 
 interface FavoriteListItem {
   readonly id: string;
@@ -40,40 +42,60 @@ interface FavoriteGroupView {
 const QUERY_LOCALE = 'es-ES' as const;
 const NORMALIZE_FORM = 'NFD' as const;
 const DIACRITIC_PATTERN = /\p{M}/gu;
-
+const FAVORITES_CARD_HOST_CLASSES: readonly string[] = ['favorites-card'];
+const FAVORITES_CARD_BODY_CLASSES: readonly string[] = ['favorites-card__body'];
+const FAVORITES_CARD_REMOVE_CLASSES: readonly string[] = ['favorites-card__remove'];
+const SEARCH_TEXT_FIELD_TYPE: TextFieldType = 'search';
+const SEARCH_AUTOCOMPLETE_ATTRIBUTE = 'off';
+const ROOT_ROUTE_SEGMENT = '/' as const;
 @Component({
   selector: 'app-favorites',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, SectionComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    SectionComponent,
+    AccessibleButtonDirective,
+    AppLayoutContentDirective,
+    InteractiveCardComponent,
+    AppTextFieldComponent
+  ],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FavoritesComponent {
-  private readonly favoritesService = inject(StopFavoritesService);
-  private readonly dialog = inject(MatDialog);
+  private readonly favoritesFacade = inject(FavoritesFacade);
+  private readonly dialog = inject(OverlayDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly formBuilder = inject(FormBuilder);
-  private readonly router = inject(Router);
 
   private readonly translations = APP_CONFIG.translationKeys.favorites;
   private readonly favoriteIconName = APP_CONFIG.homeData.favoriteStops.icon;
   private readonly removeIconName = APP_CONFIG.homeData.favoriteStops.removeIcon;
+  protected readonly layoutNavigationKey = APP_CONFIG.routes.favorites;
 
   protected readonly titleKey = this.translations.title;
   protected readonly descriptionKey = this.translations.description;
   protected readonly searchLabelKey = this.translations.searchLabel;
   protected readonly searchPlaceholderKey = this.translations.searchPlaceholder;
+  protected readonly searchFieldType = SEARCH_TEXT_FIELD_TYPE;
+  protected readonly searchAutocompleteAttribute = SEARCH_AUTOCOMPLETE_ATTRIBUTE;
   protected readonly emptyKey = this.translations.empty;
   protected readonly clearAllLabelKey = this.translations.actions.clearAll;
   protected readonly removeLabelKey = this.translations.actions.remove;
   protected readonly codeLabelKey = this.translations.list.code;
   protected readonly nucleusLabelKey = this.translations.list.nucleus;
+  protected readonly favoritesCardHostClasses = FAVORITES_CARD_HOST_CLASSES;
+  protected readonly favoritesCardBodyClasses = FAVORITES_CARD_BODY_CLASSES;
+  protected readonly favoritesCardRemoveClasses = FAVORITES_CARD_REMOVE_CLASSES;
 
   protected readonly searchControl = this.formBuilder.nonNullable.control('');
 
   private readonly favorites = signal<readonly StopFavorite[]>([]);
   private readonly searchTerm = signal('');
+  private readonly stopDetailRouteKey = APP_CONFIG.routes.stopDetailBase;
 
   protected readonly hasFavorites = computed(() => this.favorites().length > 0);
   protected readonly groups = computed(() => this.buildGroups(this.favorites(), this.searchTerm()));
@@ -100,12 +122,6 @@ export class FavoritesComponent {
     return this.removeIconName;
   }
 
-  protected async openStop(item: FavoriteListItem): Promise<void> {
-    const stopId = item.stopIds[0] ?? item.id;
-    const commands: readonly string[] = ['/', APP_CONFIG.routes.stopDetailBase, stopId];
-    await this.router.navigate(commands);
-  }
-
   protected async remove(item: FavoriteListItem): Promise<void> {
     const confirmed = await this.confirm({
       titleKey: this.translations.dialogs.remove.title,
@@ -122,7 +138,7 @@ export class FavoritesComponent {
       return;
     }
 
-    this.favoritesService.remove(item.id);
+    this.favoritesFacade.remove(item.id);
   }
 
   protected async clearAll(): Promise<void> {
@@ -143,13 +159,34 @@ export class FavoritesComponent {
       return;
     }
 
-    this.favoritesService.clear();
+    this.favoritesFacade.clear();
+  }
+
+  protected async onClearAllActivated(): Promise<void> {
+    if (!this.hasFavorites()) {
+      return;
+    }
+
+    await this.clearAll();
+  }
+
+  protected async onRemoveActivated(item: FavoriteListItem): Promise<void> {
+    await this.remove(item);
+  }
+
+  protected stopDetailCommands(item: FavoriteListItem): readonly string[] {
+    return this.buildStopDetailCommands(item);
   }
 
   private observeFavorites(): void {
-    this.favoritesService.favorites$
+    this.favoritesFacade.favorites$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((favorites) => this.favorites.set(favorites));
+  }
+
+  private buildStopDetailCommands(item: FavoriteListItem): readonly string[] {
+    const stopId = item.stopIds[0] ?? item.id;
+    return [ROOT_ROUTE_SEGMENT, this.stopDetailRouteKey, stopId] as const;
   }
 
   private observeSearch(): void {

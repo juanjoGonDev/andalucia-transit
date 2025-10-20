@@ -1,10 +1,9 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
-
-import { StopDirectoryService, StopDirectoryOption } from './stop-directory.service';
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
 import { APP_CONFIG } from '../../core/config';
+import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
+import { StopDirectoryOption, StopDirectoryService } from './stop-directory.service';
 
 interface DirectoryIndexResponse {
   readonly metadata: {

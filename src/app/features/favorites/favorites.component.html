@@ -1,26 +1,28 @@
-<div class="favorites">
+<div class="favorites" appLayoutContent [appLayoutContentNavigationKey]="layoutNavigationKey">
   <app-section [titleKey]="titleKey">
     <div class="favorites__header">
       <p class="favorites__description">{{ descriptionKey | translate }}</p>
       <div class="favorites__controls">
-        <label class="favorites__search">
-          <span class="favorites__search-label">{{ searchLabelKey | translate }}</span>
-          <input
-            type="search"
-            class="favorites__search-input"
-            [formControl]="searchControl"
+        <div class="favorites__search">
+          <app-text-field
+            class="favorites__search-field"
+            [label]="searchLabelKey | translate"
             [placeholder]="searchPlaceholderKey | translate"
-          />
-        </label>
-        <button
-          type="button"
-          class="favorites__clear"
-          (click)="clearAll()"
-          [disabled]="!hasFavorites()"
+            [type]="searchFieldType"
+            [autocomplete]="searchAutocompleteAttribute"
+            [formControl]="searchControl"
+          ></app-text-field>
+        </div>
+        <div
+          appAccessibleButton
+          class="app-outline-button app-outline-button--compact favorites__clear"
+          [appAccessibleButtonDisabled]="!hasFavorites()"
+          [class.is-disabled]="!hasFavorites()"
+          (appAccessibleButtonActivated)="onClearAllActivated()"
         >
           <span class="material-symbols-outlined favorites__clear-icon">{{ removeIcon() }}</span>
           {{ clearAllLabelKey | translate }}
-        </button>
+        </div>
       </div>
     </div>
   </app-section>
@@ -34,20 +36,34 @@
       <h3 class="favorites__group-title">{{ group.municipality }}</h3>
       <ul class="favorites__list" role="list">
         <li class="favorites__item" *ngFor="let stop of group.stops; trackBy: trackStop">
-          <button type="button" class="favorites__item-main" (click)="openStop(stop)">
-            <span class="material-symbols-outlined favorites__item-icon">{{ favoriteIcon() }}</span>
-            <span class="favorites__item-text">
-              <span class="favorites__item-name">{{ stop.name }}</span>
-              <span class="favorites__item-meta">
-                {{ codeLabelKey | translate }}: {{ stop.code }} ·
-                {{ nucleusLabelKey | translate }}: {{ stop.nucleus }}
+          <app-interactive-card
+            [ngClass]="favoritesCardHostClasses"
+            [bodyClasses]="favoritesCardBodyClasses"
+            [removeClasses]="favoritesCardRemoveClasses"
+            [removeIconName]="removeIcon()"
+            [removeAriaLabel]="removeLabelKey | translate"
+            [primaryCommands]="stopDetailCommands(stop)"
+            (removeActivated)="onRemoveActivated(stop)"
+          >
+            <div class="favorites-card__content">
+              <span class="material-symbols-outlined favorites-card__icon" aria-hidden="true">
+                {{ favoriteIcon() }}
               </span>
-            </span>
-          </button>
-          <button type="button" class="favorites__remove" (click)="remove(stop)">
-            <span class="material-symbols-outlined favorites__remove-icon">{{ removeIcon() }}</span>
-            {{ removeLabelKey | translate }}
-          </button>
+              <span class="favorites-card__text">
+                <span class="favorites-card__name">{{ stop.name }}</span>
+                <span class="favorites-card__meta">
+                  <span class="favorites-card__chip">
+                    <span class="favorites-card__chip-label">{{ codeLabelKey | translate }}</span>
+                    <span class="favorites-card__chip-value">{{ stop.code }}</span>
+                  </span>
+                  <span class="favorites-card__chip">
+                    <span class="favorites-card__chip-label">{{ nucleusLabelKey | translate }}</span>
+                    <span class="favorites-card__chip-value">{{ stop.nucleus }}</span>
+                  </span>
+                </span>
+              </span>
+            </div>
+          </app-interactive-card>
         </li>
       </ul>
     </section>

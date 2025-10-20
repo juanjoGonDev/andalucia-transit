@@ -1,15 +1,14 @@
 import { Injectable, inject } from '@angular/core';
-import { map, Observable, switchMap } from 'rxjs';
-
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
+import { Observable, map, switchMap } from 'rxjs';
 import { AppConfig } from '../../core/config';
-import { RouteTimetableApiService, ApiRouteTimetableResponse } from './route-timetable.api-service';
-import {
-  mapRouteTimetableResponse,
-  RouteTimetableEntry,
-  RouteTimetableMapperOptions
-} from './route-timetable.mapper';
+import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
 import { HolidayCalendarService } from '../holidays/holiday-calendar.service';
+import { ApiRouteTimetableResponse, RouteTimetableApiService } from './route-timetable.api-service';
+import {
+  RouteTimetableEntry,
+  RouteTimetableMapperOptions,
+  mapRouteTimetableResponse
+} from './route-timetable.mapper';
 
 export interface RouteTimetableRequest {
   readonly consortiumId: number;

@@ -1,13 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
-
-import { FavoritesComponent } from './favorites.component';
-import { StopFavorite, StopFavoritesService } from '../../domain/stops/stop-favorites.service';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { APP_CONFIG } from '../../core/config';
+import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
+import { OverlayDialogConfig, OverlayDialogRef, OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
+import { FavoritesComponent } from './favorites.component';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {
@@ -15,29 +16,33 @@ class FakeTranslateLoader implements TranslateLoader {
   }
 }
 
-class StopFavoritesServiceStub {
+class FavoritesFacadeStub {
   private readonly subject = new BehaviorSubject<readonly StopFavorite[]>([]);
   readonly favorites$ = this.subject.asObservable();
   readonly remove = jasmine.createSpy('remove');
   readonly clear = jasmine.createSpy('clear');
+  readonly add = jasmine.createSpy('add');
+  readonly toggle = jasmine.createSpy('toggle');
+  readonly isFavorite = jasmine.createSpy('isFavorite');
 
   emit(favorites: readonly StopFavorite[]): void {
     this.subject.next(favorites);
   }
 }
 
-class MatDialogStub {
+class OverlayDialogServiceStub {
   private response$: Observable<boolean | undefined> = of(true);
-  private lastConfig: MatDialogConfig<ConfirmDialogData> | undefined;
+  private lastConfig: OverlayDialogConfig<ConfirmDialogData> | undefined;
 
   readonly open = jasmine
     .createSpy('open')
-    .and.callFake((_: typeof ConfirmDialogComponent, config?: MatDialogConfig<ConfirmDialogData>) => {
+    .and.callFake((_: typeof ConfirmDialogComponent, config?: OverlayDialogConfig<ConfirmDialogData>) => {
       this.lastConfig = config;
-      const ref: Partial<MatDialogRef<ConfirmDialogComponent, boolean>> = {
-        afterClosed: () => this.response$
+      const ref: OverlayDialogRef<boolean> = {
+        afterClosed: () => this.response$,
+        close: () => undefined
       };
-      return ref as MatDialogRef<ConfirmDialogComponent, boolean>;
+      return ref;
     });
 
   setResponse(value: boolean): void {
@@ -45,20 +50,15 @@ class MatDialogStub {
   }
 
   lastData(): ConfirmDialogData | undefined {
-    const data = this.lastConfig?.data ?? undefined;
-    return data === null ? undefined : data;
+    return this.lastConfig?.data;
   }
-}
-
-class RouterStub {
-  readonly navigate = jasmine.createSpy('navigate').and.resolveTo(true);
 }
 
 interface FavoritesComponentAccess {
   searchControl: FavoritesComponent['searchControl'];
-  openStop: FavoritesComponent['openStop'];
   remove: FavoritesComponent['remove'];
   clearAll: FavoritesComponent['clearAll'];
+  stopDetailCommands: FavoritesComponent['stopDetailCommands'];
 }
 
 const accessProtected = (instance: FavoritesComponent): FavoritesComponentAccess =>
@@ -114,33 +114,35 @@ const FAVORITES: readonly StopFavorite[] = [
 describe('FavoritesComponent', () => {
   let fixture: ComponentFixture<FavoritesComponent>;
   let component: FavoritesComponent;
-  let favoritesService: StopFavoritesServiceStub;
-  let dialog: MatDialogStub;
-  let router: RouterStub;
+  let favoritesFacade: FavoritesFacadeStub;
+  let dialog: OverlayDialogServiceStub;
 
   beforeEach(async () => {
-    favoritesService = new StopFavoritesServiceStub();
-    dialog = new MatDialogStub();
-    router = new RouterStub();
-
+    favoritesFacade = new FavoritesFacadeStub();
+    dialog = new OverlayDialogServiceStub();
     await TestBed.configureTestingModule({
       imports: [
+        RouterTestingModule,
         FavoritesComponent,
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: FakeTranslateLoader } })
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
+        })
       ],
       providers: [
-        { provide: StopFavoritesService, useValue: favoritesService },
-        { provide: MatDialog, useValue: dialog },
-        { provide: Router, useValue: router }
+        { provide: FavoritesFacade, useValue: favoritesFacade },
+        { provide: OverlayDialogService, useValue: dialog }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FavoritesComponent);
     component = fixture.componentInstance;
+    const router = TestBed.inject(Router);
+    spyOn(router, 'navigate').and.resolveTo(true);
   });
 
   it('renders favorites grouped by municipality', () => {
-    favoritesService.emit(FAVORITES);
+    favoritesFacade.emit(FAVORITES);
     fixture.detectChanges();
 
     const titleElements = fixture.nativeElement.querySelectorAll('.favorites__group-title') as NodeListOf<HTMLElement>;
@@ -160,7 +162,7 @@ describe('FavoritesComponent', () => {
   });
 
   it('filters favorites by search term', () => {
-    favoritesService.emit(FAVORITES);
+    favoritesFacade.emit(FAVORITES);
     fixture.detectChanges();
 
     const access = accessProtected(component);
@@ -172,16 +174,12 @@ describe('FavoritesComponent', () => {
     expect(items[0]?.textContent).toContain('Triana');
   });
 
-  it('navigates to stop detail when selecting a favorite', async () => {
+  it('provides router commands to open stop detail', () => {
     const favorite = FAVORITES[0];
     const access = accessProtected(component);
-    await access.openStop.call(component, toListItem(favorite));
+    const commands = access.stopDetailCommands.call(component, toListItem(favorite));
 
-    expect(router.navigate).toHaveBeenCalledWith([
-      '/',
-      APP_CONFIG.routes.stopDetailBase,
-      'sevilla:001'
-    ]);
+    expect(commands).toEqual(['/', APP_CONFIG.routes.stopDetailBase, 'sevilla:001']);
   });
 
   it('removes a favorite after confirmation', async () => {
@@ -191,7 +189,7 @@ describe('FavoritesComponent', () => {
     const access = accessProtected(component);
     await access.remove.call(component, toListItem(favorite));
 
-    expect(favoritesService.remove).toHaveBeenCalledWith('sevilla-001');
+    expect(favoritesFacade.remove).toHaveBeenCalledWith('sevilla-001');
     expect(dialog.lastData()).toEqual(
       jasmine.objectContaining({
         details: jasmine.arrayContaining([
@@ -209,18 +207,18 @@ describe('FavoritesComponent', () => {
     const access = accessProtected(component);
     await access.remove.call(component, toListItem(favorite));
 
-    expect(favoritesService.remove).not.toHaveBeenCalled();
+    expect(favoritesFacade.remove).not.toHaveBeenCalled();
   });
 
   it('clears all favorites after confirmation', async () => {
-    favoritesService.emit(FAVORITES);
+    favoritesFacade.emit(FAVORITES);
     fixture.detectChanges();
     dialog.setResponse(true);
 
     const access = accessProtected(component);
     await access.clearAll.call(component);
 
-    expect(favoritesService.clear).toHaveBeenCalled();
+    expect(favoritesFacade.clear).toHaveBeenCalled();
     expect(dialog.lastData()).toEqual(
       jasmine.objectContaining({
         details: jasmine.arrayContaining([
@@ -236,6 +234,6 @@ describe('FavoritesComponent', () => {
     const access = accessProtected(component);
     await access.clearAll.call(component);
 
-    expect(favoritesService.clear).not.toHaveBeenCalled();
+    expect(favoritesFacade.clear).not.toHaveBeenCalled();
   });
 });

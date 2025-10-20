@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { forkJoin, map, Observable, of } from 'rxjs';
-
+import { Observable, forkJoin, map, of } from 'rxjs';
 import {
   StopDirectoryOption,
   StopDirectoryService

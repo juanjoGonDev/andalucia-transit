@@ -1,6 +1,5 @@
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
-
 import { ConsortiumDependencies, loadConsortiumSummaries } from './consortiums';
 
 describe('loadConsortiumSummaries', () => {

@@ -1,10 +1,9 @@
 import { Injectable, WritableSignal, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { distinctUntilChanged, map, Observable } from 'rxjs';
-
-import { RouteSearchPreferencesStorage, RouteSearchPreferencesStored } from '../../data/route-search/route-search-preferences.storage';
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
+import { Observable, distinctUntilChanged, map } from 'rxjs';
 import { AppConfig } from '../../core/config';
+import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
+import { RouteSearchPreferencesStorage, RouteSearchPreferencesStored } from '../../data/route-search/route-search-preferences.storage';
 
 interface RouteSearchPreferencesState {
   readonly previewEnabled: boolean;

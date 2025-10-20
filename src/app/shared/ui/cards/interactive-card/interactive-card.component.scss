@@ -1,0 +1,83 @@
+:host {
+  --interactive-card-background: var(--color-surface);
+  --interactive-card-foreground: var(--color-text-primary);
+  --interactive-card-radius: var(--radius-lg);
+  --interactive-card-shadow: var(--shadow-card);
+  --interactive-card-body-gap: var(--space-md);
+  --interactive-card-body-alignment: center;
+  --interactive-card-padding-block: var(--space-lg);
+  --interactive-card-padding-inline: var(--space-lg);
+  --interactive-card-remove-offset: var(--space-md);
+  --interactive-card-remove-size: var(--space-2xl);
+  --interactive-card-remove-radius: var(--radius-full);
+  --interactive-card-remove-background: var(--color-button-secondary-fill);
+  --interactive-card-remove-hover-background: var(--color-button-secondary-hover);
+  --interactive-card-remove-foreground: var(--color-text-primary);
+  --interactive-card-focus-outline: var(--color-focus-ring);
+  --interactive-card-remove-focus-outline: var(--color-focus-ring);
+  position: relative;
+  display: block;
+  width: 100%;
+  border-radius: var(--interactive-card-radius);
+  background: var(--interactive-card-background);
+  color: var(--interactive-card-foreground);
+  box-shadow: var(--interactive-card-shadow);
+  overflow: hidden;
+}
+
+.interactive-card__body {
+  display: flex;
+  align-items: var(--interactive-card-body-alignment);
+  gap: var(--interactive-card-body-gap);
+  width: 100%;
+  padding: var(--interactive-card-padding-block)
+    calc(var(--interactive-card-padding-inline) + var(--interactive-card-remove-size))
+    var(--interactive-card-padding-block)
+    var(--interactive-card-padding-inline);
+  border: none;
+  border-radius: inherit;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.interactive-card__body:focus-visible {
+  outline: 2px solid var(--interactive-card-focus-outline);
+  outline-offset: 2px;
+}
+
+.interactive-card__remove {
+  position: absolute;
+  top: var(--interactive-card-remove-offset);
+  right: var(--interactive-card-remove-offset);
+  width: var(--interactive-card-remove-size);
+  height: var(--interactive-card-remove-size);
+  border: none;
+  border-radius: var(--interactive-card-remove-radius);
+  background: var(--interactive-card-remove-background);
+  color: var(--interactive-card-remove-foreground);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.interactive-card__remove:hover {
+  background-color: var(--interactive-card-remove-hover-background);
+  transform: translateY(-2px);
+}
+
+.interactive-card__remove:focus-visible {
+  outline: 2px solid var(--interactive-card-remove-focus-outline);
+  outline-offset: 2px;
+}
+
+.interactive-card__remove .material-symbols-outlined {
+  font-size: calc(var(--font-size-base) + var(--space-3xs));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive-card__remove {
+    transition: none;
+  }
+}

@@ -1,13 +1,13 @@
-import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
 import {
   StopConnection,
   buildStopConnectionKey
 } from '../../data/route-search/stop-connections.service';
-import { RouteSearchLineMatch } from './route-search-state.service';
+import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
 import {
   collectRouteLineMatches,
   createRouteSearchSelection
 } from './route-search-selection.util';
+import { RouteSearchLineMatch } from './route-search-state.service';
 
 describe('route-search-selection.util', () => {
   const origin: StopDirectoryOption = {

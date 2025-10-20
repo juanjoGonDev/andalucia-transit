@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -5,36 +6,36 @@ import {
   DestroyRef,
   ElementRef,
   QueryList,
+  ViewChildren,
   computed,
   inject,
-  signal,
-  ViewChildren
+  signal
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { DateTime } from 'luxon';
-
+import { distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 import { APP_CONFIG } from '../../core/config';
-import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
+import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
 import {
+  RouteSearchDepartureView,
   RouteSearchResultsService,
-  RouteSearchResultsViewModel,
-  RouteSearchDepartureView
+  RouteSearchResultsViewModel
 } from '../../domain/route-search/route-search-results.service';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
+import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
 import {
   buildDateSlug,
   buildStopSlug,
   parseStopSlug
 } from '../../domain/route-search/route-search-url.util';
-import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
+import { StopDirectoryFacade, StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
+import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
+import { buildNavigationCommands } from '../../shared/navigation/navigation.util';
 import { SectionComponent } from '../../shared/ui/section/section.component';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
-import { buildNavigationCommands } from '../../shared/navigation/navigation.util';
-import { StopDirectoryService, StopDirectoryOption } from '../../data/stops/stop-directory.service';
 
 @Component({
   selector: 'app-route-search',
@@ -43,7 +44,9 @@ import { StopDirectoryService, StopDirectoryOption } from '../../data/stops/stop
     CommonModule,
     TranslateModule,
     SectionComponent,
-    RouteSearchFormComponent
+    RouteSearchFormComponent,
+    AccessibleButtonDirective,
+    AppLayoutContentDirective
   ],
   templateUrl: './route-search.component.html',
   styleUrls: [
@@ -67,7 +70,7 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly resultsService = inject(RouteSearchResultsService);
   private readonly selectionResolver = inject(RouteSearchSelectionResolverService);
   private readonly execution = inject(RouteSearchExecutionService);
-  private readonly stopDirectory = inject(StopDirectoryService);
+  private readonly stopDirectory = inject(StopDirectoryFacade);
   private readonly timezone = APP_CONFIG.data.timezone;
   private readonly scheduleAccuracyThresholdDays =
     APP_CONFIG.routeSearchData.scheduleAccuracy.warningThresholdDays;
@@ -78,6 +81,7 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly routeSegments = APP_CONFIG.routeSegments.routeSearch;
   protected readonly formTitleKey = this.translationKeys.action;
   protected readonly scheduleAccuracyWarningKey = this.translationKeys.scheduleAccuracyWarning;
+  protected readonly layoutNavigationKey = APP_CONFIG.routes.routeSearch;
 
   protected readonly selection = signal<RouteSearchSelection | null>(this.state.getSelection());
   protected readonly results = signal<RouteSearchResultsViewModel>({
