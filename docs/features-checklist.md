@@ -124,10 +124,25 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Screenshot (Favorites list — desktop parity reconfirmed): https://browser.buildwithfern.com/invocations/fdvycuml/artifacts/artifacts/favorites-desktop.png
     - [x] Screenshot (Favorites list — mobile parity reconfirmed): https://browser.buildwithfern.com/invocations/fdvycuml/artifacts/artifacts/favorites-mobile.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-30 Restored favorites list column layout and header alignment to match the baseline across breakpoints.
+    - [x] Screenshot (Favorites list — mobile grid parity): https://browser.buildwithfern.com/invocations/qsuddnum/artifacts/artifacts/favorites-mobile.png
+    - [x] Screenshot (Favorites list — desktop grid parity): https://browser.buildwithfern.com/invocations/qsuddnum/artifacts/artifacts/favorites-desktop.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+    - [x] 2025-10-30 Routed favorites card activation exclusively through router command bindings to prevent duplicate navigation handlers and confirmed layout stability.
+      - [x] Screenshot (Favorites list — desktop routing parity): https://browser.buildwithfern.com/invocations/emnefwby/artifacts/artifacts/favorites-desktop.png
+      - [x] Screenshot (Favorites list — mobile routing parity): https://browser.buildwithfern.com/invocations/emnefwby/artifacts/artifacts/favorites-mobile.png
+      - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [x] Recent searches time block anchoring (A2) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-18 Reworked recent preview entry layout with flex alignment and non-wrapping time blocks at mobile and desktop widths.
   - [x] Screenshot (Home recent searches — desktop): https://browser.buildwithfern.com/invocations/wdsyzxta/artifacts/artifacts/recent-time.png
   - [x] Tests: `npm run lint`; `npm run test` *(aborted during Chrome dependency installation)*; `npm run build` *(aborted while installing Chrome system dependencies)*.
+  - [x] 2025-10-19 Reaffirmed recent preview entry trailing time alignment so the time block stays right-aligned on narrow viewports while preserving shared spacing tokens.
+    - [x] Screenshot (Home recent searches — mobile alignment locked): https://browser.buildwithfern.com/invocations/rprdmtkl/artifacts/artifacts/home-recent-searches-mobile.png
+    - [x] Screenshot (Home recent searches — desktop alignment locked): https://browser.buildwithfern.com/invocations/rprdmtkl/artifacts/artifacts/home-recent-searches-desktop.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-30 Converted recent preview entry layout to a two-column grid so the trailing time block remains anchored without relying on manual margins.
+    - [x] Screenshot (Home recent searches — mobile grid anchoring): https://browser.buildwithfern.com/invocations/emnefwby/artifacts/artifacts/home-recent-mobile.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [x] Settings view layout integration (A3) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-18 Routed settings through the shared layout surface with the utility container and layout body tokens, ensuring baseline spacing and cards render on the muted surface without ad-hoc padding.
   - [x] Screenshot (Settings view — desktop): https://browser.buildwithfern.com/invocations/kusjavnh/artifacts/artifacts/settings-desktop.png
@@ -406,7 +421,32 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-19 Linked the stop detail actions to the stop information view using directory metadata so users can jump directly to enriched details.
     - [x] Screenshot (Stop detail — desktop, stop info action): https://browser.buildwithfern.com/invocations/xysejzld/artifacts/artifacts/stop-detail-stop-info-action.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
-- [ ] Interactive map with nearby stops (C3) — attach public screenshot URL(s); visual diff must be 0px.
-  - [ ] Record OSM/Leaflet licensing and geolocation consent handling in documentation.
-- [ ] Route overlay on map (C4) — attach public screenshot URL(s); visual diff must be 0px.
-  - [ ] Describe polyline transformation and caching strategy in documentation.
+- [x] Interactive map with nearby stops (C3) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Added a Leaflet-powered map with nearby stop markers, geolocation flow, and responsive panel layout.
+    - [x] Screenshot (Map view — desktop): https://browser.buildwithfern.com/invocations/xzkvrnbx/artifacts/artifacts/map-desktop.png
+    - [x] Screenshot (Map view — mobile): https://browser.buildwithfern.com/invocations/xzkvrnbx/artifacts/artifacts/map-mobile.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] Record OSM/Leaflet licensing and geolocation consent handling in documentation.
+    - [x] 2025-10-19 Documented mapping data sources, attribution requirements, and explicit geolocation consent flow in `docs/map-data-sources.md`.
+- [x] Route overlay on map (C4) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Connected the map overlay facade to rendered polylines and manual refresh with cached geometry slices for matching routes.
+    - [x] Screenshot (Map route overlay — desktop): https://browser.buildwithfern.com/invocations/frvhinst/artifacts/artifacts/map-overlay-desktop.png
+    - [x] Screenshot (Map route overlay — mobile): https://browser.buildwithfern.com/invocations/frvhinst/artifacts/artifacts/map-overlay-mobile.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] Describe polyline transformation and caching strategy in documentation.
+  - [x] 2025-11-02 Surface route overlay distance summaries in the map panel with shared distance formatting so travelers see stop counts and kilometers at a glance.
+    - [x] Screenshot (Map route distance — desktop): https://browser.buildwithfern.com/invocations/xvxxqrhu/artifacts/artifacts/map-route-distance.png
+    - [x] Screenshot (Map route distance — mobile): https://browser.buildwithfern.com/invocations/ewwpjinf/artifacts/artifacts/map-route-distance-mobile.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-03 Corrected route overlay stop count translations to use plural forms so singular cards read naturally in both languages.
+    - [x] Screenshot (Map route panel — pluralization fix): https://browser.buildwithfern.com/invocations/tpflxahh/artifacts/artifacts/map-route-panel.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-04 Replaced ICU pluralization with dedicated singular and plural translation keys so stop counts render without requiring an additional compiler dependency.
+    - [x] Screenshot (Map route panel — singular plural verification): https://browser.buildwithfern.com/invocations/tpflxahh/artifacts/artifacts/map-route-panel.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-05 Applied Intl.PluralRules-driven stop count selection so locale plural categories map to dedicated translation keys without extra compilers.
+    - [x] Screenshot (Map route panel — plural rules validation): https://browser.buildwithfern.com/invocations/tpflxahh/artifacts/artifacts/map-route-panel.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-06 Centralized pluralization selection in a shared service that caches Intl.PluralRules per language so map route stop counts react to locale changes without recreating rules in each component.
+    - [x] Screenshot (Map route panel — pluralization service parity): https://browser.buildwithfern.com/invocations/akubfqby/artifacts/artifacts/map-pluralization-service.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.

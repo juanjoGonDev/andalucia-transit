@@ -42,7 +42,7 @@
             [removeClasses]="favoritesCardRemoveClasses"
             [removeIconName]="removeIcon()"
             [removeAriaLabel]="removeLabelKey | translate"
-            (primaryActivated)="openStop(stop)"
+            [primaryCommands]="stopDetailCommands(stop)"
             (removeActivated)="onRemoveActivated(stop)"
           >
             <div class="favorites-card__content">

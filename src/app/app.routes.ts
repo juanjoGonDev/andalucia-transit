@@ -3,7 +3,6 @@ import { Routes } from '@angular/router';
 import { APP_CONFIG } from './core/config';
 import { HomeComponent } from './features/home/home.component';
 import { RouteSearchComponent } from './features/route-search/route-search.component';
-import { MapComponent } from './features/map/map.component';
 import { FavoritesComponent } from './features/favorites/favorites.component';
 import { AppLayoutComponent } from './shared/layout/app-layout/app-layout.component';
 
@@ -68,7 +67,8 @@ export const routes: Routes = [
       },
       {
         path: APP_CONFIG.routes.map,
-        component: MapComponent,
+        loadComponent: () =>
+          import('./features/map/map.component').then((module) => module.MapComponent),
         title: APP_CONFIG.translationKeys.navigation.map
       }
     ]
