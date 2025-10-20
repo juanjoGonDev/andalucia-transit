@@ -218,6 +218,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     () => this.routeStatus() === 'ready' && this.routes().length > 0
   );
 
+  private resolveLanguage(language: string | undefined): string {
+    if (language) {
+      return language;
+    }
+
+    return this.translate.defaultLang ?? APP_CONFIG.locales.default;
+  }
+
   async ngAfterViewInit(): Promise<void> {
     if (!this.isRunningInBrowser()) {
       return;
@@ -423,8 +431,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (!this.hasFittedRoutes && state.status === 'ready' && state.routes.length > 0) {
       const allCoordinates = this.collectRouteCoordinates(state.routes);
 
-      if (allCoordinates.length > 0) {
-        this.mapHandle?.fitToCoordinates(allCoordinates);
+      if (allCoordinates.length > 0 && this.mapHandle) {
+        this.mapHandle.fitToCoordinates(allCoordinates);
         this.hasFittedRoutes = true;
       }
     }
@@ -600,6 +608,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   constructor() {
+    this.translate.onLangChange
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ lang }) => {
+        this.stopCountPluralRules.set(createPluralRules(this.resolveLanguage(lang)));
+      });
+
     this.overlayFacade
       .watchOverlay()
       .pipe(takeUntilDestroyed())

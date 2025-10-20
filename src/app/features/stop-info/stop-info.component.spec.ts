@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-
 import { StopInfoFacade, StopInformationDetail, StopInformationState } from '../../domain/stops/stop-info.facade';
 import { StopInfoComponent } from './stop-info.component';
 
