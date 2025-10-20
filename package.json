@@ -1,7 +1,6 @@
 {
   "name": "andalucia-transit",
   "version": "0.0.1",
-  "packageManager": "pnpm@9.12.3",
   "scripts": {
     "prepare": "node scripts/dev/prepare-playwright.mjs",
     "ng": "ng",

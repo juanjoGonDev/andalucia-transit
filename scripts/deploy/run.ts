@@ -6,8 +6,8 @@ import { fileURLToPath } from 'node:url';
 
 type JsonValue = string | number | boolean | { [key: string]: JsonValue } | JsonValue[] | null;
 
-const buildCommand = 'ng';
-const buildArguments: readonly string[] = ['build', '--configuration', 'production'];
+const buildCommand = 'npx';
+const buildArguments: readonly string[] = ['ng', 'build', '--configuration', 'production'];
 const distDirectoryName = 'dist';
 const projectDirectoryName = 'andalucia-transit';
 const browserDirectoryName = 'browser';
