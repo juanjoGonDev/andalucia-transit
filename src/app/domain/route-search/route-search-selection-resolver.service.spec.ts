@@ -1,19 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import {
-  StopDirectoryFacade,
-  StopDirectoryOption,
-  StopDirectoryStopSignature
-} from '../stops/stop-directory.facade';
-import { RouteSearchSelectionResolverService } from './route-search-selection-resolver.service';
-import { RouteSearchSelection } from './route-search-state.service';
+import { RouteSearchSelectionResolverService } from '@domain/route-search/route-search-selection-resolver.service';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 import {
   STOP_CONNECTION_DIRECTION,
   StopConnection,
   StopConnectionDirection,
   StopConnectionsFacade,
   buildStopConnectionKey
-} from './stop-connections.facade';
+} from '@domain/route-search/stop-connections.facade';
+import {
+  StopDirectoryFacade,
+  StopDirectoryOption,
+  StopDirectoryStopSignature
+} from '@domain/stops/stop-directory.facade';
 
 class StopDirectoryFacadeStub {
   constructor(private readonly options: Record<string, StopDirectoryOption | null>) {}

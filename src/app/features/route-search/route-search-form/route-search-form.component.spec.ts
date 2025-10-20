@@ -3,14 +3,14 @@ import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@an
 import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, firstValueFrom, of } from 'rxjs';
-import { APP_CONFIG } from '../../../core/config';
-import { GeolocationService } from '../../../core/services/geolocation.service';
+import { APP_CONFIG } from '@core/config';
+import { GeolocationService } from '@core/services/geolocation.service';
 import {
   NearbyStopOption,
   NearbyStopOptionsService
-} from '../../../core/services/nearby-stop-options.service';
-import { NearbyStopResult, NearbyStopsService } from '../../../core/services/nearby-stops.service';
-import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
+} from '@core/services/nearby-stop-options.service';
+import { NearbyStopResult, NearbyStopsService } from '@core/services/nearby-stops.service';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 import {
   STOP_CONNECTION_DIRECTION,
   StopConnection,
@@ -18,15 +18,15 @@ import {
   StopConnectionsFacade,
   buildStopConnectionKey,
   mergeStopConnectionMaps
-} from '../../../domain/route-search/stop-connections.facade';
-import { FavoritesFacade, StopFavorite } from '../../../domain/stops/favorites.facade';
+} from '@domain/route-search/stop-connections.facade';
+import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
 import {
   StopDirectoryFacade,
   StopDirectoryOption,
   StopDirectoryStopSignature,
   StopSearchRequest
-} from '../../../domain/stops/stop-directory.facade';
-import { RouteSearchFormComponent } from './route-search-form.component';
+} from '@domain/stops/stop-directory.facade';
+import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 
 const ORIGIN_OPTION: StopDirectoryOption = {
   id: '7:origin-stop',

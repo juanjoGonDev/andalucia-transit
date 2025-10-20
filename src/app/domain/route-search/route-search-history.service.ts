@@ -1,10 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { AppConfig } from '../../core/config';
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
-import { RouteSearchHistoryStorage, RouteSearchHistoryStoredEntry } from '../../data/route-search/route-search-history.storage';
-import { createRouteSearchSelection } from './route-search-selection.util';
-import { RouteSearchLineMatch, RouteSearchSelection } from './route-search-state.service';
+import { AppConfig } from '@core/config';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
+import { RouteSearchHistoryStorage, RouteSearchHistoryStoredEntry } from '@data/route-search/route-search-history.storage';
+import { createRouteSearchSelection } from '@domain/route-search/route-search-selection.util';
+import { RouteSearchLineMatch, RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 
 export interface RouteSearchHistoryEntry {
   readonly id: string;

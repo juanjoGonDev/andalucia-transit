@@ -4,7 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   OVERLAY_DIALOG_ARIA_ADAPTER,
   OverlayDialogAriaAdapter
-} from './overlay-dialog-container.component';
+} from '@shared/ui/dialog/overlay-dialog-container.component';
 
 @Component({
   selector: 'app-dialog-layout',

@@ -1,10 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin, map, of } from 'rxjs';
+import { NearbyStopResult } from '@core/services/nearby-stops.service';
 import {
   StopDirectoryOption,
   StopDirectoryService
-} from '../../data/stops/stop-directory.service';
-import { NearbyStopResult } from './nearby-stops.service';
+} from '@data/stops/stop-directory.service';
 
 export interface NearbyStopOption extends StopDirectoryOption {
   readonly distanceInMeters: number;

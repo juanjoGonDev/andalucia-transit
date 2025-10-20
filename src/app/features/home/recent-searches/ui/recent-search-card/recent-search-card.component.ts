@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { InteractiveCardComponent } from '../../../../../shared/ui/cards/interactive-card/interactive-card.component';
+import {
+  RecentSearchPreviewEntry,
+  RecentSearchPreviewState
+} from '@features/home/recent-searches/recent-searches.models';
+import { RecentSearchPreviewEntryComponent } from '@features/home/recent-searches/ui/recent-search-preview-entry/recent-search-preview-entry.component';
 import {
   RECENT_CARD_BODY_CLASSES,
   RECENT_CARD_HOST_CLASSES,
   RECENT_CARD_REMOVE_CLASSES
-} from '../../../shared/recent-card-classes';
-import {
-  RecentSearchPreviewEntry,
-  RecentSearchPreviewState
-} from '../../recent-searches.models';
-import { RecentSearchPreviewEntryComponent } from '../recent-search-preview-entry/recent-search-preview-entry.component';
+} from '@features/home/shared/recent-card-classes';
+import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/interactive-card.component';
 
 @Component({
   selector: 'app-recent-search-card',

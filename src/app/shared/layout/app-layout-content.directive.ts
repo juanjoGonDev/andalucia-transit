@@ -13,7 +13,7 @@ import {
   AppLayoutContentRegistration,
   AppLayoutContext,
   AppLayoutNavigationKey
-} from './app-layout-context.token';
+} from '@shared/layout/app-layout-context.token';
 
 const APP_LAYOUT_CONTENT_IDENTIFIER_DESCRIPTION = 'app-layout-content';
 

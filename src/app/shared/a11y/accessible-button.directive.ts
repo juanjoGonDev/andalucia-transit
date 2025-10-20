@@ -8,7 +8,7 @@ import {
   Output,
   inject
 } from '@angular/core';
-import { ENTER_KEY_MATCHER, SPACE_KEY_MATCHER, matchesKey } from './key-event-matchers';
+import { ENTER_KEY_MATCHER, SPACE_KEY_MATCHER, matchesKey } from '@shared/a11y/key-event-matchers';
 
 export type AccessibleButtonPopupToken = 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
 type AccessibleButtonPopupValue = boolean | AccessibleButtonPopupToken;

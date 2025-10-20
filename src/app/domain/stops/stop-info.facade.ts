@@ -14,10 +14,10 @@ import {
   startWith,
   switchMap
 } from 'rxjs';
-import { SupportedLanguage } from '../../core/config';
-import { LanguageService } from '../../core/services/language.service';
-import { StopDirectoryRecord, StopDirectoryService } from '../../data/stops/stop-directory.service';
-import { StopInfoRecord, StopInfoService } from '../../data/stops/stop-info.service';
+import { SupportedLanguage } from '@core/config';
+import { LanguageService } from '@core/services/language.service';
+import { StopDirectoryRecord, StopDirectoryService } from '@data/stops/stop-directory.service';
+import { StopInfoRecord, StopInfoService } from '@data/stops/stop-info.service';
 
 interface StopSelection {
   readonly consortiumId: number;

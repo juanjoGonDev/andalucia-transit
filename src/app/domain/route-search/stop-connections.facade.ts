@@ -5,8 +5,8 @@ import {
   StopConnectionDirection,
   StopConnectionsService,
   mergeStopConnectionMaps
-} from '../../data/route-search/stop-connections.service';
-import { StopDirectoryStopSignature } from '../../data/stops/stop-directory.service';
+} from '@data/route-search/stop-connections.service';
+import { StopDirectoryStopSignature } from '@data/stops/stop-directory.service';
 
 @Injectable({ providedIn: 'root' })
 export class StopConnectionsFacade {
@@ -30,10 +30,10 @@ export {
   STOP_CONNECTION_DIRECTION,
   buildStopConnectionKey,
   mergeStopConnectionMaps
-} from '../../data/route-search/stop-connections.service';
+} from '@data/route-search/stop-connections.service';
 
 export type {
   StopConnection,
   StopConnectionDirection,
   StopLineSignature
-} from '../../data/route-search/stop-connections.service';
+} from '@data/route-search/stop-connections.service';

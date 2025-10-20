@@ -10,13 +10,13 @@ import {
   RouteSearchDepartureView,
   RouteSearchResultsService,
   RouteSearchResultsViewModel
-} from '../../domain/route-search/route-search-results.service';
-import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
-import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
-import { buildDateSlug, buildStopSlug } from '../../domain/route-search/route-search-url.util';
-import { StopDirectoryFacade, StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
-import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
-import { RouteSearchComponent } from './route-search.component';
+} from '@domain/route-search/route-search-results.service';
+import { RouteSearchSelectionResolverService } from '@domain/route-search/route-search-selection-resolver.service';
+import { RouteSearchSelection, RouteSearchStateService } from '@domain/route-search/route-search-state.service';
+import { buildDateSlug, buildStopSlug } from '@domain/route-search/route-search-url.util';
+import { StopDirectoryFacade, StopDirectoryOption } from '@domain/stops/stop-directory.facade';
+import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
+import { RouteSearchComponent } from '@features/route-search/route-search.component';
 
 class TranslateTestingLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {

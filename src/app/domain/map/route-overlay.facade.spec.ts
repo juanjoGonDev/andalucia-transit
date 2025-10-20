@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subscription, of, throwError } from 'rxjs';
-import { RouteLineStop, RouteLinesApiService } from '../../data/route-search/route-lines-api.service';
+import { RouteLineStop, RouteLinesApiService } from '@data/route-search/route-lines-api.service';
+import { RouteOverlayFacade, RouteOverlayState } from '@domain/map/route-overlay.facade';
 import {
   RouteSearchLineMatch,
   RouteSearchSelection,
   RouteSearchStateService
-} from '../route-search/route-search-state.service';
-import { calculateDistanceInMeters } from '../utils/geo-distance.util';
-import { RouteOverlayFacade, RouteOverlayState } from './route-overlay.facade';
+} from '@domain/route-search/route-search-state.service';
+import { calculateDistanceInMeters } from '@domain/utils/geo-distance.util';
 
 class RouteSearchStateServiceStub {
   private readonly subject = new BehaviorSubject<RouteSearchSelection | null>(null);

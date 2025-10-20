@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
+import { StopDirectoryOption } from '@data/stops/stop-directory.service';
 
 export interface RouteSearchLineMatch {
   readonly lineId: string;

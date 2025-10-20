@@ -3,6 +3,16 @@
   "compilerOptions": {
     "outDir": "./out-tsc/app",
     "types": [],
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@core/*": ["src/app/core/*"],
+      "@data/*": ["src/app/data/*"],
+      "@domain/*": ["src/app/domain/*"],
+      "@features/*": ["src/app/features/*"],
+      "@root/package.json": ["package.json"],
+      "@shared/*": ["src/app/shared/*"]
+    },
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true

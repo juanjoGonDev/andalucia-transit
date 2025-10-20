@@ -1,11 +1,11 @@
-import { calculateUpcomingProgress } from '../utils/progress.util';
-import { differenceInMinutes } from '../utils/time.util';
 import {
   StopScheduleDataSource,
   StopScheduleDataSourceType,
   StopScheduleResult,
   StopService
-} from './stop-schedule.model';
+} from '@domain/stop-schedule/stop-schedule.model';
+import { calculateUpcomingProgress } from '@domain/utils/progress.util';
+import { differenceInMinutes } from '@domain/utils/time.util';
 
 export interface StopScheduleUpcomingItem {
   readonly serviceId: string;

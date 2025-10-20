@@ -1,4 +1,4 @@
-import { APP_CONFIG } from '../../src/app/core/config';
+import { APP_CONFIG } from '@core/config';
 import { CompareSnapshotResult } from '../support/visual-regression/types';
 
 const HOME_LAYOUT_SNAPSHOT_BASE = 'home-layout' as const;

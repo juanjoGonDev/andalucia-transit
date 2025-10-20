@@ -1,4 +1,4 @@
-import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
+import { StopDirectoryOption } from '@data/stops/stop-directory.service';
 import {
   RouteSearchSegments,
   buildDateSlug,
@@ -6,7 +6,7 @@ import {
   buildStopSlug,
   parseDateSlug,
   parseStopSlug
-} from './route-search-url.util';
+} from '@domain/route-search/route-search-url.util';
 
 describe('route-search-url.util', () => {
   const segments: RouteSearchSegments = {

@@ -12,25 +12,25 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs';
-import { APP_CONFIG } from '../../core/config';
-import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
+import { APP_CONFIG } from '@core/config';
+import { RouteSearchExecutionService } from '@domain/route-search/route-search-execution.service';
 import {
   RouteSearchSelection,
   RouteSearchStateService,
-} from '../../domain/route-search/route-search-state.service';
-import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
-import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
-import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
-import { AppLayoutNavigationKey } from '../../shared/layout/app-layout-context.token';
+} from '@domain/route-search/route-search-state.service';
+import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
+import { HomeTabId } from '@features/home/home.types';
+import { HomeRecentSearchesComponent } from '@features/home/recent-searches/home-recent-searches.component';
+import { RECENT_CARD_BODY_CLASSES, RECENT_CARD_HOST_CLASSES } from '@features/home/shared/recent-card-classes';
+import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
+import { AppLayoutNavigationKey } from '@shared/layout/app-layout-context.token';
 import {
   NavigationCommands,
   buildNavigationCommands,
-} from '../../shared/navigation/navigation.util';
-import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
-import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
-import { HomeTabId } from './home.types';
-import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
-import { RECENT_CARD_BODY_CLASSES, RECENT_CARD_HOST_CLASSES } from './shared/recent-card-classes';
+} from '@shared/navigation/navigation.util';
+import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/interactive-card.component';
 
 interface HomeTabOption {
   readonly id: HomeTabId;

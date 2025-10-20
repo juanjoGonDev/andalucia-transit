@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { AppLayoutComponent } from '../app-layout/app-layout.component';
+import { AppLayoutComponent } from '@shared/layout/app-layout/app-layout.component';
 
 @Component({
   selector: 'app-app-shell',

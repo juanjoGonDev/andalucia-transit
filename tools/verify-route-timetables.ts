@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
-import { APP_CONFIG } from '../src/app/core/config';
-import { ApiRouteTimetableResponse } from '../src/app/data/route-search/route-timetable.api-service';
-import { mapRouteTimetableResponse } from '../src/app/data/route-search/route-timetable.mapper';
+import { APP_CONFIG } from '@core/config';
+import { ApiRouteTimetableResponse } from '@data/route-search/route-timetable.api-service';
+import { mapRouteTimetableResponse } from '@data/route-search/route-timetable.mapper';
 
 interface VerificationCase {
   readonly label: string;

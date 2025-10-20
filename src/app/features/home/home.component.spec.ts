@@ -5,15 +5,15 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { Subject, of } from 'rxjs';
-import { APP_CONFIG } from '../../core/config';
-import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
-import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
-import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
-import { StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
-import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
-import { HomeComponent } from './home.component';
-import { HomeTabId } from './home.types';
-import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
+import { APP_CONFIG } from '@core/config';
+import { RouteSearchExecutionService } from '@domain/route-search/route-search-execution.service';
+import { RouteSearchSelection, RouteSearchStateService } from '@domain/route-search/route-search-state.service';
+import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
+import { StopDirectoryOption } from '@domain/stops/stop-directory.facade';
+import { HomeComponent } from '@features/home/home.component';
+import { HomeTabId } from '@features/home/home.types';
+import { HomeRecentSearchesComponent } from '@features/home/recent-searches/home-recent-searches.component';
+import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 
 class ImmediateIntersectionObserver implements IntersectionObserver {
   readonly root: Element | Document | null = null;
