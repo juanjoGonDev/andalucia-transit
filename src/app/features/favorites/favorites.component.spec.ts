@@ -137,6 +137,8 @@ describe('FavoritesComponent', () => {
 
     fixture = TestBed.createComponent(FavoritesComponent);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
   });
 
   it('renders favorites grouped by municipality', () => {
