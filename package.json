@@ -14,7 +14,7 @@
     "start:snapshot": "node scripts/dev/start-with-snapshot.mjs",
     "lint": "npm run lint:unused && npm run lint:deps && npm run lint:workflows",
     "lint:unused": "ng lint",
-    "lint:deps": "depcheck --skip-missing --ignores=tslib,@angular/build,@angular/compiler-cli,@cypress/schematic,jasmine-core,karma,karma-chrome-launcher,karma-coverage,karma-jasmine,karma-jasmine-html-reporter,puppeteer",
+    "lint:deps": "depcheck --skip-missing --ignores=tslib,@angular/build,@angular/compiler-cli,@cypress/schematic,@messageformat/core,jasmine-core,karma,karma-chrome-launcher,karma-coverage,karma-jasmine,karma-jasmine-html-reporter,puppeteer",
     "lint:workflows": "tsx scripts/dev/lint-workflows.ts",
     "verify:all": "npm run lint && npm run test -- --watch=false && npm run build && npm run snapshot",
     "setup:environment": "tsx scripts/dev/setup-environment.ts",

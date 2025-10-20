@@ -116,8 +116,6 @@ describe('FavoritesComponent', () => {
   let component: FavoritesComponent;
   let favoritesFacade: FavoritesFacadeStub;
   let dialog: OverlayDialogServiceStub;
-  let router: Router;
-  let navigateSpy: jasmine.Spy<Router['navigate']>;
 
   beforeEach(async () => {
     favoritesFacade = new FavoritesFacadeStub();
@@ -139,8 +137,8 @@ describe('FavoritesComponent', () => {
 
     fixture = TestBed.createComponent(FavoritesComponent);
     component = fixture.componentInstance;
-    router = TestBed.inject(Router);
-    navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
+    const router = TestBed.inject(Router);
+    spyOn(router, 'navigate').and.resolveTo(true);
   });
 
   it('renders favorites grouped by municipality', () => {
