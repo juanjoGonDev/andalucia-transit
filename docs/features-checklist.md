@@ -5,6 +5,8 @@
 - Use the utility’s interaction flags or scenario runner for hover, click, map, or multi-step flows that influence the captured state.
 - Attach screenshots to pull requests or QA notes via public links or CI artefacts so reviewers can access them.
 - Example workflow: `npm run screenshot -- --url=https://example.org --waitFor=#app-root --name=feature-desktop` and upload the generated PNG with the matching artefact link.
+## Testing & Quality Workflow
+- [ ] Confirm the bootstrap script at `scripts/bootstrap.mjs` has been executed after pulling changes that modify tooling or dependencies so the environment stays deterministic for CI and local development.
 
 - [x] Display route search results as a unified list of bus departures after submitting the form.
 - [x] Return accurate schedules for future dates without falsely reporting missing services.

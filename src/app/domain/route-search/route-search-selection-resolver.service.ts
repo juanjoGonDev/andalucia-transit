@@ -1,15 +1,14 @@
 import { Injectable, inject } from '@angular/core';
-import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
-
+import { Observable, catchError, forkJoin, map, of, switchMap } from 'rxjs';
 import { StopDirectoryFacade, StopDirectoryOption, StopDirectoryStopSignature } from '../stops/stop-directory.facade';
-import {
-  StopConnection,
-  StopConnectionsFacade,
-  STOP_CONNECTION_DIRECTION
-} from './stop-connections.facade';
-import { RouteSearchSelection } from './route-search-state.service';
 import { collectRouteLineMatches, createRouteSearchSelection } from './route-search-selection.util';
+import { RouteSearchSelection } from './route-search-state.service';
 import { parseDateSlug, parseStopSlug } from './route-search-url.util';
+import {
+  STOP_CONNECTION_DIRECTION,
+  StopConnection,
+  StopConnectionsFacade
+} from './stop-connections.facade';
 
 @Injectable({ providedIn: 'root' })
 export class RouteSearchSelectionResolverService {

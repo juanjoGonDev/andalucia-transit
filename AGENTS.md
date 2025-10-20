@@ -17,6 +17,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - @angular/pwa for service worker + manifest, ngx-translate for runtime i18n, Leaflet (or ngx-leaflet) for mapping.
 - Node.js LTS + npm, ESLint + Prettier, Jasmine/Karma unit tests, Cypress end-to-end tests.
 - Configuration via Angular environments; HttpClient handles API access; commit messages in English.
+- Environment provisioning relies on `scripts/bootstrap.mjs`; any change introducing new tooling or dependencies must update this script so setup stays deterministic. Prefer pnpm via Corepack, fall back to yarn and npm only when unavoidable, and ensure the bootstrap path remains non-interactive on Linux.
 
 ## Architecture & Code Guidelines
 - Clean/hexagonal layering: presentation components -> domain services/utilities -> infrastructure adapters (API, storage).

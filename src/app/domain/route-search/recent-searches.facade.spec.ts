@@ -1,16 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, firstValueFrom, of } from 'rxjs';
 import { skip } from 'rxjs/operators';
-
+import { RecentSearchesFacade } from './recent-searches.facade';
+import { RouteSearchExecutionService } from './route-search-execution.service';
 import {
   RouteSearchHistoryEntry,
   RouteSearchHistoryService
 } from './route-search-history.service';
-import { RouteSearchPreview, RouteSearchPreviewService } from './route-search-preview.service';
-import { RouteSearchExecutionService } from './route-search-execution.service';
-import { RouteSearchSelection } from './route-search-state.service';
 import { RouteSearchPreferencesService } from './route-search-preferences.service';
-import { RecentSearchesFacade } from './recent-searches.facade';
+import { RouteSearchPreview, RouteSearchPreviewService } from './route-search-preview.service';
+import { RouteSearchSelection } from './route-search-state.service';
 
 describe('RecentSearchesFacade', () => {
   let entriesSubject: BehaviorSubject<readonly RouteSearchHistoryEntry[]>;

@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, Subject, shareReplay, startWith, switchMap } from 'rxjs';
-
 import { NewsFeedArticle, NewsFeedService } from '../../data/news/news-feed.service';
 
 export type NewsArticle = NewsFeedArticle;

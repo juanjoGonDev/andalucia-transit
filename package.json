@@ -15,7 +15,8 @@
     "start:snapshot": "node scripts/dev/start-with-snapshot.mjs",
     "lint": "npm run lint:unused && npm run lint:deps && npm run lint:workflows",
     "lint:unused": "ng lint",
-    "lint:deps": "depcheck --skip-missing --ignores=tslib,@angular/build,@angular/compiler-cli,@cypress/schematic,@messageformat/core,jasmine-core,karma,karma-chrome-launcher,karma-coverage,karma-jasmine,karma-jasmine-html-reporter,puppeteer",
+    "lint:deps": "depcheck --skip-missing --ignores=tslib,@angular/build,@angular/compiler-cli,@cypress/schematic,@messageformat/core,jasmine-core,karma,karma-chrome-launcher,karma-coverage,karma-jasmine,karma-jasmine-html-reporter,puppeteer,lefthook",
+    "lint:staged": "eslint --cache --fix",
     "lint:workflows": "tsx scripts/dev/lint-workflows.ts",
     "verify:all": "npm run lint && npm run test -- --watch=false && npm run build && npm run snapshot",
     "setup:environment": "tsx scripts/dev/setup-environment.ts",
@@ -43,6 +44,10 @@
     ]
   },
   "private": true,
+  "packageManager": "pnpm@9.12.3",
+  "engines": {
+    "node": ">=20.19.0 <21"
+  },
   "dependencies": {
     "@angular/animations": "^20.3.0",
     "@angular/cdk": "^20.2.7",
@@ -79,8 +84,10 @@
     "cypress": "^13.15.0",
     "depcheck": "^1.4.7",
     "eslint": "^9.35.0",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-unused-imports": "^4.2.0",
+    "lefthook": "^1.7.8",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

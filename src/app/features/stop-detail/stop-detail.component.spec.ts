@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
-import { BehaviorSubject, delay, of, throwError } from 'rxjs';
+import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { BehaviorSubject, delay, of, throwError } from 'rxjs';
 import { APP_CONFIG } from '../../core/config';
-import { StopSchedule, StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
 import { StopScheduleFacade } from '../../domain/stop-schedule/stop-schedule.facade';
+import { StopSchedule, StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
 import { StopDirectoryFacade, StopDirectoryRecord } from '../../domain/stops/stop-directory.facade';
+import { APP_LAYOUT_CONTEXT, AppLayoutContext } from '../../shared/layout/app-layout-context.token';
 import {
   STOP_TIMELINE_PAST_TAB_ID,
   STOP_TIMELINE_UPCOMING_TAB_ID,
   StopDetailComponent
 } from './stop-detail.component';
-import { APP_LAYOUT_CONTEXT, AppLayoutContext } from '../../shared/layout/app-layout-context.token';
 
 const STATUS_ROLE = 'status';
 const POLITE_LIVE_REGION = 'polite';

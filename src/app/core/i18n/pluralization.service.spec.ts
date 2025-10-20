@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import * as pluralizationModule from './pluralization';
 import { PluralizedTranslationKeys } from './pluralization';
 import {

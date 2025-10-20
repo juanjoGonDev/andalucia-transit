@@ -1,9 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-
 import {
-  StopDirectoryRecord,
   StopDirectoryOption,
+  StopDirectoryRecord,
   StopDirectoryService,
   StopDirectoryStopSignature,
   StopSearchRequest

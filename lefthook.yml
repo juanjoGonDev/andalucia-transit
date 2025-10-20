@@ -1,0 +1,6 @@
+pre-commit:
+  parallel: true
+  commands:
+    eslint:
+      glob: "**/*.{ts,tsx,js,jsx}"
+      run: pnpm run lint:staged -- {staged_files}

@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
 import { AppConfig } from '../../core/config';
+import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
 import { RouteSearchLineMatch } from '../../domain/route-search/route-search-state.service';
 
 interface RouteSearchHistoryStoredSelection {

@@ -1,6 +1,5 @@
-import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-
+import { TestBed } from '@angular/core/testing';
 import { APP_CONFIG } from '../../core/config';
 import { NewsFeedArticle, NewsFeedService } from './news-feed.service';
 

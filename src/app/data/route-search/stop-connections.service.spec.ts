@@ -1,22 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
-
 import {
-  StopConnectionsService,
-  StopConnection,
-  STOP_CONNECTION_DIRECTION,
-  buildStopConnectionKey
-} from './stop-connections.service';
+  StopDirectoryRecord,
+  StopDirectoryService,
+  StopDirectoryStopSignature
+} from '../stops/stop-directory.service';
 import {
   RouteLineStop,
   RouteLineSummary,
   RouteLinesApiService
 } from './route-lines-api.service';
 import {
-  StopDirectoryRecord,
-  StopDirectoryService,
-  StopDirectoryStopSignature
-} from '../stops/stop-directory.service';
+  STOP_CONNECTION_DIRECTION,
+  StopConnection,
+  StopConnectionsService,
+  buildStopConnectionKey
+} from './stop-connections.service';
 
 class DirectoryStub {
   private readonly records = new Map<string, StopDirectoryRecord>();

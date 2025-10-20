@@ -1,7 +1,7 @@
+import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { Component, inject } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, flush, flushMicrotasks } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { OVERLAY_DIALOG_SURFACE_CLASS } from './overlay-dialog-container.component';
 import {
   OverlayDialogConfig,

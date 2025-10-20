@@ -1,13 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-
-import type {
-  NearbyStopRecord,
-  NearbyStopResult as LoaderNearbyStopResult
-} from './nearby-stops.loader';
-
-import { APP_CONFIG } from '../config';
 import type { GeoCoordinate } from '../../domain/utils/geo-distance.util';
+import { APP_CONFIG } from '../config';
+import type {
+  NearbyStopResult as LoaderNearbyStopResult,
+  NearbyStopRecord
+} from './nearby-stops.loader';
 
 export type NearbyStopResult = LoaderNearbyStopResult;
 

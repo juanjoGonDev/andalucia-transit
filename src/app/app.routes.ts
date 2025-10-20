@@ -1,9 +1,8 @@
 import { Routes } from '@angular/router';
-
 import { APP_CONFIG } from './core/config';
+import { FavoritesComponent } from './features/favorites/favorites.component';
 import { HomeComponent } from './features/home/home.component';
 import { RouteSearchComponent } from './features/route-search/route-search.component';
-import { FavoritesComponent } from './features/favorites/favorites.component';
 import { AppLayoutComponent } from './shared/layout/app-layout/app-layout.component';
 
 export const routes: Routes = [

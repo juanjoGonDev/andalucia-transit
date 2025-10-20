@@ -1,10 +1,9 @@
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
-
 import {
-  buildStopDirectory,
   StopDirectoryConfig,
-  StopDirectoryDependencies
+  StopDirectoryDependencies,
+  buildStopDirectory
 } from './stop-directory';
 
 describe('stop directory generator', () => {

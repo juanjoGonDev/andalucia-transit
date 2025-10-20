@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { DateTime } from 'luxon';
 import { of } from 'rxjs';
-
-import { RouteTimetableService, RouteTimetableRequest } from './route-timetable.service';
-import { RouteTimetableApiService, ApiRouteTimetableResponse } from './route-timetable.api-service';
 import { APP_CONFIG } from '../../core/config';
 import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
 import { HolidayCalendarService } from '../holidays/holiday-calendar.service';
+import { ApiRouteTimetableResponse, RouteTimetableApiService } from './route-timetable.api-service';
+import { RouteTimetableRequest, RouteTimetableService } from './route-timetable.service';
 
 class RouteTimetableApiServiceStub {
   constructor(private readonly response: ApiRouteTimetableResponse) {}

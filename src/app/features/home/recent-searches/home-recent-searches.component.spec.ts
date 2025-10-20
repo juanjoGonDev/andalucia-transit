@@ -1,22 +1,20 @@
 import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { BehaviorSubject, Subject, of } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
-import { ActivatedRoute, Router } from '@angular/router';
-
+import { BehaviorSubject, Subject, of } from 'rxjs';
+import { RecentSearchesFacade } from '../../../domain/route-search/recent-searches.facade';
+import { RouteSearchHistoryEntry } from '../../../domain/route-search/route-search-history.service';
+import { RouteSearchPreview } from '../../../domain/route-search/route-search-preview.service';
+import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
+import { StopDirectoryOption } from '../../../domain/stops/stop-directory.facade';
 import {
   OverlayDialogConfig,
   OverlayDialogRef,
   OverlayDialogService
 } from '../../../shared/ui/dialog/overlay-dialog.service';
-
 import { HomeRecentSearchesComponent } from './home-recent-searches.component';
-import { RouteSearchHistoryEntry } from '../../../domain/route-search/route-search-history.service';
-import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
-import { StopDirectoryOption } from '../../../domain/stops/stop-directory.facade';
-import { RouteSearchPreview } from '../../../domain/route-search/route-search-preview.service';
-import { RecentSearchesFacade } from '../../../domain/route-search/recent-searches.facade';
 
 type PreviewState =
   | { readonly status: 'loading' }

@@ -1,5 +1,4 @@
 import { DateTime } from 'luxon';
-
 import { ApiRouteTimetableResponse } from './route-timetable.api-service';
 
 export interface RouteTimetableEntry {

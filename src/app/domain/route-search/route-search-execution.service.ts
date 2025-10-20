@@ -1,10 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-
-import { RouteSearchStateService, RouteSearchSelection } from './route-search-state.service';
-import { RouteSearchHistoryService } from './route-search-history.service';
-import { buildRouteSearchPath } from './route-search-url.util';
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
 import { AppConfig } from '../../core/config';
+import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
+import { RouteSearchHistoryService } from './route-search-history.service';
+import { RouteSearchSelection, RouteSearchStateService } from './route-search-state.service';
+import { buildRouteSearchPath } from './route-search-url.util';
 
 @Injectable({ providedIn: 'root' })
 export class RouteSearchExecutionService {

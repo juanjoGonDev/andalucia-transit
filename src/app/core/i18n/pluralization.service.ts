@@ -1,5 +1,4 @@
 import { Injectable, InjectionToken, inject } from '@angular/core';
-
 import {
   PluralizedTranslationKeys,
   ResolveLanguageOptions,

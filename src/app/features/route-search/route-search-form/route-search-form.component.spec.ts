@@ -1,33 +1,32 @@
 import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
-import { BehaviorSubject, firstValueFrom, of } from 'rxjs';
 import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
-
-import { RouteSearchFormComponent } from './route-search-form.component';
+import { BehaviorSubject, firstValueFrom, of } from 'rxjs';
+import { APP_CONFIG } from '../../../core/config';
+import { GeolocationService } from '../../../core/services/geolocation.service';
+import {
+  NearbyStopOption,
+  NearbyStopOptionsService
+} from '../../../core/services/nearby-stop-options.service';
+import { NearbyStopResult, NearbyStopsService } from '../../../core/services/nearby-stops.service';
+import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
+import {
+  STOP_CONNECTION_DIRECTION,
+  StopConnection,
+  StopConnectionDirection,
+  StopConnectionsFacade,
+  buildStopConnectionKey,
+  mergeStopConnectionMaps
+} from '../../../domain/route-search/stop-connections.facade';
+import { FavoritesFacade, StopFavorite } from '../../../domain/stops/favorites.facade';
 import {
   StopDirectoryFacade,
   StopDirectoryOption,
   StopDirectoryStopSignature,
   StopSearchRequest
 } from '../../../domain/stops/stop-directory.facade';
-import {
-  StopConnection,
-  StopConnectionsFacade,
-  STOP_CONNECTION_DIRECTION,
-  StopConnectionDirection,
-  buildStopConnectionKey,
-  mergeStopConnectionMaps
-} from '../../../domain/route-search/stop-connections.facade';
-import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
-import { NearbyStopResult, NearbyStopsService } from '../../../core/services/nearby-stops.service';
-import {
-  NearbyStopOption,
-  NearbyStopOptionsService
-} from '../../../core/services/nearby-stop-options.service';
-import { GeolocationService } from '../../../core/services/geolocation.service';
-import { APP_CONFIG } from '../../../core/config';
-import { FavoritesFacade, StopFavorite } from '../../../domain/stops/favorites.facade';
+import { RouteSearchFormComponent } from './route-search-form.component';
 
 const ORIGIN_OPTION: StopDirectoryOption = {
   id: '7:origin-stop',

@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-
 import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
 import {
   StopFavoriteStoredItem,

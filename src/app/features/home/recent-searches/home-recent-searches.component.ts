@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,9 +9,9 @@ import {
   inject,
   signal
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { DateTime } from 'luxon';
 import {
   Subscription,
@@ -21,24 +22,21 @@ import {
   startWith,
   switchMap
 } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
-import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
+import { AppConfig } from '../../../core/config';
+import { APP_CONFIG_TOKEN } from '../../../core/tokens/app-config.token';
+import { RecentSearchesFacade } from '../../../domain/route-search/recent-searches.facade';
+import type { RouteSearchHistoryEntry } from '../../../domain/route-search/route-search-history.service';
+import type {
+  RouteSearchPreview,
+  RouteSearchPreviewDeparture
+} from '../../../domain/route-search/route-search-preview.service';
 import { createRouteSearchSelection } from '../../../domain/route-search/route-search-selection.util';
+import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData
 } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { OverlayDialogService } from '../../../shared/ui/dialog/overlay-dialog.service';
-import { APP_CONFIG_TOKEN } from '../../../core/tokens/app-config.token';
-import { AppConfig } from '../../../core/config';
-import { RecentSearchesFacade } from '../../../domain/route-search/recent-searches.facade';
-import type {
-  RouteSearchPreview,
-  RouteSearchPreviewDeparture
-} from '../../../domain/route-search/route-search-preview.service';
-import type { RouteSearchHistoryEntry } from '../../../domain/route-search/route-search-history.service';
-
 import {
   PreviewEntryKind,
   PreviewRelativeLabel,

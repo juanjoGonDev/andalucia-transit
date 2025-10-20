@@ -1,16 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Observable, Subject, of } from 'rxjs';
-
-import { MapComponent } from './map.component';
-import {
-  LeafletMapService,
-  MapCreateOptions,
-  MapHandle,
-  MapRoutePolyline,
-  MapStopMarker
-} from '../../shared/map/leaflet-map.service';
 import { GeolocationService } from '../../core/services/geolocation.service';
 import { NearbyStopResult, NearbyStopsService } from '../../core/services/nearby-stops.service';
 import { StopDirectoryRecord, StopDirectoryService } from '../../data/stops/stop-directory.service';
@@ -19,6 +10,14 @@ import {
   RouteOverlaySelectionSummary,
   RouteOverlayState
 } from '../../domain/map/route-overlay.facade';
+import {
+  LeafletMapService,
+  MapCreateOptions,
+  MapHandle,
+  MapRoutePolyline,
+  MapStopMarker
+} from '../../shared/map/leaflet-map.service';
+import { MapComponent } from './map.component';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {

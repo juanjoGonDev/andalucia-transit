@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,9 +7,7 @@ import {
   Input,
   Output
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-
 import { AccessibleButtonDirective } from '../../../a11y/accessible-button.directive';
 
 const DEFAULT_REMOVE_ICON_NAME = 'close';
