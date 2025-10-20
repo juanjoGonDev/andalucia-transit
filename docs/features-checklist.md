@@ -145,6 +145,9 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-18 Enforced pointer cursor host binding on `AccessibleButtonDirective` while preserving disabled affordance semantics.
   - [x] Screenshot (Home interactions — desktop): https://browser.buildwithfern.com/invocations/hftcnxkb/artifacts/artifacts/home-pointer.png
   - [x] Tests: `npm run lint`; `npm run test` (Angular runner blocked by apt.llvm.org 502 while installing Chrome dependencies); `npm run build`.
+  - [x] 2025-10-20 Added legacy space key fallbacks to `AccessibleButtonDirective` so keyboard activation remains reliable across browsers while retaining baseline visuals.
+    - [x] Screenshot (Skip link focus state — desktop): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
 ### Layout & Theming Consistency (2025-10-18)
 - [x] Token compliance audit (B1) — attach public screenshot URL(s); visual diff must be 0px.
@@ -168,7 +171,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-20 Added a shared solid button compact modifier so the route search notice button relies on global tokens instead of feature-scoped overrides.
     - [x] Screenshot (Route search notice — desktop parity reconfirmed): https://browser.buildwithfern.com/invocations/njfazjfe/artifacts/artifacts/route-search-layout.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
-- [ ] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-20 Restored compact solid button text contrast by inheriting the shared primitive color tokens while keeping spacing overrides token-driven.
+    - [x] Screenshot (Route search past-search notice — desktop): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [x] Dialog framework parity (B2) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-19 Replaced dialog spacing and confirm dialog metrics with global tokens so overlay padding, typography, and focus affordances remain baseline-identical.
   - [x] Screenshot (Favorites clear confirmation — desktop): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
@@ -181,7 +187,25 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-20 Resolved dialog focus capture without relying on the injected document token by falling back to the host document so SSR renders remain stable.
   - [x] Screenshot (Favorites clear confirmation — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Linked dialog layout titles and descriptions to the overlay container aria attributes via a shared adapter so assistive tech reads projected content without visual drift.
+    - [x] Screenshot (Favorites clear confirmation — desktop, aria registration): https://browser.buildwithfern.com/invocations/skijdqfg/artifacts/artifacts/dialog-aria.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Matched overlay dialog escape handling across legacy key variants so keyboard dismissal remains consistent without impacting visuals.
+    - [x] Screenshot (Favorites clear confirmation — desktop, escape coverage verified): https://browser.buildwithfern.com/invocations/wgwaccoq/artifacts/artifacts/favorites-dialog-escape.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Bound dialog backdrop and escape listeners to overlay detachments so subscriptions release on close without altering parity.
+    - [x] Screenshot (Favorites clear confirmation — desktop, listener cleanup verified): https://browser.buildwithfern.com/invocations/wgwaccoq/artifacts/artifacts/favorites-dialog-escape.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Released dialog backdrop and keyboard listeners through a shared cleanup subject triggered before overlay disposal to guarantee teardown without affecting visuals.
+    - [x] Screenshot (Favorites clear confirmation — desktop, cleanup subject parity): https://browser.buildwithfern.com/invocations/wgwaccoq/artifacts/artifacts/favorites-dialog-escape.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-29 Limited AppTextField aria-invalid exposure to invalid controls so healthy fields omit the attribute while preserving baseline layout tokens.
+    - [x] Screenshot (Route search form — desktop, aria-invalid omission parity validated): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-28 Restored AppTextField aria-invalid boolean output so valid controls surface `false` while preserving primitive layout tokens.
+    - [x] Screenshot (Route search form — desktop, aria-invalid boolean parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
   - [x] 2025-10-19 Migrated favorites search filter to the shared AppTextFieldComponent to align control metrics and focus behavior without altering layout.
   - [x] Screenshot (Favorites search — desktop): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
@@ -194,7 +218,168 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-19 Requested native blur on disable transitions so shared text fields drop focus both visually and at the DOM level without regressing tokenized styling.
   - [x] Screenshot (Favorites search — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Surfaced AppTextField required and invalid semantics so shared inputs expose consistent error styling and accessibility metadata without changing default layout.
+    - [x] Screenshot (Favorites search — desktop, parity reconfirmed with error-ready styling): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Hardened AppTextField required detection so validator fallbacks preserve aria semantics when control helpers are unavailable.
+    - [x] Screenshot (Favorites search — desktop, parity reconfirmed): https://browser.buildwithfern.com/invocations/bvmmlrls/artifacts/artifacts/favorites-search-field.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Limited AppTextField aria-invalid output to invalid states so assistive tech ignores the attribute when controls are healthy without altering layout tokens.
+    - [x] Screenshot (Route search form — desktop, aria metadata parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Scoped AppTextField aria-invalid to emit only when controls are invalid so valid states drop the attribute while preserving baseline styling.
+    - [x] Screenshot (Route search form — desktop, aria metadata parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Added an AppTextField error projection slot so validation messaging surfaces with aria-describedby parity while maintaining baseline styling.
+    - [x] Screenshot (Route search form — desktop, error-ready parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Connected AppTextField error messaging to aria-errormessage so assistive tech announces validation issues without affecting layout.
+    - [x] Screenshot (Route search form — desktop, aria-errormessage parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Preserved AppTextField aria-describedby fallbacks so legacy screen readers announce validation errors alongside aria-errormessage without changing visuals.
+    - [x] Screenshot (Route search form — desktop, aria fallback parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Removed duplicate AppTextField aria-describedby identifiers so hint, error, and external descriptions remain unique without altering layout.
+    - [x] Screenshot (Route search form — desktop, described-by deduplication parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Reworked AppTextField error rendering to rely on TemplateRef projection so forwarded validation messages stay reactive without DOM cloning or duplicate markup.
+    - [x] Screenshot (Route search form — desktop, error projection parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Passed AppTextField error templates control state context so forwarded validation messaging can react to errors without affecting layout or tokens.
+    - [x] Screenshot (Route search form — desktop, error context parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Restored AppTextField aria-invalid metadata to explicit boolean strings so assistive tech reads consistent state cues without changing layout tokens.
+    - [x] Screenshot (Route search form — desktop, aria-invalid parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Reaffirmed AppTextField aria-invalid boolean output so valid states emit `false` strings while preserving baseline layout and tokens.
+    - [x] Screenshot (Route search form — desktop, aria-invalid boolean parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Restated AppTextField aria-invalid contract so valid controls expose the `false` string while keeping invalid states on `true` and maintaining baseline layout.
+    - [x] Screenshot (Route search form — desktop, aria-invalid contract parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-26 Limited AppTextField aria-invalid exposure to invalid controls so valid states omit the attribute while preserving shared form tokens.
+    - [x] Screenshot (Route search form — desktop, aria-invalid omission parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-27 Ensured AppTextField only surfaces the aria-invalid attribute when validation errors exist so valid states keep the attribute off without affecting layout.
+    - [x] Screenshot (Route search form — desktop, aria-invalid omission parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-19 Reconfirmed AppTextField aria-invalid omission so healthy controls drop the attribute while invalid states retain it, maintaining accessibility without visual drift.
+    - [x] Screenshot (Route search form — desktop, aria-invalid omission parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Extended AppTextField error context to expose pending and status metadata so projected validation templates can reflect async validation without visual drift.
+    - [x] Screenshot (Route search form — desktop, error context status parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Reflected AppTextField pending validation through aria-busy metadata so assistive tech reports asynchronous checks without altering layout.
+    - [x] Screenshot (Route search form — desktop, aria-busy parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Stabilized AppTextField aria-busy clearing so resolved validation cycles drop busy metadata while keeping layout and tokens unchanged.
+    - [x] Screenshot (Route search form — desktop, aria-busy reset parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Set AppTextField aria-busy to explicit `false` when validation settles so assistive tech retains a consistent attribute without changing visuals.
+    - [x] Screenshot (Route search form — desktop, aria-busy false parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Removed idle AppTextField aria-busy metadata so settled validations drop the attribute entirely while keeping layout and tokens unchanged.
+    - [x] Screenshot (Route search form — desktop, aria-busy cleared parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Reinstated explicit AppTextField aria-busy="false" metadata when validation settles so assistive tech retains stable state cues without affecting layout.
+    - [x] Screenshot (Route search form — desktop, aria-busy false parity reaffirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Limited AppTextField aria-busy exposure to pending states so settled validations remove the attribute while preserving layout tokens.
+    - [x] Screenshot (Route search form — desktop, aria-busy cleared parity reaffirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Restored AppTextField aria-busy to emit `'false'` when validations settle so assistive tech retains explicit idle metadata without altering visuals.
+    - [x] Screenshot (Route search form — desktop, aria-busy false parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Normalized AppTextField aria-invalid metadata to emit explicit boolean strings so assistive technology receives stable state cues without altering layout.
+    - [x] Screenshot (Route search form — desktop, aria-invalid parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Limited AppTextField aria-invalid metadata to invalid states so idle controls drop the attribute while keeping layout and tokens unchanged.
+    - [x] Screenshot (Route search form — desktop, aria-invalid idle parity): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Restored AppTextField aria-invalid metadata to emit explicit boolean strings for valid and invalid states so assistive technology retains consistent cues without altering layout.
+    - [x] Screenshot (Route search form — desktop, aria-invalid boolean parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Reverted AppTextField aria-invalid exposure to only render when inputs are invalid so valid fields omit the attribute in line with WAI-ARIA guidance.
+    - [x] Screenshot (Route search form — desktop, aria-invalid omission parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Reintroduced explicit AppTextField aria-invalid boolean metadata for valid states so assistive technologies receive consistent cues without altering layout or tokens.
+    - [x] Screenshot (Route search form — desktop, aria-invalid boolean parity restored): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Reaffirmed AppTextField aria-invalid boolean metadata so valid controls emit `false` and invalid controls
+    emit `true` for assistive technologies without altering layout tokens.
+    - [x] Screenshot (Route search form — desktop, aria-invalid boolean parity reaffirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Limited AppTextField aria-invalid output to invalid states so valid controls omit the attribute while maintaining primitive styling parity.
+    - [x] Screenshot (Route search form — desktop, aria-invalid omission parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Restored AppTextField aria-invalid metadata to emit explicit boolean strings so valid controls report `false` and invalid controls report `true` without altering layout tokens.
+    - [x] Screenshot (Route search form — desktop, aria-invalid boolean parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-23 Limited AppTextField aria-invalid metadata to invalid states so valid controls omit the attribute while preserving layout tokens.
+    - [x] Screenshot (Route search form — desktop, aria-invalid omission parity reconfirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-24 Restored explicit AppTextField aria-invalid boolean metadata so valid controls emit `false` and invalid controls emit `true` without altering layout tokens.
+    - [x] Screenshot (Route search form — desktop, aria-invalid boolean parity validated): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [x] 2025-10-25 Limited AppTextField aria-invalid metadata to invalid controls so valid fields omit the attribute while preserving shared form tokens.
+  - [x] Screenshot (Route search form — desktop, aria-invalid omission parity validated): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [x] 2025-10-26 Scoped AppTextField aria-invalid output to render only when controls are invalid so healthy inputs no longer expose redundant metadata.
+  - [x] Screenshot (Route search form — desktop, aria-invalid omission parity reaffirmed): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [x] 2025-10-26 Restored AppTextField aria-invalid boolean metadata so valid controls surface `false` while invalid controls surface `true` without altering shared layout tokens.
+  - [x] Screenshot (Route search form — desktop, aria-invalid boolean parity restored): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+  - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Accessibility verification sweep (B4) — attach public screenshot URL(s); visual diff must be 0px.
+- [x] 2025-10-20 Added an application-wide skip control that preserves keyboard order and focuses the shared layout body without altering visuals.
+    - [x] Screenshot (Skip to content control — desktop focus): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Anchored the skip control to the main content fragment so keyboard activation works without script execution while maintaining OnPush focus guards.
+    - [x] Screenshot (Skip to content control — desktop focus, fragment link verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-20 Preserved native anchor semantics for the skip control by refining the accessible button directive to skip keyboard simulation when hosts expose real href targets.
+    - [x] Screenshot (Skip to content control — desktop focus, fragment link verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+  - [x] 2025-10-21 Allowed the accessible button directive to keep native link roles when no override is provided so the skip control preserves baseline anchor semantics.
+    - [x] Screenshot (Skip to content control — desktop focus, native role preserved): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+  - [x] 2025-10-21 Matched the shared accessible button directive to native button timing so space activates on keyup while protecting anchor and link-role semantics.
+    - [x] Screenshot (Skip to content control — desktop focus, native key timing verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-21 Extended accessible button space key detection to handle legacy key values while preserving anchor semantics.
+    - [x] Screenshot (Skip to content control — desktop focus, legacy key coverage verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-21 Expanded accessible button enter key detection to cover legacy values without impacting anchor semantics.
+    - [x] Screenshot (Skip to content control — desktop focus, enter key parity verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-21 Cleared pending space-key activation on blur so accessible buttons do not trigger after focus leaves while preserving baseline visuals.
+    - [x] Screenshot (Skip to content control — desktop focus, blur handling verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Cancelled pending space-key activation when keyup occurs outside the host to prevent stray activations while keeping layout and tokens unchanged.
+    - [x] Screenshot (Skip to content control — desktop focus, global keyup handling verified): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Recognized legacy space key identifiers and replaced role/tabindex magic values with shared constants so accessible buttons stay cross-browser without visual drift.
+  - [x] 2025-10-22 Centralized accessible button key descriptors to simplify legacy handling while preserving anchor semantics. Attach public screenshot URL(s); visual diff must be 0px. Evidence: https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Screenshot (Skip to content control — desktop focus, legacy keyIdentifier coverage reconfirmed): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Unified accessible key matching via a shared matcher utility so the skip link and dialog escape handling stay in sync without visual drift.
+    - [x] Screenshot (Skip to content control — desktop focus, shared matcher verification): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Screenshot (Favorites dialog confirmation — escape parity check): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Consolidated shared key matcher definitions so accessible buttons and dialogs reuse identical key constant sets without layout changes.
+    - [x] Screenshot (Skip to content control — desktop focus, matcher constants verification): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
+    - [x] Screenshot (Favorites dialog confirmation — escape parity check): https://browser.buildwithfern.com/invocations/xbyhdrks/artifacts/artifacts/dialog-confirm.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Limited AppTextField aria-invalid output to invalid controls so accessibility metadata stays focused without altering layout tokens.
+    - [x] Screenshot (Route search form — desktop, aria-invalid parity check): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Restored explicit aria-invalid boolean strings on AppTextField so assistive metadata stays consistent without visual drift.
+    - [x] Screenshot (Route search form — desktop, aria-invalid contract verification): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Ensured AppTextField emits explicit aria-invalid boolean values so valid states surface `false` to assistive technology without visual drift.
+    - [x] Screenshot (Route search form — desktop, aria-invalid false-state verification): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] 2025-10-22 Reinstated explicit aria-invalid="false" output for healthy AppTextField controls so assistive technology receives consistent metadata without visual drift.
+    - [x] Screenshot (Route search form — desktop, aria-invalid false contract verification): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
 ### Feature Roadmap (2025-10-18)
 - [ ] News feed view (C1) — attach public screenshot URL(s); visual diff must be 0px.

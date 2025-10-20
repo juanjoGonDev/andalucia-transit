@@ -43,4 +43,38 @@ describe('OverlayDialogContainerComponent', () => {
 
     document.body.removeChild(trigger);
   });
+
+  it('should expose aria-labelledby when a label identifier is registered', () => {
+    component.initialize('dialog', false);
+    component.setLabelledBy('dialog-title');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.getAttribute('aria-labelledby')).toBe('dialog-title');
+  });
+
+  it('should clear aria-labelledby when provided with an empty label identifier', () => {
+    component.initialize('dialog', false);
+    component.setLabelledBy('dialog-title');
+    component.setLabelledBy('');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.hasAttribute('aria-labelledby')).toBeFalse();
+  });
+
+  it('should expose aria-describedby when a description identifier is registered', () => {
+    component.initialize('dialog', false);
+    component.setDescribedBy('dialog-description');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.getAttribute('aria-describedby')).toBe('dialog-description');
+  });
+
+  it('should clear aria-describedby when no description identifier is supplied', () => {
+    component.initialize('dialog', false);
+    component.setDescribedBy('dialog-description');
+    component.setDescribedBy(null);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.hasAttribute('aria-describedby')).toBeFalse();
+  });
 });

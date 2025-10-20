@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AppAutocompleteComponent, AppAutocompleteOption } from './app-autocomplete.component';
+import { AppTextFieldErrorDirective } from './app-text-field-slots.directive';
 
 interface OptionValue {
   readonly id: number;
@@ -24,6 +26,7 @@ const TRUE_STRING = 'true';
 const FALSE_STRING = 'false';
 const TEXT_FIELD_NOT_FOUND_ERROR_MESSAGE = 'Text field element not found';
 const INPUT_NOT_FOUND_ERROR_MESSAGE = 'Autocomplete input not found';
+const ERROR_NOT_FOUND_ERROR_MESSAGE = 'Autocomplete error not found';
 const KEYDOWN_EVENT_TYPE = 'keydown';
 const KEY_ARROW_DOWN = 'ArrowDown';
 const KEY_ARROW_UP = 'ArrowUp';
@@ -32,12 +35,21 @@ const KEY_ESCAPE = 'Escape';
 const FIRST_OPTION_INDEX = 0;
 const LAST_OPTION_INDEX = 2;
 const FIRST_OPTION_DESCRIPTION_ID = 'first-description';
+const REQUIRED_ERROR_MESSAGE = 'This field is required';
 
 const OPTIONS: readonly AppAutocompleteOption<OptionValue>[] = [
   { value: { id: 1 }, label: 'First', describedByIds: [FIRST_OPTION_DESCRIPTION_ID] },
   { value: { id: 2 }, label: 'Second' },
   { value: { id: 3 }, label: 'Third' },
 ];
+
+const ensureElement = <TElement extends Element>(element: TElement | null, message: string): TElement => {
+  if (!element) {
+    throw new Error(message);
+  }
+
+  return element;
+};
 
 @Component({
   selector: 'app-autocomplete-host',
@@ -202,4 +214,85 @@ describe('AppAutocompleteComponent', () => {
     expect(textFieldElement.getAttribute(ARIA_ACTIVE_DESCENDANT_ATTRIBUTE)).toBeNull();
     expect(fixture.nativeElement.querySelector(PANEL_SELECTOR)).toBeNull();
   });
+
+  it('writes incoming values to the nested text field', () => {
+    component.writeValue('Preset value');
+    fixture.detectChanges();
+
+    const inputElement = queryInputElement();
+
+    expect(inputElement.value).toBe('Preset value');
+  });
+
+  it('disables the nested text field when requested by the form control', () => {
+    component.setDisabledState(true);
+    fixture.detectChanges();
+
+    const inputElement = queryInputElement();
+
+    expect(inputElement.disabled).toBeTrue();
+  });
 });
+
+describe('AppAutocompleteComponent form integration', () => {
+  let fixture: ComponentFixture<AppAutocompleteFormHostComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [AppAutocompleteFormHostComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(AppAutocompleteFormHostComponent);
+    fixture.detectChanges();
+  });
+
+  it('announces projected errors when the control is invalid and touched', async () => {
+    const host = fixture.componentInstance;
+    const control = host.form.controls.city;
+
+    control.markAsTouched();
+    control.updateValueAndValidity();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const inputElement = ensureElement(
+      fixture.nativeElement.querySelector(INPUT_SELECTOR) as HTMLInputElement | null,
+      INPUT_NOT_FOUND_ERROR_MESSAGE,
+    );
+    const errorElement = ensureElement(
+      fixture.nativeElement.querySelector('.app-text-field__error') as HTMLElement | null,
+      ERROR_NOT_FOUND_ERROR_MESSAGE,
+    );
+    const describedByAttribute = inputElement.getAttribute(ARIA_DESCRIBEDBY_ATTRIBUTE);
+
+    expect(control.invalid).toBeTrue();
+    expect(control.touched).toBeTrue();
+    expect(errorElement.textContent?.trim()).toBe(REQUIRED_ERROR_MESSAGE);
+    expect(inputElement.getAttribute('aria-invalid')).toBe(TRUE_STRING);
+    expect(inputElement.getAttribute('aria-errormessage')).toBe(errorElement.id);
+    expect(describedByAttribute).not.toBeNull();
+    expect(describedByAttribute?.split(' ').includes(errorElement.id)).toBeTrue();
+  });
+});
+
+@Component({
+  standalone: true,
+  imports: [ReactiveFormsModule, AppAutocompleteComponent, AppTextFieldErrorDirective],
+  template: `
+    <form [formGroup]="form">
+      <app-autocomplete label="City" formControlName="city" [options]="options">
+        <ng-template appTextFieldError>
+          <span>{{ errorMessage }}</span>
+        </ng-template>
+      </app-autocomplete>
+    </form>
+  `,
+})
+class AppAutocompleteFormHostComponent {
+  readonly errorMessage = REQUIRED_ERROR_MESSAGE;
+  readonly options = OPTIONS;
+  readonly form = new FormGroup<{ city: FormControl<string | null> }>({
+    city: new FormControl<string | null>(null, { validators: Validators.required }),
+  });
+}

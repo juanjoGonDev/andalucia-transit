@@ -1,14 +1,28 @@
-import { Directive, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Input,
+  Output,
+  inject
+} from '@angular/core';
+
+import { ENTER_KEY_MATCHER, SPACE_KEY_MATCHER, matchesKey } from './key-event-matchers';
 
 export type AccessibleButtonPopupToken = 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
 type AccessibleButtonPopupValue = boolean | AccessibleButtonPopupToken;
 
-const KEYBOARD_ENTER = 'Enter' as const;
-const KEYBOARD_SPACE = ' ' as const;
 const ARIA_TRUE = 'true' as const;
 const ARIA_FALSE = 'false' as const;
 const CURSOR_POINTER = 'pointer' as const;
 const CURSOR_NOT_ALLOWED = 'not-allowed' as const;
+const ROLE_BUTTON = 'button' as const;
+const ROLE_LINK = 'link' as const;
+const HREF_ATTRIBUTE = 'href' as const;
+const TAB_INDEX_ENABLED = 0 as const;
+const TAB_INDEX_DISABLED = -1 as const;
 
 @Directive({
   selector: '[appAccessibleButton]',
@@ -16,6 +30,7 @@ const CURSOR_NOT_ALLOWED = 'not-allowed' as const;
   exportAs: 'appAccessibleButton'
 })
 export class AccessibleButtonDirective {
+  private readonly hostElementRef = inject(ElementRef<HTMLElement>);
   @Input() appAccessibleButtonDisabled = false;
   @Input() appAccessibleButtonRole: string | null = null;
   @Input() appAccessibleButtonPressed: boolean | null = null;
@@ -25,13 +40,13 @@ export class AccessibleButtonDirective {
   @Output() readonly appAccessibleButtonActivated = new EventEmitter<MouseEvent>();
 
   @HostBinding('attr.role')
-  get role(): string {
-    return this.appAccessibleButtonRole ?? 'button';
+  get role(): string | null {
+    return this.resolveRole();
   }
 
   @HostBinding('attr.tabindex')
   get tabIndex(): number {
-    return this.appAccessibleButtonDisabled ? -1 : 0;
+    return this.appAccessibleButtonDisabled ? TAB_INDEX_DISABLED : TAB_INDEX_ENABLED;
   }
 
   @HostBinding('attr.aria-disabled')
@@ -84,23 +99,101 @@ export class AccessibleButtonDirective {
     return this.appAccessibleButtonDisabled ? CURSOR_NOT_ALLOWED : CURSOR_POINTER;
   }
 
+  private spaceActivationPending = false;
+
   @HostListener('keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
-    if (!this.shouldHandleActivation(event)) {
+    if (this.appAccessibleButtonDisabled) {
+      this.cancelSpaceActivation();
       return;
     }
 
-    event.preventDefault();
-    this.invokeHostClick(event);
+    const resolvedRole = this.resolveRole();
+
+    if (this.isEnterKey(event)) {
+      if (this.isAnchorWithHref()) {
+        return;
+      }
+
+      event.preventDefault();
+      this.invokeHostClick(event);
+      return;
+    }
+
+    if (this.isSpaceKey(event)) {
+      if (this.isAnchorWithHref()) {
+        return;
+      }
+
+      if (resolvedRole === ROLE_LINK) {
+        this.cancelSpaceActivation();
+        return;
+      }
+
+      event.preventDefault();
+      this.spaceActivationPending = true;
+    }
   }
 
   @HostListener('keyup', ['$event'])
   onKeyup(event: KeyboardEvent): void {
-    if (!this.shouldHandleActivation(event)) {
+    if (this.appAccessibleButtonDisabled) {
+      this.cancelSpaceActivation();
       return;
     }
 
-    event.preventDefault();
+    const resolvedRole = this.resolveRole();
+
+    if (this.isEnterKey(event)) {
+      if (this.isAnchorWithHref()) {
+        return;
+      }
+
+      event.preventDefault();
+      return;
+    }
+
+    if (this.isSpaceKey(event)) {
+      if (!this.spaceActivationPending) {
+        return;
+      }
+
+      this.cancelSpaceActivation();
+
+      if (this.isAnchorWithHref()) {
+        return;
+      }
+
+      if (resolvedRole === ROLE_LINK) {
+        return;
+      }
+
+      event.preventDefault();
+      this.invokeHostClick(event);
+    }
+  }
+
+  @HostListener('blur')
+  onBlur(): void {
+    this.cancelSpaceActivation();
+  }
+
+  @HostListener('focusout')
+  onFocusOut(): void {
+    this.cancelSpaceActivation();
+  }
+
+  @HostListener('document:keyup', ['$event'])
+  onDocumentKeyup(event: KeyboardEvent): void {
+    if (!this.spaceActivationPending) {
+      return;
+    }
+
+    if (!this.isSpaceKey(event)) {
+      return;
+    }
+
+    this.cancelSpaceActivation();
   }
 
   @HostListener('click', ['$event'])
@@ -114,14 +207,6 @@ export class AccessibleButtonDirective {
     event.stopPropagation();
   }
 
-  private shouldHandleActivation(event: KeyboardEvent): boolean {
-    if (this.appAccessibleButtonDisabled) {
-      return false;
-    }
-
-    return event.key === KEYBOARD_ENTER || event.key === KEYBOARD_SPACE;
-  }
-
   private invokeHostClick(event: KeyboardEvent): void {
     const host = event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
 
@@ -131,4 +216,35 @@ export class AccessibleButtonDirective {
 
     host.click();
   }
+
+  private isEnterKey(event: KeyboardEvent): boolean {
+    return matchesKey(event, ENTER_KEY_MATCHER);
+  }
+
+  private isSpaceKey(event: KeyboardEvent): boolean {
+    return matchesKey(event, SPACE_KEY_MATCHER);
+  }
+
+  private isAnchorWithHref(): boolean {
+    const element = this.hostElementRef.nativeElement;
+
+    return element instanceof HTMLAnchorElement && element.hasAttribute(HREF_ATTRIBUTE);
+  }
+
+  private cancelSpaceActivation(): void {
+    this.spaceActivationPending = false;
+  }
+
+  private resolveRole(): string | null {
+    if (this.appAccessibleButtonRole) {
+      return this.appAccessibleButtonRole;
+    }
+
+    if (this.isAnchorWithHref()) {
+      return null;
+    }
+
+    return ROLE_BUTTON;
+  }
+
 }

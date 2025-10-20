@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive, TemplateRef, inject } from '@angular/core';
 
 @Directive({
   selector: '[appTextFieldPrefix]',
@@ -17,3 +17,11 @@ export class AppTextFieldSuffixDirective {}
   standalone: true,
 })
 export class AppTextFieldHintDirective {}
+
+@Directive({
+  selector: '[appTextFieldError]',
+  standalone: true,
+})
+export class AppTextFieldErrorDirective {
+  readonly templateRef = inject<TemplateRef<unknown>>(TemplateRef);
+}

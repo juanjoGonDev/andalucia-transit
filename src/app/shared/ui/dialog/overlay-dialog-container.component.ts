@@ -6,6 +6,7 @@ import {
   ComponentRef,
   ElementRef,
   HostBinding,
+  InjectionToken,
   OnDestroy,
   ViewChild,
   inject
@@ -18,6 +19,15 @@ export const OVERLAY_DIALOG_CONTAINER_CLASS = 'app-overlay-dialog__container';
 export const OVERLAY_DIALOG_SURFACE_CLASS = 'app-overlay-dialog__surface';
 
 type ActiveElementContainer = Document | ShadowRoot;
+
+export interface OverlayDialogAriaAdapter {
+  setLabelledBy(value: string): void;
+  setDescribedBy(value: string | null): void;
+}
+
+export const OVERLAY_DIALOG_ARIA_ADAPTER = new InjectionToken<OverlayDialogAriaAdapter>(
+  'OVERLAY_DIALOG_ARIA_ADAPTER'
+);
 
 @Component({
   selector: 'app-overlay-dialog-container',
@@ -32,9 +42,17 @@ type ActiveElementContainer = Document | ShadowRoot;
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: OVERLAY_DIALOG_CONTAINER_CLASS
-  }
+  },
+  providers: [
+    {
+      provide: OVERLAY_DIALOG_ARIA_ADAPTER,
+      useExisting: OverlayDialogContainerComponent
+    }
+  ]
 })
-export class OverlayDialogContainerComponent implements AfterViewInit, OnDestroy {
+export class OverlayDialogContainerComponent
+  implements AfterViewInit, OnDestroy, OverlayDialogAriaAdapter
+{
   @ViewChild(CdkPortalOutlet, { static: true })
   private portalOutlet!: CdkPortalOutlet;
   private readonly elementRef = inject(ElementRef<HTMLElement>);
@@ -45,6 +63,8 @@ export class OverlayDialogContainerComponent implements AfterViewInit, OnDestroy
   private previouslyFocusedElement: HTMLElement | null = null;
   private autoFocus = true;
   private roleValue: OverlayDialogRole = 'dialog';
+  private labelledBy: string | null = null;
+  private describedBy: string | null = null;
 
   @HostBinding('attr.role')
   protected get role(): OverlayDialogRole {
@@ -57,6 +77,16 @@ export class OverlayDialogContainerComponent implements AfterViewInit, OnDestroy
   @HostBinding('attr.aria-modal')
   protected readonly ariaModal = 'true';
 
+  @HostBinding('attr.aria-labelledby')
+  protected get ariaLabelledBy(): string | null {
+    return this.labelledBy;
+  }
+
+  @HostBinding('attr.aria-describedby')
+  protected get ariaDescribedBy(): string | null {
+    return this.describedBy;
+  }
+
   initialize(role: OverlayDialogRole, autoFocus: boolean): void {
     this.roleValue = role;
     this.autoFocus = autoFocus;
@@ -64,6 +94,19 @@ export class OverlayDialogContainerComponent implements AfterViewInit, OnDestroy
 
   attachComponent<T>(portal: ComponentPortal<T>): ComponentRef<T> {
     return this.portalOutlet.attachComponentPortal(portal);
+  }
+
+  setLabelledBy(value: string): void {
+    this.labelledBy = value.trim().length > 0 ? value : null;
+  }
+
+  setDescribedBy(value: string | null): void {
+    if (!value) {
+      this.describedBy = null;
+      return;
+    }
+
+    this.describedBy = value.trim().length > 0 ? value : null;
   }
 
   focusInitial(): void {

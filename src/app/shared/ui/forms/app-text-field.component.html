@@ -2,6 +2,7 @@
   class="app-text-field"
   [class.app-text-field--focused]="isFocused"
   [class.app-text-field--disabled]="isDisabled"
+  [class.app-text-field--invalid]="invalid"
 >
   <label class="app-text-field__label" [attr.for]="inputId">
     <ng-container>{{ label }}</ng-container>
@@ -20,6 +21,11 @@
       [attr.placeholder]="placeholder"
       [attr.readonly]="readonly ? '' : null"
       [attr.aria-describedby]="ariaDescribedByAttribute"
+      [attr.aria-errormessage]="ariaErrormessageAttribute"
+      [attr.aria-invalid]="ariaInvalidAttribute"
+      [attr.aria-required]="ariaRequiredAttribute"
+      [attr.aria-busy]="ariaBusyAttribute"
+      [attr.required]="requiredAttribute"
       [disabled]="isDisabled"
       [value]="value"
       (focus)="handleFocus()"
@@ -31,7 +37,21 @@
       <ng-content select="[appTextFieldSuffix]"></ng-content>
     </span>
   </div>
-  <div class="app-text-field__hint" *ngIf="hasHint" [id]="hintId">
+  <div
+    class="app-text-field__error"
+    *ngIf="shouldDisplayError"
+    [id]="errorId"
+    role="alert"
+    aria-live="polite"
+  >
+    <ng-container *ngIf="errorTemplateOutlet as template">
+      <ng-container
+        [ngTemplateOutlet]="template"
+        [ngTemplateOutletContext]="errorTemplateContext"
+      ></ng-container>
+    </ng-container>
+  </div>
+  <div class="app-text-field__hint" *ngIf="shouldDisplayHint" [id]="hintId">
     <ng-content select="[appTextFieldHint]"></ng-content>
   </div>
 </div>

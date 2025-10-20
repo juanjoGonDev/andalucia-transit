@@ -205,6 +205,8 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 - Maintain or exceed existing coverage metrics.
   - 2025-10-17: Added unit tests exercising overlay dialog focus trapping, role assignment, and focus restoration to document accessibility verification for the custom dialog host.
   - 2025-10-17: Extended form primitive unit tests to assert combobox ARIA metadata, keyboard navigation, and text field label association for the shared controls.
+  - 2025-10-22: Added AppTextField error context coverage to confirm projected validation templates receive control state without altering layout.
+  - 2025-10-22: Extended AppTextField error context tests to include pending and status propagation for forwarded validation templates.
 
 ---
 
