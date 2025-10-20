@@ -36,7 +36,7 @@ module.exports = function (config) {
     port: 9876,
     colors: true,
     logLevel: constants.LOG_INFO,
-    autoWatch: true,
+    autoWatch: false,
     browsers: ['ChromeHeadlessNoSandbox'],
     customLaunchers: {
       ChromeHeadlessNoSandbox: {
@@ -44,7 +44,7 @@ module.exports = function (config) {
         flags: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
       },
     },
-    singleRun: false,
+    singleRun: true,
     restartOnFileChange: true,
   });
 };

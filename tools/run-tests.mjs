@@ -60,6 +60,7 @@ const args = ['test', ...forwardedArgs];
 const result = spawnSync(command, args, {
   stdio: 'inherit',
   env: process.env,
+  shell: true,
 });
 
 if (result.error) {
