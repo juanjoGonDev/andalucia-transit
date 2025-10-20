@@ -21,18 +21,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
-      - name: Restore npm cache
-        id: cache-node-modules
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+          run_install: false
+      - name: Locate pnpm store
+        id: pnpm-store
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+      - name: Restore pnpm cache
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-pnpm-
       - name: Install packages
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
   quality:
     name: ${{ matrix.label }}
@@ -45,16 +50,16 @@ jobs:
         include:
           - label: Lint
             command: |
-              npm run lint
+              pnpm run lint
           - label: Test scripts
             command: |
-              npm run test:scripts
+              pnpm run test:scripts
           - label: Test angular
             command: |
-              npm run test:angular -- --watch=false --browsers=ChromeHeadlessNoSandbox
+              pnpm run test:angular -- --watch=false --browsers=ChromeHeadlessNoSandbox
           - label: Deploy pipeline
             command: |
-              npm run test:deploy
+              pnpm run test:deploy
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,19 +67,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
-      - name: Restore npm cache
-        id: cache-node-modules
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+          run_install: false
+      - name: Locate pnpm store
+        id: pnpm-store
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+      - name: Restore pnpm cache
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-pnpm-
       - name: Install packages
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Run ${{ matrix.label }}
         run: ${{ matrix.command }}
 
