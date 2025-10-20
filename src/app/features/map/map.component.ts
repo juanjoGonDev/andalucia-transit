@@ -1,3 +1,4 @@
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -10,28 +11,16 @@ import {
   inject,
   signal
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom, map, startWith } from 'rxjs';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { APP_CONFIG } from '../../core/config';
-import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
-import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
-import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
-import {
-  LeafletMapService,
-  MapHandle,
-  MapRoutePolyline,
-  MapStopMarker
-} from '../../shared/map/leaflet-map.service';
-import { GeolocationService } from '../../core/services/geolocation.service';
+import { createPluralRules } from '../../core/i18n/pluralization';
+import { PluralizationService } from '../../core/i18n/pluralization.service';
 import { GEOLOCATION_REQUEST_OPTIONS } from '../../core/services/geolocation-request.options';
+import { GeolocationService } from '../../core/services/geolocation.service';
 import { NearbyStopResult, NearbyStopsService } from '../../core/services/nearby-stops.service';
 import { StopDirectoryService } from '../../data/stops/stop-directory.service';
-import { PluralizationService } from '../../core/i18n/pluralization.service';
-import { createPluralRules } from '../../core/i18n/pluralization';
-import { buildDistanceDisplay } from '../../domain/utils/distance-display.util';
-import { GeoCoordinate } from '../../domain/utils/geo-distance.util';
 import {
   RouteOverlayFacade,
   RouteOverlayRoute,
@@ -39,6 +28,17 @@ import {
   RouteOverlayState,
   RouteOverlayStatus
 } from '../../domain/map/route-overlay.facade';
+import { buildDistanceDisplay } from '../../domain/utils/distance-display.util';
+import { GeoCoordinate } from '../../domain/utils/geo-distance.util';
+import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
+import {
+  LeafletMapService,
+  MapHandle,
+  MapRoutePolyline,
+  MapStopMarker
+} from '../../shared/map/leaflet-map.service';
+import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
 
 interface MapStopView {
   readonly id: string;

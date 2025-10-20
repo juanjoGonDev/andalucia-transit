@@ -9,13 +9,12 @@ import {
   Polyline,
   PolylineOptions,
   circleMarker,
-  layerGroup,
-  latLngBounds,
   map as createMap,
+  latLngBounds,
+  layerGroup,
   polyline,
   tileLayer
 } from 'leaflet';
-
 import { GeoCoordinate } from '../../domain/utils/geo-distance.util';
 
 export interface MapCreateOptions {

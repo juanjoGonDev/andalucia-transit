@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -9,7 +10,7 @@ import {
   SimpleChanges,
   inject
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   FormBuilder,
@@ -20,12 +21,12 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
+import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatOptionModule, MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   BehaviorSubject,
   Observable,
@@ -42,41 +43,39 @@ import {
   startWith,
   switchMap
 } from 'rxjs/operators';
-import { TranslateModule } from '@ngx-translate/core';
-
 import { APP_CONFIG } from '../../../core/config';
+import { GEOLOCATION_REQUEST_OPTIONS } from '../../../core/services/geolocation-request.options';
+import { GeolocationService } from '../../../core/services/geolocation.service';
+import {
+  NearbyStopOption,
+  NearbyStopOptionsService
+} from '../../../core/services/nearby-stop-options.service';
+import {
+  NearbyStopResult,
+  NearbyStopsService
+} from '../../../core/services/nearby-stops.service';
+import {
+  collectRouteLineMatches,
+  createRouteSearchSelection
+} from '../../../domain/route-search/route-search-selection.util';
+import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
+import {
+  STOP_CONNECTION_DIRECTION,
+  StopConnection,
+  StopConnectionsFacade,
+  buildStopConnectionKey
+} from '../../../domain/route-search/stop-connections.facade';
+import { FavoritesFacade, StopFavorite } from '../../../domain/stops/favorites.facade';
 import {
   StopDirectoryFacade,
   StopDirectoryOption,
   StopDirectoryStopSignature,
   StopSearchRequest
 } from '../../../domain/stops/stop-directory.facade';
-import {
-  StopConnectionsFacade,
-  StopConnection,
-  STOP_CONNECTION_DIRECTION,
-  buildStopConnectionKey
-} from '../../../domain/route-search/stop-connections.facade';
-import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
-import {
-  collectRouteLineMatches,
-  createRouteSearchSelection
-} from '../../../domain/route-search/route-search-selection.util';
-import { FavoritesFacade, StopFavorite } from '../../../domain/stops/favorites.facade';
-import { MaterialSymbolName } from '../../../shared/ui/types/material-symbol-name';
-import { GeolocationService } from '../../../core/services/geolocation.service';
-import {
-  NearbyStopResult,
-  NearbyStopsService
-} from '../../../core/services/nearby-stops.service';
-import { GEOLOCATION_REQUEST_OPTIONS } from '../../../core/services/geolocation-request.options';
-import { GeoCoordinate } from '../../../domain/utils/geo-distance.util';
-import {
-  NearbyStopOption,
-  NearbyStopOptionsService
-} from '../../../core/services/nearby-stop-options.service';
 import { buildDistanceDisplay } from '../../../domain/utils/distance-display.util';
+import { GeoCoordinate } from '../../../domain/utils/geo-distance.util';
 import { AccessibleButtonDirective } from '../../../shared/a11y/accessible-button.directive';
+import { MaterialSymbolName } from '../../../shared/ui/types/material-symbol-name';
 
 interface StopOptionDistanceLabel {
   readonly translationKey: string;

@@ -1,23 +1,22 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { ActivatedRoute, ParamMap, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { DateTime } from 'luxon';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, of } from 'rxjs';
-import { ActivatedRoute, ParamMap, Router, convertToParamMap, provideRouter } from '@angular/router';
-import { DateTime } from 'luxon';
-
-import { RouteSearchComponent } from './route-search.component';
 import {
   RouteSearchDepartureView,
   RouteSearchResultsService,
   RouteSearchResultsViewModel
 } from '../../domain/route-search/route-search-results.service';
-import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
-import { StopDirectoryFacade, StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
 import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
+import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
 import { buildDateSlug, buildStopSlug } from '../../domain/route-search/route-search-url.util';
+import { StopDirectoryFacade, StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
 import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
+import { RouteSearchComponent } from './route-search.component';
 
 class TranslateTestingLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {

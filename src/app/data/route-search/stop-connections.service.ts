@@ -1,12 +1,11 @@
 import { Injectable, inject } from '@angular/core';
-import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
-
-import { RouteLineStop, RouteLineSummary, RouteLinesApiService } from './route-lines-api.service';
+import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import {
   StopDirectoryRecord,
   StopDirectoryService,
   StopDirectoryStopSignature
 } from '../stops/stop-directory.service';
+import { RouteLineStop, RouteLineSummary, RouteLinesApiService } from './route-lines-api.service';
 
 export interface StopLineSignature {
   readonly lineId: string;

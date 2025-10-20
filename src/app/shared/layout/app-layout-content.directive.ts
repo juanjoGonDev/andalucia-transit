@@ -7,7 +7,6 @@ import {
   SimpleChanges,
   inject
 } from '@angular/core';
-
 import {
   APP_LAYOUT_CONTEXT,
   AppLayoutContentIdentifier,

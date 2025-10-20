@@ -1,8 +1,7 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-
-import { StopScheduleResult } from './stop-schedule.model';
 import { StopScheduleService } from '../../data/services/stop-schedule.service';
+import { StopScheduleResult } from './stop-schedule.model';
 
 export interface StopScheduleQueryOptions {
   readonly queryDate?: Date;

@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-
 import { StopDirectoryService } from '../../data/stops/stop-directory.service';
 import { StopDirectoryFacade, StopSearchRequest } from './stop-directory.facade';
 

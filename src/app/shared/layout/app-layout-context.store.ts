@@ -1,5 +1,4 @@
 import { Injectable, Signal, computed, signal } from '@angular/core';
-
 import {
   AppLayoutContentIdentifier,
   AppLayoutContentRegistration,

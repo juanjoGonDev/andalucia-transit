@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
-
-import { FavoritesFacade } from './favorites.facade';
-import { StopFavoritesService, StopFavorite } from './stop-favorites.service';
 import type { StopDirectoryOption } from '../../data/stops/stop-directory.service';
+import { FavoritesFacade } from './favorites.facade';
+import { StopFavorite, StopFavoritesService } from './stop-favorites.service';
 
 describe('FavoritesFacade', () => {
   let facade: FavoritesFacade;

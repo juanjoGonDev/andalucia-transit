@@ -8,18 +8,18 @@ import {
   DestroyRef,
   EventEmitter,
   HostBinding,
+  Injector,
   Input,
   Output,
   TemplateRef,
   ViewChild,
   forwardRef,
   inject,
-  Injector,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AppTextFieldComponent } from './app-text-field.component';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
 import { AppTextFieldErrorDirective } from './app-text-field-slots.directive';
+import { AppTextFieldComponent } from './app-text-field.component';
 
 const DEFAULT_AUTOCOMPLETE_ATTRIBUTE = 'off';
 const EMPTY_STRING = '';

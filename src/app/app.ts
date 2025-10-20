@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-
 import { LanguageService } from './core/services/language.service';
 
 @Component({

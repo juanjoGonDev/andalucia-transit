@@ -1,9 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable } from 'rxjs';
-
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
+import { Observable, map } from 'rxjs';
 import { AppConfig, SupportedLanguage } from '../../core/config';
+import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
 
 interface StopInfoApiResponse {
   readonly idParada: string;

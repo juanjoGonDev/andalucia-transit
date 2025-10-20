@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process';
-import { appendFile, access, copyFile, readFile } from 'node:fs/promises';
 import { constants as fsConstants } from 'node:fs';
+import { access, appendFile, copyFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -32,7 +32,7 @@ const currentDirectory = path.dirname(fileURLToPath(new URL(import.meta.url)));
 const rootDirectory = path.resolve(currentDirectory, '..', '..');
 const packageJsonPath = path.join(rootDirectory, packageFileName);
 
-function isRecord(value: JsonValue): value is { [key: string]: JsonValue } {
+function isRecord(value: JsonValue): value is Record<string, JsonValue> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 

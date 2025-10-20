@@ -2,7 +2,7 @@
 
 ## Automated bootstrap
 
-Run `npm run setup:environment` to install dependencies, validate formatting, run lint checks, execute script tests, build the Angular workspace, and generate the latest transport snapshot in a single pass. The script provides progress logs and exits on the first failure to keep feedback focused.
+`scripts/bootstrap.mjs` standardizes environment provisioning across macOS, Linux, and Windows by validating the declared Node.js engine range, activating the pinned pnpm release through Corepack, installing dependencies deterministically, and wiring Lefthook so the pre-commit hook autofixes ESLint issues on staged files. Linux remains the CI baseline, so keep the bootstrap workflow non-interactive and reliable on that platform. The existing `setup:environment` npm script continues to install dependencies, validate formatting, run lint checks, execute script tests, build the Angular workspace, and generate the latest transport snapshot in a single pass while exiting on the first failure to keep feedback focused.
 
 ## Targeted checks
 

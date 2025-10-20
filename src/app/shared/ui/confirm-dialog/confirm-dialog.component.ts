@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { DialogLayoutComponent } from '../dialog/dialog-layout.component';
 import { AccessibleButtonDirective } from '../../a11y/accessible-button.directive';
+import { DialogLayoutComponent } from '../dialog/dialog-layout.component';
 import {
   injectOverlayDialogData,
   injectOverlayDialogRef,

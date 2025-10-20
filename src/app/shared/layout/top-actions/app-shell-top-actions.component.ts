@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,19 +8,17 @@ import {
   inject,
   signal
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-
 import { APP_CONFIG } from '../../../core/config';
 import { HomeTabId } from '../../../features/home/home.types';
-import { buildNavigationCommands, NavigationCommands } from '../../navigation/navigation.util';
-import { AppLayoutContextStore } from '../app-layout-context.store';
-import { AppLayoutNavigationKey } from '../app-layout-context.token';
 import {
   AccessibleButtonDirective,
   AccessibleButtonPopupToken
 } from '../../a11y/accessible-button.directive';
+import { NavigationCommands, buildNavigationCommands } from '../../navigation/navigation.util';
+import { AppLayoutContextStore } from '../app-layout-context.store';
+import { AppLayoutNavigationKey } from '../app-layout-context.token';
 
 interface ShellMenuEntry {
   readonly id: string;

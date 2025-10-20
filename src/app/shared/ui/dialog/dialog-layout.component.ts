@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   OVERLAY_DIALOG_ARIA_ADAPTER,

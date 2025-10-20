@@ -1,20 +1,19 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { Subject, of } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
-
-import { HomeComponent } from './home.component';
-import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
-import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
-import { StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
-import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
-import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
+import { Subject, of } from 'rxjs';
 import { APP_CONFIG } from '../../core/config';
-import { HomeTabId } from './home.types';
+import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
+import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
 import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
+import { StopDirectoryOption } from '../../domain/stops/stop-directory.facade';
+import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
+import { HomeComponent } from './home.component';
+import { HomeTabId } from './home.types';
+import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
 
 class ImmediateIntersectionObserver implements IntersectionObserver {
   readonly root: Element | Document | null = null;

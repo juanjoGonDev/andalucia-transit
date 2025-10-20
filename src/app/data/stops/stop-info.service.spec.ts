@@ -1,9 +1,8 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-
-import { StopInfoRecord, StopInfoService } from './stop-info.service';
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
 import { APP_CONFIG } from '../../core/config';
+import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
+import { StopInfoRecord, StopInfoService } from './stop-info.service';
 
 describe('StopInfoService', () => {
   let service: StopInfoService;

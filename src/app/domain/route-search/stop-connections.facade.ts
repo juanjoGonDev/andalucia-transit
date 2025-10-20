@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-
 import {
   StopConnection,
   StopConnectionDirection,

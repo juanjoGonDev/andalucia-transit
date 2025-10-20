@@ -1,5 +1,4 @@
 import { InjectionToken } from '@angular/core';
-
 import packageMetadataJson from '../../../../package.json' assert { type: 'json' };
 import { PackageMetadata } from '../interfaces/package-metadata.interface';
 

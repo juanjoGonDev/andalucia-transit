@@ -4,11 +4,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { OverlayDialogConfig, OverlayDialogRef, OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
-import { FavoritesComponent } from './favorites.component';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { APP_CONFIG } from '../../core/config';
 import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/ui/confirm-dialog/confirm-dialog.component';
+import { OverlayDialogConfig, OverlayDialogRef, OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
+import { FavoritesComponent } from './favorites.component';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {

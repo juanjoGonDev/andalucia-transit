@@ -1,17 +1,16 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-
+import { RouteSearchExecutionService } from './route-search-execution.service';
 import {
   RouteSearchHistoryEntry,
   RouteSearchHistoryService
 } from './route-search-history.service';
+import { RouteSearchPreferencesService } from './route-search-preferences.service';
 import {
   RouteSearchPreview,
   RouteSearchPreviewService
 } from './route-search-preview.service';
-import { RouteSearchExecutionService } from './route-search-execution.service';
 import { RouteSearchSelection } from './route-search-state.service';
-import { RouteSearchPreferencesService } from './route-search-preferences.service';
 
 @Injectable({ providedIn: 'root' })
 export class RecentSearchesFacade {

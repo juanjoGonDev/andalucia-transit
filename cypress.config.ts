@@ -1,7 +1,7 @@
-import { defineConfig } from 'cypress';
-import { mkdir, readFile, writeFile, copyFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { defineConfig } from 'cypress';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 import {
