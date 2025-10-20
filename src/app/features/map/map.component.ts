@@ -11,9 +11,9 @@ import {
   signal
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
-import { firstValueFrom } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { firstValueFrom, map, startWith } from 'rxjs';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 import { APP_CONFIG } from '../../core/config';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
@@ -29,7 +29,11 @@ import { GeolocationService } from '../../core/services/geolocation.service';
 import { GEOLOCATION_REQUEST_OPTIONS } from '../../core/services/geolocation-request.options';
 import { NearbyStopResult, NearbyStopsService } from '../../core/services/nearby-stops.service';
 import { StopDirectoryService } from '../../data/stops/stop-directory.service';
-import { PluralizationService } from '../../core/i18n/pluralization.service';
+import {
+  createPluralRules,
+  resolveLanguage,
+  selectPluralizedTranslationKey
+} from '../../core/i18n/pluralization';
 import { buildDistanceDisplay } from '../../domain/utils/distance-display.util';
 import { GeoCoordinate } from '../../domain/utils/geo-distance.util';
 import {
@@ -108,19 +112,40 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly stopDirectory = inject(StopDirectoryService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly overlayFacade = inject(RouteOverlayFacade);
-  private readonly pluralization = inject(PluralizationService);
+  private readonly translate = inject(TranslateService);
 
   private mapHandle: MapHandle | null = null;
   private userCoordinate: GeoCoordinate | null = null;
   private isDestroyed = false;
   private currentSelectionKey: string | null = null;
   private hasFittedRoutes = false;
+  private readonly pluralRulesCache = new Map<string, Intl.PluralRules>();
 
   private readonly translations = APP_CONFIG.translationKeys.map;
   private readonly distanceTranslations = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
   private readonly routeDistanceTranslations = APP_CONFIG.translationKeys.map.routes.distance;
   private readonly routeStopCountTranslations = APP_CONFIG.translationKeys.map.routes.stopCount;
   private readonly stopDetailRouteKey = APP_CONFIG.routes.stopDetailBase;
+
+  private readonly language = toSignal(
+    this.translate.onLangChange.pipe(
+      map(({ lang }) =>
+        resolveLanguage({
+          current: lang,
+          defaultLanguage: this.translate.defaultLang,
+          fallback: APP_CONFIG.locales.default
+        })
+      ),
+      startWith(
+        resolveLanguage({
+          current: this.translate.currentLang,
+          defaultLanguage: this.translate.defaultLang,
+          fallback: APP_CONFIG.locales.default
+        })
+      )
+    ),
+    { requireSync: true }
+  );
 
   protected readonly translationKeys = this.translations;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.map;
@@ -135,11 +160,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected readonly routeErrorKey = signal<string | null>(null);
   protected readonly routes = signal<readonly RouteOverlayRoute[]>([]);
   protected readonly routeViews = computed<readonly MapRouteView[]>(() => {
+    const language = this.language();
+    const pluralRules = this.resolvePluralRules(language);
+
     return this.routes().map((route) => {
       const distance = buildDistanceDisplay(route.lengthInMeters, this.routeDistanceTranslations);
-      const stopCountTranslationKey = this.pluralization.selectTranslationKey(
+      const stopCountTranslationKey = selectPluralizedTranslationKey(
         route.stopCount,
-        this.routeStopCountTranslations
+        this.routeStopCountTranslations,
+        pluralRules
       );
 
       return {
@@ -298,6 +327,19 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   protected refreshRoutes(): void {
     this.overlayFacade.refresh();
+  }
+
+  private resolvePluralRules(language: string): Intl.PluralRules {
+    const cached = this.pluralRulesCache.get(language);
+
+    if (cached) {
+      return cached;
+    }
+
+    const rules = createPluralRules(language);
+    this.pluralRulesCache.set(language, rules);
+
+    return rules;
   }
 
   private async loadStops(

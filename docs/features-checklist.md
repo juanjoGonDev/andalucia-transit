@@ -450,3 +450,6 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-11-06 Centralized pluralization selection in a shared service that caches Intl.PluralRules per language so map route stop counts react to locale changes without recreating rules in each component.
     - [x] Screenshot (Map route panel — pluralization service parity): https://browser.buildwithfern.com/invocations/akubfqby/artifacts/artifacts/map-pluralization-service.png
     - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-07 Simplified map pluralization to rely on per-view Intl.PluralRules caching and pure utilities so stop count labels react to language changes without a root service.
+    - [x] Screenshot (Map route panel — plural rules cached per view): https://browser.buildwithfern.com/invocations/bqkcovke/artifacts/artifacts/map-route-panel.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.

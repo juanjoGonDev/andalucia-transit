@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Observable, Subject, of } from 'rxjs';
 
 import { MapComponent } from './map.component';
@@ -237,6 +237,10 @@ describe('MapComponent', () => {
         { provide: PLATFORM_ID, useValue: 'browser' }
       ]
     }).compileComponents();
+
+    const translate = TestBed.inject(TranslateService);
+    translate.setDefaultLang('es');
+    translate.use('es');
 
     fixture = TestBed.createComponent(MapComponent);
     component = fixture.componentInstance;
