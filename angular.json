@@ -107,7 +107,9 @@
             "styles": [
               "src/styles.scss",
               "leaflet/dist/leaflet.css"
-            ]
+            ],
+            "watch": false,
+            "browsers": "ChromeHeadlessNoSandbox"
           }
         },
         "lint": {

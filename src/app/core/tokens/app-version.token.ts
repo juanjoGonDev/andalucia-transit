@@ -1,9 +1,9 @@
 import { InjectionToken } from '@angular/core';
-import packageMetadataJson from '../../../../package.json' assert { type: 'json' };
+import * as packageMetadataJson from '../../../../package.json';
 import { PackageMetadata } from '../interfaces/package-metadata.interface';
 
 const UNKNOWN_VERSION = '0.0.0' as const;
-const PACKAGE_METADATA = packageMetadataJson as PackageMetadata;
+const PACKAGE_METADATA = packageMetadataJson as unknown as PackageMetadata;
 const FALLBACK_VERSION = normalizeVersion(PACKAGE_METADATA.version);
 const APP_VERSION_VALUE = resolveVersion(FALLBACK_VERSION);
 

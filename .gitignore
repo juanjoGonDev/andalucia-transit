@@ -44,6 +44,7 @@ testem.log
 /typings
 __screenshots__/
 .eslintcache
+/test-results
 
 # System files
 .DS_Store
