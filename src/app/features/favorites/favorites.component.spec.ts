@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { OverlayDialogConfig, OverlayDialogRef, OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
 import { FavoritesComponent } from './favorites.component';
@@ -114,6 +116,8 @@ describe('FavoritesComponent', () => {
   let component: FavoritesComponent;
   let favoritesFacade: FavoritesFacadeStub;
   let dialog: OverlayDialogServiceStub;
+  let router: Router;
+  let navigateSpy: jasmine.Spy<Router['navigate']>;
 
   beforeEach(async () => {
     favoritesFacade = new FavoritesFacadeStub();
