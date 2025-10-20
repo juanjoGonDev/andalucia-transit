@@ -1,5 +1,10 @@
 # Feature Checklist
 
+## Visual Evidence Requirements
+- Visual fixes and layout integrations must include screenshots captured with `scripts/screenshot.js`.
+- Use the utility’s interaction flags or scenario runner for hover, click, map, or multi-step flows that influence the captured state.
+- Attach screenshots to pull requests or QA notes via public links or CI artefacts so reviewers can access them.
+
 - [x] Display route search results as a unified list of bus departures after submitting the form.
 - [x] Return accurate schedules for future dates without falsely reporting missing services.
 - [x] Keep the route search form populated on the results view so travelers can refine queries in place.

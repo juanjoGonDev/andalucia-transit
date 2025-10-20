@@ -88,6 +88,12 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Local development workflow: before completing any task, run and pass only the necessary checks according to the type of change. For visual or style changes, run npm run lint, npm run test, and npm run build. For logic, data, or API changes, also run npm run snapshot. For deployment or workflow changes, run npm run test:deploy. Confirm npm start launches without compilation errors. Use npm run verify:all only when a full verification is required.
 - Reference `docs/development-environment.md` for targeted command guidance when determining which checks must run for a change.
 
+### Visual Verification
+- Use the headless screenshot utility in `scripts/screenshot.js` to capture deterministic UI states for CI review and design validation.
+- Capabilities include navigation and waiting controls, viewport and device emulation, storage and permission configuration, DOM interactions, map-specific adjustments, accessibility assertions, and capture variants with masking.
+- The tool can emit HAR files, console transcripts, and PNG output, and accepts ordered scenarios for multi-step flows.
+- All generated artefacts live under `artifacts/screenshots` (or the configured directory) which is ignored by Git; share captures via CI artefacts or public URLs when referencing them in reviews or documentation.
+
 ## Performance & UX Guardrails
 - Leverage lazy-loaded routes and code splitting; reuse API results with RxJS `shareReplay` or caching services; offload heavy computations (e.g., nearest stop calculations) to Web Workers if needed.
 - Keep map rendering efficient via clustering and viewport filtering; dispose of subscriptions and event listeners to prevent leaks.
