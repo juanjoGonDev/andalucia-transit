@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
-import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-
 import { StopInfoFacade, StopInformationDetail, StopInformationState } from '../../domain/stops/stop-info.facade';
 import { StopInfoComponent } from './stop-info.component';
 
@@ -59,10 +57,7 @@ describe('StopInfoComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         StopInfoComponent,
-        TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
-          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
-        })
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: FakeTranslateLoader } })
       ],
       providers: [
         { provide: StopInfoFacade, useValue: facade },

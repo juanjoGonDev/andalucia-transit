@@ -298,7 +298,10 @@
       "loading": "Cargando recorridos…",
       "empty": "No hay rutas disponibles para esta búsqueda.",
       "cardAria": "Resaltar la ruta {{code}} hacia {{destination}} en el mapa",
-      "stopCount": "{value, plural, =0 {# paradas} =1 {# parada} other {# paradas}}",
+      "stopCount": {
+        "one": "{{value}} parada",
+        "other": "{{value}} paradas"
+      },
       "distance": {
         "meters": "{{value}} m",
         "kilometers": "{{value}} km"

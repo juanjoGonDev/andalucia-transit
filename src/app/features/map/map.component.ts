@@ -11,10 +11,9 @@ import {
   signal
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
 import { APP_CONFIG } from '../../core/config';
 import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
@@ -29,6 +28,7 @@ import { GeolocationService } from '../../core/services/geolocation.service';
 import { GEOLOCATION_REQUEST_OPTIONS } from '../../core/services/geolocation-request.options';
 import { NearbyStopResult, NearbyStopsService } from '../../core/services/nearby-stops.service';
 import { StopDirectoryService } from '../../data/stops/stop-directory.service';
+import { createPluralRules, selectPluralizedTranslationKey } from '../../core/i18n/pluralization';
 import { buildDistanceDisplay } from '../../domain/utils/distance-display.util';
 import { GeoCoordinate } from '../../domain/utils/geo-distance.util';
 import {
@@ -56,7 +56,8 @@ interface MapRouteView {
   readonly id: string;
   readonly lineCode: string;
   readonly destinationName: string;
-  readonly stopCount: number;
+  readonly stopCountTranslationKey: string;
+  readonly stopCountValue: string;
   readonly distanceTranslationKey: string;
   readonly distanceValue: string;
 }
@@ -106,6 +107,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly stopDirectory = inject(StopDirectoryService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly overlayFacade = inject(RouteOverlayFacade);
+  private readonly translate = inject(TranslateService);
+
+  private readonly stopCountPluralRules = signal(
+    createPluralRules(this.resolveLanguage(this.translate.currentLang))
+  );
 
   private mapHandle: MapHandle | null = null;
   private userCoordinate: GeoCoordinate | null = null;
@@ -116,6 +122,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly translations = APP_CONFIG.translationKeys.map;
   private readonly distanceTranslations = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
   private readonly routeDistanceTranslations = APP_CONFIG.translationKeys.map.routes.distance;
+  private readonly routeStopCountTranslations = APP_CONFIG.translationKeys.map.routes.stopCount;
   private readonly stopDetailRouteKey = APP_CONFIG.routes.stopDetailBase;
 
   protected readonly translationKeys = this.translations;
@@ -130,20 +137,28 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected readonly routeStatus = signal<RouteOverlayStatus>('idle');
   protected readonly routeErrorKey = signal<string | null>(null);
   protected readonly routes = signal<readonly RouteOverlayRoute[]>([]);
-  protected readonly routeViews = computed<readonly MapRouteView[]>(() =>
-    this.routes().map((route) => {
+  protected readonly routeViews = computed<readonly MapRouteView[]>(() => {
+    const pluralRules = this.stopCountPluralRules();
+
+    return this.routes().map((route) => {
       const distance = buildDistanceDisplay(route.lengthInMeters, this.routeDistanceTranslations);
+      const stopCountTranslationKey = selectPluralizedTranslationKey(
+        route.stopCount,
+        this.routeStopCountTranslations,
+        pluralRules
+      );
 
       return {
         id: route.id,
         lineCode: route.lineCode,
         destinationName: route.destinationName,
-        stopCount: route.stopCount,
+        stopCountTranslationKey,
+        stopCountValue: String(route.stopCount),
         distanceTranslationKey: distance.translationKey,
         distanceValue: distance.value
       } satisfies MapRouteView;
-    })
-  );
+    });
+  });
   protected readonly activeRouteId = signal<string | null>(null);
   protected readonly routeSelectionSummary = signal<RouteOverlaySelectionSummary | null>(null);
 
@@ -165,6 +180,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected readonly hasRouteResults = computed(
     () => this.routeStatus() === 'ready' && this.routes().length > 0
   );
+
+  private resolveLanguage(language: string | undefined): string {
+    if (language) {
+      return language;
+    }
+
+    return this.translate.defaultLang ?? APP_CONFIG.locales.default;
+  }
 
   async ngAfterViewInit(): Promise<void> {
     if (!this.isRunningInBrowser()) {
@@ -363,8 +386,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     if (!this.hasFittedRoutes && state.status === 'ready' && state.routes.length > 0) {
       const allCoordinates = this.collectRouteCoordinates(state.routes);
 
-      if (allCoordinates.length > 0) {
-        this.mapHandle?.fitToCoordinates(allCoordinates);
+      if (allCoordinates.length > 0 && this.mapHandle) {
+        this.mapHandle.fitToCoordinates(allCoordinates);
         this.hasFittedRoutes = true;
       }
     }
@@ -458,6 +481,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   constructor() {
+    this.translate.onLangChange
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ lang }) => {
+        this.stopCountPluralRules.set(createPluralRules(this.resolveLanguage(lang)));
+      });
+
     this.overlayFacade
       .watchOverlay()
       .pipe(takeUntilDestroyed())

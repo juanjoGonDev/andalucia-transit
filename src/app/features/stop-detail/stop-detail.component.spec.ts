@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { BehaviorSubject, delay, of, throwError } from 'rxjs';
-import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
-
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '../../core/config';
 import { StopSchedule, StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
 import { StopScheduleFacade } from '../../domain/stop-schedule/stop-schedule.facade';
@@ -64,8 +62,7 @@ describe('StopDetailComponent', () => {
       imports: [
         StopDetailComponent,
         TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
-          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
         })
       ],
       providers: [
