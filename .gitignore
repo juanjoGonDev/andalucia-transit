@@ -43,6 +43,7 @@ artifacts/
 testem.log
 /typings
 __screenshots__/
+.eslintcache
 
 # System files
 .DS_Store
