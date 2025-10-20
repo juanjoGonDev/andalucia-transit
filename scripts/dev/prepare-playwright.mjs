@@ -12,6 +12,8 @@ const VALUE_TRUE = 'true';
 const VALUE_ONE = '1';
 const EXIT_SUCCESS = 0;
 const NEWLINE = '\n';
+const STDIO_INHERIT = 'inherit';
+const ERROR_INSTALL = 'Playwright browser installation failed';
 
 function isTruthy(value) {
   if (!value) {
@@ -25,14 +27,19 @@ function shouldSkip() {
   return isTruthy(process.env[ENV_SKIP]);
 }
 
+function isWindows() {
+  return process.platform === PLATFORM_WINDOWS;
+}
+
 function resolveExecutable() {
-  return process.platform === PLATFORM_WINDOWS ? COMMAND_NPX_WINDOWS : COMMAND_NPX;
+  return isWindows() ? COMMAND_NPX_WINDOWS : COMMAND_NPX;
 }
 
 function runInstall() {
   return new Promise((resolve, reject) => {
     const child = spawn(resolveExecutable(), [ARG_PLAYWRIGHT, ARG_INSTALL, ARG_WITH_DEPS], {
-      stdio: 'inherit',
+      stdio: STDIO_INHERIT,
+      shell: isWindows(),
     });
     child.on('error', reject);
     child.on('exit', (code) => {
@@ -40,7 +47,7 @@ function runInstall() {
         resolve();
         return;
       }
-      reject(new Error('Playwright browser installation failed'));
+      reject(new Error(ERROR_INSTALL));
     });
   });
 }
