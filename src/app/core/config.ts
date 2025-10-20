@@ -1,3 +1,5 @@
+import { PluralizedTranslationKeys } from './i18n/pluralization';
+
 const STOP_DETAIL_BASE_SEGMENT = 'stop-detail' as const;
 const STOP_ID_ROUTE_PARAM = 'stopId' as const;
 const STOP_INFO_BASE_SEGMENT = 'stop-info' as const;
@@ -33,6 +35,12 @@ const LANGUAGE_LOCALE_MAP = {
   es: LOCALE_ES_STANDARD,
   en: LOCALE_EN_STANDARD
 } as const;
+
+const MAP_ROUTE_STOP_COUNT_TRANSLATIONS: PluralizedTranslationKeys = {
+  one: 'map.routes.stopCount.one',
+  other: 'map.routes.stopCount.other'
+} as const;
+
 
 export const APP_CONFIG = {
   appName: 'Andalucia Transit',
@@ -315,6 +323,34 @@ export const APP_CONFIG = {
     map: {
       title: 'map.title',
       description: 'map.description',
+      locate: 'map.locate',
+      locating: 'map.locating',
+      panelTitle: 'map.panelTitle',
+      permissionPrompt: 'map.permissionPrompt',
+      accessibleMapLabel: 'map.accessibleMapLabel',
+      empty: 'map.empty',
+      stopAriaLabel: 'map.stopAriaLabel',
+      errors: {
+        permissionDenied: 'map.errors.permissionDenied',
+        positionUnavailable: 'map.errors.positionUnavailable',
+        timeout: 'map.errors.timeout',
+        generic: 'map.errors.generic'
+      },
+      routes: {
+        title: 'map.routes.title',
+        refresh: 'map.routes.refresh',
+        summary: 'map.routes.summary',
+        prompt: 'map.routes.prompt',
+        loading: 'map.routes.loading',
+        empty: 'map.routes.empty',
+        cardAria: 'map.routes.cardAria',
+        stopCount: MAP_ROUTE_STOP_COUNT_TRANSLATIONS,
+        distance: {
+          meters: 'map.routes.distance.meters',
+          kilometers: 'map.routes.distance.kilometers'
+        },
+        error: 'map.routes.error'
+      },
       openList: 'map.openList',
       hint: 'map.hint'
     },

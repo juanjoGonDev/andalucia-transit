@@ -33,6 +33,7 @@ export class InteractiveCardComponent {
   @Input() primaryAriaLabel: string | null = null;
   @Input() primaryRole: string | null = null;
   @Input() primaryCommands: readonly string[] | null = null;
+  @Input() primaryPressed: boolean | null = null;
   @Output() readonly primaryActivated = new EventEmitter<void>();
   @Output() readonly removeActivated = new EventEmitter<void>();
 

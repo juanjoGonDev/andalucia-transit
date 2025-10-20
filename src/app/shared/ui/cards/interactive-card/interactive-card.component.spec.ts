@@ -34,6 +34,7 @@ const BASE_REMOVE_CLASS = 'interactive-card__remove';
       [primaryAriaLabel]="primaryAriaLabel"
       [primaryRole]="primaryRole"
       [primaryCommands]="primaryCommands"
+      [primaryPressed]="primaryPressed"
       (primaryActivated)="primary.emit()"
       (removeActivated)="remove.emit()"
     >
@@ -51,6 +52,7 @@ class HostCardComponent {
   @Input() primaryAriaLabel: string | null = null;
   @Input() primaryRole: string | null = null;
   @Input() primaryCommands: readonly string[] | null = null;
+  @Input() primaryPressed: boolean | null = null;
   @Output() readonly primary = new EventEmitter<void>();
   @Output() readonly remove = new EventEmitter<void>();
 }
@@ -159,5 +161,17 @@ describe('InteractiveCardComponent', () => {
     const card = queryInteractiveCard();
 
     expect(card.classList).toContain(BASE_HOST_CLASS);
+  });
+
+  it('applies pressed state to the primary section when provided', () => {
+    host.primaryRole = 'button';
+    host.primaryPressed = true;
+    host.bodyClasses = [BODY_CLASS];
+
+    fixture.detectChanges();
+
+    const primary = fixture.debugElement.query(By.css(`.${BODY_CLASS}`));
+
+    expect(primary.attributes['aria-pressed']).toBe('true');
   });
 });
