@@ -7,7 +7,9 @@
     "settings": "Settings",
     "language": "Language",
     "lines": "Lines",
-    "favorites": "Favorites"
+    "favorites": "Favorites",
+    "news": "News",
+    "stopInfo": "Stop information"
   },
   "languages": {
     "es": "Spanish",
@@ -186,6 +188,9 @@
     "title": "Stop overview",
     "subtitle": "Live departures with accessibility and university indicators.",
     "loading": "Loading schedule…",
+    "actions": {
+      "stopInfo": "View stop information"
+    },
     "error": {
       "title": "Schedule unavailable",
       "description": "We can't load departures for this stop right now. Try again in a moment."
@@ -219,6 +224,35 @@
     "source": {
       "live": "This information comes right now from the {{provider}}.",
       "snapshot": "This information comes from a copy saved on {{date}} at {{time}} by the {{provider}}."
+    }
+  },
+  "stopInfo": {
+    "title": "Stop information",
+    "description": "Key details for the selected stop, including codes, zone, and available connections.",
+    "actions": {
+      "refresh": "Refresh stop"
+    },
+    "status": {
+      "loading": "Loading stop information…",
+      "offline": "Showing offline snapshot details. Live data will appear when you reconnect.",
+      "notFound": "We couldn't find a stop with that consortium and number.",
+      "error": "We couldn't load the stop information. Try again shortly."
+    },
+    "labels": {
+      "stopNumber": "Stop number",
+      "stopCode": "Stop code",
+      "municipality": "Municipality",
+      "nucleus": "District",
+      "zone": "Zone",
+      "description": "Description",
+      "observations": "Notes",
+      "correspondences": "Connections",
+      "location": "Coordinates",
+      "status": "Status"
+    },
+    "tags": {
+      "main": "Main stop",
+      "inactive": "Inactive"
     }
   },
   "routeSearch": {
@@ -269,6 +303,31 @@
       "application": {
         "title": "Application",
         "versionLabel": "Version"
+      }
+    }
+  },
+  "news": {
+    "title": "News",
+    "description": "Latest updates and official notices from the Andalusian transport network.",
+    "updatedLabel": "Updated on {{date}}",
+    "readMore": "Read more",
+    "refresh": "Refresh",
+    "empty": "No news items are available right now.",
+    "feed": {
+      "sevillaMetroUpdates": {
+        "title": "Extended night service on Seville metro",
+        "summary": "Service hours are expanded with extra trains while the airport connection works continue.",
+        "link": "https://www.ctan.es/noticias/ampliacion-metro-sevilla"
+      },
+      "malagaNightRoutes": {
+        "title": "Night routes reinforced in Málaga",
+        "summary": "Night lines N1 and N4 will run every 20 minutes on weekends during the peak season.",
+        "link": "https://www.ctan.es/noticias/refuerzo-nocturno-malaga"
+      },
+      "cadizDigitalTickets": {
+        "title": "Digital travel pass for Bahía de Cádiz",
+        "summary": "New mobile ticket supports online top-ups and contactless validation on metropolitan buses.",
+        "link": "https://www.ctan.es/noticias/billete-digital-cadiz"
       }
     }
   },

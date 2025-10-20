@@ -483,7 +483,7 @@ describe('AppTextFieldComponent', () => {
     expect(input?.getAttribute('aria-required')).toBe(ARIA_TRUE);
   });
 
-  it('exposes invalid state only after the control becomes touched', () => {
+  it('defers visual invalid state until interaction while announcing invalid metadata immediately', () => {
     const reactiveFixture = TestBed.createComponent(AppTextFieldReactiveHostComponent);
     reactiveFixture.detectChanges();
 
@@ -496,7 +496,7 @@ describe('AppTextFieldComponent', () => {
 
     expect(field).not.toBeNull();
     expect(field?.classList).not.toContain(INVALID_CLASS);
-    expect(input.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBeNull();
+    expect(input.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBe(ARIA_TRUE);
 
     input.dispatchEvent(new FocusEvent('focus'));
     reactiveFixture.detectChanges();
@@ -518,6 +518,8 @@ describe('AppTextFieldComponent', () => {
       throw new Error(MISSING_INPUT_ERROR_MESSAGE);
     }
 
+    expect(input.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBe(ARIA_TRUE);
+
     input.dispatchEvent(new FocusEvent('focus'));
     reactiveFixture.detectChanges();
     input.dispatchEvent(new FocusEvent('blur'));
@@ -529,6 +531,12 @@ describe('AppTextFieldComponent', () => {
 
     expect(field?.classList).not.toContain(INVALID_CLASS);
     expect(input.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBeNull();
+
+    input.value = '';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    reactiveFixture.detectChanges();
+
+    expect(input.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBe(ARIA_TRUE);
   });
 
   it('reflects pending control state through aria-busy metadata', fakeAsync(() => {

@@ -30,10 +30,39 @@ import {
   AppLayoutContext,
   AppLayoutTabRegistration,
 } from '../../shared/layout/app-layout-context.token';
+import { StopDirectoryFacade } from '../../domain/stops/stop-directory.facade';
+import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
 
 const ALL_DESTINATIONS_OPTION = 'all';
+const STATUS_ROLE = 'status';
+const POLITE_LIVE = 'polite';
+const ASSERTIVE_LIVE = 'assertive';
 export const STOP_TIMELINE_UPCOMING_TAB_ID = 'stop-detail-timeline-upcoming' as const;
 export const STOP_TIMELINE_PAST_TAB_ID = 'stop-detail-timeline-past' as const;
+
+type StopInfoCommands = readonly string[] | null;
+
+const areStopInfoCommandsEqual = (left: StopInfoCommands, right: StopInfoCommands): boolean => {
+  if (left === right) {
+    return true;
+  }
+
+  if (!left || !right) {
+    return false;
+  }
+
+  if (left.length !== right.length) {
+    return false;
+  }
+
+  for (let index = 0; index < left.length; index += 1) {
+    if (left[index] !== right[index]) {
+      return false;
+    }
+  }
+
+  return true;
+};
 
 type ScheduleItem = StopScheduleUiModel['upcoming'][number] | StopScheduleUiModel['past'][number];
 
@@ -45,7 +74,13 @@ type ScheduleState =
 @Component({
   selector: 'app-stop-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, AppLayoutContentDirective],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    AppLayoutContentDirective,
+    AccessibleButtonDirective
+  ],
   templateUrl: './stop-detail.component.html',
   styleUrls: ['./stop-detail.component.scss', './stop-detail.component-list.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,12 +93,17 @@ export class StopDetailComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly stopScheduleFacade = inject(StopScheduleFacade);
   private readonly layoutContext: AppLayoutContext = inject(APP_LAYOUT_CONTEXT);
+  private readonly stopDirectoryFacade = inject(StopDirectoryFacade);
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.stopDetail;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.stopDetailBase;
+  protected readonly actionKeys = this.translationKeys.actions;
   protected readonly destinationControl = new FormControl<string>(ALL_DESTINATIONS_OPTION, {
     nonNullable: true,
   });
+  protected readonly statusRole = STATUS_ROLE;
+  protected readonly politeLiveRegion = POLITE_LIVE;
+  protected readonly assertiveLiveRegion = ASSERTIVE_LIVE;
   private readonly timelineTabs: readonly AppLayoutTabRegistration[] = [
     {
       identifier: STOP_TIMELINE_UPCOMING_TAB_ID,
@@ -116,6 +156,28 @@ export class StopDetailComponent {
     distinctUntilChanged(),
   );
 
+  protected readonly stopInfoCommands$ = this.stopId$.pipe(
+    switchMap((stopId) =>
+      this.stopDirectoryFacade.getRecordByStopId(stopId).pipe(
+        map((record): StopInfoCommands => {
+          if (!record) {
+            return null;
+          }
+
+          return [
+            StopDetailComponent.ROOT_COMMAND,
+            APP_CONFIG.routes.stopInfoBase,
+            record.consortiumId.toString(),
+            stopId,
+          ];
+        }),
+      ),
+    ),
+    startWith<StopInfoCommands>(null),
+    distinctUntilChanged(areStopInfoCommandsEqual),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
+
   protected readonly viewModel$: Observable<StopScheduleUiModel> = combineLatest([
     this.scheduleResult$,
     this.destinationControl.valueChanges.pipe(startWith(this.destinationControl.value)),
@@ -155,6 +217,10 @@ export class StopDetailComponent {
     this.viewModel$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((viewModel) => this.syncTimelineTab(viewModel));
+  }
+
+  protected async openStopInfo(commands: readonly string[]): Promise<void> {
+    await this.router.navigate(commands);
   }
 
   private redirectToHome(): void {

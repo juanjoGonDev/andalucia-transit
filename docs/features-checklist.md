@@ -120,6 +120,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] Screenshot (Favorites list — desktop): https://browser.buildwithfern.com/invocations/qekfmfwj/artifacts/artifacts/favorites-desktop.png
   - [x] Screenshot (Favorites list — mobile): https://browser.buildwithfern.com/invocations/qekfmfwj/artifacts/artifacts/favorites-mobile.png
   - [x] Tests: `npm run lint`; `npm run test` *(aborted while installing Chrome dependencies for the Angular runner)*; `npm run build`.
+  - [x] 2025-10-29 Rebuilt interactive card tokens to lock the favorites gradient, chip contrast, and remove control placement against the baseline.
+    - [x] Screenshot (Favorites list — desktop parity reconfirmed): https://browser.buildwithfern.com/invocations/fdvycuml/artifacts/artifacts/favorites-desktop.png
+    - [x] Screenshot (Favorites list — mobile parity reconfirmed): https://browser.buildwithfern.com/invocations/fdvycuml/artifacts/artifacts/favorites-mobile.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [x] Recent searches time block anchoring (A2) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-18 Reworked recent preview entry layout with flex alignment and non-wrapping time blocks at mobile and desktop widths.
   - [x] Screenshot (Home recent searches — desktop): https://browser.buildwithfern.com/invocations/wdsyzxta/artifacts/artifacts/recent-time.png
@@ -199,7 +203,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-22 Released dialog backdrop and keyboard listeners through a shared cleanup subject triggered before overlay disposal to guarantee teardown without affecting visuals.
     - [x] Screenshot (Favorites clear confirmation — desktop, cleanup subject parity): https://browser.buildwithfern.com/invocations/wgwaccoq/artifacts/artifacts/favorites-dialog-escape.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
-- [ ] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
+- [x] Form primitive harmonization (B3) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Locked AppTextField aria-invalid metadata to emit only for invalid controls and synchronized autocomplete and date picker tests to guard the shared behavior.
+    - [x] Screenshot (Route search form — desktop, aria-invalid semantics locked): https://browser.buildwithfern.com/invocations/sjtdgooh/artifacts/artifacts/route-search-form.png
+    - [x] Tests: `npm run test:angular`.
   - [x] 2025-10-29 Limited AppTextField aria-invalid exposure to invalid controls so healthy fields omit the attribute while preserving baseline layout tokens.
     - [x] Screenshot (Route search form — desktop, aria-invalid omission parity validated): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
@@ -330,7 +337,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
 - [x] 2025-10-26 Restored AppTextField aria-invalid boolean metadata so valid controls surface `false` while invalid controls surface `true` without altering shared layout tokens.
   - [x] Screenshot (Route search form — desktop, aria-invalid boolean parity restored): https://browser.buildwithfern.com/invocations/bfnlgbtv/artifacts/artifacts/route-search-notice.png
   - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
-- [ ] Accessibility verification sweep (B4) — attach public screenshot URL(s); visual diff must be 0px.
+- [x] Accessibility verification sweep (B4) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-31 Completed accessibility sweep by promoting the routed content section to a main landmark and marking dynamic stop messaging as live regions with polite and assertive cues.
+    - [x] Screenshot (Stop information status messaging — desktop): https://browser.buildwithfern.com/invocations/mqzfeuzz/artifacts/artifacts/stop-info-status.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [x] 2025-10-20 Added an application-wide skip control that preserves keyboard order and focuses the shared layout body without altering visuals.
     - [x] Screenshot (Skip to content control — desktop focus): https://browser.buildwithfern.com/invocations/rgcguyok/artifacts/artifacts/skip-link-focus.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
@@ -382,10 +392,20 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 
 ### Feature Roadmap (2025-10-18)
-- [ ] News feed view (C1) — attach public screenshot URL(s); visual diff must be 0px.
-  - [ ] Document CTAN endpoint + caching in `docs/api-reference.md`.
-- [ ] Stop information by consortium + stop number (C2) — attach public screenshot URL(s); visual diff must be 0px.
-  - [ ] Ensure friendly URL contract and offline fallback notes in documentation.
+- [x] News feed view (C1) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Routed the new News feature through `AppLayoutComponent`, added a cached feed service with domain facade refresh hooks, and styled card listings with shared tokens.
+    - [x] Screenshot (News view — desktop): https://browser.buildwithfern.com/invocations/ndveuzdu/artifacts/artifacts/news-view.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] Document CTAN endpoint + caching in `docs/api-reference.md`.
+    - [x] 2025-10-29 Added a news snapshot feed section covering source attribution, caching behaviour, and article schema details.
+- [x] Stop information by consortium + stop number (C2) — attach public screenshot URL(s); visual diff must be 0px.
+  - [x] 2025-10-19 Introduced the stop information route with shared layout registration, domain facade, and offline-friendly fallbacks for directory data.
+    - [x] Screenshot (Stop information — desktop): https://browser.buildwithfern.com/invocations/bmicpmgc/artifacts/artifacts/stop-info-desktop.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+  - [x] Ensure friendly URL contract and offline fallback notes in documentation.
+  - [x] 2025-10-19 Linked the stop detail actions to the stop information view using directory metadata so users can jump directly to enriched details.
+    - [x] Screenshot (Stop detail — desktop, stop info action): https://browser.buildwithfern.com/invocations/xysejzld/artifacts/artifacts/stop-detail-stop-info-action.png
+    - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
 - [ ] Interactive map with nearby stops (C3) — attach public screenshot URL(s); visual diff must be 0px.
   - [ ] Record OSM/Leaflet licensing and geolocation consent handling in documentation.
 - [ ] Route overlay on map (C4) — attach public screenshot URL(s); visual diff must be 0px.

@@ -1,28 +1,30 @@
 .favorites-card {
-  position: relative;
-  display: flex;
-  width: 100%;
-  border-radius: var(--radius-xl);
-  background-image: linear-gradient(
-    135deg,
-    var(--color-primary-gradient-start) 0%,
+  --interactive-card-background: linear-gradient(
+    132deg,
+    var(--color-primary-gradient-start-strong) 0%,
+    var(--color-primary-midnight) 62%,
     var(--color-secondary-overlay-strong) 100%
   );
-  color: var(--color-text-inverse);
-  box-shadow: var(--shadow-hero-card);
+  --interactive-card-foreground: var(--color-text-inverse);
+  --interactive-card-radius: calc(var(--radius-xl) + var(--space-2xs));
+  --interactive-card-shadow: var(--shadow-hero-card);
+  --interactive-card-body-gap: var(--space-md);
+  --interactive-card-body-alignment: flex-start;
+  --interactive-card-padding-block: calc(var(--space-lg) + var(--space-2xs));
+  --interactive-card-padding-inline: calc(var(--space-lg) + var(--space-xs));
+  --interactive-card-remove-offset: calc(var(--space-md) + var(--space-3xs));
+  --interactive-card-remove-size: calc(var(--space-xl) + var(--space-sm));
+  --interactive-card-remove-background: var(--color-text-inverse-overlay-soft);
+  --interactive-card-remove-hover-background: var(--color-text-inverse-overlay-strong);
+  --interactive-card-remove-foreground: var(--color-text-inverse);
+  --interactive-card-focus-outline: var(--color-text-inverse-soft-strong);
+  --interactive-card-remove-focus-outline: var(--color-text-inverse);
 }
 
 .favorites-card__body {
   display: flex;
   align-items: flex-start;
   gap: var(--space-md);
-  width: 100%;
-  padding: var(--space-lg) calc(var(--space-xl) + var(--space-sm)) var(--space-lg) var(--space-lg);
-  border: none;
-  border-radius: inherit;
-  background: transparent;
-  color: inherit;
-  text-align: left;
 }
 
 .favorites-card__body:focus-visible {
@@ -72,7 +74,7 @@
   gap: var(--space-4xs);
   padding: var(--space-4xs) var(--space-sm);
   border-radius: var(--radius-full);
-  background-color: var(--color-text-inverse-overlay-soft);
+  background-color: var(--color-text-inverse-overlay-weak);
   color: var(--color-text-inverse);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
@@ -88,38 +90,16 @@
   font-weight: var(--font-weight-bold);
 }
 
-.favorites-card__remove {
-  position: absolute;
-  top: var(--space-md);
-  right: var(--space-md);
-  width: var(--space-2xl);
-  height: var(--space-2xl);
-  border-radius: var(--radius-full);
-  background-color: var(--color-text-inverse-overlay-soft);
-  color: var(--color-text-inverse);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.favorites-card__remove:hover {
-  background-color: var(--color-text-inverse-overlay-strong);
-  transform: translateY(-2px);
-}
-
-.favorites-card__remove:focus-visible {
-  outline: 2px solid var(--color-text-inverse);
-  outline-offset: 2px;
-}
-
 .favorites-card__remove .material-symbols-outlined {
-  font-size: var(--font-size-lg);
+  font-size: calc(var(--font-size-base) + var(--space-2xs));
 }
 
 @media (min-width: 48rem) {
-  .favorites-card__body {
-    padding: calc(var(--space-lg) + var(--space-xs)) calc(var(--space-2xl) + var(--space-sm)) calc(var(--space-lg) + var(--space-xs)) calc(var(--space-xl) - var(--space-2xs));
+  .favorites-card {
+    --interactive-card-padding-block: calc(var(--space-xl) - var(--space-3xs));
+    --interactive-card-padding-inline: calc(var(--space-xl) + var(--space-xs));
+    --interactive-card-remove-offset: calc(var(--space-lg) - var(--space-4xs));
+    --interactive-card-remove-size: calc(var(--space-2xl) + var(--space-3xs));
   }
 
   .favorites-card__name {

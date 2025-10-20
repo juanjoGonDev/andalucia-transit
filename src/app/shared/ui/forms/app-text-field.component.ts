@@ -191,7 +191,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   }
 
   get ariaInvalidAttribute(): 'true' | null {
-    return this.shouldDisplayInvalidState() ? (ARIA_TRUE as 'true') : null;
+    return this.isControlInvalid(this.resolveControl()) ? (ARIA_TRUE as 'true') : null;
   }
 
   get ariaRequiredAttribute(): 'true' | null {
@@ -485,6 +485,14 @@ export class AppTextFieldComponent implements ControlValueAccessor {
     }
 
     return this.ngControl?.control ?? null;
+  }
+
+  private isControlInvalid(control: AbstractControl | null): boolean {
+    if (!control) {
+      return false;
+    }
+
+    return control.invalid;
   }
 
   private isControlPending(control: AbstractControl | null): boolean {

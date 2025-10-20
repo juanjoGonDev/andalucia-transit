@@ -8,6 +8,9 @@ const ISO_DATE_EXAMPLE = '2025-01-02';
 const INVALID_DATE_VALUE = '2025-02-30';
 const TRIMMED_EMPTY_VALUE = '   ';
 const REQUIRED_ERROR_MESSAGE = 'This field is required';
+const ARIA_INVALID_ATTRIBUTE = 'aria-invalid';
+const TRUE_STRING = 'true';
+const VALID_DATE = new Date(Date.UTC(2025, 0, 2));
 
 const ensureDate = (value: Date | null): Date => {
   if (!value) {
@@ -134,6 +137,39 @@ describe('AppDatePickerComponent projected error content', () => {
     expect(inputElement.getAttribute('aria-errormessage')).toBe(errorElement.id);
     expect(describedByAttribute).not.toBeNull();
     expect(describedByAttribute?.split(' ').includes(errorElement.id)).toBeTrue();
+  });
+
+  it('reflects control validity through the aria-invalid attribute', async () => {
+    const control = fixture.componentInstance.form.controls.date;
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const inputElement = ensureElement(
+      fixture.nativeElement.querySelector('input') as HTMLInputElement | null,
+    );
+
+    expect(control.invalid).toBeTrue();
+    expect(inputElement.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBe(TRUE_STRING);
+
+    control.setValue(VALID_DATE);
+    control.updateValueAndValidity();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(control.valid).toBeTrue();
+    expect(inputElement.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBeNull();
+
+    control.setValue(null);
+    control.updateValueAndValidity();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(control.invalid).toBeTrue();
+    expect(inputElement.getAttribute(ARIA_INVALID_ATTRIBUTE)).toBe(TRUE_STRING);
   });
 });
 

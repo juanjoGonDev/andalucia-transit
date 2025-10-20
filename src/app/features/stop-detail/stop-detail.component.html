@@ -7,7 +7,11 @@
     <div class="app-layout__body">
       <ng-container *ngIf="isLoading$ | async; else scheduleContent">
         <section class="stop-detail__card stop-detail__card--centered">
-          <div class="stop-detail__status stop-detail__loading">
+          <div
+            class="stop-detail__status stop-detail__loading"
+            [attr.role]="statusRole"
+            [attr.aria-live]="politeLiveRegion"
+          >
             <span class="material-symbols-outlined stop-detail__status-icon stop-detail__loading-icon"
               >hourglass_top</span
             >
@@ -19,7 +23,11 @@
       <ng-template #scheduleContent>
         <ng-container *ngIf="loadError$ | async; else scheduleLoaded">
           <section class="stop-detail__card stop-detail__card--centered">
-            <div class="stop-detail__status stop-detail__error">
+            <div
+              class="stop-detail__status stop-detail__error"
+              [attr.role]="statusRole"
+              [attr.aria-live]="assertiveLiveRegion"
+            >
               <span class="material-symbols-outlined stop-detail__status-icon stop-detail__error-icon"
                 >warning</span
               >
@@ -40,6 +48,21 @@
                 <span class="stop-detail__tag">{{ viewModel.stopCode }}</span>
                 <h1 class="stop-detail__title">{{ viewModel.stopName }}</h1>
                 <p class="stop-detail__subtitle">{{ translationKeys.subtitle | translate }}</p>
+              </div>
+              <div
+                class="stop-detail__actions"
+                *ngIf="stopInfoCommands$ | async as stopInfoCommands"
+              >
+                <div
+                  class="app-outline-button app-outline-button--compact stop-detail__action"
+                  appAccessibleButton
+                  (appAccessibleButtonActivated)="openStopInfo(stopInfoCommands)"
+                >
+                  <span class="material-symbols-outlined stop-detail__action-icon" aria-hidden="true">
+                    info
+                  </span>
+                  {{ actionKeys.stopInfo | translate }}
+                </div>
               </div>
               <div class="stop-detail__meta">
                 <div class="stop-detail__meta-item">
