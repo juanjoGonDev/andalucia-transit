@@ -1,9 +1,9 @@
 const { join } = require('node:path');
 const { constants } = require('karma');
-const puppeteer = require('puppeteer');
+const { chromium } = require('playwright');
 
 if (!process.env.CHROME_BIN) {
-  process.env.CHROME_BIN = puppeteer.executablePath();
+  process.env.CHROME_BIN = chromium.executablePath();
 }
 
 module.exports = function (config) {

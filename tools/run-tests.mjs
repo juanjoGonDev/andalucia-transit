@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import puppeteer from 'puppeteer';
+import { chromium } from 'playwright';
 
 const browserFlag = '--browsers';
 const watchFlag = '--watch';
@@ -12,7 +12,7 @@ const chromeAutoInstallDisabled = 'false';
 const defaultBrowsers = [chromeHeadlessNoSandbox];
 
 if (!process.env.CHROME_BIN) {
-  process.env.CHROME_BIN = puppeteer.executablePath();
+  process.env.CHROME_BIN = chromium.executablePath();
 }
 
 const command = process.platform === 'win32' ? 'ng.cmd' : 'ng';

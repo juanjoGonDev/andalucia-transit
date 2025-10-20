@@ -6,6 +6,7 @@ const COMMAND_NPX = 'npx';
 const COMMAND_NPX_WINDOWS = 'npx.cmd';
 const ARG_PLAYWRIGHT = 'playwright';
 const ARG_INSTALL = 'install';
+const ARG_CHROMIUM = 'chromium';
 const ARG_WITH_DEPS = '--with-deps';
 const ENV_SKIP = 'PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD';
 const VALUE_TRUE = 'true';
@@ -37,7 +38,7 @@ function resolveExecutable() {
 
 function runInstall() {
   return new Promise((resolve, reject) => {
-    const child = spawn(resolveExecutable(), [ARG_PLAYWRIGHT, ARG_INSTALL, ARG_WITH_DEPS], {
+    const child = spawn(resolveExecutable(), [ARG_PLAYWRIGHT, ARG_INSTALL, ARG_CHROMIUM, ARG_WITH_DEPS], {
       stdio: STDIO_INHERIT,
       shell: isWindows(),
     });

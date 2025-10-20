@@ -15,7 +15,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 ## Tech Stack & Tooling
 - Angular (latest stable; current workspace on Angular 20) with TypeScript, Angular Material, RxJS, and standalone component architecture.
 - @angular/pwa for service worker + manifest, ngx-translate for runtime i18n, Leaflet (or ngx-leaflet) for mapping.
-- Node.js LTS + npm, ESLint + Prettier, Jasmine/Karma unit tests, Cypress end-to-end tests.
+- Node.js LTS + npm, ESLint + Prettier, Jasmine/Karma unit tests launched with Playwright-managed Chromium, Cypress end-to-end tests.
 - Configuration via Angular environments; HttpClient handles API access; commit messages in English.
 - Environment provisioning relies on `scripts/bootstrap.mjs`; any change introducing new tooling or dependencies must update this script so setup stays deterministic. Prefer pnpm via Corepack, fall back to yarn and npm only when unavoidable, and ensure the bootstrap path remains non-interactive on Linux.
 
@@ -36,6 +36,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - 2025-10-13: Route timetable mapping infers weekday sets and holiday availability from consortium frequency codes and labels, covering variations across CTAN consorcios 1-9.
 - 2025-10-15: Snapshot pipeline now streams progress logs, persists catalog data in parallel, and linting enforces GitHub Actions validity via actionlint; see `docs/development-environment.md` for the environment bootstrap script.
 - 2025-10-16: Deployment verification relies on `npm run deploy:prepare`, which mirrors the GitHub Pages build and fallback creation. Run `npm run test:deploy` in pull requests that modify deployment workflows or `scripts/deploy/*` utilities.
+- 2025-10-19: Puppeteer tooling replaced with Playwright (Chromium-only) while preserving Cypress end-to-end coverage.
 
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.
