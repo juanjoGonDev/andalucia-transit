@@ -63,7 +63,8 @@ describe('StopDetailComponent', () => {
       imports: [
         StopDetailComponent,
         TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
         })
       ],
       providers: [

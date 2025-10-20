@@ -123,7 +123,10 @@ describe('FavoritesComponent', () => {
       imports: [
         RouterTestingModule,
         FavoritesComponent,
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: FakeTranslateLoader } })
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
+        })
       ],
       providers: [
         { provide: FavoritesFacade, useValue: favoritesFacade },
@@ -133,6 +136,8 @@ describe('FavoritesComponent', () => {
 
     fixture = TestBed.createComponent(FavoritesComponent);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
   });
 
   it('renders favorites grouped by municipality', () => {

@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, of } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { DateTime } from 'luxon';
@@ -155,7 +156,8 @@ describe('RouteSearchComponent', () => {
         RouteSearchComponent,
         RouteSearchFormStubComponent,
         TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: TranslateTestingLoader }
+          loader: { provide: TranslateLoader, useClass: TranslateTestingLoader },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
         })
       ],
       providers: [
