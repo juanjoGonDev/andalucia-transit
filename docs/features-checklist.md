@@ -465,3 +465,6 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Screenshot (Map routes panel — live announcements desktop): https://browser.buildwithfern.com/invocations/dcjwgcpm/artifacts/artifacts/map-routes-desktop.png
     - [x] Screenshot (Map routes panel — live announcements mobile): https://browser.buildwithfern.com/invocations/dcjwgcpm/artifacts/artifacts/map-routes-mobile.png
     - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-12 Announced map route overlay loading, success, empty, and error states via the live region so screen readers receive context when results change.
+    - [x] Screenshot (Map routes panel — status announcements): https://browser.buildwithfern.com/invocations/jpllhjge/artifacts/artifacts/map-route-status.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.

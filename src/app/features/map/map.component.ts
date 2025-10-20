@@ -122,7 +122,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly distanceTranslations = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
   private readonly routeDistanceTranslations = APP_CONFIG.translationKeys.map.routes.distance;
   private readonly routeStopCountTranslations = APP_CONFIG.translationKeys.map.routes.stopCount;
-  private readonly routeAnnouncementTranslations = APP_CONFIG.translationKeys.map.routes.announcements;
+  private readonly routeAnnouncementSelectedKey =
+    APP_CONFIG.translationKeys.map.routes.announcements.selected;
+  private readonly routeAnnouncementClearedKey =
+    APP_CONFIG.translationKeys.map.routes.announcements.cleared;
+  private readonly routeAnnouncementLoadingKey =
+    APP_CONFIG.translationKeys.map.routes.announcements.loading;
+  private readonly routeAnnouncementLoadedTranslations =
+    APP_CONFIG.translationKeys.map.routes.announcements.loaded;
+  private readonly routeAnnouncementEmptyKey =
+    APP_CONFIG.translationKeys.map.routes.announcements.empty;
+  private readonly routeAnnouncementErrorKey =
+    APP_CONFIG.translationKeys.map.routes.announcements.error;
   private readonly stopDetailRouteKey = APP_CONFIG.routes.stopDetailBase;
 
   private readonly language = toSignal(
@@ -182,6 +193,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   });
   protected readonly activeRouteId = signal<string | null>(null);
   protected readonly routeSelectionSummary = signal<RouteOverlaySelectionSummary | null>(null);
+
+  private lastRouteStatus: RouteOverlayStatus | null = null;
+  private lastRouteCount = -1;
+  private lastRouteErrorKey: string | null = null;
 
   protected readonly hasStops = computed(() => this.stops().length > 0);
   protected readonly showEmptyState = computed(
@@ -402,6 +417,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     this.routeSelectionSummary.set(state.selectionSummary);
     this.routes.set(state.routes);
     this.updateMapRoutes();
+    this.announceRouteStatusIfNeeded(state);
 
     if (!this.hasFittedRoutes && state.status === 'ready' && state.routes.length > 0) {
       const allCoordinates = this.collectRouteCoordinates(state.routes);
@@ -438,7 +454,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   private announceRouteSelected(route: RouteOverlayRoute): void {
-    const message = this.translate.instant(this.routeAnnouncementTranslations.selected, {
+    const message = this.translate.instant(this.routeAnnouncementSelectedKey, {
       code: route.lineCode,
       destination: route.destinationName
     });
@@ -447,8 +463,61 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   private announceRouteCleared(): void {
-    const message = this.translate.instant(this.routeAnnouncementTranslations.cleared);
+    const message = this.translate.instant(this.routeAnnouncementClearedKey);
     this.publishRouteAnnouncement(message);
+  }
+
+  private announceRoutesLoading(): void {
+    const message = this.translate.instant(this.routeAnnouncementLoadingKey);
+    this.publishRouteAnnouncement(message);
+  }
+
+  private announceRoutesLoaded(count: number): void {
+    const language = this.language();
+    const translationKey = this.pluralization.selectKey(
+      count,
+      this.routeAnnouncementLoadedTranslations,
+      language
+    );
+    const message = this.translate.instant(translationKey, { value: String(count) });
+    this.publishRouteAnnouncement(message);
+  }
+
+  private announceRoutesEmpty(): void {
+    const message = this.translate.instant(this.routeAnnouncementEmptyKey);
+    this.publishRouteAnnouncement(message);
+  }
+
+  private announceRoutesError(errorKey: string | null): void {
+    const translationKey = errorKey ?? this.routeAnnouncementErrorKey;
+    const message = this.translate.instant(translationKey);
+    this.publishRouteAnnouncement(message);
+  }
+
+  private announceRouteStatusIfNeeded(state: RouteOverlayState): void {
+    const statusChanged = state.status !== this.lastRouteStatus;
+    const routeCountChanged = state.routes.length !== this.lastRouteCount;
+    const errorChanged = state.errorKey !== this.lastRouteErrorKey;
+
+    if (!statusChanged && !routeCountChanged && !errorChanged) {
+      return;
+    }
+
+    if (state.status === 'loading') {
+      this.announceRoutesLoading();
+    } else if (state.status === 'ready') {
+      if (state.routes.length > 0) {
+        this.announceRoutesLoaded(state.routes.length);
+      } else if (routeCountChanged || statusChanged) {
+        this.announceRoutesEmpty();
+      }
+    } else if (state.status === 'error') {
+      this.announceRoutesError(state.errorKey);
+    }
+
+    this.lastRouteStatus = state.status;
+    this.lastRouteCount = state.routes.length;
+    this.lastRouteErrorKey = state.errorKey;
   }
 
   private publishRouteAnnouncement(message: string): void {

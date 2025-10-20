@@ -290,23 +290,30 @@
     "accessibleMapLabel": "Mapa de Andalucía con paradas cercanas",
     "empty": "No encontramos paradas en tu área.",
     "stopAriaLabel": "Abrir la parada {{code}} en {{municipality}}",
-  "routes": {
-    "title": "Líneas",
-    "refresh": "Actualizar rutas",
-    "summary": "Rutas para {{origin}} → {{destination}}",
-    "prompt": "Realiza una búsqueda de rutas para mostrarlas en el mapa.",
-    "loading": "Cargando recorridos…",
-    "empty": "No hay rutas disponibles para esta búsqueda.",
-    "cardAria": "Resaltar la ruta {{code}} hacia {{destination}} en el mapa",
-    "announcements": {
-      "selected": "Ruta {{code}} hacia {{destination}} resaltada en el mapa.",
-      "cleared": "Se ha quitado el resaltado de la ruta."
-    },
-    "stopCount": {
-      "one": "{{value}} parada",
-      "other": "{{value}} paradas"
-    },
-    "distance": {
+    "routes": {
+      "title": "Líneas",
+      "refresh": "Actualizar rutas",
+      "summary": "Rutas para {{origin}} → {{destination}}",
+      "prompt": "Realiza una búsqueda de rutas para mostrarlas en el mapa.",
+      "loading": "Cargando recorridos…",
+      "empty": "No hay rutas disponibles para esta búsqueda.",
+      "cardAria": "Resaltar la ruta {{code}} hacia {{destination}} en el mapa",
+      "announcements": {
+        "selected": "Ruta {{code}} hacia {{destination}} resaltada en el mapa.",
+        "cleared": "Se ha quitado el resaltado de la ruta.",
+        "loading": "Cargando rutas para esta búsqueda.",
+        "loaded": {
+          "one": "{{value}} ruta cargada en el mapa.",
+          "other": "{{value}} rutas cargadas en el mapa."
+        },
+        "empty": "No hay rutas disponibles para esta búsqueda.",
+        "error": "No pudimos cargar las rutas de esta búsqueda."
+      },
+      "stopCount": {
+        "one": "{{value}} parada",
+        "other": "{{value}} paradas"
+      },
+      "distance": {
         "meters": "{{value}} m",
         "kilometers": "{{value}} km"
       },

@@ -470,6 +470,8 @@ describe('MapComponent', () => {
   });
 
   it('announces highlight clearing when overlay selection changes', async () => {
+    const translate = TestBed.inject(TranslateService);
+    const instantSpy = spyOn(translate, 'instant').and.callThrough();
     const readyState = buildRouteOverlayState({
       status: 'ready',
       routes: [
@@ -512,7 +514,115 @@ describe('MapComponent', () => {
     await fixture.whenStable();
 
     expect(access.activeRouteId()).toBeNull();
-    expect(access.routeLiveMessage()).toBe('map.routes.announcements.cleared');
+    expect(access.routeLiveMessage()).toBe('map.routes.announcements.loading');
+    expect(instantSpy).toHaveBeenCalledWith('map.routes.announcements.cleared');
+  });
+
+  it('announces overlay loading status changes', async () => {
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const loadingState = buildRouteOverlayState({
+      status: 'loading',
+      routes: [],
+      selectionKey: 'loading-selection',
+      errorKey: null
+    });
+
+    overlayFacade.emit(loadingState);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteSelectionAccess;
+
+    expect(access.routeLiveMessage()).toBe('map.routes.announcements.loading');
+  });
+
+  it('announces overlay ready status with pluralized count', async () => {
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const readyState = buildRouteOverlayState({
+      status: 'ready',
+      routes: [
+        {
+          id: 'ready-route-one',
+          lineId: 'line-ready-one',
+          lineCode: 'M-101',
+          direction: 0,
+          destinationName: 'Centro',
+          coordinates: [
+            { latitude: 37.2, longitude: -5.9 },
+            { latitude: 37.22, longitude: -5.92 }
+          ],
+          stopCount: 4,
+          lengthInMeters: ROUTE_LENGTH_METERS
+        },
+        {
+          id: 'ready-route-two',
+          lineId: 'line-ready-two',
+          lineCode: 'M-102',
+          direction: 1,
+          destinationName: 'Santa Justa',
+          coordinates: [
+            { latitude: 37.24, longitude: -5.94 },
+            { latitude: 37.26, longitude: -5.96 }
+          ],
+          stopCount: 5,
+          lengthInMeters: ROUTE_LENGTH_METERS
+        }
+      ],
+      selectionKey: 'ready-selection',
+      errorKey: null
+    });
+
+    overlayFacade.emit(readyState);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteSelectionAccess;
+
+    expect(access.routeLiveMessage()).toBe('map.routes.announcements.loaded.other');
+  });
+
+  it('announces overlay empty state when ready without routes', async () => {
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const emptyState = buildRouteOverlayState({
+      status: 'ready',
+      routes: [],
+      selectionKey: 'ready-empty',
+      errorKey: null
+    });
+
+    overlayFacade.emit(emptyState);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteSelectionAccess;
+
+    expect(access.routeLiveMessage()).toBe('map.routes.announcements.empty');
+  });
+
+  it('announces overlay errors when state enters error status', async () => {
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const errorState = buildRouteOverlayState({
+      status: 'error',
+      routes: [],
+      selectionKey: 'error-selection',
+      errorKey: 'map.routes.error'
+    });
+
+    overlayFacade.emit(errorState);
+    await fixture.whenStable();
+
+    const access = component as unknown as MapRouteSelectionAccess;
+
+    expect(access.routeLiveMessage()).toBe('map.routes.error');
   });
 
   it('refreshes overlay data when refreshRoutes is invoked', () => {

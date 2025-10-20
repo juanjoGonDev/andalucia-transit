@@ -290,23 +290,30 @@
     "accessibleMapLabel": "Andalusia map with nearby stops",
     "empty": "No nearby stops were found in your area.",
     "stopAriaLabel": "Open stop {{code}} in {{municipality}}",
-  "routes": {
-    "title": "Routes",
-    "refresh": "Refresh routes",
-    "summary": "Routes for {{origin}} → {{destination}}",
-    "prompt": "Run a route search to display matching routes on the map.",
-    "loading": "Loading route overlays…",
-    "empty": "No routes are available for this search yet.",
-    "cardAria": "Highlight route {{code}} to {{destination}} on the map",
-    "announcements": {
-      "selected": "Route {{code}} to {{destination}} highlighted on the map.",
-      "cleared": "Route highlight cleared."
-    },
-    "stopCount": {
-      "one": "{{value}} stop",
-      "other": "{{value}} stops"
-    },
-    "distance": {
+    "routes": {
+      "title": "Routes",
+      "refresh": "Refresh routes",
+      "summary": "Routes for {{origin}} → {{destination}}",
+      "prompt": "Run a route search to display matching routes on the map.",
+      "loading": "Loading route overlays…",
+      "empty": "No routes are available for this search yet.",
+      "cardAria": "Highlight route {{code}} to {{destination}} on the map",
+      "announcements": {
+        "selected": "Route {{code}} to {{destination}} highlighted on the map.",
+        "cleared": "Route highlight cleared.",
+        "loading": "Loading routes for this search.",
+        "loaded": {
+          "one": "{{value}} route loaded on the map.",
+          "other": "{{value}} routes loaded on the map."
+        },
+        "empty": "No routes were loaded for this search.",
+        "error": "We could not load routes for this search."
+      },
+      "stopCount": {
+        "one": "{{value}} stop",
+        "other": "{{value}} stops"
+      },
+      "distance": {
         "meters": "{{value}} m",
         "kilometers": "{{value}} km"
       },
