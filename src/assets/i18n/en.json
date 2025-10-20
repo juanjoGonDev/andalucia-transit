@@ -298,10 +298,7 @@
       "loading": "Loading route overlays…",
       "empty": "No routes are available for this search yet.",
       "cardAria": "Highlight route {{code}} to {{destination}} on the map",
-      "stopCount": {
-        "singular": "{{value}} stop",
-        "plural": "{{value}} stops"
-      },
+      "stopCount": "{value, plural, =0 {# stops} =1 {# stop} other {# stops}}",
       "distance": {
         "meters": "{{value}} m",
         "kilometers": "{{value}} km"

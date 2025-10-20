@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { Observable, Subject, of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
+import { Observable, Subject, of, firstValueFrom } from 'rxjs';
 
 import { MapComponent } from './map.component';
 import {
@@ -22,7 +24,11 @@ import {
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {
-    return of({});
+    return of({
+      'map.routes.stopCount': '{value, plural, =0 {# stops} =1 {# stop} other {# stops}}',
+      'map.routes.distance.meters': '{{value}} m',
+      'map.routes.distance.kilometers': '{{value}} km'
+    });
   }
 }
 
@@ -154,8 +160,7 @@ interface MapStopViewStub {
 interface MapRouteViewAccess {
   routeViews(): readonly {
     readonly id: string;
-    readonly stopCountTranslationKey: string;
-    readonly stopCountValue: string;
+    readonly stopCount: number;
     readonly distanceTranslationKey: string;
     readonly distanceValue: string;
   }[];
@@ -226,7 +231,11 @@ describe('MapComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         MapComponent,
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: FakeTranslateLoader } })
+        RouterTestingModule,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
+        })
       ],
       providers: [
         { provide: LeafletMapService, useValue: mapService },
@@ -237,6 +246,9 @@ describe('MapComponent', () => {
         { provide: PLATFORM_ID, useValue: 'browser' }
       ]
     }).compileComponents();
+
+    const translate = TestBed.inject(TranslateService);
+    await firstValueFrom(translate.use('en'));
 
     fixture = TestBed.createComponent(MapComponent);
     component = fixture.componentInstance;
@@ -333,7 +345,9 @@ describe('MapComponent', () => {
     await fixture.whenStable();
 
     overlayFacade.emit(state);
+    fixture.detectChanges();
     await fixture.whenStable();
+    fixture.detectChanges();
 
     const lastRender = mapService.handle.renderedRoutes.at(-1);
 
@@ -375,10 +389,14 @@ describe('MapComponent', () => {
     const views = access.routeViews();
 
     expect(views.length).toBe(1);
-    expect(views[0]?.stopCountTranslationKey).toBe('map.routes.stopCount.plural');
-    expect(views[0]?.stopCountValue).toBe('2');
+    expect(views[0]?.stopCount).toBe(2);
     expect(views[0]?.distanceTranslationKey).toBe('map.routes.distance.meters');
     expect(views[0]?.distanceValue).toBe('750');
+
+    const translate = TestBed.inject(TranslateService);
+    const label = translate.instant('map.routes.stopCount', { value: views[0]?.stopCount });
+
+    expect(label).toBe('2 stops');
   });
 
   it('selects the singular stop count translation when only one stop is present', async () => {
@@ -408,14 +426,20 @@ describe('MapComponent', () => {
     await fixture.whenStable();
 
     overlayFacade.emit(state);
+    fixture.detectChanges();
     await fixture.whenStable();
+    fixture.detectChanges();
 
     const access = component as unknown as MapRouteViewAccess;
     const views = access.routeViews();
 
     expect(views.length).toBe(1);
-    expect(views[0]?.stopCountTranslationKey).toBe('map.routes.stopCount.singular');
-    expect(views[0]?.stopCountValue).toBe('1');
+    expect(views[0]?.stopCount).toBe(1);
+
+    const translate = TestBed.inject(TranslateService);
+    const label = translate.instant('map.routes.stopCount', { value: views[0]?.stopCount });
+
+    expect(label).toBe('1 stop');
   });
 
   it('refreshes overlay data when refreshRoutes is invoked', () => {

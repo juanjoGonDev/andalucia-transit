@@ -444,3 +444,6 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-11-04 Replaced ICU pluralization with dedicated singular and plural translation keys so stop counts render without requiring an additional compiler dependency.
     - [x] Screenshot (Map route panel — singular plural verification): https://browser.buildwithfern.com/invocations/tpflxahh/artifacts/artifacts/map-route-panel.png
     - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-05 Restored ICU messageformat pluralization for map route stop counts with the ngx-translate compiler so localized strings share a single translation key across languages.
+    - [x] Screenshot (Map route panel — ICU pluralization): https://browser.buildwithfern.com/invocations/zjyksxoa/artifacts/artifacts/map-route-panel.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.

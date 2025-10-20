@@ -336,10 +336,7 @@ export const APP_CONFIG = {
         loading: 'map.routes.loading',
         empty: 'map.routes.empty',
         cardAria: 'map.routes.cardAria',
-        stopCount: {
-          singular: 'map.routes.stopCount.singular',
-          plural: 'map.routes.stopCount.plural'
-        },
+        stopCount: 'map.routes.stopCount',
         distance: {
           meters: 'map.routes.distance.meters',
           kilometers: 'map.routes.distance.kilometers'
