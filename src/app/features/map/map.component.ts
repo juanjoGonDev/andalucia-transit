@@ -29,11 +29,7 @@ import { GeolocationService } from '../../core/services/geolocation.service';
 import { GEOLOCATION_REQUEST_OPTIONS } from '../../core/services/geolocation-request.options';
 import { NearbyStopResult, NearbyStopsService } from '../../core/services/nearby-stops.service';
 import { StopDirectoryService } from '../../data/stops/stop-directory.service';
-import {
-  createPluralRules,
-  resolveLanguage,
-  selectPluralizedTranslationKey
-} from '../../core/i18n/pluralization';
+import { PluralizationService } from '../../core/i18n/pluralization.service';
 import { buildDistanceDisplay } from '../../domain/utils/distance-display.util';
 import { GeoCoordinate } from '../../domain/utils/geo-distance.util';
 import {
@@ -113,13 +109,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly overlayFacade = inject(RouteOverlayFacade);
   private readonly translate = inject(TranslateService);
+  private readonly pluralization = inject(PluralizationService);
 
   private mapHandle: MapHandle | null = null;
   private userCoordinate: GeoCoordinate | null = null;
   private isDestroyed = false;
   private currentSelectionKey: string | null = null;
   private hasFittedRoutes = false;
-  private readonly pluralRulesCache = new Map<string, Intl.PluralRules>();
 
   private readonly translations = APP_CONFIG.translationKeys.map;
   private readonly distanceTranslations = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
@@ -130,14 +126,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly language = toSignal(
     this.translate.onLangChange.pipe(
       map(({ lang }) =>
-        resolveLanguage({
+        this.pluralization.resolveLanguage({
           current: lang,
           defaultLanguage: this.translate.defaultLang,
           fallback: APP_CONFIG.locales.default
         })
       ),
       startWith(
-        resolveLanguage({
+        this.pluralization.resolveLanguage({
           current: this.translate.currentLang,
           defaultLanguage: this.translate.defaultLang,
           fallback: APP_CONFIG.locales.default
@@ -161,14 +157,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected readonly routes = signal<readonly RouteOverlayRoute[]>([]);
   protected readonly routeViews = computed<readonly MapRouteView[]>(() => {
     const language = this.language();
-    const pluralRules = this.resolvePluralRules(language);
 
     return this.routes().map((route) => {
       const distance = buildDistanceDisplay(route.lengthInMeters, this.routeDistanceTranslations);
-      const stopCountTranslationKey = selectPluralizedTranslationKey(
+      const stopCountTranslationKey = this.pluralization.selectKey(
         route.stopCount,
         this.routeStopCountTranslations,
-        pluralRules
+        language
       );
 
       return {
@@ -327,19 +322,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   protected refreshRoutes(): void {
     this.overlayFacade.refresh();
-  }
-
-  private resolvePluralRules(language: string): Intl.PluralRules {
-    const cached = this.pluralRulesCache.get(language);
-
-    if (cached) {
-      return cached;
-    }
-
-    const rules = createPluralRules(language);
-    this.pluralRulesCache.set(language, rules);
-
-    return rules;
   }
 
   private async loadStops(
