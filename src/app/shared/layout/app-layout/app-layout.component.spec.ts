@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
-
 import { AppLayoutComponent } from './app-layout.component';
 import { AppShellTopActionsComponent } from '../top-actions/app-shell-top-actions.component';
 

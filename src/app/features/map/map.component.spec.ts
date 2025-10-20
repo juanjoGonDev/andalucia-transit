@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Observable, Subject, of } from 'rxjs';
-
 import { MapComponent } from './map.component';
 import {
   LeafletMapService,

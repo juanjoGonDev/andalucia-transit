@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { BehaviorSubject, delay, of, throwError } from 'rxjs';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-
 import { APP_CONFIG } from '../../core/config';
 import { StopSchedule, StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
 import { StopScheduleFacade } from '../../domain/stop-schedule/stop-schedule.facade';
