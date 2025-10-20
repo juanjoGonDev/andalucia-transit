@@ -95,33 +95,37 @@
                     [attr.data-next]="item.isNext ? 'true' : null"
                   >
                     <div class="route-search__item-time">
-                      <span class="route-search__item-clock">{{
-                        item.arrivalTime | date: 'HH:mm'
-                      }}</span>
-                      <span
-                        *ngIf="item.relativeLabel as label"
-                        class="route-search__item-relative"
-                        [attr.data-kind]="item.kind"
-                      >
-                        <ng-container *ngIf="item.kind === 'upcoming'; else pastLabel">
-                          {{ translationKeys.upcomingLabel | translate: { time: label } }}
-                        </ng-container>
-                        <ng-template #pastLabel>
-                          {{ translationKeys.pastLabel | translate: { time: label } }}
-                        </ng-template>
-                      </span>
-                      <span
-                        *ngIf="item.isMostRecentPast"
-                        class="route-search__item-badge route-search__item-badge--previous route-search__item-badge--align-end"
-                      >
-                        {{ translationKeys.previousBadge | translate }}
-                      </span>
-                      <span
-                        *ngIf="item.isNext"
-                        class="route-search__item-badge route-search__item-badge--next route-search__item-badge--align-end"
-                      >
-                        {{ translationKeys.nextBadge | translate }}
-                      </span>
+                      <div class="route-search__item-time-primary">
+                        <span class="route-search__item-clock">{{
+                          item.arrivalTime | date: 'HH:mm'
+                        }}</span>
+                        <span
+                          *ngIf="item.relativeLabel as label"
+                          class="route-search__item-relative"
+                          [attr.data-kind]="item.kind"
+                        >
+                          <ng-container *ngIf="item.kind === 'upcoming'; else pastLabel">
+                            {{ translationKeys.upcomingLabel | translate: { time: label } }}
+                          </ng-container>
+                          <ng-template #pastLabel>
+                            {{ translationKeys.pastLabel | translate: { time: label } }}
+                          </ng-template>
+                        </span>
+                      </div>
+                      <div class="route-search__item-time-badges">
+                        <span
+                          *ngIf="item.isMostRecentPast"
+                          class="route-search__item-badge route-search__item-badge--previous"
+                        >
+                          {{ translationKeys.previousBadge | translate }}
+                        </span>
+                        <span
+                          *ngIf="item.isNext"
+                          class="route-search__item-badge route-search__item-badge--next"
+                        >
+                          {{ translationKeys.nextBadge | translate }}
+                        </span>
+                      </div>
                     </div>
                     <div class="route-search__item-details">
                       <div class="route-search__item-line-info">

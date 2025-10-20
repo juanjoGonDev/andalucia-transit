@@ -143,6 +143,11 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-10-30 Converted recent preview entry layout to a two-column grid so the trailing time block remains anchored without relying on manual margins.
     - [x] Screenshot (Home recent searches — mobile grid anchoring): https://browser.buildwithfern.com/invocations/emnefwby/artifacts/artifacts/home-recent-mobile.png
     - [x] Tests: `npm run lint`; `npm run test`; `npm run build`.
+- [x] “Time ago” wrapping on mobile — keep trailing timeline badges aligned without forcing single-line labels.
+  - [x] 2025-10-31 Reflowed route search timeline time blocks with a primary flex group and trailing badge rail so long “time ago” strings wrap while badges stay right-aligned on small screens.
+    - [x] Screenshot (Route search timeline — mobile alignment): https://browser.buildwithfern.com/invocations/pjapvozo/artifacts/artifacts/route-search-mobile.png
+    - [x] Screenshot (Route search timeline — desktop alignment): https://browser.buildwithfern.com/invocations/pjapvozo/artifacts/artifacts/route-search-desktop.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
 - [x] Settings view layout integration (A3) — attach public screenshot URL(s); visual diff must be 0px.
   - [x] 2025-10-18 Routed settings through the shared layout surface with the utility container and layout body tokens, ensuring baseline spacing and cards render on the muted surface without ad-hoc padding.
   - [x] Screenshot (Settings view — desktop): https://browser.buildwithfern.com/invocations/kusjavnh/artifacts/artifacts/settings-desktop.png
