@@ -78,19 +78,18 @@ describe('calculateRouteLengthInMeters', () => {
     ).toBe(0);
   });
 
-  it('sums the distances between sequential coordinates and rounds the result', () => {
+  it('sums the distances between sequential coordinates', () => {
     const coordinates = [
       { latitude: 37.0, longitude: -5.0 },
       { latitude: 37.1, longitude: -5.1 },
       { latitude: 37.2, longitude: -5.2 }
     ] as const;
 
-    const expectedLength = Math.round(
+    const expectedLength =
       calculateDistanceInMeters(coordinates[0], coordinates[1]) +
-        calculateDistanceInMeters(coordinates[1], coordinates[2])
-    );
+      calculateDistanceInMeters(coordinates[1], coordinates[2]);
 
-    expect(calculateRouteLengthInMeters(coordinates)).toBe(expectedLength);
+    expect(calculateRouteLengthInMeters(coordinates)).toBeCloseTo(expectedLength, 6);
   });
 });
 

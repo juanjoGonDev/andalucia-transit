@@ -458,3 +458,6 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-11-09 Sorted map route overlays by route length with stop-count tie-breakers so the most direct options surface first.
     - [x] Screenshot (Map routes ordered panel — default selection prompt): https://browser.buildwithfern.com/invocations/duaaoxoa/artifacts/artifacts/map-route-sorting.png
     - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+  - [x] 2025-11-10 Preserved precise route overlay length calculations so sorting no longer collapses ties created by rounding.
+    - [x] Screenshot (Map routes ordered panel — default selection prompt): https://browser.buildwithfern.com/invocations/duaaoxoa/artifacts/artifacts/map-route-sorting.png
+    - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.

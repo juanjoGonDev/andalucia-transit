@@ -101,7 +101,7 @@ function calculateExpectedLengthFromCoordinates(
     );
   }
 
-  return Math.round(lengthInMeters);
+  return lengthInMeters;
 }
 
 describe('RouteOverlayFacade', () => {
@@ -151,7 +151,10 @@ describe('RouteOverlayFacade', () => {
     expect(routeLines.getLineStops).toHaveBeenCalledTimes(1);
     expect(received.at(-1)?.status).toBe('ready');
     expect(received.at(-1)?.routes.length).toBe(1);
-    expect(received.at(-1)?.routes.at(0)?.lengthInMeters).toBe(EXPECTED_ROUTE_LENGTH_METERS);
+    expect(received.at(-1)?.routes.at(0)?.lengthInMeters).toBeCloseTo(
+      EXPECTED_ROUTE_LENGTH_METERS,
+      6
+    );
     expect(received.at(-1)?.routes.at(0)?.lineCode).toBe(LINE_CODE);
 
     routeLines.getLineStops.calls.reset();
@@ -272,10 +275,19 @@ describe('RouteOverlayFacade', () => {
       buildExpectedRouteId(matches[0]!)
     ]);
 
-    expect(readyState!.routes[0]!.lengthInMeters).toBe(EXPECTED_ROUTE_LENGTH_METERS);
-    expect(readyState!.routes[1]!.lengthInMeters).toBe(EXPECTED_TIE_ROUTE_LENGTH_METERS);
+    expect(readyState!.routes[0]!.lengthInMeters).toBeCloseTo(
+      EXPECTED_ROUTE_LENGTH_METERS,
+      6
+    );
+    expect(readyState!.routes[1]!.lengthInMeters).toBeCloseTo(
+      EXPECTED_TIE_ROUTE_LENGTH_METERS,
+      6
+    );
     expect(readyState!.routes[0]!.stopCount).toBeLessThan(readyState!.routes[1]!.stopCount);
-    expect(readyState!.routes[2]!.lengthInMeters).toBe(EXPECTED_ALTERNATE_ROUTE_LENGTH_METERS);
+    expect(readyState!.routes[2]!.lengthInMeters).toBeCloseTo(
+      EXPECTED_ALTERNATE_ROUTE_LENGTH_METERS,
+      6
+    );
 
     subscription.unsubscribe();
   });
