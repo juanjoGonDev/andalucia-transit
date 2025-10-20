@@ -2,6 +2,7 @@
   "name": "andalucia-transit",
   "version": "0.0.1",
   "scripts": {
+    "prepare": "node scripts/dev/prepare-playwright.mjs",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -25,7 +26,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "deploy:prepare": "tsx scripts/deploy/run.ts",
-    "test:deploy": "npm run deploy:prepare"
+    "test:deploy": "npm run deploy:prepare",
+    "screenshot": "node scripts/screenshot.js"
   },
   "prettier": {
     "printWidth": 100,

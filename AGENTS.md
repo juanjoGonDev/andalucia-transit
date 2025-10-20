@@ -89,8 +89,10 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Reference `docs/development-environment.md` for targeted command guidance when determining which checks must run for a change.
 
 ### Visual Verification
-- Use the headless screenshot utility in `scripts/screenshot.js` to capture deterministic UI states for CI review and design validation.
+- Use the headless screenshot utility in `scripts/screenshot.js` or the `npm run screenshot` shortcut to capture deterministic UI states for CI review and design validation.
 - Capabilities include navigation and waiting controls, viewport and device emulation, storage and permission configuration, DOM interactions, map-specific adjustments, accessibility assertions, and capture variants with masking.
+- Defaults live in `scripts/screenshot.config.json`, and teams can supply alternative paths through the `--config` flag to tailor timeouts, directories, and other repeated inputs.
+- Example capture command: `npm run screenshot -- --url=https://example.org --waitFor=#app-root --name=home-desktop`.
 - The tool can emit HAR files, console transcripts, and PNG output, and accepts ordered scenarios for multi-step flows.
 - All generated artefacts live under `artifacts/screenshots` (or the configured directory) which is ignored by Git; share captures via CI artefacts or public URLs when referencing them in reviews or documentation.
 

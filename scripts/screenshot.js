@@ -1,7 +1,7 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import process from 'node:process';
-import { chromium } from 'playwright';
+const fs = require('node:fs');
+const path = require('node:path');
+const process = require('node:process');
+const { chromium } = require('playwright');
 
 const FLAG_PREFIX = '--';
 const ARG_SEPARATOR = '=';
@@ -23,6 +23,10 @@ const DEFAULT_NAME = 'capture';
 const BOOLEAN_TRUE = 'true';
 const BOOLEAN_FALSE = 'false';
 const FILE_ENCODING = 'utf-8';
+const CONFIG_FLAG = 'config';
+const DEFAULT_CONFIG_FILE = path.join(__dirname, 'screenshot.config.json');
+const BOOLEAN_TRUE_VALUE = true;
+const BOOLEAN_FALSE_VALUE = false;
 const WAIT_STATES = new Set(['load', 'domcontentloaded', 'networkidle', 'idle']);
 const COLOR_SCHEMES = new Set(['light', 'dark', 'no-preference']);
 const SCROLL_COMMAND_TOP = 'top';
@@ -91,6 +95,56 @@ function parseArgs(argv) {
   return options;
 }
 
+function resolveConfigPath(value) {
+  if (value === undefined) {
+    return DEFAULT_CONFIG_FILE;
+  }
+  const normalized = String(value);
+  if (normalized.length === 0) {
+    return DEFAULT_CONFIG_FILE;
+  }
+  if (path.isAbsolute(normalized)) {
+    return normalized;
+  }
+  return path.resolve(process.cwd(), normalized);
+}
+
+function loadConfigOptions(value) {
+  const resolvedPath = resolveConfigPath(value);
+  if (!fs.existsSync(resolvedPath)) {
+    return { options: {}, path: resolvedPath, loaded: false };
+  }
+  const content = fs.readFileSync(resolvedPath, FILE_ENCODING);
+  if (content.trim().length === 0) {
+    return { options: {}, path: resolvedPath, loaded: true };
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(content);
+  } catch (error) {
+    throw new Error('Unable to parse screenshot config');
+  }
+  if (!parsed || Array.isArray(parsed) || typeof parsed !== 'object') {
+    throw new Error('Screenshot config must be a JSON object');
+  }
+  const options = {};
+  for (const [key, entry] of Object.entries(parsed)) {
+    options[key] = entry;
+  }
+  return { options, path: resolvedPath, loaded: true };
+}
+
+function mergeOptions(base, overrides) {
+  const result = { ...base };
+  if (!overrides) {
+    return result;
+  }
+  for (const key of Object.keys(overrides)) {
+    result[key] = overrides[key];
+  }
+  return result;
+}
+
 function readSingle(value) {
   if (value === undefined) {
     return undefined;
@@ -105,6 +159,12 @@ function readBoolean(value, fallback) {
   const candidate = readSingle(value);
   if (candidate === undefined) {
     return fallback;
+  }
+  if (candidate === BOOLEAN_TRUE_VALUE) {
+    return true;
+  }
+  if (candidate === BOOLEAN_FALSE_VALUE) {
+    return false;
   }
   if (candidate === BOOLEAN_TRUE) {
     return true;
@@ -132,7 +192,10 @@ function readList(value) {
     return [];
   }
   const raw = Array.isArray(value) ? value : [value];
-  return raw.flatMap((entry) => entry.split(LIST_SEPARATOR)).map((entry) => entry.trim()).filter((entry) => entry.length > 0);
+  return raw
+    .flatMap((entry) => String(entry).split(LIST_SEPARATOR))
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.length > 0);
 }
 
 function ensureDirectory(target) {
@@ -614,68 +677,77 @@ async function validateOffline(page, timeout) {
 
 async function main() {
   const args = parseArgs(process.argv);
-  const targetUrl = readSingle(args.url);
+  const configToken = readSingle(args[CONFIG_FLAG]);
+  if (configToken !== undefined) {
+    delete args[CONFIG_FLAG];
+  }
+  const configData = loadConfigOptions(configToken);
+  if (configData.loaded) {
+    logEvent(LOG_EVENT_ACTION, { action: 'config', path: configData.path });
+  }
+  const options = mergeOptions(configData.options, args);
+  const targetUrl = readSingle(options.url);
   if (!targetUrl) {
     throw new Error('url flag is required');
   }
-  const timeout = readNumber(args.timeout, DEFAULT_TIMEOUT_MS);
-  const retries = readNumber(args.retries, DEFAULT_RETRIES);
-  const retryDelay = readNumber(args.retryDelay, DEFAULT_RETRY_DELAY_MS);
-  const width = readNumber(args.width, DEFAULT_WIDTH);
-  const height = readNumber(args.height, DEFAULT_HEIGHT);
-  const deviceScaleFactor = readNumber(args.deviceScaleFactor, DEFAULT_DEVICE_SCALE_FACTOR);
-  const userAgent = readSingle(args.userAgent);
-  const localeValues = readList(args.locale);
-  const timezone = readSingle(args.timezone) ?? DEFAULT_TIMEZONE;
-  const colorScheme = readSingle(args.colorScheme) ?? DEFAULT_COLOR_SCHEME;
+  const timeout = readNumber(options.timeout, DEFAULT_TIMEOUT_MS);
+  const retries = readNumber(options.retries, DEFAULT_RETRIES);
+  const retryDelay = readNumber(options.retryDelay, DEFAULT_RETRY_DELAY_MS);
+  const width = readNumber(options.width, DEFAULT_WIDTH);
+  const height = readNumber(options.height, DEFAULT_HEIGHT);
+  const deviceScaleFactor = readNumber(options.deviceScaleFactor, DEFAULT_DEVICE_SCALE_FACTOR);
+  const userAgent = readSingle(options.userAgent);
+  const localeValues = readList(options.locale);
+  const timezone = readSingle(options.timezone) ?? DEFAULT_TIMEZONE;
+  const colorScheme = readSingle(options.colorScheme) ?? DEFAULT_COLOR_SCHEME;
   if (!COLOR_SCHEMES.has(colorScheme)) {
     throw new Error('Unsupported color scheme');
   }
-  const offline = readBoolean(args.offline, false);
-  const ignoreHttpsErrors = readBoolean(args.ignoreHttpsErrors, true);
-  const throttleProfile = readSingle(args.throttle);
-  const cpuSlowdown = readNumber(args.cpuSlowdown, 0);
-  const permissions = readList(args.grantPermissions);
-  const geolocationValue = readSingle(args.geolocation);
-  const cookies = readList(args.cookie).map(parseCookie);
-  const localStorage = readList(args.localStorage).map(parseStoragePair);
-  const sessionStorage = readList(args.sessionStorage).map(parseStoragePair);
-  const storageStateRaw = readSingle(args.storageState);
+  const offline = readBoolean(options.offline, false);
+  const ignoreHttpsErrors = readBoolean(options.ignoreHttpsErrors, true);
+  const throttleProfile = readSingle(options.throttle);
+  const cpuSlowdown = readNumber(options.cpuSlowdown, 0);
+  const permissions = readList(options.grantPermissions);
+  const geolocationValue = readSingle(options.geolocation);
+  const cookies = readList(options.cookie).map(parseCookie);
+  const localStorage = readList(options.localStorage).map(parseStoragePair);
+  const sessionStorage = readList(options.sessionStorage).map(parseStoragePair);
+  const storageStateRaw = readSingle(options.storageState);
   const storageStatePath = storageStateRaw ? path.resolve(storageStateRaw) : null;
-  const hoverSelector = readSingle(args.hover);
-  const clickSelector = readSingle(args.click);
-  const dblclickSelector = readSingle(args.dblclick);
-  const focusSelector = readSingle(args.focus);
-  const typeEntry = args.type ? parseTypedSelector(readSingle(args.type), 'type') : null;
-  const pressEntry = args.press ? parseTypedSelector(readSingle(args.press), 'press') : null;
-  const selectEntry = args.select ? parseTypedSelector(readSingle(args.select), 'select') : null;
-  const scrollEntry = args.scrollTo ? parseScrollTarget(readSingle(args.scrollTo)) : null;
-  const evalScript = readSingle(args.eval);
-  const evalFileRaw = readSingle(args.evalFile);
+  const hoverSelector = readSingle(options.hover);
+  const clickSelector = readSingle(options.click);
+  const dblclickSelector = readSingle(options.dblclick);
+  const focusSelector = readSingle(options.focus);
+  const typeEntry = options.type ? parseTypedSelector(readSingle(options.type), 'type') : null;
+  const pressEntry = options.press ? parseTypedSelector(readSingle(options.press), 'press') : null;
+  const selectEntry = options.select ? parseTypedSelector(readSingle(options.select), 'select') : null;
+  const scrollEntry = options.scrollTo ? parseScrollTarget(readSingle(options.scrollTo)) : null;
+  const evalScript = readSingle(options.eval);
+  const evalFileRaw = readSingle(options.evalFile);
   const evalFile = evalFileRaw ? path.resolve(evalFileRaw) : null;
-  const steps = parseScenario(readSingle(args.steps), readSingle(args.scenario));
-  const waitForSelector = readSingle(args.waitFor);
-  const waitHiddenSelector = readSingle(args.waitHidden);
-  const waitState = readSingle(args.waitState);
+  const steps = parseScenario(readSingle(options.steps), readSingle(options.scenario));
+  const waitForSelector = readSingle(options.waitFor);
+  const waitHiddenSelector = readSingle(options.waitHidden);
+  const waitState = readSingle(options.waitState);
   if (waitState && !WAIT_STATES.has(waitState)) {
     throw new Error('Unsupported wait state');
   }
-  const mapCenterValue = readSingle(args.mapCenter);
-  const mapZoomValue = readSingle(args.mapZoom);
-  const waitMapIdle = readBoolean(args.waitMapIdle, false);
-  const waitTilesLoaded = readBoolean(args.waitTilesLoaded, false);
-  const clickMapMarkerValue = readSingle(args.clickMapMarker);
-  const byRoleValue = readSingle(args.byRole);
-  const assertAriaValue = readSingle(args.assertAria);
-  const fullPage = readBoolean(args.fullPage, false);
-  const elementSelector = readSingle(args.element);
-  const clipValue = readSingle(args.clip);
-  const maskSelectors = readList(args.mask);
-  const outputDir = path.resolve(readSingle(args.outDir) ?? DEFAULT_OUTPUT_DIR);
-  const nameBase = readSingle(args.name) ?? DEFAULT_NAME;
-  const breakpointValues = parseBreakpoints(readList(args.breakpoints));
-  const harRaw = readSingle(args.har);
-  const consoleRaw = readSingle(args.consoleLog);
+  const mapCenterValue = readSingle(options.mapCenter);
+  const mapZoomValue = readSingle(options.mapZoom);
+  const waitMapIdle = readBoolean(options.waitMapIdle, false);
+  const waitTilesLoaded = readBoolean(options.waitTilesLoaded, false);
+  const clickMapMarkerValue = readSingle(options.clickMapMarker);
+  const byRoleValue = readSingle(options.byRole);
+  const assertAriaValue = readSingle(options.assertAria);
+  const fullPage = readBoolean(options.fullPage, false);
+  const elementSelector = readSingle(options.element);
+  const clipValue = readSingle(options.clip);
+  const maskSelectors = readList(options.mask);
+  const outputDir = path.resolve(readSingle(options.outDir) ?? DEFAULT_OUTPUT_DIR);
+  const nameBase = readSingle(options.name) ?? DEFAULT_NAME;
+  const breakpointValues = parseBreakpoints(readList(options.breakpoints));
+  const harRaw = readSingle(options.har);
+  const consoleRaw = readSingle(options.consoleLog);
   const harPath = harRaw ? (path.isAbsolute(harRaw) ? harRaw : path.join(outputDir, harRaw)) : null;
   const consolePath = consoleRaw ? (path.isAbsolute(consoleRaw) ? consoleRaw : path.join(outputDir, consoleRaw)) : null;
   const locales = deriveLocales(localeValues, breakpointValues.length > 0 ? breakpointValues.length : 1);
