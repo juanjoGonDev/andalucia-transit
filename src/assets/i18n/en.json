@@ -77,7 +77,7 @@
       "recentStops": {
         "title": "Recent searches",
         "empty": "Start a search to see it here.",
-        "searchDate": "We will search for {{date}}",
+        "searchDate": "We will search for {date}",
         "searchDateToday": "Updated to today",
         "next": "Next",
         "previous": "Previous",
@@ -121,8 +121,8 @@
         "retry": "Try again",
         "close": "Close",
         "distance": {
-          "meters": "{{value}} m",
-          "kilometers": "{{value}} km"
+          "meters": "{value} m",
+          "kilometers": "{value} km"
         }
       },
       "recentStops": {
@@ -206,24 +206,24 @@
     },
     "schedule": {
       "upcomingTitle": "Upcoming departures",
-      "upcomingSubtitle": "Showing {{count}} departures",
+      "upcomingSubtitle": "Showing {count} departures",
       "pastTitle": "Recent departures",
-      "pastSubtitle": "Showing {{count}} departures",
+      "pastSubtitle": "Showing {count} departures",
       "emptyUpcoming": "No upcoming departures match the selected destination.",
       "emptyPast": "No recent departures for this stop."
     },
     "status": {
-      "arrivesIn": "Arrives in {{minutes}} min",
+      "arrivesIn": "Arrives in {minutes} min",
       "arrivingNow": "Arriving now",
-      "departedAgo": "Departed {{minutes}} min ago"
+      "departedAgo": "Departed {minutes} min ago"
     },
     "badges": {
       "accessible": "Accessible bus",
       "universityOnly": "University service"
     },
     "source": {
-      "live": "This information comes right now from the {{provider}}.",
-      "snapshot": "This information comes from a copy saved on {{date}} at {{time}} by the {{provider}}."
+      "live": "This information comes right now from the {provider}.",
+      "snapshot": "This information comes from a copy saved on {date} at {time} by the {provider}."
     }
   },
   "stopInfo": {
@@ -265,15 +265,15 @@
     "dateLabel": "Travel date",
     "sampleResult": "Take line C2 from Plaza Nueva to Parque María Luisa at 08:15.",
     "backLabel": "Back to search",
-    "upcomingLabel": "In {{time}}",
-    "pastLabel": "{{time}} ago",
+    "upcomingLabel": "In {time}",
+    "pastLabel": "{time} ago",
     "nextBadge": "Next",
     "previousBadge": "Previous",
     "noUpcoming": "No more direct departures for this date within the next hours.",
     "changeDate": "Choose another date",
     "emptyResults": "No services were found for this route.",
-    "arrivalAt": "Arrives at {{time}}",
-    "travelDuration": "Trip {{duration}}",
+    "arrivalAt": "Arrives at {time}",
+    "travelDuration": "Trip {duration}",
     "holidayBadge": "Holiday service",
     "estimateNotice": "Times are estimates based on Junta de Andalucía schedule data.",
     "pastSearchNotice": "You are viewing schedules for a past date. Refresh to see the current services.",
@@ -289,33 +289,33 @@
     "permissionPrompt": "Share your location to see nearby stops on the map.",
     "accessibleMapLabel": "Andalusia map with nearby stops",
     "empty": "No nearby stops were found in your area.",
-    "stopAriaLabel": "Open stop {{code}} in {{municipality}}",
+    "stopAriaLabel": "Open stop {code} in {municipality}",
     "routes": {
       "title": "Routes",
       "refresh": "Refresh routes",
-      "summary": "Routes for {{origin}} → {{destination}}",
+      "summary": "Routes for {origin} → {destination}",
       "prompt": "Run a route search to display matching routes on the map.",
       "loading": "Loading route overlays…",
       "empty": "No routes are available for this search yet.",
-      "cardAria": "Highlight route {{code}} to {{destination}} on the map",
+      "cardAria": "Highlight route {code} to {destination} on the map",
       "announcements": {
-        "selected": "Route {{code}} to {{destination}} highlighted on the map.",
+        "selected": "Route {code} to {destination} highlighted on the map.",
         "cleared": "Route highlight cleared.",
         "loading": "Loading routes for this search.",
         "loaded": {
-          "one": "{{value}} route loaded on the map.",
-          "other": "{{value}} routes loaded on the map."
+          "one": "{value} route loaded on the map.",
+          "other": "{value} routes loaded on the map."
         },
         "empty": "No routes were loaded for this search.",
         "error": "We could not load routes for this search."
       },
       "stopCount": {
-        "one": "{{value}} stop",
-        "other": "{{value}} stops"
+        "one": "{value} stop",
+        "other": "{value} stops"
       },
       "distance": {
-        "meters": "{{value}} m",
-        "kilometers": "{{value}} km"
+        "meters": "{value} m",
+        "kilometers": "{value} km"
       },
       "error": "We could not load routes for this search. Please try again."
     },
@@ -334,7 +334,7 @@
       "language": {
         "title": "Language",
         "description": "Choose your preferred language.",
-        "actionLabel": "Switch application language to {{language}}",
+        "actionLabel": "Switch application language to {language}",
         "activeLabel": "Current language"
       },
       "recentSearches": {
@@ -351,7 +351,7 @@
   "news": {
     "title": "News",
     "description": "Latest updates and official notices from the Andalusian transport network.",
-    "updatedLabel": "Updated on {{date}}",
+    "updatedLabel": "Updated on {date}",
     "readMore": "Read more",
     "refresh": "Refresh",
     "empty": "No news items are available right now.",
