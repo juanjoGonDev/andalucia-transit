@@ -241,7 +241,7 @@ async function installLefthook(manager) {
 }
 
 async function installPlaywrightBrowsers() {
-  const scriptPath = join(rootDirectory, 'scripts', 'dev', 'prepare-playwright.mjs');
+  const scriptPath = join(rootDirectory, 'scripts', 'dev', 'prepare.mjs');
   const success = await execute(process.execPath, [scriptPath], 'Prepare Playwright Chromium');
   if (success) {
     summary.push('Playwright Chromium ready.');

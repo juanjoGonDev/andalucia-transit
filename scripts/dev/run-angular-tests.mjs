@@ -11,7 +11,7 @@ const EXIT_SUCCESS = 0;
 const ERROR_PREFIX = '[run-angular-tests]';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const prepareScript = resolve(__dirname, 'prepare-playwright.mjs');
+const prepareScript = resolve(__dirname, 'prepare.mjs');
 
 async function spawnAsync(command, args, options = {}) {
   return new Promise((resolve, reject) => {

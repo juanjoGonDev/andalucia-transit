@@ -13,7 +13,7 @@ source_of_truth: [tests]
 
 # Related Files
 - Root `playwright.config.ts` configures browser, base URL, and reporters.
-- `scripts/dev/prepare-playwright.mjs` ensures browser binaries installed.
+- `scripts/dev/prepare.mjs` prepares Playwright Chromium before tests run.
 
 # Linked Shards
 - Cypress suites: [`cypress.md`](./cypress.md).

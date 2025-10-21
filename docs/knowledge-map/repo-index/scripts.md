@@ -17,7 +17,7 @@ source_of_truth: [scripts]
   - `run.ts` → Deployment preparation aligning with `npm run deploy:prepare` flow.
 - `dev/`
   - `lint-workflows.ts` → Validates GitHub workflows via actionlint.
-  - `prepare-playwright.mjs` → Ensures Playwright browsers are ready.
+  - `prepare.mjs` → Installs Playwright Chromium and Lefthook hooks during package manager prepare.
   - `setup-environment.ts` → Local dev environment helper.
   - `start-with-snapshot.mjs` → Launches dev server preloaded with snapshot data.
 - `snapshot/`

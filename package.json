@@ -2,7 +2,7 @@
   "name": "andalucia-transit",
   "version": "0.0.1",
   "scripts": {
-    "prepare": "node scripts/dev/prepare-playwright.mjs",
+    "prepare": "node scripts/dev/prepare.mjs",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
