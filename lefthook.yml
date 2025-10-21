@@ -1,6 +1,16 @@
 pre-commit:
   parallel: true
   commands:
-    eslint:
+    lint-deps:
+      glob: "**/*.{json}"
+      run: pnpm run lint:deps
+    lint-workflows:
+      glob: "**/*.{yml,yaml}"
+      run: pnpm run lint:workflows
+    lint-angular:
+      glob: "**/*.{ts,tsx,js,jsx,html}"
+      run: pnpm run lint:unused
+    eslint-staged:
       glob: "**/*.{ts,tsx,js,jsx}"
       run: pnpm run lint:staged -- {staged_files}
+      depends_on: [lint-deps, lint-workflows, lint-angular]

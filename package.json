@@ -14,7 +14,7 @@
     "test:playwright": "playwright test",
     "snapshot": "tsx scripts/snapshot/run.ts",
     "start:snapshot": "node scripts/dev/start-with-snapshot.mjs",
-    "lint": "npm run lint:unused && npm run lint:deps && npm run lint:workflows",
+    "lint": "npm run lint:unused && npm run lint:deps && npm run lint:workflows && npm run lint:staged",
     "lint:unused": "ng lint",
     "lint:deps": "depcheck --skip-missing --ignores=tslib,@angular/build,@angular/compiler-cli,@cypress/schematic,@messageformat/core,eslint-import-resolver-typescript,jasmine-core,karma,karma-chrome-launcher,karma-coverage,karma-jasmine,karma-jasmine-html-reporter,lefthook",
     "lint:staged": "eslint --cache --fix",
