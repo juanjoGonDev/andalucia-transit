@@ -1,0 +1,201 @@
+[
+  {
+    "path": "docs/knowledge-map/README.md",
+    "title": "Knowledge Map Overview",
+    "summary": "Purpose, usage, and maintenance conventions for the knowledge map",
+    "tags": ["knowledge-base"],
+    "links": ["docs/knowledge-map/index.md"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/index.md",
+    "title": "Knowledge Map Entry Point",
+    "summary": "Top-level table of contents linking all shards",
+    "tags": ["knowledge-base"],
+    "links": [
+      "docs/knowledge-map/repo-index/overview.md",
+      "docs/knowledge-map/docs-index/overview.md",
+      "docs/knowledge-map/components-index/overview.md",
+      "docs/knowledge-map/data-index/overview.md",
+      "docs/knowledge-map/cross-reference.md",
+      "docs/knowledge-map/glossary.md"
+    ],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/overview.md",
+    "title": "Repository Tree Overview",
+    "summary": "High-level directory map with links to detailed shards",
+    "tags": ["repository"],
+    "links": [
+      "docs/knowledge-map/repo-index/root.md",
+      "docs/knowledge-map/repo-index/src.md",
+      "docs/knowledge-map/repo-index/scripts.md"
+    ],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/root.md",
+    "title": "Root Workspace Files",
+    "summary": "Root-level directories and configuration files",
+    "tags": ["repository","config"],
+    "links": ["AGENTS.md", "angular.json", "package.json"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/src.md",
+    "title": "Src Directory Overview",
+    "summary": "Angular source entry points and subdirectories",
+    "tags": ["repository","angular"],
+    "links": [
+      "docs/knowledge-map/repo-index/src-app.md",
+      "docs/knowledge-map/repo-index/src-assets.md"
+    ],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/src-app.md",
+    "title": "App Directory Overview",
+    "summary": "Top-level Angular app structure and major layers",
+    "tags": ["repository","angular"],
+    "links": [
+      "docs/knowledge-map/repo-index/src-app-core.md",
+      "docs/knowledge-map/repo-index/src-app-data.md",
+      "docs/knowledge-map/repo-index/src-app-domain.md",
+      "docs/knowledge-map/repo-index/src-app-features.md",
+      "docs/knowledge-map/repo-index/src-app-shared.md"
+    ],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/src-app-core.md",
+    "title": "Core Layer Index",
+    "summary": "Global services, tokens, and i18n utilities",
+    "tags": ["angular","core"],
+    "links": ["src/app/core"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/src-app-data.md",
+    "title": "Data Layer Index",
+    "summary": "API clients, repositories, and storage services",
+    "tags": ["angular","data"],
+    "links": ["src/app/data", "docs/knowledge-map/data-index/overview.md"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/src-app-domain.md",
+    "title": "Domain Layer Index",
+    "summary": "Facades, models, and utilities coordinating business logic",
+    "tags": ["angular","domain"],
+    "links": ["src/app/domain"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/src-app-features.md",
+    "title": "Features Layer Index",
+    "summary": "Standalone feature components and supporting assets",
+    "tags": ["angular","features"],
+    "links": ["src/app/features"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/src-app-shared.md",
+    "title": "Shared Layer Index",
+    "summary": "Reusable layout, accessibility, and UI primitives",
+    "tags": ["angular","shared"],
+    "links": ["src/app/shared"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/src-assets.md",
+    "title": "Assets Directory Index",
+    "summary": "Static datasets, translations, and runtime toggles",
+    "tags": ["assets","data"],
+    "links": ["src/assets"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/scripts.md",
+    "title": "Scripts Directory Index",
+    "summary": "Automation scripts for bootstrap, deployment, and snapshots",
+    "tags": ["tooling","scripts"],
+    "links": ["scripts"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/tests.md",
+    "title": "Playwright Tests Index",
+    "summary": "Non-Angular Playwright smoke suites and helpers",
+    "tags": ["testing","playwright"],
+    "links": ["tests/playwright"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/tools.md",
+    "title": "Tools Directory Index",
+    "summary": "Standalone verification utilities",
+    "tags": ["tooling"],
+    "links": ["tools"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/cypress.md",
+    "title": "Cypress Suite Index",
+    "summary": "Cypress end-to-end specs, fixtures, and support files",
+    "tags": ["testing","cypress"],
+    "links": ["cypress"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/repo-index/public.md",
+    "title": "Public Assets Index",
+    "summary": "Static public assets including PWA manifest",
+    "tags": ["assets"],
+    "links": ["public"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/docs-index/overview.md",
+    "title": "Docs Library Overview",
+    "summary": "Summaries and cross-links for documentation assets",
+    "tags": ["documentation"],
+    "links": ["docs"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/components-index/overview.md",
+    "title": "Components and Features Index",
+    "summary": "Feature modules, supporting services, and verification hooks",
+    "tags": ["angular","features","testing"],
+    "links": ["src/app/features", "src/app/shared"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/data-index/overview.md",
+    "title": "Data and API Index",
+    "summary": "External APIs, local snapshots, and data flows",
+    "tags": ["data","api"],
+    "links": ["src/app/data", "src/assets/data", "docs/api-reference.md"],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/cross-reference.md",
+    "title": "Feature Cross-Reference",
+    "summary": "Concept-to-code matrix linking docs, tests, and data",
+    "tags": ["reference"],
+    "links": [
+      "docs/knowledge-map/components-index/overview.md",
+      "docs/knowledge-map/data-index/overview.md"
+    ],
+    "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/knowledge-map/glossary.md",
+    "title": "Knowledge Map Glossary",
+    "summary": "Single-line definitions for recurring terms",
+    "tags": ["reference","glossary"],
+    "links": [],
+    "last_scanned": "2025-10-21"
+  }
+]
