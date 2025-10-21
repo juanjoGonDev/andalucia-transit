@@ -28,6 +28,10 @@ const NEWLINE = '\n';
 const ERROR_PLAYWRIGHT = 'Playwright browser installation failed';
 const ERROR_LEFTHOOK = 'Lefthook installation failed';
 
+function log(message) {
+  process.stdout.write(`${message}${NEWLINE}`);
+}
+
 function isWindows() {
   return process.platform === PLATFORM_WINDOWS;
 }
@@ -89,11 +93,14 @@ function runProcess(command, args, shell) {
 
 async function installPlaywright() {
   if (shouldSkipPlaywright()) {
+    log('Skipping Playwright Chromium installation.');
     return;
   }
+  log('Installing Playwright Chromium...');
   const command = resolveCommand(COMMAND_NPX);
   try {
     await runProcess(command, [ARG_PLAYWRIGHT, ARG_INSTALL, ARG_CHROMIUM, ARG_WITH_DEPS], isWindows());
+    log('Playwright Chromium installed.');
   } catch (error) {
     throw new Error(`${ERROR_PLAYWRIGHT}: ${error.message}`);
   }
@@ -111,16 +118,20 @@ function resolveLefthookCommand() {
 }
 
 async function installLefthook() {
+  log('Installing Lefthook hooks...');
   const { command, args } = resolveLefthookCommand();
   try {
     await runProcess(command, args, isWindows());
+    log('Lefthook hooks installed.');
   } catch (error) {
     throw new Error(`${ERROR_LEFTHOOK}: ${error.message}`);
   }
 }
 
 async function main() {
+  log('Preparing workspace tooling...');
   await Promise.all([installPlaywright(), installLefthook()]);
+  log('Workspace tooling ready.');
 }
 
 main().catch(error => {

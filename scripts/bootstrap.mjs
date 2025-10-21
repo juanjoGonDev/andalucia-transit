@@ -218,37 +218,6 @@ async function installDependencies(manager) {
   }
 }
 
-async function installLefthook(manager) {
-  try {
-    let success = false;
-    if (manager.name === 'pnpm') {
-      success = await execute('pnpm', ['exec', 'lefthook', 'install'], 'Install Lefthook with pnpm');
-    } else if (manager.name === 'yarn') {
-      success = await execute('yarn', ['lefthook', 'install'], 'Install Lefthook with yarn');
-    } else {
-      success = await execute('npx', ['lefthook', 'install'], 'Install Lefthook with npx');
-    }
-    if (success) {
-      summary.push('Lefthook installed with pre-commit configuration.');
-      return true;
-    }
-    logWithTime('⚠️ Lefthook could not be installed, continuing without it.');
-    return false;
-  } catch (error) {
-    logWithTime(`⚠️ Lefthook installation failed: ${error.message}, continuing without it.`);
-    return false;
-  }
-}
-
-async function installPlaywrightBrowsers() {
-  const scriptPath = join(rootDirectory, 'scripts', 'dev', 'prepare.mjs');
-  const success = await execute(process.execPath, [scriptPath], 'Prepare Playwright Chromium');
-  if (success) {
-    summary.push('Playwright Chromium ready.');
-  }
-  return success;
-}
-
 async function selectManager(packageManagerValue) {
   const parsed = parsePackageManager(packageManagerValue);
   const sequence = [
@@ -315,22 +284,6 @@ async function run() {
       process.exit(1);
     }
     logElapsedTime(managerStart, `Package manager selection (${manager.name})`);
-    logWithTime('🌐 Preparing Playwright Chromium...');
-    const playwrightStart = new Date();
-    const playwrightReady = await installPlaywrightBrowsers();
-    if (!playwrightReady) {
-      console.error('❌ Playwright Chromium could not be prepared.');
-      process.exit(1);
-    }
-    logElapsedTime(playwrightStart, 'Playwright Chromium preparation');
-    logWithTime('🔧 Configuring additional tooling...');
-    const toolsStart = new Date();
-    await Promise.allSettled([
-      installLefthook(manager).catch((error) => {
-        logWithTime(`⚠️ Lefthook setup failed: ${error.message}`);
-      }),
-    ]);
-    logElapsedTime(toolsStart, 'Additional tooling configuration');
     console.log('\n📊 Installation summary:');
     console.log('='.repeat(50));
     console.log(summary.join('\n'));
