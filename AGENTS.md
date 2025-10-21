@@ -1,3 +1,9 @@
+## Start Here: Knowledge Map
+- Agents must open [`docs/knowledge-map/index.md`](docs/knowledge-map/index.md) before any other repository exploration.
+- Use the knowledge map shards to scope searches instead of running recursive tree scans.
+- Prefer [`docs/knowledge-map/index.json`](docs/knowledge-map/index.json) for programmatic discovery workflows.
+- Respect drift or change notes banners recorded in shards to maintain accurate context.
+
 ### Change Management - Living Document
 AGENTS.md is the canonical decision log. When implementation, tooling, workflows, legal obligations, or conventions change, update this file in the same pull request or align the code with what is written here. Keep entries concise and link to supporting material in `docs/`.
 
