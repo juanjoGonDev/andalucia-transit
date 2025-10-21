@@ -10,7 +10,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "npm run test:scripts && npm run test:angular && npm run test:playwright",
     "test:angular": "ng test --browsers=ChromeHeadlessNoSandbox --watch=false --code-coverage",
-    "test:scripts": "tsx --test scripts/**/*.test.ts",
+    "test:scripts": "node scripts/run-tests.cjs",
     "test:playwright": "playwright test",
     "snapshot": "tsx scripts/snapshot/run.ts",
     "start:snapshot": "node scripts/dev/start-with-snapshot.mjs",
@@ -83,6 +83,7 @@
     "@types/pixelmatch": "^5.2.6",
     "actionlint": "^2.0.6",
     "angular-eslint": "20.4.0",
+    "cli-table3": "^0.6.5",
     "cypress": "^15.5.0",
     "depcheck": "^1.4.7",
     "eslint": "^9.38.0",
@@ -90,6 +91,7 @@
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-unused-imports": "^4.3.0",
+    "glob": "^11.0.3",
     "jasmine-core": "~5.12.0",
     "karma": "~6.4.4",
     "karma-chrome-launcher": "~3.2.0",
@@ -103,7 +105,8 @@
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
     "typescript": "~5.9.3",
-    "typescript-eslint": "8.46.2"
+    "typescript-eslint": "8.46.2",
+    "vitest": "^3.2.4"
   },
   "volta": {
     "node": "20.19.0"
