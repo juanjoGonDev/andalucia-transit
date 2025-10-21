@@ -49,7 +49,7 @@ function runAngularTests(chromePath) {
     '--code-coverage',
   ];
   const extraArgs = process.argv.slice(2);
-  const child = spawn('ng', [...baseArgs, ...extraArgs], {
+  const child = spawn('npx', ['ng', ...baseArgs, ...extraArgs], {
     stdio: 'inherit',
     env: {
       ...process.env,
