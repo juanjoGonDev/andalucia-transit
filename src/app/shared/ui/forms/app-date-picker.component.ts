@@ -5,21 +5,21 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChild,
-  EventEmitter,
   DestroyRef,
+  EventEmitter,
   HostBinding,
+  Injector,
   Input,
   Output,
   TemplateRef,
   ViewChild,
-  inject,
   forwardRef,
-  Injector,
+  inject,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AppTextFieldComponent, TextFieldType } from './app-text-field.component';
-import { AppTextFieldErrorDirective } from './app-text-field-slots.directive';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgControl } from '@angular/forms';
+import { AppTextFieldErrorDirective } from '@shared/ui/forms/app-text-field-slots.directive';
+import { AppTextFieldComponent, TextFieldType } from '@shared/ui/forms/app-text-field.component';
 
 const EMPTY_STRING = '';
 const DEFAULT_AUTOCOMPLETE_ATTRIBUTE = 'off';

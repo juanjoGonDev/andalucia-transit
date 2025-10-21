@@ -1,5 +1,5 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { registerLocaleData } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import localeEs from '@angular/common/locales/es';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -7,14 +7,13 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { Observable, of } from 'rxjs';
-
-import { AppComponent } from './app';
-import { routes } from './app.routes';
+import { AppComponent } from '@app/app';
+import { routes } from '@app/app.routes';
 import {
   StopDirectoryOption,
   StopDirectoryService
-} from './data/stops/stop-directory.service';
-import { AppLayoutComponent } from './shared/layout/app-layout/app-layout.component';
+} from '@data/stops/stop-directory.service';
+import { AppLayoutComponent } from '@shared/layout/app-layout/app-layout.component';
 
 class StopDirectoryTestingService {
   searchStops(): Observable<readonly StopDirectoryOption[]> {

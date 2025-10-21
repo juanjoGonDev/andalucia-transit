@@ -1,4 +1,4 @@
-import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 
 export type PreviewEntryKind = 'previous' | 'next';
 

@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-
-import { STOP_CONNECTION_DIRECTION, StopConnection } from './stop-connections.facade';
-import { StopConnectionsFacade } from './stop-connections.facade';
-import { StopDirectoryStopSignature } from '../../data/stops/stop-directory.service';
-import { StopConnectionsService } from '../../data/route-search/stop-connections.service';
+import { StopConnectionsService } from '@data/route-search/stop-connections.service';
+import { StopDirectoryStopSignature } from '@data/stops/stop-directory.service';
+import { STOP_CONNECTION_DIRECTION, StopConnection } from '@domain/route-search/stop-connections.facade';
+import { StopConnectionsFacade } from '@domain/route-search/stop-connections.facade';
 
 describe('StopConnectionsFacade', () => {
   let facade: StopConnectionsFacade;

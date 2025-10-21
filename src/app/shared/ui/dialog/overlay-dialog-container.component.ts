@@ -1,3 +1,5 @@
+import { FocusTrap, FocusTrapFactory } from '@angular/cdk/a11y';
+import { CdkPortalOutlet, ComponentPortal, PortalModule } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
 import {
   AfterViewInit,
@@ -11,9 +13,7 @@ import {
   ViewChild,
   inject
 } from '@angular/core';
-import { CdkPortalOutlet, ComponentPortal, PortalModule } from '@angular/cdk/portal';
-import { FocusTrap, FocusTrapFactory } from '@angular/cdk/a11y';
-import { OverlayDialogRole } from './overlay-dialog.service';
+import { OverlayDialogRole } from '@shared/ui/dialog/overlay-dialog.service';
 
 export const OVERLAY_DIALOG_CONTAINER_CLASS = 'app-overlay-dialog__container';
 export const OVERLAY_DIALOG_SURFACE_CLASS = 'app-overlay-dialog__surface';

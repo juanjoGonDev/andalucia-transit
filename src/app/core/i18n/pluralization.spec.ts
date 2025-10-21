@@ -3,7 +3,7 @@ import {
   resolveLanguage,
   selectPluralizedTranslationKey,
   selectPluralizedTranslationKeyForLanguage
-} from './pluralization';
+} from '@core/i18n/pluralization';
 
 const ONE_KEY = 'translation.one' as const;
 const OTHER_KEY = 'translation.other' as const;

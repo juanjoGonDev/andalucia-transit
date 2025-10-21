@@ -1,24 +1,23 @@
+import { A11yModule } from '@angular/cdk/a11y';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {
   ApplicationConfig,
   LOCALE_ID,
   importProvidersFrom,
   isDevMode,
-  provideZoneChangeDetection,
-  provideBrowserGlobalErrorListeners
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection
 } from '@angular/core';
+import { MatNativeDateModule } from '@angular/material/core';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { TranslateCompiler, TranslateModule } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-import { MatNativeDateModule } from '@angular/material/core';
-import { OverlayModule } from '@angular/cdk/overlay';
-import { A11yModule } from '@angular/cdk/a11y';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
-
-import { routes } from './app.routes';
-import { APP_CONFIG } from './core/config';
+import { routes } from '@app/app.routes';
+import { APP_CONFIG } from '@core/config';
 
 export const appConfig: ApplicationConfig = {
   providers: [

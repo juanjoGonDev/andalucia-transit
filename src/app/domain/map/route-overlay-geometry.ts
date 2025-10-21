@@ -1,4 +1,4 @@
-import { GeoCoordinate, calculateDistanceInMeters } from '../utils/geo-distance.util';
+import { GeoCoordinate, calculateDistanceInMeters } from '@domain/utils/geo-distance.util';
 
 export interface RouteOverlayLineStop {
   readonly stopId: string;

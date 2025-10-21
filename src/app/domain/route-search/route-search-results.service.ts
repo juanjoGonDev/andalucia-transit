@@ -1,14 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { map, Observable, of, switchMap, timer } from 'rxjs';
-
-import { RouteTimetableService, RouteTimetableRequest } from '../../data/route-search/route-timetable.service';
-import { RouteTimetableEntry } from '../../data/route-search/route-timetable.mapper';
-import { RouteSearchLineMatch, RouteSearchSelection } from './route-search-state.service';
+import { Observable, map, of, switchMap, timer } from 'rxjs';
+import { RouteTimetableEntry } from '@data/route-search/route-timetable.mapper';
+import { RouteTimetableRequest, RouteTimetableService } from '@data/route-search/route-timetable.service';
+import { RouteSearchLineMatch, RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 import {
   ARRIVAL_PROGRESS_WINDOW_MINUTES,
   calculatePastProgress,
   calculateUpcomingProgress
-} from '../utils/progress.util';
+} from '@domain/utils/progress.util';
 
 const MILLISECONDS_PER_SECOND = 1_000;
 const MILLISECONDS_PER_MINUTE = 60_000;

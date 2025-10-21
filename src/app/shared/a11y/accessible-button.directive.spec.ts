@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-
-import { AccessibleButtonDirective, AccessibleButtonPopupToken } from './accessible-button.directive';
+import { AccessibleButtonDirective, AccessibleButtonPopupToken } from '@shared/a11y/accessible-button.directive';
 
 type ExtendedKeyboardEvent = KeyboardEvent & { keyIdentifier?: string };
 

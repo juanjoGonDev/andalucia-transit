@@ -34,13 +34,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.19.0'
-          cache: 'npm'
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+          run_install: false
+      - name: Locate pnpm store
+        id: pnpm-store
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+      - name: Restore pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Generate snapshots
-        run: npm run snapshot
+        run: pnpm run snapshot
       - name: Run snapshot tests
-        run: npm run test:scripts
+        run: pnpm run test:scripts
       - name: Detect changes
         id: diff
         run: |
@@ -65,7 +79,7 @@ jobs:
 
           <!-- resource-summary:start -->
           - Data source: Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía (automatically fetched).
-          - Scripts: `npm run snapshot`, `npm run test:scripts`
+          - Scripts: `pnpm run snapshot`, `pnpm run test:scripts`
           <!-- resource-summary:end -->
           BODY
           sed -i "s/automatically fetched/automatically fetched at ${SNAPSHOT_TIME}/" pr-body.md

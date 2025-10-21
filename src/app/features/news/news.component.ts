@@ -1,12 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-
-import { APP_CONFIG } from '../../core/config';
-import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
-import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
-import { NewsArticle, NewsFacade } from '../../domain/news/news.facade';
+import { APP_CONFIG } from '@core/config';
+import { NewsArticle, NewsFacade } from '@domain/news/news.facade';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 
 const NEWS_DATE_FORMAT = 'mediumDate';
 const NEWS_REFRESH_ICON = 'refresh';

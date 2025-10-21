@@ -1,16 +1,15 @@
-import { Injectable, InjectionToken, Injector, inject } from '@angular/core';
 import {
+  ComponentType,
   Overlay,
   OverlayConfig,
-  OverlayRef,
-  ComponentType
+  OverlayRef
 } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
+import { Injectable, InjectionToken, Injector, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
-
-import { OverlayDialogContainerComponent } from './overlay-dialog-container.component';
-import { ESCAPE_KEY_MATCHER, matchesKey } from '../../a11y/key-event-matchers';
+import { ESCAPE_KEY_MATCHER, matchesKey } from '@shared/a11y/key-event-matchers';
+import { OverlayDialogContainerComponent } from '@shared/ui/dialog/overlay-dialog-container.component';
 
 export type OverlayDialogRole = 'dialog' | 'alertdialog';
 

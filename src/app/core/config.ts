@@ -1,4 +1,4 @@
-import { PluralizedTranslationKeys } from './i18n/pluralization';
+import { PluralizedTranslationKeys } from '@core/i18n/pluralization';
 
 const STOP_DETAIL_BASE_SEGMENT = 'stop-detail' as const;
 const STOP_ID_ROUTE_PARAM = 'stopId' as const;

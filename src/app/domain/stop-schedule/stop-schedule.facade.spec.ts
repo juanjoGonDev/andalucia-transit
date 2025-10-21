@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-
-import { StopScheduleResult } from './stop-schedule.model';
-import { StopScheduleFacade } from './stop-schedule.facade';
-import { StopScheduleService } from '../../data/services/stop-schedule.service';
+import { StopScheduleService } from '@data/services/stop-schedule.service';
+import { StopScheduleFacade } from '@domain/stop-schedule/stop-schedule.facade';
+import { StopScheduleResult } from '@domain/stop-schedule/stop-schedule.model';
 
 describe('StopScheduleFacade', () => {
   let facade: StopScheduleFacade;

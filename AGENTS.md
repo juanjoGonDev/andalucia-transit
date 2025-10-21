@@ -15,8 +15,9 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 ## Tech Stack & Tooling
 - Angular (latest stable; current workspace on Angular 20) with TypeScript, Angular Material, RxJS, and standalone component architecture.
 - @angular/pwa for service worker + manifest, ngx-translate for runtime i18n, Leaflet (or ngx-leaflet) for mapping.
-- Node.js LTS + npm, ESLint + Prettier, Jasmine/Karma unit tests, Cypress end-to-end tests.
+- Node.js LTS + npm, ESLint + Prettier, Jasmine/Karma unit tests launched with Playwright-managed Chromium, Cypress end-to-end tests.
 - Configuration via Angular environments; HttpClient handles API access; commit messages in English.
+- Environment provisioning relies on `scripts/bootstrap.mjs`; any change introducing new tooling or dependencies must update this script so setup stays deterministic. Prefer pnpm via Corepack, fall back to yarn and npm only when unavoidable, and ensure the bootstrap path remains non-interactive on Linux.
 
 ## Architecture & Code Guidelines
 - Clean/hexagonal layering: presentation components -> domain services/utilities -> infrastructure adapters (API, storage).
@@ -35,6 +36,8 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - 2025-10-13: Route timetable mapping infers weekday sets and holiday availability from consortium frequency codes and labels, covering variations across CTAN consorcios 1-9.
 - 2025-10-15: Snapshot pipeline now streams progress logs, persists catalog data in parallel, and linting enforces GitHub Actions validity via actionlint; see `docs/development-environment.md` for the environment bootstrap script.
 - 2025-10-16: Deployment verification relies on `npm run deploy:prepare`, which mirrors the GitHub Pages build and fallback creation. Run `npm run test:deploy` in pull requests that modify deployment workflows or `scripts/deploy/*` utilities.
+- 2025-10-21: Angular unit tests default to the Playwright-managed `ChromeHeadlessNoSandbox` launcher with headless flags forced and watch mode disabled (`angular.json`, `karma.conf.js`); use `ng test --watch` to opt back into the interactive runner when needed.
+- 2025-10-19: Puppeteer tooling replaced with Playwright (Chromium-only) while preserving Cypress end-to-end coverage.
 
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.
@@ -87,6 +90,14 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Break complex product goals into smaller verifiable tasks and validate each step before progressing to the next.
 - Local development workflow: before completing any task, run and pass only the necessary checks according to the type of change. For visual or style changes, run npm run lint, npm run test, and npm run build. For logic, data, or API changes, also run npm run snapshot. For deployment or workflow changes, run npm run test:deploy. Confirm npm start launches without compilation errors. Use npm run verify:all only when a full verification is required.
 - Reference `docs/development-environment.md` for targeted command guidance when determining which checks must run for a change.
+
+### Visual Verification
+- Use the headless screenshot utility in `scripts/screenshot.js` or the `npm run screenshot` shortcut to capture deterministic UI states for CI review and design validation.
+- Capabilities include navigation and waiting controls, viewport and device emulation, storage and permission configuration, DOM interactions, map-specific adjustments, accessibility assertions, and capture variants with masking.
+- Defaults live in `scripts/screenshot.config.json`, and teams can supply alternative paths through the `--config` flag to tailor timeouts, directories, and other repeated inputs.
+- Example capture command: `npm run screenshot -- --url=https://example.org --waitFor=#app-root --name=home-desktop`.
+- The tool can emit HAR files, console transcripts, and PNG output, and accepts ordered scenarios for multi-step flows.
+- All generated artefacts live under `artifacts/screenshots` (or the configured directory) which is ignored by Git; share captures via CI artefacts or public URLs when referencing them in reviews or documentation.
 
 ## Performance & UX Guardrails
 - Leverage lazy-loaded routes and code splitting; reuse API results with RxJS `shareReplay` or caching services; offload heavy computations (e.g., nearest stop calculations) to Web Workers if needed.

@@ -1,13 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-
 import {
-  StopDirectoryRecord,
   StopDirectoryOption,
+  StopDirectoryRecord,
   StopDirectoryService,
   StopDirectoryStopSignature,
   StopSearchRequest
-} from '../../data/stops/stop-directory.service';
+} from '@data/stops/stop-directory.service';
 
 @Injectable({ providedIn: 'root' })
 export class StopDirectoryFacade {

@@ -12,16 +12,15 @@ import {
   switchMap,
   tap
 } from 'rxjs';
-
-import { RouteLinesApiService, RouteLineStop } from '../../data/route-search/route-lines-api.service';
-import { RouteSearchSelection, RouteSearchStateService } from '../route-search/route-search-state.service';
-import { GeoCoordinate } from '../utils/geo-distance.util';
+import { RouteLineStop, RouteLinesApiService } from '@data/route-search/route-lines-api.service';
 import {
   RouteOverlayGeometryRequest,
+  RouteOverlayLineStop,
   buildRouteSegmentCoordinates,
-  calculateRouteLengthInMeters,
-  RouteOverlayLineStop
-} from './route-overlay-geometry';
+  calculateRouteLengthInMeters
+} from '@domain/map/route-overlay-geometry';
+import { RouteSearchSelection, RouteSearchStateService } from '@domain/route-search/route-search-state.service';
+import { GeoCoordinate } from '@domain/utils/geo-distance.util';
 
 export type RouteOverlayStatus = 'idle' | 'loading' | 'ready' | 'error';
 

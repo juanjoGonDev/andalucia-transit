@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AppAutocompleteComponent, AppAutocompleteOption } from './app-autocomplete.component';
-import { AppTextFieldErrorDirective } from './app-text-field-slots.directive';
+import { AppAutocompleteComponent, AppAutocompleteOption } from '@shared/ui/forms/app-autocomplete.component';
+import { AppTextFieldErrorDirective } from '@shared/ui/forms/app-text-field-slots.directive';
 
 interface OptionValue {
   readonly id: number;

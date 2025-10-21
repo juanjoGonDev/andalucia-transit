@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
-import { DialogLayoutComponent } from './dialog-layout.component';
+import { DialogLayoutComponent } from '@shared/ui/dialog/dialog-layout.component';
 import {
   OVERLAY_DIALOG_ARIA_ADAPTER,
   OverlayDialogAriaAdapter
-} from './overlay-dialog-container.component';
+} from '@shared/ui/dialog/overlay-dialog-container.component';
 
 class EmptyTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {

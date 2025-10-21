@@ -3,6 +3,7 @@ const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
 const prettier = require('eslint-config-prettier');
 const unusedImports = require('eslint-plugin-unused-imports');
+const eslintPluginImport = require('eslint-plugin-import');
 
 module.exports = tseslint.config(
   {
@@ -16,7 +17,16 @@ module.exports = tseslint.config(
     ],
     processor: angular.processInlineTemplates,
     plugins: {
-      'unused-imports': unusedImports
+      'unused-imports': unusedImports,
+      import: eslintPluginImport
+    },
+    settings: {
+      'import/resolver': {
+        node: true,
+        typescript: {
+          project: ['./tsconfig.json']
+        }
+      }
     },
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
@@ -36,6 +46,27 @@ module.exports = tseslint.config(
           type: 'attribute',
           prefix: 'app',
           style: 'camelCase'
+        }
+      ],
+      'import/order': [
+        'error',
+        {
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          'newlines-between': 'never',
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true
+          }
+        }
+      ],
+      'sort-imports': [
+        'error',
+        {
+          ignoreCase: false,
+          ignoreDeclarationSort: true,
+          ignoreMemberSort: false,
+          memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+          allowSeparatedGroups: false
         }
       ],
       '@angular-eslint/component-selector': [

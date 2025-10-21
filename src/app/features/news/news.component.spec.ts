@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { NewsArticle, NewsFacade } from '../../domain/news/news.facade';
-import { NewsComponent } from './news.component';
+import { NewsArticle, NewsFacade } from '@domain/news/news.facade';
+import { NewsComponent } from '@features/news/news.component';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {

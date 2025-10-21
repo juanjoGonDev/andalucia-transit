@@ -1,4 +1,4 @@
-import { APP_CONFIG } from '../../src/app/core/config';
+import { APP_CONFIG } from '@core/config';
 import { CompareSnapshotResult } from '../support/visual-regression/types';
 
 const HOME_LAYOUT_SNAPSHOT_BASE = 'home-layout' as const;
@@ -26,13 +26,13 @@ const RUNTIME_FLAGS_PROPERTY = APP_CONFIG.runtime.flagsProperty;
 
 type VisitHandler = (win: Window) => void;
 
-type SnapshotScenario = {
+interface SnapshotScenario {
   readonly name: string;
   readonly path: string;
   readonly readySelector: string;
   readonly clockTime?: number;
   readonly onBeforeVisit?: VisitHandler;
-};
+}
 
 type QueryParams = Record<string, string | undefined>;
 
@@ -51,12 +51,12 @@ const LOCALE_VARIANTS = [
 
 type LocaleKey = (typeof LOCALE_VARIANTS)[number]['key'];
 
-type ScenarioOptions = {
+interface ScenarioOptions {
   readonly queryParams?: QueryParams;
   readonly readySelector?: string;
   readonly clockTime?: number;
   readonly onBeforeVisit?: VisitHandler;
-};
+}
 
 type MutableWindow = Window & Record<string, unknown>;
 

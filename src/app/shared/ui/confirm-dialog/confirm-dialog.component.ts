@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { DialogLayoutComponent } from '../dialog/dialog-layout.component';
-import { AccessibleButtonDirective } from '../../a11y/accessible-button.directive';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { DialogLayoutComponent } from '@shared/ui/dialog/dialog-layout.component';
 import {
   injectOverlayDialogData,
   injectOverlayDialogRef,
-} from '../dialog/overlay-dialog.service';
+} from '@shared/ui/dialog/overlay-dialog.service';
 
 export interface ConfirmDialogData {
   readonly titleKey: string;

@@ -1,12 +1,11 @@
 import { Injectable, InjectionToken, inject } from '@angular/core';
-
 import {
   PluralizedTranslationKeys,
   ResolveLanguageOptions,
   createPluralRules,
   resolveLanguage,
   selectPluralizedTranslationKey
-} from './pluralization';
+} from '@core/i18n/pluralization';
 
 export type PluralRulesFactory = (language: string) => Intl.PluralRules;
 

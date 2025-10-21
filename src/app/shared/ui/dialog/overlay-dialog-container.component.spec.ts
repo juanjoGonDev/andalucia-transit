@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { A11yModule } from '@angular/cdk/a11y';
-import { OverlayDialogContainerComponent } from './overlay-dialog-container.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { OverlayDialogContainerComponent } from '@shared/ui/dialog/overlay-dialog-container.component';
 
 describe('OverlayDialogContainerComponent', () => {
   let fixture: ComponentFixture<OverlayDialogContainerComponent>;

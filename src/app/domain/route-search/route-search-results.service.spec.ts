@@ -1,14 +1,13 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
-
+import { RouteTimetableEntry } from '@data/route-search/route-timetable.mapper';
+import { RouteTimetableRequest, RouteTimetableService } from '@data/route-search/route-timetable.service';
+import { StopDirectoryOption } from '@data/stops/stop-directory.service';
 import {
   RouteSearchResultsService,
   RouteSearchResultsViewModel
-} from './route-search-results.service';
-import { RouteSearchSelection } from './route-search-state.service';
-import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
-import { RouteTimetableService, RouteTimetableRequest } from '../../data/route-search/route-timetable.service';
-import { RouteTimetableEntry } from '../../data/route-search/route-timetable.mapper';
+} from '@domain/route-search/route-search-results.service';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 
 class RouteTimetableServiceStub {
   constructor(private readonly entries: readonly RouteTimetableEntry[]) {}

@@ -1,12 +1,10 @@
 import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-
 import { TranslateModule } from '@ngx-translate/core';
-
-import { AppShellTopActionsComponent } from '../top-actions/app-shell-top-actions.component';
-import { AppLayoutContextStore } from '../app-layout-context.store';
-import { APP_LAYOUT_CONTEXT } from '../app-layout-context.token';
-import { AccessibleButtonDirective } from '../../a11y/accessible-button.directive';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { AppLayoutContextStore } from '@shared/layout/app-layout-context.store';
+import { APP_LAYOUT_CONTEXT } from '@shared/layout/app-layout-context.token';
+import { AppShellTopActionsComponent } from '@shared/layout/top-actions/app-shell-top-actions.component';
 
 const MAIN_CONTENT_ID = 'app-main-content';
 const SKIP_LINK_LABEL_KEY = 'layout.skipToContent';

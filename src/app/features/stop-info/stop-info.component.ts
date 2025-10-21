@@ -1,14 +1,13 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { map, distinctUntilChanged, shareReplay } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
-import { APP_CONFIG } from '../../core/config';
-import { StopInfoFacade, StopInformationDetail, StopInformationState } from '../../domain/stops/stop-info.facade';
-import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
-import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
+import { distinctUntilChanged, map, shareReplay } from 'rxjs';
+import { APP_CONFIG } from '@core/config';
+import { StopInfoFacade, StopInformationDetail, StopInformationState } from '@domain/stops/stop-info.facade';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 
 interface StopInfoRouteSelection {
   readonly consortiumId: number;

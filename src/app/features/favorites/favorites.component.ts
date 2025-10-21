@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,24 +7,22 @@ import {
   inject,
   signal
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
-
-import { APP_CONFIG } from '../../core/config';
-import { SectionComponent } from '../../shared/ui/section/section.component';
+import { APP_CONFIG } from '@core/config';
+import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
+import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/interactive-card.component';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData
-} from '../../shared/ui/confirm-dialog/confirm-dialog.component';
-import { OverlayDialogService } from '../../shared/ui/dialog/overlay-dialog.service';
-import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
-import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
-import { InteractiveCardComponent } from '../../shared/ui/cards/interactive-card/interactive-card.component';
-import { AppTextFieldComponent, TextFieldType } from '../../shared/ui/forms/app-text-field.component';
-import { FavoritesFacade, StopFavorite } from '../../domain/stops/favorites.facade';
+} from '@shared/ui/confirm-dialog/confirm-dialog.component';
+import { OverlayDialogService } from '@shared/ui/dialog/overlay-dialog.service';
+import { AppTextFieldComponent, TextFieldType } from '@shared/ui/forms/app-text-field.component';
+import { SectionComponent } from '@shared/ui/section/section.component';
 
 interface FavoriteListItem {
   readonly id: string;

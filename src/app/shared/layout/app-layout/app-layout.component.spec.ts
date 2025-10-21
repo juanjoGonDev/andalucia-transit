@@ -1,10 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
-import { AppLayoutComponent } from './app-layout.component';
-import { AppShellTopActionsComponent } from '../top-actions/app-shell-top-actions.component';
+import { AppLayoutComponent } from '@shared/layout/app-layout/app-layout.component';
+import { AppShellTopActionsComponent } from '@shared/layout/top-actions/app-shell-top-actions.component';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {

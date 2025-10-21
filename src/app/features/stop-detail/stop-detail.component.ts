@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   Observable,
   catchError,
@@ -15,23 +16,21 @@ import {
   startWith,
   switchMap,
 } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
-import { APP_CONFIG } from '../../core/config';
-import { StopScheduleFacade } from '../../domain/stop-schedule/stop-schedule.facade';
+import { APP_CONFIG } from '@core/config';
+import { StopScheduleFacade } from '@domain/stop-schedule/stop-schedule.facade';
+import { StopScheduleResult } from '@domain/stop-schedule/stop-schedule.model';
 import {
-  buildStopScheduleUiModel,
   StopScheduleUiModel,
-} from '../../domain/stop-schedule/stop-schedule.transform';
-import { StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
-import { AppLayoutContentDirective } from '../../shared/layout/app-layout-content.directive';
+  buildStopScheduleUiModel,
+} from '@domain/stop-schedule/stop-schedule.transform';
+import { StopDirectoryFacade } from '@domain/stops/stop-directory.facade';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import {
   APP_LAYOUT_CONTEXT,
   AppLayoutContext,
   AppLayoutTabRegistration,
-} from '../../shared/layout/app-layout-context.token';
-import { StopDirectoryFacade } from '../../domain/stops/stop-directory.facade';
-import { AccessibleButtonDirective } from '../../shared/a11y/accessible-button.directive';
+} from '@shared/layout/app-layout-context.token';
 
 const ALL_DESTINATIONS_OPTION = 'all';
 const STATUS_ROLE = 'status';

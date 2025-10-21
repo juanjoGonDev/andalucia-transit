@@ -7,14 +7,13 @@ import {
   SimpleChanges,
   inject
 } from '@angular/core';
-
 import {
   APP_LAYOUT_CONTEXT,
   AppLayoutContentIdentifier,
   AppLayoutContentRegistration,
   AppLayoutContext,
   AppLayoutNavigationKey
-} from './app-layout-context.token';
+} from '@shared/layout/app-layout-context.token';
 
 const APP_LAYOUT_CONTENT_IDENTIFIER_DESCRIPTION = 'app-layout-content';
 
