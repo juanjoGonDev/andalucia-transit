@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
+
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const rootDirectory = join(scriptDirectory, '..');
 const summary = [];
@@ -10,7 +11,7 @@ let corepackAlreadyEnabled = false;
 
 function logWithTime(message) {
   const now = new Date();
-  const timeString = now.toISOString().substr(11, 12);
+  const timeString = now.toISOString().substring(11, 23);
   console.log(`[${timeString}] ${message}`);
   return now;
 }
@@ -18,8 +19,9 @@ function logWithTime(message) {
 function logElapsedTime(startTime, operation) {
   const endTime = new Date();
   const elapsed = (endTime - startTime) / 1000;
-  timings.push({ operation, duration: elapsed.toFixed(2) });
-  logWithTime(`✅ ${operation} completado en ${elapsed.toFixed(2)} segundos`);
+  const formatted = elapsed.toFixed(2);
+  timings.push({ operation, duration: formatted });
+  logWithTime(`✅ ${operation} completed in ${formatted} seconds`);
   return endTime;
 }
 
@@ -105,28 +107,24 @@ function commandAvailable(command) {
   return result.status === 0;
 }
 
-async function execute(command, args, operation = 'Ejecutar comando') {
+async function execute(command, args, operation = 'Run command') {
   return new Promise((resolve) => {
-    const startTime = logWithTime(`🚀 Iniciando: ${operation} (${command} ${args.join(' ')})`);
-    
+    const startTime = logWithTime(`🚀 Starting: ${operation} (${command} ${args.join(' ')})`);
     try {
-      const result = spawnSync(command, args, { 
-        cwd: rootDirectory, 
+      const result = spawnSync(command, args, {
+        cwd: rootDirectory,
         stdio: 'inherit',
-        shell: true
+        shell: true,
       });
-      
       const success = result.status === 0;
-      
       if (success) {
         logElapsedTime(startTime, operation);
       } else {
-        console.error(`❌ Error en: ${operation} (Código: ${result.status || 'N/A'})`);
+        console.error(`❌ ${operation} failed (code: ${result.status ?? 'N/A'})`);
       }
-      
       resolve(success);
     } catch (error) {
-      console.error(`❌ Error al ejecutar ${operation}:`, error.message);
+      console.error(`❌ ${operation} threw an error: ${error.message}`);
       resolve(false);
     }
   });
@@ -136,40 +134,32 @@ async function ensureCorepack() {
   if (corepackAlreadyEnabled) {
     return true;
   }
-
   try {
-    // Verificar si corepack está disponible
     try {
-      const corepackCheck = spawnSync('corepack', ['--version'], { 
+      const corepackCheck = spawnSync('corepack', ['--version'], {
         stdio: 'pipe',
-        encoding: 'utf8'
+        encoding: 'utf8',
       });
-      
       if (corepackCheck.status !== 0) {
         throw new Error('Corepack check failed');
       }
-      
-      logWithTime(`ℹ️ Corepack ${corepackCheck.stdout.trim()} detectado`);
+      logWithTime(`ℹ️ Corepack ${corepackCheck.stdout.trim()} detected`);
     } catch (error) {
-      logWithTime('ℹ️ Corepack no está disponible, continuando sin él...');
+      logWithTime('ℹ️ Corepack is not available, continuing without it.');
       summary.push('Corepack not available, continuing without it.');
       return false;
     }
-    
-    // Si está disponible, intentar habilitarlo
-    logWithTime('🔄 Habilitando Corepack...');
-    const result = await execute('corepack', ['enable'], 'Habilitar Corepack');
-    
+    logWithTime('🔄 Enabling Corepack...');
+    const result = await execute('corepack', ['enable'], 'Enable Corepack');
     if (!result) {
-      logWithTime('⚠️ No se pudo habilitar Corepack, continuando sin él...');
+      logWithTime('⚠️ Corepack could not be enabled, continuing without it.');
       return false;
     }
-    
     summary.push('Corepack enabled successfully.');
     corepackAlreadyEnabled = true;
     return true;
   } catch (error) {
-    logWithTime('⚠️ Error al intentar habilitar Corepack, continuando sin él...');
+    logWithTime('⚠️ Enabling Corepack failed, continuing without it.');
     return false;
   }
 }
@@ -178,13 +168,12 @@ async function prepareWithCorepack(name, version) {
   if (!version) {
     return true;
   }
-
   try {
-    logWithTime(`🔧 Preparando ${name}@${version} con Corepack...`);
-    const result = await execute('corepack', ['prepare', `${name}@${version}`, '--activate'], `Preparar ${name} con Corepack`);
+    logWithTime(`🔧 Preparing ${name}@${version} with Corepack...`);
+    const result = await execute('corepack', ['prepare', `${name}@${version}`, '--activate'], `Prepare ${name} with Corepack`);
     return result !== null;
   } catch (error) {
-    logWithTime(`⚠️ No se pudo preparar ${name}@${version} con Corepack: ${error.message}`);
+    logWithTime(`⚠️ Corepack could not prepare ${name}@${version}: ${error.message}`);
     return false;
   }
 }
@@ -215,19 +204,16 @@ function installArguments(name, hasLock) {
 async function installDependencies(manager) {
   const hasLock = lockExists(manager.name);
   const args = installArguments(manager.name, hasLock);
-  
   try {
-    const success = await execute(manager.name, args, `Instalar dependencias con ${manager.name}`);
-    
+    const success = await execute(manager.name, args, `Install dependencies with ${manager.name}`);
     if (success) {
-      const lockState = hasLock ? 'lock respetado' : 'lock creado';
-      summary.push(`Dependencias instaladas con ${manager.name} (${lockState}).`);
+      const lockState = hasLock ? 'lock respected' : 'lock created';
+      summary.push(`Dependencies installed with ${manager.name} (${lockState}).`);
       return true;
     }
-    
     return false;
   } catch (error) {
-    logWithTime(`❌ Error al instalar dependencias con ${manager.name}: ${error.message}`);
+    logWithTime(`❌ Installing dependencies with ${manager.name} failed: ${error.message}`);
     return false;
   }
 }
@@ -235,160 +221,142 @@ async function installDependencies(manager) {
 async function installLefthook(manager) {
   try {
     let success = false;
-    
     if (manager.name === 'pnpm') {
-      success = await execute('pnpm', ['exec', 'lefthook', 'install'], 'Instalar Lefthook con pnpm');
+      success = await execute('pnpm', ['exec', 'lefthook', 'install'], 'Install Lefthook with pnpm');
     } else if (manager.name === 'yarn') {
-      success = await execute('yarn', ['lefthook', 'install'], 'Instalar Lefthook con yarn');
+      success = await execute('yarn', ['lefthook', 'install'], 'Install Lefthook with yarn');
     } else {
-      success = await execute('npx', ['lefthook', 'install'], 'Instalar Lefthook con npx');
+      success = await execute('npx', ['lefthook', 'install'], 'Install Lefthook with npx');
     }
-    
     if (success) {
-      summary.push('Lefthook instalado con configuración pre-commit.');
+      summary.push('Lefthook installed with pre-commit configuration.');
       return true;
-    } else {
-      logWithTime('⚠️ No se pudo instalar Lefthook, continuando sin él...');
-      return false;
     }
+    logWithTime('⚠️ Lefthook could not be installed, continuing without it.');
+    return false;
   } catch (error) {
-    logWithTime(`⚠️ Error al instalar Lefthook: ${error.message}, continuando sin él...`);
+    logWithTime(`⚠️ Lefthook installation failed: ${error.message}, continuing without it.`);
     return false;
   }
+}
+
+async function installPlaywrightBrowsers() {
+  const scriptPath = join(rootDirectory, 'scripts', 'dev', 'prepare-playwright.mjs');
+  const success = await execute(process.execPath, [scriptPath], 'Prepare Playwright Chromium');
+  if (success) {
+    summary.push('Playwright Chromium ready.');
+  }
+  return success;
 }
 
 async function selectManager(packageManagerValue) {
   const parsed = parsePackageManager(packageManagerValue);
   const sequence = [
-    { 
-      name: 'pnpm', 
+    {
+      name: 'pnpm',
       version: parsed?.name === 'pnpm' ? parsed.version : null,
-      requiresCorepack: true
+      requiresCorepack: true,
     },
-    { 
-      name: 'yarn', 
+    {
+      name: 'yarn',
       version: parsed?.name === 'yarn' ? parsed.version : null,
-      requiresCorepack: true
+      requiresCorepack: true,
     },
-    { 
-      name: 'npm', 
+    {
+      name: 'npm',
       version: parsed?.name === 'npm' ? parsed.version : null,
-      requiresCorepack: false
-    }
+      requiresCorepack: false,
+    },
   ];
-
   for (const manager of sequence) {
-    logWithTime(`🔍 Probando con ${manager.name}...`);
-    
-    // Verificar si el comando está disponible
+    logWithTime(`🔍 Trying ${manager.name}...`);
     if (!commandAvailable(manager.name)) {
-      logWithTime(`ℹ️ ${manager.name} no está disponible, probando con el siguiente gestor...`);
+      logWithTime(`ℹ️ ${manager.name} is not available, moving to the next option.`);
       continue;
     }
-
-    // Manejar Corepack si es necesario
     if (manager.requiresCorepack && manager.version) {
-      logWithTime(`🔄 Configurando ${manager.name}@${manager.version}...`);
-      
+      logWithTime(`🔄 Configuring ${manager.name}@${manager.version}...`);
       const corepackEnabled = await ensureCorepack();
       if (corepackEnabled) {
         const prepared = await prepareWithCorepack(manager.name, manager.version);
         if (!prepared) {
-          logWithTime(`⚠️ No se pudo configurar ${manager.name}@${manager.version} con Corepack.`);
+          logWithTime(`⚠️ ${manager.name}@${manager.version} could not be prepared with Corepack.`);
           continue;
         }
-        summary.push(`${manager.name}@${manager.version} configurado con Corepack.`);
+        summary.push(`${manager.name}@${manager.version} configured with Corepack.`);
       } else {
-        logWithTime(`ℹ️ Usando ${manager.name} sin Corepack...`);
+        logWithTime(`ℹ️ Using ${manager.name} without Corepack.`);
       }
     }
-
-    // Intentar instalar dependencias
-    logWithTime(`🔄 Intentando instalar dependencias con ${manager.name}...`);
+    logWithTime(`🔄 Installing dependencies with ${manager.name}...`);
     const depsInstalled = await installDependencies(manager);
-    
     if (depsInstalled) {
-      summary.push(`✅ Gestor de paquetes seleccionado: ${manager.name}.`);
+      summary.push(`✅ Selected package manager: ${manager.name}.`);
       return manager;
     }
-    
-    logWithTime(`⚠️ La instalación con ${manager.name} falló, probando con el siguiente...`);
+    logWithTime(`⚠️ Dependency installation with ${manager.name} failed, trying the next option.`);
   }
-  
   return null;
 }
 
 async function run() {
-  const startTime = logWithTime('🚀 Iniciando proceso de instalación');
-  
+  const startTime = logWithTime('🚀 Starting environment bootstrap');
   try {
-    // 1. Leer configuración del proyecto
-    logWithTime('📦 Leyendo configuración del proyecto...');
+    logWithTime('📦 Reading project configuration...');
     const pkg = readJsonFile('package.json');
-    
-    // 2. Verificar requisitos de Node.js
-    logWithTime('🔍 Verificando requisitos de Node.js...');
+    logWithTime('🔍 Validating Node.js requirements...');
     const engineRequirement = pkg.engines?.node;
     ensureNodeRequirement(engineRequirement);
-    
-    // 3. Seleccionar y configurar el gestor de paquetes
-    logWithTime('🛠️  Seleccionando gestor de paquetes...');
+    logWithTime('🛠️ Selecting package manager...');
     const managerStart = new Date();
     const manager = await selectManager(pkg.packageManager);
-    
     if (!manager) {
-      console.error('❌ No se encontró un gestor de paquetes adecuado.');
+      console.error('❌ No suitable package manager was found.');
       process.exit(1);
     }
-    
-    logElapsedTime(managerStart, `Selección de gestor de paquetes (${manager.name})`);
-    
-    // 4. Instalar Lefthook (opcional, no crítico)
-    logWithTime('🔧 Configurando herramientas adicionales...');
+    logElapsedTime(managerStart, `Package manager selection (${manager.name})`);
+    logWithTime('🌐 Preparing Playwright Chromium...');
+    const playwrightStart = new Date();
+    const playwrightReady = await installPlaywrightBrowsers();
+    if (!playwrightReady) {
+      console.error('❌ Playwright Chromium could not be prepared.');
+      process.exit(1);
+    }
+    logElapsedTime(playwrightStart, 'Playwright Chromium preparation');
+    logWithTime('🔧 Configuring additional tooling...');
     const toolsStart = new Date();
-    
-    // Ejecutar en paralelo las tareas que no son críticas
     await Promise.allSettled([
-      installLefthook(manager).catch(err => {
-        logWithTime(`⚠️ No se pudo instalar Lefthook: ${err.message}`);
-      })
+      installLefthook(manager).catch((error) => {
+        logWithTime(`⚠️ Lefthook setup failed: ${error.message}`);
+      }),
     ]);
-    
-    logElapsedTime(toolsStart, 'Configuración de herramientas adicionales');
-    
-    // Mostrar resumen
-    console.log('\n📊 Resumen de la instalación:');
+    logElapsedTime(toolsStart, 'Additional tooling configuration');
+    console.log('\n📊 Installation summary:');
     console.log('='.repeat(50));
     console.log(summary.join('\n'));
-    
-    // Mostrar tiempos
-    console.log('\n⏱️  Tiempos de ejecución:');
+    console.log('\n⏱️ Execution times:');
     console.log('='.repeat(50));
     timings.forEach(({ operation, duration }) => {
-      console.log(`- ${operation}: ${duration} segundos`);
+      console.log(`- ${operation}: ${duration} seconds`);
     });
-    
     const totalTime = (new Date() - startTime) / 1000;
     console.log('='.repeat(50));
-    console.log(`✨ Proceso completado en ${totalTime.toFixed(2)} segundos`);
-    
+    console.log(`✨ Completed in ${totalTime.toFixed(2)} seconds`);
   } catch (error) {
-    console.error('\n❌ Error durante la instalación:', error.message);
+    console.error('\n❌ Installation failed:', error.message);
     console.error('Stack:', error.stack);
     process.exit(1);
   }
 }
 
-// Manejar promesas no capturadas
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ Error no manejado en la promesa:');
+process.on('unhandledRejection', (reason) => {
+  console.error('❌ Unhandled promise rejection:');
   console.error(reason);
   process.exit(1);
 });
 
-// Ejecutar la aplicación
-run().catch(error => {
-  console.error('❌ Error fatal no manejado:');
+run().catch((error) => {
+  console.error('❌ Unhandled fatal error:');
   console.error(error);
   process.exit(1);
 });
