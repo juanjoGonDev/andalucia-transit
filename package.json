@@ -9,7 +9,7 @@
     "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "npm run test:scripts && npm run test:angular && npm run test:playwright",
-    "test:angular": "ng test --browsers=ChromeHeadlessNoSandbox --watch=false --code-coverage",
+    "test:angular": "node scripts/dev/run-angular-tests.mjs",
     "test:scripts": "node scripts/run-tests.cjs",
     "test:playwright": "playwright test",
     "snapshot": "tsx scripts/snapshot/run.ts",

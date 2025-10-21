@@ -2,9 +2,12 @@ const { join } = require('node:path');
 const { constants } = require('karma');
 const { chromium } = require('playwright');
 
-// Usar el Chrome de Playwright
-const chromePath = chromium.executablePath();
-process.env.CHROME_BIN = chromePath;
+// Usar el Chrome de Playwright si no viene definido desde el entorno
+let chromePath = process.env.CHROME_BIN;
+if (!chromePath) {
+  chromePath = chromium.executablePath();
+  process.env.CHROME_BIN = chromePath;
+}
 
 // Configuración para el navegador
 const chromeFlags = [
