@@ -56,7 +56,7 @@ jobs:
               pnpm run test:scripts
           - label: Test angular
             command: |
-              pnpm run test:angular -- --watch=false --browsers=ChromeHeadlessNoSandbox
+              pnpm run test:angular
           - label: Deploy pipeline
             command: |
               pnpm run test:deploy
