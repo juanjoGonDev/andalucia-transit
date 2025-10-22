@@ -14,6 +14,7 @@ import { HomeComponent } from '@features/home/home.component';
 import { HomeTabId } from '@features/home/home.types';
 import { HomeRecentSearchesComponent } from '@features/home/recent-searches/home-recent-searches.component';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
+import { AppLayoutNavigationKey } from '@shared/layout/app-layout-context.token';
 
 class ImmediateIntersectionObserver implements IntersectionObserver {
   readonly root: Element | Document | null = null;
@@ -235,10 +236,21 @@ describe('HomeComponent', () => {
     component.selectTab('favorites');
     expect(router.navigate).toHaveBeenCalledWith(['/', APP_CONFIG.routes.homeFavorites]);
   });
+
+  it('updates the layout navigation key when selecting a tab', () => {
+    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
+
+    expect(component.layoutNavigationKey()).toBe(APP_CONFIG.routes.home);
+
+    component.selectTab('recent');
+
+    expect(component.layoutNavigationKey()).toBe(APP_CONFIG.routes.homeRecent);
+  });
 });
 
 interface HomeComponentTestingApi {
   onSelectionConfirmed(selection: RouteSearchSelection): Promise<void>;
   isTabActive(tab: HomeTabId): boolean;
   selectTab(tab: HomeTabId): void;
+  layoutNavigationKey(): AppLayoutNavigationKey;
 }

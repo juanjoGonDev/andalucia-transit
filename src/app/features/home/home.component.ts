@@ -70,6 +70,11 @@ export class HomeComponent {
     ['recent', buildNavigationCommands(APP_CONFIG.routes.homeRecent)],
     ['favorites', buildNavigationCommands(APP_CONFIG.routes.homeFavorites)],
   ]);
+  private readonly homeTabNavigationKeys = new Map<HomeTabId, AppLayoutNavigationKey>([
+    ['search', APP_CONFIG.routes.home],
+    ['recent', APP_CONFIG.routes.homeRecent],
+    ['favorites', APP_CONFIG.routes.homeFavorites],
+  ]);
   private readonly homeTabRoutes = new Map<string, HomeTabId>([
     [APP_CONFIG.routes.home, 'search'],
     [APP_CONFIG.routes.homeRecent, 'recent'],
@@ -144,6 +149,7 @@ export class HomeComponent {
     }
 
     this.activeTab.set(tab);
+    this.updateLayoutNavigationKeyForTab(tab);
     void this.navigateToTab(tab);
   }
 
@@ -229,6 +235,10 @@ export class HomeComponent {
     return this.homeNavigationKeys.get(path) ?? APP_CONFIG.routes.home;
   }
 
+  private resolveNavigationKeyFromTab(tab: HomeTabId): AppLayoutNavigationKey | null {
+    return this.homeTabNavigationKeys.get(tab) ?? null;
+  }
+
   private async navigateToTab(tab: HomeTabId): Promise<void> {
     const commands = this.homeTabCommands.get(tab);
 
@@ -237,5 +247,15 @@ export class HomeComponent {
     }
 
     await this.router.navigate(commands);
+  }
+
+  private updateLayoutNavigationKeyForTab(tab: HomeTabId): void {
+    const nextKey = this.resolveNavigationKeyFromTab(tab);
+
+    if (!nextKey || this.layoutNavigationKey() === nextKey) {
+      return;
+    }
+
+    this.layoutNavigationKey.set(nextKey);
   }
 }
