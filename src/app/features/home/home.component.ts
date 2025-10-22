@@ -9,7 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
@@ -55,7 +55,6 @@ interface HomeTabOption {
 })
 export class HomeComponent {
   private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
   private readonly routeSearchState = inject(RouteSearchStateService);
   private readonly execution = inject(RouteSearchExecutionService);
   private readonly favoritesFacade = inject(FavoritesFacade);
@@ -206,9 +205,10 @@ export class HomeComponent {
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() => {
-        const nextTab = this.resolveTabFromRoute();
-        const nextNavigationKey = this.resolveNavigationKeyFromRoute();
+      .subscribe((event) => {
+        const path = this.resolveRoutePath(event.urlAfterRedirects ?? event.url ?? null);
+        const nextTab = this.resolveTabFromPath(path);
+        const nextNavigationKey = this.resolveNavigationKeyFromPath(path);
 
         if (this.activeTab() !== nextTab) {
           this.activeTab.set(nextTab);
@@ -221,18 +221,34 @@ export class HomeComponent {
   }
 
   private syncActiveTabWithRoute(): void {
-    this.activeTab.set(this.resolveTabFromRoute());
-    this.layoutNavigationKey.set(this.resolveNavigationKeyFromRoute());
+    const currentPath = this.resolveRoutePath(this.router.url);
+    this.activeTab.set(this.resolveTabFromPath(currentPath));
+    this.layoutNavigationKey.set(this.resolveNavigationKeyFromPath(currentPath));
   }
 
-  private resolveTabFromRoute(): HomeTabId {
-    const path = this.route.snapshot.routeConfig?.path ?? APP_CONFIG.routes.home;
-    return this.homeTabRoutes.get(path) ?? 'search';
+  private resolveRoutePath(url: string | null | undefined): string {
+    if (!url) {
+      return APP_CONFIG.routes.home;
+    }
+
+    const trimmed = url.startsWith('/') ? url.slice(1) : url;
+    const path = trimmed.split('?')[0]?.split('#')[0] ?? '';
+
+    if (!path) {
+      return APP_CONFIG.routes.home;
+    }
+
+    return path;
   }
 
-  private resolveNavigationKeyFromRoute(): AppLayoutNavigationKey {
-    const path = this.route.snapshot.routeConfig?.path ?? APP_CONFIG.routes.home;
-    return this.homeNavigationKeys.get(path) ?? APP_CONFIG.routes.home;
+  private resolveTabFromPath(path: string | null | undefined): HomeTabId {
+    const routePath = path ?? APP_CONFIG.routes.home;
+    return this.homeTabRoutes.get(routePath) ?? 'search';
+  }
+
+  private resolveNavigationKeyFromPath(path: string | null | undefined): AppLayoutNavigationKey {
+    const routePath = path ?? APP_CONFIG.routes.home;
+    return this.homeNavigationKeys.get(routePath) ?? APP_CONFIG.routes.home;
   }
 
   private resolveNavigationKeyFromTab(tab: HomeTabId): AppLayoutNavigationKey | null {

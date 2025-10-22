@@ -79,12 +79,15 @@ class FavoritesFacadeStub {
 }
 
 class RouterStub {
+  url = `/${APP_CONFIG.routes.home}`;
   navigate = jasmine.createSpy('navigate').and.resolveTo(true);
   private readonly eventsSubject = new Subject<NavigationEnd>();
   readonly events = this.eventsSubject.asObservable();
 
   emitNavigation(path: string): void {
-    this.eventsSubject.next(new NavigationEnd(1, path, path));
+    const normalized = path.startsWith('/') ? path : `/${path}`;
+    this.url = normalized;
+    this.eventsSubject.next(new NavigationEnd(1, normalized, normalized));
   }
 }
 
