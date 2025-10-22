@@ -29,7 +29,8 @@
     "format:check": "prettier --check .",
     "deploy:prepare": "tsx scripts/deploy/run.ts",
     "test:deploy": "npm run deploy:prepare",
-    "screenshot": "node scripts/screenshot.js"
+    "screenshot": "node scripts/screenshot.js",
+    "record": "node scripts/record.js"
   },
   "prettier": {
     "printWidth": 100,
