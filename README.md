@@ -13,4 +13,4 @@ The workspace ships with ESLint, Prettier, Jasmine/Karma unit testing, and Cypre
 ## Media capture
 
 - `pnpm run record` launches the Playwright-based recorder that captures screenshots and videos with the same DOM automation flow as the legacy screenshot utility. Refer to [docs/recording-guide.md](docs/recording-guide.md) for full flag descriptions and troubleshooting tips.
-- Share demo captures via external links in pull request summaries or review comments, and remove local binaries after uploading.
+- Share demo captures via external links (example https://tmpfiles.org) in pull request summaries or review comments, and remove local binaries after uploading.
