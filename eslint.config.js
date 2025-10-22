@@ -7,6 +7,9 @@ const eslintPluginImport = require('eslint-plugin-import');
 
 module.exports = tseslint.config(
   {
+    ignores: ['docs/**/*.html']
+  },
+  {
     files: ['**/*.ts'],
     extends: [
       eslint.configs.recommended,
