@@ -61,9 +61,7 @@
       "search": {
         "title": "Search Stops",
         "originLabel": "Origin",
-        "originPlaceholder": "Where are you starting?",
         "destinationLabel": "Destination",
-        "destinationPlaceholder": "Where do you want to go?",
         "dateLabel": "Date",
         "submit": "Search schedules",
         "swapLabel": "Swap origin and destination",

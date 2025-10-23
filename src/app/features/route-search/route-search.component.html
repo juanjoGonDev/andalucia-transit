@@ -6,20 +6,26 @@
   <div class="utility-container">
     <div class="app-layout__body">
       <div class="route-search__content">
-        <header class="route-search__header">
+      <header class="route-search__hero app-hero">
+        <div class="route-search__hero-bar">
           <div
             appAccessibleButton
             class="app-icon-button route-search__back-button"
             (appAccessibleButtonActivated)="navigateBack()"
             [attr.aria-label]="translationKeys.backLabel | translate"
           >
-            <span class="material-symbols-outlined">arrow_back</span>
+            <span class="material-symbols-outlined">{{ backIcon }}</span>
           </div>
-          <div class="route-search__header-titles">
-            <h1 class="route-search__title">{{ translationKeys.title | translate }}</h1>
-            <p class="route-search__description">{{ translationKeys.description | translate }}</p>
+          <div class="route-search__hero-intro app-hero__intro">
+            <h1 class="app-hero__title route-search__title">
+              {{ translationKeys.title | translate }}
+            </h1>
+            <p class="app-hero__description route-search__description">
+              {{ translationKeys.description | translate }}
+            </p>
           </div>
-        </header>
+        </div>
+      </header>
         <main class="route-search__main">
           <app-section class="route-search__form" [titleKey]="formTitleKey" appearance="card">
             <app-route-search-form

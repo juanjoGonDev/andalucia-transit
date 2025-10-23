@@ -15,11 +15,20 @@
             <app-text-field
               class="favorites__search-field"
               [label]="searchLabelKey | translate"
+              [labelMode]="textFieldLabelModes.hidden"
               [placeholder]="searchPlaceholderKey | translate"
               [type]="searchFieldType"
               [autocomplete]="searchAutocompleteAttribute"
               [formControl]="searchControl"
-            ></app-text-field>
+            >
+              <span
+                appTextFieldPrefix
+                class="material-symbols-outlined favorites__search-icon"
+                aria-hidden="true"
+              >
+                {{ searchIcon }}
+              </span>
+            </app-text-field>
           </div>
           <div
             appAccessibleButton

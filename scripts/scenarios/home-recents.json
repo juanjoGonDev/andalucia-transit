@@ -1,0 +1,23 @@
+[
+  {"type":"waitFor","selector":"#home-search-origin"},
+  {"type":"type","selector":"#home-search-origin","text":"La Gangosa"},
+  {"type":"sleep","duration":400},
+  {"type":"press","selector":"#home-search-origin","keys":"ArrowDown"},
+  {"type":"press","selector":"#home-search-origin","keys":"Enter"},
+  {"type":"waitFor","selector":"#home-search-destination"},
+  {"type":"type","selector":"#home-search-destination","text":"Estacion Intermodal"},
+  {"type":"sleep","duration":400},
+  {"type":"press","selector":"#home-search-destination","keys":"ArrowDown"},
+  {"type":"press","selector":"#home-search-destination","keys":"Enter"},
+  {"type":"sleep","duration":200},
+  {"type":"click","selector":"text=Buscar horarios"},
+  {"type":"waitFor","selector":".route-search__summary"},
+  {"type":"sleep","duration":600},
+  {"type":"eval","script":"console.log('routePath', window.location.pathname)"},
+  {"type":"eval","script":"(() => { const key='andalucia-transit.routeSearchHistory'; const raw=localStorage.getItem(key); if(!raw){return;} const entries=JSON.parse(raw); if(!Array.isArray(entries) || !entries.length){return;} const entry=entries[0]; entry.selection.queryDate='2025-10-20T00:00:00.000Z'; entry.executedAt='2025-10-20T10:00:00.000Z'; localStorage.setItem(key, JSON.stringify(entries)); })();"},
+  {"type":"goto","url":"http://localhost:4201/"},
+  {"type":"waitFor","selector":".home__tabs"},
+  {"type":"click","selector":"[role=tab] >> text=Recientes"},
+  {"type":"waitFor","selector":".recent-card__route"},
+  {"type":"sleep","duration":1200}
+]

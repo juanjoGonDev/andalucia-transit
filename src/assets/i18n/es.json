@@ -61,9 +61,7 @@
       "search": {
         "title": "Buscar paradas",
         "originLabel": "Origen",
-        "originPlaceholder": "¿Dónde empiezas?",
         "destinationLabel": "Destino",
-        "destinationPlaceholder": "¿A dónde vas?",
         "dateLabel": "Fecha",
         "submit": "Buscar horarios",
         "swapLabel": "Intercambiar origen y destino",

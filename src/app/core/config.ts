@@ -171,9 +171,7 @@ export const APP_CONFIG = {
         search: {
           title: 'home.sections.search.title',
           originLabel: 'home.sections.search.originLabel',
-          originPlaceholder: 'home.sections.search.originPlaceholder',
           destinationLabel: 'home.sections.search.destinationLabel',
-          destinationPlaceholder: 'home.sections.search.destinationPlaceholder',
           dateLabel: 'home.sections.search.dateLabel',
           submit: 'home.sections.search.submit',
           swapLabel: 'home.sections.search.swapLabel',

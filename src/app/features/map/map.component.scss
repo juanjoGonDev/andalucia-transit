@@ -33,7 +33,8 @@
 
 .map__content {
   display: grid;
-  gap: var(--space-lg);
+  gap: var(--space-xl);
+  align-items: start;
 }
 
 .map__canvas {
@@ -45,22 +46,22 @@
 
 .map__leaflet {
   width: 100%;
-  height: 24rem;
+  height: clamp(22rem, 45vh, 28rem);
 }
 
 .map__panel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-md-plus);
   background-color: var(--color-surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  padding: var(--space-lg);
+  padding: clamp(var(--space-lg), 3vw, var(--space-2xl));
 }
 
 .map__panel-title {
   margin: 0;
-  font-size: var(--font-size-title-md);
+  font-size: clamp(var(--font-size-title-sm), 2vw, var(--font-size-title-md));
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-strong);
 }
@@ -81,22 +82,23 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: var(--space-sm);
+  gap: var(--space-md);
 }
 
 .map__stop-item {
   margin: 0;
+  min-inline-size: 0;
 }
 
 .map__stop-card-body {
   display: grid;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
 }
 
 .map__routes {
   display: grid;
-  gap: var(--space-sm);
-  padding-top: var(--space-md);
+  gap: var(--space-md);
+  padding-top: var(--space-md-plus);
   border-top: 1px solid var(--color-border-subtle);
 }
 
@@ -110,7 +112,7 @@
 
 .map__routes-title {
   margin: 0;
-  font-size: var(--font-size-title-sm);
+  font-size: clamp(var(--font-size-lg), 1.5vw, var(--font-size-title-sm));
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-strong);
 }
@@ -141,7 +143,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: var(--space-sm);
+  gap: var(--space-md);
 }
 
 .map__route-item {
@@ -150,7 +152,7 @@
 
 .map__route-card-body {
   display: grid;
-  gap: var(--space-2xs);
+  gap: var(--space-sm);
 }
 
 .map__route-card-body--active {
@@ -160,7 +162,7 @@
 
 .map-route {
   display: grid;
-  gap: var(--space-2xs);
+  gap: var(--space-sm);
 }
 
 .map-route__header {
@@ -168,12 +170,14 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-sm);
+  flex-wrap: wrap;
 }
 
 .map-route__metrics {
   display: flex;
   align-items: baseline;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
+  flex-wrap: wrap;
 }
 
 .map-route__code {
@@ -201,7 +205,7 @@
 }
 
 .map-route__destination {
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-strong);
 }
@@ -232,7 +236,7 @@
 }
 
 .map-stop__name {
-  font-size: var(--font-size-lg);
+  font-size: clamp(var(--font-size-md), 1.6vw, var(--font-size-lg));
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-strong);
 }
@@ -240,7 +244,7 @@
 .map-stop__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2xs);
+  gap: var(--space-xs);
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
@@ -271,17 +275,17 @@
   }
 
   .map__leaflet {
-    height: 28rem;
+    height: clamp(26rem, 48vh, 32rem);
   }
 }
 
 @media (min-width: 64rem) {
   .map__content {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
     align-items: start;
   }
 
   .map__leaflet {
-    height: 32rem;
+    height: clamp(30rem, 52vh, 36rem);
   }
 }

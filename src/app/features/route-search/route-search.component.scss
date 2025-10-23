@@ -9,38 +9,54 @@
   flex-direction: column;
   width: min(100%, 64rem);
   margin: 0 auto;
+  gap: clamp(var(--space-xl), 5vw, var(--space-3xl));
 }
 
-.route-search__header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+.route-search__hero {
+  width: 100%;
+  padding-block-start: clamp(var(--space-lg), 4vw, var(--space-3xl));
+}
+
+.route-search__hero-bar {
   display: flex;
+  align-items: flex-start;
+  gap: clamp(var(--space-md), 3vw, var(--space-xl));
+}
+
+.route-search__hero-intro {
+  flex: 1 1 auto;
+}
+
+.route-search__back-button {
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-md);
-  padding: clamp(var(--space-sm), 2vw, var(--space-md-plus))
-    clamp(var(--space-md), 3vw, var(--space-2xl))
-    var(--space-xs);
-  background-color: var(--color-header-surface);
-  backdrop-filter: blur(12px);
+  justify-content: center;
+  width: clamp(3rem, 6vw, 3.5rem);
+  height: clamp(3rem, 6vw, 3.5rem);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--app-hero-border-subtle);
+  background: var(--app-hero-surface-raised);
+  color: var(--app-hero-text-primary);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
-.route-search__header-titles {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3xs);
+.route-search__back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.route-search__back-button:focus-visible {
+  outline: 3px solid var(--app-hero-outline-color);
+  outline-offset: 2px;
 }
 
 .route-search__title {
   margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-text-strong);
 }
 
 .route-search__description {
   margin: 0;
-  color: var(--color-text-muted);
 }
 
 .route-search__main {
@@ -48,8 +64,8 @@
   display: flex;
   flex-direction: column;
   gap: clamp(var(--space-lg), 2vw + var(--space-md), var(--space-2xl));
-  padding: clamp(var(--space-md), 3vw, var(--space-2xl));
-  padding-bottom: clamp(var(--space-md), 3vw, var(--space-2xl));
+  padding-inline: clamp(var(--space-md), 3vw, var(--space-2xl));
+  padding-bottom: clamp(var(--space-lg), 3vw, var(--space-2xl));
 }
 
 .route-search__form {
@@ -63,8 +79,14 @@
 }
 
 @media (max-width: 768px) {
-  .route-search__header {
-    padding-inline: var(--space-md);
+  .route-search__hero-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-md);
+  }
+
+  .route-search__back-button {
+    align-self: flex-start;
   }
 
   .route-search__main {
