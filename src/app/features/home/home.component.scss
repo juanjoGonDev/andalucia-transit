@@ -67,16 +67,15 @@
 }
 
 .home__tabs {
-  display: inline-flex;
-  align-items: center;
+  display: flex;
   justify-content: center;
-  align-content: center;
-  gap: var(--space-3xs);
-  padding: 0.3rem;
-  border-radius: 999px;
-  background: var(--color-surface-muted);
+  align-items: center;
+  gap: clamp(var(--space-sm), 4vw, var(--space-lg));
+  padding: var(--space-4xs) var(--space-xs);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border-subtle) 65%, transparent);
   flex-wrap: wrap;
   max-width: 100%;
+  margin-inline: auto;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -86,27 +85,53 @@
 }
 
 .home__tab {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  border-radius: 999px;
-  padding: 0.55rem 1.2rem;
-  background: transparent;
-  font-weight: 600;
+  gap: var(--space-5xs);
+  padding: var(--space-xs) var(--space-sm);
   color: var(--color-text-secondary);
-  flex: 0 1 auto;
-  min-width: clamp(6.5rem, 22vw, 9rem);
+  font-weight: 600;
+  flex: 0 0 auto;
   white-space: nowrap;
+  transition: color 160ms ease;
+}
+
+.home__tab::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: calc(-1 * var(--space-5xs));
+  height: 0.2rem;
+  border-radius: var(--radius-full);
+  background: transparent;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 160ms ease, background-color 160ms ease;
 }
 
 .home__tab[aria-selected='true'] {
+  color: var(--color-text-primary);
+}
+
+.home__tab[aria-selected='true']::after {
   background: linear-gradient(
     135deg,
     var(--color-primary-gradient-start) 0%,
-    color-mix(in srgb, var(--color-primary) 75%, transparent) 100%
+    color-mix(in srgb, var(--color-primary) 80%, transparent) 100%
   );
-  color: var(--color-text-inverse);
+  transform: scaleX(1);
+}
+
+.home__tab:focus-visible {
+  outline: none;
+  color: var(--color-primary-stronger);
+}
+
+.home__tab:focus-visible::after {
+  background: var(--color-primary-stronger);
+  transform: scaleX(1);
 }
 
 .home__card-body {
