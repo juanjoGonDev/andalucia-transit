@@ -1,71 +1,77 @@
-<div
-  class="stop-info"
+<section
+  class="stop-info app-layout__surface app-layout__surface--hero"
   appLayoutContent
   [appLayoutContentNavigationKey]="layoutNavigationKey"
 >
-  <header class="stop-info__header">
-    <div class="stop-info__heading">
-      <h1 class="stop-info__title">{{ translation.title | translate }}</h1>
-      <p class="stop-info__subtitle">{{ translation.description | translate }}</p>
-    </div>
-    <div
-      appAccessibleButton
-      class="app-outline-button app-outline-button--compact stop-info__refresh"
-      (appAccessibleButtonActivated)="refresh()"
-    >
-      <span class="material-symbols-outlined stop-info__refresh-icon" aria-hidden="true">refresh</span>
-      {{ actionKeys.refresh | translate }}
-    </div>
-  </header>
+  <div class="utility-container">
+    <div class="app-layout__body">
+      <header class="stop-info__hero app-hero">
+        <div class="app-hero__intro">
+          <h1 class="app-hero__title">{{ translation.title | translate }}</h1>
+          <p class="app-hero__description">{{ translation.description | translate }}</p>
+        </div>
+        <div class="app-hero__actions">
+          <div
+            appAccessibleButton
+            class="app-outline-button app-outline-button--compact stop-info__refresh"
+            (appAccessibleButtonActivated)="refresh()"
+          >
+            <span class="material-symbols-outlined stop-info__refresh-icon" aria-hidden="true">refresh</span>
+            {{ actionKeys.refresh | translate }}
+          </div>
+        </div>
+      </header>
 
-  <ng-container *ngIf="state$ | async as state">
-    <div
-      *ngIf="isLoading(state)"
-      class="stop-info__status stop-info__status--loading"
-      [attr.role]="statusRole"
-      [attr.aria-live]="politeLiveRegion"
-    >
-      <span class="material-symbols-outlined stop-info__status-icon" aria-hidden="true">
-        progress_activity
-      </span>
-      <p class="stop-info__status-text">{{ statusKeys.loading | translate }}</p>
-    </div>
+      <ng-container *ngIf="state$ | async as state">
+        <div
+          *ngIf="isLoading(state)"
+          class="stop-info__status stop-info__status--loading"
+          [attr.role]="statusRole"
+          [attr.aria-live]="politeLiveRegion"
+        >
+          <span class="material-symbols-outlined stop-info__status-icon" aria-hidden="true">
+            progress_activity
+          </span>
+          <p class="stop-info__status-text">{{ statusKeys.loading | translate }}</p>
+        </div>
 
-    <ng-container *ngIf="isReady(state)">
-      <ng-container
-        *ngTemplateOutlet="detailCard; context: { $implicit: state.detail, source: state.source }"
-      ></ng-container>
-    </ng-container>
+        <ng-container *ngIf="isReady(state)">
+          <ng-container
+            *ngTemplateOutlet="detailCard; context: { $implicit: state.detail, source: state.source }"
+          ></ng-container>
+        </ng-container>
 
-    <ng-container *ngIf="isNotFound(state)">
-      <div
-        class="stop-info__status stop-info__status--error"
-        [attr.role]="statusRole"
-        [attr.aria-live]="assertiveLiveRegion"
-      >
-        <span class="material-symbols-outlined stop-info__status-icon" aria-hidden="true">
-          search_off
-        </span>
-        <p class="stop-info__status-text">{{ statusKeys.notFound | translate }}</p>
-      </div>
-      <ng-container *ngIf="state.fallback as fallbackDetail">
-        <ng-container
-          *ngTemplateOutlet="detailCard; context: { $implicit: fallbackDetail, source: 'offline' }"
-        ></ng-container>
+        <ng-container *ngIf="isNotFound(state)">
+          <div
+            class="stop-info__status stop-info__status--error"
+            [attr.role]="statusRole"
+            [attr.aria-live]="assertiveLiveRegion"
+          >
+            <span class="material-symbols-outlined stop-info__status-icon" aria-hidden="true">
+              search_off
+            </span>
+            <p class="stop-info__status-text">{{ statusKeys.notFound | translate }}</p>
+          </div>
+          <ng-container *ngIf="state.fallback as fallbackDetail">
+            <ng-container
+              *ngTemplateOutlet="detailCard; context: { $implicit: fallbackDetail, source: 'offline' }"
+            ></ng-container>
+          </ng-container>
+        </ng-container>
+
+        <div
+          *ngIf="isError(state)"
+          class="stop-info__status stop-info__status--error"
+          [attr.role]="statusRole"
+          [attr.aria-live]="assertiveLiveRegion"
+        >
+          <span class="material-symbols-outlined stop-info__status-icon" aria-hidden="true">error</span>
+          <p class="stop-info__status-text">{{ statusKeys.error | translate }}</p>
+        </div>
       </ng-container>
-    </ng-container>
-
-    <div
-      *ngIf="isError(state)"
-      class="stop-info__status stop-info__status--error"
-      [attr.role]="statusRole"
-      [attr.aria-live]="assertiveLiveRegion"
-    >
-      <span class="material-symbols-outlined stop-info__status-icon" aria-hidden="true">error</span>
-      <p class="stop-info__status-text">{{ statusKeys.error | translate }}</p>
     </div>
-  </ng-container>
-</div>
+  </div>
+</section>
 
 <ng-template #detailCard let-detail let-source="source">
   <section class="stop-info__content">

@@ -1,148 +1,152 @@
 <section
-  class="map"
+  class="map app-layout__surface app-layout__surface--hero"
   appLayoutContent
   [appLayoutContentNavigationKey]="layoutNavigationKey"
 >
-  <header class="map__header">
-    <div class="map__titles">
-      <h1 class="map__title">{{ translationKeys.title | translate }}</h1>
-      <p class="map__description">{{ translationKeys.description | translate }}</p>
-    </div>
-    <div class="map__actions">
-      <button
-        type="button"
-        class="app-solid-button map__locate-button"
-        appAccessibleButton
-        [disabled]="isLocating()"
-        (click)="locate()"
-        [attr.aria-busy]="isLocating() ? 'true' : null"
-      >
-        <ng-container *ngIf="!isLocating(); else locatingLabel">
-          {{ translationKeys.locate | translate }}
-        </ng-container>
-        <ng-template #locatingLabel>
-          {{ translationKeys.locating | translate }}
-        </ng-template>
-      </button>
-    </div>
-  </header>
-  <div class="map__content">
-    <div class="map__canvas">
-      <div
-        #mapCanvas
-        class="map__leaflet"
-        role="img"
-        [attr.aria-label]="translationKeys.accessibleMapLabel | translate"
-      ></div>
-    </div>
-    <aside class="map__panel">
-      <h2 class="map__panel-title">{{ translationKeys.panelTitle | translate }}</h2>
-      <p *ngIf="showPrompt()" class="map__panel-message">
-        {{ translationKeys.permissionPrompt | translate }}
-      </p>
-      <p *ngIf="errorKey()" class="map__panel-message map__panel-message--error">
-        {{ errorKey() | translate }}
-      </p>
-      <p *ngIf="showEmptyState()" class="map__panel-message">
-        {{ translationKeys.empty | translate }}
-      </p>
-      <ul *ngIf="hasStops()" class="map__stop-list">
-        <li *ngFor="let stop of stops(); trackBy: trackStop" class="map__stop-item">
-          <app-interactive-card
-            [bodyClasses]="stopCardBodyClasses"
-            [primaryCommands]="stop.commands"
-            [primaryAriaLabel]="
-              translationKeys.stopAriaLabel |
-                translate: { code: stop.code, municipality: stop.municipality }
-            "
-          >
-            <div class="map-stop">
-              <div class="map-stop__header">
-                <span class="map-stop__code">{{ stop.code }}</span>
-                <span class="map-stop__distance">
-                  {{ stop.distanceTranslationKey | translate: { value: stop.distanceValue } }}
-                </span>
-              </div>
-              <div class="map-stop__name">{{ stop.name }}</div>
-              <div class="map-stop__meta">
-                <span class="map-stop__municipality">{{ stop.municipality }}</span>
-                <span *ngIf="stop.nucleus" class="map-stop__nucleus">{{ stop.nucleus }}</span>
-              </div>
-            </div>
-          </app-interactive-card>
-        </li>
-      </ul>
-      <section class="map__routes">
-        <header class="map__routes-header">
-          <h3 class="map__routes-title">{{ translationKeys.routes.title | translate }}</h3>
+  <div class="utility-container">
+    <div class="app-layout__body">
+      <header class="map__hero app-hero">
+        <div class="app-hero__intro">
+          <h1 class="app-hero__title">{{ translationKeys.title | translate }}</h1>
+          <p class="app-hero__description">{{ translationKeys.description | translate }}</p>
+        </div>
+        <div class="app-hero__actions map__actions">
           <button
             type="button"
-            class="app-outline-button app-outline-button--compact map__routes-refresh"
+            class="app-solid-button map__locate-button"
             appAccessibleButton
-            [disabled]="!hasRouteSelection() || isRouteLoading()"
-            (click)="refreshRoutes()"
+            [disabled]="isLocating()"
+            (click)="locate()"
+            [attr.aria-busy]="isLocating() ? 'true' : null"
           >
-            {{ translationKeys.routes.refresh | translate }}
+            <ng-container *ngIf="!isLocating(); else locatingLabel">
+              {{ translationKeys.locate | translate }}
+            </ng-container>
+            <ng-template #locatingLabel>
+              {{ translationKeys.locating | translate }}
+            </ng-template>
           </button>
-        </header>
-        <span
-          class="map__routes-announcement app-visually-hidden"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {{ routeLiveMessage() }}
-        </span>
-        <p *ngIf="routeSelectionSummary()" class="map__routes-summary">
-          {{
-            translationKeys.routes.summary
-              | translate: {
-                  origin: routeSelectionSummary()?.originName,
-                  destination: routeSelectionSummary()?.destinationName
-                }
-          }}
-        </p>
-        <p *ngIf="!hasRouteSelection()" class="map__routes-message">
-          {{ translationKeys.routes.prompt | translate }}
-        </p>
-        <p *ngIf="isRouteLoading()" class="map__routes-message">
-          {{ translationKeys.routes.loading | translate }}
-        </p>
-        <p *ngIf="routeErrorKey()" class="map__routes-message map__routes-message--error">
-          {{ routeErrorKey() | translate }}
-        </p>
-        <p *ngIf="hasRouteSelection() && !isRouteLoading() && !routeErrorKey() && !hasRouteResults()" class="map__routes-message">
-          {{ translationKeys.routes.empty | translate }}
-        </p>
-        <ul *ngIf="hasRouteResults()" class="map__route-list">
-          <li *ngFor="let route of routeViews(); trackBy: trackRoute" class="map__route-item">
-            <app-interactive-card
-              [bodyClasses]="routeCardBodyClasses(route.id)"
-              [primaryRole]="routeCardRole"
-              [primaryAriaLabel]="
-                translationKeys.routes.cardAria
-                  | translate: { code: route.lineCode, destination: route.destinationName }
-              "
-              [primaryPressed]="activeRouteId() === route.id"
-              (primaryActivated)="toggleRoute(route.id)"
-            >
-              <div class="map-route">
-                <div class="map-route__header">
-                  <span class="map-route__code">{{ route.lineCode }}</span>
-                  <div class="map-route__metrics">
-                    <span class="map-route__stops">
-                      {{ route.stopCountTranslationKey | translate: { value: route.stopCountValue } }}
-                    </span>
-                    <span class="map-route__distance">
-                      {{ route.distanceTranslationKey | translate: { value: route.distanceValue } }}
+        </div>
+      </header>
+      <div class="map__content">
+        <div class="map__canvas">
+          <div
+            #mapCanvas
+            class="map__leaflet"
+            role="img"
+            [attr.aria-label]="translationKeys.accessibleMapLabel | translate"
+          ></div>
+        </div>
+        <aside class="map__panel">
+          <h2 class="map__panel-title">{{ translationKeys.panelTitle | translate }}</h2>
+          <p *ngIf="showPrompt()" class="map__panel-message">
+            {{ translationKeys.permissionPrompt | translate }}
+          </p>
+          <p *ngIf="errorKey()" class="map__panel-message map__panel-message--error">
+            {{ errorKey() | translate }}
+          </p>
+          <p *ngIf="showEmptyState()" class="map__panel-message">
+            {{ translationKeys.empty | translate }}
+          </p>
+          <ul *ngIf="hasStops()" class="map__stop-list">
+            <li *ngFor="let stop of stops(); trackBy: trackStop" class="map__stop-item">
+              <app-interactive-card
+                [bodyClasses]="stopCardBodyClasses"
+                [primaryCommands]="stop.commands"
+                [primaryAriaLabel]="
+                  translationKeys.stopAriaLabel |
+                    translate: { code: stop.code, municipality: stop.municipality }
+                "
+              >
+                <div class="map-stop">
+                  <div class="map-stop__header">
+                    <span class="map-stop__code">{{ stop.code }}</span>
+                    <span class="map-stop__distance">
+                      {{ stop.distanceTranslationKey | translate: { value: stop.distanceValue } }}
                     </span>
                   </div>
+                  <div class="map-stop__name">{{ stop.name }}</div>
+                  <div class="map-stop__meta">
+                    <span class="map-stop__municipality">{{ stop.municipality }}</span>
+                    <span *ngIf="stop.nucleus" class="map-stop__nucleus">{{ stop.nucleus }}</span>
+                  </div>
                 </div>
-                <div class="map-route__destination">{{ route.destinationName }}</div>
-              </div>
-            </app-interactive-card>
-          </li>
-        </ul>
-      </section>
-    </aside>
+              </app-interactive-card>
+            </li>
+          </ul>
+          <section class="map__routes">
+            <header class="map__routes-header">
+              <h3 class="map__routes-title">{{ translationKeys.routes.title | translate }}</h3>
+              <button
+                type="button"
+                class="app-outline-button app-outline-button--compact map__routes-refresh"
+                appAccessibleButton
+                [disabled]="!hasRouteSelection() || isRouteLoading()"
+                (click)="refreshRoutes()"
+              >
+                {{ translationKeys.routes.refresh | translate }}
+              </button>
+            </header>
+            <span
+              class="map__routes-announcement app-visually-hidden"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {{ routeLiveMessage() }}
+            </span>
+            <p *ngIf="routeSelectionSummary()" class="map__routes-summary">
+              {{
+                translationKeys.routes.summary
+                  | translate: {
+                      origin: routeSelectionSummary()?.originName,
+                      destination: routeSelectionSummary()?.destinationName
+                    }
+              }}
+            </p>
+            <p *ngIf="!hasRouteSelection()" class="map__routes-message">
+              {{ translationKeys.routes.prompt | translate }}
+            </p>
+            <p *ngIf="isRouteLoading()" class="map__routes-message">
+              {{ translationKeys.routes.loading | translate }}
+            </p>
+            <p *ngIf="routeErrorKey()" class="map__routes-message map__routes-message--error">
+              {{ routeErrorKey() | translate }}
+            </p>
+            <p *ngIf="hasRouteSelection() && !isRouteLoading() && !routeErrorKey() && !hasRouteResults()" class="map__routes-message">
+              {{ translationKeys.routes.empty | translate }}
+            </p>
+            <ul *ngIf="hasRouteResults()" class="map__route-list">
+              <li *ngFor="let route of routeViews(); trackBy: trackRoute" class="map__route-item">
+                <app-interactive-card
+                  [bodyClasses]="routeCardBodyClasses(route.id)"
+                  [primaryRole]="routeCardRole"
+                  [primaryAriaLabel]="
+                    translationKeys.routes.cardAria
+                      | translate: { code: route.lineCode, destination: route.destinationName }
+                  "
+                  [primaryPressed]="activeRouteId() === route.id"
+                  (primaryActivated)="toggleRoute(route.id)"
+                >
+                  <div class="map-route">
+                    <div class="map-route__header">
+                      <span class="map-route__code">{{ route.lineCode }}</span>
+                      <div class="map-route__metrics">
+                        <span class="map-route__stops">
+                          {{ route.stopCountTranslationKey | translate: { value: route.stopCountValue } }}
+                        </span>
+                        <span class="map-route__distance">
+                          {{ route.distanceTranslationKey | translate: { value: route.distanceValue } }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="map-route__destination">{{ route.destinationName }}</div>
+                  </div>
+                </app-interactive-card>
+              </li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+    </div>
   </div>
 </section>

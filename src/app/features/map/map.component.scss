@@ -5,32 +5,19 @@
 .map {
   display: grid;
   gap: var(--space-xl);
-  padding: var(--space-lg);
 }
 
-.map__header {
+.map__hero {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: clamp(var(--space-md), 3vw, var(--space-xl));
   align-items: flex-start;
 }
 
-.map__titles {
+.map__hero .app-hero__intro {
   display: grid;
   gap: var(--space-xs);
-}
-
-.map__title {
-  margin: 0;
-  font-size: var(--font-size-title-lg);
-  font-weight: var(--font-weight-extrabold);
-  color: var(--color-text-strong);
-}
-
-.map__description {
-  margin: 0;
-  font-size: var(--font-size-base);
-  color: var(--color-text-muted);
+  max-width: 42rem;
 }
 
 .map__actions {
@@ -273,13 +260,13 @@
     padding: var(--space-xl);
   }
 
-  .map__header {
+  .map__hero {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
 
-  .map__title {
+  .map__hero .app-hero__title {
     font-size: var(--font-size-2xl);
   }
 

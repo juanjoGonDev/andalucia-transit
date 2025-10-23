@@ -369,6 +369,7 @@ export const APP_CONFIG = {
     },
     settings: {
       title: 'settings.title',
+      description: 'settings.description',
       sections: {
         language: {
           title: 'settings.sections.language.title',

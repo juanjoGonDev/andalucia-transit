@@ -2,94 +2,22 @@
   display: block;
 }
 
-.home {
-  position: relative;
-  min-height: 100dvh;
-  padding-bottom: clamp(var(--space-2xl), 6vw, var(--space-4xl));
-  background: linear-gradient(160deg, var(--color-primary) 0%, var(--color-secondary) 70%);
-  color: var(--color-text-inverse);
-  overflow: hidden;
-}
-
-.home::before,
-.home::after {
-  content: '';
-  position: absolute;
-  inset: auto;
-  border-radius: 50%;
-  filter: blur(0.5px);
-  opacity: 0.65;
-}
-
-.home::before {
-  width: clamp(12rem, 40vw, 22rem);
-  height: clamp(12rem, 40vw, 22rem);
-  top: -6rem;
-  right: -4rem;
-  background: radial-gradient(
-    circle at 30% 30%,
-    color-mix(in srgb, var(--color-surface) 35%, transparent) 0%,
-    transparent 70%
-  );
-}
-
-.home::after {
-  width: clamp(10rem, 35vw, 18rem);
-  height: clamp(10rem, 35vw, 18rem);
-  bottom: -6rem;
-  left: -5rem;
-  background: radial-gradient(
-    circle at 70% 70%,
-    color-mix(in srgb, var(--color-primary) 30%, transparent) 0%,
-    transparent 70%
-  );
-}
-
 .home__stack {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
 }
 
-.home__container {
+.home__body {
   position: relative;
   z-index: 1;
-  width: min(100%, 64rem);
-  margin: 0 auto;
-  padding: clamp(var(--space-lg), 5vw, var(--space-3xl))
-    clamp(var(--space-md), 6vw, var(--space-4xl)) 0;
   gap: clamp(calc(var(--space-lg) + var(--space-3xs)), 4vw, var(--space-3xl));
+  padding-block-start: clamp(var(--space-lg), 5vw, var(--space-3xl));
+  padding-block-end: 0;
 }
 
 .home__header {
-  gap: clamp(var(--space-md), 3vw, calc(var(--space-lg) + var(--space-3xs)));
-}
-
-.home__intro {
-  gap: var(--space-sm);
-  max-width: 75vw;
-}
-
-.home__eyebrow {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-inverse-soft);
-}
-
-.home__headline {
-  margin: 0;
-  font-size: clamp(2.1rem, 4vw, 3rem);
-  font-weight: 800;
-  line-height: 1.05;
-}
-
-.home__description {
-  margin: 0;
-  font-size: clamp(1rem, 1.6vw, 1.15rem);
-  color: var(--color-text-inverse-soft);
+  width: min(100%, 60rem);
 }
 
 .home__main {

@@ -22,7 +22,6 @@ import {
 } from '@shared/ui/confirm-dialog/confirm-dialog.component';
 import { OverlayDialogService } from '@shared/ui/dialog/overlay-dialog.service';
 import { AppTextFieldComponent, TextFieldType } from '@shared/ui/forms/app-text-field.component';
-import { SectionComponent } from '@shared/ui/section/section.component';
 
 interface FavoriteListItem {
   readonly id: string;
@@ -55,7 +54,6 @@ const ROOT_ROUTE_SEGMENT = '/' as const;
     CommonModule,
     ReactiveFormsModule,
     TranslateModule,
-    SectionComponent,
     AccessibleButtonDirective,
     AppLayoutContentDirective,
     InteractiveCardComponent,

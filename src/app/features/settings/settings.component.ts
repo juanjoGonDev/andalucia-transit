@@ -37,6 +37,8 @@ export class SettingsComponent {
   private readonly translation = APP_CONFIG.translationKeys.settings;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.settings;
 
+  protected readonly titleKey = this.translation.title;
+  protected readonly descriptionKey = this.translation.description;
   protected readonly languageSectionTitleKey = this.translation.sections.language.title;
   protected readonly languageDescriptionKey = this.translation.sections.language.description;
   protected readonly languageActionLabelKey = this.translation.sections.language.actionLabel;

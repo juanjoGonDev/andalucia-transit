@@ -330,6 +330,7 @@
   },
   "settings": {
     "title": "Settings",
+    "description": "Customize your experience and manage your preferences.",
     "sections": {
       "language": {
         "title": "Language",
