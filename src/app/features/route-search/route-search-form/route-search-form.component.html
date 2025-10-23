@@ -23,6 +23,7 @@
         formControlName="origin"
         [matAutocomplete]="originAutocomplete"
         autocomplete="off"
+        placeholder=""
       />
       <mat-autocomplete
         #originAutocomplete="matAutocomplete"
@@ -91,6 +92,7 @@
         formControlName="destination"
         [matAutocomplete]="destinationAutocomplete"
         autocomplete="off"
+        placeholder=""
       />
       <mat-autocomplete
         #destinationAutocomplete="matAutocomplete"
@@ -150,6 +152,7 @@
         [matDatepicker]="datePicker"
         [min]="minSearchDate"
         readonly
+        placeholder=""
         (focus)="focusDatePicker(datePicker)"
         (click)="focusDatePicker(datePicker)"
       />

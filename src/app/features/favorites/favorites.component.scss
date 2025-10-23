@@ -58,6 +58,8 @@
   background: color-mix(in srgb, var(--app-hero-surface-raised) 96%, transparent);
   box-shadow: var(--shadow-card);
   color: var(--color-text-primary);
+  width: min(100%, 64rem);
+  margin: 0 auto;
 }
 
 
@@ -98,13 +100,19 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-md-plus);
-  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
 }
 
 .favorites__item {
   margin: 0;
+  width: 100%;
+}
+
+.favorites__item > app-interactive-card {
+  width: 100%;
 }
 
 @media (min-width: 48rem) {
@@ -123,16 +131,6 @@
 
   .favorites__search {
     flex: 0 1 22rem;
-  }
-
-  .favorites__list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 64rem) {
-  .favorites__list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

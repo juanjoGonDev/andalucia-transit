@@ -33,13 +33,15 @@
 
 .map__content {
   display: grid;
-  gap: var(--space-xl);
+  gap: clamp(var(--space-lg), 4vw, var(--space-2xl));
   align-items: start;
+  width: min(100%, 64rem);
+  margin: 0 auto;
 }
 
 .map__canvas {
-  background-color: var(--color-surface);
-  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--app-hero-surface-raised) 96%, transparent);
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
   overflow: hidden;
 }
@@ -53,10 +55,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-md-plus);
-  background-color: var(--color-surface);
-  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--app-hero-surface-raised) 94%, transparent);
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
   padding: clamp(var(--space-lg), 3vw, var(--space-2xl));
+  color: var(--color-text-primary);
 }
 
 .map__panel-title {
@@ -70,6 +73,7 @@
   margin: 0;
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
+  line-height: var(--line-height-relaxed);
 }
 
 .map__panel-message--error {
@@ -82,7 +86,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: var(--space-md);
+  gap: var(--space-md-plus);
 }
 
 .map__stop-item {
@@ -93,13 +97,14 @@
 .map__stop-card-body {
   display: grid;
   gap: var(--space-sm);
+  align-content: start;
 }
 
 .map__routes {
   display: grid;
   gap: var(--space-md);
   padding-top: var(--space-md-plus);
-  border-top: 1px solid var(--color-border-subtle);
+  border-top: 1px solid color-mix(in srgb, var(--color-border-subtle) 85%, transparent);
 }
 
 .map__routes-header {
@@ -143,7 +148,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: var(--space-md);
+  gap: var(--space-md-plus);
 }
 
 .map__route-item {

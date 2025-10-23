@@ -17,10 +17,17 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  width: 100%;
 }
 
 .home-recent__item {
   list-style: none;
+  width: 100%;
+}
+
+.home-recent__item > app-interactive-card,
+.home-recent__item > app-recent-search-card {
+  width: 100%;
 }
 
 .home__panel--recent .home-recent__empty {

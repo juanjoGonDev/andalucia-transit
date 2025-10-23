@@ -3,6 +3,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { APP_CONFIG } from '@core/config';
+
+const TITLE_SEPARATOR = ' · ' as const;
 
 @Injectable({ providedIn: 'root' })
 export class LocalizedTitleStrategy extends TitleStrategy {
@@ -31,10 +34,14 @@ export class LocalizedTitleStrategy extends TitleStrategy {
     const translationKey = this.buildTitle(snapshot);
 
     if (!translationKey) {
+      this.title.setTitle(APP_CONFIG.appName);
       return;
     }
 
-    const translatedTitle = this.translate.instant(translationKey);
-    this.title.setTitle(translatedTitle);
+    const translatedTitle = this.translate.instant(translationKey).trim();
+    const resolvedTitle = translatedTitle.length
+      ? `${translatedTitle}${TITLE_SEPARATOR}${APP_CONFIG.appName}`
+      : APP_CONFIG.appName;
+    this.title.setTitle(resolvedTitle);
   }
 }

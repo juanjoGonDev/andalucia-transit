@@ -13,6 +13,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
+import {
+  RECENT_CARD_BODY_CLASSES,
+  RECENT_CARD_HOST_CLASSES,
+  RECENT_CARD_REMOVE_CLASSES
+} from '@features/home/shared/recent-card-classes';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/interactive-card.component';
@@ -46,9 +51,12 @@ interface FavoriteGroupView {
 const QUERY_LOCALE = 'es-ES' as const;
 const NORMALIZE_FORM = 'NFD' as const;
 const DIACRITIC_PATTERN = /\p{M}/gu;
-const FAVORITES_CARD_HOST_CLASSES: readonly string[] = ['favorites-card'];
-const FAVORITES_CARD_BODY_CLASSES: readonly string[] = ['favorites-card__body'];
-const FAVORITES_CARD_REMOVE_CLASSES: readonly string[] = ['favorites-card__remove'];
+const FAVORITES_CARD_HOST_CLASSES: readonly string[] = [
+  ...RECENT_CARD_HOST_CLASSES,
+  'favorites-card'
+];
+const FAVORITES_CARD_BODY_CLASSES: readonly string[] = [...RECENT_CARD_BODY_CLASSES];
+const FAVORITES_CARD_REMOVE_CLASSES: readonly string[] = [...RECENT_CARD_REMOVE_CLASSES];
 const SEARCH_TEXT_FIELD_TYPE: TextFieldType = 'search';
 const SEARCH_AUTOCOMPLETE_ATTRIBUTE = 'off';
 const SEARCH_ICON_NAME = 'search' as const;

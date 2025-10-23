@@ -1,48 +1,24 @@
 .favorites-card {
-  --interactive-card-background: linear-gradient(
-    132deg,
-    var(--color-primary-gradient-start-strong) 0%,
-    var(--color-primary-midnight) 62%,
-    var(--color-secondary-overlay-strong) 100%
-  );
-  --interactive-card-foreground: var(--color-text-inverse);
-  --interactive-card-radius: calc(var(--radius-xl) + var(--space-2xs));
-  --interactive-card-shadow: var(--shadow-hero-card);
-  --interactive-card-body-gap: var(--space-md);
-  --interactive-card-body-alignment: flex-start;
-  --interactive-card-padding-block: calc(var(--space-lg) + var(--space-2xs));
-  --interactive-card-padding-inline: calc(var(--space-lg) + var(--space-xs));
-  --interactive-card-remove-offset: calc(var(--space-md) + var(--space-3xs));
-  --interactive-card-remove-size: calc(var(--space-xl) + var(--space-sm));
-  --interactive-card-remove-background: var(--color-text-inverse-overlay-soft);
-  --interactive-card-remove-hover-background: var(--color-text-inverse-overlay-strong);
-  --interactive-card-remove-foreground: var(--color-text-inverse);
-  --interactive-card-focus-outline: var(--color-text-inverse-soft-strong);
-  --interactive-card-remove-focus-outline: var(--color-text-inverse);
+  border: 1px solid color-mix(in srgb, var(--color-text-inverse) 12%, transparent);
+  box-shadow: var(--shadow-recent-card-legacy);
 }
 
-.favorites-card__body {
-  display: flex;
+.favorites-card .recent-card__body {
   align-items: flex-start;
   gap: var(--space-md);
 }
 
-.favorites-card__body:focus-visible {
-  outline: 2px solid var(--color-text-inverse-soft-strong);
-  outline-offset: 2px;
-}
-
 .favorites-card__content {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
   gap: var(--space-md);
   width: 100%;
 }
 
 .favorites-card__icon {
-  font-size: var(--font-size-xl);
+  font-size: clamp(var(--font-size-xl), 3vw, var(--font-size-2xl));
   color: var(--color-text-inverse);
-  flex-shrink: 0;
 }
 
 .favorites-card__text {
@@ -50,15 +26,14 @@
   flex-direction: column;
   gap: var(--space-xs);
   min-inline-size: 0;
-  flex: 1 1 auto;
   color: inherit;
 }
 
 .favorites-card__name {
-  margin: 0;
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
+  font-size: clamp(var(--font-size-lg), 2.3vw, var(--font-size-xl));
+  font-weight: var(--font-weight-semibold);
   letter-spacing: var(--letter-spacing-wide);
+  margin: 0;
   color: inherit;
 }
 
@@ -74,35 +49,38 @@
   gap: var(--space-4xs);
   padding: var(--space-4xs) var(--space-sm);
   border-radius: var(--radius-full);
-  background-color: var(--color-text-inverse-overlay-weak);
-  color: var(--color-text-inverse);
+  background-color: color-mix(in srgb, var(--color-text-inverse) 24%, transparent);
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-medium);
 }
 
 .favorites-card__chip-label {
   opacity: 0.85;
-  font-weight: var(--font-weight-medium);
 }
 
 .favorites-card__chip-value {
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
 }
 
-.favorites-card__remove .material-symbols-outlined {
-  font-size: calc(var(--font-size-base) + var(--space-2xs));
+.favorites-card .recent-card__remove {
+  background: color-mix(in srgb, var(--color-text-inverse) 28%, transparent);
+  color: var(--color-text-inverse);
 }
 
-@media (min-width: 48rem) {
-  .favorites-card {
-    --interactive-card-padding-block: calc(var(--space-xl) - var(--space-3xs));
-    --interactive-card-padding-inline: calc(var(--space-xl) + var(--space-xs));
-    --interactive-card-remove-offset: calc(var(--space-lg) - var(--space-4xs));
-    --interactive-card-remove-size: calc(var(--space-2xl) + var(--space-3xs));
+.favorites-card .recent-card__remove:hover {
+  background: color-mix(in srgb, var(--color-text-inverse) 36%, transparent);
+}
+
+.favorites-card .recent-card__remove:focus-visible {
+  outline: 2px solid var(--color-text-inverse);
+}
+
+@media (max-width: 40rem) {
+  .favorites-card__content {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .favorites-card__name {
+  .favorites-card__icon {
     font-size: var(--font-size-xl);
   }
 }
