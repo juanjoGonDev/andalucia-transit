@@ -77,23 +77,25 @@
                   <ul class="home-recent__list" role="list">
                     <li class="home-recent__item" *ngFor="let favorite of favoritePreview(); trackBy: trackFavorite">
                       <app-interactive-card
-                        [ngClass]="recentCardHostClasses"
-                        [bodyClasses]="recentCardBodyClasses"
+                        [ngClass]="favoriteCardHostClasses"
+                        [bodyClasses]="favoriteCardBodyClasses"
                         (primaryActivated)="openFavorite(favorite)"
                       >
-                        <div class="recent-card__content">
-                          <div class="recent-card__route">
-                            <span class="recent-card__origin">{{ favorite.name }}</span>
-                            <span class="recent-card__arrow" aria-hidden="true">→</span>
-                            <span class="recent-card__destination">{{ favorite.municipality }}</span>
+                        <div class="home-favorite-card__content">
+                          <div class="home-favorite-card__header">
+                            <span class="home-favorite-card__name">{{ favorite.name }}</span>
+                            <span class="home-favorite-card__arrow" aria-hidden="true">→</span>
+                            <span class="home-favorite-card__location">{{ favorite.municipality }}</span>
                           </div>
-                          <div class="recent-card__preview">
-                            <div class="recent-card__status recent-card__status--empty">
-                              {{ favoritesCodeLabelKey | translate }} {{ favorite.code }}
-                            </div>
-                            <div class="recent-card__status recent-card__status--empty">
-                              {{ favoritesNucleusLabelKey | translate }} {{ favorite.nucleus }}
-                            </div>
+                          <div class="home-favorite-card__details">
+                            <span class="home-favorite-card__chip">
+                              <span class="home-favorite-card__chip-label">{{ favoritesCodeLabelKey | translate }}</span>
+                              <span class="home-favorite-card__chip-value">{{ favorite.code }}</span>
+                            </span>
+                            <span class="home-favorite-card__chip">
+                              <span class="home-favorite-card__chip-label">{{ favoritesNucleusLabelKey | translate }}</span>
+                              <span class="home-favorite-card__chip-value">{{ favorite.nucleus }}</span>
+                            </span>
                           </div>
                         </div>
                       </app-interactive-card>

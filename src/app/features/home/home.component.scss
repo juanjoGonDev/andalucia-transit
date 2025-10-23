@@ -134,6 +134,60 @@
   color: var(--color-primary-stronger);
 }
 
+.home-favorite-card {
+  width: 100%;
+}
+
+.home-favorite-card__body {
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+}
+
+.home-favorite-card__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 0.75rem;
+}
+
+.home-favorite-card__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.home-favorite-card__arrow {
+  opacity: 0.7;
+}
+
+.home-favorite-card__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.home-favorite-card__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4xs);
+  padding: var(--space-4xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  background-color: color-mix(in srgb, var(--color-text-inverse) 24%, transparent);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.home-favorite-card__chip-label {
+  opacity: 0.85;
+}
+
+.home-favorite-card__chip-value {
+  font-weight: var(--font-weight-semibold);
+}
+
 .home__recent-summary {
   display: flex;
   flex-direction: column;

@@ -115,6 +115,93 @@
   width: 100%;
 }
 
+.favorites-card {
+  width: 100%;
+}
+
+.favorites-card__body {
+  display: grid;
+  gap: var(--space-md);
+  align-content: start;
+}
+
+.favorites-card__content {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: flex-start;
+  gap: var(--space-md);
+  width: 100%;
+}
+
+.favorites-card__icon {
+  font-size: clamp(var(--font-size-xl), 3vw, var(--font-size-2xl));
+  color: var(--color-text-inverse);
+}
+
+.favorites-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  min-inline-size: 0;
+  color: inherit;
+}
+
+.favorites-card__name {
+  font-size: clamp(var(--font-size-lg), 2.3vw, var(--font-size-xl));
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  margin: 0;
+  color: inherit;
+}
+
+.favorites-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.favorites-card__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4xs);
+  padding: var(--space-4xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  background-color: color-mix(in srgb, var(--color-text-inverse) 24%, transparent);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.favorites-card__chip-label {
+  opacity: 0.85;
+}
+
+.favorites-card__chip-value {
+  font-weight: var(--font-weight-semibold);
+}
+
+.favorites-card__remove {
+  background: color-mix(in srgb, var(--color-text-inverse) 28%, transparent);
+  color: var(--color-text-inverse);
+}
+
+.favorites-card__remove:hover {
+  background: color-mix(in srgb, var(--color-text-inverse) 36%, transparent);
+}
+
+.favorites-card__remove:focus-visible {
+  outline: 2px solid var(--color-text-inverse);
+}
+
+@media (max-width: 40rem) {
+  .favorites-card__content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .favorites-card__icon {
+    font-size: var(--font-size-xl);
+  }
+}
+
 @media (min-width: 48rem) {
   .favorites__hero {
     flex-direction: row;

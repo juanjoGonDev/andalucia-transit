@@ -94,6 +94,16 @@
   min-inline-size: 0;
 }
 
+.map__stop-item app-interactive-card,
+.map__route-item app-interactive-card {
+  --interactive-card-background: color-mix(in srgb, var(--app-hero-surface-raised) 96%, transparent);
+  --interactive-card-foreground: var(--color-text-primary);
+  --interactive-card-shadow: var(--shadow-card);
+  --interactive-card-hover-shadow: var(--shadow-card);
+  --interactive-card-remove-background: var(--color-button-secondary-fill);
+  --interactive-card-remove-hover-background: var(--color-button-secondary-hover);
+}
+
 .map__stop-card-body {
   display: grid;
   gap: var(--space-sm);

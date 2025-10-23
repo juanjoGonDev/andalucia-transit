@@ -32,6 +32,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Define data contracts with TypeScript interfaces; keep constants in dedicated config modules; avoid magic numbers/strings.
 - Use Angular DI and factory providers for abstractions; rely on OnPush change detection where possible; tear down subscriptions via `async` pipe or `takeUntil`.
 - Follow English naming, 2-space indentation, semicolons, and avoid redundant comments or commented-out code.
+- Reusable UI components must encapsulate their baseline visual design within the component (template + styles). Consumers can override presentation through documented inputs or local classes, never by relying on shared partials for the default look.
 - Keep navigable URLs human-friendly at all entry points. When generating links or parsing deep links, prefer descriptive slugs over opaque identifiers while preserving the ability to resolve the underlying record.
 
 ## Decision Log

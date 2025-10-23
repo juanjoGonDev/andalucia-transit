@@ -18,6 +18,6 @@
   {"type":"goto","url":"http://localhost:4201/"},
   {"type":"waitFor","selector":".home__tabs"},
   {"type":"click","selector":"[role=tab] >> text=Recientes"},
-  {"type":"waitFor","selector":".recent-card__route"},
+  {"type":"waitFor","selector":".recent-search-card__route"},
   {"type":"sleep","duration":1200}
 ]
