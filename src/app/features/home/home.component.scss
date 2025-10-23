@@ -69,22 +69,35 @@
 .home__tabs {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  justify-content: center;
+  align-content: center;
+  gap: var(--space-3xs);
   padding: 0.3rem;
   border-radius: 999px;
   background: var(--color-surface-muted);
   flex-wrap: wrap;
-  justify-content: center;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.home__tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .home__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   border-radius: 999px;
   padding: 0.55rem 1.2rem;
   background: transparent;
   font-weight: 600;
   color: var(--color-text-secondary);
-  flex: 1 0 auto;
+  flex: 0 1 auto;
+  min-width: clamp(6.5rem, 22vw, 9rem);
+  white-space: nowrap;
 }
 
 .home__tab[aria-selected='true'] {
