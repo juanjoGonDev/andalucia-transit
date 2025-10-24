@@ -29,6 +29,28 @@ const buildResponse = (articles: readonly TestFeedResponseArticle[]): TestFeedRe
   articles
 });
 
+const TRAILING_SLASHES_PATTERN = /\/+$/u;
+const LEADING_SLASHES_PATTERN = /^\/+/u;
+
+const trimTrailingSlashes = (value: string): string => value.replace(TRAILING_SLASHES_PATTERN, '');
+
+const trimLeadingSlashes = (value: string): string => value.replace(LEADING_SLASHES_PATTERN, '');
+
+const buildRemoteFeedUrl = (): string => {
+  const normalizedBase = trimTrailingSlashes(APP_CONFIG.apiBaseUrl);
+  const normalizedPath = trimLeadingSlashes(APP_CONFIG.data.news.feedApiPath);
+
+  if (normalizedPath.length === 0) {
+    return normalizedBase;
+  }
+
+  if (normalizedBase.length === 0) {
+    return normalizedPath;
+  }
+
+  return `${normalizedBase}/${normalizedPath}`;
+};
+
 describe('NewsFeedService', () => {
   let service: NewsFeedService;
   let httpTestingController: HttpTestingController;
@@ -53,7 +75,7 @@ describe('NewsFeedService', () => {
       emissions.push([...articles]);
     });
 
-    const request = httpTestingController.expectOne(APP_CONFIG.data.news.feedPath);
+    const request = httpTestingController.expectOne(buildRemoteFeedUrl());
 
     expect(request.request.method).toBe('GET');
 
@@ -92,7 +114,9 @@ describe('NewsFeedService', () => {
     const firstSubscription = service.loadFeed().subscribe();
     const secondSubscription = service.loadFeed().subscribe();
 
-    const request = httpTestingController.expectOne(APP_CONFIG.data.news.feedPath);
+    const request = httpTestingController.expectOne(buildRemoteFeedUrl());
+
+    expect(request.request.method).toBe('GET');
 
     request.flush(
       buildResponse([
@@ -108,5 +132,49 @@ describe('NewsFeedService', () => {
 
     firstSubscription.unsubscribe();
     secondSubscription.unsubscribe();
+  });
+
+  it('falls back to the snapshot feed when the remote endpoint fails', () => {
+    const emissions: NewsFeedArticle[][] = [];
+
+    service.loadFeed().subscribe((articles) => {
+      emissions.push([...articles]);
+    });
+
+    const remoteRequest = httpTestingController.expectOne(buildRemoteFeedUrl());
+
+    expect(remoteRequest.request.method).toBe('GET');
+
+    remoteRequest.flush(
+      { message: 'unavailable' },
+      {
+        status: 503,
+        statusText: 'Service Unavailable'
+      }
+    );
+
+    const fallbackRequest = httpTestingController.expectOne(APP_CONFIG.data.news.feedSnapshotPath);
+
+    expect(fallbackRequest.request.method).toBe('GET');
+
+    fallbackRequest.flush(
+      buildResponse([
+        {
+          id: 'fallback-entry',
+          titleKey: 'news.feed.fallbackEntry.title',
+          summaryKey: 'news.feed.fallbackEntry.summary',
+          link: 'https://www.ctan.es/noticias/fallback',
+          publishedAt: '2024-04-20T09:00:00+02:00'
+        }
+      ])
+    );
+
+    const firstEmission = emissions.at(0);
+
+    if (!firstEmission) {
+      throw new Error('Fallback feed not loaded');
+    }
+
+    expect(firstEmission.map((article: NewsFeedArticle) => article.id)).toEqual(['fallback-entry']);
   });
 });

@@ -7,6 +7,7 @@
 ### Change Management - Living Document
 AGENTS.md is the canonical decision log. When implementation, tooling, workflows, legal obligations, or conventions change, update this file in the same pull request or align the code with what is written here. Keep entries concise and link to supporting material in `docs/`.
 - Binary files are forbidden in git history. Never commit compiled artifacts, media exports, or other binary assets; share them via external storage and reference the link in documentation or pull requests when required.
+- Snapshot datasets packaged under `assets/data` (news feed, stop directories, timetable extracts, etc.) exist strictly as offline fallbacks. Fetch live data from the CTAN API first and gracefully degrade to the packaged snapshot if the network request fails or the session is offline.
 
 ## Product Vision & User Value
 - Progressive Web App for the Andalusia (CTAN) public transport network that surfaces stop schedules, nearby stops, direct routes, and an explorable map.

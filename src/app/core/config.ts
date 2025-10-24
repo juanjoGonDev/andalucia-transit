@@ -19,6 +19,7 @@ const DATA_TIMEZONE = 'Europe/Madrid' as const;
 const STOP_SERVICES_SNAPSHOT_PATH = 'assets/data/snapshots/stop-services/latest.json' as const;
 const STOP_DIRECTORY_SNAPSHOT_PATH = 'assets/data/stop-directory/index.json' as const;
 const NEWS_FEED_SNAPSHOT_PATH = 'assets/data/news/feed.json' as const;
+const NEWS_FEED_API_PATH = 'v1/noticias/feed' as const;
 const RUNTIME_FLAGS_PROPERTY = '__ANDALUCIA_TRANSIT_FLAGS__' as const;
 const HOLIDAY_API_BASE_URL = 'https://date.nager.at/api/v3' as const;
 const HOLIDAY_COUNTRY_CODE = 'ES' as const;
@@ -521,7 +522,8 @@ export const APP_CONFIG = {
       regionCodes: HOLIDAY_REGION_CODES
     },
     news: {
-      feedPath: NEWS_FEED_SNAPSHOT_PATH
+      feedApiPath: NEWS_FEED_API_PATH,
+      feedSnapshotPath: NEWS_FEED_SNAPSHOT_PATH
     }
   }
 } as const;

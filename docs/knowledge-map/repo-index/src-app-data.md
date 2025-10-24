@@ -11,7 +11,7 @@ source_of_truth: [src/app/data]
 - `holidays/`
   - `holiday-calendar.api-service.ts` → Calls Nager.Date API; service wraps caching logic with spec coverage.
 - `news/`
-  - `news-feed.service.ts` → Reads static snapshot feeds; spec ensures parsing.
+  - `news-feed.service.ts` → Requests the live CTAN feed and falls back to the packaged snapshot when offline; spec covers sorting and fallback behaviour.
 - `route-search/`
   - `route-lines-api.service.ts` and `route-timetable.api-service.ts` → HTTP access to CTAN endpoints.
   - `route-timetable.mapper.ts` (+ spec) → Transforms API models to domain timetables.
