@@ -30,6 +30,33 @@ Retrieves the full list of national and regional public holidays for the request
 
 The integration must display CTAN data attribution unchanged and cite the Nager.Date source in documentation when referencing holiday-aware behaviour.
 
+### assets/data/news/feed.json — CTAN news snapshot feed
+
+Provides a pre-generated list of recent announcements from the CTAN open data portal. The snapshot is baked into the application bundle during the snapshot pipeline and exposes metadata alongside individual article descriptors.
+
+- **Provider:** Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía (https://www.ctan.es/noticias)
+- **Distribution:** Static JSON snapshot served from `assets/data/news/feed.json` with `generatedAt`, `timezone`, and `providerName` metadata.
+- **Usage:** Loaded through `NewsFeedService`, which issues a single HttpClient GET request and caches the parsed response with `shareReplay({ bufferSize: 1, refCount: true })` for the session. The Angular service worker (`ngsw-config.json`) precaches the asset, so offline sessions reuse the latest packaged snapshot until a redeploy supplies fresher data.
+- **Refresh cadence:** Snapshot regenerated during content refresh runs; update `metadata.generatedAt` when sourcing a newer feed extract.
+
+**Article schema**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | String | Stable identifier used as the translation prefix and trackBy key. |
+| titleKey | String | Translation key for the localized headline stored in `assets/i18n`. |
+| summaryKey | String | Translation key for the localized summary stored in `assets/i18n`. |
+| link | String | External URL pointing to the canonical CTAN announcement. |
+| publishedAt | String | ISO 8601 timestamp in the `metadata.timezone` zone used for chronological sorting. |
+
+**Metadata fields**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| generatedAt | String | ISO 8601 timestamp describing when the snapshot file was produced. |
+| timezone | String | IANA timezone identifier applied to all article timestamps. |
+| providerName | String | Localized attribution string displayed to users. |
+
 ## Endpoint catalog
 
 ### Abreviaturas
@@ -2771,6 +2798,7 @@ Datos de una parada dado su identificador
 - **Permissions:** Todos
 - **Examples:** Ejemplo de uso: `http://api.ctan.es/v1/Consorcios/7/paradas/56`
 - **Source:** v1/recursos/paradas.php
+- **App usage:** La vista de información de parada consulta este recurso añadiendo el parámetro `lang` (`ES` o `EN`) para mostrar el nombre, zona, correspondencias y notas de la parada. Si la petición falla, el cliente reutiliza el snapshot del directorio de paradas para ofrecer los datos básicos en modo sin conexión.
 
 **Parameters**
 

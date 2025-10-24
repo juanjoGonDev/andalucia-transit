@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, TemplateRef } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({

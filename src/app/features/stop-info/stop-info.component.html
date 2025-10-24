@@ -1,0 +1,140 @@
+<div
+  class="stop-info"
+  appLayoutContent
+  [appLayoutContentNavigationKey]="layoutNavigationKey"
+>
+  <header class="stop-info__header">
+    <div class="stop-info__heading">
+      <h1 class="stop-info__title">{{ translation.title | translate }}</h1>
+      <p class="stop-info__subtitle">{{ translation.description | translate }}</p>
+    </div>
+    <div
+      appAccessibleButton
+      class="app-outline-button app-outline-button--compact stop-info__refresh"
+      (appAccessibleButtonActivated)="refresh()"
+    >
+      <span class="material-symbols-outlined stop-info__refresh-icon" aria-hidden="true">refresh</span>
+      {{ actionKeys.refresh | translate }}
+    </div>
+  </header>
+
+  <ng-container *ngIf="state$ | async as state">
+    <div
+      *ngIf="isLoading(state)"
+      class="stop-info__status stop-info__status--loading"
+      [attr.role]="statusRole"
+      [attr.aria-live]="politeLiveRegion"
+    >
+      <span class="material-symbols-outlined stop-info__status-icon" aria-hidden="true">
+        progress_activity
+      </span>
+      <p class="stop-info__status-text">{{ statusKeys.loading | translate }}</p>
+    </div>
+
+    <ng-container *ngIf="isReady(state)">
+      <ng-container
+        *ngTemplateOutlet="detailCard; context: { $implicit: state.detail, source: state.source }"
+      ></ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="isNotFound(state)">
+      <div
+        class="stop-info__status stop-info__status--error"
+        [attr.role]="statusRole"
+        [attr.aria-live]="assertiveLiveRegion"
+      >
+        <span class="material-symbols-outlined stop-info__status-icon" aria-hidden="true">
+          search_off
+        </span>
+        <p class="stop-info__status-text">{{ statusKeys.notFound | translate }}</p>
+      </div>
+      <ng-container *ngIf="state.fallback as fallbackDetail">
+        <ng-container
+          *ngTemplateOutlet="detailCard; context: { $implicit: fallbackDetail, source: 'offline' }"
+        ></ng-container>
+      </ng-container>
+    </ng-container>
+
+    <div
+      *ngIf="isError(state)"
+      class="stop-info__status stop-info__status--error"
+      [attr.role]="statusRole"
+      [attr.aria-live]="assertiveLiveRegion"
+    >
+      <span class="material-symbols-outlined stop-info__status-icon" aria-hidden="true">error</span>
+      <p class="stop-info__status-text">{{ statusKeys.error | translate }}</p>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #detailCard let-detail let-source="source">
+  <section class="stop-info__content">
+    <article class="stop-info__card">
+      <header class="stop-info__card-header">
+        <h2 class="stop-info__card-title">{{ detail.name }}</h2>
+        <ul class="stop-info__tags" role="list">
+          <li *ngIf="showTag(detail, 'main')" class="stop-info__tag">
+            {{ tagKeys.main | translate }}
+          </li>
+          <li *ngIf="showTag(detail, 'inactive')" class="stop-info__tag stop-info__tag--inactive">
+            {{ tagKeys.inactive | translate }}
+          </li>
+        </ul>
+      </header>
+
+      <dl class="stop-info__meta">
+        <div class="stop-info__meta-row">
+          <dt class="stop-info__meta-term">{{ labels.stopNumber | translate }}</dt>
+          <dd class="stop-info__meta-value">{{ detail.stopNumber }}</dd>
+        </div>
+        <div *ngIf="detail.stopCode" class="stop-info__meta-row">
+          <dt class="stop-info__meta-term">{{ labels.stopCode | translate }}</dt>
+          <dd class="stop-info__meta-value">{{ detail.stopCode }}</dd>
+        </div>
+        <div *ngIf="detail.municipality" class="stop-info__meta-row">
+          <dt class="stop-info__meta-term">{{ labels.municipality | translate }}</dt>
+          <dd class="stop-info__meta-value">{{ detail.municipality }}</dd>
+        </div>
+        <div *ngIf="detail.nucleus" class="stop-info__meta-row">
+          <dt class="stop-info__meta-term">{{ labels.nucleus | translate }}</dt>
+          <dd class="stop-info__meta-value">{{ detail.nucleus }}</dd>
+        </div>
+        <div *ngIf="detail.zone" class="stop-info__meta-row">
+          <dt class="stop-info__meta-term">{{ labels.zone | translate }}</dt>
+          <dd class="stop-info__meta-value">{{ detail.zone }}</dd>
+        </div>
+        <div *ngIf="detail.location" class="stop-info__meta-row">
+          <dt class="stop-info__meta-term">{{ labels.location | translate }}</dt>
+          <dd class="stop-info__meta-value stop-info__meta-value--coordinates">
+            <span>{{ detail.location.latitude | number: '1.4-4' }}</span>,
+            <span>{{ detail.location.longitude | number: '1.4-4' }}</span>
+          </dd>
+        </div>
+      </dl>
+
+      <p *ngIf="detail.description" class="stop-info__text stop-info__text--primary">
+        {{ detail.description }}
+      </p>
+      <p *ngIf="detail.observations" class="stop-info__text stop-info__text--secondary">
+        {{ detail.observations }}
+      </p>
+
+      <section *ngIf="detail.correspondences.length > 0" class="stop-info__section">
+        <h3 class="stop-info__section-title">{{ labels.correspondences | translate }}</h3>
+        <ul class="stop-info__correspondence-list" role="list">
+          <li
+            *ngFor="let code of detail.correspondences; trackBy: trackCorrespondence"
+            class="stop-info__correspondence-item"
+          >
+            {{ code }}
+          </li>
+        </ul>
+      </section>
+
+      <div *ngIf="source === 'offline'" class="stop-info__notice">
+        <span class="material-symbols-outlined stop-info__notice-icon" aria-hidden="true">wifi_off</span>
+        <p class="stop-info__notice-text">{{ statusKeys.offline | translate }}</p>
+      </div>
+    </article>
+  </section>
+</ng-template>

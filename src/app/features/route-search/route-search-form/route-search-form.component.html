@@ -1,18 +1,21 @@
 <form class="route-search-form" [formGroup]="searchForm" (ngSubmit)="submit()">
   <div class="route-search-form__grid">
-    <mat-form-field appearance="fill" class="route-search-form__field route-search-form__field--origin">
+    <mat-form-field
+      appearance="fill"
+      floatLabel="always"
+      class="route-search-form__field route-search-form__field--origin app-field"
+    >
       <mat-label>{{ originLabelKey | translate }}</mat-label>
-      <button
-        mat-icon-button
+      <div
+        appAccessibleButton
         matPrefix
-        type="button"
         class="route-search-form__location-button"
-        [disabled]="originLocationLoading"
+        [appAccessibleButtonDisabled]="originLocationLoading"
         [attr.aria-label]="originLocationActionLabelKey | translate"
-        (click)="recommendOriginFromLocation()"
+        (appAccessibleButtonActivated)="recommendOriginFromLocation()"
       >
         <span class="material-symbols-outlined route-search-form__icon">{{ originIcon }}</span>
-      </button>
+      </div>
       <input
         matInput
         type="text"
@@ -47,17 +50,18 @@
                     {{ distance.translationKey | translate: { value: distance.value } }}
                   </span>
                 </div>
-                <button
-                  type="button"
+                <div
+                  appAccessibleButton
                   class="route-search-form__favorite-button"
-                  (click)="toggleFavorite(option, $event)"
+                  (appAccessibleButtonActivated)="toggleFavorite(option, $event)"
+                  [appAccessibleButtonPressed]="option.isFavorite"
                   [attr.aria-label]="favoriteToggleLabel(option) | translate"
                   [attr.data-active]="option.isFavorite ? 'true' : null"
                 >
                   <span class="material-symbols-outlined route-search-form__favorite-icon">
                     {{ favoriteToggleIcon(option) }}
                   </span>
-                </button>
+                </div>
               </div>
             </mat-option>
           </mat-optgroup>
@@ -65,16 +69,20 @@
       </mat-autocomplete>
     </mat-form-field>
 
-    <button
-      type="button"
+    <div
+      appAccessibleButton
       class="route-search-form__swap"
-      (click)="swap()"
+      (appAccessibleButtonActivated)="swap()"
       [attr.aria-label]="swapLabelKey | translate"
     >
       <span class="material-symbols-outlined">{{ swapIcon }}</span>
-    </button>
+    </div>
 
-    <mat-form-field appearance="fill" class="route-search-form__field route-search-form__field--destination">
+    <mat-form-field
+      appearance="fill"
+      floatLabel="always"
+      class="route-search-form__field route-search-form__field--destination app-field"
+    >
       <mat-label>{{ destinationLabelKey | translate }}</mat-label>
       <span matPrefix class="material-symbols-outlined route-search-form__icon">{{ destinationIcon }}</span>
       <input
@@ -111,17 +119,18 @@
                     {{ distance.translationKey | translate: { value: distance.value } }}
                   </span>
                 </div>
-                <button
-                  type="button"
+                <div
+                  appAccessibleButton
                   class="route-search-form__favorite-button"
-                  (click)="toggleFavorite(option, $event)"
+                  (appAccessibleButtonActivated)="toggleFavorite(option, $event)"
+                  [appAccessibleButtonPressed]="option.isFavorite"
                   [attr.aria-label]="favoriteToggleLabel(option) | translate"
                   [attr.data-active]="option.isFavorite ? 'true' : null"
                 >
                   <span class="material-symbols-outlined route-search-form__favorite-icon">
                     {{ favoriteToggleIcon(option) }}
                   </span>
-                </button>
+                </div>
               </div>
             </mat-option>
           </mat-optgroup>
@@ -129,7 +138,11 @@
       </mat-autocomplete>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" class="route-search-form__field route-search-form__field--date">
+    <mat-form-field
+      appearance="fill"
+      floatLabel="always"
+      class="route-search-form__field route-search-form__field--date app-field"
+    >
       <mat-label>{{ dateLabelKey | translate }}</mat-label>
       <span matPrefix class="material-symbols-outlined route-search-form__icon">{{ dateIcon }}</span>
       <input
@@ -146,9 +159,14 @@
     </mat-form-field>
   </div>
 
-  <button class="route-search-form__submit" type="submit" [disabled]="searchForm.invalid">
+  <div
+    appAccessibleButton
+    class="app-button app-button--primary app-button--lg app-button--block-mobile route-search-form__submit"
+    [appAccessibleButtonDisabled]="searchForm.invalid"
+    (appAccessibleButtonActivated)="onSubmitTrigger()"
+  >
     {{ submitLabelKey | translate }}
-  </button>
+  </div>
 
   <p
     *ngIf="noRoutes$ | async"

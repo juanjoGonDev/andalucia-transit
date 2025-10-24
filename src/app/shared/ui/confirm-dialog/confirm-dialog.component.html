@@ -1,18 +1,27 @@
-<h2 class="confirm-dialog__title">{{ data.titleKey | translate }}</h2>
-<div class="confirm-dialog__content">
-  <p class="confirm-dialog__message">{{ data.messageKey | translate }}</p>
-  <ul *ngIf="data.details?.length" class="confirm-dialog__details" role="list">
-    <li *ngFor="let detail of data.details" class="confirm-dialog__detail">
-      <span class="confirm-dialog__detail-label">{{ detail.labelKey | translate }}</span>
-      <span class="confirm-dialog__detail-value">{{ detail.value }}</span>
-    </li>
-  </ul>
-</div>
-<div class="confirm-dialog__actions">
-  <button type="button" class="confirm-dialog__button confirm-dialog__button--secondary" (click)="cancel()">
-    {{ data.cancelKey | translate }}
-  </button>
-  <button type="button" class="confirm-dialog__button confirm-dialog__button--primary" (click)="confirm()">
-    {{ data.confirmKey | translate }}
-  </button>
-</div>
+<app-dialog-layout [titleKey]="data.titleKey">
+  <div appDialogBody class="confirm-dialog__body">
+    <p class="confirm-dialog__message">{{ data.messageKey | translate }}</p>
+    <ul *ngIf="data.details?.length" class="confirm-dialog__details" role="list">
+      <li *ngFor="let detail of data.details" class="confirm-dialog__detail">
+        <span class="confirm-dialog__detail-label">{{ detail.labelKey | translate }}</span>
+        <span class="confirm-dialog__detail-value">{{ detail.value }}</span>
+      </li>
+    </ul>
+  </div>
+  <div appDialogActions class="confirm-dialog__actions">
+    <div
+      appAccessibleButton
+      class="app-button app-button--ghost app-button--block-mobile"
+      (appAccessibleButtonActivated)="cancel()"
+    >
+      {{ data.cancelKey | translate }}
+    </div>
+    <div
+      appAccessibleButton
+      class="app-button app-button--primary app-button--block-mobile"
+      (appAccessibleButtonActivated)="confirm()"
+    >
+      {{ data.confirmKey | translate }}
+    </div>
+  </div>
+</app-dialog-layout>

@@ -1,0 +1,20 @@
+<div
+  appAccessibleButton
+  [ngClass]="bodyClasses"
+  [appAccessibleButtonRole]="computedPrimaryRole"
+  [routerLink]="computedPrimaryCommands"
+  [appAccessibleButtonPressed]="primaryPressed"
+  [attr.aria-label]="primaryAriaLabel"
+  (appAccessibleButtonActivated)="handlePrimaryActivated()"
+>
+  <ng-content></ng-content>
+</div>
+<div
+  *ngIf="removeAriaLabel"
+  appAccessibleButton
+  [ngClass]="removeClasses"
+  [attr.aria-label]="removeAriaLabel"
+  (appAccessibleButtonActivated)="handleRemoveActivated($event)"
+>
+  <span [ngClass]="removeIconClass">{{ removeIconName }}</span>
+</div>

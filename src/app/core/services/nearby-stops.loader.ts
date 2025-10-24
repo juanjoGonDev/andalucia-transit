@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-
-import { GeoCoordinate, calculateDistanceInMeters } from '../../domain/utils/geo-distance.util';
+import { GeoCoordinate, calculateDistanceInMeters } from '@domain/utils/geo-distance.util';
 
 interface StopDirectoryIndexFile {
   readonly chunks: readonly StopDirectoryChunkDescriptor[];

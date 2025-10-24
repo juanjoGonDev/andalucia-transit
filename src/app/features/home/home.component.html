@@ -1,109 +1,111 @@
-<section class="home">
-  <div class="home__content">
-    <header class="home__header">
-      <h1 class="home__title">{{ headerTitleKey | translate }}</h1>
-      <button
-        type="button"
-        class="home__info-button"
-        [attr.aria-label]="headerInfoLabelKey | translate"
-      >
-        <span class="material-symbols-outlined">{{ infoIcon }}</span>
-      </button>
+<section
+  class="home"
+  appLayoutContent
+  [appLayoutContentNavigationKey]="layoutNavigationKey()"
+>
+  <div class="home__container home__stack">
+    <header class="home__header home__stack">
+      <div class="home__intro home__stack">
+        <p class="home__eyebrow">{{ heroEyebrowKey | translate }}</p>
+        <h1 class="home__headline">{{ headerTaglineKey | translate }}</h1>
+        <p class="home__description">{{ heroDescriptionKey | translate }}</p>
+      </div>
     </header>
-    <main class="home__main">
-      <app-section [titleKey]="searchTitleKey" appearance="card">
-        @defer (on viewport) {
-          <app-route-search-form
-            [initialSelection]="currentSelection$ | async"
-            (selectionConfirmed)="onSelectionConfirmed($event)"
-          ></app-route-search-form>
-        } @placeholder {
-          <div class="home-search-placeholder" aria-hidden="true">
-            <span class="home-search-placeholder__field"></span>
-            <span class="home-search-placeholder__field"></span>
-            <span class="home-search-placeholder__field"></span>
-            <span class="home-search-placeholder__action"></span>
+
+    <main class="home__main home__stack">
+      <section class="home__card home__stack" aria-labelledby="homeCardTitle">
+        <div class="home__card-header home__stack">
+          <div>
+            <h2 id="homeCardTitle" class="home__card-title">{{ headerTitleKey | translate }}</h2>
+            <p class="home__card-subtitle">{{ heroActionKey | translate }}</p>
           </div>
-        }
-      </app-section>
-      <app-section
-        [titleKey]="recentStopsTitleKey"
-        [actionsTemplate]="recentStopsActions"
-      >
-        <ng-template #recentStopsActions>
-          <button
-            type="button"
-            class="home__section-action"
-            *ngIf="recentClearActionVisible()"
-            (click)="onClearRecentSearches()"
-          >
-            {{ recentStopsClearKey | translate }}
-          </button>
-        </ng-template>
-        @defer (on viewport) {
-          <app-home-recent-searches
-            #recentSearches
-            (itemsStateChange)="onRecentItemsStateChange($event)"
-          ></app-home-recent-searches>
-        } @placeholder {
-          <ul class="home-recent-placeholder" aria-hidden="true">
-            <li
-              *ngFor="let index of recentPlaceholderItems"
-              class="home-recent-placeholder__item"
+          <div class="home__tabs" role="tablist">
+            <div
+              *ngFor="let tab of tabs"
+              appAccessibleButton
+              class="home__tab"
+              appAccessibleButtonRole="tab"
+              [attr.aria-selected]="isTabActive(tab.id)"
+              (appAccessibleButtonActivated)="selectTab(tab.id)"
             >
-              <span class="home-recent-placeholder__line home-recent-placeholder__line--primary"></span>
-              <span class="home-recent-placeholder__line home-recent-placeholder__line--secondary"></span>
-            </li>
-          </ul>
-        }
-      </app-section>
-      <app-section [titleKey]="findNearbyTitleKey">
-        <app-card-list-item
-          [titleKey]="findNearbyActionKey"
-          [layout]="locationActionLayout"
-          [trailingIcon]="trailingIcon"
-          [ariaLabelKey]="findNearbyActionKey"
-          (action)="openNearbyStopsDialog()"
-        ></app-card-list-item>
-      </app-section>
-      <app-section [titleKey]="favoritesTitleKey">
-        <div class="home__favorites">
-          <p class="home__favorites-description">{{ favoritesDescriptionKey | translate }}</p>
-          <ng-container *ngIf="hasFavorites(); else favoritesEmpty">
-            <ul class="home__favorites-list" role="list">
-              <li
-                class="home__favorites-item"
-                *ngFor="let favorite of favoritePreview(); trackBy: trackFavorite"
-              >
-                <button
-                  type="button"
-                  class="home__favorites-button"
-                  (click)="openFavorite(favorite)"
-                >
-                  <span class="material-symbols-outlined home__favorites-icon">{{ favoriteIcon() }}</span>
-                  <span class="home__favorites-text">
-                    <span class="home__favorites-name">{{ favorite.name }}</span>
-                    <span class="home__favorites-meta">
-                      {{ favoritesCodeLabelKey | translate }}: {{ favorite.code }} · {{ favorite.municipality }}
-                    </span>
-                  </span>
-                </button>
-              </li>
-            </ul>
-          </ng-container>
-          <ng-template #favoritesEmpty>
-            <p class="home__favorites-empty">{{ favoritesEmptyKey | translate }}</p>
-          </ng-template>
-          <app-card-list-item
-            [leadingIcon]="favoriteIcon()"
-            [titleKey]="favoritesActionKey"
-            [layout]="locationActionLayout"
-            [iconVariant]="actionCardIconVariant"
-            [trailingIcon]="trailingIcon"
-            [commands]="favoritesCommands"
-          ></app-card-list-item>
+              {{ tab.labelKey | translate }}
+            </div>
+          </div>
         </div>
-      </app-section>
+        <div class="home__card-body home__stack">
+          <ng-container [ngSwitch]="activeTab()">
+            <div *ngSwitchCase="'search'" class="home__panel home__panel--search home__stack">
+              <app-route-search-form
+                [initialSelection]="currentSelection$ | async"
+                (selectionConfirmed)="onSelectionConfirmed($event)"
+              ></app-route-search-form>
+            </div>
+            <div *ngSwitchCase="'recent'" class="home__panel home__panel--recent home__stack">
+              <header class="home__panel-header">
+                <div class="home__panel-heading home__stack">
+                  <h3 class="home__panel-title">{{ recentStopsTitleKey | translate }}</h3>
+                </div>
+                <div
+                  *ngIf="recentClearActionVisible()"
+                  appAccessibleButton
+                  class="app-button app-button--ghost home__panel-action"
+                  (appAccessibleButtonActivated)="onClearRecentSearches()"
+                >
+                  {{ recentStopsClearKey | translate }}
+                </div>
+              </header>
+              <app-home-recent-searches
+                #recentSearches
+                (itemsStateChange)="onRecentItemsStateChange($event)"
+              ></app-home-recent-searches>
+            </div>
+            <div *ngSwitchCase="'favorites'" class="home__panel home__panel--favorites home__stack">
+              <header class="home__panel-header">
+                <div class="home__panel-heading home__stack">
+                  <h3 class="home__panel-title">{{ favoritesTitleKey | translate }}</h3>
+                </div>
+                <div
+                  appAccessibleButton
+                  class="app-button app-button--ghost home__panel-action"
+                  (appAccessibleButtonActivated)="openFavoritesView()"
+                >
+                  {{ favoritesActionKey | translate }}
+                </div>
+              </header>
+              <ng-container *ngIf="hasFavorites(); else favoritesEmpty">
+                <ul class="home-recent__list" role="list">
+                  <li class="home-recent__item" *ngFor="let favorite of favoritePreview(); trackBy: trackFavorite">
+                    <app-interactive-card
+                      [ngClass]="recentCardHostClasses"
+                      [bodyClasses]="recentCardBodyClasses"
+                      (primaryActivated)="openFavorite(favorite)"
+                    >
+                      <div class="recent-card__content">
+                        <div class="recent-card__route">
+                          <span class="recent-card__origin">{{ favorite.name }}</span>
+                          <span class="recent-card__arrow" aria-hidden="true">→</span>
+                          <span class="recent-card__destination">{{ favorite.municipality }}</span>
+                        </div>
+                        <div class="recent-card__preview">
+                          <div class="recent-card__status recent-card__status--empty">
+                            {{ favoritesCodeLabelKey | translate }} {{ favorite.code }}
+                          </div>
+                          <div class="recent-card__status recent-card__status--empty">
+                            {{ favoritesNucleusLabelKey | translate }} {{ favorite.nucleus }}
+                          </div>
+                        </div>
+                      </div>
+                    </app-interactive-card>
+                  </li>
+                </ul>
+              </ng-container>
+              <ng-template #favoritesEmpty>
+                <p class="home-recent__empty">{{ favoritesEmptyKey | translate }}</p>
+              </ng-template>
+            </div>
+          </ng-container>
+        </div>
+      </section>
     </main>
   </div>
 </section>

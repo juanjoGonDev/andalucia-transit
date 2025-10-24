@@ -1,0 +1,29 @@
+.app-layout__surface {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface-muted);
+}
+
+.app-layout__surface > .utility-container {
+  flex: 1 1 auto;
+  display: flex;
+  width: 100%;
+}
+
+.app-layout__body {
+  --app-layout-body-gap: var(--space-xl);
+  --app-layout-body-padding-block: var(--space-2xl);
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-layout-body-gap);
+  padding-block: var(--app-layout-body-padding-block);
+  width: 100%;
+}
+
+@media (min-width: 48rem) {
+  .app-layout__body {
+    --app-layout-body-padding-block: var(--space-3xl);
+  }
+}
