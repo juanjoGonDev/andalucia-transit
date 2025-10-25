@@ -1,10 +1,16 @@
 <section
-  class="settings app-layout__surface"
+  class="settings app-layout__surface app-layout__surface--hero"
   appLayoutContent
   [appLayoutContentNavigationKey]="layoutNavigationKey"
 >
   <div class="utility-container">
     <div class="app-layout__body">
+      <header class="settings__hero app-hero">
+        <div class="app-hero__intro">
+          <h1 class="app-hero__title">{{ titleKey | translate }}</h1>
+          <p class="app-hero__description">{{ descriptionKey | translate }}</p>
+        </div>
+      </header>
       <app-section [titleKey]="languageSectionTitleKey" appearance="card">
         <div class="settings__section">
           <p class="settings__description">{{ languageDescriptionKey | translate }}</p>

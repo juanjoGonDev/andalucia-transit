@@ -1,71 +1,91 @@
-<div class="favorites" appLayoutContent [appLayoutContentNavigationKey]="layoutNavigationKey">
-  <app-section [titleKey]="titleKey">
-    <div class="favorites__header">
-      <p class="favorites__description">{{ descriptionKey | translate }}</p>
-      <div class="favorites__controls">
-        <div class="favorites__search">
-          <app-text-field
-            class="favorites__search-field"
-            [label]="searchLabelKey | translate"
-            [placeholder]="searchPlaceholderKey | translate"
-            [type]="searchFieldType"
-            [autocomplete]="searchAutocompleteAttribute"
-            [formControl]="searchControl"
-          ></app-text-field>
+<section
+  class="favorites app-layout__surface app-layout__surface--hero"
+  appLayoutContent
+  [appLayoutContentNavigationKey]="layoutNavigationKey"
+>
+  <div class="utility-container">
+    <div class="app-layout__body">
+      <header class="favorites__hero app-hero">
+        <div class="app-hero__intro">
+          <h1 class="app-hero__title">{{ titleKey | translate }}</h1>
+          <p class="app-hero__description">{{ descriptionKey | translate }}</p>
         </div>
-        <div
-          appAccessibleButton
-          class="app-outline-button app-outline-button--compact favorites__clear"
-          [appAccessibleButtonDisabled]="!hasFavorites()"
-          [class.is-disabled]="!hasFavorites()"
-          (appAccessibleButtonActivated)="onClearAllActivated()"
-        >
-          <span class="material-symbols-outlined favorites__clear-icon">{{ removeIcon() }}</span>
-          {{ clearAllLabelKey | translate }}
-        </div>
-      </div>
-    </div>
-  </app-section>
-
-  <div *ngIf="!hasResults()" class="favorites__empty">
-    <p class="favorites__empty-message">{{ emptyKey | translate }}</p>
-  </div>
-
-  <div *ngIf="hasResults()" class="favorites__groups">
-    <section class="favorites__group" *ngFor="let group of groups(); trackBy: trackGroup">
-      <h3 class="favorites__group-title">{{ group.municipality }}</h3>
-      <ul class="favorites__list" role="list">
-        <li class="favorites__item" *ngFor="let stop of group.stops; trackBy: trackStop">
-          <app-interactive-card
-            [ngClass]="favoritesCardHostClasses"
-            [bodyClasses]="favoritesCardBodyClasses"
-            [removeClasses]="favoritesCardRemoveClasses"
-            [removeIconName]="removeIcon()"
-            [removeAriaLabel]="removeLabelKey | translate"
-            [primaryCommands]="stopDetailCommands(stop)"
-            (removeActivated)="onRemoveActivated(stop)"
+        <div class="app-hero__actions favorites__controls">
+          <div class="favorites__search">
+            <app-text-field
+              class="favorites__search-field"
+              [label]="searchLabelKey | translate"
+              [labelMode]="textFieldLabelModes.hidden"
+              [placeholder]="searchPlaceholderKey | translate"
+              [type]="searchFieldType"
+              [autocomplete]="searchAutocompleteAttribute"
+              [formControl]="searchControl"
+            >
+              <span
+                appTextFieldPrefix
+                class="material-symbols-outlined favorites__search-icon"
+                aria-hidden="true"
+              >
+                {{ searchIcon }}
+              </span>
+            </app-text-field>
+          </div>
+          <div
+            appAccessibleButton
+            class="app-outline-button app-outline-button--compact favorites__clear"
+            [appAccessibleButtonDisabled]="!hasFavorites()"
+            [class.is-disabled]="!hasFavorites()"
+            (appAccessibleButtonActivated)="onClearAllActivated()"
           >
-            <div class="favorites-card__content">
-              <span class="material-symbols-outlined favorites-card__icon" aria-hidden="true">
-                {{ favoriteIcon() }}
-              </span>
-              <span class="favorites-card__text">
-                <span class="favorites-card__name">{{ stop.name }}</span>
-                <span class="favorites-card__meta">
-                  <span class="favorites-card__chip">
-                    <span class="favorites-card__chip-label">{{ codeLabelKey | translate }}</span>
-                    <span class="favorites-card__chip-value">{{ stop.code }}</span>
-                  </span>
-                  <span class="favorites-card__chip">
-                    <span class="favorites-card__chip-label">{{ nucleusLabelKey | translate }}</span>
-                    <span class="favorites-card__chip-value">{{ stop.nucleus }}</span>
-                  </span>
-                </span>
-              </span>
-            </div>
-          </app-interactive-card>
-        </li>
-      </ul>
-    </section>
+            <span class="material-symbols-outlined favorites__clear-icon">{{ removeIcon() }}</span>
+            {{ clearAllLabelKey | translate }}
+          </div>
+        </div>
+      </header>
+
+      <section class="favorites__panel">
+        <div *ngIf="!hasResults()" class="favorites__empty">
+          <p class="favorites__empty-message">{{ emptyKey | translate }}</p>
+        </div>
+
+        <div *ngIf="hasResults()" class="favorites__groups">
+          <section class="favorites__group" *ngFor="let group of groups(); trackBy: trackGroup">
+            <h2 class="favorites__group-title">{{ group.municipality }}</h2>
+            <ul class="favorites__list" role="list">
+              <li class="favorites__item" *ngFor="let stop of group.stops; trackBy: trackStop">
+                <app-interactive-card
+                  [ngClass]="favoritesCardHostClasses"
+                  [bodyClasses]="favoritesCardBodyClasses"
+                  [removeClasses]="favoritesCardRemoveClasses"
+                  [removeIconName]="removeIcon()"
+                  [removeAriaLabel]="removeLabelKey | translate"
+                  [primaryCommands]="stopDetailCommands(stop)"
+                  (removeActivated)="onRemoveActivated(stop)"
+                >
+                  <div class="favorites-card__content">
+                    <span class="material-symbols-outlined favorites-card__icon" aria-hidden="true">
+                      {{ favoriteIcon() }}
+                    </span>
+                    <span class="favorites-card__text">
+                      <span class="favorites-card__name">{{ stop.name }}</span>
+                      <span class="favorites-card__meta">
+                        <span class="favorites-card__chip">
+                          <span class="favorites-card__chip-label">{{ codeLabelKey | translate }}</span>
+                          <span class="favorites-card__chip-value">{{ stop.code }}</span>
+                        </span>
+                        <span class="favorites-card__chip">
+                          <span class="favorites-card__chip-label">{{ nucleusLabelKey | translate }}</span>
+                          <span class="favorites-card__chip-value">{{ stop.nucleus }}</span>
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                </app-interactive-card>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </section>
+    </div>
   </div>
-</div>
+</section>

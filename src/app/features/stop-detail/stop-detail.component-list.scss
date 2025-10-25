@@ -29,15 +29,18 @@
 }
 
 .stop-detail__list-main {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 1rem;
+  row-gap: 0.5rem;
+  align-items: end;
 }
 
 .stop-detail__time-block {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  align-items: flex-start;
 }
 
 .stop-detail__time {
@@ -54,7 +57,17 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  align-items: center;
+  align-items: baseline;
+}
+
+@media (max-width: 40rem) {
+  .stop-detail__list-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stop-detail__info {
+    justify-content: space-between;
+  }
 }
 
 .stop-detail__line {

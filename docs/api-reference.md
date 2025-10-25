@@ -30,13 +30,20 @@ Retrieves the full list of national and regional public holidays for the request
 
 The integration must display CTAN data attribution unchanged and cite the Nager.Date source in documentation when referencing holiday-aware behaviour.
 
-### assets/data/news/feed.json — CTAN news snapshot feed
+### GET https://api.ctan.es/v1/noticias/feed — CTAN news feed
 
-Provides a pre-generated list of recent announcements from the CTAN open data portal. The snapshot is baked into the application bundle during the snapshot pipeline and exposes metadata alongside individual article descriptors.
+Delivers the latest announcements from the CTAN open data portal. The endpoint mirrors the snapshot schema packaged with the application and is the primary data source for the News feature.
 
 - **Provider:** Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía (https://www.ctan.es/noticias)
+- **Usage:** `NewsFeedService` requests this endpoint first and caches the parsed articles with `shareReplay({ bufferSize: 1, refCount: true })` for the session. Consumers receive fresh data whenever connectivity allows.
+- **Fallback:** When the request fails or the session is offline, the service transparently loads the packaged snapshot from `assets/data/news/feed.json` and emits that dataset instead.
+
+### assets/data/news/feed.json — CTAN news snapshot fallback
+
+Provides a pre-generated list of recent announcements baked into the application bundle for offline resilience. The snapshot exposes metadata alongside individual article descriptors and matches the remote feed schema exactly.
+
 - **Distribution:** Static JSON snapshot served from `assets/data/news/feed.json` with `generatedAt`, `timezone`, and `providerName` metadata.
-- **Usage:** Loaded through `NewsFeedService`, which issues a single HttpClient GET request and caches the parsed response with `shareReplay({ bufferSize: 1, refCount: true })` for the session. The Angular service worker (`ngsw-config.json`) precaches the asset, so offline sessions reuse the latest packaged snapshot until a redeploy supplies fresher data.
+- **Usage:** Loaded by `NewsFeedService` only when the live feed is unreachable; cached by the Angular service worker (`ngsw-config.json`) so offline sessions reuse the latest packaged snapshot until a redeploy supplies fresher data.
 - **Refresh cadence:** Snapshot regenerated during content refresh runs; update `metadata.generatedAt` when sourcing a newer feed extract.
 
 **Article schema**

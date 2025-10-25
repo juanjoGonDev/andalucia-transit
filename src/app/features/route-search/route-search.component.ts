@@ -37,6 +37,8 @@ import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.dir
 import { buildNavigationCommands } from '@shared/navigation/navigation.util';
 import { SectionComponent } from '@shared/ui/section/section.component';
 
+const BACK_ICON_NAME = 'arrow_back' as const;
+
 @Component({
   selector: 'app-route-search',
   standalone: true,
@@ -82,6 +84,7 @@ export class RouteSearchComponent implements AfterViewInit {
   protected readonly formTitleKey = this.translationKeys.action;
   protected readonly scheduleAccuracyWarningKey = this.translationKeys.scheduleAccuracyWarning;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.routeSearch;
+  protected readonly backIcon = BACK_ICON_NAME;
 
   protected readonly selection = signal<RouteSearchSelection | null>(this.state.getSelection());
   protected readonly results = signal<RouteSearchResultsViewModel>({

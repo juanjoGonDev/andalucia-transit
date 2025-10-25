@@ -21,8 +21,12 @@ import {
   ConfirmDialogData
 } from '@shared/ui/confirm-dialog/confirm-dialog.component';
 import { OverlayDialogService } from '@shared/ui/dialog/overlay-dialog.service';
-import { AppTextFieldComponent, TextFieldType } from '@shared/ui/forms/app-text-field.component';
-import { SectionComponent } from '@shared/ui/section/section.component';
+import { AppTextFieldPrefixDirective } from '@shared/ui/forms/app-text-field-slots.directive';
+import {
+  AppTextFieldComponent,
+  TEXT_FIELD_LABEL_MODES,
+  TextFieldType
+} from '@shared/ui/forms/app-text-field.component';
 
 interface FavoriteListItem {
   readonly id: string;
@@ -47,6 +51,7 @@ const FAVORITES_CARD_BODY_CLASSES: readonly string[] = ['favorites-card__body'];
 const FAVORITES_CARD_REMOVE_CLASSES: readonly string[] = ['favorites-card__remove'];
 const SEARCH_TEXT_FIELD_TYPE: TextFieldType = 'search';
 const SEARCH_AUTOCOMPLETE_ATTRIBUTE = 'off';
+const SEARCH_ICON_NAME = 'search' as const;
 const ROOT_ROUTE_SEGMENT = '/' as const;
 @Component({
   selector: 'app-favorites',
@@ -55,11 +60,11 @@ const ROOT_ROUTE_SEGMENT = '/' as const;
     CommonModule,
     ReactiveFormsModule,
     TranslateModule,
-    SectionComponent,
     AccessibleButtonDirective,
     AppLayoutContentDirective,
     InteractiveCardComponent,
-    AppTextFieldComponent
+    AppTextFieldComponent,
+    AppTextFieldPrefixDirective
   ],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.scss',
@@ -82,6 +87,8 @@ export class FavoritesComponent {
   protected readonly searchPlaceholderKey = this.translations.searchPlaceholder;
   protected readonly searchFieldType = SEARCH_TEXT_FIELD_TYPE;
   protected readonly searchAutocompleteAttribute = SEARCH_AUTOCOMPLETE_ATTRIBUTE;
+  protected readonly textFieldLabelModes = TEXT_FIELD_LABEL_MODES;
+  protected readonly searchIcon = SEARCH_ICON_NAME;
   protected readonly emptyKey = this.translations.empty;
   protected readonly clearAllLabelKey = this.translations.actions.clearAll;
   protected readonly removeLabelKey = this.translations.actions.remove;

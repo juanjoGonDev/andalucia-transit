@@ -4,7 +4,11 @@
   [class.app-text-field--disabled]="isDisabled"
   [class.app-text-field--invalid]="invalid"
 >
-  <label class="app-text-field__label" [attr.for]="inputId">
+  <label
+    class="app-text-field__label"
+    [class.app-text-field__label--hidden]="isLabelHidden"
+    [attr.for]="inputId"
+  >
     <ng-container>{{ label }}</ng-container>
   </label>
   <div class="app-text-field__control">
@@ -19,6 +23,7 @@
       [attr.type]="type"
       [attr.autocomplete]="autocomplete"
       [attr.placeholder]="placeholder"
+      [attr.aria-label]="ariaLabelAttribute"
       [attr.readonly]="readonly ? '' : null"
       [attr.aria-describedby]="ariaDescribedByAttribute"
       [attr.aria-errormessage]="ariaErrormessageAttribute"

@@ -48,6 +48,12 @@ const NOOP_VALUE_CALLBACK = (_value: string): void => undefined;
 const NOOP_VOID_CALLBACK = (): void => undefined;
 const DEFAULT_CONTROL_STATUS: FormControlStatus = 'VALID';
 const PENDING_CONTROL_STATUS: FormControlStatus = 'PENDING';
+export const TEXT_FIELD_LABEL_MODES = {
+  visible: 'visible',
+  hidden: 'hidden'
+} as const;
+
+export type TextFieldLabelMode = (typeof TEXT_FIELD_LABEL_MODES)[keyof typeof TEXT_FIELD_LABEL_MODES];
 
 export type TextFieldType = 'text' | 'search' | 'email' | 'tel' | 'url' | 'password';
 
@@ -86,6 +92,7 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   @Input() type: TextFieldType = DEFAULT_TEXT_FIELD_TYPE;
   @Input() readonly = false;
   @Input() required = false;
+  @Input() labelMode: TextFieldLabelMode = TEXT_FIELD_LABEL_MODES.visible;
   @Input() name?: string;
   @Input()
   set describedBy(value: string | readonly string[] | undefined) {
@@ -125,6 +132,8 @@ export class AppTextFieldComponent implements ControlValueAccessor {
   private externalControl: AbstractControl | null = null;
   private externalControlSubscriptions: Subscription[] = [];
   private forwardedErrorTemplate: TemplateRef<unknown> | null = null;
+
+  protected readonly labelModes = TEXT_FIELD_LABEL_MODES;
 
   private onChange: (value: string) => void = NOOP_VALUE_CALLBACK;
   private onTouched: () => void = NOOP_VOID_CALLBACK;
@@ -188,6 +197,14 @@ export class AppTextFieldComponent implements ControlValueAccessor {
 
   get hasHint(): boolean {
     return Boolean(this.hint);
+  }
+
+  get isLabelHidden(): boolean {
+    return this.labelMode === TEXT_FIELD_LABEL_MODES.hidden;
+  }
+
+  get ariaLabelAttribute(): string | null {
+    return this.isLabelHidden ? this.label : null;
   }
 
   get ariaInvalidAttribute(): 'true' | null {

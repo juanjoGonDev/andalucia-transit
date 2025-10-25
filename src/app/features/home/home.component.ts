@@ -21,7 +21,6 @@ import {
 import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
 import { HomeTabId } from '@features/home/home.types';
 import { HomeRecentSearchesComponent } from '@features/home/recent-searches/home-recent-searches.component';
-import { RECENT_CARD_BODY_CLASSES, RECENT_CARD_HOST_CLASSES } from '@features/home/shared/recent-card-classes';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
@@ -36,6 +35,9 @@ interface HomeTabOption {
   readonly id: HomeTabId;
   readonly labelKey: string;
 }
+
+const HOME_FAVORITE_CARD_HOST_CLASSES: readonly string[] = ['home-favorite-card'];
+const HOME_FAVORITE_CARD_BODY_CLASSES: readonly string[] = ['home-favorite-card__body'];
 
 @Component({
   selector: 'app-home',
@@ -106,8 +108,8 @@ export class HomeComponent {
   protected readonly favoritesEmptyKey = this.translation.sections.favorites.empty;
   protected readonly favoritesCodeLabelKey = APP_CONFIG.translationKeys.favorites.list.code;
   protected readonly favoritesNucleusLabelKey = APP_CONFIG.translationKeys.favorites.list.nucleus;
-  protected readonly recentCardHostClasses = RECENT_CARD_HOST_CLASSES;
-  protected readonly recentCardBodyClasses = RECENT_CARD_BODY_CLASSES;
+  protected readonly favoriteCardHostClasses = HOME_FAVORITE_CARD_HOST_CLASSES;
+  protected readonly favoriteCardBodyClasses = HOME_FAVORITE_CARD_BODY_CLASSES;
 
   protected readonly activeTab = signal<HomeTabId>('search');
   protected readonly recentClearActionVisible = signal(false);
