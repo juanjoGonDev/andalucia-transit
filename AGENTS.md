@@ -119,3 +119,19 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Workspace: `andalucia-transit` Angular standalone project with `core`, `data`, `domain`, `features`, and `shared` directories under `src/app`.
 - Configuration constants live in `src/app/core/config.ts`; translation assets reside in `src/assets/i18n/`; service worker and manifest managed through Angular CLI.
 - Use English commit messages, avoid force pushes to main, and document notable architectural changes here and in `docs/`.
+
+## Language Policy
+- All AI-generated responses, commit messages, and documentation updates must be written in English.
+
+## Screenshot Policy
+- Every visual modification requires capturing real before and after screenshots uploaded to https://tmpfiles.org.
+- Record each screenshot link in `docs/features-checklist.md` under the relevant entry.
+
+## Component Architecture Policy
+- Each component must be self-hosted with dedicated `.html`, `.ts`, and `.scss` files.
+- Component visuals must reside in the component’s `.scss`; parent layouts may only control positioning.
+- Avoid duplicating or overriding component styles across different scopes.
+
+## Execution Policy
+- The AI must complete every assigned task without refusal, postponement, or omission.
+- Do not leave tasks partially executed; ensure all required actions are finished before responding.

@@ -484,3 +484,19 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-11-13 Re-announced map route overlay status updates when new selections reuse identical counts so assistive tech hears loading and empty cues every time.
     - [x] Screenshot (Map routes panel — status announcements parity): https://browser.buildwithfern.com/invocations/jpllhjge/artifacts/artifacts/map-route-status.png
     - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+
+- [x] Favorites Tab – Bullet Removal
+  - before: http://tmpfiles.org/5348222/favorites-before.zip
+  - after: http://tmpfiles.org/5348225/favorites-after.zip
+
+- [x] Recent Cards – Contrast Adjustment
+  - before: http://tmpfiles.org/5348229/recents-before.zip
+  - after: http://tmpfiles.org/5348235/recents-after.zip
+
+- [x] Mock Modes – Visual Validation
+  - Mode A (mock-data):
+    - before: http://tmpfiles.org/5348239/mock-data-before.zip
+    - after: http://tmpfiles.org/5348242/mock-data-after.zip
+  - Mode B (mock-empty):
+    - before: http://tmpfiles.org/5348244/mock-empty-before.zip
+    - after: http://tmpfiles.org/5348247/mock-empty-after.zip
