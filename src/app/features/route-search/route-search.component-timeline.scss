@@ -1,3 +1,42 @@
+$primary: var(--color-primary);
+$primary-strong: var(--color-primary-strong);
+$primary-midnight: var(--color-primary-midnight);
+$secondary: var(--color-secondary);
+$surface: var(--color-surface);
+$contrast: var(--color-text-inverse);
+
+@mixin line-next() {
+  --route-search-state-background: linear-gradient(
+    120deg,
+    color-mix(in srgb, #{$primary} 16%, #{$surface} 84%) 0%,
+    color-mix(in srgb, #{$primary-strong} 10%, #{$surface} 90%) 100%
+  );
+  --route-search-state-border: color-mix(in srgb, #{$primary} 14%, #{$surface} 86%);
+  --route-search-state-strong: color-mix(in srgb, #{$primary-midnight} 85%, #{$surface} 15%);
+  --route-search-state-muted: color-mix(in srgb, #{$primary-midnight} 55%, #{$surface} 45%);
+  --route-search-state-soft: color-mix(in srgb, #{$primary} 24%, #{$surface} 76%);
+  --route-search-state-progress-track: color-mix(in srgb, #{$primary} 18%, transparent 82%);
+  --route-search-state-progress-fill: color-mix(in srgb, #{$primary-strong} 82%, #{$surface} 18%);
+  --route-search-state-badge-background: color-mix(in srgb, #{$primary} 22%, #{$surface} 78%);
+  --route-search-state-badge-text: color-mix(in srgb, #{$primary-midnight} 80%, #{$contrast} 20%);
+}
+
+@mixin line-previous() {
+  --route-search-state-background: linear-gradient(
+    120deg,
+    color-mix(in srgb, #{$secondary} 10%, #{$surface} 90%) 0%,
+    color-mix(in srgb, #{$secondary} 6%, #{$surface} 94%) 100%
+  );
+  --route-search-state-border: color-mix(in srgb, #{$secondary} 16%, #{$surface} 84%);
+  --route-search-state-strong: color-mix(in srgb, #{$secondary} 78%, #{$surface} 22%);
+  --route-search-state-muted: color-mix(in srgb, #{$secondary} 48%, #{$surface} 52%);
+  --route-search-state-soft: color-mix(in srgb, #{$secondary} 18%, #{$surface} 82%);
+  --route-search-state-progress-track: color-mix(in srgb, #{$secondary} 16%, transparent 84%);
+  --route-search-state-progress-fill: color-mix(in srgb, #{$secondary} 70%, #{$surface} 30%);
+  --route-search-state-badge-background: color-mix(in srgb, #{$secondary} 14%, #{$surface} 86%);
+  --route-search-state-badge-text: color-mix(in srgb, #{$secondary} 78%, #{$contrast} 22%);
+}
+
 .route-search__timeline {
   display: flex;
   flex-direction: column;
@@ -18,11 +57,37 @@
 }
 
 .route-search__item {
+  --route-search-state-background: transparent;
+  --route-search-state-border: var(--color-border-subtle);
+  --route-search-state-strong: var(--color-text-strong);
+  --route-search-state-muted: var(--color-text-muted);
+  --route-search-state-soft: color-mix(
+    in srgb,
+    var(--color-text-muted) 16%,
+    var(--color-surface) 84%
+  );
+  --route-search-state-progress-track: color-mix(
+    in srgb,
+    var(--color-text-muted) 14%,
+    transparent 86%
+  );
+  --route-search-state-progress-fill: color-mix(
+    in srgb,
+    var(--color-text-strong) 78%,
+    var(--color-surface) 22%
+  );
+  --route-search-state-badge-background: color-mix(
+    in srgb,
+    var(--color-text-muted) 18%,
+    var(--color-surface) 82%
+  );
+  --route-search-state-badge-text: var(--color-text-strong);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 0.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--route-search-state-border);
+  background: var(--route-search-state-background);
 }
 
 .route-search__item:last-child {
@@ -31,14 +96,19 @@
 }
 
 .route-search__item--next {
+  @include line-next();
   border-radius: 0.75rem;
-  background: linear-gradient(90deg, var(--color-upcoming-soft) 0%, transparent 100%);
   padding: 0.75rem;
   margin: -0.75rem;
+  border: 1px solid var(--route-search-state-border);
 }
 
 .route-search__item--next + .route-search__item {
   margin-top: 0.75rem;
+}
+
+.route-search__item--past {
+  @include line-previous();
 }
 
 .route-search__item-time {
@@ -70,11 +140,11 @@
 }
 
 .route-search__item-relative[data-kind='upcoming'] {
-  color: var(--color-upcoming-strong);
+  color: var(--route-search-state-strong);
 }
 
 .route-search__item-relative[data-kind='past'] {
-  color: var(--color-past-strong);
+  color: var(--route-search-state-muted);
 }
 
 .route-search__item-badge {
@@ -95,13 +165,13 @@
 }
 
 .route-search__item-badge--next {
-  background-color: var(--color-upcoming-soft);
-  color: var(--color-upcoming-strong);
+  background-color: var(--route-search-state-badge-background);
+  color: var(--route-search-state-badge-text);
 }
 
 .route-search__item-badge--previous {
-  background-color: var(--color-past-soft);
-  color: var(--color-past-strong);
+  background-color: var(--route-search-state-badge-background);
+  color: var(--route-search-state-badge-text);
 }
 
 .route-search__item-details {
@@ -120,6 +190,7 @@
 
 .route-search__item-line {
   font-size: 1.1rem;
+  color: var(--route-search-state-strong);
 }
 
 .route-search__item-frequency {
@@ -137,7 +208,7 @@
 }
 
 .route-search__item-destination {
-  color: var(--color-text-muted);
+  color: var(--route-search-state-muted);
 }
 
 .route-search__item-arrival {
@@ -145,16 +216,16 @@
   align-items: center;
   gap: 0.35rem;
   font-size: 0.8rem;
-  color: var(--color-text-muted);
+  color: var(--route-search-state-muted);
 }
 
 .route-search__item-arrival-time {
   font-weight: 600;
-  color: var(--color-text-strong);
+  color: var(--route-search-state-strong);
 }
 
 .route-search__item-travel {
-  color: var(--color-text-muted);
+  color: var(--route-search-state-muted);
 }
 
 .route-search__item-flags {
@@ -190,19 +261,19 @@
 }
 
 .route-search__item-progress--upcoming {
-  background-color: var(--color-upcoming-track);
+  background-color: var(--route-search-state-progress-track);
 }
 
 .route-search__item-progress--past {
-  background-color: var(--color-past-track);
+  background-color: var(--route-search-state-progress-track);
 }
 
 .route-search__item-progress-bar--upcoming {
-  background-color: var(--color-upcoming-strong);
+  background-color: var(--route-search-state-progress-fill);
 }
 
 .route-search__item-progress--past .route-search__item-progress-bar {
-  background-color: var(--color-past-strong);
+  background-color: var(--route-search-state-progress-fill);
 }
 
 .route-search__item-progress-group {

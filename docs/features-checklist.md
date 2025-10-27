@@ -5,6 +5,14 @@
 - Use the utility’s interaction flags or scenario runner for hover, click, map, or multi-step flows that influence the captured state.
 - Attach screenshots to pull requests or QA notes via public links or CI artefacts so reviewers can access them.
 - Example workflow: `npm run screenshot -- --url=https://example.org --waitFor=#app-root --name=feature-desktop` and upload the generated PNG with the matching artefact link.
+
+### Route Detail Page – Accessibility and Color Harmonization
+Description: Updated line colors and text contrast for better accessibility and theme compliance.
+before (desktop): http://tmpfiles.org/5351615/route-detail-before-desktop.png
+after (desktop): http://tmpfiles.org/5351660/route-detail-after-desktop.png
+before (mobile): http://tmpfiles.org/5351625/route-detail-before-mobile.png
+after (mobile): http://tmpfiles.org/5351673/route-detail-after-mobile.png
+
 ## Testing & Quality Workflow
 - [ ] Confirm the bootstrap script at `scripts/bootstrap.mjs` has been executed after pulling changes that modify tooling or dependencies so the environment stays deterministic for CI and local development.
 
