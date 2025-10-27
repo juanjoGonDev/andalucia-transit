@@ -143,3 +143,9 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Copy the returned share link (which includes the claim token) and immediately verify it by issuing a GET request (`curl -I <link>` or `curl -s -o /dev/null <link>`) to confirm an HTTP 200 response.
 - Record the verified link inside `docs/features-checklist.md` and cite it in status updates or final summaries.
 - Store only the “after” captures in documentation; archive any “before” evidence outside the repository.
+
+## Automated Screenshot Publishing
+- Capture every visual verification state with the Playwright-powered workflow defined in `scripts/snap-and-publish.ts`.
+- Always run the script after completing a visual change so the desktop and mobile screenshots upload to Filebin and return public `https://filebin.net/<bin>/<file>.png` links.
+- Include the generated markdown block in status updates, pull requests, and documentation updates for every modified surface.
+- Do not upload screenshots to any other hosting service; Filebin links produced by the publishing script are the single source of truth.

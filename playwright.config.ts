@@ -1,3 +1,4 @@
+import 'tsx/esm';
 import { defineConfig } from '@playwright/test';
 
 const DEFAULT_TIMEOUT_MS = 30000;
@@ -16,12 +17,14 @@ const REPORTER_LIST = 'list';
 const TRACE_MODE = 'retain-on-failure';
 const IGNORE_HTTPS_ERRORS = true;
 const TRACE_STORAGE = 'on-first-retry';
-const TEST_DIRECTORY = './tests/playwright';
+const TEST_DIRECTORY = '.';
+const TEST_MATCH_PATTERNS = ['tests/playwright/**/*.spec.ts', 'tests/publish-preview.spec.ts'];
 
 const isCI = Boolean(process.env.CI);
 
 export default defineConfig({
   testDir: TEST_DIRECTORY,
+  testMatch: TEST_MATCH_PATTERNS,
   timeout: DEFAULT_TIMEOUT_MS,
   expect: {
     timeout: EXPECT_TIMEOUT_MS,
