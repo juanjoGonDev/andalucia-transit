@@ -137,3 +137,9 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - The AI must complete every assigned task without refusal, postponement, or omission.
 - Do not leave tasks partially executed; ensure all required actions are finished before responding.
 - Do not conclude any task until before/after screenshots are uploaded to https://www.file.io, linked in the response, and logged in the checklist.
+
+## Screenshot Upload Guide
+- Capture the target state first, then upload the PNG to https://www.file.io using the CLI (example: `curl -s -F "file=@capture.png" https://www.file.io`).
+- Copy the returned share link (which includes the claim token) and immediately verify it by issuing a GET request (`curl -I <link>` or `curl -s -o /dev/null <link>`) to confirm an HTTP 200 response.
+- Record the verified link inside `docs/features-checklist.md` and cite it in status updates or final summaries.
+- Store only the “after” captures in documentation; archive any “before” evidence outside the repository.

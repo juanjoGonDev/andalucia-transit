@@ -43,7 +43,8 @@ pnpm run record -- \
 ## Sharing demo captures
 
 - Generate showcases against stable public pages such as Wikipedia so reviewers can reproduce the run.
-- Upload the resulting screenshot and video to an external host, add the links to the pull request summary or comments, and delete the local binaries afterward. (for example: https://www.file.io/?expires=14d)
+- Upload the resulting screenshot and video to https://www.file.io, add the share links to the pull request summary or comments, and delete the local binaries afterward.
+- After each upload, perform a quick verification request (`curl -I <link>` or `curl -s -o /dev/null <link>`) to confirm the link returns HTTP 200 before sharing it.
 - Keep the repository free of committed media assets to avoid bloating the history.
 
 ## Troubleshooting
