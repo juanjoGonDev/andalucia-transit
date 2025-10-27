@@ -1,40 +1,48 @@
 import 'tsx/esm';
+import { promises as fs } from 'fs';
+import path from 'path';
 import { expect, test } from '@playwright/test';
-import { MultipartRequester } from '../scripts/upload-to-filebin';
+import { SnapAndPublishDependencies, SnapAndPublishOptions } from '../scripts/snap-and-publish';
+import { UploadSummary } from '../scripts/upload-to-filebin';
 
 const TEST_BIN = 'playwright-preview-bin';
+const DESKTOP_SAMPLE = 'sample_es_1280_800_viewport.png';
+const MOBILE_SAMPLE = 'sample_es_414_896_viewport.png';
 
-function createMockRequester(): MultipartRequester {
-  return async (_endpoint, body) => {
-    const bodyText = body.toString('utf-8');
-    const match = bodyText.match(/filename="([^"]+)"/);
-    const fileName = match ? match[1] : `capture-${Date.now().toString(16)}`;
-    const headers = {};
-    const responsePayload = {
+async function prepareSampleFiles(): Promise<{ desktop: string; mobile: string }> {
+  const captureDir = path.resolve('.captures');
+  await fs.mkdir(captureDir, { recursive: true });
+  const desktopPath = path.join(captureDir, DESKTOP_SAMPLE);
+  const mobilePath = path.join(captureDir, MOBILE_SAMPLE);
+  await fs.writeFile(desktopPath, Buffer.from('desktop'));
+  await fs.writeFile(mobilePath, Buffer.from('mobile'));
+  return { desktop: desktopPath, mobile: mobilePath };
+}
+
+function createDependencies(sample: { desktop: string; mobile: string }): SnapAndPublishDependencies {
+  return {
+    record: async () => ({ screenshots: [sample.desktop, sample.mobile] }),
+    upload: async (filePaths: string[]): Promise<UploadSummary> => ({
       bin: TEST_BIN,
-      files: [
-        {
-          filename: fileName,
-          url: `https://filebin.net/${TEST_BIN}/${fileName}`,
-        },
-      ],
-    };
-    return {
-      status: 200,
-      headers,
-      body: JSON.stringify(responsePayload),
-    };
+      files: filePaths.map((filePath) => {
+        const name = path.basename(filePath);
+        return { name, url: `https://filebin.net/${TEST_BIN}/${name}` };
+      }),
+    }),
   };
 }
 
 test('publishes route detail preview', async () => {
+  const { desktop, mobile } = await prepareSampleFiles();
+  const dependencies = createDependencies({ desktop, mobile });
   const module = await import('../scripts/snap-and-publish.ts');
   const { snapAndPublish } = module;
-  const block = await snapAndPublish({
+  const options: SnapAndPublishOptions = {
     url: 'https://example.com',
     label: 'Route Detail Preview',
-    requestImplementation: createMockRequester(),
-  });
+    recordArgs: [],
+  };
+  const block = await snapAndPublish(options, dependencies);
   expect(block).toContain(`after (desktop): https://filebin.net/${TEST_BIN}/`);
   expect(block).toContain(`after (mobile): https://filebin.net/${TEST_BIN}/`);
 });

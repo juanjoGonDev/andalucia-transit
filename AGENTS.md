@@ -124,7 +124,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - All AI-generated responses, commit messages, and documentation updates must be written in English.
 
 ## Screenshot Policy
-- Every visual modification requires capturing real before and after screenshots with `scripts/snap-and-publish.ts`, which uploads the captures to https://filebin.net within a single bin so related files stay grouped.
+- Every visual modification requires capturing real before and after screenshots with `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"`, which delegates to `scripts/record.js` for the capture flow and uploads the PNG files to https://filebin.net within a single bin so related files stay grouped.
 - Provide the markdown block returned by the script in all status updates and final responses using the `https://filebin.net/<bin>/<file>.png` format.
 - Open each generated link to confirm it renders correctly before sharing it and record the verified URLs in `docs/features-checklist.md`.
 
@@ -139,13 +139,14 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Do not conclude any task until before/after screenshots are uploaded to https://filebin.net, linked in the response, and logged in the checklist.
 
 ## Screenshot Upload Guide
-- Run `npx tsx scripts/snap-and-publish.ts --url <pageUrl> --label "<Surface name>"` to capture the desktop and mobile states and upload them to Filebin automatically. Use the `--bin` flag to append to an existing bin when refreshing evidence.
+- Run `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"` to capture the desktop and mobile states, rely on `scripts/record.js` for any scripted interactions, and upload both PNG files to Filebin automatically. Use the `--bin` flag to append to an existing bin when refreshing evidence and pass additional recorder flags after a `--` delimiter when complex scenarios are required.
 - Copy the markdown block printed by the script, visit each `https://filebin.net/<bin>/<file>.png` link in a browser or with `curl -I` to confirm it returns the screenshot, and only then add it to documentation or responses.
+- The upload workflow enforces `image/png` metadata for every asset; never rename or convert captures after publishing.
 - Paste the verified block into `docs/features-checklist.md` under the relevant heading and include the same block in status updates or final summaries.
 - Store only the “after” captures in documentation while archiving any “before” evidence outside the repository.
 
 ## Automated Screenshot Publishing
-- Capture every visual verification state with the Playwright-powered workflow defined in `scripts/snap-and-publish.ts`.
+- Capture every visual verification state with the Playwright workflow driven by `npm run publish:evidence`, which invokes `scripts/record.js` to keep scenario automation consistent with manual recording tasks.
 - Always run the script after completing a visual change so the desktop and mobile screenshots upload to Filebin and return public `https://filebin.net/<bin>/<file>.png` links.
 - Include the generated markdown block in status updates, pull requests, and documentation updates for every modified surface.
 - Do not upload screenshots to any other hosting service; Filebin links produced by the publishing script are the single source of truth.

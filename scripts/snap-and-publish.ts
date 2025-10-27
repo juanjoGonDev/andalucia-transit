@@ -1,122 +1,286 @@
+import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { Browser, BrowserContext, chromium } from 'playwright';
-import { MultipartRequester, UploadSummary, uploadToFilebin } from './upload-to-filebin';
+import { fileURLToPath } from 'url';
+import { UploadSummary, uploadToFilebin } from './upload-to-filebin';
 
 const CAPTURE_DIRECTORY = '.captures';
 const DESKTOP_WIDTH = 1280;
 const DESKTOP_HEIGHT = 800;
 const MOBILE_WIDTH = 414;
 const MOBILE_HEIGHT = 896;
-const NETWORK_IDLE_STATE = 'networkidle';
-const MOBILE_DEVICE_SCALE_FACTOR = 2;
-const MOBILE_USER_AGENT =
-  'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1';
+const DEFAULT_LOCALE = 'es';
+const DEFAULT_FULL_PAGE = true;
+const BREAKPOINT_SEPARATOR = ',';
+const DIMENSION_SEPARATOR = 'x';
+const FLAG_PREFIX = '--';
+const FLAG_VALUE_SEPARATOR = '=';
+const PASS_THROUGH_MARKER = '--';
+const SCREENSHOT_EVENT = 'screenshot';
+const PATH_KEY = 'path';
+const SCRIPT_DIRECTORY = path.dirname(fileURLToPath(import.meta.url));
+const RECORD_SCRIPT = path.resolve(SCRIPT_DIRECTORY, 'record.js');
+
+interface Breakpoint {
+  width: number;
+  height: number;
+}
 
 export interface SnapAndPublishOptions {
   url: string;
   label: string;
   bin?: string;
-  requestImplementation?: MultipartRequester;
+  recordArgs: string[];
 }
 
-interface Viewport {
-  width: number;
-  height: number;
+interface RecordConfig {
+  url: string;
+  baseName: string;
+  outputDir: string;
+  breakpoints: Breakpoint[];
+  locale: string;
+  fullPage: boolean;
+  passThrough: string[];
 }
 
-function ensureValue(value: string | undefined, message: string): string {
-  if (!value) {
-    throw new Error(message);
-  }
-  return value;
+interface RecordResult {
+  screenshots: string[];
 }
 
-function parseArguments(argv: string[]): SnapAndPublishOptions {
+export interface SnapAndPublishDependencies {
+  record: (config: RecordConfig) => Promise<RecordResult>;
+  upload: (filePaths: string[], existingBin?: string) => Promise<UploadSummary>;
+}
+
+const DEFAULT_DEPENDENCIES: SnapAndPublishDependencies = {
+  record: runRecordProcess,
+  upload: uploadToFilebin,
+};
+
+function parseCli(argv: string[]): SnapAndPublishOptions {
+  const markerIndex = argv.indexOf(PASS_THROUGH_MARKER);
+  const baseArgs = markerIndex >= 0 ? argv.slice(0, markerIndex) : argv;
+  const recordArgs = markerIndex >= 0 ? argv.slice(markerIndex + 1) : [];
   let url: string | undefined;
   let label: string | undefined;
   let bin: string | undefined;
-  for (let index = 0; index < argv.length; index += 1) {
-    const token = argv[index];
-    if (token === '--url') {
-      url = ensureValue(argv[index + 1], 'Missing value for --url');
+  for (let index = 0; index < baseArgs.length; index += 1) {
+    const token = baseArgs[index];
+    if (token.startsWith(`${FLAG_PREFIX}url${FLAG_VALUE_SEPARATOR}`)) {
+      url = token.slice(`${FLAG_PREFIX}url${FLAG_VALUE_SEPARATOR}`.length);
+      continue;
+    }
+    if (token === `${FLAG_PREFIX}url`) {
+      url = readNextValue(baseArgs, index);
       index += 1;
-    } else if (token === '--label') {
-      label = ensureValue(argv[index + 1], 'Missing value for --label');
+      continue;
+    }
+    if (token.startsWith(`${FLAG_PREFIX}label${FLAG_VALUE_SEPARATOR}`)) {
+      label = token.slice(`${FLAG_PREFIX}label${FLAG_VALUE_SEPARATOR}`.length);
+      continue;
+    }
+    if (token === `${FLAG_PREFIX}label`) {
+      label = readNextValue(baseArgs, index);
       index += 1;
-    } else if (token === '--bin') {
-      bin = ensureValue(argv[index + 1], 'Missing value for --bin');
+      continue;
+    }
+    if (token.startsWith(`${FLAG_PREFIX}bin${FLAG_VALUE_SEPARATOR}`)) {
+      bin = token.slice(`${FLAG_PREFIX}bin${FLAG_VALUE_SEPARATOR}`.length);
+      continue;
+    }
+    if (token === `${FLAG_PREFIX}bin`) {
+      bin = readNextValue(baseArgs, index);
       index += 1;
     }
   }
-  if (!url || !label) {
-    throw new Error('Both --url and --label are required');
+  if (!url) {
+    throw new Error('Missing required --url value');
   }
-  return { url, label, bin };
-}
-
-function timestamp(): string {
-  return new Date().toISOString().replace(/[:.]/g, '-');
-}
-
-async function ensureDirectory(directory: string): Promise<void> {
-  await fs.mkdir(directory, { recursive: true });
-}
-
-async function captureScreenshot(browser: Browser, viewport: Viewport, url: string, filePath: string, mobile: boolean): Promise<void> {
-  const contextOptions: Parameters<typeof browser.newContext>[0] = {
-    viewport,
-  };
-  if (mobile) {
-    contextOptions.isMobile = true;
-    contextOptions.deviceScaleFactor = MOBILE_DEVICE_SCALE_FACTOR;
-    contextOptions.userAgent = MOBILE_USER_AGENT;
+  if (!label) {
+    throw new Error('Missing required --label value');
   }
-  const context: BrowserContext = await browser.newContext(contextOptions);
-  const page = await context.newPage();
-  await page.goto(url, { waitUntil: NETWORK_IDLE_STATE });
-  await page.waitForLoadState(NETWORK_IDLE_STATE);
-  await page.screenshot({ path: filePath, fullPage: true });
-  await context.close();
+  return { url, label, bin, recordArgs };
+}
+
+function readNextValue(args: string[], index: number): string {
+  const next = args[index + 1];
+  if (!next) {
+    throw new Error('Expected value after flag');
+  }
+  return next;
+}
+
+function sanitizeLabel(label: string): string {
+  const normalized = label
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+  const cleaned = normalized.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  return cleaned.length > 0 ? cleaned : 'surface';
+}
+
+function createBaseName(label: string): string {
+  const slug = sanitizeLabel(label);
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  return `${slug}-${timestamp}`;
+}
+
+function formatBreakpoint({ width, height }: Breakpoint): string {
+  return `${width}${DIMENSION_SEPARATOR}${height}`;
+}
+
+function hasFlag(args: string[], name: string): boolean {
+  const direct = `${FLAG_PREFIX}${name}`;
+  return args.some((value) => value === direct || value.startsWith(`${direct}${FLAG_VALUE_SEPARATOR}`));
+}
+
+function ensureFlag(args: string[], name: string, value: string): void {
+  if (hasFlag(args, name)) {
+    return;
+  }
+  args.push(`${FLAG_PREFIX}${name}${FLAG_VALUE_SEPARATOR}${value}`);
+}
+
+function buildRecordArgs(config: RecordConfig): string[] {
+  const args = [...config.passThrough];
+  ensureFlag(args, 'url', config.url);
+  ensureFlag(args, 'outDir', config.outputDir);
+  ensureFlag(args, 'name', config.baseName);
+  ensureFlag(args, 'locale', config.locale);
+  const breakpointValue = config.breakpoints.map(formatBreakpoint).join(BREAKPOINT_SEPARATOR);
+  ensureFlag(args, 'breakpoints', breakpointValue);
+  ensureFlag(args, 'headless', 'true');
+  ensureFlag(args, 'fullPage', config.fullPage ? 'true' : 'false');
+  return args;
+}
+
+function processStdout(buffer: string, collector: string[]): string {
+  let remaining = buffer;
+  while (true) {
+    const newlineIndex = remaining.indexOf('\n');
+    if (newlineIndex < 0) {
+      return remaining;
+    }
+    const line = remaining.slice(0, newlineIndex).trim();
+    remaining = remaining.slice(newlineIndex + 1);
+    if (!line) {
+      continue;
+    }
+    try {
+      const payload = JSON.parse(line) as { event?: string; details?: Record<string, unknown> };
+      if (payload.event === SCREENSHOT_EVENT && payload.details && typeof payload.details[PATH_KEY] === 'string') {
+        collector.push(String(payload.details[PATH_KEY]));
+      }
+    } catch {
+      continue;
+    }
+  }
+}
+
+async function runRecordProcess(config: RecordConfig): Promise<RecordResult> {
+  const recordArgs = buildRecordArgs(config);
+  return new Promise<RecordResult>((resolve, reject) => {
+    const child = spawn(process.execPath, [RECORD_SCRIPT, ...recordArgs], { stdio: ['ignore', 'pipe', 'pipe'] });
+    const screenshots: string[] = [];
+    let stdoutBuffer = '';
+    let stderrBuffer = '';
+    child.stdout.setEncoding('utf-8');
+    child.stdout.on('data', (chunk: string) => {
+      stdoutBuffer = processStdout(stdoutBuffer + chunk, screenshots);
+    });
+    child.stderr.setEncoding('utf-8');
+    child.stderr.on('data', (chunk: string) => {
+      stderrBuffer += chunk;
+    });
+    child.on('error', (error) => {
+      reject(error);
+    });
+    child.on('close', (code) => {
+      if (code !== 0) {
+        reject(new Error(stderrBuffer.trim().length > 0 ? stderrBuffer.trim() : 'Record script failed'));
+        return;
+      }
+      if (screenshots.length === 0) {
+        reject(new Error('Record script produced no screenshots'));
+        return;
+      }
+      resolve({ screenshots });
+    });
+  });
+}
+
+function matchesDimension(filePath: string, width: number, height: number): boolean {
+  const token = `_${width}_${height}_`;
+  if (filePath.includes(token)) {
+    return true;
+  }
+  const suffixToken = `_${width}_${height}.`;
+  return filePath.includes(suffixToken);
+}
+
+function selectScreenshots(paths: string[]): { desktop: string; mobile: string } {
+  const desktopCandidate = paths.find((entry) => matchesDimension(entry, DESKTOP_WIDTH, DESKTOP_HEIGHT));
+  const mobileCandidate = paths.find((entry) => matchesDimension(entry, MOBILE_WIDTH, MOBILE_HEIGHT));
+  if (desktopCandidate && mobileCandidate && desktopCandidate !== mobileCandidate) {
+    return { desktop: desktopCandidate, mobile: mobileCandidate };
+  }
+  if (paths.length >= 2) {
+    return { desktop: paths[0], mobile: paths[1] };
+  }
+  throw new Error('Unable to identify desktop and mobile screenshots from record output');
+}
+
+async function ensureFileExists(target: string): Promise<void> {
+  await fs.access(target);
 }
 
 function buildMarkdown(label: string, summary: UploadSummary, desktopName: string, mobileName: string): string {
-  const desktopFile = summary.files.find((entry) => entry.name === desktopName);
-  const mobileFile = summary.files.find((entry) => entry.name === mobileName);
-  if (!desktopFile || !mobileFile) {
-    throw new Error('Uploaded file list is incomplete');
+  const desktopEntry = summary.files.find((file) => file.name === desktopName);
+  const mobileEntry = summary.files.find((file) => file.name === mobileName);
+  if (!desktopEntry || !mobileEntry) {
+    throw new Error('Missing uploaded screenshot entries');
   }
-  return `${label} – AFTER\nafter (desktop): ${desktopFile.url}\nafter (mobile): ${mobileFile.url}`;
+  return `${label} – AFTER\nafter (desktop): ${desktopEntry.url}\nafter (mobile): ${mobileEntry.url}`;
 }
 
-export async function snapAndPublish(options: SnapAndPublishOptions): Promise<string> {
+export async function snapAndPublish(
+  options: SnapAndPublishOptions,
+  dependencies: SnapAndPublishDependencies = DEFAULT_DEPENDENCIES,
+): Promise<string> {
   const captureDir = path.resolve(process.cwd(), CAPTURE_DIRECTORY);
-  await ensureDirectory(captureDir);
-  const stamp = timestamp();
-  const desktopName = `${stamp}-desktop.png`;
-  const mobileName = `${stamp}-mobile.png`;
-  const desktopPath = path.join(captureDir, desktopName);
-  const mobilePath = path.join(captureDir, mobileName);
-  const browser = await chromium.launch();
-  try {
-    await captureScreenshot(browser, { width: DESKTOP_WIDTH, height: DESKTOP_HEIGHT }, options.url, desktopPath, false);
-    await captureScreenshot(browser, { width: MOBILE_WIDTH, height: MOBILE_HEIGHT }, options.url, mobilePath, true);
-  } finally {
-    await browser.close();
-  }
-  const summary = await uploadToFilebin([desktopPath, mobilePath], options.bin, options.requestImplementation);
-  return buildMarkdown(options.label, summary, desktopName, mobileName);
+  await fs.mkdir(captureDir, { recursive: true });
+  const baseName = createBaseName(options.label);
+  const recordConfig: RecordConfig = {
+    url: options.url,
+    baseName,
+    outputDir: captureDir,
+    breakpoints: [
+      { width: DESKTOP_WIDTH, height: DESKTOP_HEIGHT },
+      { width: MOBILE_WIDTH, height: MOBILE_HEIGHT },
+    ],
+    locale: DEFAULT_LOCALE,
+    fullPage: DEFAULT_FULL_PAGE,
+    passThrough: options.recordArgs,
+  };
+  const recordResult = await dependencies.record(recordConfig);
+  const { desktop, mobile } = selectScreenshots(recordResult.screenshots);
+  await ensureFileExists(desktop);
+  await ensureFileExists(mobile);
+  const uploadSummary = await dependencies.upload([desktop, mobile], options.bin);
+  const desktopName = path.basename(desktop);
+  const mobileName = path.basename(mobile);
+  return buildMarkdown(options.label, uploadSummary, desktopName, mobileName);
 }
 
 async function runCli(): Promise<void> {
-  const options = parseArguments(process.argv.slice(2));
+  const options = parseCli(process.argv.slice(2));
   const block = await snapAndPublish(options);
-  console.log(block);
+  process.stdout.write(`${block}\n`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   runCli().catch((error) => {
-    console.error(error instanceof Error ? error.message : String(error));
+    process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
     process.exitCode = 1;
   });
 }

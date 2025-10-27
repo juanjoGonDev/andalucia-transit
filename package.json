@@ -32,7 +32,8 @@
     "deploy:prepare": "tsx scripts/deploy/run.ts",
     "test:deploy": "npm run deploy:prepare",
     "screenshot": "node scripts/screenshot.js",
-    "record": "node scripts/record.js"
+    "record": "node scripts/record.js",
+    "publish:evidence": "tsx scripts/snap-and-publish.ts"
   },
   "prettier": {
     "printWidth": 100,
