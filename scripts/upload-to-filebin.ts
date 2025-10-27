@@ -1,10 +1,23 @@
-import { File } from 'buffer';
+import { setDefaultResultOrder } from 'dns';
 import { promises as fs } from 'fs';
+import http, { IncomingHttpHeaders } from 'http';
+import https from 'https';
 import path from 'path';
 
 const FILEBIN_BASE_URL = 'https://filebin.net';
 const JSON_ACCEPT_HEADER = 'application/json';
 const PNG_MIME_TYPE = 'image/png';
+const DNS_RESULT_ORDER_IPV4_FIRST = 'ipv4first';
+const HTTP_PROTOCOL_HTTPS = 'https:';
+const HTTP_METHOD_POST = 'POST';
+const HEADER_ACCEPT = 'Accept';
+const HEADER_CONTENT_TYPE = 'Content-Type';
+const HEADER_CONTENT_LENGTH = 'Content-Length';
+const HEADER_LOCATION = 'location';
+const MULTIPART_BOUNDARY_PREFIX = '----FilebinBoundary';
+const CRLF = '\r\n';
+
+setDefaultResultOrder(DNS_RESULT_ORDER_IPV4_FIRST);
 
 interface FilebinFileDescriptor {
   filename?: string;
@@ -34,7 +47,22 @@ interface UploadArgs {
   bin?: string;
 }
 
-type FetchImplementation = typeof fetch;
+interface LocalFile {
+  name: string;
+  data: Buffer;
+}
+
+interface FilebinResponse {
+  status: number;
+  headers: IncomingHttpHeaders;
+  body: string;
+}
+
+export type MultipartRequester = (
+  endpoint: string,
+  body: Buffer,
+  boundary: string,
+) => Promise<FilebinResponse>;
 
 function ensureString(value: unknown): string | undefined {
   if (typeof value === 'string' && value.length > 0) {
@@ -94,14 +122,76 @@ function resolveFileUrl(payload: FilebinPayload, binId: string, fileName: string
   return `${FILEBIN_BASE_URL}/${binId}/${fileName}`;
 }
 
-async function readFileBuffer(filePath: string): Promise<File> {
+function generateBoundary(): string {
+  return `${MULTIPART_BOUNDARY_PREFIX}${Date.now().toString(16)}${Math.random().toString(16).slice(2)}`;
+}
+
+function buildMultipartBody(fileName: string, data: Buffer, boundary: string): Buffer {
+  const headerLines = [
+    `--${boundary}`,
+    `Content-Disposition: form-data; name="file"; filename="${fileName}"`,
+    `Content-Type: ${PNG_MIME_TYPE}`,
+    '',
+    '',
+  ];
+  const header = Buffer.from(headerLines.join(CRLF), 'utf-8');
+  const footer = Buffer.from(`${CRLF}--${boundary}--${CRLF}`, 'utf-8');
+  return Buffer.concat([header, data, footer]);
+}
+
+function sendMultipartRequest(endpoint: string, body: Buffer, boundary: string): Promise<FilebinResponse> {
+  const url = new URL(endpoint);
+  const headers = {
+    [HEADER_ACCEPT]: JSON_ACCEPT_HEADER,
+    [HEADER_CONTENT_TYPE]: `multipart/form-data; boundary=${boundary}`,
+    [HEADER_CONTENT_LENGTH]: body.length.toString(),
+  };
+  const options = {
+    method: HTTP_METHOD_POST,
+    hostname: url.hostname,
+    port: url.port ? Number(url.port) : undefined,
+    path: `${url.pathname}${url.search}`,
+    headers,
+  };
+  const client = url.protocol === HTTP_PROTOCOL_HTTPS ? https : http;
+  return new Promise((resolve, reject) => {
+    const request = client.request(options, (response) => {
+      const chunks: Buffer[] = [];
+      response.on('data', (chunk) => {
+        const bufferChunk = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+        chunks.push(bufferChunk);
+      });
+      response.on('end', () => {
+        const payload = Buffer.concat(chunks).toString('utf-8');
+        resolve({
+          status: response.statusCode ?? 0,
+          headers: response.headers,
+          body: payload,
+        });
+      });
+    });
+    request.on('error', (error) => {
+      reject(error);
+    });
+    request.write(body);
+    request.end();
+  });
+}
+
+async function readFileBuffer(filePath: string): Promise<LocalFile> {
   const absolutePath = path.resolve(filePath);
   const data = await fs.readFile(absolutePath);
   const fileName = path.basename(absolutePath);
-  return new File([data], fileName, { type: PNG_MIME_TYPE });
+  return { name: fileName, data };
 }
 
-export async function uploadToFilebin(filePaths: string[], existingBin?: string, requestFn: FetchImplementation = fetch): Promise<UploadSummary> {
+const defaultRequester: MultipartRequester = sendMultipartRequest;
+
+export async function uploadToFilebin(
+  filePaths: string[],
+  existingBin?: string,
+  requestFn: MultipartRequester = defaultRequester,
+): Promise<UploadSummary> {
   if (filePaths.length === 0) {
     throw new Error('At least one file is required for upload');
   }
@@ -109,28 +199,22 @@ export async function uploadToFilebin(filePaths: string[], existingBin?: string,
   const summaries: UploadFileSummary[] = [];
   for (const filePath of filePaths) {
     const file = await readFileBuffer(filePath);
-    const formData = new FormData();
-    formData.append('file', file);
+    const boundary = generateBoundary();
+    const body = buildMultipartBody(file.name, file.data, boundary);
     const endpoint = binIdentifier ? `${FILEBIN_BASE_URL}/${binIdentifier}` : FILEBIN_BASE_URL;
-    const response = await requestFn(endpoint, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Accept: JSON_ACCEPT_HEADER,
-      },
-    });
-    if (!response.ok) {
+    const response = await requestFn(endpoint, body, boundary);
+    if (response.status < 200 || response.status >= 300) {
       throw new Error(`Filebin upload failed for ${file.name} with status ${response.status}`);
     }
-    const text = await response.text();
     let payload: FilebinPayload;
     try {
-      payload = ensurePayload(JSON.parse(text));
+      payload = ensurePayload(JSON.parse(response.body));
     } catch (error) {
       throw new Error(`Unable to parse Filebin response for ${file.name}: ${(error as Error).message}`);
     }
     if (!binIdentifier) {
-      binIdentifier = payload.bin ?? payload.key ?? extractBinFromLocation(response.headers.get('location') ?? '');
+      const locationHeader = ensureString(response.headers[HEADER_LOCATION]);
+      binIdentifier = payload.bin ?? payload.key ?? (locationHeader ? extractBinFromLocation(locationHeader) : undefined);
     }
     if (!binIdentifier) {
       throw new Error(`Filebin did not return a bin identifier for ${file.name}`);

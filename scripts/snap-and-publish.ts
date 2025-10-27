@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { Browser, BrowserContext, chromium } from 'playwright';
-import { UploadSummary, uploadToFilebin } from './upload-to-filebin';
+import { MultipartRequester, UploadSummary, uploadToFilebin } from './upload-to-filebin';
 
 const CAPTURE_DIRECTORY = '.captures';
 const DESKTOP_WIDTH = 1280;
@@ -17,7 +17,7 @@ export interface SnapAndPublishOptions {
   url: string;
   label: string;
   bin?: string;
-  fetchImplementation?: typeof fetch;
+  requestImplementation?: MultipartRequester;
 }
 
 interface Viewport {
@@ -104,7 +104,7 @@ export async function snapAndPublish(options: SnapAndPublishOptions): Promise<st
   } finally {
     await browser.close();
   }
-  const summary = await uploadToFilebin([desktopPath, mobilePath], options.bin, options.fetchImplementation ?? fetch);
+  const summary = await uploadToFilebin([desktopPath, mobilePath], options.bin, options.requestImplementation);
   return buildMarkdown(options.label, summary, desktopName, mobileName);
 }
 

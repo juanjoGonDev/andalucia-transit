@@ -43,8 +43,8 @@ pnpm run record -- \
 ## Sharing demo captures
 
 - Generate showcases against stable public pages such as Wikipedia so reviewers can reproduce the run.
-- Upload the resulting screenshot and video to https://filebin.net/ by posting the files with `curl -F "file=@capture.png" https://filebin.net/`, capture the bin-specific URLs, add them to the pull request summary or comments, and delete the local binaries afterward.
-- After each upload, perform a quick verification request (`curl -I https://filebin.net/<bin>/<filename>` or `curl -s -o /dev/null https://filebin.net/<bin>/<filename>`) to confirm the link returns HTTP 200 before sharing it.
+- Upload the resulting screenshot and video to https://filebin.net/ by running `npx tsx scripts/snap-and-publish.ts --url <pageUrl> --label "<Surface name>"`, capture the markdown block it prints, add the Filebin links to the pull request summary or comments, and delete the local binaries afterward.
+- After each upload, open the returned `https://filebin.net/<bin>/<filename>` URLs in a browser or perform a verification request (`curl -I` or `curl -s -o /dev/null`) to confirm they return the asset before sharing them.
 - Keep the repository free of committed media assets to avoid bloating the history.
 
 ## Troubleshooting

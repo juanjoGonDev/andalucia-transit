@@ -9,7 +9,7 @@
 - Capture updated surfaces with Playwright through `scripts/snap-and-publish.ts`, which saves desktop and mobile PNG files and uploads them to Filebin automatically.
 - Always paste the returned markdown block with public `https://filebin.net/<bin>/<file>.png` URLs into the relevant documentation entries and pull request notes.
 - Supplementary captures that require custom interactions can still use `scripts/screenshot.js`, but the final published evidence must flow through Filebin using the automated script.
-- Keep the generated links accessible until the bin expires and refresh them before review if needed.
+- Open each generated link to ensure it renders correctly before recording it, keep the links accessible until the bin expires, and refresh them before review if needed.
 
 ### Route Detail Page – Accessibility and Color Harmonization
 Description: Updated line colors and text contrast for better accessibility and theme compliance.

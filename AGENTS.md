@@ -124,9 +124,9 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - All AI-generated responses, commit messages, and documentation updates must be written in English.
 
 ## Screenshot Policy
-- Every visual modification requires capturing real before and after screenshots uploaded to https://filebin.net within a single bin so related captures stay grouped.
-- Provide accessible direct links to the uploaded screenshots in all status updates and final responses using the `https://filebin.net/<bin>/<file>.png` format.
-- Record each screenshot link in `docs/features-checklist.md` under the relevant entry and refresh bins whenever they expire.
+- Every visual modification requires capturing real before and after screenshots with `scripts/snap-and-publish.ts`, which uploads the captures to https://filebin.net within a single bin so related files stay grouped.
+- Provide the markdown block returned by the script in all status updates and final responses using the `https://filebin.net/<bin>/<file>.png` format.
+- Open each generated link to confirm it renders correctly before sharing it and record the verified URLs in `docs/features-checklist.md`.
 
 ## Component Architecture Policy
 - Each component must be self-hosted with dedicated `.html`, `.ts`, and `.scss` files.
@@ -139,9 +139,9 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Do not conclude any task until before/after screenshots are uploaded to https://filebin.net, linked in the response, and logged in the checklist.
 
 ## Screenshot Upload Guide
-- Capture the target state first, then upload each PNG to https://filebin.net/ using `curl -s -F "file=@capture.png" https://filebin.net/`. The first upload creates a bin identifier that subsequent uploads should reuse (`https://filebin.net/<bin>`).
-- Copy the returned public URL (`https://filebin.net/<bin>/<filename>`) and immediately verify it by performing a GET request (`curl -I <url>` or `curl -s -o /dev/null <url>`) to ensure the response succeeds.
-- Record every verified link inside `docs/features-checklist.md` and cite it in status updates or final summaries.
+- Run `npx tsx scripts/snap-and-publish.ts --url <pageUrl> --label "<Surface name>"` to capture the desktop and mobile states and upload them to Filebin automatically. Use the `--bin` flag to append to an existing bin when refreshing evidence.
+- Copy the markdown block printed by the script, visit each `https://filebin.net/<bin>/<file>.png` link in a browser or with `curl -I` to confirm it returns the screenshot, and only then add it to documentation or responses.
+- Paste the verified block into `docs/features-checklist.md` under the relevant heading and include the same block in status updates or final summaries.
 - Store only the “after” captures in documentation while archiving any “before” evidence outside the repository.
 
 ## Automated Screenshot Publishing
