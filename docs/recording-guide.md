@@ -43,7 +43,7 @@ pnpm run record -- \
 ## Sharing demo captures
 
 - Generate showcases against stable public pages such as Wikipedia so reviewers can reproduce the run.
-- Upload the resulting screenshot and video to an external host, add the links to the pull request summary or comments, and delete the local binaries afterward. (for example: https://tmpfiles.org)
+- Upload the resulting screenshot and video to an external host, add the links to the pull request summary or comments, and delete the local binaries afterward. (for example: https://www.file.io/?expires=14d)
 - Keep the repository free of committed media assets to avoid bloating the history.
 
 ## Troubleshooting

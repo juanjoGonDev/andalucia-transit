@@ -124,7 +124,8 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - All AI-generated responses, commit messages, and documentation updates must be written in English.
 
 ## Screenshot Policy
-- Every visual modification requires capturing real before and after screenshots uploaded to https://tmpfiles.org.
+- Every visual modification requires capturing real before and after screenshots uploaded to https://www.file.io with a 14-day expiration window.
+- Provide accessible direct links to the uploaded screenshots in all status updates and final responses.
 - Record each screenshot link in `docs/features-checklist.md` under the relevant entry.
 
 ## Component Architecture Policy
@@ -135,3 +136,4 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 ## Execution Policy
 - The AI must complete every assigned task without refusal, postponement, or omission.
 - Do not leave tasks partially executed; ensure all required actions are finished before responding.
+- Do not conclude any task until before/after screenshots are uploaded to https://www.file.io, linked in the response, and logged in the checklist.

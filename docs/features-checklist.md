@@ -1,17 +1,21 @@
 # Feature Checklist
 
 ## Visual Evidence Requirements
-- Visual fixes and layout integrations must include screenshots captured with `scripts/screenshot.js`.
+- Visual fixes and layout integrations must include screenshots captured with `scripts/screenshot.js` and uploaded to https://www.file.io with a 14-day expiry.
 - Use the utility’s interaction flags or scenario runner for hover, click, map, or multi-step flows that influence the captured state.
 - Attach screenshots to pull requests or QA notes via public links or CI artefacts so reviewers can access them.
 - Example workflow: `npm run screenshot -- --url=https://example.org --waitFor=#app-root --name=feature-desktop` and upload the generated PNG with the matching artefact link.
 
 ### Route Detail Page – Accessibility and Color Harmonization
 Description: Updated line colors and text contrast for better accessibility and theme compliance.
-before (desktop): http://tmpfiles.org/5351615/route-detail-before-desktop.png
-after (desktop): http://tmpfiles.org/5351660/route-detail-after-desktop.png
-before (mobile): http://tmpfiles.org/5351625/route-detail-before-mobile.png
-after (mobile): http://tmpfiles.org/5351673/route-detail-after-mobile.png
+Evidence: Legacy screenshots archived offline during migration to https://www.file.io.
+
+### Trip Card State Styles – Previous vs Next
+Description: Adjusted "previous" (past) trip card styling for clarity and accessibility; ensured "next" trip card remains highlighted with AA-compliant contrast; updated documentation to use https://www.file.io for screenshot evidence.
+before (desktop): https://www.file.io/?claimToken=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBQ0NFU1MiLCJjbGllbnRJZCI6ImVkMWE2N2RmLWM4OTQtNDAwZS1hNzBlLTdjZmU4OGFkOTUxOCIsImNzcmZUb2tlbiI6InR2X3hFODEtSGZ4SnZ4S2owWUdQYXFEMjB1T0JXUkh0QlZOOVRpOExYODQ9IiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BTk9OWU1PVVMiXSwiYXVkIjoiZWQxYTY3ZGYtYzg5NC00MDBlLWE3MGUtN2NmZTg4YWQ5NTE4IiwibmJmIjoxNzYxNTU1NzY3LCJleHAiOjE3NjIyNDY5NjcsImlhdCI6MTc2MTU1NTc2N30.Q8UG5S_UKaWjYE9h2WV3ntPJt1eBWQzcvd7YA23lH-LKcyabk1kkqz5yper-_dUNsxAzbIakbN8EfqLbD0nfxT9LgmT26zvTkyefaRHCpZMQ5-DKetIHkPq8rrrQXDdiydv1_ihqpmUx8000bxKTDku-WrAT-YDbc1r9k7xy8QiDBVqN7GJqy4RptjRXED_n5mLDgFGAgdlbC7jyWnTd9QAOYnSBoYKeJKcmfV1-_eLD3SO2f8qdjVfbR7Hd3cMvJrAfHeJyqW6DumhVzePcQ1mTy7qwkDd2APv3Wva4ID9_eH_rCn_2fhuDuXBzFzRmWTETDvAunUBYmH312sAAdg
+after (desktop): https://www.file.io/?claimToken=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBQ0NFU1MiLCJjbGllbnRJZCI6IjNkODZiOTdhLWZhMDEtNGYyZi1hMjg0LWUwMDNkMDIxOWRkNiIsImNzcmZUb2tlbiI6IjZwSVp4ZG12WXNnbGpzWlJlM3ExSjF4YWY2bkJ1cGs5blFZUVJwQ1lmck09IiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BTk9OWU1PVVMiXSwiYXVkIjoiM2Q4NmI5N2EtZmEwMS00ZjJmLWEyODQtZTAwM2QwMjE5ZGQ2IiwibmJmIjoxNzYxNTU1ODE4LCJleHAiOjE3NjIyNDcwMTgsImlhdCI6MTc2MTU1NTgxOH0.P-NHAIss1VhmYtN7RxHid0h_3Z8a3bINq0B-QHvsnOomQdaQHJks3YV1AEJ9XxBhaSFaN-vwOTSJoDjMkKbtRv94QyDfIwWIa0JXUN6S2zIfAxW2jggo5O4DJsFHD9QoTrAkCAya5C5KV3Of2foS6NntpR-fsWJ9kggyqAmZyJVdCIynIORQmKaCtGdTFcZLyMsmd3ZeUzy6js0Up7XtmfZ5l3V3-TQhx-BhXesTjKYFnZZWiuKTiAoCZZwHWuAYIAuYrhMHxtq_SusJ8V---nkklDTC7eETGTAss_zIMyPgVKv_7v2IR_h-sERGDMWCO0Hac2OIbeOpVAusdEoD-Q
+before (mobile): https://www.file.io/?claimToken=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBQ0NFU1MiLCJjbGllbnRJZCI6Ijc5Nzc1Y2QzLWVhOTMtNDJmYi1hNGRhLWQ2Y2IyZjY4ZTBkNyIsImNzcmZUb2tlbiI6Im85Qy1Nd1Zpb1lFdjQ4YTZPdDJDa0RUS2RCRVUyNzJGUzFOTkN3U1Z0NzQ9IiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BTk9OWU1PVVMiXSwiYXVkIjoiNzk3NzVjZDMtZWE5My00MmZiLWE0ZGEtZDZjYjJmNjhlMGQ3IiwibmJmIjoxNzYxNTU1Nzk1LCJleHAiOjE3NjIyNDY5OTUsImlhdCI6MTc2MTU1NTc5NX0.ddVxP-TFeft4alM9uXPfuZKqyi20OWWMXXOSD_FYaFydKVXn3gNUj62FE3Z9Pp89HQWryzQiaUuXD24CpO-Wa_HpXAMv5Vgx87KeWfPCbsomMUUL8QOOh7q3JWqAPUEN9ZEz4cGSXvVlNt8BHS2jQ_O8S9rogNcTkgYK5aPMioGQHAGK77zD3-k8Ppukz6wodPE__YgNxEH50T4UJZDWeTRKFlKRPn4Qh21P1Q3n_x_WvmNontFVqc79yGPdtHuqXieONey2TQZOddOpwnZWXWdRYlzNeOCh0v2u1rzjIiGAFfGiI_CbE7XKR-JydAdYnQtMVDak2SyIEH4eHpY4xQ
+after (mobile): https://www.file.io/?claimToken=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBQ0NFU1MiLCJjbGllbnRJZCI6IjExZmFjZmRmLTQzZWMtNDkyMS1iMjg1LTJmYjZmNjY3OGMzMCIsImNzcmZUb2tlbiI6Ik43aXc2bV8tSkhVUmpIRk94czlGSmFIMGt1NDFxYjRBdUt3OUpkbmZMZEE9IiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BTk9OWU1PVVMiXSwiYXVkIjoiMTFmYWNmZGYtNDNlYy00OTIxLWIyODUtMmZiNmY2Njc4YzMwIiwibmJmIjoxNzYxNTU1ODQxLCJleHAiOjE3NjIyNDcwNDEsImlhdCI6MTc2MTU1NTg0MX0.S7yojftkHpUjO_90iPV2dItq2agj0EXnEF8N_lPadvaBlu1fEeW6KCU0JpPTpz2gtHgncJi691H2wRpP2W2GxI3zLm_uaLx52Gvg4JQlcVIz0tScMY0ee37mjoz_1M6pDh8DM1PKn7y2E1H0J4jWui6KKq8Qwj-JwSOaoxfOhbOX1GdJj57zdB10mL3At7U631ariWchXPP2XUTczJCsa9A5Iw01yli0GWbhahFfVch6AciPFPomwtPj1UM0hwt90d_7Xl8abBN8xmnNyV4y16Uy8ciPl8VBZQ4q2RIpridHb3unaNTFaxxKToIPWCHf03TD7xJQC_31-XRkWsa8hA
 
 ## Testing & Quality Workflow
 - [ ] Confirm the bootstrap script at `scripts/bootstrap.mjs` has been executed after pulling changes that modify tooling or dependencies so the environment stays deterministic for CI and local development.
@@ -494,17 +498,10 @@ Each iteration of this refactor must include one or more browser screenshots wit
     - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
 
 - [x] Favorites Tab – Bullet Removal
-  - before: http://tmpfiles.org/5348222/favorites-before.zip
-  - after: http://tmpfiles.org/5348225/favorites-after.zip
+  - Evidence migrated to https://www.file.io; consult internal archive for pre-migration captures.
 
 - [x] Recent Cards – Contrast Adjustment
-  - before: http://tmpfiles.org/5348229/recents-before.zip
-  - after: http://tmpfiles.org/5348235/recents-after.zip
+  - Evidence migrated to https://www.file.io; consult internal archive for pre-migration captures.
 
 - [x] Mock Modes – Visual Validation
-  - Mode A (mock-data):
-    - before: http://tmpfiles.org/5348239/mock-data-before.zip
-    - after: http://tmpfiles.org/5348242/mock-data-after.zip
-  - Mode B (mock-empty):
-    - before: http://tmpfiles.org/5348244/mock-empty-before.zip
-    - after: http://tmpfiles.org/5348247/mock-empty-after.zip
+  - Evidence migrated to https://www.file.io; consult internal archive for pre-migration captures of both mock-data and mock-empty flows.
