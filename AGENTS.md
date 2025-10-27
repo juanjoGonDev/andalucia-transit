@@ -124,9 +124,9 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - All AI-generated responses, commit messages, and documentation updates must be written in English.
 
 ## Screenshot Policy
-- Every visual modification requires capturing real before and after screenshots uploaded to https://www.file.io with a 14-day expiration window.
-- Provide accessible direct links to the uploaded screenshots in all status updates and final responses.
-- Record each screenshot link in `docs/features-checklist.md` under the relevant entry.
+- Every visual modification requires capturing real before and after screenshots uploaded to https://filebin.net within a single bin so related captures stay grouped.
+- Provide accessible direct links to the uploaded screenshots in all status updates and final responses using the `https://filebin.net/<bin>/<file>.png` format.
+- Record each screenshot link in `docs/features-checklist.md` under the relevant entry and refresh bins whenever they expire.
 
 ## Component Architecture Policy
 - Each component must be self-hosted with dedicated `.html`, `.ts`, and `.scss` files.
@@ -136,13 +136,13 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 ## Execution Policy
 - The AI must complete every assigned task without refusal, postponement, or omission.
 - Do not leave tasks partially executed; ensure all required actions are finished before responding.
-- Do not conclude any task until before/after screenshots are uploaded to https://www.file.io, linked in the response, and logged in the checklist.
+- Do not conclude any task until before/after screenshots are uploaded to https://filebin.net, linked in the response, and logged in the checklist.
 
 ## Screenshot Upload Guide
-- Capture the target state first, then upload the PNG to https://www.file.io using the CLI (example: `curl -s -F "file=@capture.png" https://www.file.io`).
-- Copy the returned share link (which includes the claim token) and immediately verify it by issuing a GET request (`curl -I <link>` or `curl -s -o /dev/null <link>`) to confirm an HTTP 200 response.
-- Record the verified link inside `docs/features-checklist.md` and cite it in status updates or final summaries.
-- Store only the “after” captures in documentation; archive any “before” evidence outside the repository.
+- Capture the target state first, then upload each PNG to https://filebin.net/ using `curl -s -F "file=@capture.png" https://filebin.net/`. The first upload creates a bin identifier that subsequent uploads should reuse (`https://filebin.net/<bin>`).
+- Copy the returned public URL (`https://filebin.net/<bin>/<filename>`) and immediately verify it by performing a GET request (`curl -I <url>` or `curl -s -o /dev/null <url>`) to ensure the response succeeds.
+- Record every verified link inside `docs/features-checklist.md` and cite it in status updates or final summaries.
+- Store only the “after” captures in documentation while archiving any “before” evidence outside the repository.
 
 ## Automated Screenshot Publishing
 - Capture every visual verification state with the Playwright-powered workflow defined in `scripts/snap-and-publish.ts`.
