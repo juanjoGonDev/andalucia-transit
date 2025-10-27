@@ -13,4 +13,4 @@ The workspace ships with ESLint, Prettier, Jasmine/Karma unit testing, and Cypre
 ## Media capture
 
 - `pnpm run record` launches the Playwright-based recorder that captures screenshots and videos with the same DOM automation flow as the legacy screenshot utility. Refer to [docs/recording-guide.md](docs/recording-guide.md) for full flag descriptions and troubleshooting tips.
-- Share demo captures via https://filebin.net by running `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"`; the script uploads PNG assets with preserved metadata, so avoid renaming them before verifying the returned links and pasting the markdown block into pull request summaries or review comments.
+- Share demo captures via https://filebin.net by running `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"`; the helper streams logs, stores PNG assets under `artifacts/screenshots`, preserves metadata, and you must verify the returned links before pasting the markdown block into pull request summaries or review comments.

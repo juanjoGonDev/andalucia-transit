@@ -1,7 +1,7 @@
 # Feature Checklist
 
 ## Publishing Workflow Update
-- Every checklist entry must paste the "– AFTER" block printed by `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"` immediately below its description.
+- Every checklist entry must paste the "– AFTER" block printed by `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"`, which stores captures under `artifacts/screenshots`, immediately below its description.
 - Screenshot links must use the public `https://filebin.net/<bin>/<file>.png` URLs returned by the publishing script.
 - Prior tmpfiles.org instructions are obsolete and must not be referenced in new updates.
 
@@ -15,16 +15,16 @@
 ### Screenshot Pipeline Verification – Publish Evidence
 Description: Automated `publish:evidence` runs against mock data routes to confirm record.js compatibility and Filebin uploads.
 Home Recents Action – AFTER
-after (desktop): https://filebin.net/apyduwuzx6bmh9b1/home-recents-action-2025-10-27T15-40-49-092Z_es_1280_800_full.png
-after (mobile): https://filebin.net/apyduwuzx6bmh9b1/home-recents-action-2025-10-27T15-40-49-092Z_es_414_896_full.png
+after (desktop): https://filebin.net/l6bb9tzk44mh9k78/home-recents-action-2025-10-27T19-57-06-986Z_es_1280_800_full.png
+after (mobile): https://filebin.net/l6bb9tzk44mh9k78/home-recents-action-2025-10-27T19-57-06-986Z_es_414_896_full.png
 
 Route Search Action – AFTER
-after (desktop): https://filebin.net/wged16oi33cmh9b1/route-search-action-2025-10-27T15-40-17-061Z_es_1280_800_full.png
-after (mobile): https://filebin.net/wged16oi33cmh9b1/route-search-action-2025-10-27T15-40-17-061Z_es_414_896_full.png
+after (desktop): https://filebin.net/fi4ismg545bmh9k7/route-search-action-2025-10-27T19-57-27-923Z_es_1280_800_full.png
+after (mobile): https://filebin.net/fi4ismg545bmh9k7/route-search-action-2025-10-27T19-57-27-923Z_es_414_896_full.png
 
-Favorites Page Action – AFTER
-after (desktop): https://filebin.net/e5xf4lpn18dmh9b0/favorites-page-action-2025-10-27T15-39-52-894Z_es_1280_800_full.png
-after (mobile): https://filebin.net/e5xf4lpn18dmh9b0/favorites-page-action-2025-10-27T15-39-52-894Z_es_414_896_full.png
+Favorites Tab Action – AFTER
+after (desktop): https://filebin.net/7fjrod0dc15mh9kf/favorites-tab-action-2025-10-27T20-03-38-218Z_es_1280_800_full.png
+after (mobile): https://filebin.net/7fjrod0dc15mh9kf/favorites-tab-action-2025-10-27T20-03-38-218Z_es_414_896_full.png
 
 ### Route Detail Page – Accessibility and Color Harmonization
 Description: Updated line colors and text contrast for better accessibility and theme compliance.

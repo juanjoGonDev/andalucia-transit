@@ -1,10 +1,10 @@
-import { spawn } from 'child_process';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { spawn } from 'node:child_process';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { UploadSummary, uploadToFilebin } from './upload-to-filebin';
 
-const CAPTURE_DIRECTORY = '.captures';
+const CAPTURE_DIRECTORY = 'artifacts/screenshots';
 const DESKTOP_WIDTH = 1280;
 const DESKTOP_HEIGHT = 800;
 const MOBILE_WIDTH = 414;
@@ -18,6 +18,7 @@ const FLAG_VALUE_SEPARATOR = '=';
 const PASS_THROUGH_MARKER = '--';
 const SCREENSHOT_EVENT = 'screenshot';
 const PATH_KEY = 'path';
+const LOG_PREFIX = '[snap-and-publish]';
 const SCRIPT_DIRECTORY = path.dirname(fileURLToPath(import.meta.url));
 const RECORD_SCRIPT = path.resolve(SCRIPT_DIRECTORY, 'record.js');
 
@@ -30,7 +31,7 @@ export interface SnapAndPublishOptions {
   url: string;
   label: string;
   bin?: string;
-  recordArgs: string[];
+  recordArgs?: string[];
 }
 
 interface RecordConfig {
@@ -54,13 +55,18 @@ export interface SnapAndPublishDependencies {
 
 const DEFAULT_DEPENDENCIES: SnapAndPublishDependencies = {
   record: runRecordProcess,
-  upload: uploadToFilebin,
+  upload: (filePaths, existingBin) => uploadToFilebin(filePaths, existingBin),
 };
 
+function logInfo(message: string): void {
+  process.stderr.write(`${LOG_PREFIX} ${message}\n`);
+}
+
 function parseCli(argv: string[]): SnapAndPublishOptions {
-  const markerIndex = argv.indexOf(PASS_THROUGH_MARKER);
-  const baseArgs = markerIndex >= 0 ? argv.slice(0, markerIndex) : argv;
-  const recordArgs = markerIndex >= 0 ? argv.slice(markerIndex + 1) : [];
+  const normalized = argv.length > 0 && argv[0] === PASS_THROUGH_MARKER ? argv.slice(1) : argv;
+  const markerIndex = normalized.indexOf(PASS_THROUGH_MARKER);
+  const baseArgs = markerIndex >= 0 ? normalized.slice(0, markerIndex) : normalized;
+  const recordArgs = markerIndex >= 0 ? normalized.slice(markerIndex + 1) : [];
   let url: string | undefined;
   let label: string | undefined;
   let bin: string | undefined;
@@ -179,6 +185,7 @@ function processStdout(buffer: string, collector: string[]): string {
 
 async function runRecordProcess(config: RecordConfig): Promise<RecordResult> {
   const recordArgs = buildRecordArgs(config);
+  logInfo(`Starting record.js with ${recordArgs.join(' ')}`);
   return new Promise<RecordResult>((resolve, reject) => {
     const child = spawn(process.execPath, [RECORD_SCRIPT, ...recordArgs], { stdio: ['ignore', 'pipe', 'pipe'] });
     const screenshots: string[] = [];
@@ -196,6 +203,9 @@ async function runRecordProcess(config: RecordConfig): Promise<RecordResult> {
       reject(error);
     });
     child.on('close', (code) => {
+      if (stdoutBuffer.length > 0) {
+        stdoutBuffer = processStdout(`${stdoutBuffer}\n`, screenshots);
+      }
       if (code !== 0) {
         reject(new Error(stderrBuffer.trim().length > 0 ? stderrBuffer.trim() : 'Record script failed'));
         return;
@@ -249,6 +259,7 @@ export async function snapAndPublish(
 ): Promise<string> {
   const captureDir = path.resolve(process.cwd(), CAPTURE_DIRECTORY);
   await fs.mkdir(captureDir, { recursive: true });
+  logInfo(`Capturing screenshots in ${captureDir}`);
   const baseName = createBaseName(options.label);
   const recordConfig: RecordConfig = {
     url: options.url,
@@ -260,12 +271,13 @@ export async function snapAndPublish(
     ],
     locale: DEFAULT_LOCALE,
     fullPage: DEFAULT_FULL_PAGE,
-    passThrough: options.recordArgs,
+    passThrough: options.recordArgs ?? [],
   };
   const recordResult = await dependencies.record(recordConfig);
   const { desktop, mobile } = selectScreenshots(recordResult.screenshots);
   await ensureFileExists(desktop);
   await ensureFileExists(mobile);
+  logInfo('Uploading screenshots to Filebin');
   const uploadSummary = await dependencies.upload([desktop, mobile], options.bin);
   const desktopName = path.basename(desktop);
   const mobileName = path.basename(mobile);
@@ -274,6 +286,7 @@ export async function snapAndPublish(
 
 async function runCli(): Promise<void> {
   const options = parseCli(process.argv.slice(2));
+  logInfo(`Processing ${options.label}`);
   const block = await snapAndPublish(options);
   process.stdout.write(`${block}\n`);
 }
