@@ -25,6 +25,9 @@ source_of_truth: [docs/api-reference.md, docs/api.html, docs/component-refactor-
 # Map and Data Governance
 - `map-data-sources.md` → Licensing, caching, and consent for mapping; links to [`../data-index/overview.md`](../data-index/overview.md#mapping-and-geolocation).
 
+# Audit Reports
+- `audit/2025-10-29-screenshot-pipeline.md` → Verification log for the publish evidence workflow, including Filebin links; aligns with [`../repo-index/scripts.md`](../repo-index/scripts.md#automation).
+
 # Maintenance Notes
 - Refresh `api.html` and `api-reference.md` together after upstream changes.
 - When executing plan milestones, annotate relevant shards with change notes.

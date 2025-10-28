@@ -24,6 +24,7 @@ source_of_truth: [docs/knowledge-map]
   - [Cypress](./repo-index/cypress.md)
   - [Public](./repo-index/public.md)
 - [Docs Index](./docs-index/overview.md)
+  - [Audit Reports](./docs-index/overview.md#audit-reports)
 - [Components Index](./components-index/overview.md)
 - [Data Index](./data-index/overview.md)
 - [Cross Reference](./cross-reference.md)

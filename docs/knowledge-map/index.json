@@ -160,8 +160,24 @@
     "title": "Docs Library Overview",
     "summary": "Summaries and cross-links for documentation assets",
     "tags": ["documentation"],
-    "links": ["docs"],
+    "links": ["docs", "docs/audit/README.md"],
     "last_scanned": "2025-10-21"
+  },
+  {
+    "path": "docs/audit/README.md",
+    "title": "Audit Reports Index",
+    "summary": "Entry point listing repository audit documents",
+    "tags": ["audit","documentation"],
+    "links": ["docs/audit/2025-10-29-screenshot-pipeline.md"],
+    "last_scanned": "2025-10-29"
+  },
+  {
+    "path": "docs/audit/2025-10-29-screenshot-pipeline.md",
+    "title": "Screenshot Publishing Audit",
+    "summary": "Verification log for the publish evidence workflow and Filebin outputs",
+    "tags": ["audit","tooling"],
+    "links": ["scripts/snap-and-publish.ts", "docs/features-checklist.md"],
+    "last_scanned": "2025-10-29"
   },
   {
     "path": "docs/knowledge-map/components-index/overview.md",

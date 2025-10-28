@@ -1,0 +1,5 @@
+[
+  {"type":"waitFor","selector":".home__tabs"},
+  {"type":"click","selector":"[role=tab] >> text=Recientes"},
+  {"type":"sleep","duration":800}
+]

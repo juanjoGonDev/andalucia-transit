@@ -34,6 +34,7 @@ yarn-error.log
 /cypress/videos
 .artifacts/
 artifacts/
+/v8-compile-cache-*/
 /cypress/visual-diff
 /cypress/visual-baseline
 .sass-cache/

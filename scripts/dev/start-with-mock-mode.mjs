@@ -3,14 +3,20 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const runtimeFlagsPath = resolve('src/assets/runtime-flags.js');
-const snapshotFlags =
-  "window.__ANDALUCIA_TRANSIT_FLAGS__ = Object.freeze({ forceSnapshot: true, mockDataMode: null });\n";
-const [, , ...serveExtraArgs] = process.argv;
+const validModes = new Set(['data', 'empty']);
+const [, , requestedMode, ...serveExtraArgs] = process.argv;
+
+if (!requestedMode || !validModes.has(requestedMode)) {
+  console.error('Usage: node scripts/dev/start-with-mock-mode.mjs <data|empty>');
+  process.exit(1);
+}
+
+const mockFlags =
+  `window.__ANDALUCIA_TRANSIT_FLAGS__ = Object.freeze({ forceSnapshot: false, mockDataMode: '${requestedMode}' });\n`;
 
 async function main() {
   const originalContent = await readFile(runtimeFlagsPath, 'utf-8');
-
-  await writeFile(runtimeFlagsPath, snapshotFlags, { encoding: 'utf-8' });
+  await writeFile(runtimeFlagsPath, mockFlags, { encoding: 'utf-8' });
 
   const command = process.platform === 'win32' ? 'ng.cmd' : 'ng';
   const child = spawn(command, ['serve', ...serveExtraArgs], { stdio: 'inherit' });

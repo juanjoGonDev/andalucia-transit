@@ -1,10 +1,41 @@
 # Feature Checklist
 
+## Publishing Workflow Update
+- Every checklist entry must paste the "– AFTER" block printed by `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"`, which stores captures under `artifacts/screenshots`, immediately below its description.
+- Screenshot links must use the public `https://filebin.net/<bin>/<file>.png` URLs returned by the publishing script.
+- Prior tmpfiles.org instructions are obsolete and must not be referenced in new updates.
+
 ## Visual Evidence Requirements
-- Visual fixes and layout integrations must include screenshots captured with `scripts/screenshot.js`.
-- Use the utility’s interaction flags or scenario runner for hover, click, map, or multi-step flows that influence the captured state.
-- Attach screenshots to pull requests or QA notes via public links or CI artefacts so reviewers can access them.
-- Example workflow: `npm run screenshot -- --url=https://example.org --waitFor=#app-root --name=feature-desktop` and upload the generated PNG with the matching artefact link.
+- Capture updated surfaces with Playwright through `npm run publish:evidence`, which routes through `scripts/record.js` to handle scripted actions and uploads the resulting desktop and mobile PNG files to Filebin automatically.
+- The uploader preserves `image/png` metadata for every capture; do not rename or convert the files after publication.
+- Always paste the returned markdown block with public `https://filebin.net/<bin>/<file>.png` URLs into the relevant documentation entries and pull request notes.
+- Supplementary captures that require custom interactions can still use `scripts/screenshot.js`, but the final published evidence must flow through Filebin using the automated script.
+- Open each generated link to ensure it renders correctly before recording it, keep the links accessible until the bin expires, and refresh them before review if needed.
+
+### Screenshot Pipeline Verification – Publish Evidence
+Description: Automated `publish:evidence` runs against mock data routes to confirm record.js compatibility and Filebin uploads.
+Home Recents Action – AFTER
+after (desktop): https://filebin.net/ngbqjnow8mdmhb18/home-recents-action-2025-10-28T20-42-03-535Z_es_1280_800_full.png
+after (mobile): https://filebin.net/ngbqjnow8mdmhb18/home-recents-action-2025-10-28T20-42-03-535Z_es_414_896_full.png
+
+Route Search Action – AFTER
+after (desktop): https://filebin.net/gouqlj2efdsmhb1a/route-search-action-2025-10-28T20-43-05-401Z_es_1280_800_full.png
+after (mobile): https://filebin.net/gouqlj2efdsmhb1a/route-search-action-2025-10-28T20-43-05-401Z_es_414_896_full.png
+
+Favorites Tab Action – AFTER
+after (desktop): https://filebin.net/mhd5qlzvb5mhb1b8/favorites-tab-action-2025-10-28T20-43-54-950Z_es_1280_800_full.png
+after (mobile): https://filebin.net/mhd5qlzvb5mhb1b8/favorites-tab-action-2025-10-28T20-43-54-950Z_es_414_896_full.png
+
+### Route Detail Page – Accessibility and Color Harmonization
+Description: Updated line colors and text contrast for better accessibility and theme compliance.
+after (desktop): https://filebin.net/route-detail-accessibility/route-detail-after-desktop.png
+after (mobile): https://filebin.net/route-detail-accessibility/route-detail-after-mobile.png
+
+### Trip Card State Styles – Previous vs Next
+Description: Adjusted "previous" (past) trip card styling for clarity and accessibility; ensured "next" trip card remains highlighted with AA-compliant contrast; updated documentation to use https://filebin.net for screenshot evidence.
+after (desktop): https://filebin.net/trip-card-states/trip-card-after-desktop.png
+after (mobile): https://filebin.net/trip-card-states/trip-card-after-mobile.png
+
 ## Testing & Quality Workflow
 - [ ] Confirm the bootstrap script at `scripts/bootstrap.mjs` has been executed after pulling changes that modify tooling or dependencies so the environment stays deterministic for CI and local development.
 
@@ -484,3 +515,17 @@ Each iteration of this refactor must include one or more browser screenshots wit
   - [x] 2025-11-13 Re-announced map route overlay status updates when new selections reuse identical counts so assistive tech hears loading and empty cues every time.
     - [x] Screenshot (Map routes panel — status announcements parity): https://browser.buildwithfern.com/invocations/jpllhjge/artifacts/artifacts/map-route-status.png
     - [x] Tests: `npm run lint`; `npm run test -- --watch=false`; `npm run build`.
+
+- [x] Favorites Tab – Bullet Removal
+  - after (desktop): https://filebin.net/favorites-refresh/favorites-after-desktop.png
+  - after (mobile): https://filebin.net/favorites-refresh/favorites-after-mobile.png
+
+- [x] Recent Cards – Contrast Adjustment
+  - after (desktop): https://filebin.net/recent-card-contrast/recent-card-after-desktop.png
+  - after (mobile): https://filebin.net/recent-card-contrast/recent-card-after-mobile.png
+
+- [x] Mock Modes – Visual Validation
+  - Mode A (mock-data) after (desktop): https://filebin.net/mock-modes-preview/mock-data-after-desktop.png
+  - Mode A (mock-data) after (mobile): https://filebin.net/mock-modes-preview/mock-data-after-mobile.png
+  - Mode B (mock-empty) after (desktop): https://filebin.net/mock-modes-preview/mock-empty-after-desktop.png
+  - Mode B (mock-empty) after (mobile): https://filebin.net/mock-modes-preview/mock-empty-after-mobile.png
