@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-27T05:07:50.249Z",
+    "generatedAt": "2025-10-28T05:07:38.487Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
@@ -12,7 +12,7 @@
       "id": "54",
       "code": "M-955",
       "name": "Arcos De La Frontera - Jerez De La Frontera (Málaga)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "UTE VJA-089 (DAMAS)"
@@ -36,7 +36,7 @@
       "id": "49",
       "code": "M-950",
       "name": "Arcos De La Frontera-Cádiz (Ubrique)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "UTE VJA-089 (DAMAS)"
@@ -60,7 +60,7 @@
       "id": "50",
       "code": "M-951",
       "name": "Arcos De La Frontera-Jerez De La Frontera",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "UTE VJA-089 (DAMAS)"
@@ -84,7 +84,7 @@
       "id": "175",
       "code": "M-953",
       "name": "Arcos De La Frontera-Jerez De La Frontera (Ubrique)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "UTE VJA-089 (DAMAS)"
@@ -108,7 +108,7 @@
       "id": "51",
       "code": "M-952",
       "name": "Arcos De La Frontera-Jerez De La Frontera (Villamartín)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "UTE VJA-089 (DAMAS)"
@@ -132,7 +132,7 @@
       "id": "240",
       "code": "M-037",
       "name": "Cádiz-Campus De Puerto Real (Por CA-35)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -156,7 +156,7 @@
       "id": "5",
       "code": "M-021",
       "name": "Cádiz-Cementerio Mancomunado",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -204,7 +204,7 @@
       "id": "4",
       "code": "M-020",
       "name": "Cádiz-Chiclana De La Frontera",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -228,7 +228,7 @@
       "id": "235",
       "code": "M-912",
       "name": "Cádiz-Conil-Atlanterra (Por Vejer/Por Los Caños)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -252,7 +252,7 @@
       "id": "234",
       "code": "M-911",
       "name": "Cádiz-Conil-Barbate (Por La Barca/Por Los Caños)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -276,7 +276,7 @@
       "id": "236",
       "code": "M-913",
       "name": "Cádiz-Conil-Barbate Por Hospital",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -300,7 +300,7 @@
       "id": "237",
       "code": "M-914",
       "name": "Cádiz-Conil-Caños De Meca",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -348,7 +348,7 @@
       "id": "13",
       "code": "M-040",
       "name": "Cádiz-El Puerto De Santa María (Directo)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -372,7 +372,7 @@
       "id": "14",
       "code": "M-041",
       "name": "Cádiz-El Puerto De Santa María (Por Río San Pedro Y Campus Universitario De Puerto Real)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -396,7 +396,7 @@
       "id": "36",
       "code": "M-902",
       "name": "Cádiz-El Puerto De Santa María-Jerez De La Frontera-Arcos De La Frontera (Ronda)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -420,7 +420,7 @@
       "id": "38",
       "code": "M-904",
       "name": "Cádiz-El Puerto De Santa María-Jerez-Arcos De La Frontera (Alcalá Del Valle)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -444,7 +444,7 @@
       "id": "21",
       "code": "M-062",
       "name": "Cádiz-El Puerto De Santa María-Rota",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -468,7 +468,7 @@
       "id": "19",
       "code": "M-060",
       "name": "Cádiz-El Puerto De Santa María-Rota (Por Costa Oeste)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -492,7 +492,7 @@
       "id": "20",
       "code": "M-061",
       "name": "Cádiz-El Puerto De Santa María-Rota (Por Río San Pedro, Campus De Puerto Real Y Costa Oeste)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -516,7 +516,7 @@
       "id": "220",
       "code": "M-035",
       "name": "Cádiz-Escuela De Ingeniería",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -540,7 +540,7 @@
       "id": "12",
       "code": "M-034",
       "name": "Cádiz-Hospital De Puerto Real (Por Autovía)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -564,7 +564,7 @@
       "id": "16",
       "code": "M-050",
       "name": "Cádiz-Jerez De La Frontera (Directo)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -588,7 +588,7 @@
       "id": "18",
       "code": "M-052",
       "name": "Cádiz-Jerez De La Frontera (Por Campus Universitario De Puerto Real Y El Puerto De Santa María)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -612,7 +612,7 @@
       "id": "17",
       "code": "M-051",
       "name": "Cádiz-Jerez De La Frontera (Por El Puerto De Santa María)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -636,7 +636,7 @@
       "id": "177",
       "code": "M-053",
       "name": "Cádiz-Jerez De La Frontera (Por Hospital De Jerez)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -708,7 +708,7 @@
       "id": "11",
       "code": "M-033",
       "name": "Cádiz-Puerto Real (Directo)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -732,7 +732,7 @@
       "id": "267",
       "code": "M-038",
       "name": "Cádiz-Puerto Real (por Av. Constitución de 1812 y CA-35)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -756,7 +756,7 @@
       "id": "239",
       "code": "M-036",
       "name": "Cádiz-Puerto Real (Por CA-35)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -780,7 +780,7 @@
       "id": "9",
       "code": "M-031",
       "name": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -804,7 +804,7 @@
       "id": "6",
       "code": "M-030",
       "name": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real-Hospital",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -828,7 +828,7 @@
       "id": "10",
       "code": "M-032",
       "name": "Cádiz-Río San Pedro-Puerto Real (512 Viviendas)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -876,7 +876,7 @@
       "id": "2",
       "code": "M-010",
       "name": "Cádiz-San Fernando Norte (Por León Herrero)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A.",
@@ -902,7 +902,7 @@
       "id": "3",
       "code": "M-011",
       "name": "Cádiz-San Fernando Sur (Por Camposoto Y San Marcos)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A.",
@@ -928,7 +928,7 @@
       "id": "221",
       "code": "M-231",
       "name": "Chiclana De La Frontera-Campus Universitario De Puerto Real",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -952,7 +952,7 @@
       "id": "26",
       "code": "M-230",
       "name": "Chiclana De La Frontera-Hospital De Puerto Real (Por Marquesado)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Belizon y Rodriguez S.L."
@@ -976,7 +976,7 @@
       "id": "7",
       "code": "M-120",
       "name": "Chiclana-San Fernando",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Belizon y Rodriguez S.L."
@@ -1000,7 +1000,7 @@
       "id": "219",
       "code": "M-966",
       "name": "Chipiona-Costa Ballena-Rota",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A.",
@@ -1025,7 +1025,7 @@
       "id": "230",
       "code": "M-965",
       "name": "Chipiona-Sanlúcar De Barrameda (Sevilla/Utrera)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "UTE VJA-089 (DAMAS)"
@@ -1049,7 +1049,7 @@
       "id": "225",
       "code": "M-967",
       "name": "Chipiona-Sanlúcar De Barrameda-Cádiz  (Por Campus De Puerto Real)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "UTE VJA-089 (DAMAS)"
@@ -1073,7 +1073,7 @@
       "id": "163",
       "code": "M-960",
       "name": "Chipiona-Sanlúcar De Barrameda-Cádiz (Por Puerto Real Y Campus)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "UTE VJA-089 (DAMAS)"
@@ -1097,7 +1097,7 @@
       "id": "164",
       "code": "M-961",
       "name": "Chipiona-Sanlúcar De Barrameda-El Puerto De Santa María-Cádiz",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "UTE VJA-089 (DAMAS)"
@@ -1121,7 +1121,7 @@
       "id": "166",
       "code": "M-963",
       "name": "Chipiona-Sanlúcar De Barrameda-Jerez De La Frontera",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Empresa Monforte S.A.U."
@@ -1145,7 +1145,7 @@
       "id": "167",
       "code": "M-964",
       "name": "Chipiona-Sanlúcar De Barrameda-Jerez De La Frontera (Por Hospital)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Empresa Monforte S.A.U."
@@ -1169,7 +1169,7 @@
       "id": "165",
       "code": "M-962",
       "name": "Chipiona-Sanlúcar De Barrameda-San Fernando (Por Puerto Real Y Hospital)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "UTE VJA-089 (DAMAS)"
@@ -1193,7 +1193,7 @@
       "id": "156",
       "code": "M-251",
       "name": "Conil-Jerez (Atlanterra-Sevilla)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1217,7 +1217,7 @@
       "id": "155",
       "code": "M-250",
       "name": "Conil-Jerez (La Línea-Sevilla)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1241,7 +1241,7 @@
       "id": "231",
       "code": "M-974",
       "name": "Costa Ballena-Chipiona-Sanlúcar De Barrameda (Sevilla)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "UTE VJA-089 (DAMAS)"
@@ -1265,7 +1265,7 @@
       "id": "172",
       "code": "M-561",
       "name": "Costa Ballena-Chipiona-Sanlúcar-Jerez",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Empresa Monforte S.A.U."
@@ -1289,7 +1289,7 @@
       "id": "226",
       "code": "M-340",
       "name": "El Puerto De Santa María-Campus Universitario De Puerto Real",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1313,7 +1313,7 @@
       "id": "27",
       "code": "M-350",
       "name": "Jerez De La Frontera-Campus Universitario De Puerto Real",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1337,7 +1337,7 @@
       "id": "223",
       "code": "M-351",
       "name": "Jerez De La Frontera-Campus Universitario De Puerto Real  (Por Cuatro Caminos)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1361,7 +1361,7 @@
       "id": "224",
       "code": "M-352",
       "name": "Jerez De La Frontera-Campus Universitario De Puerto Real (Por El Puerto De Santa María)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1385,7 +1385,7 @@
       "id": "48",
       "code": "M-947",
       "name": "Medina-Chiclana De La Frontera",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1409,7 +1409,7 @@
       "id": "43",
       "code": "M-942",
       "name": "Medina-Chiclana-Hospital-Puerto Real-Cádiz",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1433,7 +1433,7 @@
       "id": "41",
       "code": "M-940",
       "name": "Medina-Chiclana-San Fernando-Cádiz (Alcalá De Los Gazules)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1457,7 +1457,7 @@
       "id": "44",
       "code": "M-943",
       "name": "Medina-Hospital-Puerto Real-Cádiz (Benalúp Y Paterna)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1481,7 +1481,7 @@
       "id": "46",
       "code": "M-945",
       "name": "Medina-Jerez De La Frontera",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1505,7 +1505,7 @@
       "id": "222",
       "code": "M-330",
       "name": "Puerto Real-Escuela De Ingeniería",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1529,7 +1529,7 @@
       "id": "28",
       "code": "M-360",
       "name": "Rota-Costa Oeste-El Puerto de Santa María-Hospital de Puerto Real",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1553,7 +1553,7 @@
       "id": "32",
       "code": "M-560",
       "name": "Rota-Jerez De La Frontera",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1577,7 +1577,7 @@
       "id": "39",
       "code": "M-905",
       "name": "Rota-Jerez De La Frontera (Sevilla)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1601,7 +1601,7 @@
       "id": "23",
       "code": "M-130",
       "name": "San Fernando-Campus Universitario",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
@@ -1625,7 +1625,7 @@
       "id": "170",
       "code": "M-972",
       "name": "Sanlúcar De Barrameda-Campus De Jerez",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Empresa Monforte S.A.U."
@@ -1649,7 +1649,7 @@
       "id": "168",
       "code": "M-970",
       "name": "Sanlúcar De Barrameda-Jerez De La Frontera",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Empresa Monforte S.A.U."
@@ -1673,7 +1673,7 @@
       "id": "169",
       "code": "M-971",
       "name": "Sanlúcar De Barrameda-Jerez De La Frontera (Por Hospital)",
-      "mode": "AUTOBÚS INTERURBANO",
+      "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Empresa Monforte S.A.U."
