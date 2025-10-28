@@ -215,6 +215,9 @@
       "arrivingNow": "Arriving now",
       "departedAgo": "Departed {minutes} min ago"
     },
+    "progress": {
+      "upcoming": "{minutes, plural, =0 {Arriving now. Progress {percentage}% complete.} one {Arrives in {minutes} minute. Progress {percentage}% complete.} other {Arrives in {minutes} minutes. Progress {percentage}% complete.}}"
+    },
     "badges": {
       "accessible": "Accessible bus",
       "universityOnly": "University service"

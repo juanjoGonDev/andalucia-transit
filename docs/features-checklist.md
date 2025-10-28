@@ -71,6 +71,10 @@ Stop Detail Metadata – AFTER
 after (desktop): https://filebin.net/mf9uuakbnhamhaqu/stop-detail-metadata-2025-10-28T15-51-07-602Z_es_1280_800_full.png
 after (mobile): https://filebin.net/mf9uuakbnhamhaqu/stop-detail-metadata-2025-10-28T15-51-07-602Z_es_414_896_full.png
 
+Stop Detail Progress Announcement – AFTER
+after (desktop): https://filebin.net/jxr59m3ktbjmhav1/stop-detail-progress-after-2025-10-28T17-50-04-751Z_es_1280_800_full.png
+after (mobile): https://filebin.net/jxr59m3ktbjmhav1/stop-detail-progress-after-2025-10-28T17-50-04-751Z_es_414_896_full.png
+
 Stop Info – AFTER
 after (desktop): https://filebin.net/jael0fllbcmha9k0/stop-info-2025-10-28T07-46-56-764Z_es_1280_800_full.png
 after (mobile): https://filebin.net/jael0fllbcmha9k0/stop-info-2025-10-28T07-46-56-764Z_es_414_896_full.png
