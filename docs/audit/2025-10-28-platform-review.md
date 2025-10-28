@@ -1,40 +1,73 @@
 # 2025-10-28 Platform Audit
 
-## Scope
-This audit reviewed the current production-equivalent build running locally at `http://127.0.0.1:4200` with the bundled CTAN snapshot data. Screenshots were captured with `npm run publish:evidence` for desktop (1280x800) and mobile (414x896) breakpoints per repository policy. The review focused on visual fidelity, accessibility, functional flows, and alignment with the living documentation in `docs/`.
+## Executive Summary
+- Stop detail metadata uses tertiary text color on white, failing WCAG 2.1 AA (3.58:1 vs required 4.5:1). Update the token mapping or component theme to reach compliant contrast without drifting from the shared palette.
+- Home dashboard tablist exposes custom roles without `tabpanel` semantics or keyboard roving focus, blocking screen-reader navigation and violating WAI-ARIA authoring guidance.
+- Tab-triggered route changes drop focus to `<body>` instead of the main content region, forcing assistive technology users to traverse the entire page after every tab switch.
+- Stop detail departure progress indicator lacks an accessible textual equivalent for elapsed/remaining time, preventing parity with visual progress feedback.
+- Operational guardrails (automated accessibility scans, live CTAN smoke checks, shareable deep-link controls, offline indicator) remain unimplemented, leaving gaps between documentation intent and product behavior.
 
-## High-Priority Issues
-- **Stop detail metadata contrast fails WCAG 2.1 AA** — the `.stop-detail__meta-label` style uses `var(--color-text-tertiary)` (≈#838795) on a white surface, producing ~3.58:1 contrast for non-large uppercase labels. Update the token or component style to meet 4.5:1 without breaking the shared theme.【F:src/app/features/stop-detail/stop-detail.component.scss†L132-L143】
-- **Home tabs missing tabpanel semantics and keyboard navigation** — the home view renders `div` elements with `role="tab"` but the panels lack `role="tabpanel"`, `aria-labelledby`, and `id` links. Arrow key management is also absent, so keyboard users cannot cycle tabs per WAI-ARIA Authoring Practices. Implement structural bindings and key handlers in `HomeComponent` to satisfy accessible tab requirements.【F:src/app/features/home/home.component.html†L23-L88】【F:src/app/features/home/home.component.ts†L96-L156】
+These gaps are inconsistent with the accessibility mandate in `AGENTS.md`, the component refactor plan in `docs/component-refactor-plan.md`, and the UX guardrails recorded in `docs/ui-theme.md`. The remediation plan below sequences fixes by urgency and aligns the necessary code, tests, and documentation updates.
 
-## Medium-Priority Issues
-- **Tab state routing lacks focus restoration** — when a tab navigation command triggers a route change, focus returns to the document body instead of the tab content. Hook into the layout context or call `focusMainContent()` after navigation to maintain context for assistive tech.【F:src/app/features/home/home.component.ts†L114-L156】【F:src/app/shared/layout/app-layout/app-layout.component.ts†L34-L49】
-- **Stop detail progress bar lacks textual duration** — the upcoming departure progress indicator is `aria-hidden="true"`, and no textual equivalent communicates elapsed percentage. Add a visually hidden string or extend the existing relative time labels to cover the same information for screen readers.【F:src/app/features/stop-detail/stop-detail.component.html†L108-L175】
+## Methodology
+- **Build context:** Angular 20 workspace running locally at `http://127.0.0.1:4200` using bundled CTAN snapshot data.
+- **Tooling:** `npm run publish:evidence` (Playwright) for deterministic desktop 1280×800 and mobile 414×896 captures, Lighthouse a11y quick scans, manual keyboard traversal, and locale toggling (`es`⇄`en`).
+- **References:** `AGENTS.md`, `docs/features-checklist.md`, `docs/component-refactor-plan.md`, `docs/ui-theme.md`, `docs/project-plan.md`.
 
-## Functional Observations
-- The bundled stop snapshot renders consistent departures, but no automated regression guard confirms live CTAN parity. Add smoke tests against the live API (with snapshot fallback) to detect upstream drift before daily snapshots publish.
-- Route search deep links succeed with slugged stop IDs (`/routes/.../to/.../on/...`), but there is no UI affordance to copy or share these links. Consider exposing a share action once validation ensures slugs are stable across locales.【F:src/app/domain/route-search/route-search-url.util.ts†L13-L87】
+## Remediation Backlog
+| ID | Priority | Category | Problem Statement | Evidence | Required Fix | References |
+| --- | --- | --- | --- | --- | --- | --- |
+| H1 | High | Accessibility | `.stop-detail__meta-label` applies `var(--color-text-tertiary)` (~#838795) on white, yielding ~3.58:1 contrast for non-large labels. | After capture: [Stop Detail desktop](https://filebin.net/vs5uq8atdvmha9jr/stop-detail-2025-10-28T07-46-42-450Z_es_1280_800_full.png) | Adjust the stop detail metadata token or introduce a dedicated semantic token mapped to compliant contrast; verify against WCAG 2.1 AA using axe-core and unit contrast tests. | `src/app/features/stop-detail/stop-detail.component.scss`, `docs/ui-theme.md` |
+| H2 | High | Accessibility | Home dashboard tabs render `div` roles without `aria-controls`, `aria-selected`, or managed roving tabindex; panels miss `role="tabpanel"`. Arrow-key navigation absent. | After capture: [Home desktop](https://filebin.net/07atvutr262mha9g/home-2025-10-28T07-44-06-058Z_es_1280_800_full.png) | Implement accessible tab pattern (`aria-controls`, `aria-labelledby`, `tabindex`, arrow key handlers) within `HomeComponent`; add focused unit tests and axe regression coverage. | `src/app/features/home/home.component.html`, `src/app/features/home/home.component.ts`, `docs/component-refactor-plan.md` |
+| H3 | High | Accessibility | Focus drops to `<body>` after tab-triggered navigation, breaking context continuity for assistive tech. | Manual keyboard walkthrough | Invoke shared layout focus restoration (`focusMainContent`) post navigation and add integration test verifying focus target; ensure no layout shifts. | `src/app/features/home/home.component.ts`, `src/app/shared/layout/app-layout/app-layout.component.ts` |
+| H4 | High | Accessibility | Departure progress indicator is `aria-hidden` without textual equivalent for elapsed percentage. | After capture: [Stop Detail desktop](https://filebin.net/vs5uq8atdvmha9jr/stop-detail-2025-10-28T07-46-42-450Z_es_1280_800_full.png) | Extend departure card view-model to expose localized progress strings, render via visually hidden text, and add unit coverage for translation keys. | `src/app/features/stop-detail/stop-detail.component.html`, `src/app/features/stop-detail/stop-detail.component.ts`, `src/assets/i18n/*` |
+| M1 | Medium | Functional | No automated parity guard between CTAN live API and bundled snapshot. | N/A (process gap) | Add nightly smoke tests hitting live API with graceful fallback (HttpClient + environment guard); document in `docs/development-environment.md`. | `src/app/domain/*`, `docs/development-environment.md` |
+| M2 | Medium | UX | Deep-linkable route results lack share/copy affordance despite stable slug support. | After capture: [Route Search Results desktop](https://filebin.net/onjhjm36ixbmha9i/route-search-results-2025-10-28T07-45-43-566Z_es_1280_800_full.png) | Add share button aligned with `appAccessibleButton`, integrate Web Share API where available, and update translations/documentation. | `src/app/features/route-search/results`, `docs/project-plan.md` |
+| M3 | Medium | UX/Status | Offline indicator absent when serving snapshot data. | After capture: [Stop Detail desktop](https://filebin.net/vs5uq8atdvmha9jr/stop-detail-2025-10-28T07-46-42-450Z_es_1280_800_full.png) | Bind service worker network status into layout banner; ensure bilingual messaging and update docs. | `src/app/core/offline`, `src/app/shared/layout/app-layout`, `docs/ui-theme.md` |
+| L1 | Low | Automation | No automated axe-core run in CI for routed surfaces. | N/A (automation gap) | Wire axe-core Playwright step into `npm run lint` or dedicated pipeline, storing reports under artifacts. | `package.json`, `scripts/record.js`, `docs/development-environment.md` |
+| L2 | Low | DevEx | `appAccessibleButton` lacks helper for roving tabindex, requiring manual implementations for each tablist/menu. | Code review | Extend directive with optional manager to cut duplication, update docs and tests. | `src/app/shared/a11y/accessible-button.directive.ts`, `docs/component-refactor-plan.md` |
 
-## Recommended Enhancements
-- Introduce automated axe-core scans for each routed page during CI to catch future WCAG regressions before release.
-- Extend `appAccessibleButton` with optional roving tabindex helpers so tablists, menus, and switch groups can comply with keyboard interaction patterns out of the box.【F:src/app/shared/a11y/accessible-button.directive.ts†L24-L200】
-- Provide a persistent offline indicator tied to the service worker so users understand when data originates from snapshots versus live responses.【F:src/app/features/stop-detail/stop-detail.component.html†L70-L120】
+### Evidence Capture Status
+- **Before images:** Not captured for this cycle. Capture via `npm run publish:evidence -- --url <pageUrl> --label "<Surface>" --mode=before` before applying fixes to enable regression comparison.
+- **After images:** Listed above and registered in `docs/features-checklist.md` under “2025-10-28 Platform Audit Evidence”.
 
-## Documentation Adjustments
-- Record the screenshot evidence block (see below) in `docs/features-checklist.md` under a dated heading for traceability.【F:docs/features-checklist.md†L1-L86】
-- Add an accessibility section summarizing tab semantics requirements to `docs/components-index/overview.md` to guide future feature work.
+## Documentation Alignment Gaps
+| Document | Expected Content | Current Gap | Required Update |
+| --- | --- | --- | --- |
+| `docs/component-refactor-plan.md` | Tab semantics guidance for new layouts | No mention of required ARIA attributes for tablists/tabpanels | Add subsection covering tab accessibility requirements referenced by H2/H3 |
+| `docs/development-environment.md` | Automation check matrix | No instructions for running axe-core or live CTAN smoke checks | Document new commands once implemented (M1, L1) |
+| `docs/ui-theme.md` | Contrast token inventory | Missing coverage for tertiary text usage and accessibility thresholds | Append contrast table updates tied to H1 |
+| `docs/project-plan.md` | Shareable route deep-link initiative tracking | Initiative absent | Introduce roadmap item referencing M2 |
 
-## Evidence
-- Home – AFTER: desktop `https://filebin.net/07atvutr262mha9g/home-2025-10-28T07-44-06-058Z_es_1280_800_full.png`, mobile `https://filebin.net/07atvutr262mha9g/home-2025-10-28T07-44-06-058Z_es_414_896_full.png`.
-- Home (Recents) – AFTER: desktop `https://filebin.net/yt2ohbtio6mha9k9/home-recents-2025-10-28T07-47-09-748Z_es_1280_800_full.png`, mobile `https://filebin.net/yt2ohbtio6mha9k9/home-recents-2025-10-28T07-47-09-748Z_es_414_896_full.png`.
-- Home (Favorites tab) – AFTER: desktop `https://filebin.net/39m1ne8wefwmha9k/home-favorites-2025-10-28T07-47-21-945Z_es_1280_800_full.png`, mobile `https://filebin.net/39m1ne8wefwmha9k/home-favorites-2025-10-28T07-47-21-945Z_es_414_896_full.png`.
-- Route Search – AFTER: desktop `https://filebin.net/7e5wl15klgemha9i/route-search-2025-10-28T07-45-29-789Z_es_1280_800_full.png`, mobile `https://filebin.net/7e5wl15klgemha9i/route-search-2025-10-28T07-45-29-789Z_es_414_896_full.png`.
-- Route Search Results – AFTER: desktop `https://filebin.net/onjhjm36ixbmha9i/route-search-results-2025-10-28T07-45-43-566Z_es_1280_800_full.png`, mobile `https://filebin.net/onjhjm36ixbmha9i/route-search-results-2025-10-28T07-45-43-566Z_es_414_896_full.png`.
-- Favorites – AFTER: desktop `https://filebin.net/xv36cyxa4lcmha9i/favorites-2025-10-28T07-45-58-434Z_es_1280_800_full.png`, mobile `https://filebin.net/xv36cyxa4lcmha9i/favorites-2025-10-28T07-45-58-434Z_es_414_896_full.png`.
-- Map – AFTER: desktop `https://filebin.net/pcddcanb31mha9iy/map-2025-10-28T07-46-08-582Z_es_1280_800_full.png`, mobile `https://filebin.net/pcddcanb31mha9iy/map-2025-10-28T07-46-08-582Z_es_414_896_full.png`.
-- Settings – AFTER: desktop `https://filebin.net/r7lvk4nl3ymha9j8/settings-2025-10-28T07-46-20-819Z_es_1280_800_full.png`, mobile `https://filebin.net/r7lvk4nl3ymha9j8/settings-2025-10-28T07-46-20-819Z_es_414_896_full.png`.
-- News – AFTER: desktop `https://filebin.net/fvlfqtx2uxvmha9j/news-2025-10-28T07-46-31-144Z_es_1280_800_full.png`, mobile `https://filebin.net/fvlfqtx2uxvmha9j/news-2025-10-28T07-46-31-144Z_es_414_896_full.png`.
-- Stop Detail – AFTER: desktop `https://filebin.net/vs5uq8atdvmha9jr/stop-detail-2025-10-28T07-46-42-450Z_es_1280_800_full.png`, mobile `https://filebin.net/vs5uq8atdvmha9jr/stop-detail-2025-10-28T07-46-42-450Z_es_414_896_full.png`.
-- Stop Info – AFTER: desktop `https://filebin.net/jael0fllbcmha9k0/stop-info-2025-10-28T07-46-56-764Z_es_1280_800_full.png`, mobile `https://filebin.net/jael0fllbcmha9k0/stop-info-2025-10-28T07-46-56-764Z_es_414_896_full.png`.
+## Testing Roadmap
+- Add axe-core smoke tests for every routed view (CI + local) and capture artifacts per run.
+- Expand Jasmine specs to cover:
+  - Home tab roving focus and ARIA attribute toggling (H2, H3).
+  - Stop detail progress text generation and i18n interpolation (H4).
+  - Offline indicator service/observable behavior (M3).
+- Create Playwright/Cypress integration coverage verifying share action invocation and focus preservation after navigation.
 
-(Refer to the feature checklist update for the full markdown block with per-breakpoint URLs.)
+## Implementation Order of Operations
+1. Resolve high-priority accessibility defects (H1–H4) with accompanying tests and documentation updates.
+2. Introduce automated accessibility pipeline (L1) to guard regressions while implementing functional UX improvements (M1–M3).
+3. Extend reusable a11y primitives (L2) and roll out share/offline enhancements, ensuring translations and documentation remain synchronized.
+4. Re-run visual and accessibility audits post-remediation, recapturing before/after evidence for each surface.
+
+## Evidence Archive
+- Home — AFTER: desktop [PNG](https://filebin.net/07atvutr262mha9g/home-2025-10-28T07-44-06-058Z_es_1280_800_full.png), mobile [PNG](https://filebin.net/07atvutr262mha9g/home-2025-10-28T07-44-06-058Z_es_414_896_full.png)
+- Home (Recents) — AFTER: desktop [PNG](https://filebin.net/yt2ohbtio6mha9k9/home-recents-2025-10-28T07-47-09-748Z_es_1280_800_full.png), mobile [PNG](https://filebin.net/yt2ohbtio6mha9k9/home-recents-2025-10-28T07-47-09-748Z_es_414_896_full.png)
+- Home (Favorites) — AFTER: desktop [PNG](https://filebin.net/39m1ne8wefwmha9k/home-favorites-2025-10-28T07-47-21-945Z_es_1280_800_full.png), mobile [PNG](https://filebin.net/39m1ne8wefwmha9k/home-favorites-2025-10-28T07-47-21-945Z_es_414_896_full.png)
+- Route Search — AFTER: desktop [PNG](https://filebin.net/7e5wl15klgemha9i/route-search-2025-10-28T07-45-29-789Z_es_1280_800_full.png), mobile [PNG](https://filebin.net/7e5wl15klgemha9i/route-search-2025-10-28T07-45-29-789Z_es_414_896_full.png)
+- Route Search Results — AFTER: desktop [PNG](https://filebin.net/onjhjm36ixbmha9i/route-search-results-2025-10-28T07-45-43-566Z_es_1280_800_full.png), mobile [PNG](https://filebin.net/onjhjm36ixbmha9i/route-search-results-2025-10-28T07-45-43-566Z_es_414_896_full.png)
+- Favorites — AFTER: desktop [PNG](https://filebin.net/xv36cyxa4lcmha9i/favorites-2025-10-28T07-45-58-434Z_es_1280_800_full.png), mobile [PNG](https://filebin.net/xv36cyxa4lcmha9i/favorites-2025-10-28T07-45-58-434Z_es_414_896_full.png)
+- Map — AFTER: desktop [PNG](https://filebin.net/pcddcanb31mha9iy/map-2025-10-28T07-46-08-582Z_es_1280_800_full.png), mobile [PNG](https://filebin.net/pcddcanb31mha9iy/map-2025-10-28T07-46-08-582Z_es_414_896_full.png)
+- Settings — AFTER: desktop [PNG](https://filebin.net/r7lvk4nl3ymha9j8/settings-2025-10-28T07-46-20-819Z_es_1280_800_full.png), mobile [PNG](https://filebin.net/r7lvk4nl3ymha9j8/settings-2025-10-28T07-46-20-819Z_es_414_896_full.png)
+- News — AFTER: desktop [PNG](https://filebin.net/fvlfqtx2uxvmha9j/news-2025-10-28T07-46-31-144Z_es_1280_800_full.png), mobile [PNG](https://filebin.net/fvlfqtx2uxvmha9j/news-2025-10-28T07-46-31-144Z_es_414_896_full.png)
+- Stop Detail — AFTER: desktop [PNG](https://filebin.net/vs5uq8atdvmha9jr/stop-detail-2025-10-28T07-46-42-450Z_es_1280_800_full.png), mobile [PNG](https://filebin.net/vs5uq8atdvmha9jr/stop-detail-2025-10-28T07-46-42-450Z_es_414_896_full.png)
+- Stop Info — AFTER: desktop [PNG](https://filebin.net/jael0fllbcmha9k0/stop-info-2025-10-28T07-46-56-764Z_es_1280_800_full.png), mobile [PNG](https://filebin.net/jael0fllbcmha9k0/stop-info-2025-10-28T07-46-56-764Z_es_414_896_full.png)
+
+## Next Verification Cycle Checklist
+- [ ] Capture “before” evidence for high-priority fixes using `npm run publish:evidence` with the `--mode=before` label convention.
+- [ ] Implement high-priority fixes (H1–H4) with accompanying unit/integration tests and updated documentation.
+- [ ] Re-run accessibility and functional smoke tests, attach reports to the follow-up audit, and refresh `docs/features-checklist.md` entries with new “after” captures.
+- [ ] Confirm bilingual messaging and focus restoration behaviors on desktop and mobile breakpoints prior to closing the audit.
