@@ -67,6 +67,10 @@ Stop Detail – AFTER
 after (desktop): https://filebin.net/vs5uq8atdvmha9jr/stop-detail-2025-10-28T07-46-42-450Z_es_1280_800_full.png
 after (mobile): https://filebin.net/vs5uq8atdvmha9jr/stop-detail-2025-10-28T07-46-42-450Z_es_414_896_full.png
 
+Stop Detail Metadata – AFTER
+after (desktop): https://filebin.net/mf9uuakbnhamhaqu/stop-detail-metadata-2025-10-28T15-51-07-602Z_es_1280_800_full.png
+after (mobile): https://filebin.net/mf9uuakbnhamhaqu/stop-detail-metadata-2025-10-28T15-51-07-602Z_es_414_896_full.png
+
 Stop Info – AFTER
 after (desktop): https://filebin.net/jael0fllbcmha9k0/stop-info-2025-10-28T07-46-56-764Z_es_1280_800_full.png
 after (mobile): https://filebin.net/jael0fllbcmha9k0/stop-info-2025-10-28T07-46-56-764Z_es_414_896_full.png
