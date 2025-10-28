@@ -191,6 +191,20 @@
                       [style.width.%]="item.progressPercentage"
                     ></div>
                   </div>
+                  <span class="app-visually-hidden">
+                    {{
+                      translationKeys.status.progressAnnouncement
+                        | translate: {
+                            line: item.lineCode,
+                            destination: item.destination,
+                            status: item.minutesUntilArrival > 0
+                              ? (translationKeys.status.arrivesIn
+                                  | translate: { minutes: item.minutesUntilArrival })
+                              : (translationKeys.status.arrivingNow | translate),
+                            progress: item.progressPercentage
+                          }
+                    }}
+                  </span>
                 </li>
               </ul>
             </ng-container>

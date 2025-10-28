@@ -3,7 +3,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  ElementRef,
+  QueryList,
   ViewChild,
+  ViewChildren,
   computed,
   inject,
   signal,
@@ -24,6 +27,15 @@ import { HomeTabId } from '@features/home/home.types';
 import { HomeRecentSearchesComponent } from '@features/home/recent-searches/home-recent-searches.component';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import {
+  ARROW_DOWN_KEY_MATCHER,
+  ARROW_LEFT_KEY_MATCHER,
+  ARROW_RIGHT_KEY_MATCHER,
+  ARROW_UP_KEY_MATCHER,
+  END_KEY_MATCHER,
+  HOME_KEY_MATCHER,
+  matchesKey,
+} from '@shared/a11y/key-event-matchers';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import { AppLayoutNavigationKey } from '@shared/layout/app-layout-context.token';
 import {
@@ -53,6 +65,9 @@ interface HomeTabOption {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
+  private static readonly ACTIVE_TAB_INDEX = 0 as const;
+  private static readonly INACTIVE_TAB_INDEX = -1 as const;
+
   private readonly router = inject(Router);
   private readonly routeSearchState = inject(RouteSearchStateService);
   private readonly execution = inject(RouteSearchExecutionService);
@@ -111,6 +126,8 @@ export class HomeComponent {
 
   @ViewChild('recentSearches')
   private recentSearchesComponent?: HomeRecentSearchesComponent;
+  @ViewChildren('tabElement', { read: ElementRef })
+  private tabElements?: QueryList<ElementRef<HTMLElement>>;
 
   private readonly favorites = signal<readonly StopFavorite[]>([]);
   protected readonly favoritePreview = computed(() => {
@@ -139,17 +156,33 @@ export class HomeComponent {
   }
 
   protected selectTab(tab: HomeTabId): void {
-    if (this.activeTab() === tab) {
-      return;
-    }
-
-    this.activeTab.set(tab);
-    this.updateLayoutNavigationKeyForTab(tab);
-    void this.navigateToTab(tab);
+    this.activateTab(tab, this.resolveTabElementById(tab), false);
   }
 
   protected isTabActive(tab: HomeTabId): boolean {
     return this.activeTab() === tab;
+  }
+
+  protected resolveTabFocusIndex(tab: HomeTabId): number {
+    return this.activeTab() === tab
+      ? HomeComponent.ACTIVE_TAB_INDEX
+      : HomeComponent.INACTIVE_TAB_INDEX;
+  }
+
+  protected onTabKeydown(event: KeyboardEvent, index: number): void {
+    if (this.handleHomeNavigation(event)) {
+      return;
+    }
+
+    if (this.handleEndNavigation(event)) {
+      return;
+    }
+
+    if (this.handlePreviousNavigation(event, index)) {
+      return;
+    }
+
+    this.handleNextNavigation(event, index);
   }
 
   protected async onSelectionConfirmed(selection: RouteSearchSelection): Promise<void> {
@@ -265,5 +298,126 @@ export class HomeComponent {
     }
 
     this.layoutNavigationKey.set(nextKey);
+  }
+
+  private handlePreviousNavigation(event: KeyboardEvent, currentIndex: number): boolean {
+    if (!this.isPreviousNavigationKey(event)) {
+      return false;
+    }
+
+    event.preventDefault();
+    const targetIndex = this.resolveCircularIndex(currentIndex - 1);
+    this.activateTabByIndex(targetIndex);
+    return true;
+  }
+
+  private handleNextNavigation(event: KeyboardEvent, currentIndex: number): void {
+    if (!this.isNextNavigationKey(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    const targetIndex = this.resolveCircularIndex(currentIndex + 1);
+    this.activateTabByIndex(targetIndex);
+  }
+
+  private handleHomeNavigation(event: KeyboardEvent): boolean {
+    if (!matchesKey(event, HOME_KEY_MATCHER)) {
+      return false;
+    }
+
+    event.preventDefault();
+    this.activateTabByIndex(0);
+    return true;
+  }
+
+  private handleEndNavigation(event: KeyboardEvent): boolean {
+    if (!matchesKey(event, END_KEY_MATCHER)) {
+      return false;
+    }
+
+    event.preventDefault();
+    this.activateTabByIndex(this.tabs.length - 1);
+    return true;
+  }
+
+  private isPreviousNavigationKey(event: KeyboardEvent): boolean {
+    return matchesKey(event, ARROW_LEFT_KEY_MATCHER) || matchesKey(event, ARROW_UP_KEY_MATCHER);
+  }
+
+  private isNextNavigationKey(event: KeyboardEvent): boolean {
+    return matchesKey(event, ARROW_RIGHT_KEY_MATCHER) || matchesKey(event, ARROW_DOWN_KEY_MATCHER);
+  }
+
+  private resolveCircularIndex(index: number): number {
+    const count = this.tabs.length;
+
+    if (count === 0) {
+      return 0;
+    }
+
+    return ((index % count) + count) % count;
+  }
+
+  private activateTabByIndex(index: number): void {
+    const resolvedIndex = this.resolveCircularIndex(index);
+    const target = this.tabs[resolvedIndex];
+
+    if (!target) {
+      return;
+    }
+
+    this.activateTab(target.id, this.resolveTabElementByIndex(resolvedIndex), true);
+  }
+
+  private activateTab(tab: HomeTabId, element: HTMLElement | null, focusAfterNavigation: boolean): void {
+    const current = this.activeTab();
+
+    if (current === tab) {
+      if (focusAfterNavigation) {
+        this.focusTabElement(element);
+      }
+
+      return;
+    }
+
+    this.activeTab.set(tab);
+    this.updateLayoutNavigationKeyForTab(tab);
+
+    if (focusAfterNavigation) {
+      this.focusTabElement(element);
+    }
+
+    void this.navigateToTab(tab).then(() => {
+      if (focusAfterNavigation) {
+        this.focusTabElement(element);
+      }
+    });
+  }
+
+  private resolveTabElementById(tab: HomeTabId): HTMLElement | null {
+    const index = this.tabs.findIndex((option) => option.id === tab);
+
+    if (index < 0) {
+      return null;
+    }
+
+    return this.resolveTabElementByIndex(index);
+  }
+
+  private resolveTabElementByIndex(index: number): HTMLElement | null {
+    const elements = this.tabElements?.toArray() ?? [];
+    const elementRef = elements[index] ?? null;
+    return elementRef ? elementRef.nativeElement : null;
+  }
+
+  private focusTabElement(element: HTMLElement | null): void {
+    if (!element) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      element.focus();
+    });
   }
 }

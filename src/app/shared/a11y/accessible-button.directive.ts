@@ -36,6 +36,7 @@ export class AccessibleButtonDirective {
   @Input() appAccessibleButtonChecked: boolean | null = null;
   @Input() appAccessibleButtonExpanded: boolean | null = null;
   @Input() appAccessibleButtonHasPopup: AccessibleButtonPopupValue | null = null;
+  @Input() appAccessibleButtonTabIndex: number | null = null;
   @Output() readonly appAccessibleButtonActivated = new EventEmitter<MouseEvent>();
 
   @HostBinding('attr.role')
@@ -45,7 +46,7 @@ export class AccessibleButtonDirective {
 
   @HostBinding('attr.tabindex')
   get tabIndex(): number {
-    return this.appAccessibleButtonDisabled ? TAB_INDEX_DISABLED : TAB_INDEX_ENABLED;
+    return this.resolveTabIndex();
   }
 
   @HostBinding('attr.aria-disabled')
@@ -232,6 +233,22 @@ export class AccessibleButtonDirective {
 
   private cancelSpaceActivation(): void {
     this.spaceActivationPending = false;
+  }
+
+  private resolveTabIndex(): number {
+    if (this.appAccessibleButtonDisabled) {
+      return TAB_INDEX_DISABLED;
+    }
+
+    if (this.appAccessibleButtonTabIndex === null) {
+      return TAB_INDEX_ENABLED;
+    }
+
+    if (!Number.isFinite(this.appAccessibleButtonTabIndex)) {
+      return TAB_INDEX_ENABLED;
+    }
+
+    return Math.trunc(this.appAccessibleButtonTabIndex);
   }
 
   private resolveRole(): string | null {

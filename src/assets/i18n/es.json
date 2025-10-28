@@ -213,7 +213,8 @@
     "status": {
       "arrivesIn": "Llega en {minutes} min",
       "arrivingNow": "Llegando ahora",
-      "departedAgo": "Salió hace {minutes} min"
+      "departedAgo": "Salió hace {minutes} min",
+      "progressAnnouncement": "Línea {line} hacia {destination}. {status}. {progress}% de la espera completada."
     },
     "badges": {
       "accessible": "Servicio accesible",

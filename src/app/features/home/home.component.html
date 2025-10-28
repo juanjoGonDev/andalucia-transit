@@ -20,13 +20,17 @@
               <h2 id="homeCardTitle" class="home__card-title">{{ headerTitleKey | translate }}</h2>
               <p class="home__card-subtitle">{{ heroActionKey | translate }}</p>
             </div>
-            <div class="home__tabs" role="tablist">
+            <div class="home__tabs" role="tablist" aria-orientation="horizontal">
               <div
-                *ngFor="let tab of tabs"
+                *ngFor="let tab of tabs; let index = index"
+                #tabElement
                 appAccessibleButton
                 class="home__tab"
                 appAccessibleButtonRole="tab"
+                [appAccessibleButtonTabIndex]="resolveTabFocusIndex(tab.id)"
+                [attr.tabindex]="resolveTabFocusIndex(tab.id)"
                 [attr.aria-selected]="isTabActive(tab.id)"
+                (keydown)="onTabKeydown($event, index)"
                 (appAccessibleButtonActivated)="selectTab(tab.id)"
               >
                 {{ tab.labelKey | translate }}

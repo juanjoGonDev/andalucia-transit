@@ -285,11 +285,12 @@ export const APP_CONFIG = {
         emptyUpcoming: 'stopDetail.schedule.emptyUpcoming',
         emptyPast: 'stopDetail.schedule.emptyPast'
       },
-      status: {
-        arrivesIn: 'stopDetail.status.arrivesIn',
-        arrivingNow: 'stopDetail.status.arrivingNow',
-        departedAgo: 'stopDetail.status.departedAgo'
-      },
+        status: {
+          arrivesIn: 'stopDetail.status.arrivesIn',
+          arrivingNow: 'stopDetail.status.arrivingNow',
+          departedAgo: 'stopDetail.status.departedAgo',
+          progressAnnouncement: 'stopDetail.status.progressAnnouncement'
+        },
       badges: {
         accessible: 'stopDetail.badges.accessible',
         universityOnly: 'stopDetail.badges.universityOnly'
