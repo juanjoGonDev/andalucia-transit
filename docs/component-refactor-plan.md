@@ -159,6 +159,7 @@ Each iteration must produce screenshot evidence showing identical computed outpu
 
 - Replace interactive controls with neutral containers using `AccessibleButtonDirective`.
 - Validate tab order, focus rings, pressed/expanded states, and ARIA bindings.
+- Follow WAI-ARIA tab authoring practices: unique tab IDs with `aria-controls`, roving `tabindex` cycling with arrow keys (Home/End jump support), and focus restoration through the layout context after navigation.
 - Ensure all new form controls maintain full keyboard and screen-reader parity with current behavior.
 - Run automated a11y audits (axe-core, Lighthouse) after each major migration step.
 

@@ -17,6 +17,7 @@ export class AppLayoutContextStore implements AppLayoutContext {
   private readonly navigationKeys = signal<
     ReadonlyMap<AppLayoutContentIdentifier, AppLayoutNavigationKey | null>
   >(new Map());
+  private focusMainContentHandler: (() => void) | null = null;
 
   private readonly currentSnapshot: Signal<AppLayoutContextSnapshot> = computed(() => ({
     activeContent: this.activeContent(),
@@ -74,6 +75,22 @@ export class AppLayoutContextStore implements AppLayoutContext {
   clearTabs(): void {
     this.tabs.set([]);
     this.activeTab.set(null);
+  }
+
+  setFocusMainContentHandler(handler: () => void): void {
+    this.focusMainContentHandler = handler;
+  }
+
+  clearFocusMainContentHandler(): void {
+    this.focusMainContentHandler = null;
+  }
+
+  focusMainContent(): void {
+    if (!this.focusMainContentHandler) {
+      return;
+    }
+
+    this.focusMainContentHandler();
   }
 
   snapshot(): AppLayoutContextSnapshot {

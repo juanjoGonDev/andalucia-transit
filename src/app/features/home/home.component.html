@@ -20,13 +20,20 @@
               <h2 id="homeCardTitle" class="home__card-title">{{ headerTitleKey | translate }}</h2>
               <p class="home__card-subtitle">{{ heroActionKey | translate }}</p>
             </div>
-            <div class="home__tabs" role="tablist">
+            <div class="home__tabs" role="tablist" aria-orientation="horizontal">
               <div
-                *ngFor="let tab of tabs"
+                *ngFor="let tab of tabs; let index = index"
+                #homeTabButton
                 appAccessibleButton
                 class="home__tab"
                 appAccessibleButtonRole="tab"
+                [appAccessibleButtonTabIndex]="resolveTabIndex(tab.id)"
+                [attr.tabindex]="resolveTabIndex(tab.id)"
                 [attr.aria-selected]="isTabActive(tab.id)"
+                [attr.id]="buildTabDomId(tab.id)"
+                [attr.aria-controls]="buildPanelDomId(tab.id)"
+                (focus)="onTabFocus(tab.id)"
+                (keydown)="onTabKeydown($event, index)"
                 (appAccessibleButtonActivated)="selectTab(tab.id)"
               >
                 {{ tab.labelKey | translate }}
@@ -35,13 +42,27 @@
           </div>
           <div class="home__card-body home__stack">
             <ng-container [ngSwitch]="activeTab()">
-              <div *ngSwitchCase="'search'" class="home__panel home__panel--search home__stack">
+              <div
+                *ngSwitchCase="'search'"
+                class="home__panel home__panel--search home__stack"
+                role="tabpanel"
+                [attr.id]="buildPanelDomId('search')"
+                [attr.aria-labelledby]="buildTabDomId('search')"
+                [attr.tabindex]="panelTabIndex"
+              >
                 <app-route-search-form
                   [initialSelection]="currentSelection$ | async"
                   (selectionConfirmed)="onSelectionConfirmed($event)"
                 ></app-route-search-form>
               </div>
-              <div *ngSwitchCase="'recent'" class="home__panel home__panel--recent home__stack">
+              <div
+                *ngSwitchCase="'recent'"
+                class="home__panel home__panel--recent home__stack"
+                role="tabpanel"
+                [attr.id]="buildPanelDomId('recent')"
+                [attr.aria-labelledby]="buildTabDomId('recent')"
+                [attr.tabindex]="panelTabIndex"
+              >
                 <header class="home__panel-header">
                   <div class="home__panel-heading home__stack">
                     <h3 class="home__panel-title">{{ recentStopsTitleKey | translate }}</h3>
@@ -60,7 +81,14 @@
                   (itemsStateChange)="onRecentItemsStateChange($event)"
                 ></app-home-recent-searches>
               </div>
-              <div *ngSwitchCase="'favorites'" class="home__panel home__panel--favorites home__stack">
+              <div
+                *ngSwitchCase="'favorites'"
+                class="home__panel home__panel--favorites home__stack"
+                role="tabpanel"
+                [attr.id]="buildPanelDomId('favorites')"
+                [attr.aria-labelledby]="buildTabDomId('favorites')"
+                [attr.tabindex]="panelTabIndex"
+              >
                 <header class="home__panel-header">
                   <div class="home__panel-heading home__stack">
                     <h3 class="home__panel-title">{{ favoritesTitleKey | translate }}</h3>

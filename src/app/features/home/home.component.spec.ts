@@ -14,7 +14,12 @@ import { HomeComponent } from '@features/home/home.component';
 import { HomeTabId } from '@features/home/home.types';
 import { HomeRecentSearchesComponent } from '@features/home/recent-searches/home-recent-searches.component';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
-import { AppLayoutNavigationKey } from '@shared/layout/app-layout-context.token';
+import {
+  APP_LAYOUT_CONTEXT,
+  AppLayoutContext,
+  AppLayoutContextSnapshot,
+  AppLayoutNavigationKey,
+} from '@shared/layout/app-layout-context.token';
 
 class ImmediateIntersectionObserver implements IntersectionObserver {
   readonly root: Element | Document | null = null;
@@ -78,6 +83,27 @@ class FavoritesFacadeStub {
   readonly favorites$ = of<readonly StopFavorite[]>([]);
 }
 
+class AppLayoutContextStub implements AppLayoutContext {
+  private static readonly emptySnapshot: AppLayoutContextSnapshot = {
+    activeContent: null,
+    activeNavigationKey: null,
+    tabs: [],
+    activeTab: null,
+  };
+
+  readonly registerContent = jasmine.createSpy('registerContent');
+  readonly unregisterContent = jasmine.createSpy('unregisterContent');
+  readonly configureTabs = jasmine.createSpy('configureTabs');
+  readonly setActiveTab = jasmine.createSpy('setActiveTab');
+  readonly clearTabs = jasmine.createSpy('clearTabs');
+  readonly setFocusMainContentHandler = jasmine.createSpy('setFocusMainContentHandler');
+  readonly clearFocusMainContentHandler = jasmine.createSpy('clearFocusMainContentHandler');
+  readonly focusMainContent = jasmine.createSpy('focusMainContent');
+  readonly snapshot = jasmine
+    .createSpy('snapshot')
+    .and.returnValue(AppLayoutContextStub.emptySnapshot);
+}
+
 class RouterStub {
   url = `/${APP_CONFIG.routes.home}`;
   navigate = jasmine.createSpy('navigate').and.resolveTo(true);
@@ -125,6 +151,7 @@ describe('HomeComponent', () => {
   let execution: RouteSearchExecutionStub;
   let routeStub: ActivatedRouteStub;
   let originalIntersectionObserver: typeof IntersectionObserver | undefined;
+  let layoutContext: AppLayoutContextStub;
   const originOption: StopDirectoryOption = {
     id: 'origin',
     code: '001',
@@ -163,7 +190,8 @@ describe('HomeComponent', () => {
         { provide: ActivatedRoute, useClass: ActivatedRouteStub },
         { provide: RouteSearchStateService, useClass: RouteSearchStateStub },
         { provide: RouteSearchExecutionService, useClass: RouteSearchExecutionStub },
-        { provide: FavoritesFacade, useClass: FavoritesFacadeStub }
+        { provide: FavoritesFacade, useClass: FavoritesFacadeStub },
+        { provide: APP_LAYOUT_CONTEXT, useClass: AppLayoutContextStub }
       ]
     })
       .overrideComponent(HomeComponent, {
@@ -180,6 +208,7 @@ describe('HomeComponent', () => {
     router = TestBed.inject(Router) as unknown as RouterStub;
     execution = TestBed.inject(RouteSearchExecutionService) as unknown as RouteSearchExecutionStub;
     routeStub = TestBed.inject(ActivatedRoute) as unknown as ActivatedRouteStub;
+    layoutContext = TestBed.inject(APP_LAYOUT_CONTEXT) as AppLayoutContextStub;
     fixture.detectChanges();
   });
 
@@ -217,6 +246,62 @@ describe('HomeComponent', () => {
     const recent = fixture.debugElement.queryAll(By.directive(HomeRecentSearchesStubComponent));
     expect(recent.length).toBeGreaterThan(0);
   });
+
+  it('applies aria metadata to tabs and panels', () => {
+    fixture.detectChanges();
+    const tabElements = fixture.debugElement.queryAll(By.css('.home__tab'));
+    const panelElements = fixture.debugElement.queryAll(By.css('.home__panel'));
+
+    expect(tabElements.length).toBe(3);
+    expect(panelElements.length).toBe(1);
+
+    const searchTab = tabElements[0]?.nativeElement as HTMLElement;
+    const searchPanel = fixture.debugElement.query(By.css('#home-panel-search'))
+      ?.nativeElement as HTMLElement | undefined;
+
+    expect(searchTab.getAttribute('role')).toBe('tab');
+    expect(searchTab.getAttribute('id')).toBe('home-tab-search');
+    expect(searchTab.getAttribute('aria-controls')).toBe('home-panel-search');
+    expect(searchTab.getAttribute('aria-selected')).toBe('true');
+    expect(searchTab.getAttribute('tabindex')).toBe('0');
+
+    expect(searchPanel).toBeDefined();
+
+    if (searchPanel) {
+      expect(searchPanel.getAttribute('role')).toBe('tabpanel');
+      expect(searchPanel.getAttribute('aria-labelledby')).toBe('home-tab-search');
+      expect(searchPanel.getAttribute('tabindex')).toBe('0');
+    }
+  });
+
+  it('manages roving tabindex across tabs', fakeAsync(() => {
+    fixture.detectChanges();
+    const tabElements = fixture.debugElement.queryAll(By.css('.home__tab'));
+    const searchTab = tabElements[0]?.nativeElement as HTMLElement;
+    const recentTab = tabElements[1]?.nativeElement as HTMLElement;
+
+    expect(searchTab.getAttribute('tabindex')).toBe('0');
+    expect(recentTab.getAttribute('tabindex')).toBe('-1');
+
+    searchTab.focus();
+    searchTab.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+    tick();
+    fixture.detectChanges();
+
+    expect(document.activeElement).toBe(recentTab);
+    expect(recentTab.getAttribute('tabindex')).toBe('0');
+    expect(searchTab.getAttribute('tabindex')).toBe('-1');
+    expect(router.navigate).not.toHaveBeenCalled();
+  }));
+
+  it('invokes layout focus restoration after tab activation', fakeAsync(() => {
+    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
+    router.navigate.calls.reset();
+    layoutContext.focusMainContent.calls.reset();
+    component.selectTab('recent');
+    tick();
+    expect(layoutContext.focusMainContent).toHaveBeenCalled();
+  }));
 
   it('activates the requested tab when the route path changes', () => {
     const component = fixture.componentInstance as unknown as HomeComponentTestingApi;

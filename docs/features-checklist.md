@@ -27,9 +27,9 @@ after (desktop): https://filebin.net/7fjrod0dc15mh9kf/favorites-tab-action-2025-
 after (mobile): https://filebin.net/7fjrod0dc15mh9kf/favorites-tab-action-2025-10-27T20-03-38-218Z_es_414_896_full.png
 
 ### 2025-10-28 Platform Audit Evidence
-Home – AFTER
-after (desktop): https://filebin.net/07atvutr262mha9g/home-2025-10-28T07-44-06-058Z_es_1280_800_full.png
-after (mobile): https://filebin.net/07atvutr262mha9g/home-2025-10-28T07-44-06-058Z_es_414_896_full.png
+Home Tabs – AFTER
+after (desktop): https://filebin.net/kkhvvyoifh8mhau9/home-tabs-2025-10-28T17-27-43-059Z_es_1280_800_full.png
+after (mobile): https://filebin.net/kkhvvyoifh8mhau9/home-tabs-2025-10-28T17-27-43-059Z_es_414_896_full.png
 
 Home (Recents) – AFTER
 after (desktop): https://filebin.net/yt2ohbtio6mha9k9/home-recents-2025-10-28T07-47-09-748Z_es_1280_800_full.png
