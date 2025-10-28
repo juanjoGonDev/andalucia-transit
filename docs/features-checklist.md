@@ -26,6 +26,51 @@ Favorites Tab Action – AFTER
 after (desktop): https://filebin.net/7fjrod0dc15mh9kf/favorites-tab-action-2025-10-27T20-03-38-218Z_es_1280_800_full.png
 after (mobile): https://filebin.net/7fjrod0dc15mh9kf/favorites-tab-action-2025-10-27T20-03-38-218Z_es_414_896_full.png
 
+### 2025-10-28 Platform Audit Evidence
+Home – AFTER
+after (desktop): https://filebin.net/07atvutr262mha9g/home-2025-10-28T07-44-06-058Z_es_1280_800_full.png
+after (mobile): https://filebin.net/07atvutr262mha9g/home-2025-10-28T07-44-06-058Z_es_414_896_full.png
+
+Home (Recents) – AFTER
+after (desktop): https://filebin.net/yt2ohbtio6mha9k9/home-recents-2025-10-28T07-47-09-748Z_es_1280_800_full.png
+after (mobile): https://filebin.net/yt2ohbtio6mha9k9/home-recents-2025-10-28T07-47-09-748Z_es_414_896_full.png
+
+Home (Favorites Tab) – AFTER
+after (desktop): https://filebin.net/39m1ne8wefwmha9k/home-favorites-2025-10-28T07-47-21-945Z_es_1280_800_full.png
+after (mobile): https://filebin.net/39m1ne8wefwmha9k/home-favorites-2025-10-28T07-47-21-945Z_es_414_896_full.png
+
+Route Search – AFTER
+after (desktop): https://filebin.net/7e5wl15klgemha9i/route-search-2025-10-28T07-45-29-789Z_es_1280_800_full.png
+after (mobile): https://filebin.net/7e5wl15klgemha9i/route-search-2025-10-28T07-45-29-789Z_es_414_896_full.png
+
+Route Search Results – AFTER
+after (desktop): https://filebin.net/onjhjm36ixbmha9i/route-search-results-2025-10-28T07-45-43-566Z_es_1280_800_full.png
+after (mobile): https://filebin.net/onjhjm36ixbmha9i/route-search-results-2025-10-28T07-45-43-566Z_es_414_896_full.png
+
+Favorites View – AFTER
+after (desktop): https://filebin.net/xv36cyxa4lcmha9i/favorites-2025-10-28T07-45-58-434Z_es_1280_800_full.png
+after (mobile): https://filebin.net/xv36cyxa4lcmha9i/favorites-2025-10-28T07-45-58-434Z_es_414_896_full.png
+
+Map – AFTER
+after (desktop): https://filebin.net/pcddcanb31mha9iy/map-2025-10-28T07-46-08-582Z_es_1280_800_full.png
+after (mobile): https://filebin.net/pcddcanb31mha9iy/map-2025-10-28T07-46-08-582Z_es_414_896_full.png
+
+Settings – AFTER
+after (desktop): https://filebin.net/r7lvk4nl3ymha9j8/settings-2025-10-28T07-46-20-819Z_es_1280_800_full.png
+after (mobile): https://filebin.net/r7lvk4nl3ymha9j8/settings-2025-10-28T07-46-20-819Z_es_414_896_full.png
+
+News – AFTER
+after (desktop): https://filebin.net/fvlfqtx2uxvmha9j/news-2025-10-28T07-46-31-144Z_es_1280_800_full.png
+after (mobile): https://filebin.net/fvlfqtx2uxvmha9j/news-2025-10-28T07-46-31-144Z_es_414_896_full.png
+
+Stop Detail – AFTER
+after (desktop): https://filebin.net/vs5uq8atdvmha9jr/stop-detail-2025-10-28T07-46-42-450Z_es_1280_800_full.png
+after (mobile): https://filebin.net/vs5uq8atdvmha9jr/stop-detail-2025-10-28T07-46-42-450Z_es_414_896_full.png
+
+Stop Info – AFTER
+after (desktop): https://filebin.net/jael0fllbcmha9k0/stop-info-2025-10-28T07-46-56-764Z_es_1280_800_full.png
+after (mobile): https://filebin.net/jael0fllbcmha9k0/stop-info-2025-10-28T07-46-56-764Z_es_414_896_full.png
+
 ### Route Detail Page – Accessibility and Color Harmonization
 Description: Updated line colors and text contrast for better accessibility and theme compliance.
 after (desktop): https://filebin.net/route-detail-accessibility/route-detail-after-desktop.png
