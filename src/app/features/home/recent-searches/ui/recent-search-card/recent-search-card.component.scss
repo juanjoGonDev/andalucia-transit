@@ -1,5 +1,13 @@
 :host {
   display: block;
+  --recent-search-card-secondary-text: color-mix(in srgb, var(--color-text-inverse) 85%, transparent);
+  --recent-search-card-muted-text: color-mix(in srgb, var(--color-text-inverse) 70%, transparent);
+  --recent-preview-line-background: var(--color-primary-light);
+  --recent-preview-line-foreground: var(--color-secondary);
+  --recent-preview-relative-color: var(--recent-search-card-muted-text);
+  --recent-preview-time-color: var(--color-text-inverse);
+  --recent-preview-time-previous-color: var(--color-error);
+  --recent-preview-time-next-color: var(--color-primary-light);
 }
 
 .recent-search-card__content {
@@ -17,15 +25,16 @@
   gap: 0.45rem;
   font-weight: 700;
   font-size: 1.05rem;
+  color: var(--color-text-inverse);
 }
 
 .recent-search-card__arrow {
-  opacity: 0.7;
+  color: var(--recent-search-card-secondary-text);
 }
 
 .recent-search-card__date {
   font-size: 0.9rem;
-  color: var(--color-text-inverse-soft);
+  color: var(--recent-search-card-secondary-text);
 }
 
 .recent-search-card__preview {
@@ -38,7 +47,7 @@
 
 .recent-search-card__status {
   font-size: 0.9rem;
-  color: var(--color-text-inverse-soft);
+  color: var(--recent-search-card-secondary-text);
 }
 
 .recent-search-card__status--error {
@@ -53,7 +62,7 @@
 .recent-search-card__today {
   margin-left: auto;
   margin-top: auto;
-  color: var(--color-text-inverse-soft);
+  color: color-mix(in srgb, var(--color-text-inverse) 92%, transparent);
   font-weight: 600;
   font-size: 0.85rem;
   align-self: end;
