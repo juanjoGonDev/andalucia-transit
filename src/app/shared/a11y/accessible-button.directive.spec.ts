@@ -45,7 +45,6 @@ function setKeyboardEventIdentifier(event: ExtendedKeyboardEvent, value: string)
       [appAccessibleButtonChecked]="checked"
       [appAccessibleButtonExpanded]="expanded"
       [appAccessibleButtonHasPopup]="hasPopup"
-      [appAccessibleButtonTabIndex]="tabIndex"
       (appAccessibleButtonActivated)="onActivated($event)"
     >
       Action
@@ -59,7 +58,6 @@ class HostComponent {
   checked: boolean | null = null;
   expanded: boolean | null = null;
   hasPopup: boolean | AccessibleButtonPopupToken | null = null;
-  tabIndex: number | null = null;
   readonly onActivated: jasmine.Spy<(event: MouseEvent) => void> = jasmine.createSpy();
 }
 
@@ -130,21 +128,6 @@ describe('AccessibleButtonDirective', () => {
 
     expect(nativeElement.getAttribute('tabindex')).toBe('-1');
     expect(nativeElement.getAttribute('aria-disabled')).toBe('true');
-  });
-
-  it('should expose configured tab index when provided', () => {
-    hostComponent.tabIndex = 4;
-    fixture.detectChanges();
-
-    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
-    const nativeElement = element.nativeElement as HTMLElement;
-
-    expect(nativeElement.getAttribute('tabindex')).toBe('4');
-
-    hostComponent.tabIndex = null;
-    fixture.detectChanges();
-
-    expect(nativeElement.getAttribute('tabindex')).toBe('0');
   });
 
   it('should set not-allowed cursor when disabled', () => {

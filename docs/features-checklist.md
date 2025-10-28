@@ -26,15 +26,15 @@ Favorites Tab Action – AFTER
 after (desktop): https://filebin.net/7fjrod0dc15mh9kf/favorites-tab-action-2025-10-27T20-03-38-218Z_es_1280_800_full.png
 after (mobile): https://filebin.net/7fjrod0dc15mh9kf/favorites-tab-action-2025-10-27T20-03-38-218Z_es_414_896_full.png
 
-### 2025-10-28 Home Tabs Keyboard Roving Focus and Stop Timeline Narration
-Description: Added roving focus with arrow, Home, and End key support for the home dashboard tabs and exposed progress narration for upcoming departures in the stop timeline.
-Home Tabs – AFTER
-after (desktop): https://filebin.net/qwyq2uq8h7mhaz7y/home-tabs-after-2025-10-28T19-48-47-462Z_es_1280_800_full.png
-after (mobile): https://filebin.net/qwyq2uq8h7mhaz7y/home-tabs-after-2025-10-28T19-48-47-462Z_es_414_896_full.png
+### 2025-10-28 Home Tabs Interaction Baseline Restore
+Description: Removed the roving-focus keyboard experiment and stop timeline narration to match the documented baseline behavior and visuals.
+Home Tabs AFTER revert – AFTER
+after (desktop): https://filebin.net/lmtbw6mtt6lmhb02/home-tabs-after-revert-2025-10-28T20-10-42-354Z_es_1280_800_full.png
+after (mobile): https://filebin.net/lmtbw6mtt6lmhb02/home-tabs-after-revert-2025-10-28T20-10-42-354Z_es_414_896_full.png
 
-Stop Detail Timeline – AFTER
-after (desktop): https://filebin.net/3qbxa8lx6b4mhaz8/stop-detail-after-2025-10-28T19-48-59-066Z_es_1280_800_full.png
-after (mobile): https://filebin.net/3qbxa8lx6b4mhaz8/stop-detail-after-2025-10-28T19-48-59-066Z_es_414_896_full.png
+Stop Detail AFTER revert – AFTER
+after (desktop): https://filebin.net/lmtbw6mtt6lmhb02/stop-detail-after-revert-2025-10-28T20-11-05-630Z_es_1280_800_full.png
+after (mobile): https://filebin.net/lmtbw6mtt6lmhb02/stop-detail-after-revert-2025-10-28T20-11-05-630Z_es_414_896_full.png
 
 ### Route Detail Page – Accessibility and Color Harmonization
 Description: Updated line colors and text contrast for better accessibility and theme compliance.

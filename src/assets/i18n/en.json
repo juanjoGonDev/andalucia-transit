@@ -213,8 +213,7 @@
     "status": {
       "arrivesIn": "Arrives in {minutes} min",
       "arrivingNow": "Arriving now",
-      "departedAgo": "Departed {minutes} min ago",
-      "progressAnnouncement": "Line {line} to {destination}. {status}. {progress}% of the wait complete."
+      "departedAgo": "Departed {minutes} min ago"
     },
     "badges": {
       "accessible": "Accessible bus",
