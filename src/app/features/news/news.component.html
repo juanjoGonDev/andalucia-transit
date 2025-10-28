@@ -1,47 +1,57 @@
-<div class="news" appLayoutContent [appLayoutContentNavigationKey]="layoutNavigationKey">
-  <header class="news__header">
-    <div class="news__heading">
-      <h1 class="news__title">{{ titleKey | translate }}</h1>
-      <p class="news__description">{{ descriptionKey | translate }}</p>
-    </div>
-    <div
-      appAccessibleButton
-      class="app-outline-button app-outline-button--compact news__refresh"
-      (appAccessibleButtonActivated)="refresh()"
-    >
-      <span class="material-symbols-outlined news__refresh-icon" aria-hidden="true">{{ refreshIconName }}</span>
-      {{ refreshLabelKey | translate }}
-    </div>
-  </header>
-
-  <ng-container *ngIf="articles$ | async as articles">
-    <div *ngIf="articles.length === 0" class="news__empty">
-      <p class="news__empty-message">{{ emptyKey | translate }}</p>
-    </div>
-
-    <ul *ngIf="articles.length > 0" class="news__list" role="list">
-      <li *ngFor="let article of articles; trackBy: trackArticle" class="news__item">
-        <article class="news__card">
-          <header class="news__card-header">
-            <h2 class="news__card-title">{{ article.titleKey | translate }}</h2>
-            <time class="news__card-date" [attr.datetime]="article.publishedAt">
-              {{ updatedLabelKey | translate:{ date: (article.publishedAt | date: dateFormat : timezone) } }}
-            </time>
-          </header>
-          <p class="news__card-summary">{{ article.summaryKey | translate }}</p>
-          <div class="news__card-actions">
-            <a
-              appAccessibleButton
-              class="app-solid-button app-solid-button--compact news__card-link"
-              [attr.href]="article.link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ readMoreLabelKey | translate }}
-            </a>
+<section
+  class="news app-layout__surface app-layout__surface--hero"
+  appLayoutContent
+  [appLayoutContentNavigationKey]="layoutNavigationKey"
+>
+  <div class="utility-container">
+    <div class="app-layout__body">
+      <header class="news__hero app-hero">
+        <div class="app-hero__intro">
+          <h1 class="app-hero__title">{{ titleKey | translate }}</h1>
+          <p class="app-hero__description">{{ descriptionKey | translate }}</p>
+        </div>
+        <div class="app-hero__actions">
+          <div
+            appAccessibleButton
+            class="app-outline-button app-outline-button--compact news__refresh"
+            (appAccessibleButtonActivated)="refresh()"
+          >
+            <span class="material-symbols-outlined news__refresh-icon" aria-hidden="true">{{ refreshIconName }}</span>
+            {{ refreshLabelKey | translate }}
           </div>
-        </article>
-      </li>
-    </ul>
-  </ng-container>
-</div>
+        </div>
+      </header>
+
+      <ng-container *ngIf="articles$ | async as articles">
+        <div *ngIf="articles.length === 0" class="news__empty">
+          <p class="news__empty-message">{{ emptyKey | translate }}</p>
+        </div>
+
+        <ul *ngIf="articles.length > 0" class="news__list" role="list">
+          <li *ngFor="let article of articles; trackBy: trackArticle" class="news__item">
+            <article class="news__card">
+              <header class="news__card-header">
+                <h2 class="news__card-title">{{ article.titleKey | translate }}</h2>
+                <time class="news__card-date" [attr.datetime]="article.publishedAt">
+                  {{ updatedLabelKey | translate:{ date: (article.publishedAt | date: dateFormat : timezone) } }}
+                </time>
+              </header>
+              <p class="news__card-summary">{{ article.summaryKey | translate }}</p>
+              <div class="news__card-actions">
+                <a
+                  appAccessibleButton
+                  class="app-solid-button app-solid-button--compact news__card-link"
+                  [attr.href]="article.link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ readMoreLabelKey | translate }}
+                </a>
+              </div>
+            </article>
+          </li>
+        </ul>
+      </ng-container>
+    </div>
+  </div>
+</section>

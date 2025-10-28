@@ -1,6 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { AppConfig } from '@core/config';
+import { MockDataMode, RuntimeFlagsService } from '@core/runtime/runtime-flags.service';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
+import { getMockRouteSearchHistoryEntries } from '@data/mock/home-mock-data';
 import { RouteSearchLineMatch } from '@domain/route-search/route-search-state.service';
 
 interface RouteSearchHistoryStoredSelection {
@@ -33,9 +35,20 @@ const JSON_PARSE_REVIVER = (_key: string, value: unknown): unknown => value;
 @Injectable({ providedIn: 'root' })
 export class RouteSearchHistoryStorage {
   private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
+  private readonly runtimeFlags = inject(RuntimeFlagsService);
   private memoryStore: string | null = null;
 
   load(): readonly RouteSearchHistoryStoredEntry[] {
+    const mode = this.mockDataMode();
+
+    if (mode === 'data') {
+      return getMockRouteSearchHistoryEntries();
+    }
+
+    if (mode === 'empty') {
+      return [];
+    }
+
     const raw = this.readValue();
 
     if (!raw) {
@@ -66,11 +79,19 @@ export class RouteSearchHistoryStorage {
   }
 
   save(entries: readonly RouteSearchHistoryStoredEntry[]): void {
+    if (this.isMockModeActive()) {
+      return;
+    }
+
     const payload = JSON.stringify(entries);
     this.writeValue(payload);
   }
 
   clear(): void {
+    if (this.isMockModeActive()) {
+      return;
+    }
+
     this.writeValue(null);
   }
 
@@ -206,6 +227,11 @@ export class RouteSearchHistoryStorage {
   }
 
   private writeValue(value: string | null): void {
+    if (this.isMockModeActive()) {
+      this.memoryStore = value;
+      return;
+    }
+
     if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
       this.memoryStore = value;
       return;
@@ -221,5 +247,13 @@ export class RouteSearchHistoryStorage {
 
     window.localStorage.setItem(storageKey, value);
     this.memoryStore = value;
+  }
+
+  private mockDataMode(): MockDataMode {
+    return this.runtimeFlags.mockDataMode();
+  }
+
+  private isMockModeActive(): boolean {
+    return this.mockDataMode() !== null;
   }
 }

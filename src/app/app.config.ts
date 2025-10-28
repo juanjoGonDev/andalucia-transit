@@ -11,13 +11,14 @@ import {
 } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideRouter } from '@angular/router';
+import { TitleStrategy, provideRouter } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
 import { TranslateCompiler, TranslateModule } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { routes } from '@app/app.routes';
 import { APP_CONFIG } from '@core/config';
+import { LocalizedTitleStrategy } from '@core/routing/localized-title.strategy';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,6 +26,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     { provide: LOCALE_ID, useValue: APP_CONFIG.locales.default },
     provideRouter(routes),
+    { provide: TitleStrategy, useClass: LocalizedTitleStrategy },
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimationsAsync(),
     importProvidersFrom(OverlayModule),

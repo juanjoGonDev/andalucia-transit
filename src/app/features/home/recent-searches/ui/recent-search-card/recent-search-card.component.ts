@@ -6,11 +6,6 @@ import {
   RecentSearchPreviewState
 } from '@features/home/recent-searches/recent-searches.models';
 import { RecentSearchPreviewEntryComponent } from '@features/home/recent-searches/ui/recent-search-preview-entry/recent-search-preview-entry.component';
-import {
-  RECENT_CARD_BODY_CLASSES,
-  RECENT_CARD_HOST_CLASSES,
-  RECENT_CARD_REMOVE_CLASSES
-} from '@features/home/shared/recent-card-classes';
 import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/interactive-card.component';
 
 @Component({
@@ -18,6 +13,7 @@ import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/inte
   standalone: true,
   imports: [CommonModule, TranslateModule, RecentSearchPreviewEntryComponent, InteractiveCardComponent],
   templateUrl: './recent-search-card.component.html',
+  styleUrls: ['./recent-search-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecentSearchCardComponent {
@@ -36,9 +32,6 @@ export class RecentSearchCardComponent {
 
   @Output() readonly open = new EventEmitter<void>();
   @Output() readonly remove = new EventEmitter<void>();
-  protected readonly recentCardHostClasses = RECENT_CARD_HOST_CLASSES;
-  protected readonly recentCardBodyClasses = RECENT_CARD_BODY_CLASSES;
-  protected readonly recentCardRemoveClasses = RECENT_CARD_REMOVE_CLASSES;
 
   protected trackByEntry(_: number, entry: RecentSearchPreviewEntry): string {
     return entry.id;

@@ -177,9 +177,9 @@ describe('HomeRecentSearchesComponent', () => {
 
     fixture.detectChanges();
 
-    const route = fixture.debugElement.query(By.css('.recent-card__route'));
+    const route = fixture.debugElement.query(By.css('.recent-search-card__route'));
     expect(route.nativeElement.textContent).toContain('Origin');
-    const previewContainer = fixture.debugElement.query(By.css('.recent-card__preview'));
+    const previewContainer = fixture.debugElement.query(By.css('.recent-search-card__preview'));
     expect(previewContainer).not.toBeNull();
     const line = fixture.debugElement.query(By.css('.recent-preview-entry__line'));
     expect(line.nativeElement.textContent.trim()).toBe('L1');
@@ -240,7 +240,7 @@ describe('HomeRecentSearchesComponent', () => {
     flushMicrotasks();
     fixture.detectChanges();
 
-    const status = fixture.debugElement.query(By.css('.recent-card__status--disabled'));
+    const status = fixture.debugElement.query(By.css('.recent-search-card__status--disabled'));
     expect(status).not.toBeNull();
     expect(facade.loadPreview).not.toHaveBeenCalled();
   }));
@@ -312,7 +312,7 @@ describe('HomeRecentSearchesComponent', () => {
     tick();
     fixture.detectChanges();
 
-    const button = fixture.debugElement.query(By.css('.recent-card__body'));
+    const button = fixture.debugElement.query(By.css('.interactive-card__body'));
     button.nativeElement.click();
     tick();
 
@@ -327,7 +327,7 @@ describe('HomeRecentSearchesComponent', () => {
     tick();
     fixture.detectChanges();
 
-    const removeButton = fixture.debugElement.query(By.css('.recent-card__remove'));
+    const removeButton = fixture.debugElement.query(By.css('.interactive-card__remove'));
     removeButton.nativeElement.click();
     tick();
 

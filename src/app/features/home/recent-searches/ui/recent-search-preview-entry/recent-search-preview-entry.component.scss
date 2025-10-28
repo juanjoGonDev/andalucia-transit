@@ -1,23 +1,25 @@
 :host {
   display: block;
+  --recent-preview-line-background: var(--color-primary);
+  --recent-preview-line-foreground: var(--color-surface-light);
+  --recent-preview-relative-color: var(--color-text-muted);
+  --recent-preview-time-color: var(--color-text-strong);
+  --recent-preview-time-previous-color: var(--color-error);
+  --recent-preview-time-next-color: var(--color-primary);
 }
 
 .recent-preview-entry {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: var(--space-md);
-  row-gap: var(--space-xs);
-  align-items: start;
+  row-gap: var(--space-3xs);
+  align-content: start;
   padding: 0.35rem 0;
 }
 
-.recent-preview-entry__meta {
-  display: flex;
-  flex: 1 1 auto;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-xs);
-  min-inline-size: 0;
+.recent-preview-entry__header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: var(--space-sm);
 }
 
 .recent-preview-entry__line {
@@ -26,8 +28,8 @@
   justify-content: center;
   padding: 0.125rem 0.75rem;
   border-radius: var(--radius-full);
-  background-color: var(--color-primary);
-  color: var(--color-surface-light);
+  background-color: var(--recent-preview-line-background);
+  color: var(--recent-preview-line-foreground);
   font-weight: 700;
   font-size: 0.85rem;
   letter-spacing: 0.01em;
@@ -36,32 +38,41 @@
 .recent-preview-entry__relative {
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--color-text-muted);
+  color: var(--recent-preview-relative-color);
+  white-space: normal;
+  word-break: break-word;
 }
 
 .recent-preview-entry__time {
   display: flex;
   justify-content: flex-end;
-  align-self: flex-start;
-  min-inline-size: var(--space-4xl);
+  align-items: baseline;
+  min-inline-size: clamp(var(--space-3xl), 16vw, var(--space-5xl));
   font-weight: 700;
-  font-size: 1.15rem;
-  color: var(--color-text-strong);
+  font-size: clamp(1rem, 4vw, 1.15rem);
+  color: var(--recent-preview-time-color);
   justify-self: end;
   white-space: nowrap;
   text-align: right;
 }
 
 .recent-preview-entry__time--previous {
-  color: var(--color-error);
+  color: var(--recent-preview-time-previous-color);
 }
 
 .recent-preview-entry__time--next {
-  color: var(--color-primary);
+  color: var(--recent-preview-time-next-color);
 }
 
 @media (min-width: 48rem) {
   .recent-preview-entry {
     padding: 0.45rem 0;
+  }
+}
+
+@media (max-width: 40rem) {
+  .recent-preview-entry__time {
+    justify-self: start;
+    min-inline-size: auto;
   }
 }

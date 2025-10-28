@@ -187,8 +187,6 @@ export class RouteSearchFormComponent implements OnChanges {
   readonly originLabelKey = this.translation.originLabel;
   readonly destinationLabelKey = this.translation.destinationLabel;
   readonly dateLabelKey = this.translation.dateLabel;
-  readonly originPlaceholderKey = this.translation.originPlaceholder;
-  readonly destinationPlaceholderKey = this.translation.destinationPlaceholder;
   readonly swapLabelKey = this.translation.swapLabel;
   readonly noRoutesMessageKey = this.translation.noRoutes;
   readonly favoritesGroupLabelKey = this.translation.favoritesGroupLabel;

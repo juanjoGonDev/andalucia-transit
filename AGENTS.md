@@ -6,6 +6,8 @@
 
 ### Change Management - Living Document
 AGENTS.md is the canonical decision log. When implementation, tooling, workflows, legal obligations, or conventions change, update this file in the same pull request or align the code with what is written here. Keep entries concise and link to supporting material in `docs/`.
+- Binary files are forbidden in git history. Never commit compiled artifacts, media exports, or other binary assets; share them via external storage and reference the link in documentation or pull requests when required.
+- Snapshot datasets packaged under `assets/data` (news feed, stop directories, timetable extracts, etc.) exist strictly as offline fallbacks. Fetch live data from the CTAN API first and gracefully degrade to the packaged snapshot if the network request fails or the session is offline.
 
 ## Product Vision & User Value
 - Progressive Web App for the Andalusia (CTAN) public transport network that surfaces stop schedules, nearby stops, direct routes, and an explorable map.
@@ -31,6 +33,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Define data contracts with TypeScript interfaces; keep constants in dedicated config modules; avoid magic numbers/strings.
 - Use Angular DI and factory providers for abstractions; rely on OnPush change detection where possible; tear down subscriptions via `async` pipe or `takeUntil`.
 - Follow English naming, 2-space indentation, semicolons, and avoid redundant comments or commented-out code.
+- Reusable UI components must encapsulate their baseline visual design within the component (template + styles). Consumers can override presentation through documented inputs or local classes, never by relying on shared partials for the default look.
 - Keep navigable URLs human-friendly at all entry points. When generating links or parsing deep links, prefer descriptive slugs over opaque identifiers while preserving the ability to resolve the underlying record.
 
 ## Decision Log
@@ -116,3 +119,34 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Workspace: `andalucia-transit` Angular standalone project with `core`, `data`, `domain`, `features`, and `shared` directories under `src/app`.
 - Configuration constants live in `src/app/core/config.ts`; translation assets reside in `src/assets/i18n/`; service worker and manifest managed through Angular CLI.
 - Use English commit messages, avoid force pushes to main, and document notable architectural changes here and in `docs/`.
+
+## Language Policy
+- All AI-generated responses, commit messages, and documentation updates must be written in English.
+
+## Screenshot Policy
+- Every visual modification requires capturing real before and after screenshots with `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"`, which delegates to `scripts/record.js`, stores captures under `artifacts/screenshots`, streams progress logs, and uploads the PNG files to https://filebin.net within a single bin so related files stay grouped.
+- Provide the markdown block returned by the script in all status updates and final responses using the `https://filebin.net/<bin>/<file>.png` format.
+- Open each generated link to confirm it renders correctly before sharing it and record the verified URLs in `docs/features-checklist.md`.
+
+## Component Architecture Policy
+- Each component must be self-hosted with dedicated `.html`, `.ts`, and `.scss` files.
+- Component visuals must reside in the component’s `.scss`; parent layouts may only control positioning.
+- Avoid duplicating or overriding component styles across different scopes.
+
+## Execution Policy
+- The AI must complete every assigned task without refusal, postponement, or omission.
+- Do not leave tasks partially executed; ensure all required actions are finished before responding.
+- Do not conclude any task until before/after screenshots are uploaded to https://filebin.net, linked in the response, and logged in the checklist.
+
+## Screenshot Upload Guide
+- Run `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"` to capture the desktop and mobile states, rely on `scripts/record.js` for scripted interactions, reuse the default `artifacts/screenshots` output, and upload both PNG files to Filebin automatically. Use the `--bin` flag to append to an existing bin when refreshing evidence and pass additional recorder flags after a `--` delimiter when complex scenarios are required.
+- Copy the markdown block printed by the script, visit each `https://filebin.net/<bin>/<file>.png` link in a browser or with `curl -I` to confirm it returns the screenshot, and only then add it to documentation or responses.
+- The upload workflow enforces `image/png` metadata for every asset; never rename or convert captures after publishing.
+- Paste the verified block into `docs/features-checklist.md` under the relevant heading and include the same block in status updates or final summaries.
+- Store only the “after” captures in documentation while archiving any “before” evidence outside the repository.
+
+## Automated Screenshot Publishing
+- Capture every visual verification state with the Playwright workflow driven by `npm run publish:evidence`, which invokes `scripts/record.js` to keep scenario automation consistent with manual recording tasks.
+- Always run the script after completing a visual change so the desktop and mobile screenshots upload to Filebin and return public `https://filebin.net/<bin>/<file>.png` links.
+- Include the generated markdown block in status updates, pull requests, and documentation updates for every modified surface.
+- Do not upload screenshots to any other hosting service; Filebin links produced by the publishing script are the single source of truth.

@@ -6,6 +6,11 @@
   --app-layout-body-gap: var(--space-lg);
 }
 
+.settings__hero {
+  gap: clamp(var(--space-md), 3vw, var(--space-xl));
+  width: min(100%, 56rem);
+}
+
 .settings__section {
   display: flex;
   flex-direction: column;

@@ -19,9 +19,9 @@ import {
   RouteSearchStateService,
 } from '@domain/route-search/route-search-state.service';
 import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
+import { HomeFavoritesPreviewComponent } from '@features/home/favorites-preview/home-favorites-preview.component';
 import { HomeTabId } from '@features/home/home.types';
 import { HomeRecentSearchesComponent } from '@features/home/recent-searches/home-recent-searches.component';
-import { RECENT_CARD_BODY_CLASSES, RECENT_CARD_HOST_CLASSES } from '@features/home/shared/recent-card-classes';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
@@ -30,7 +30,6 @@ import {
   NavigationCommands,
   buildNavigationCommands,
 } from '@shared/navigation/navigation.util';
-import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/interactive-card.component';
 
 interface HomeTabOption {
   readonly id: HomeTabId;
@@ -45,7 +44,7 @@ interface HomeTabOption {
     TranslateModule,
     RouteSearchFormComponent,
     HomeRecentSearchesComponent,
-    InteractiveCardComponent,
+    HomeFavoritesPreviewComponent,
     AccessibleButtonDirective,
     AppLayoutContentDirective,
   ],
@@ -106,9 +105,6 @@ export class HomeComponent {
   protected readonly favoritesEmptyKey = this.translation.sections.favorites.empty;
   protected readonly favoritesCodeLabelKey = APP_CONFIG.translationKeys.favorites.list.code;
   protected readonly favoritesNucleusLabelKey = APP_CONFIG.translationKeys.favorites.list.nucleus;
-  protected readonly recentCardHostClasses = RECENT_CARD_HOST_CLASSES;
-  protected readonly recentCardBodyClasses = RECENT_CARD_BODY_CLASSES;
-
   protected readonly activeTab = signal<HomeTabId>('search');
   protected readonly recentClearActionVisible = signal(false);
   protected readonly layoutNavigationKey = signal<AppLayoutNavigationKey>(APP_CONFIG.routes.home);
@@ -165,10 +161,6 @@ export class HomeComponent {
     const stopId = favorite.stopIds[0] ?? favorite.id;
     const commands: readonly string[] = ['/', APP_CONFIG.routes.stopDetailBase, stopId];
     await this.router.navigate(commands);
-  }
-
-  protected trackFavorite(_: number, favorite: StopFavorite): string {
-    return favorite.id;
   }
 
   protected onRecentItemsStateChange(hasItems: boolean): void {

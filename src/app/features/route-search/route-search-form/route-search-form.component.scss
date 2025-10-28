@@ -22,6 +22,26 @@
   width: 100%;
 }
 
+.route-search-form__field input::placeholder {
+  color: transparent;
+}
+
+.route-search-form__field input::-webkit-input-placeholder {
+  color: transparent;
+}
+
+.route-search-form__field input::-moz-placeholder {
+  color: transparent;
+}
+
+.route-search-form__field input:-ms-input-placeholder {
+  color: transparent;
+}
+
+.route-search-form__field input::-ms-input-placeholder {
+  color: transparent;
+}
+
 .route-search-form__field--origin {
   grid-area: origin;
 }
