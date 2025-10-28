@@ -23,8 +23,6 @@ const HREF_ATTRIBUTE = 'href' as const;
 const TAB_INDEX_ENABLED = 0 as const;
 const TAB_INDEX_DISABLED = -1 as const;
 
-export type AccessibleButtonTabIndex = typeof TAB_INDEX_ENABLED | typeof TAB_INDEX_DISABLED;
-
 @Directive({
   selector: '[appAccessibleButton]',
   standalone: true,
@@ -38,7 +36,6 @@ export class AccessibleButtonDirective {
   @Input() appAccessibleButtonChecked: boolean | null = null;
   @Input() appAccessibleButtonExpanded: boolean | null = null;
   @Input() appAccessibleButtonHasPopup: AccessibleButtonPopupValue | null = null;
-  @Input() appAccessibleButtonTabIndex: AccessibleButtonTabIndex | null = null;
   @Output() readonly appAccessibleButtonActivated = new EventEmitter<MouseEvent>();
 
   @HostBinding('attr.role')
@@ -48,15 +45,7 @@ export class AccessibleButtonDirective {
 
   @HostBinding('attr.tabindex')
   get tabIndex(): number {
-    if (this.appAccessibleButtonDisabled) {
-      return TAB_INDEX_DISABLED;
-    }
-
-    if (this.appAccessibleButtonTabIndex !== null) {
-      return this.appAccessibleButtonTabIndex;
-    }
-
-    return TAB_INDEX_ENABLED;
+    return this.appAccessibleButtonDisabled ? TAB_INDEX_DISABLED : TAB_INDEX_ENABLED;
   }
 
   @HostBinding('attr.aria-disabled')

@@ -31,9 +31,6 @@ export interface AppLayoutContext {
   readonly configureTabs: (tabs: readonly AppLayoutTabRegistration[]) => void;
   readonly setActiveTab: (identifier: AppLayoutTabIdentifier) => void;
   readonly clearTabs: () => void;
-  readonly setFocusMainContentHandler: (handler: () => void) => void;
-  readonly clearFocusMainContentHandler: () => void;
-  readonly focusMainContent: () => void;
   readonly snapshot: () => AppLayoutContextSnapshot;
 }
 
@@ -59,15 +56,6 @@ const createNoopAppLayoutContext = (): AppLayoutContext => {
       void identifier;
     },
     clearTabs: () => {
-      return;
-    },
-    setFocusMainContentHandler: (handler: () => void) => {
-      void handler;
-    },
-    clearFocusMainContentHandler: () => {
-      return;
-    },
-    focusMainContent: () => {
       return;
     },
     snapshot: () => emptySnapshot

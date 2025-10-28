@@ -3,10 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  ElementRef,
-  QueryList,
   ViewChild,
-  ViewChildren,
   computed,
   inject,
   signal,
@@ -26,25 +23,9 @@ import { HomeFavoritesPreviewComponent } from '@features/home/favorites-preview/
 import { HomeTabId } from '@features/home/home.types';
 import { HomeRecentSearchesComponent } from '@features/home/recent-searches/home-recent-searches.component';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
-import {
-  AccessibleButtonDirective,
-  AccessibleButtonTabIndex,
-} from '@shared/a11y/accessible-button.directive';
-import {
-  ARROW_DOWN_KEY_MATCHER,
-  ARROW_LEFT_KEY_MATCHER,
-  ARROW_RIGHT_KEY_MATCHER,
-  ARROW_UP_KEY_MATCHER,
-  END_KEY_MATCHER,
-  HOME_KEY_MATCHER,
-  matchesKey,
-} from '@shared/a11y/key-event-matchers';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
-import {
-  APP_LAYOUT_CONTEXT,
-  AppLayoutContext,
-  AppLayoutNavigationKey,
-} from '@shared/layout/app-layout-context.token';
+import { AppLayoutNavigationKey } from '@shared/layout/app-layout-context.token';
 import {
   NavigationCommands,
   buildNavigationCommands,
@@ -77,7 +58,6 @@ export class HomeComponent {
   private readonly execution = inject(RouteSearchExecutionService);
   private readonly favoritesFacade = inject(FavoritesFacade);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly layoutContext: AppLayoutContext = inject(APP_LAYOUT_CONTEXT);
 
   private readonly translation = APP_CONFIG.translationKeys.home;
   private readonly favoritePreviewLimit = APP_CONFIG.homeData.favoriteStops.homePreviewLimit;
@@ -126,21 +106,11 @@ export class HomeComponent {
   protected readonly favoritesCodeLabelKey = APP_CONFIG.translationKeys.favorites.list.code;
   protected readonly favoritesNucleusLabelKey = APP_CONFIG.translationKeys.favorites.list.nucleus;
   protected readonly activeTab = signal<HomeTabId>('search');
-  protected readonly focusedTab = signal<HomeTabId>('search');
   protected readonly recentClearActionVisible = signal(false);
   protected readonly layoutNavigationKey = signal<AppLayoutNavigationKey>(APP_CONFIG.routes.home);
-  protected readonly panelTabIndex = 0;
 
   @ViewChild('recentSearches')
   private recentSearchesComponent?: HomeRecentSearchesComponent;
-
-  @ViewChildren('homeTabButton', { read: ElementRef })
-  private readonly tabButtons?: QueryList<ElementRef<HTMLElement>>;
-
-  private static readonly tabDomIdPrefix = 'home-tab';
-  private static readonly panelDomIdPrefix = 'home-panel';
-  private static readonly negativeTabIndex: AccessibleButtonTabIndex = -1;
-  private static readonly enabledTabIndex: AccessibleButtonTabIndex = 0;
 
   private readonly favorites = signal<readonly StopFavorite[]>([]);
   protected readonly favoritePreview = computed(() => {
@@ -173,49 +143,13 @@ export class HomeComponent {
       return;
     }
 
-    this.focusedTab.set(tab);
     this.activeTab.set(tab);
     this.updateLayoutNavigationKeyForTab(tab);
-    void this.navigateToTab(tab).then(() => this.layoutContext.focusMainContent());
+    void this.navigateToTab(tab);
   }
 
   protected isTabActive(tab: HomeTabId): boolean {
     return this.activeTab() === tab;
-  }
-
-  protected resolveTabIndex(tab: HomeTabId): AccessibleButtonTabIndex {
-    return this.focusedTab() === tab
-      ? HomeComponent.enabledTabIndex
-      : HomeComponent.negativeTabIndex;
-  }
-
-  protected onTabKeydown(event: KeyboardEvent, index: number): void {
-    if (matchesKey(event, HOME_KEY_MATCHER)) {
-      event.preventDefault();
-      this.focusTabByIndex(0);
-      return;
-    }
-
-    if (matchesKey(event, END_KEY_MATCHER)) {
-      event.preventDefault();
-      this.focusTabByIndex(this.tabs.length - 1);
-      return;
-    }
-
-    if (matchesKey(event, ARROW_LEFT_KEY_MATCHER) || matchesKey(event, ARROW_UP_KEY_MATCHER)) {
-      event.preventDefault();
-      this.focusPreviousTab(index);
-      return;
-    }
-
-    if (matchesKey(event, ARROW_RIGHT_KEY_MATCHER) || matchesKey(event, ARROW_DOWN_KEY_MATCHER)) {
-      event.preventDefault();
-      this.focusNextTab(index);
-    }
-  }
-
-  protected onTabFocus(tab: HomeTabId): void {
-    this.focusedTab.set(tab);
   }
 
   protected async onSelectionConfirmed(selection: RouteSearchSelection): Promise<void> {
@@ -272,10 +206,6 @@ export class HomeComponent {
           this.activeTab.set(nextTab);
         }
 
-        if (this.focusedTab() !== nextTab) {
-          this.focusedTab.set(nextTab);
-        }
-
         if (this.layoutNavigationKey() !== nextNavigationKey) {
           this.layoutNavigationKey.set(nextNavigationKey);
         }
@@ -284,9 +214,7 @@ export class HomeComponent {
 
   private syncActiveTabWithRoute(): void {
     const currentPath = this.resolveRoutePath(this.router.url);
-    const currentTab = this.resolveTabFromPath(currentPath);
-    this.activeTab.set(currentTab);
-    this.focusedTab.set(currentTab);
+    this.activeTab.set(this.resolveTabFromPath(currentPath));
     this.layoutNavigationKey.set(this.resolveNavigationKeyFromPath(currentPath));
   }
 
@@ -337,39 +265,5 @@ export class HomeComponent {
     }
 
     this.layoutNavigationKey.set(nextKey);
-  }
-
-  private focusPreviousTab(currentIndex: number): void {
-    const nextIndex = currentIndex === 0 ? this.tabs.length - 1 : currentIndex - 1;
-    this.focusTabByIndex(nextIndex);
-  }
-
-  private focusNextTab(currentIndex: number): void {
-    const nextIndex = currentIndex === this.tabs.length - 1 ? 0 : currentIndex + 1;
-    this.focusTabByIndex(nextIndex);
-  }
-
-  private focusTabByIndex(index: number): void {
-    const tab = this.tabs[index] ?? null;
-
-    if (!tab) {
-      return;
-    }
-
-    this.focusedTab.set(tab.id);
-    const buttons = this.tabButtons;
-    const element = buttons?.get(index)?.nativeElement ?? null;
-
-    if (element) {
-      element.focus({ preventScroll: true });
-    }
-  }
-
-  protected buildTabDomId(tab: HomeTabId): string {
-    return `${HomeComponent.tabDomIdPrefix}-${tab}`;
-  }
-
-  protected buildPanelDomId(tab: HomeTabId): string {
-    return `${HomeComponent.panelDomIdPrefix}-${tab}`;
   }
 }

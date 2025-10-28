@@ -54,7 +54,7 @@
   --color-text-strong: var(--color-text-primary);
   --color-text-secondary: rgba(6, 15, 43, 0.6);
   --color-text-muted: #64748b;
-  --color-text-tertiary: #5a627b;
+  --color-text-tertiary: rgba(6, 15, 43, 0.5);
   --color-text-soft: rgba(6, 15, 43, 0.7);
   --color-text-inverse: #ffffff;
   --color-text-inverse-soft-strong: rgba(241, 243, 244, 0.75);

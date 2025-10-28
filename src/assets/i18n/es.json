@@ -215,9 +215,6 @@
       "arrivingNow": "Llegando ahora",
       "departedAgo": "Salió hace {minutes} min"
     },
-    "progress": {
-      "upcoming": "{minutes, plural, =0 {Llegando ahora. Progreso {percentage}% completado.} one {Llega en {minutes} minuto. Progreso {percentage}% completado.} other {Llega en {minutes} minutos. Progreso {percentage}% completado.}}"
-    },
     "badges": {
       "accessible": "Servicio accesible",
       "universityOnly": "Servicio universitario"

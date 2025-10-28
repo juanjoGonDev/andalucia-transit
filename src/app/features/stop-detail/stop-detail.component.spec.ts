@@ -4,7 +4,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, delay, of, throwError } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { StopScheduleFacade } from '@domain/stop-schedule/stop-schedule.facade';
-import { StopSchedule, StopScheduleResult, StopService } from '@domain/stop-schedule/stop-schedule.model';
+import { StopSchedule, StopScheduleResult } from '@domain/stop-schedule/stop-schedule.model';
 import { StopDirectoryFacade, StopDirectoryRecord } from '@domain/stops/stop-directory.facade';
 import {
   STOP_TIMELINE_PAST_TAB_ID,
@@ -213,33 +213,6 @@ describe('StopDetailComponent', () => {
     ]);
   }));
 
-  it('announces progress for upcoming departures', fakeAsync(() => {
-    const futureArrival = new Date(Date.now() + 5 * 60 * 1000);
-    scheduleFacade.loadStopSchedule.and.returnValue(
-      of(
-        createResult('stop-main-street', [
-          createService({
-            serviceId: 'service-1',
-            arrivalTime: futureArrival
-          })
-        ])
-      )
-    );
-
-    fixture = TestBed.createComponent(StopDetailComponent);
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-
-    const announcement = fixture.nativeElement.querySelector(
-      '.stop-detail__progress-announcement'
-    ) as HTMLElement | null;
-
-    expect(announcement?.textContent?.trim()).toBe(
-      APP_CONFIG.translationKeys.stopDetail.progress.upcoming
-    );
-  }));
-
   it('marks the past timeline tab active when no upcoming services remain', fakeAsync(() => {
     fixture = TestBed.createComponent(StopDetailComponent);
     fixture.detectChanges();
@@ -263,7 +236,7 @@ describe('StopDetailComponent', () => {
   }));
 });
 
-function createResult(stopId: string, services: readonly StopService[] = []): StopScheduleResult {
+function createResult(stopId: string): StopScheduleResult {
   const now = new Date();
   const schedule: StopSchedule = {
     stopId,
@@ -271,7 +244,7 @@ function createResult(stopId: string, services: readonly StopService[] = []): St
     stopName: 'Test Stop',
     queryDate: now,
     generatedAt: now,
-    services
+    services: []
   } as const;
 
   return {
@@ -297,20 +270,5 @@ function createDirectoryRecord(stopId: string): StopDirectoryRecord {
     nucleusId: 'sevilla',
     zone: 'A',
     location: { latitude: 37.389, longitude: -5.984 }
-  } as const;
-}
-
-function createService(
-  overrides: Pick<StopService, 'serviceId' | 'arrivalTime'>
-): StopService {
-  return {
-    serviceId: overrides.serviceId,
-    arrivalTime: overrides.arrivalTime,
-    lineId: 'line-1',
-    lineCode: 'L1',
-    direction: 0,
-    destination: 'Centro',
-    isAccessible: false,
-    isUniversityOnly: false
   } as const;
 }

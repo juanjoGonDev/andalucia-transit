@@ -185,15 +185,6 @@
                       <span class="material-symbols-outlined">school</span>
                     </span>
                   </div>
-                  <div class="stop-detail__progress-announcement app-visually-hidden">
-                    {{
-                      translationKeys.progress.upcoming
-                        | translate: {
-                            minutes: item.minutesUntilArrival,
-                            percentage: item.progressPercentage
-                          }
-                    }}
-                  </div>
                   <div class="stop-detail__progress" aria-hidden="true">
                     <div
                       class="stop-detail__progress-bar"

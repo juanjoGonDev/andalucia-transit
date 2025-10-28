@@ -1,12 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  OnDestroy,
-  ViewChild,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
@@ -42,20 +34,12 @@ const MAIN_ROLE = 'main';
     class: 'app-shell'
   }
 })
-export class AppLayoutComponent implements AfterViewInit, OnDestroy {
+export class AppLayoutComponent {
   private readonly contextStore = inject(AppLayoutContextStore);
   @ViewChild('mainContent', { static: true }) private readonly mainContent?: ElementRef<HTMLElement>;
   protected readonly mainContentId = MAIN_CONTENT_ID;
   protected readonly skipLinkLabelKey = SKIP_LINK_LABEL_KEY;
   protected readonly mainContentRole = MAIN_ROLE;
-
-  ngAfterViewInit(): void {
-    this.contextStore.setFocusMainContentHandler(() => this.focusMainContent());
-  }
-
-  ngOnDestroy(): void {
-    this.contextStore.clearFocusMainContentHandler();
-  }
 
   protected get mainContentFragment(): string {
     return `${FRAGMENT_PREFIX}${this.mainContentId}`;
