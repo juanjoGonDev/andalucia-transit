@@ -5,6 +5,8 @@
     "prepare": "node scripts/dev/prepare.mjs",
     "ng": "ng",
     "start": "ng serve",
+    "dev:mock-data": "node scripts/dev/start-with-mock-mode.mjs data",
+    "dev:mock-empty": "node scripts/dev/start-with-mock-mode.mjs empty",
     "build": "ng build",
     "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
@@ -30,7 +32,8 @@
     "deploy:prepare": "tsx scripts/deploy/run.ts",
     "test:deploy": "npm run deploy:prepare",
     "screenshot": "node scripts/screenshot.js",
-    "record": "node scripts/record.js"
+    "record": "node scripts/record.js",
+    "publish:evidence": "tsx scripts/snap-and-publish.ts"
   },
   "prettier": {
     "printWidth": 100,

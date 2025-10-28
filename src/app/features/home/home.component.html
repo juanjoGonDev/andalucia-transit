@@ -74,33 +74,12 @@
                   </div>
                 </header>
                 <ng-container *ngIf="hasFavorites(); else favoritesEmpty">
-                  <ul class="home-recent__list" role="list">
-                    <li class="home-recent__item" *ngFor="let favorite of favoritePreview(); trackBy: trackFavorite">
-                      <app-interactive-card
-                        [ngClass]="favoriteCardHostClasses"
-                        [bodyClasses]="favoriteCardBodyClasses"
-                        (primaryActivated)="openFavorite(favorite)"
-                      >
-                        <div class="home-favorite-card__content">
-                          <div class="home-favorite-card__header">
-                            <span class="home-favorite-card__name">{{ favorite.name }}</span>
-                            <span class="home-favorite-card__arrow" aria-hidden="true">→</span>
-                            <span class="home-favorite-card__location">{{ favorite.municipality }}</span>
-                          </div>
-                          <div class="home-favorite-card__details">
-                            <span class="home-favorite-card__chip">
-                              <span class="home-favorite-card__chip-label">{{ favoritesCodeLabelKey | translate }}</span>
-                              <span class="home-favorite-card__chip-value">{{ favorite.code }}</span>
-                            </span>
-                            <span class="home-favorite-card__chip">
-                              <span class="home-favorite-card__chip-label">{{ favoritesNucleusLabelKey | translate }}</span>
-                              <span class="home-favorite-card__chip-value">{{ favorite.nucleus }}</span>
-                            </span>
-                          </div>
-                        </div>
-                      </app-interactive-card>
-                    </li>
-                  </ul>
+                  <app-home-favorites-preview
+                    [favorites]="favoritePreview()"
+                    [codeLabel]="favoritesCodeLabelKey | translate"
+                    [nucleusLabel]="favoritesNucleusLabelKey | translate"
+                    (favoriteSelected)="openFavorite($event)"
+                  ></app-home-favorites-preview>
                 </ng-container>
                 <ng-template #favoritesEmpty>
                   <p class="home-recent__empty">{{ favoritesEmptyKey | translate }}</p>
