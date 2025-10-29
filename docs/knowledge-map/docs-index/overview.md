@@ -3,7 +3,7 @@ title: Docs Library Overview
 intent: Summarize existing documentation assets and their entry points
 tags: [documentation]
 last_scanned: 2025-10-21
-source_of_truth: [docs/api-reference.md, docs/api.html, docs/component-refactor-plan.md, docs/development-environment.md, docs/features-checklist.md, docs/map-data-sources.md, docs/project-plan.md, docs/ui-theme.md]
+source_of_truth: [docs/api-reference.md, docs/api.html, docs/component-refactor-plan.md, docs/development-environment.md, docs/feature-checklist.md, docs/map-data-sources.md, docs/project-plan.md, docs/ui-theme.md]
 ---
 **When to use:** Decide which document covers a question before opening the source file.
 
@@ -19,7 +19,7 @@ source_of_truth: [docs/api-reference.md, docs/api.html, docs/component-refactor-
 - `development-environment.md` → Bootstrap steps and targeted verification commands; cross-reference [`../repo-index/scripts.md`](../repo-index/scripts.md).
 
 # Feature Tracking
-- `features-checklist.md` → Completion log and QA requirements; pairs with [`../components-index/overview.md`](../components-index/overview.md#feature-coverage) and [`../cross-reference.md`](../cross-reference.md).
+- `feature-checklist.md` → Completion log and QA requirements; pairs with [`../components-index/overview.md`](../components-index/overview.md#feature-coverage) and [`../cross-reference.md`](../cross-reference.md).
 - `project-plan.md` → Active initiatives with acceptance criteria; map tasks to components via [`../components-index/overview.md`](../components-index/overview.md#open-initiatives).
 
 # Map and Data Governance

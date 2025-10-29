@@ -55,7 +55,7 @@ source_of_truth: [src/app/app.ts, src/app/features, src/app/shared, src/app/core
 ## A11y and Shared UI
 - Shared assets: `src/app/shared/a11y`, `shared/ui`, `shared/layout`.
 - Tests: Directive specs, dialog specs, form component specs.
-- Docs: `docs/features-checklist.md` accessibility tasks.
+- Docs: `docs/feature-checklist.md` accessibility tasks.
 
 ## Design System
 - Tokens: `src/styles/`, `src/styles.scss`, theme declarations.
@@ -70,7 +70,7 @@ source_of_truth: [src/app/app.ts, src/app/features, src/app/shared, src/app/core
 - Impacted files: `src/app/shared/layout`, `src/app/features/*`, `src/app/shared/ui`.
 
 ## Feature Coverage
-- Checklist: `docs/features-checklist.md` for completed scopes.
+- Checklist: `docs/feature-checklist.md` for completed scopes.
 - QA Evidence: screenshot workflow in `docs/development-environment.md` and `scripts/screenshot.js`.
 
 ## Open Initiatives

@@ -53,7 +53,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - `docs/api.html` contains a static snapshot of the CTAN open data portal describing all consumed API endpoints. Refresh it when the upstream site changes and note the update in this file.
 - `docs/api-reference.md` summarizes every CTAN REST endpoint and cross-references shared parameters for planning data combinations; keep it current when the upstream API evolves.
 - Add new documentation artifacts in `docs/` alongside a short pointer in AGENTS.md for discoverability.
-- Track feature work using the checklist at `docs/features-checklist.md` and update entries as scope evolves.
+- Track feature work using the checklist at `docs/feature-checklist.md` and update entries as scope evolves.
 
 ## Security & Privacy Practices
 - Angular safety: rely on Angular template sanitization; do not use direct DOM APIs or `DomSanitizer.bypassSecurityTrust*` unless reviewed and documented; never evaluate dynamic scripts or HTML.
@@ -126,7 +126,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 ## Screenshot Policy
 - Every visual modification requires capturing real before and after screenshots with `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"`, which delegates to `scripts/record.js`, stores captures under `artifacts/screenshots`, streams progress logs, and uploads the PNG files to https://filebin.net within a single bin so related files stay grouped.
 - Provide the markdown block returned by the script in all status updates and final responses using the `https://filebin.net/<bin>/<file>.png` format.
-- Open each generated link to confirm it renders correctly before sharing it and record the verified URLs in `docs/features-checklist.md`.
+- Open each generated link to confirm it renders correctly before sharing it and record the verified URLs in `docs/feature-checklist.md`.
 
 ## Component Architecture Policy
 - Each component must be self-hosted with dedicated `.html`, `.ts`, and `.scss` files.
@@ -142,7 +142,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Run `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"` to capture the desktop and mobile states, rely on `scripts/record.js` for scripted interactions, reuse the default `artifacts/screenshots` output, and upload both PNG files to Filebin automatically. Use the `--bin` flag to append to an existing bin when refreshing evidence and pass additional recorder flags after a `--` delimiter when complex scenarios are required.
 - Copy the markdown block printed by the script, visit each `https://filebin.net/<bin>/<file>.png` link in a browser or with `curl -I` to confirm it returns the screenshot, and only then add it to documentation or responses.
 - The upload workflow enforces `image/png` metadata for every asset; never rename or convert captures after publishing.
-- Paste the verified block into `docs/features-checklist.md` under the relevant heading and include the same block in status updates or final summaries.
+- Paste the verified block into `docs/feature-checklist.md` under the relevant heading and include the same block in status updates or final summaries.
 - Store only the “after” captures in documentation while archiving any “before” evidence outside the repository.
 
 ## Automated Screenshot Publishing
