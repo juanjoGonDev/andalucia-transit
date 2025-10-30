@@ -40,7 +40,7 @@ This backlog records only outstanding work discovered during the latest in-app r
   - _Done on 2025-10-30 – Added localized polite live region with bounded progress messaging, refreshed ES/EN strings, unit + Playwright coverage, and documented workflow in accessibility/audit shards with Filebin evidence._
 
 ### Visual Consistency
-- [ ] **Restore tertiary metadata contrast compliance** [P0] [visual] [testing]
+- [x] **Restore tertiary metadata contrast compliance** [P0] [visual] [testing]
   - **Rationale:** Tertiary text tokens reverted to low-contrast values; multiple views (stop metadata, favorites cards) now drop below WCAG 2.1 AA at 4.5:1.
   - **Repro (text only):** Desktop 1440×900, open Stop Detail; inspect `.stop-timeline__meta` text (#7a859b on #f6f7fb) with contrast tool → ~3.3:1.
   - **Observed vs Expected:** Observed ratios <4.5:1. Expected tokens meeting ≥4.5:1 for normal text per accessibility policy.
@@ -52,7 +52,7 @@ This backlog records only outstanding work discovered during the latest in-app r
   - **Tests:** Add unit tests for token exports in `src/theme/tokens.spec.ts`; augment Playwright visual check `tests/e2e/theme/contrast.spec.ts` to validate computed ratios via `window.getComputedStyle`.
   - **Affected Areas (guess):** `src/theme/tokens.ts`, styles under `src/app/features/stop-detail`, `src/app/features/favorites`, `src/app/features/routes`.
   - **Docs to Update:** `docs/ui-theme.md`, `docs/audit/contrast-report.md`, knowledge map palette references.
-
+  - _Done on 2025-10-31 – Raised `--color-text-tertiary` to `#5a627b`, documented measurements in the contrast log, and added unit plus Playwright enforcement for ≥4.5:1 ratios across surfaces._
 - [ ] **Align stop timeline spacing on tablet breakpoints** [P2] [visual]
   - **Rationale:** At 768–1024px widths the timeline cards collapse with inconsistent gutter spacing compared to design guidelines in `AGENTS.md`.
   - **Repro (text only):** Tablet 1024×768 landscape, open Stop Detail; observe `.timeline-card` gaps: inner spacing 8px vs expected 16px.

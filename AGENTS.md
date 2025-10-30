@@ -49,6 +49,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - 2025-10-19: Puppeteer tooling replaced with Playwright (Chromium-only) while preserving Cypress end-to-end coverage.
 - 2025-10-28: Home dashboard tabs use roving tabindex with the accessible button directive, directional key matchers, and focus restoration hooks; unit and Playwright coverage guard keyboard semantics and router sync.
 - 2025-10-30: Stop detail upcoming timeline broadcasts polite live-region summaries (line, destination, status, progress) via `StopDetailComponent`; keep translations under `stopDetail.announcements.progress` and unit/Playwright coverage aligned.
+- 2025-10-31: Theme token `--color-text-tertiary` locked at `#5a627b` to keep tertiary metadata ≥4.5:1 against `--color-background`; guard via `src/styles/theme-rules.spec.ts` and Playwright `tests/playwright/theme.contrast.spec.ts`.
 
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.
