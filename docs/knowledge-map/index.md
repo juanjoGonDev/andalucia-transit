@@ -2,7 +2,7 @@
 title: Knowledge Map Entry Point
 intent: Route agents to the correct shard for repository discovery
 tags: [knowledge-base]
-last_scanned: 2025-10-21
+last_scanned: 2025-10-30
 source_of_truth: [docs/knowledge-map]
 ---
 **When to use:** Always consult this table of contents before opening deeper shards.

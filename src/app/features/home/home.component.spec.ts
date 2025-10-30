@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -249,11 +249,116 @@ describe('HomeComponent', () => {
 
     expect(component.layoutNavigationKey()).toBe(APP_CONFIG.routes.homeRecent);
   });
+
+  it('applies roving tabindex to tabs', () => {
+    const tabs = fixture.debugElement.queryAll(By.css('.home__tab'));
+
+    expect(tabs.length).toBe(3);
+    expect((tabs[0].nativeElement as HTMLElement).getAttribute('tabindex')).toBe('0');
+    expect((tabs[1].nativeElement as HTMLElement).getAttribute('tabindex')).toBe('-1');
+    expect((tabs[2].nativeElement as HTMLElement).getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('handles keyboard navigation between tabs', fakeAsync(() => {
+    const tabs = fixture.debugElement.queryAll(By.css('.home__tab'));
+    const firstTab = tabs[0].nativeElement as HTMLElement;
+
+    router.navigate.calls.reset();
+
+    const arrowRightEvent = new KeyboardEvent('keydown', {
+      key: 'ArrowRight',
+      bubbles: true,
+      cancelable: true
+    });
+    firstTab.dispatchEvent(arrowRightEvent);
+    fixture.detectChanges();
+    flushMicrotasks();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/', APP_CONFIG.routes.homeRecent]);
+
+    const updatedTabs = fixture.debugElement.queryAll(By.css('.home__tab'));
+    const secondTabElement = updatedTabs[1].nativeElement as HTMLElement;
+
+    expect(secondTabElement.getAttribute('tabindex')).toBe('0');
+    expect(document.activeElement).toBe(secondTabElement);
+  }));
+
+  it('handles home and end keys within the tablist', fakeAsync(() => {
+    const tabs = fixture.debugElement.queryAll(By.css('.home__tab'));
+    const firstTab = tabs[0].nativeElement as HTMLElement;
+
+    router.navigate.calls.reset();
+
+    const endEvent = new KeyboardEvent('keydown', {
+      key: 'End',
+      bubbles: true,
+      cancelable: true
+    });
+    firstTab.dispatchEvent(endEvent);
+    fixture.detectChanges();
+    flushMicrotasks();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/', APP_CONFIG.routes.homeFavorites]);
+
+    router.navigate.calls.reset();
+
+    const latestTabs = fixture.debugElement.queryAll(By.css('.home__tab'));
+    const lastTab = latestTabs[2].nativeElement as HTMLElement;
+
+    const homeEvent = new KeyboardEvent('keydown', {
+      key: 'Home',
+      bubbles: true,
+      cancelable: true
+    });
+    lastTab.dispatchEvent(homeEvent);
+    fixture.detectChanges();
+    flushMicrotasks();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/']);
+    expect(document.activeElement).toBe(fixture.debugElement.queryAll(By.css('.home__tab'))[0].nativeElement);
+  }));
+
+  it('restores focus to the active tab after navigating away and returning', fakeAsync(() => {
+    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
+    const favorite: StopFavorite = {
+      id: 'favorite-1',
+      code: '001',
+      name: 'Favorite Stop',
+      municipality: 'Seville',
+      municipalityId: 'sev',
+      nucleus: 'Centro',
+      nucleusId: 'sev-centro',
+      consortiumId: 1,
+      stopIds: ['stop-1']
+    };
+
+    component.selectTab('favorites');
+    fixture.detectChanges();
+    flushMicrotasks();
+
+    router.navigate.calls.reset();
+
+    component.openFavorite(favorite);
+    fixture.detectChanges();
+    flushMicrotasks();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/', APP_CONFIG.routes.stopDetailBase, 'stop-1']);
+
+    router.emitNavigation(APP_CONFIG.routes.homeFavorites);
+    fixture.detectChanges();
+    flushMicrotasks();
+
+    const favoritesTab = fixture.debugElement.queryAll(By.css('.home__tab'))[2].nativeElement as HTMLElement;
+
+    expect(favoritesTab.getAttribute('tabindex')).toBe('0');
+    expect(document.activeElement).toBe(favoritesTab);
+  }));
 });
 
 interface HomeComponentTestingApi {
   onSelectionConfirmed(selection: RouteSearchSelection): Promise<void>;
   isTabActive(tab: HomeTabId): boolean;
   selectTab(tab: HomeTabId): void;
+  openFavorite(favorite: StopFavorite): Promise<void>;
   layoutNavigationKey(): AppLayoutNavigationKey;
 }

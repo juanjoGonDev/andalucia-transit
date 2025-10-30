@@ -290,6 +290,9 @@ export const APP_CONFIG = {
         arrivingNow: 'stopDetail.status.arrivingNow',
         departedAgo: 'stopDetail.status.departedAgo'
       },
+      announcements: {
+        progress: 'stopDetail.announcements.progress'
+      },
       badges: {
         accessible: 'stopDetail.badges.accessible',
         universityOnly: 'stopDetail.badges.universityOnly'
