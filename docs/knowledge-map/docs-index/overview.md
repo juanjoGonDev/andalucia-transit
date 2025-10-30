@@ -3,7 +3,7 @@ title: Docs Library Overview
 intent: Summarize existing documentation assets and their entry points
 tags: [documentation]
 last_scanned: 2025-10-30
-source_of_truth: [docs/api-reference.md, docs/api.html, docs/component-refactor-plan.md, docs/development-environment.md, docs/feature-checklist.md, docs/map-data-sources.md, docs/project-plan.md, docs/ui-theme.md, docs/accessibility/keyboard-patterns.md, docs/accessibility/stop-detail.md, docs/audit/home-dashboard.md, docs/audit/stop-detail.md, docs/audit/contrast-report.md]
+source_of_truth: [docs/api-reference.md, docs/api.html, docs/component-refactor-plan.md, docs/development-environment.md, docs/feature-checklist.md, docs/map-data-sources.md, docs/project-plan.md, docs/ui-theme.md, docs/design-system/layout.md, docs/accessibility/keyboard-patterns.md, docs/accessibility/stop-detail.md, docs/audit/home-dashboard.md, docs/audit/stop-detail.md, docs/audit/contrast-report.md]
 ---
 **When to use:** Decide which document covers a question before opening the source file.
 
@@ -14,6 +14,7 @@ source_of_truth: [docs/api-reference.md, docs/api.html, docs/component-refactor-
 # Component and Layout Plans
 - `component-refactor-plan.md` → Sequenced refactor roadmap enforcing visual parity; see [`../components-index/overview.md`](../components-index/overview.md#planned-refactors) for change notes.
 - `ui-theme.md` → Token changes for styling parity; referenced in [`../components-index/overview.md`](../components-index/overview.md#design-system).
+- `design-system/layout.md` → Spacing guidance for shared surfaces (e.g., stop timeline tablet rhythm) plus evidence logging expectations.
 
 # Deployment and Environment Docs
 - `development-environment.md` → Bootstrap steps and targeted verification commands; cross-reference [`../repo-index/scripts.md`](../repo-index/scripts.md).

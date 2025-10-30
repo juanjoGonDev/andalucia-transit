@@ -53,7 +53,7 @@ This backlog records only outstanding work discovered during the latest in-app r
   - **Affected Areas (guess):** `src/theme/tokens.ts`, styles under `src/app/features/stop-detail`, `src/app/features/favorites`, `src/app/features/routes`.
   - **Docs to Update:** `docs/ui-theme.md`, `docs/audit/contrast-report.md`, knowledge map palette references.
   - _Done on 2025-10-31 – Raised `--color-text-tertiary` to `#5a627b`, documented measurements in the contrast log, and added unit plus Playwright enforcement for ≥4.5:1 ratios across surfaces._
-- [ ] **Align stop timeline spacing on tablet breakpoints** [P2] [visual]
+- [x] **Align stop timeline spacing on tablet breakpoints** [P2] [visual]
   - **Rationale:** At 768–1024px widths the timeline cards collapse with inconsistent gutter spacing compared to design guidelines in `AGENTS.md`.
   - **Repro (text only):** Tablet 1024×768 landscape, open Stop Detail; observe `.timeline-card` gaps: inner spacing 8px vs expected 16px.
   - **Observed vs Expected:** Observed cramped metadata causing text wrapping; expected consistent 16px padding and 24px inter-card spacing across breakpoints.
@@ -65,6 +65,12 @@ This backlog records only outstanding work discovered during the latest in-app r
   - **Tests:** Update responsive visual regression in Playwright `tests/e2e/stop-detail.layout.spec.ts` to assert computed spacing.
   - **Affected Areas (guess):** `src/app/features/stop-detail/components/stop-timeline/stop-timeline.component.scss`.
   - **Docs to Update:** `docs/audit/stop-detail.md`, spacing guidelines in `docs/design-system/layout.md`.
+  - _Done on 2025-10-30 – normalized stop timeline spacing tokens, added tablet breakpoint overrides, documented measurements, and captured updated evidence._
+  - **Evidence:**
+    - Before (desktop): https://filebin.net/m8fd24w991mhdytp/stop-detail-timeline-2025-10-30T21-57-33-292Z_es_1280_800_full.png
+    - Before (tablet): https://filebin.net/j475ach25komhdyu/stop-detail-timeline-tablet-2025-10-30T21-58-19-940Z_es_1024_768_full.png
+    - After (desktop): https://filebin.net/lc4vmt0ky9mhdywz/stop-detail-timeline-2025-10-30T22-00-08-645Z_es_1280_800_full.png
+    - After (tablet): https://filebin.net/4ikg3dm0akrmhdyx/stop-detail-timeline-tablet-2025-10-30T22-00-34-058Z_es_1024_768_full.png
 
 ### Functional Behaviour
 - [ ] **Persist Home tab selection across navigation cycles** [P1] [functional]
