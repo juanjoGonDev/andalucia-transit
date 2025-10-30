@@ -6,12 +6,12 @@ This backlog records only outstanding work discovered during the latest in-app r
 ## Conventions
 - **Priority**: P0 (critical), P1 (important), P2 (nice-to-have)
 - **Tags**: [accessibility], [visual], [functional], [docs], [testing], [i18n], [tooling]
-- **Evidence Policy**: No image uploads. Document observations with viewport size, reproduction steps, expected versus actual behaviour, relevant selectors/roles, color contrast measurements, and a reasoned fix aligned with `AGENTS.md`.
+- **Evidence Policy**: Capture BEFORE/AFTER desktop (≥1280×800) and mobile (414×896) screenshots with `npm run publish:evidence`, verify Filebin links, and supplement with textual notes (viewport, reproduction, expected vs actual, selectors, contrast).
 
 ## Backlog (Pending Items Only)
 
 ### Accessibility
-- [ ] **Reinstate structured keyboard roving for Home dashboard tabs** [P0] [accessibility] [functional]
+- [x] **Reinstate structured keyboard roving for Home dashboard tabs** [P0] [accessibility] [functional]
   - **Rationale:** Current implementation falls back to basic buttons, violating the composite control guidance in `AGENTS.md` and breaking Arrow/Home/End navigation for keyboard and assistive tech users.
   - **Repro (text only):** Desktop 1440×900, focus the Home tablist with `Tab`, press ArrowRight repeatedly; observe focus leaves the tablist instead of moving between tabs.
   - **Observed vs Expected:** Observed: focus jumps to page content, active indicator does not move. Expected: roving tabindex keeps focus inside the tablist, updating the active tab without DOM focus leakage.
@@ -20,11 +20,12 @@ This backlog records only outstanding work discovered during the latest in-app r
   - **Acceptance Criteria (measurable):**
     1) ArrowLeft/ArrowRight navigate between visible tabs without escaping the tablist; Home/End jump to first/last tab.
     2) Focus indicator remains visible (≥3:1 contrast) on the active tab after keyboard interaction and after returning from routed sub-views.
-  - **Tests:** Extend `home-dashboard-tabs.component.spec.ts` with directional key unit tests; add Playwright flow in `tests/e2e/home/tabs.keyboard.spec.ts` asserting focus order.
-  - **Affected Areas (guess):** `src/app/features/home/components/home-dashboard-tabs/*`, `src/app/shared/directives/accessible-button/*`, `src/app/shared/utils/keyboard/*`.
+  - **Tests:** Extend `home.component.spec.ts` with directional key unit tests; add Playwright flow in `tests/playwright/home-tabs.keyboard.spec.ts` asserting focus order.
+  - **Affected Areas (guess):** `src/app/features/home/home.component.*`, `src/app/shared/a11y/*`.
   - **Docs to Update:** `docs/audit/home-dashboard.md`, `docs/accessibility/keyboard-patterns.md`, `AGENTS.md` decision log.
+  - _Done on 2025-10-28 – reinstated roving tabindex via accessible-button overrides, added keyboard matchers, focus restoration, unit coverage, and Playwright navigation checks._
 
-- [ ] **Deliver concise live-region updates for stop timeline progress** [P1] [accessibility]
+- [x] **Deliver concise live-region updates for stop timeline progress** [P1] [accessibility]
   - **Rationale:** Screen reader users receive no progress cues for upcoming departures, conflicting with the narration expectations captured in previous audits.
   - **Repro (text only):** Mobile 414×896 with VoiceOver, open Stop Detail, toggle between departures while timeline updates; no announcements occur.
   - **Observed vs Expected:** Observed: silent updates. Expected: polite live region announces percentage/status once per change without duplicating static labels.
@@ -33,9 +34,10 @@ This backlog records only outstanding work discovered during the latest in-app r
   - **Acceptance Criteria (measurable):**
     1) Live region announces progress deltas in ES and EN only when underlying data changes.
     2) VoiceOver/NVDA testing confirms no double reading of static labels or percentages.
-  - **Tests:** Add unit coverage for the timeline service/controller verifying emission conditions; include axe-core assertion in Playwright `tests/e2e/stop-detail.accessibility.spec.ts` checking for exactly one live region with correct politeness.
+  - **Tests:** Add unit coverage for the timeline service/controller verifying emission conditions; include axe-core assertion in Playwright `tests/playwright/stop-detail.accessibility.spec.ts` checking for exactly one live region with correct politeness.
   - **Affected Areas (guess):** `src/app/features/stop-detail/components/stop-timeline/*`, `src/assets/i18n/es.json`, `src/assets/i18n/en.json`.
   - **Docs to Update:** `docs/accessibility/stop-detail.md`, `docs/feature-checklist.md` audit notes, `AGENTS.md` accessibility section.
+  - _Done on 2025-10-30 – Added localized polite live region with bounded progress messaging, refreshed ES/EN strings, unit + Playwright coverage, and documented workflow in accessibility/audit shards with Filebin evidence._
 
 ### Visual Consistency
 - [ ] **Restore tertiary metadata contrast compliance** [P0] [visual] [testing]

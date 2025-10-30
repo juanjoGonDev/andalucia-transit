@@ -3,7 +3,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  QueryList,
   ViewChild,
+  ViewChildren,
   computed,
   inject,
   signal,
@@ -24,6 +26,13 @@ import { HomeTabId } from '@features/home/home.types';
 import { HomeRecentSearchesComponent } from '@features/home/recent-searches/home-recent-searches.component';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import {
+  ARROW_LEFT_KEY_MATCHER,
+  ARROW_RIGHT_KEY_MATCHER,
+  END_KEY_MATCHER,
+  HOME_KEY_MATCHER,
+  matchesKey,
+} from '@shared/a11y/key-event-matchers';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import { AppLayoutNavigationKey } from '@shared/layout/app-layout-context.token';
 import {
@@ -35,6 +44,12 @@ interface HomeTabOption {
   readonly id: HomeTabId;
   readonly labelKey: string;
 }
+
+const TAB_ROLE = 'tab' as const;
+const ACTIVE_TAB_INDEX = 0 as const;
+const INACTIVE_TAB_INDEX = -1 as const;
+const STEP_PREVIOUS = -1 as const;
+const STEP_NEXT = 1 as const;
 
 @Component({
   selector: 'app-home',
@@ -94,6 +109,7 @@ export class HomeComponent {
     { id: 'recent', labelKey: this.translation.tabs.recent },
     { id: 'favorites', labelKey: this.translation.tabs.favorites },
   ];
+  protected readonly tabRole = TAB_ROLE;
   protected readonly summaryTitleKey = this.translation.summary.lastSearch;
   protected readonly summarySeeAllKey = this.translation.summary.seeAll;
   protected readonly summaryEmptyKey = this.translation.summary.empty;
@@ -111,6 +127,9 @@ export class HomeComponent {
 
   @ViewChild('recentSearches')
   private recentSearchesComponent?: HomeRecentSearchesComponent;
+
+  @ViewChildren('homeTabButton', { read: AccessibleButtonDirective })
+  private tabButtons?: QueryList<AccessibleButtonDirective>;
 
   private readonly favorites = signal<readonly StopFavorite[]>([]);
   protected readonly favoritePreview = computed(() => {
@@ -132,6 +151,8 @@ export class HomeComponent {
 
   protected readonly currentSelection$ = this.routeSearchState.selection$;
 
+  private pendingTabFocusRestore = false;
+
   constructor() {
     this.observeFavorites();
     this.syncActiveTabWithRoute();
@@ -140,11 +161,13 @@ export class HomeComponent {
 
   protected selectTab(tab: HomeTabId): void {
     if (this.activeTab() === tab) {
+      this.queueFocusOnTab(tab);
       return;
     }
 
     this.activeTab.set(tab);
     this.updateLayoutNavigationKeyForTab(tab);
+    this.queueFocusOnTab(tab);
     void this.navigateToTab(tab);
   }
 
@@ -154,13 +177,13 @@ export class HomeComponent {
 
   protected async onSelectionConfirmed(selection: RouteSearchSelection): Promise<void> {
     const commands = this.execution.prepare(selection);
-    await this.router.navigate(commands);
+    await this.navigate(commands);
   }
 
   protected async openFavorite(favorite: StopFavorite): Promise<void> {
     const stopId = favorite.stopIds[0] ?? favorite.id;
     const commands: readonly string[] = ['/', APP_CONFIG.routes.stopDetailBase, stopId];
-    await this.router.navigate(commands);
+    await this.navigate(commands);
   }
 
   protected onRecentItemsStateChange(hasItems: boolean): void {
@@ -181,7 +204,40 @@ export class HomeComponent {
     await this.navigate(this.favoritesCommands);
   }
 
-  private async navigate(commands: NavigationCommands): Promise<void> {
+  protected tabButtonTabIndex(tab: HomeTabId): number {
+    return this.activeTab() === tab ? ACTIVE_TAB_INDEX : INACTIVE_TAB_INDEX;
+  }
+
+  protected onTabKeydown(event: KeyboardEvent, index: number): void {
+    if (matchesKey(event, ARROW_LEFT_KEY_MATCHER)) {
+      event.preventDefault();
+      this.activateRelativeTab(index, STEP_PREVIOUS);
+      return;
+    }
+
+    if (matchesKey(event, ARROW_RIGHT_KEY_MATCHER)) {
+      event.preventDefault();
+      this.activateRelativeTab(index, STEP_NEXT);
+      return;
+    }
+
+    if (matchesKey(event, HOME_KEY_MATCHER)) {
+      event.preventDefault();
+      this.activateTabByIndex(0);
+      return;
+    }
+
+    if (matchesKey(event, END_KEY_MATCHER)) {
+      event.preventDefault();
+      this.activateTabByIndex(this.tabs.length - 1);
+    }
+  }
+
+  private async navigate(commands: NavigationCommands, trackFocusRestore = true): Promise<void> {
+    if (trackFocusRestore && !this.isHomeTabCommand(commands)) {
+      this.pendingTabFocusRestore = true;
+    }
+
     await this.router.navigate(commands);
   }
 
@@ -208,6 +264,11 @@ export class HomeComponent {
 
         if (this.layoutNavigationKey() !== nextNavigationKey) {
           this.layoutNavigationKey.set(nextNavigationKey);
+        }
+
+        if (this.pendingTabFocusRestore && this.isHomeTabRoute(path)) {
+          this.pendingTabFocusRestore = false;
+          this.queueFocusOnTab(nextTab);
         }
       });
   }
@@ -254,7 +315,7 @@ export class HomeComponent {
       return;
     }
 
-    await this.router.navigate(commands);
+    await this.navigate(commands, false);
   }
 
   private updateLayoutNavigationKeyForTab(tab: HomeTabId): void {
@@ -265,5 +326,87 @@ export class HomeComponent {
     }
 
     this.layoutNavigationKey.set(nextKey);
+  }
+
+  private activateRelativeTab(index: number, step: number): void {
+    const total = this.tabs.length;
+
+    if (total === 0) {
+      return;
+    }
+
+    const normalized = (index + step + total) % total;
+    this.activateTabByIndex(normalized);
+  }
+
+  private activateTabByIndex(index: number): void {
+    const tab = this.tabs[index];
+
+    if (!tab) {
+      return;
+    }
+
+    this.selectTab(tab.id);
+  }
+
+  private queueFocusOnTab(tab: HomeTabId): void {
+    this.schedule(() => this.focusTabById(tab));
+  }
+
+  private focusTabById(tab: HomeTabId): void {
+    const index = this.findTabIndex(tab);
+
+    if (index < 0) {
+      return;
+    }
+
+    this.focusTabByIndex(index);
+  }
+
+  private focusTabByIndex(index: number): void {
+    const directives = this.tabButtons;
+
+    if (!directives) {
+      return;
+    }
+
+    const collection = directives.toArray();
+    const directive = collection[index];
+
+    if (!directive) {
+      return;
+    }
+
+    directive.focus();
+  }
+
+  private findTabIndex(tab: HomeTabId): number {
+    return this.tabs.findIndex((option) => option.id === tab);
+  }
+
+  private isHomeTabRoute(path: string | null | undefined): boolean {
+    if (!path) {
+      return false;
+    }
+
+    return this.homeTabRoutes.has(path);
+  }
+
+  private isHomeTabCommand(commands: NavigationCommands): boolean {
+    for (const segment of commands) {
+      if (!segment || segment === '/') {
+        continue;
+      }
+
+      if (this.homeTabRoutes.has(segment)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private schedule(callback: () => void): void {
+    queueMicrotask(callback);
   }
 }

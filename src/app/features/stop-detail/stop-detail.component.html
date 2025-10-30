@@ -142,6 +142,13 @@
                 </p>
               </div>
             </header>
+            <div
+              *ngIf="timelineAnnouncement$ | async as announcement"
+              class="app-visually-hidden stop-detail__live-region"
+              aria-live="polite"
+            >
+              {{ announcement }}
+            </div>
             <ng-container *ngIf="viewModel.upcoming.length; else emptyUpcoming">
               <ul class="stop-detail__list">
                 <li

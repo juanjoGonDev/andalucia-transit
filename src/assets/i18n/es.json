@@ -215,6 +215,9 @@
       "arrivingNow": "Llegando ahora",
       "departedAgo": "Salió hace {minutes} min"
     },
+    "announcements": {
+      "progress": "Servicio {lineCode} hacia {destination}. {statusText}. Progreso al {percentage}%"
+    },
     "badges": {
       "accessible": "Servicio accesible",
       "universityOnly": "Servicio universitario"

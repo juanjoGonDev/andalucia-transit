@@ -47,6 +47,8 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - 2025-10-16: Deployment verification relies on `npm run deploy:prepare`, which mirrors the GitHub Pages build and fallback creation. Run `npm run test:deploy` in pull requests that modify deployment workflows or `scripts/deploy/*` utilities.
 - 2025-10-21: Angular unit tests default to the Playwright-managed `ChromeHeadlessNoSandbox` launcher with headless flags forced and watch mode disabled (`angular.json`, `karma.conf.js`); use `ng test --watch` to opt back into the interactive runner when needed.
 - 2025-10-19: Puppeteer tooling replaced with Playwright (Chromium-only) while preserving Cypress end-to-end coverage.
+- 2025-10-28: Home dashboard tabs use roving tabindex with the accessible button directive, directional key matchers, and focus restoration hooks; unit and Playwright coverage guard keyboard semantics and router sync.
+- 2025-10-30: Stop detail upcoming timeline broadcasts polite live-region summaries (line, destination, status, progress) via `StopDetailComponent`; keep translations under `stopDetail.announcements.progress` and unit/Playwright coverage aligned.
 
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.

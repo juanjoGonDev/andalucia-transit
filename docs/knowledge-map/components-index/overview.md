@@ -2,7 +2,7 @@
 title: Components and Features Index
 intent: Highlight major application features, their files, and verification hooks
 tags: [angular,features,testing]
-last_scanned: 2025-10-21
+last_scanned: 2025-10-30
 source_of_truth: [src/app/app.ts, src/app/features, src/app/shared, src/app/core, tests/playwright, cypress/e2e]
 ---
 **When to use:** Understand which files deliver a feature, its supporting services, and associated tests.
@@ -37,6 +37,7 @@ source_of_truth: [src/app/app.ts, src/app/features, src/app/shared, src/app/core
 - Stop detail: `src/app/features/stop-detail`, `stop-info`, domain `stop-schedule` and `stops` modules.
 - Data: `stop-schedule.api-service.ts`, `stop-directory.service.ts`.
 - Tests: Feature specs plus stop facades/services specs.
+- Docs: [`../docs-index/overview.md`](../docs-index/overview.md#accessibility-guidance) → `accessibility/stop-detail.md`, [`../docs-index/overview.md`](../docs-index/overview.md#audit-notes) → `audit/stop-detail.md`.
 
 ## News Feed
 - Files: `src/app/features/news`.

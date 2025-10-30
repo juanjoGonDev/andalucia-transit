@@ -2,8 +2,8 @@
 title: Docs Library Overview
 intent: Summarize existing documentation assets and their entry points
 tags: [documentation]
-last_scanned: 2025-10-21
-source_of_truth: [docs/api-reference.md, docs/api.html, docs/component-refactor-plan.md, docs/development-environment.md, docs/feature-checklist.md, docs/map-data-sources.md, docs/project-plan.md, docs/ui-theme.md]
+last_scanned: 2025-10-30
+source_of_truth: [docs/api-reference.md, docs/api.html, docs/component-refactor-plan.md, docs/development-environment.md, docs/feature-checklist.md, docs/map-data-sources.md, docs/project-plan.md, docs/ui-theme.md, docs/accessibility/keyboard-patterns.md, docs/accessibility/stop-detail.md, docs/audit/home-dashboard.md, docs/audit/stop-detail.md]
 ---
 **When to use:** Decide which document covers a question before opening the source file.
 
@@ -21,6 +21,14 @@ source_of_truth: [docs/api-reference.md, docs/api.html, docs/component-refactor-
 # Feature Tracking
 - `feature-checklist.md` → Completion log and QA requirements; pairs with [`../components-index/overview.md`](../components-index/overview.md#feature-coverage) and [`../cross-reference.md`](../cross-reference.md).
 - `project-plan.md` → Active initiatives with acceptance criteria; map tasks to components via [`../components-index/overview.md`](../components-index/overview.md#open-initiatives).
+
+# Accessibility Guidance
+- `accessibility/keyboard-patterns.md` → Interaction expectations for composites, including home tablist roving focus.
+- `accessibility/stop-detail.md` → Live timeline narration workflow, manual/automated QA, and evidence links.
+
+# Audit Notes
+- `audit/home-dashboard.md` → Textual verification for home dashboard keyboard behaviour; aligns with `accessibility/keyboard-patterns.md`.
+- `audit/stop-detail.md` → Accessibility audit for stop timeline progress narration with QA steps and evidence.
 
 # Map and Data Governance
 - `map-data-sources.md` → Licensing, caching, and consent for mapping; links to [`../data-index/overview.md`](../data-index/overview.md#mapping-and-geolocation).
