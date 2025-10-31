@@ -1,10 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { DateTime } from 'luxon';
-import { map, Observable, shareReplay } from 'rxjs';
-
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
-import { AppConfig } from '../../core/config';
-import { ApiPublicHoliday, HolidayCalendarApiService } from './holiday-calendar.api-service';
+import { Observable, map, shareReplay } from 'rxjs';
+import { AppConfig } from '@core/config';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
+import { ApiPublicHoliday, HolidayCalendarApiService } from '@data/holidays/holiday-calendar.api-service';
 
 export interface HolidayMatch {
   readonly date: Date;

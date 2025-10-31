@@ -30,6 +30,40 @@ Retrieves the full list of national and regional public holidays for the request
 
 The integration must display CTAN data attribution unchanged and cite the Nager.Date source in documentation when referencing holiday-aware behaviour.
 
+### GET https://api.ctan.es/v1/noticias/feed — CTAN news feed
+
+Delivers the latest announcements from the CTAN open data portal. The endpoint mirrors the snapshot schema packaged with the application and is the primary data source for the News feature.
+
+- **Provider:** Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía (https://www.ctan.es/noticias)
+- **Usage:** `NewsFeedService` requests this endpoint first and caches the parsed articles with `shareReplay({ bufferSize: 1, refCount: true })` for the session. Consumers receive fresh data whenever connectivity allows.
+- **Fallback:** When the request fails or the session is offline, the service transparently loads the packaged snapshot from `assets/data/news/feed.json` and emits that dataset instead.
+
+### assets/data/news/feed.json — CTAN news snapshot fallback
+
+Provides a pre-generated list of recent announcements baked into the application bundle for offline resilience. The snapshot exposes metadata alongside individual article descriptors and matches the remote feed schema exactly.
+
+- **Distribution:** Static JSON snapshot served from `assets/data/news/feed.json` with `generatedAt`, `timezone`, and `providerName` metadata.
+- **Usage:** Loaded by `NewsFeedService` only when the live feed is unreachable; cached by the Angular service worker (`ngsw-config.json`) so offline sessions reuse the latest packaged snapshot until a redeploy supplies fresher data.
+- **Refresh cadence:** Snapshot regenerated during content refresh runs; update `metadata.generatedAt` when sourcing a newer feed extract.
+
+**Article schema**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | String | Stable identifier used as the translation prefix and trackBy key. |
+| titleKey | String | Translation key for the localized headline stored in `assets/i18n`. |
+| summaryKey | String | Translation key for the localized summary stored in `assets/i18n`. |
+| link | String | External URL pointing to the canonical CTAN announcement. |
+| publishedAt | String | ISO 8601 timestamp in the `metadata.timezone` zone used for chronological sorting. |
+
+**Metadata fields**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| generatedAt | String | ISO 8601 timestamp describing when the snapshot file was produced. |
+| timezone | String | IANA timezone identifier applied to all article timestamps. |
+| providerName | String | Localized attribution string displayed to users. |
+
 ## Endpoint catalog
 
 ### Abreviaturas
@@ -2771,6 +2805,7 @@ Datos de una parada dado su identificador
 - **Permissions:** Todos
 - **Examples:** Ejemplo de uso: `http://api.ctan.es/v1/Consorcios/7/paradas/56`
 - **Source:** v1/recursos/paradas.php
+- **App usage:** La vista de información de parada consulta este recurso añadiendo el parámetro `lang` (`ES` o `EN`) para mostrar el nombre, zona, correspondencias y notas de la parada. Si la petición falla, el cliente reutiliza el snapshot del directorio de paradas para ofrecer los datos básicos en modo sin conexión.
 
 **Parameters**
 

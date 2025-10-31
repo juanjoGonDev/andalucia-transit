@@ -1,14 +1,15 @@
-import { ChangeDetectionStrategy, Component, TrackByFunction, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { ChangeDetectionStrategy, Component, TrackByFunction, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-
-import { SectionComponent } from '../../shared/ui/section/section.component';
-import { LanguageService } from '../../core/services/language.service';
-import { APP_CONFIG, SupportedLanguage } from '../../core/config';
-import { LanguageOption } from '../../core/interfaces/language-option.interface';
-import { APP_VERSION } from '../../core/tokens/app-version.token';
-import { RouteSearchPreferencesService } from '../../domain/route-search/route-search-preferences.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { APP_CONFIG, SupportedLanguage } from '@core/config';
+import { LanguageOption } from '@core/interfaces/language-option.interface';
+import { LanguageService } from '@core/services/language.service';
+import { APP_VERSION } from '@core/tokens/app-version.token';
+import { RouteSearchPreferencesService } from '@domain/route-search/route-search-preferences.service';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
+import { SectionComponent } from '@shared/ui/section/section.component';
 
 interface LanguageItem extends LanguageOption {
   readonly isActive: boolean;
@@ -17,7 +18,13 @@ interface LanguageItem extends LanguageOption {
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, TranslateModule, SectionComponent],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    SectionComponent,
+    AccessibleButtonDirective,
+    AppLayoutContentDirective
+  ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -28,7 +35,10 @@ export class SettingsComponent {
   private readonly routeSearchPreferences = inject(RouteSearchPreferencesService);
 
   private readonly translation = APP_CONFIG.translationKeys.settings;
+  protected readonly layoutNavigationKey = APP_CONFIG.routes.settings;
 
+  protected readonly titleKey = this.translation.title;
+  protected readonly descriptionKey = this.translation.description;
   protected readonly languageSectionTitleKey = this.translation.sections.language.title;
   protected readonly languageDescriptionKey = this.translation.sections.language.description;
   protected readonly languageActionLabelKey = this.translation.sections.language.actionLabel;

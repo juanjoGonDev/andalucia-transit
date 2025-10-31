@@ -1,31 +1,32 @@
 import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, firstValueFrom, of } from 'rxjs';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-
-import { RouteSearchFormComponent } from './route-search-form.component';
-import {
-  StopDirectoryOption,
-  StopDirectoryService,
-  StopDirectoryStopSignature,
-  StopSearchRequest
-} from '../../../data/stops/stop-directory.service';
-import {
-  StopConnection,
-  StopConnectionsService,
-  STOP_CONNECTION_DIRECTION,
-  StopConnectionDirection,
-  buildStopConnectionKey
-} from '../../../data/route-search/stop-connections.service';
-import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
-import { NearbyStopResult, NearbyStopsService } from '../../../core/services/nearby-stops.service';
+import { APP_CONFIG } from '@core/config';
+import { GeolocationService } from '@core/services/geolocation.service';
 import {
   NearbyStopOption,
   NearbyStopOptionsService
-} from '../../../core/services/nearby-stop-options.service';
-import { GeolocationService } from '../../../core/services/geolocation.service';
-import { APP_CONFIG } from '../../../core/config';
-import { StopFavoritesService, StopFavorite } from '../../../domain/stops/stop-favorites.service';
+} from '@core/services/nearby-stop-options.service';
+import { NearbyStopResult, NearbyStopsService } from '@core/services/nearby-stops.service';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
+import {
+  STOP_CONNECTION_DIRECTION,
+  StopConnection,
+  StopConnectionDirection,
+  StopConnectionsFacade,
+  buildStopConnectionKey,
+  mergeStopConnectionMaps
+} from '@domain/route-search/stop-connections.facade';
+import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
+import {
+  StopDirectoryFacade,
+  StopDirectoryOption,
+  StopDirectoryStopSignature,
+  StopSearchRequest
+} from '@domain/stops/stop-directory.facade';
+import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 
 const ORIGIN_OPTION: StopDirectoryOption = {
   id: '7:origin-stop',
@@ -83,6 +84,14 @@ class DirectoryStub {
   getOptionByStopId(stopId: string) {
     return of(this.options.get(stopId) ?? null);
   }
+
+  getOptionByStopSignature(consortiumId: number, stopId: string) {
+    const match = Array.from(this.options.values()).find(
+      (option) => option.consortiumId === consortiumId && option.stopIds.includes(stopId)
+    );
+
+    return of(match ?? null);
+  }
 }
 
 class ConnectionsStub {
@@ -102,6 +111,12 @@ class ConnectionsStub {
   ) {
     const key = this.buildKey(signatures, direction);
     return of(this.responses.get(key) ?? new Map());
+  }
+
+  mergeConnections(
+    maps: readonly ReadonlyMap<string, StopConnection>[]
+  ): ReadonlyMap<string, StopConnection> {
+    return mergeStopConnectionMaps(maps);
   }
 
   private buildKey(
@@ -156,9 +171,68 @@ class NearbyStopOptionsStub {
   }
 }
 
-class FavoritesStub {
-  readonly favorites$ = new BehaviorSubject<readonly StopFavorite[]>([]);
-  toggle = jasmine.createSpy('toggle');
+class FavoritesFacadeStub {
+  private favoritesIndex = new Map<string, StopFavorite>();
+  private readonly favoritesSubject = new BehaviorSubject<readonly StopFavorite[]>([]);
+  readonly favorites$ = this.favoritesSubject.asObservable();
+
+  add(option: StopDirectoryOption): void {
+    if (this.favoritesIndex.has(option.id)) {
+      return;
+    }
+
+    const next = [...this.favoritesSubject.value, this.toFavorite(option)];
+    this.setFavorites(next);
+  }
+
+  remove(id: StopFavorite['id']): void {
+    if (!this.favoritesIndex.has(id)) {
+      return;
+    }
+
+    const next = this.favoritesSubject.value.filter((favorite) => favorite.id !== id);
+    this.setFavorites(next);
+  }
+
+  clear(): void {
+    if (!this.favoritesSubject.value.length) {
+      return;
+    }
+
+    this.setFavorites([]);
+  }
+
+  toggle(option: StopDirectoryOption): void {
+    if (this.favoritesIndex.has(option.id)) {
+      this.remove(option.id);
+      return;
+    }
+
+    this.add(option);
+  }
+
+  isFavorite(id: StopFavorite['id']): boolean {
+    return this.favoritesIndex.has(id);
+  }
+
+  private setFavorites(favorites: readonly StopFavorite[]): void {
+    this.favoritesIndex = new Map(favorites.map((favorite) => [favorite.id, favorite] as const));
+    this.favoritesSubject.next(favorites);
+  }
+
+  private toFavorite(option: StopDirectoryOption): StopFavorite {
+    return {
+      id: option.id,
+      code: option.code,
+      name: option.name,
+      municipality: option.municipality,
+      municipalityId: option.municipalityId,
+      nucleus: option.nucleus,
+      nucleusId: option.nucleusId,
+      consortiumId: option.consortiumId,
+      stopIds: option.stopIds
+    } satisfies StopFavorite;
+  }
 }
 
 class TranslateLoaderStub implements TranslateLoader {
@@ -174,29 +248,30 @@ describe('RouteSearchFormComponent', () => {
   let geolocation: GeolocationStub;
   let nearbyStops: NearbyStopsStub;
   let nearbyStopOptions: NearbyStopOptionsStub;
-  let favorites: FavoritesStub;
+  let favorites: FavoritesFacadeStub;
 
   beforeEach(async () => {
     connections = new ConnectionsStub();
     geolocation = new GeolocationStub();
     nearbyStops = new NearbyStopsStub();
     nearbyStopOptions = new NearbyStopOptionsStub();
-    favorites = new FavoritesStub();
+    favorites = new FavoritesFacadeStub();
 
     await TestBed.configureTestingModule({
       imports: [
         RouteSearchFormComponent,
         TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: TranslateLoaderStub }
+          loader: { provide: TranslateLoader, useClass: TranslateLoaderStub },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
         })
       ],
       providers: [
-        { provide: StopDirectoryService, useClass: DirectoryStub },
-        { provide: StopConnectionsService, useValue: connections },
+        { provide: StopDirectoryFacade, useClass: DirectoryStub },
+        { provide: StopConnectionsFacade, useValue: connections },
         { provide: GeolocationService, useValue: geolocation },
         { provide: NearbyStopsService, useValue: nearbyStops },
         { provide: NearbyStopOptionsService, useValue: nearbyStopOptions },
-        { provide: StopFavoritesService, useValue: favorites }
+        { provide: FavoritesFacade, useValue: favorites }
       ]
     }).compileComponents();
 
