@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-11-10T05:07:39.535Z",
+    "generatedAt": "2025-11-11T05:07:34.194Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -8,56 +8,6 @@
     "itemCount": 72
   },
   "lines": [
-    {
-      "id": "1121",
-      "code": "0180D",
-      "name": "0180D - Granada - Cájar (Directo)",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Empresa Liñan",
-        "S.A."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "1123",
-      "code": "0256C",
-      "name": "0256 CITAI",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "NEX Continental Holdings",
-        "S.L.U."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
     {
       "id": "653",
       "code": "0104",
@@ -334,6 +284,31 @@
       "inboundPath": []
     },
     {
+      "id": "1121",
+      "code": "0180D",
+      "name": "Granada - Cájar (Directo)",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "Empresa Liñan",
+        "S.A."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "727",
       "code": "0395",
       "name": "Granada - Cenes de la Vega - Dúdar - Quéntar",
@@ -437,6 +412,31 @@
       "id": "1114",
       "code": "0153",
       "name": "Granada - Churriana V. - Híjar (Directo)",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "NEX Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "1123",
+      "code": "0256C",
+      "name": "Granada - CITAI",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
