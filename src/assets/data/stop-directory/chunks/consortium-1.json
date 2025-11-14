@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-11-13T05:07:14.830Z",
+    "generatedAt": "2025-11-14T05:07:02.731Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
     "consortiumName": "Área de Sevilla",
-    "stopCount": 1148
+    "stopCount": 1146
   },
   "stops": [
     {
@@ -231,21 +231,6 @@
       "location": {
         "latitude": 37.52995301578372,
         "longitude": -6.151654780983282
-      }
-    },
-    {
-      "consortiumId": 1,
-      "stopId": "2584",
-      "stopCode": "2584",
-      "name": "AMBULATORIO GERENA (FRENTE)",
-      "municipality": "GERENA",
-      "municipalityId": "25",
-      "nucleus": "GERENA",
-      "nucleusId": "3183",
-      "zone": "D",
-      "location": {
-        "latitude": 37.529486017644885,
-        "longitude": -6.151111274957657
       }
     },
     {
@@ -9591,21 +9576,6 @@
       "location": {
         "latitude": 37.34587342979363,
         "longitude": -5.975457684288944
-      }
-    },
-    {
-      "consortiumId": 1,
-      "stopId": "2583",
-      "stopCode": "2583",
-      "name": "GUARDIA CIVIL GERENA (I)",
-      "municipality": "GERENA",
-      "municipalityId": "25",
-      "nucleus": "GERENA",
-      "nucleusId": "3183",
-      "zone": "D",
-      "location": {
-        "latitude": 37.52783872707969,
-        "longitude": -6.150032761614683
       }
     },
     {

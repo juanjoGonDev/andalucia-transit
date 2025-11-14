@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-11-13T05:07:14.830Z",
+    "generatedAt": "2025-11-14T05:07:02.731Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,14 +50,14 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 3996
+    "totalStops": 3994
   },
   "chunks": [
     {
       "id": "consortium-1",
       "consortiumId": 1,
       "path": "chunks/consortium-1.json",
-      "stopCount": 1148
+      "stopCount": 1146
     },
     {
       "id": "consortium-2",
@@ -1884,17 +1884,6 @@
       "stopId": "2585",
       "stopCode": "2585",
       "name": "AMBULATORIO GERENA",
-      "municipality": "GERENA",
-      "municipalityId": "25",
-      "nucleus": "GERENA",
-      "nucleusId": "3183",
-      "consortiumId": 1,
-      "chunkId": "consortium-1"
-    },
-    {
-      "stopId": "2584",
-      "stopCode": "2584",
-      "name": "AMBULATORIO GERENA (FRENTE)",
       "municipality": "GERENA",
       "municipalityId": "25",
       "nucleus": "GERENA",
@@ -23769,17 +23758,6 @@
       "nucleusId": "5",
       "consortiumId": 6,
       "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "2583",
-      "stopCode": "2583",
-      "name": "GUARDIA CIVIL GERENA (I)",
-      "municipality": "GERENA",
-      "municipalityId": "25",
-      "nucleus": "GERENA",
-      "nucleusId": "3183",
-      "consortiumId": 1,
-      "chunkId": "consortium-1"
     },
     {
       "stopId": "2582",
