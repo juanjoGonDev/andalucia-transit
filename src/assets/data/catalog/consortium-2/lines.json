@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-11-14T05:07:05.887Z",
+    "generatedAt": "2025-11-15T05:06:46.840Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
@@ -327,7 +327,6 @@
       "mode": "BARCO",
       "modeId": "2",
       "operators": [
-        "Damas S.A.",
         "UTE Catamaranes Consorcio Bahía de Cádiz"
       ],
       "hasNews": true,
@@ -856,7 +855,6 @@
       "mode": "BARCO",
       "modeId": "2",
       "operators": [
-        "Damas S.A.",
         "UTE Catamaranes Consorcio Bahía de Cádiz"
       ],
       "hasNews": true,
