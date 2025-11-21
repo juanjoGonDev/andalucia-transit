@@ -1,15 +1,15 @@
 {
   "metadata": {
-    "generatedAt": "2025-11-20T05:07:05.955Z",
+    "generatedAt": "2025-11-21T05:07:11.227Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "itemCount": 74
+    "itemCount": 72
   },
   "lines": [
     {
-      "id": "653",
+      "id": "1128",
       "code": "0104",
       "name": "A.Humeya - Jun - S.Jerónimo",
       "mode": "AUTOBUS",
@@ -708,56 +708,6 @@
       "inboundPath": []
     },
     {
-      "id": "806",
-      "code": "0100-A1",
-      "name": "Granada - Jun - A.Humeya - Víznar",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Carlos Fernández de la Torre",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "639",
-      "code": "0102-A1",
-      "name": "Granada - Jun - Alfacar",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Carlos Fernández de la Torre",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "1127",
       "code": "0102",
       "name": "Granada - Jun - Alfacar ",
@@ -783,8 +733,8 @@
       "inboundPath": []
     },
     {
-      "id": "1069",
-      "code": "0101-A3",
+      "id": "1126",
+      "code": "0101",
       "name": "Granada - Jun - Alfacar - Víznar",
       "mode": "AUTOBUS",
       "modeId": "1",
