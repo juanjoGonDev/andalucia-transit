@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-11-20T05:07:02.440Z",
+    "generatedAt": "2025-11-21T05:07:07.454Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 3994
+    "totalStops": 3995
   },
   "chunks": [
     {
@@ -75,7 +75,7 @@
       "id": "consortium-4",
       "consortiumId": 4,
       "path": "chunks/consortium-4.json",
-      "stopCount": 980
+      "stopCount": 981
     },
     {
       "id": "consortium-5",
@@ -23274,6 +23274,17 @@
       "nucleusId": "3227",
       "consortiumId": 1,
       "chunkId": "consortium-1"
+    },
+    {
+      "stopId": "2168",
+      "stopCode": "2168",
+      "name": "Glorieta el Pandero",
+      "municipality": "Almogía",
+      "municipalityId": "9",
+      "nucleus": "Almogía",
+      "nucleusId": "100",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "3080",
