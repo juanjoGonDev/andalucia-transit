@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject, Subscription, map } from 'rxjs';
-
-import { RouteSearchResultsService, RouteSearchDepartureView } from './route-search-results.service';
-import { RouteSearchSelection } from './route-search-state.service';
+import { RouteSearchDepartureView, RouteSearchResultsService } from '@domain/route-search/route-search-results.service';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 
 export interface RouteSearchPreviewDeparture {
   readonly id: string;

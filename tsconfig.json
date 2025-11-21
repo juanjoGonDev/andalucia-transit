@@ -13,6 +13,16 @@
     "target": "ES2022",
     "module": "preserve",
     "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@core/*": ["src/app/core/*"],
+      "@data/*": ["src/app/data/*"],
+      "@domain/*": ["src/app/domain/*"],
+      "@features/*": ["src/app/features/*"],
+      "@root/package.json": ["package.json"],
+      "@shared/*": ["src/app/shared/*"]
+    },
     "resolveJsonModule": true
   },
   "angularCompilerOptions": {

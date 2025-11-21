@@ -1,0 +1,30 @@
+<ul class="home-favorites-preview__list" role="list">
+  <li
+    class="home-favorites-preview__item"
+    *ngFor="let favorite of favorites; trackBy: trackByFavoriteId"
+  >
+    <app-interactive-card
+      class="home-favorites-preview__card"
+      [bodyClasses]="cardBodyClasses"
+      (primaryActivated)="handleFavoriteSelected(favorite)"
+    >
+      <div class="home-favorites-preview__content">
+        <div class="home-favorites-preview__header">
+          <span class="home-favorites-preview__name">{{ favorite.name }}</span>
+          <span class="home-favorites-preview__arrow" aria-hidden="true">→</span>
+          <span class="home-favorites-preview__location">{{ favorite.municipality }}</span>
+        </div>
+        <div class="home-favorites-preview__details">
+          <span class="home-favorites-preview__chip">
+            <span class="home-favorites-preview__chip-label">{{ codeLabel }}</span>
+            <span class="home-favorites-preview__chip-value">{{ favorite.code }}</span>
+          </span>
+          <span class="home-favorites-preview__chip">
+            <span class="home-favorites-preview__chip-label">{{ nucleusLabel }}</span>
+            <span class="home-favorites-preview__chip-value">{{ favorite.nucleus }}</span>
+          </span>
+        </div>
+      </div>
+    </app-interactive-card>
+  </li>
+</ul>

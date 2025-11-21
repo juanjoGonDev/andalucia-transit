@@ -1,0 +1,36 @@
+{
+  "metadata": {
+    "generatedAt": "2024-04-30T10:00:00.000Z",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos",
+    "consortiums": [
+      {
+        "id": 1,
+        "name": "Consorcio de Sevilla",
+        "shortName": "Sevilla"
+      }
+    ],
+    "totalStops": 1
+  },
+  "chunks": [
+    {
+      "id": "sample-chunk",
+      "consortiumId": 1,
+      "path": "chunks/sample-chunk.json",
+      "stopCount": 1
+    }
+  ],
+  "searchIndex": [
+    {
+      "stopId": "4101",
+      "stopCode": "4101",
+      "name": "Prado de San Sebastián",
+      "municipality": "Sevilla",
+      "municipalityId": "4109101",
+      "nucleus": "Sevilla",
+      "nucleusId": "4109101001",
+      "consortiumId": 1,
+      "chunkId": "sample-chunk"
+    }
+  ]
+}
