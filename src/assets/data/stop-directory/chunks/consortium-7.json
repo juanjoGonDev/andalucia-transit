@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-11-21T05:07:07.454Z",
+    "generatedAt": "2025-11-22T05:06:39.561Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 7,
@@ -375,8 +375,8 @@
       "name": "Ciudad Jardin",
       "municipality": "La Guardia de Jaén",
       "municipalityId": "3",
-      "nucleus": "La Guardia de Jaén",
-      "nucleusId": "5",
+      "nucleus": "Ciudad Jardin",
+      "nucleusId": "6",
       "zone": "B",
       "location": {
         "latitude": 37.763064,
