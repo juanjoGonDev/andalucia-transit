@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-11-26T05:06:53.455Z",
+    "generatedAt": "2025-11-27T05:07:18.666Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "stopCount": 981
+    "stopCount": 982
   },
   "stops": [
     {
@@ -11061,6 +11061,21 @@
       "location": {
         "latitude": 36.71333888888889,
         "longitude": -4.435077777777778
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2170",
+      "stopCode": "2170",
+      "name": "Pastelero",
+      "municipality": "Villanueva de la Concepción",
+      "municipalityId": "22",
+      "nucleus": "Barriada Pastelero",
+      "nucleusId": "214",
+      "zone": "C",
+      "location": {
+        "latitude": 36.89678333333333,
+        "longitude": -4.568925
       }
     },
     {
