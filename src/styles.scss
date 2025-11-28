@@ -1,5 +1,8 @@
 @use '@angular/material' as mat;
+@use 'styles/components';
+@use 'styles/layout';
 
+@import 'styles/theme-rules.css';
 @include mat.core();
 
 $theme: mat.define-theme(
@@ -16,61 +19,11 @@ $theme: mat.define-theme(
 
 :root {
   color-scheme: light;
-  --font-family-display: 'Public Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --color-primary: #137fec;
-  --color-primary-light: #3ea1ff;
-  --color-primary-soft: rgba(19, 127, 236, 0.12);
-  --color-primary-soft-dark: rgba(19, 127, 236, 0.2);
-  --color-upcoming-strong: #0f9d58;
-  --color-upcoming-soft: rgba(15, 157, 88, 0.16);
-  --color-upcoming-track: rgba(15, 157, 88, 0.25);
-  --color-past-strong: #c2410c;
-  --color-past-soft: rgba(194, 65, 12, 0.18);
-  --color-past-track: rgba(194, 65, 12, 0.26);
-  --color-holiday-strong: #0b7285;
-  --color-holiday-soft: rgba(11, 114, 133, 0.16);
-  --color-background-light: #f6f7f8;
-  --color-background-dark: #101922;
-  --color-surface-light: #ffffff;
-  --color-surface-hover: #f8fafc;
-  --color-surface-dark: #1f2a34;
-  --color-surface-dark-hover: #24313d;
-  --color-text-strong: #1e293b;
-  --color-text-muted: #64748b;
-  --color-text-strong-dark: #f8fafc;
-  --color-text-muted-dark: #cbd5f5;
-  --color-icon-muted: #94a3b8;
-  --color-icon-muted-dark: #8ea4c8;
-  --color-icon-default: #475569;
-  --color-icon-default-dark: #cbd5f5;
-  --color-header-surface: rgba(246, 247, 248, 0.88);
-  --color-header-surface-dark: rgba(16, 25, 34, 0.88);
-  --color-footer-surface: rgba(246, 247, 248, 0.92);
-  --color-footer-surface-dark: rgba(16, 25, 34, 0.92);
-  --color-border-subtle: rgba(148, 163, 184, 0.35);
-  --color-border-subtle-dark: rgba(94, 108, 132, 0.45);
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.08);
-  --shadow-md: 0 12px 24px rgba(15, 23, 42, 0.12);
-  --shadow-dark: 0 1px 2px rgba(2, 6, 23, 0.65);
-  --shadow-dark-stronger: 0 12px 24px rgba(2, 6, 23, 0.6);
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-full: 9999px;
 }
 
-.dark {
-  color-scheme: dark;
-  --color-upcoming-strong: #34d399;
-  --color-upcoming-soft: rgba(52, 211, 153, 0.22);
-  --color-upcoming-track: rgba(52, 211, 153, 0.38);
-  --color-past-strong: #fbbf24;
-  --color-past-soft: rgba(251, 191, 36, 0.28);
-  --color-past-track: rgba(251, 191, 36, 0.42);
-  --color-holiday-strong: #67e8f9;
-  --color-holiday-soft: rgba(103, 232, 249, 0.24);
-}
-
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -81,15 +34,10 @@ body {
 
 body {
   margin: 0;
-  font-family: var(--font-family-display);
-  background-color: var(--color-background-light);
-  color: var(--color-text-strong);
+  font-family: var(--font-family-base);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
-}
-
-body.dark {
-  background-color: var(--color-background-dark);
-  color: var(--color-text-strong-dark);
 }
 
 a {

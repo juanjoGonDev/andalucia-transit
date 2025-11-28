@@ -2,15 +2,14 @@ import { execFile } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { promisify } from 'node:util';
-
 import { buildCatalog } from './catalog-generator';
-import { loadConsortiumSummaries } from './consortiums';
 import { SNAPSHOT_JOB_CONFIG } from './config';
-import { buildSnapshotFile, SnapshotConfig, SnapshotTarget } from './snapshot-generator';
+import { loadConsortiumSummaries } from './consortiums';
+import { SnapshotConfig, SnapshotTarget, buildSnapshotFile } from './snapshot-generator';
 import {
-  buildStopDirectory,
   StopDirectoryBuildResult,
-  StopDirectorySearchIndexEntry
+  StopDirectorySearchIndexEntry,
+  buildStopDirectory
 } from './stop-directory';
 
 const JSON_SPACING = 2;
@@ -166,7 +165,7 @@ function createJsonFetcher() {
       }
 
       return (await response.json()) as T;
-    } catch (error) {
+    } catch {
       const curlResult = await execFileAsync(CURL_BINARY, [...CURL_FLAGS, url]);
       return JSON.parse(curlResult.stdout) as T;
     }

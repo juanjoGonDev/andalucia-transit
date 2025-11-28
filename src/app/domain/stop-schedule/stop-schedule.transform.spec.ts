@@ -1,6 +1,6 @@
-import { StopSchedule, StopScheduleResult } from './stop-schedule.model';
-import { buildStopScheduleUiModel } from './stop-schedule.transform';
-import { addMinutesToDate, startOfMinute } from '../utils/time.util';
+import { StopSchedule, StopScheduleResult } from '@domain/stop-schedule/stop-schedule.model';
+import { buildStopScheduleUiModel } from '@domain/stop-schedule/stop-schedule.transform';
+import { addMinutesToDate, startOfMinute } from '@domain/utils/time.util';
 
 describe('buildStopScheduleUiModel', () => {
   it('classifies services into upcoming and past buckets', () => {

@@ -1,0 +1,16 @@
+[
+  {"type":"waitFor","selector":"#home-search-origin"},
+  {"type":"type","selector":"#home-search-origin","text":"La Gangosa"},
+  {"type":"sleep","duration":400},
+  {"type":"press","selector":"#home-search-origin","keys":"ArrowDown"},
+  {"type":"press","selector":"#home-search-origin","keys":"Enter"},
+  {"type":"waitFor","selector":"#home-search-destination"},
+  {"type":"type","selector":"#home-search-destination","text":"Estacion Intermodal"},
+  {"type":"sleep","duration":400},
+  {"type":"press","selector":"#home-search-destination","keys":"ArrowDown"},
+  {"type":"press","selector":"#home-search-destination","keys":"Enter"},
+  {"type":"sleep","duration":200},
+  {"type":"click","selector":"text=Buscar horarios"},
+  {"type":"waitFor","selector":".route-search__summary"},
+  {"type":"sleep","duration":800}
+]

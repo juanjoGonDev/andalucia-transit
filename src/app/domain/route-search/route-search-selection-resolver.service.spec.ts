@@ -1,22 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-
-import { RouteSearchSelectionResolverService } from './route-search-selection-resolver.service';
+import { RouteSearchSelectionResolverService } from '@domain/route-search/route-search-selection-resolver.service';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 import {
-  StopDirectoryService,
+  STOP_CONNECTION_DIRECTION,
+  StopConnection,
+  StopConnectionDirection,
+  StopConnectionsFacade,
+  buildStopConnectionKey
+} from '@domain/route-search/stop-connections.facade';
+import {
+  StopDirectoryFacade,
   StopDirectoryOption,
   StopDirectoryStopSignature
-} from '../../data/stops/stop-directory.service';
-import {
-  StopConnectionsService,
-  StopConnection,
-  STOP_CONNECTION_DIRECTION,
-  StopConnectionDirection,
-  buildStopConnectionKey
-} from '../../data/route-search/stop-connections.service';
-import { RouteSearchSelection } from './route-search-state.service';
+} from '@domain/stops/stop-directory.facade';
 
-class StopDirectoryServiceStub {
+class StopDirectoryFacadeStub {
   constructor(private readonly options: Record<string, StopDirectoryOption | null>) {}
 
   getOptionByStopId(stopId: string) {
@@ -28,7 +27,7 @@ class StopDirectoryServiceStub {
   }
 }
 
-class StopConnectionsServiceStub {
+class StopConnectionsFacadeStub {
   constructor(
     private readonly responses: Partial<Record<StopConnectionDirection, ReadonlyMap<string, StopConnection>>>
   ) {}
@@ -38,6 +37,18 @@ class StopConnectionsServiceStub {
     direction: StopConnectionDirection
   ) {
     return of(this.responses[direction] ?? new Map<string, StopConnection>());
+  }
+
+  mergeConnections(
+    maps: readonly ReadonlyMap<string, StopConnection>[]
+  ): ReadonlyMap<string, StopConnection> {
+    return maps.reduce<ReadonlyMap<string, StopConnection>>((result, current) => {
+      const merged = new Map(result);
+      current.forEach((value, key) => {
+        merged.set(key, value);
+      });
+      return merged;
+    }, new Map<string, StopConnection>());
   }
 }
 
@@ -72,8 +83,8 @@ describe('RouteSearchSelectionResolverService', () => {
     TestBed.configureTestingModule({
       providers: [
         RouteSearchSelectionResolverService,
-        { provide: StopDirectoryService, useValue: new StopDirectoryServiceStub({ '74': originOption, '75': originOption, '100': destinationOption }) },
-        { provide: StopConnectionsService, useValue: new StopConnectionsServiceStub(connections) }
+        { provide: StopDirectoryFacade, useValue: new StopDirectoryFacadeStub({ '74': originOption, '75': originOption, '100': destinationOption }) },
+        { provide: StopConnectionsFacade, useValue: new StopConnectionsFacadeStub(connections) }
       ]
     });
 

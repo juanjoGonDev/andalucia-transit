@@ -1,0 +1,398 @@
+a,
+a *,
+button,
+button *,
+[role='button'],
+[role='button'] *,
+[tabindex]:not([tabindex='-1']),
+[tabindex]:not([tabindex='-1']) *,
+[appAccessibleButton],
+[appAccessibleButton] *,
+[class*='app-'][class*='button'],
+[class*='app-'][class*='button'] * {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible),
+[role='button']:focus:not(:focus-visible),
+[tabindex]:not([tabindex='-1']):focus:not(:focus-visible),
+[appAccessibleButton]:focus:not(:focus-visible),
+.app-button:focus:not(:focus-visible),
+.app-icon-button:focus:not(:focus-visible),
+.app-list-button:focus:not(:focus-visible),
+.app-outline-button:focus:not(:focus-visible),
+.app-solid-button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+[class~='app-visually-hidden'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
+
+[appAccessibleButton]:focus-visible,
+.app-button:focus-visible,
+.app-icon-button:focus-visible,
+.app-list-button:focus-visible,
+.app-outline-button:focus-visible,
+.app-solid-button:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+.app-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-text-strong);
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.app-button:disabled,
+.app-button[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.65;
+  box-shadow: none;
+  transform: none;
+  pointer-events: none;
+}
+
+.app-button--primary {
+  border-color: transparent;
+  color: var(--color-button-text);
+  background-image: linear-gradient(
+    135deg,
+    var(--color-primary-gradient-start),
+    var(--color-primary-gradient-end)
+  );
+  box-shadow: var(--shadow-button);
+}
+
+.app-button--primary:not(:disabled):hover,
+.app-button--primary:not(:disabled):focus-visible {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-primary-gradient-start-strong),
+    var(--color-primary-stronger)
+  );
+  box-shadow: var(--shadow-button);
+  transform: translateY(-1px);
+}
+
+.app-button--primary:disabled,
+.app-button--primary[aria-disabled='true'] {
+  background-image: none;
+  background-color: var(--color-border-subtle);
+  color: var(--color-text-muted);
+}
+
+.app-button--secondary {
+  background-color: var(--color-button-secondary-fill);
+  border-color: var(--color-button-secondary-border);
+  color: var(--color-text-strong);
+  backdrop-filter: blur(12px);
+}
+
+.app-button--secondary:not(:disabled):hover,
+.app-button--secondary:not(:disabled):focus-visible {
+  background-color: var(--color-button-secondary-hover);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.app-button--ghost {
+  border-color: transparent;
+  background-color: transparent;
+  color: var(--color-text-muted);
+}
+
+.app-button--ghost:not(:disabled):hover,
+.app-button--ghost:not(:disabled):focus-visible {
+  background-color: var(--color-button-ghost-hover);
+  color: var(--color-text-strong);
+}
+
+.app-button--ghost:not(:disabled):active {
+  background-color: var(--color-button-ghost-active);
+}
+
+.app-button--icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border-radius: var(--radius-full);
+}
+
+.app-button--pill {
+  border-radius: var(--radius-full);
+}
+
+.app-button--block {
+  width: 100%;
+}
+
+.app-button--lg {
+  padding: 0.85rem 1.75rem;
+  font-size: 1rem;
+}
+
+.app-button--sm {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.875rem;
+}
+
+.app-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-2xl);
+  height: var(--space-2xl);
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-subtle);
+  background: transparent;
+  color: var(--color-icon-muted);
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.app-icon-button:hover,
+.app-icon-button:focus-visible {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-soft);
+}
+
+.app-list-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-light);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.app-list-button:hover,
+.app-list-button:focus-visible {
+  background-color: var(--color-primary-soft);
+  box-shadow: var(--shadow-md);
+  outline: none;
+}
+
+.app-outline-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--app-outline-button-gap, 0.5rem);
+  padding: var(--app-outline-button-padding, 0.6rem 1rem);
+  border: 1px solid var(--app-outline-button-border, var(--color-border-subtle));
+  border-radius: var(--app-outline-button-radius, var(--radius-lg));
+  background: var(--app-outline-button-background, transparent);
+  color: var(--app-outline-button-color, var(--color-text-strong));
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.app-outline-button--compact {
+  --app-outline-button-gap: var(--space-xs);
+  --app-outline-button-padding: calc(var(--space-sm) - var(--space-5xs) - var(--space-6xs)) var(--space-md);
+}
+
+.app-outline-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.app-outline-button.is-disabled,
+.app-outline-button[aria-disabled='true'] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.app-outline-button:not(.is-disabled):hover {
+  border-color: var(--app-outline-button-border-hover, var(--color-primary));
+  color: var(--app-outline-button-color-hover, var(--color-primary));
+  background-color: var(--app-outline-button-background-hover, var(--color-primary-soft));
+}
+
+.app-solid-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--app-solid-button-gap, 0);
+  padding: var(--app-solid-button-padding, 0.75rem 1.5rem);
+  border: none;
+  border-radius: var(--app-solid-button-radius, var(--radius-lg));
+  background: var(--app-solid-button-background, var(--color-primary));
+  color: var(--app-solid-button-color, var(--color-button-text));
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--app-solid-button-transition, none);
+}
+
+.app-solid-button--compact {
+  --app-solid-button-gap: var(--space-xs);
+  --app-solid-button-padding: var(--space-xs) var(--space-md);
+  --app-solid-button-radius: var(--radius-full);
+}
+
+.app-field {
+  --app-field-background: var(--color-input-surface);
+  --app-field-background-hover: var(--color-input-surface-hover);
+  --app-field-border: var(--color-input-border);
+  --app-field-border-active: var(--color-input-border-active);
+}
+
+.app-field .mat-mdc-text-field-wrapper {
+  border-radius: var(--radius-xl);
+  background-color: var(--app-field-background);
+  border: 1px solid var(--app-field-border);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.app-field:hover .mat-mdc-text-field-wrapper {
+  background-color: var(--app-field-background-hover);
+}
+
+.app-field.mat-focused .mat-mdc-text-field-wrapper {
+  border-color: var(--app-field-border-active);
+  background-color: var(--color-input-surface-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.app-field .mat-mdc-form-field-focus-overlay {
+  opacity: 0;
+}
+
+.app-field .mat-mdc-form-field-infix {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.app-field .mat-mdc-input-element {
+  padding: 0;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text-primary);
+}
+
+.app-field .mat-mdc-input-element::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+.app-field .mat-mdc-form-field-flex {
+  align-items: center;
+}
+
+.app-field .mat-mdc-floating-label {
+  transition: none;
+}
+
+.app-field .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.app-field .mat-mdc-floating-label {
+  color: var(--color-text-muted);
+}
+
+.app-field.mat-focused .mat-mdc-floating-label {
+  color: var(--color-primary);
+}
+
+.app-dialog {
+  display: flex;
+  flex-direction: column;
+  max-width: min(90vw, 28rem);
+}
+
+.app-dialog__title {
+  margin: 0;
+  padding: var(--space-lg) var(--space-lg) var(--space-none);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+}
+
+.app-dialog__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding: var(--space-xs) var(--space-lg) var(--space-none);
+  padding-right: calc(var(--space-lg) - ((var(--space-xs) - var(--space-5xs)) / 2));
+  max-height: min(70vh, 24rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+
+.app-dialog__content::-webkit-scrollbar {
+  width: calc(var(--space-xs) - var(--space-5xs));
+}
+
+.app-dialog__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-dialog__content::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.app-dialog__description {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.app-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg) var(--space-lg);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .app-dialog__actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .app-button.app-button--block-mobile {
+    width: 100%;
+  }
+}

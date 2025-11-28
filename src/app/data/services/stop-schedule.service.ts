@@ -1,23 +1,22 @@
 import { Injectable, inject } from '@angular/core';
 import { DateTime } from 'luxon';
-import { catchError, forkJoin, map, Observable, of, switchMap, throwError } from 'rxjs';
-
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
-import { AppConfig } from '../../core/config';
-import { RuntimeFlagsService } from '../../core/runtime/runtime-flags.service';
-import { StopSchedule, StopScheduleResult, StopService } from '../../domain/stop-schedule/stop-schedule.model';
+import { Observable, catchError, forkJoin, map, of, switchMap, throwError } from 'rxjs';
+import { AppConfig } from '@core/config';
+import { RuntimeFlagsService } from '@core/runtime/runtime-flags.service';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 import {
-  StopScheduleSnapshotRepository,
   StopScheduleSnapshotRecord,
+  StopScheduleSnapshotRepository,
   StopScheduleSnapshotService
-} from './stop-schedule-snapshot.repository';
-import { StopDirectoryService, StopDirectoryRecord } from '../stops/stop-directory.service';
+} from '@data/services/stop-schedule-snapshot.repository';
 import {
   ApiStopInformation,
-  ApiStopServicesResponse,
   ApiStopServiceEntry,
+  ApiStopServicesResponse,
   StopScheduleApiService
-} from './stop-schedule.api-service';
+} from '@data/services/stop-schedule.api-service';
+import { StopDirectoryRecord, StopDirectoryService } from '@data/stops/stop-directory.service';
+import { StopSchedule, StopScheduleResult, StopService } from '@domain/stop-schedule/stop-schedule.model';
 
 const API_RESPONSE_DATE_FORMAT = 'yyyy-LL-dd HH:mm' as const;
 

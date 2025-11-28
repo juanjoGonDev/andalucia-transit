@@ -1,4 +1,4 @@
-import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
+import { StopDirectoryOption } from '@data/stops/stop-directory.service';
 
 export interface RouteSearchSegments {
   readonly base: string;
