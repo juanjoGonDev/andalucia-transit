@@ -30,6 +30,12 @@ yarn-error.log
 
 # Miscellaneous
 /.angular/cache
+/cypress/screenshots
+/cypress/videos
+.artifacts/
+artifacts/
+/cypress/visual-diff
+/cypress/visual-baseline
 .sass-cache/
 /connect.lock
 /coverage
@@ -37,6 +43,8 @@ yarn-error.log
 testem.log
 /typings
 __screenshots__/
+.eslintcache
+/test-results
 
 # System files
 .DS_Store

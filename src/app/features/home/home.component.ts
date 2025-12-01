@@ -1,20 +1,40 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, ViewChild, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ViewChild,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { filter } from 'rxjs';
+import { APP_CONFIG } from '@core/config';
+import { RouteSearchExecutionService } from '@domain/route-search/route-search-execution.service';
+import {
+  RouteSearchSelection,
+  RouteSearchStateService,
+} from '@domain/route-search/route-search-state.service';
+import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
+import { HomeFavoritesPreviewComponent } from '@features/home/favorites-preview/home-favorites-preview.component';
+import { HomeTabId } from '@features/home/home.types';
+import { HomeRecentSearchesComponent } from '@features/home/recent-searches/home-recent-searches.component';
+import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
+import { AppLayoutNavigationKey } from '@shared/layout/app-layout-context.token';
+import {
+  NavigationCommands,
+  buildNavigationCommands,
+} from '@shared/navigation/navigation.util';
 
-import { APP_CONFIG } from '../../core/config';
-import { MaterialSymbolName } from '../../shared/ui/types/material-symbol-name';
-import { CardListItemComponent } from '../../shared/ui/card-list-item/card-list-item.component';
-import { SectionComponent } from '../../shared/ui/section/section.component';
-import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
-import { RouteSearchExecutionService } from '../../domain/route-search/route-search-execution.service';
-import { StopFavoritesService, StopFavorite } from '../../domain/stops/stop-favorites.service';
-import { RouteSearchFormComponent } from '../route-search/route-search-form/route-search-form.component';
-import { HomeRecentSearchesComponent } from './recent-searches/home-recent-searches.component';
-import { buildNavigationCommands } from '../../shared/navigation/navigation.util';
+interface HomeTabOption {
+  readonly id: HomeTabId;
+  readonly labelKey: string;
+}
 
 @Component({
   selector: 'app-home',
@@ -22,49 +42,72 @@ import { buildNavigationCommands } from '../../shared/navigation/navigation.util
   imports: [
     CommonModule,
     TranslateModule,
-    CardListItemComponent,
-    SectionComponent,
     RouteSearchFormComponent,
-    HomeRecentSearchesComponent
+    HomeRecentSearchesComponent,
+    HomeFavoritesPreviewComponent,
+    AccessibleButtonDirective,
+    AppLayoutContentDirective,
   ],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss', './home.component-search.scss', './home.component-placeholder.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./home.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-  private static readonly recentPlaceholderCount = 3;
   private readonly router = inject(Router);
-  private readonly dialog = inject(MatDialog);
   private readonly routeSearchState = inject(RouteSearchStateService);
   private readonly execution = inject(RouteSearchExecutionService);
-  private readonly favoritesService = inject(StopFavoritesService);
+  private readonly favoritesFacade = inject(FavoritesFacade);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly translation = APP_CONFIG.translationKeys.home;
-  private readonly favoriteIconName: MaterialSymbolName = APP_CONFIG.homeData.favoriteStops.icon;
   private readonly favoritePreviewLimit = APP_CONFIG.homeData.favoriteStops.homePreviewLimit;
 
+  private readonly favoritesCommands = buildNavigationCommands(APP_CONFIG.routes.favorites);
+  private readonly homeTabCommands: ReadonlyMap<HomeTabId, NavigationCommands> = new Map([
+    ['search', buildNavigationCommands(APP_CONFIG.routes.home)],
+    ['recent', buildNavigationCommands(APP_CONFIG.routes.homeRecent)],
+    ['favorites', buildNavigationCommands(APP_CONFIG.routes.homeFavorites)],
+  ]);
+  private readonly homeTabNavigationKeys = new Map<HomeTabId, AppLayoutNavigationKey>([
+    ['search', APP_CONFIG.routes.home],
+    ['recent', APP_CONFIG.routes.homeRecent],
+    ['favorites', APP_CONFIG.routes.homeFavorites],
+  ]);
+  private readonly homeTabRoutes = new Map<string, HomeTabId>([
+    [APP_CONFIG.routes.home, 'search'],
+    [APP_CONFIG.routes.homeRecent, 'recent'],
+    [APP_CONFIG.routes.homeFavorites, 'favorites'],
+  ]);
+  private readonly homeNavigationKeys = new Map<string, AppLayoutNavigationKey>([
+    [APP_CONFIG.routes.home, APP_CONFIG.routes.home],
+    [APP_CONFIG.routes.homeRecent, APP_CONFIG.routes.homeRecent],
+    [APP_CONFIG.routes.homeFavorites, APP_CONFIG.routes.homeFavorites],
+  ]);
+
   protected readonly headerTitleKey = this.translation.header.title;
-  protected readonly headerInfoLabelKey = this.translation.header.infoLabel;
-  protected readonly infoIcon: MaterialSymbolName = 'info';
+  protected readonly headerTaglineKey = this.translation.header.tagline;
+  protected readonly heroEyebrowKey = this.translation.hero.eyebrow;
+  protected readonly heroDescriptionKey = this.translation.hero.description;
+  protected readonly heroActionKey = this.translation.hero.action;
+  protected readonly tabs: readonly HomeTabOption[] = [
+    { id: 'search', labelKey: this.translation.tabs.search },
+    { id: 'recent', labelKey: this.translation.tabs.recent },
+    { id: 'favorites', labelKey: this.translation.tabs.favorites },
+  ];
+  protected readonly summaryTitleKey = this.translation.summary.lastSearch;
+  protected readonly summarySeeAllKey = this.translation.summary.seeAll;
+  protected readonly summaryEmptyKey = this.translation.summary.empty;
   protected readonly searchTitleKey = this.translation.sections.search.title;
   protected readonly recentStopsTitleKey = this.translation.sections.recentStops.title;
   protected readonly recentStopsClearKey = this.translation.sections.recentStops.actions.clearAll;
-  protected readonly findNearbyTitleKey = this.translation.sections.findNearby.title;
-  protected readonly findNearbyActionKey = this.translation.sections.findNearby.action;
   protected readonly favoritesTitleKey = this.translation.sections.favorites.title;
-  protected readonly favoritesDescriptionKey = this.translation.sections.favorites.description;
   protected readonly favoritesActionKey = this.translation.sections.favorites.action;
   protected readonly favoritesEmptyKey = this.translation.sections.favorites.empty;
   protected readonly favoritesCodeLabelKey = APP_CONFIG.translationKeys.favorites.list.code;
-
-  protected readonly trailingIcon: MaterialSymbolName = 'chevron_right';
-  protected readonly favoritesCommands = buildNavigationCommands(APP_CONFIG.routes.favorites);
-
-  protected readonly locationActionLayout = 'action' as const;
-  protected readonly actionCardIconVariant = 'soft' as const;
-
+  protected readonly favoritesNucleusLabelKey = APP_CONFIG.translationKeys.favorites.list.nucleus;
+  protected readonly activeTab = signal<HomeTabId>('search');
   protected readonly recentClearActionVisible = signal(false);
+  protected readonly layoutNavigationKey = signal<AppLayoutNavigationKey>(APP_CONFIG.routes.home);
 
   @ViewChild('recentSearches')
   private recentSearchesComponent?: HomeRecentSearchesComponent;
@@ -77,23 +120,36 @@ export class HomeComponent {
       return [] as readonly StopFavorite[];
     }
 
-    return current.slice(0, Math.max(this.favoritePreviewLimit, 0));
+    const limit = Math.max(this.favoritePreviewLimit, 0);
+
+    if (limit === 0) {
+      return [] as readonly StopFavorite[];
+    }
+
+    return current.slice(0, limit);
   });
   protected readonly hasFavorites = computed(() => this.favorites().length > 0);
 
   protected readonly currentSelection$ = this.routeSearchState.selection$;
-  protected readonly recentPlaceholderItems = Array.from(
-    { length: HomeComponent.recentPlaceholderCount },
-    (_, index) => index
-  );
 
   constructor() {
     this.observeFavorites();
+    this.syncActiveTabWithRoute();
+    this.observeRouteChanges();
   }
 
-  protected async openNearbyStopsDialog(): Promise<void> {
-    const { HomeNearbyStopsDialogComponent } = await import('./home-nearby-stops-dialog.component');
-    this.dialog.open(HomeNearbyStopsDialogComponent);
+  protected selectTab(tab: HomeTabId): void {
+    if (this.activeTab() === tab) {
+      return;
+    }
+
+    this.activeTab.set(tab);
+    this.updateLayoutNavigationKeyForTab(tab);
+    void this.navigateToTab(tab);
+  }
+
+  protected isTabActive(tab: HomeTabId): boolean {
+    return this.activeTab() === tab;
   }
 
   protected async onSelectionConfirmed(selection: RouteSearchSelection): Promise<void> {
@@ -105,14 +161,6 @@ export class HomeComponent {
     const stopId = favorite.stopIds[0] ?? favorite.id;
     const commands: readonly string[] = ['/', APP_CONFIG.routes.stopDetailBase, stopId];
     await this.router.navigate(commands);
-  }
-
-  protected trackFavorite(_: number, favorite: StopFavorite): string {
-    return favorite.id;
-  }
-
-  protected favoriteIcon(): MaterialSymbolName {
-    return this.favoriteIconName;
   }
 
   protected onRecentItemsStateChange(hasItems: boolean): void {
@@ -129,9 +177,93 @@ export class HomeComponent {
     await component.clearAll();
   }
 
+  protected async openFavoritesView(): Promise<void> {
+    await this.navigate(this.favoritesCommands);
+  }
+
+  private async navigate(commands: NavigationCommands): Promise<void> {
+    await this.router.navigate(commands);
+  }
+
   private observeFavorites(): void {
-    this.favoritesService.favorites$
+    this.favoritesFacade.favorites$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((favorites) => this.favorites.set(favorites));
+  }
+
+  private observeRouteChanges(): void {
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((event) => {
+        const path = this.resolveRoutePath(event.urlAfterRedirects ?? event.url ?? null);
+        const nextTab = this.resolveTabFromPath(path);
+        const nextNavigationKey = this.resolveNavigationKeyFromPath(path);
+
+        if (this.activeTab() !== nextTab) {
+          this.activeTab.set(nextTab);
+        }
+
+        if (this.layoutNavigationKey() !== nextNavigationKey) {
+          this.layoutNavigationKey.set(nextNavigationKey);
+        }
+      });
+  }
+
+  private syncActiveTabWithRoute(): void {
+    const currentPath = this.resolveRoutePath(this.router.url);
+    this.activeTab.set(this.resolveTabFromPath(currentPath));
+    this.layoutNavigationKey.set(this.resolveNavigationKeyFromPath(currentPath));
+  }
+
+  private resolveRoutePath(url: string | null | undefined): string {
+    if (!url) {
+      return APP_CONFIG.routes.home;
+    }
+
+    const trimmed = url.startsWith('/') ? url.slice(1) : url;
+    const path = trimmed.split('?')[0]?.split('#')[0] ?? '';
+
+    if (!path) {
+      return APP_CONFIG.routes.home;
+    }
+
+    return path;
+  }
+
+  private resolveTabFromPath(path: string | null | undefined): HomeTabId {
+    const routePath = path ?? APP_CONFIG.routes.home;
+    return this.homeTabRoutes.get(routePath) ?? 'search';
+  }
+
+  private resolveNavigationKeyFromPath(path: string | null | undefined): AppLayoutNavigationKey {
+    const routePath = path ?? APP_CONFIG.routes.home;
+    return this.homeNavigationKeys.get(routePath) ?? APP_CONFIG.routes.home;
+  }
+
+  private resolveNavigationKeyFromTab(tab: HomeTabId): AppLayoutNavigationKey | null {
+    return this.homeTabNavigationKeys.get(tab) ?? null;
+  }
+
+  private async navigateToTab(tab: HomeTabId): Promise<void> {
+    const commands = this.homeTabCommands.get(tab);
+
+    if (!commands) {
+      return;
+    }
+
+    await this.router.navigate(commands);
+  }
+
+  private updateLayoutNavigationKeyForTab(tab: HomeTabId): void {
+    const nextKey = this.resolveNavigationKeyFromTab(tab);
+
+    if (!nextKey || this.layoutNavigationKey() === nextKey) {
+      return;
+    }
+
+    this.layoutNavigationKey.set(nextKey);
   }
 }

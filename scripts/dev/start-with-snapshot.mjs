@@ -3,7 +3,9 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const runtimeFlagsPath = resolve('src/assets/runtime-flags.js');
-const snapshotFlags = "window.__ANDALUCIA_TRANSIT_FLAGS__ = Object.freeze({ forceSnapshot: true });\n";
+const snapshotFlags =
+  "window.__ANDALUCIA_TRANSIT_FLAGS__ = Object.freeze({ forceSnapshot: true, mockDataMode: null });\n";
+const [, , ...serveExtraArgs] = process.argv;
 
 async function main() {
   const originalContent = await readFile(runtimeFlagsPath, 'utf-8');
@@ -11,15 +13,16 @@ async function main() {
   await writeFile(runtimeFlagsPath, snapshotFlags, { encoding: 'utf-8' });
 
   const command = process.platform === 'win32' ? 'ng.cmd' : 'ng';
-  const child = spawn(command, ['serve'], { stdio: 'inherit' });
+  const child = spawn(command, ['serve', ...serveExtraArgs], { stdio: 'inherit' });
 
   const restoreFlags = async () => {
     await writeFile(runtimeFlagsPath, originalContent, { encoding: 'utf-8' });
   };
 
-  const handleExit = async (code: number | null) => {
+  const handleExit = async (code) => {
     await restoreFlags();
-    process.exit(code ?? 0);
+    const exitCode = typeof code === 'number' ? code : 0;
+    process.exit(exitCode);
   };
 
   child.on('exit', handleExit);

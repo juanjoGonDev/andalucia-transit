@@ -1,21 +1,19 @@
 import { Injectable, inject } from '@angular/core';
-import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
-
-import { StopDirectoryService, StopDirectoryOption } from '../../data/stops/stop-directory.service';
+import { Observable, catchError, forkJoin, map, of, switchMap } from 'rxjs';
+import { collectRouteLineMatches, createRouteSearchSelection } from '@domain/route-search/route-search-selection.util';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
+import { parseDateSlug, parseStopSlug } from '@domain/route-search/route-search-url.util';
 import {
-  StopConnection,
-  StopConnectionsService,
   STOP_CONNECTION_DIRECTION,
-  mergeStopConnectionMaps
-} from '../../data/route-search/stop-connections.service';
-import { RouteSearchSelection } from './route-search-state.service';
-import { collectRouteLineMatches, createRouteSearchSelection } from './route-search-selection.util';
-import { parseDateSlug, parseStopSlug } from './route-search-url.util';
+  StopConnection,
+  StopConnectionsFacade
+} from '@domain/route-search/stop-connections.facade';
+import { StopDirectoryFacade, StopDirectoryOption, StopDirectoryStopSignature } from '@domain/stops/stop-directory.facade';
 
 @Injectable({ providedIn: 'root' })
 export class RouteSearchSelectionResolverService {
-  private readonly directory = inject(StopDirectoryService);
-  private readonly connections = inject(StopConnectionsService);
+  private readonly directory = inject(StopDirectoryFacade);
+  private readonly connections = inject(StopConnectionsFacade);
 
   resolveFromSlugs(
     originSlug: string | null,
@@ -69,7 +67,7 @@ export class RouteSearchSelectionResolverService {
   }
 
   private loadConnections(origin: StopDirectoryOption): Observable<ReadonlyMap<string, StopConnection>> {
-    const signatures = origin.stopIds.map((stopId) => ({
+    const signatures: readonly StopDirectoryStopSignature[] = origin.stopIds.map((stopId) => ({
       consortiumId: origin.consortiumId,
       stopId
     }));
@@ -77,7 +75,7 @@ export class RouteSearchSelectionResolverService {
     return forkJoin([
       this.connections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Forward),
       this.connections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Backward)
-    ]).pipe(map((connections) => mergeStopConnectionMaps(connections)));
+    ]).pipe(map((connections) => this.connections.mergeConnections(connections)));
   }
 }
 

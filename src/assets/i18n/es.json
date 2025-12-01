@@ -7,24 +7,61 @@
     "settings": "Configuración",
     "language": "Idioma",
     "lines": "Líneas",
-    "favorites": "Favoritas"
+    "favorites": "Favoritas",
+    "news": "Noticias",
+    "stopInfo": "Información de parada"
   },
   "languages": {
     "es": "Español",
     "en": "Inglés"
   },
+  "layout": {
+    "skipToContent": "Saltar al contenido principal"
+  },
   "home": {
     "header": {
-      "title": "Horarios de Autobuses",
+      "title": "Planifica tu próximo viaje",
+      "tagline": "Planifica tu ruta fácilmente",
       "infoLabel": "Ver información de la aplicación"
+    },
+    "hero": {
+      "eyebrow": "Autobuses de Andalucía",
+      "description": "Encuentra la mejor forma de moverte",
+      "action": "Comenzar ahora"
+    },
+    "topBar": {
+      "settingsLabel": "Abrir ajustes",
+      "menuLabel": "Abrir menú de apartados",
+      "mapLabel": "Abrir mapa interactivo"
+    },
+    "tabs": {
+      "search": "Buscador",
+      "recent": "Recientes",
+      "favorites": "Favoritas",
+      "nearby": "Cercanas",
+      "settings": "Configuración"
+    },
+    "menu": {
+      "recent": "Búsquedas recientes",
+      "favorites": "Paradas favoritas",
+      "news": "Noticias",
+      "nearby": "Paradas cercanas",
+      "settings": "Configuración",
+      "inProgress": "En progreso"
+    },
+    "summary": {
+      "lastSearch": "Tus últimas búsquedas",
+      "seeAll": "Ver todas",
+      "empty": "Empieza una búsqueda para verla aquí."
+    },
+    "quickActions": {
+      "nearby": "Usar mi ubicación"
     },
     "sections": {
       "search": {
         "title": "Buscar paradas",
         "originLabel": "Origen",
-        "originPlaceholder": "¿Dónde empiezas?",
         "destinationLabel": "Destino",
-        "destinationPlaceholder": "¿A dónde vas?",
         "dateLabel": "Fecha",
         "submit": "Buscar horarios",
         "swapLabel": "Intercambiar origen y destino",
@@ -37,8 +74,8 @@
       },
       "recentStops": {
         "title": "Paradas recientes",
-        "empty": "Las búsquedas que hagas aparecerán aquí.",
-        "searchDate": "Buscaremos para {{date}}",
+        "empty": "Empieza una búsqueda para verla aquí.",
+        "searchDate": "Buscaremos para {date}",
         "searchDateToday": "Actualizado a hoy",
         "next": "Próximo",
         "previous": "Último",
@@ -53,13 +90,21 @@
       },
       "findNearby": {
         "title": "Buscar cercanas",
-        "action": "Usar mi ubicación"
+        "description": "Permite que la app detecte las paradas cerca de ti y obtén rutas rápidas.",
+        "action": "Usar mi ubicación",
+        "hint": "Solo pedimos tu ubicación cuando buscas paradas cercanas."
       },
       "favorites": {
         "title": "Paradas favoritas",
         "description": "Guarda tus paradas habituales y consúltalas desde cualquier lugar.",
         "action": "Abrir paradas favoritas",
         "empty": "Todavía no has guardado ninguna parada favorita."
+      },
+      "settings": {
+        "title": "Configuración",
+        "description": "Ajusta tu idioma preferido, gestiona el uso de datos y revisa las opciones de accesibilidad.",
+        "action": "Abrir configuración",
+        "hint": "Tus preferencias se guardan solo en este dispositivo."
       }
     },
     "dialogs": {
@@ -74,8 +119,8 @@
         "retry": "Intentar de nuevo",
         "close": "Cerrar",
         "distance": {
-          "meters": "{{value}} m",
-          "kilometers": "{{value}} km"
+          "meters": "{value} m",
+          "kilometers": "{value} km"
         }
       },
       "recentStops": {
@@ -141,6 +186,9 @@
     "title": "Resumen de la parada",
     "subtitle": "Horarios en vivo con información de accesibilidad y servicios universitarios.",
     "loading": "Cargando horarios…",
+    "actions": {
+      "stopInfo": "Ver información de la parada"
+    },
     "error": {
       "title": "Horario no disponible",
       "description": "No podemos cargar las salidas de esta parada en este momento. Inténtalo de nuevo en unos instantes."
@@ -156,24 +204,53 @@
     },
     "schedule": {
       "upcomingTitle": "Próximas salidas",
-      "upcomingSubtitle": "{{count}} salidas programadas",
+      "upcomingSubtitle": "{count} salidas programadas",
       "pastTitle": "Salidas recientes",
-      "pastSubtitle": "{{count}} salidas registradas",
+      "pastSubtitle": "{count} salidas registradas",
       "emptyUpcoming": "No hay salidas próximas para esta selección.",
       "emptyPast": "No hay salidas recientes para esta parada."
     },
     "status": {
-      "arrivesIn": "Llega en {{minutes}} min",
+      "arrivesIn": "Llega en {minutes} min",
       "arrivingNow": "Llegando ahora",
-      "departedAgo": "Salió hace {{minutes}} min"
+      "departedAgo": "Salió hace {minutes} min"
     },
     "badges": {
       "accessible": "Servicio accesible",
       "universityOnly": "Servicio universitario"
     },
     "source": {
-      "live": "Estos datos vienen ahora mismo del {{provider}}.",
-      "snapshot": "Estos datos provienen de una copia guardada el {{date}} a las {{time}} del {{provider}}."
+      "live": "Estos datos vienen ahora mismo del {provider}.",
+      "snapshot": "Estos datos provienen de una copia guardada el {date} a las {time} del {provider}."
+    }
+  },
+  "stopInfo": {
+    "title": "Información de la parada",
+    "description": "Consulta los datos principales de la parada, su zona y las líneas que conectan.",
+    "actions": {
+      "refresh": "Actualizar parada"
+    },
+    "status": {
+      "loading": "Cargando información de la parada…",
+      "offline": "Mostrando los datos guardados sin conexión. Se actualizarán al recuperar la red.",
+      "notFound": "No encontramos una parada con ese consorcio y número.",
+      "error": "No pudimos cargar la información de la parada. Inténtalo de nuevo en unos instantes."
+    },
+    "labels": {
+      "stopNumber": "Número de parada",
+      "stopCode": "Código",
+      "municipality": "Municipio",
+      "nucleus": "Distrito",
+      "zone": "Zona",
+      "description": "Descripción",
+      "observations": "Notas",
+      "correspondences": "Correspondencias",
+      "location": "Coordenadas",
+      "status": "Estado"
+    },
+    "tags": {
+      "main": "Parada principal",
+      "inactive": "Inactiva"
     }
   },
   "routeSearch": {
@@ -186,15 +263,15 @@
     "dateLabel": "Fecha de viaje",
     "sampleResult": "Toma la línea C2 desde Plaza Nueva hasta Parque María Luisa a las 08:15.",
     "backLabel": "Volver a la búsqueda",
-    "upcomingLabel": "En {{time}}",
-    "pastLabel": "Hace {{time}}",
+    "upcomingLabel": "En {time}",
+    "pastLabel": "Hace {time}",
     "nextBadge": "Siguiente",
     "previousBadge": "Anterior",
     "noUpcoming": "No hay más salidas directas para esta fecha en las próximas horas.",
     "changeDate": "Buscar otra fecha",
     "emptyResults": "No se encontraron servicios para esta ruta.",
-    "arrivalAt": "Llega a las {{time}}",
-    "travelDuration": "Trayecto {{duration}}",
+    "arrivalAt": "Llega a las {time}",
+    "travelDuration": "Trayecto {duration}",
     "holidayBadge": "Servicio festivo",
     "estimateNotice": "Horarios estimados con los datos oficiales de la Junta de Andalucía.",
     "pastSearchNotice": "Estás consultando horarios de una fecha pasada. Actualiza la búsqueda para ver los servicios vigentes.",
@@ -204,16 +281,59 @@
   "map": {
     "title": "Mapa de la red",
     "description": "Explora el mapa y revisa cada parada.",
+    "locate": "Usar mi ubicación",
+    "locating": "Buscando ubicación…",
+    "panelTitle": "Paradas cercanas",
+    "permissionPrompt": "Comparte tu ubicación para ver las paradas cercanas en el mapa.",
+    "accessibleMapLabel": "Mapa de Andalucía con paradas cercanas",
+    "empty": "No encontramos paradas en tu área.",
+    "stopAriaLabel": "Abrir la parada {code} en {municipality}",
+    "routes": {
+      "title": "Líneas",
+      "refresh": "Actualizar rutas",
+      "summary": "Rutas para {origin} → {destination}",
+      "prompt": "Realiza una búsqueda de rutas para mostrarlas en el mapa.",
+      "loading": "Cargando recorridos…",
+      "empty": "No hay rutas disponibles para esta búsqueda.",
+      "cardAria": "Resaltar la ruta {code} hacia {destination} en el mapa",
+      "announcements": {
+        "selected": "Ruta {code} hacia {destination} resaltada en el mapa.",
+        "cleared": "Se ha quitado el resaltado de la ruta.",
+        "loading": "Cargando rutas para esta búsqueda.",
+        "loaded": {
+          "one": "{value} ruta cargada en el mapa.",
+          "other": "{value} rutas cargadas en el mapa."
+        },
+        "empty": "No hay rutas disponibles para esta búsqueda.",
+        "error": "No pudimos cargar las rutas de esta búsqueda."
+      },
+      "stopCount": {
+        "one": "{value} parada",
+        "other": "{value} paradas"
+      },
+      "distance": {
+        "meters": "{value} m",
+        "kilometers": "{value} km"
+      },
+      "error": "No pudimos cargar las rutas de esta búsqueda. Inténtalo de nuevo."
+    },
+    "errors": {
+      "permissionDenied": "No tenemos permiso para acceder a tu ubicación.",
+      "positionUnavailable": "No se pudo determinar tu ubicación actual.",
+      "timeout": "La solicitud de ubicación tardó demasiado en completarse.",
+      "generic": "No pudimos cargar las paradas cercanas. Inténtalo de nuevo."
+    },
     "openList": "Ver lista",
     "hint": "Vista previa del mapa"
   },
   "settings": {
     "title": "Configuración",
+    "description": "Personaliza tu experiencia y gestiona tus preferencias.",
     "sections": {
       "language": {
         "title": "Idioma",
         "description": "Elige tu idioma preferido.",
-        "actionLabel": "Cambiar el idioma de la aplicación a {{language}}",
+        "actionLabel": "Cambiar el idioma de la aplicación a {language}",
         "activeLabel": "Idioma actual"
       },
       "recentSearches": {
@@ -224,6 +344,31 @@
       "application": {
         "title": "Aplicación",
         "versionLabel": "Versión"
+      }
+    }
+  },
+  "news": {
+    "title": "Noticias",
+    "description": "Últimas novedades y avisos oficiales de la red de transporte andaluza.",
+    "updatedLabel": "Actualizado el {date}",
+    "readMore": "Leer más",
+    "refresh": "Actualizar",
+    "empty": "No hay noticias disponibles en este momento.",
+    "feed": {
+      "sevillaMetroUpdates": {
+        "title": "Ampliación nocturna del metro de Sevilla",
+        "summary": "El servicio extiende horarios y refuerza frecuencias durante las obras de conexión con el Aeropuerto.",
+        "link": "https://www.ctan.es/noticias/ampliacion-metro-sevilla"
+      },
+      "malagaNightRoutes": {
+        "title": "Refuerzo de líneas nocturnas en Málaga",
+        "summary": "Las líneas N1 y N4 operarán cada 20 minutos los fines de semana para cubrir la temporada alta.",
+        "link": "https://www.ctan.es/noticias/refuerzo-nocturno-malaga"
+      },
+      "cadizDigitalTickets": {
+        "title": "Abono digital para el Consorcio Bahía de Cádiz",
+        "summary": "Nueva tarjeta móvil con recarga online y validación sin contacto para autobuses metropolitanos.",
+        "link": "https://www.ctan.es/noticias/billete-digital-cadiz"
       }
     }
   },

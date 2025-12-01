@@ -1,5 +1,10 @@
+import { PluralizedTranslationKeys } from '@core/i18n/pluralization';
+
 const STOP_DETAIL_BASE_SEGMENT = 'stop-detail' as const;
 const STOP_ID_ROUTE_PARAM = 'stopId' as const;
+const STOP_INFO_BASE_SEGMENT = 'stop-info' as const;
+const STOP_INFO_CONSORTIUM_PARAM = 'consortiumId' as const;
+const STOP_INFO_STOP_PARAM = 'stopNumber' as const;
 const ROUTE_SEARCH_BASE_SEGMENT = 'routes' as const;
 const ROUTE_SEARCH_CONNECTOR_SEGMENT = 'to' as const;
 const ROUTE_SEARCH_DATE_SEGMENT = 'on' as const;
@@ -7,11 +12,14 @@ const ROUTE_SEARCH_ORIGIN_PARAM = 'originSlug' as const;
 const ROUTE_SEARCH_DESTINATION_PARAM = 'destinationSlug' as const;
 const ROUTE_SEARCH_DATE_PARAM = 'dateSlug' as const;
 const ROUTE_SEARCH_ORIGIN_QUERY_PARAM = 'originStopId' as const;
+const NEWS_ROUTE_SEGMENT = 'news' as const;
 const DATA_PROVIDER_NAME =
   'Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía' as const;
 const DATA_TIMEZONE = 'Europe/Madrid' as const;
 const STOP_SERVICES_SNAPSHOT_PATH = 'assets/data/snapshots/stop-services/latest.json' as const;
 const STOP_DIRECTORY_SNAPSHOT_PATH = 'assets/data/stop-directory/index.json' as const;
+const NEWS_FEED_SNAPSHOT_PATH = 'assets/data/news/feed.json' as const;
+const NEWS_FEED_API_PATH = 'v1/noticias/feed' as const;
 const RUNTIME_FLAGS_PROPERTY = '__ANDALUCIA_TRANSIT_FLAGS__' as const;
 const HOLIDAY_API_BASE_URL = 'https://date.nager.at/api/v3' as const;
 const HOLIDAY_COUNTRY_CODE = 'ES' as const;
@@ -20,12 +28,25 @@ const ROUTE_SEARCH_HISTORY_STORAGE_KEY = 'andalucia-transit.routeSearchHistory' 
 const ROUTE_SEARCH_PREFERENCES_STORAGE_KEY = 'andalucia-transit.routeSearchPreferences' as const;
 const STOP_FAVORITES_STORAGE_KEY = 'andalucia-transit.stopFavorites' as const;
 const ROUTE_SEARCH_SCHEDULE_ACCURACY_THRESHOLD_DAYS = 30 as const;
+const HOME_RECENT_ROUTE = 'recents' as const;
+const HOME_FAVORITES_ROUTE = 'favs' as const;
 const LOCALE_ES_STANDARD = 'es-ES' as const;
 const LOCALE_EN_STANDARD = 'en-GB' as const;
 const LANGUAGE_LOCALE_MAP = {
   es: LOCALE_ES_STANDARD,
   en: LOCALE_EN_STANDARD
 } as const;
+
+const MAP_ROUTE_STOP_COUNT_TRANSLATIONS: PluralizedTranslationKeys = {
+  one: 'map.routes.stopCount.one',
+  other: 'map.routes.stopCount.other'
+} as const;
+
+const MAP_ROUTE_ANNOUNCEMENT_LOADED_TRANSLATIONS: PluralizedTranslationKeys = {
+  one: 'map.routes.announcements.loaded.one',
+  other: 'map.routes.announcements.loaded.other'
+} as const;
+
 
 export const APP_CONFIG = {
   appName: 'Andalucia Transit',
@@ -42,19 +63,6 @@ export const APP_CONFIG = {
   formats: {
     isoDate: 'yyyy-MM-dd'
   },
-  data: {
-    providerName: DATA_PROVIDER_NAME,
-    timezone: DATA_TIMEZONE,
-    snapshots: {
-      stopServicesPath: STOP_SERVICES_SNAPSHOT_PATH,
-      stopDirectoryPath: STOP_DIRECTORY_SNAPSHOT_PATH
-    },
-    holidays: {
-      apiBaseUrl: HOLIDAY_API_BASE_URL,
-      countryCode: HOLIDAY_COUNTRY_CODE,
-      regionCodes: HOLIDAY_REGION_CODES
-    }
-  },
   runtime: {
     flagsProperty: RUNTIME_FLAGS_PROPERTY
   },
@@ -66,16 +74,22 @@ export const APP_CONFIG = {
       originStopId: ROUTE_SEARCH_ORIGIN_QUERY_PARAM
     }
   },
+  home: {},
   routes: {
     home: '' as const,
+    homeRecent: HOME_RECENT_ROUTE,
+    homeFavorites: HOME_FAVORITES_ROUTE,
     stopDetailBase: STOP_DETAIL_BASE_SEGMENT,
     stopDetailPattern: `${STOP_DETAIL_BASE_SEGMENT}/:${STOP_ID_ROUTE_PARAM}` as const,
+    stopInfoBase: STOP_INFO_BASE_SEGMENT,
+    stopInfoPattern: `${STOP_INFO_BASE_SEGMENT}/:${STOP_INFO_CONSORTIUM_PARAM}/:${STOP_INFO_STOP_PARAM}` as const,
     routeSearch: ROUTE_SEARCH_BASE_SEGMENT,
     routeSearchResultPattern:
       `${ROUTE_SEARCH_BASE_SEGMENT}/:${ROUTE_SEARCH_ORIGIN_PARAM}/${ROUTE_SEARCH_CONNECTOR_SEGMENT}/:${ROUTE_SEARCH_DESTINATION_PARAM}/${ROUTE_SEARCH_DATE_SEGMENT}/:${ROUTE_SEARCH_DATE_PARAM}` as const,
     map: 'map' as const,
     settings: 'settings' as const,
-    favorites: 'favorites' as const
+    favorites: 'favorites' as const,
+    news: NEWS_ROUTE_SEGMENT
   },
   routeSegments: {
     routeSearch: {
@@ -85,6 +99,10 @@ export const APP_CONFIG = {
   },
   routeParams: {
     stopId: STOP_ID_ROUTE_PARAM,
+    stopInfo: {
+      consortiumId: STOP_INFO_CONSORTIUM_PARAM,
+      stopNumber: STOP_INFO_STOP_PARAM
+    },
     routeSearch: {
       origin: ROUTE_SEARCH_ORIGIN_PARAM,
       destination: ROUTE_SEARCH_DESTINATION_PARAM,
@@ -103,7 +121,9 @@ export const APP_CONFIG = {
       settings: 'navigation.settings',
       language: 'navigation.language',
       lines: 'navigation.lines',
-      favorites: 'navigation.favorites'
+      favorites: 'navigation.favorites',
+      news: 'navigation.news',
+      stopInfo: 'navigation.stopInfo'
     },
     languages: {
       es: 'languages.es',
@@ -112,15 +132,47 @@ export const APP_CONFIG = {
     home: {
       header: {
         title: 'home.header.title',
+        tagline: 'home.header.tagline',
         infoLabel: 'home.header.infoLabel'
+      },
+      hero: {
+        eyebrow: 'home.hero.eyebrow',
+        description: 'home.hero.description',
+        action: 'home.hero.action'
+      },
+      topBar: {
+        settingsLabel: 'home.topBar.settingsLabel',
+        menuLabel: 'home.topBar.menuLabel',
+        mapLabel: 'home.topBar.mapLabel'
+      },
+      tabs: {
+        search: 'home.tabs.search',
+        recent: 'home.tabs.recent',
+        favorites: 'home.tabs.favorites',
+        nearby: 'home.tabs.nearby',
+        settings: 'home.tabs.settings'
+      },
+      menu: {
+        recent: 'home.menu.recent',
+        favorites: 'home.menu.favorites',
+        news: 'home.menu.news',
+        nearby: 'home.menu.nearby',
+        settings: 'home.menu.settings',
+        inProgress: 'home.menu.inProgress'
+      },
+      summary: {
+        lastSearch: 'home.summary.lastSearch',
+        seeAll: 'home.summary.seeAll',
+        empty: 'home.summary.empty'
+      },
+      quickActions: {
+        nearby: 'home.quickActions.nearby'
       },
       sections: {
         search: {
           title: 'home.sections.search.title',
           originLabel: 'home.sections.search.originLabel',
-          originPlaceholder: 'home.sections.search.originPlaceholder',
           destinationLabel: 'home.sections.search.destinationLabel',
-          destinationPlaceholder: 'home.sections.search.destinationPlaceholder',
           dateLabel: 'home.sections.search.dateLabel',
           submit: 'home.sections.search.submit',
           swapLabel: 'home.sections.search.swapLabel',
@@ -149,13 +201,21 @@ export const APP_CONFIG = {
         },
         findNearby: {
           title: 'home.sections.findNearby.title',
-          action: 'home.sections.findNearby.action'
+          description: 'home.sections.findNearby.description',
+          action: 'home.sections.findNearby.action',
+          hint: 'home.sections.findNearby.hint'
         },
         favorites: {
           title: 'home.sections.favorites.title',
           description: 'home.sections.favorites.description',
           action: 'home.sections.favorites.action',
           empty: 'home.sections.favorites.empty'
+        },
+        settings: {
+          title: 'home.sections.settings.title',
+          description: 'home.sections.settings.description',
+          action: 'home.sections.settings.action',
+          hint: 'home.sections.settings.hint'
         }
       },
       dialogs: {
@@ -209,6 +269,9 @@ export const APP_CONFIG = {
         stopCodeLabel: 'stopDetail.header.stopCodeLabel',
         scheduleDateLabel: 'stopDetail.header.scheduleDateLabel',
         lastUpdatedLabel: 'stopDetail.header.lastUpdatedLabel'
+      },
+      actions: {
+        stopInfo: 'stopDetail.actions.stopInfo'
       },
       filters: {
         destinationLabel: 'stopDetail.filters.destinationLabel',
@@ -264,11 +327,48 @@ export const APP_CONFIG = {
     map: {
       title: 'map.title',
       description: 'map.description',
+      locate: 'map.locate',
+      locating: 'map.locating',
+      panelTitle: 'map.panelTitle',
+      permissionPrompt: 'map.permissionPrompt',
+      accessibleMapLabel: 'map.accessibleMapLabel',
+      empty: 'map.empty',
+      stopAriaLabel: 'map.stopAriaLabel',
+      errors: {
+        permissionDenied: 'map.errors.permissionDenied',
+        positionUnavailable: 'map.errors.positionUnavailable',
+        timeout: 'map.errors.timeout',
+        generic: 'map.errors.generic'
+      },
+      routes: {
+        title: 'map.routes.title',
+        refresh: 'map.routes.refresh',
+        summary: 'map.routes.summary',
+        prompt: 'map.routes.prompt',
+        loading: 'map.routes.loading',
+        empty: 'map.routes.empty',
+        cardAria: 'map.routes.cardAria',
+        announcements: {
+          selected: 'map.routes.announcements.selected',
+          cleared: 'map.routes.announcements.cleared',
+          loading: 'map.routes.announcements.loading',
+          loaded: MAP_ROUTE_ANNOUNCEMENT_LOADED_TRANSLATIONS,
+          empty: 'map.routes.announcements.empty',
+          error: 'map.routes.announcements.error'
+        },
+        stopCount: MAP_ROUTE_STOP_COUNT_TRANSLATIONS,
+        distance: {
+          meters: 'map.routes.distance.meters',
+          kilometers: 'map.routes.distance.kilometers'
+        },
+        error: 'map.routes.error'
+      },
       openList: 'map.openList',
       hint: 'map.hint'
     },
     settings: {
       title: 'settings.title',
+      description: 'settings.description',
       sections: {
         language: {
           title: 'settings.sections.language.title',
@@ -285,6 +385,43 @@ export const APP_CONFIG = {
           title: 'settings.sections.application.title',
           versionLabel: 'settings.sections.application.versionLabel'
         }
+      }
+    },
+    news: {
+      title: 'news.title',
+      description: 'news.description',
+      updatedLabel: 'news.updatedLabel',
+      readMore: 'news.readMore',
+      empty: 'news.empty',
+      refresh: 'news.refresh'
+    },
+    stopInfo: {
+      title: 'stopInfo.title',
+      description: 'stopInfo.description',
+      actions: {
+        refresh: 'stopInfo.actions.refresh'
+      },
+      status: {
+        loading: 'stopInfo.status.loading',
+        offline: 'stopInfo.status.offline',
+        notFound: 'stopInfo.status.notFound',
+        error: 'stopInfo.status.error'
+      },
+      labels: {
+        stopNumber: 'stopInfo.labels.stopNumber',
+        stopCode: 'stopInfo.labels.stopCode',
+        municipality: 'stopInfo.labels.municipality',
+        nucleus: 'stopInfo.labels.nucleus',
+        zone: 'stopInfo.labels.zone',
+        description: 'stopInfo.labels.description',
+        observations: 'stopInfo.labels.observations',
+        correspondences: 'stopInfo.labels.correspondences',
+        location: 'stopInfo.labels.location',
+        status: 'stopInfo.labels.status'
+      },
+      tags: {
+        main: 'stopInfo.tags.main',
+        inactive: 'stopInfo.tags.inactive'
       }
     },
     favorites: {
@@ -370,6 +507,23 @@ export const APP_CONFIG = {
       inactiveIcon: 'star_border' as const,
       removeIcon: 'delete' as const,
       homePreviewLimit: 3
+    }
+  },
+  data: {
+    providerName: DATA_PROVIDER_NAME,
+    timezone: DATA_TIMEZONE,
+    snapshots: {
+      stopServicesPath: STOP_SERVICES_SNAPSHOT_PATH,
+      stopDirectoryPath: STOP_DIRECTORY_SNAPSHOT_PATH
+    },
+    holidays: {
+      apiBaseUrl: HOLIDAY_API_BASE_URL,
+      countryCode: HOLIDAY_COUNTRY_CODE,
+      regionCodes: HOLIDAY_REGION_CODES
+    },
+    news: {
+      feedApiPath: NEWS_FEED_API_PATH,
+      feedSnapshotPath: NEWS_FEED_SNAPSHOT_PATH
     }
   }
 } as const;

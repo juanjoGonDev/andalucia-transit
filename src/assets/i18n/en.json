@@ -7,24 +7,61 @@
     "settings": "Settings",
     "language": "Language",
     "lines": "Lines",
-    "favorites": "Favorites"
+    "favorites": "Favorites",
+    "news": "News",
+    "stopInfo": "Stop information"
   },
   "languages": {
     "es": "Spanish",
     "en": "English"
   },
+  "layout": {
+    "skipToContent": "Skip to main content"
+  },
   "home": {
     "header": {
-      "title": "Bus Timetables",
+      "title": "Plan your next ride",
+      "tagline": "Plan your trip easily",
       "infoLabel": "View application information"
+    },
+    "hero": {
+      "eyebrow": "Andalusian Buses",
+      "description": "Find the best way to get around",
+      "action": "Start planning"
+    },
+    "topBar": {
+      "settingsLabel": "Open settings",
+      "menuLabel": "Open feature menu",
+      "mapLabel": "Open interactive map"
+    },
+    "tabs": {
+      "search": "Search",
+      "recent": "Recents",
+      "favorites": "Favorites",
+      "nearby": "Nearby",
+      "settings": "Settings"
+    },
+    "menu": {
+      "recent": "Recent searches",
+      "favorites": "Favorite stops",
+      "news": "News",
+      "nearby": "Nearby stops",
+      "settings": "Settings",
+      "inProgress": "In progress"
+    },
+    "summary": {
+      "lastSearch": "Your last searches",
+      "seeAll": "See all",
+      "empty": "Start a search to see it here."
+    },
+    "quickActions": {
+      "nearby": "Use my location"
     },
     "sections": {
       "search": {
         "title": "Search Stops",
         "originLabel": "Origin",
-        "originPlaceholder": "Where are you starting?",
         "destinationLabel": "Destination",
-        "destinationPlaceholder": "Where do you want to go?",
         "dateLabel": "Date",
         "submit": "Search schedules",
         "swapLabel": "Swap origin and destination",
@@ -37,8 +74,8 @@
       },
       "recentStops": {
         "title": "Recent searches",
-        "empty": "Your recent searches will appear here.",
-        "searchDate": "We will search for {{date}}",
+        "empty": "Start a search to see it here.",
+        "searchDate": "We will search for {date}",
         "searchDateToday": "Updated to today",
         "next": "Next",
         "previous": "Previous",
@@ -53,13 +90,21 @@
       },
       "findNearby": {
         "title": "Find Nearby",
-        "action": "Use My Location"
+        "description": "Allow the app to detect stops close to you and get quick directions.",
+        "action": "Use My Location",
+        "hint": "We only request your location when you ask for nearby stops."
       },
       "favorites": {
         "title": "Favorite stops",
         "description": "Save the stops you visit most to reach them faster.",
         "action": "Open favorite stops",
         "empty": "You have not saved any favorite stops yet."
+      },
+      "settings": {
+        "title": "Configuration",
+        "description": "Adjust your language preferences, manage data usage, and review accessibility options.",
+        "action": "Open settings",
+        "hint": "Your preferences stay on this device."
       }
     },
     "dialogs": {
@@ -74,8 +119,8 @@
         "retry": "Try again",
         "close": "Close",
         "distance": {
-          "meters": "{{value}} m",
-          "kilometers": "{{value}} km"
+          "meters": "{value} m",
+          "kilometers": "{value} km"
         }
       },
       "recentStops": {
@@ -141,6 +186,9 @@
     "title": "Stop overview",
     "subtitle": "Live departures with accessibility and university indicators.",
     "loading": "Loading schedule…",
+    "actions": {
+      "stopInfo": "View stop information"
+    },
     "error": {
       "title": "Schedule unavailable",
       "description": "We can't load departures for this stop right now. Try again in a moment."
@@ -156,24 +204,53 @@
     },
     "schedule": {
       "upcomingTitle": "Upcoming departures",
-      "upcomingSubtitle": "Showing {{count}} departures",
+      "upcomingSubtitle": "Showing {count} departures",
       "pastTitle": "Recent departures",
-      "pastSubtitle": "Showing {{count}} departures",
+      "pastSubtitle": "Showing {count} departures",
       "emptyUpcoming": "No upcoming departures match the selected destination.",
       "emptyPast": "No recent departures for this stop."
     },
     "status": {
-      "arrivesIn": "Arrives in {{minutes}} min",
+      "arrivesIn": "Arrives in {minutes} min",
       "arrivingNow": "Arriving now",
-      "departedAgo": "Departed {{minutes}} min ago"
+      "departedAgo": "Departed {minutes} min ago"
     },
     "badges": {
       "accessible": "Accessible bus",
       "universityOnly": "University service"
     },
     "source": {
-      "live": "This information comes right now from the {{provider}}.",
-      "snapshot": "This information comes from a copy saved on {{date}} at {{time}} by the {{provider}}."
+      "live": "This information comes right now from the {provider}.",
+      "snapshot": "This information comes from a copy saved on {date} at {time} by the {provider}."
+    }
+  },
+  "stopInfo": {
+    "title": "Stop information",
+    "description": "Key details for the selected stop, including codes, zone, and available connections.",
+    "actions": {
+      "refresh": "Refresh stop"
+    },
+    "status": {
+      "loading": "Loading stop information…",
+      "offline": "Showing offline snapshot details. Live data will appear when you reconnect.",
+      "notFound": "We couldn't find a stop with that consortium and number.",
+      "error": "We couldn't load the stop information. Try again shortly."
+    },
+    "labels": {
+      "stopNumber": "Stop number",
+      "stopCode": "Stop code",
+      "municipality": "Municipality",
+      "nucleus": "District",
+      "zone": "Zone",
+      "description": "Description",
+      "observations": "Notes",
+      "correspondences": "Connections",
+      "location": "Coordinates",
+      "status": "Status"
+    },
+    "tags": {
+      "main": "Main stop",
+      "inactive": "Inactive"
     }
   },
   "routeSearch": {
@@ -186,15 +263,15 @@
     "dateLabel": "Travel date",
     "sampleResult": "Take line C2 from Plaza Nueva to Parque María Luisa at 08:15.",
     "backLabel": "Back to search",
-    "upcomingLabel": "In {{time}}",
-    "pastLabel": "{{time}} ago",
+    "upcomingLabel": "In {time}",
+    "pastLabel": "{time} ago",
     "nextBadge": "Next",
     "previousBadge": "Previous",
     "noUpcoming": "No more direct departures for this date within the next hours.",
     "changeDate": "Choose another date",
     "emptyResults": "No services were found for this route.",
-    "arrivalAt": "Arrives at {{time}}",
-    "travelDuration": "Trip {{duration}}",
+    "arrivalAt": "Arrives at {time}",
+    "travelDuration": "Trip {duration}",
     "holidayBadge": "Holiday service",
     "estimateNotice": "Times are estimates based on Junta de Andalucía schedule data.",
     "pastSearchNotice": "You are viewing schedules for a past date. Refresh to see the current services.",
@@ -204,16 +281,59 @@
   "map": {
     "title": "Network map",
     "description": "Explore the network map and inspect each stop.",
+    "locate": "Use my location",
+    "locating": "Locating…",
+    "panelTitle": "Nearby stops",
+    "permissionPrompt": "Share your location to see nearby stops on the map.",
+    "accessibleMapLabel": "Andalusia map with nearby stops",
+    "empty": "No nearby stops were found in your area.",
+    "stopAriaLabel": "Open stop {code} in {municipality}",
+    "routes": {
+      "title": "Routes",
+      "refresh": "Refresh routes",
+      "summary": "Routes for {origin} → {destination}",
+      "prompt": "Run a route search to display matching routes on the map.",
+      "loading": "Loading route overlays…",
+      "empty": "No routes are available for this search yet.",
+      "cardAria": "Highlight route {code} to {destination} on the map",
+      "announcements": {
+        "selected": "Route {code} to {destination} highlighted on the map.",
+        "cleared": "Route highlight cleared.",
+        "loading": "Loading routes for this search.",
+        "loaded": {
+          "one": "{value} route loaded on the map.",
+          "other": "{value} routes loaded on the map."
+        },
+        "empty": "No routes were loaded for this search.",
+        "error": "We could not load routes for this search."
+      },
+      "stopCount": {
+        "one": "{value} stop",
+        "other": "{value} stops"
+      },
+      "distance": {
+        "meters": "{value} m",
+        "kilometers": "{value} km"
+      },
+      "error": "We could not load routes for this search. Please try again."
+    },
+    "errors": {
+      "permissionDenied": "We do not have permission to access your location.",
+      "positionUnavailable": "We could not determine your current location.",
+      "timeout": "The location request took too long to finish.",
+      "generic": "We could not load nearby stops right now. Please try again."
+    },
     "openList": "View list",
     "hint": "Map preview loading"
   },
   "settings": {
     "title": "Settings",
+    "description": "Customize your experience and manage your preferences.",
     "sections": {
       "language": {
         "title": "Language",
         "description": "Choose your preferred language.",
-        "actionLabel": "Switch application language to {{language}}",
+        "actionLabel": "Switch application language to {language}",
         "activeLabel": "Current language"
       },
       "recentSearches": {
@@ -224,6 +344,31 @@
       "application": {
         "title": "Application",
         "versionLabel": "Version"
+      }
+    }
+  },
+  "news": {
+    "title": "News",
+    "description": "Latest updates and official notices from the Andalusian transport network.",
+    "updatedLabel": "Updated on {date}",
+    "readMore": "Read more",
+    "refresh": "Refresh",
+    "empty": "No news items are available right now.",
+    "feed": {
+      "sevillaMetroUpdates": {
+        "title": "Extended night service on Seville metro",
+        "summary": "Service hours are expanded with extra trains while the airport connection works continue.",
+        "link": "https://www.ctan.es/noticias/ampliacion-metro-sevilla"
+      },
+      "malagaNightRoutes": {
+        "title": "Night routes reinforced in Málaga",
+        "summary": "Night lines N1 and N4 will run every 20 minutes on weekends during the peak season.",
+        "link": "https://www.ctan.es/noticias/refuerzo-nocturno-malaga"
+      },
+      "cadizDigitalTickets": {
+        "title": "Digital travel pass for Bahía de Cádiz",
+        "summary": "New mobile ticket supports online top-ups and contactless validation on metropolitan buses.",
+        "link": "https://www.ctan.es/noticias/billete-digital-cadiz"
       }
     }
   },

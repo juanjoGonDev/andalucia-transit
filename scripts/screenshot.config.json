@@ -1,0 +1,6 @@
+{
+  "timeout": 45000,
+  "waitState": "networkidle",
+  "outDir": "artifacts/screenshots",
+  "ignoreHttpsErrors": true
+}

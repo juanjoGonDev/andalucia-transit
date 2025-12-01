@@ -1,10 +1,12 @@
 import { Injectable, inject } from '@angular/core';
+import { AppConfig } from '@core/config';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 
-import { APP_CONFIG_TOKEN } from '../tokens/app-config.token';
-import { AppConfig } from '../config';
+export type MockDataMode = 'data' | 'empty' | null;
 
 interface RuntimeFlagsDefinition {
   readonly forceSnapshot?: boolean;
+  readonly mockDataMode?: MockDataMode;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -14,6 +16,10 @@ export class RuntimeFlagsService {
 
   shouldForceSnapshot(): boolean {
     return this.flags.forceSnapshot === true;
+  }
+
+  mockDataMode(): MockDataMode {
+    return this.flags.mockDataMode ?? null;
   }
 }
 
@@ -30,6 +36,15 @@ function readRuntimeFlags(propertyKey: string): RuntimeFlagsDefinition {
   }
 
   const forceSnapshot = (rawFlags as RuntimeFlagsDefinition).forceSnapshot === true;
+  const mockDataMode = normalizeMockDataMode((rawFlags as RuntimeFlagsDefinition).mockDataMode);
 
-  return { forceSnapshot } satisfies RuntimeFlagsDefinition;
+  return { forceSnapshot, mockDataMode } satisfies RuntimeFlagsDefinition;
+}
+
+function normalizeMockDataMode(mode: MockDataMode | undefined): MockDataMode {
+  if (mode === 'data' || mode === 'empty') {
+    return mode;
+  }
+
+  return null;
 }

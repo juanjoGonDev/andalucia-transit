@@ -1,3 +1,100 @@
+$primary: var(--color-primary);
+$primary-strong: var(--color-primary-strong);
+$primary-midnight: var(--color-primary-midnight);
+$secondary: var(--color-secondary);
+$surface: var(--color-surface);
+$surface-muted: var(--color-surface-muted);
+$contrast: var(--color-text-inverse);
+$warning: var(--color-warning);
+
+@mixin trip-state-base(
+  $background,
+  $border,
+  $strong,
+  $muted,
+  $soft,
+  $badge-background,
+  $badge-text,
+  $badge-border,
+  $progress-track,
+  $progress-fill
+) {
+  --route-search-state-background: #{$background};
+  --route-search-state-border: #{$border};
+  --route-search-state-strong: #{$strong};
+  --route-search-state-muted: #{$muted};
+  --route-search-state-soft: #{$soft};
+  --route-search-state-badge-background: #{$badge-background};
+  --route-search-state-badge-text: #{$badge-text};
+  --route-search-state-badge-border: #{$badge-border};
+  --route-search-state-progress-track: #{$progress-track};
+  --route-search-state-progress-fill: #{$progress-fill};
+}
+
+@mixin trip-next-surface() {
+  @include trip-state-base(
+    linear-gradient(
+      120deg,
+      color-mix(in srgb, #{$primary} 16%, #{$surface} 84%) 0%,
+      color-mix(in srgb, #{$primary-strong} 12%, #{$surface} 88%) 100%
+    ),
+    color-mix(in srgb, #{$primary} 18%, #{$surface} 82%),
+    color-mix(in srgb, #{$primary-midnight} 85%, #{$surface} 15%),
+    color-mix(in srgb, #{$primary-midnight} 58%, #{$surface} 42%),
+    color-mix(in srgb, #{$primary} 24%, #{$surface} 76%),
+    color-mix(in srgb, #{$primary} 22%, #{$surface} 78%),
+    color-mix(in srgb, #{$primary-midnight} 82%, #{$contrast} 18%),
+    color-mix(in srgb, #{$primary-midnight} 26%, transparent 74%),
+    color-mix(in srgb, #{$primary} 18%, transparent 82%),
+    color-mix(in srgb, #{$primary-strong} 86%, #{$surface} 14%)
+  );
+}
+
+@mixin trip-previous-surface() {
+  @include trip-state-base(
+    linear-gradient(
+      120deg,
+      color-mix(in srgb, #{$surface-muted} 92%, #{$warning} 8%) 0%,
+      color-mix(in srgb, #{$surface} 88%, #{$warning} 12%) 100%
+    ),
+    color-mix(in srgb, #{$secondary} 12%, #{$surface} 88%),
+    color-mix(in srgb, #{$secondary} 82%, #{$surface} 18%),
+    color-mix(in srgb, #{$secondary} 50%, #{$surface} 50%),
+    color-mix(in srgb, #{$secondary} 24%, #{$surface} 76%),
+    color-mix(in srgb, #{$warning} 16%, #{$surface} 84%),
+    color-mix(in srgb, #{$secondary} 76%, #{$surface} 24%),
+    color-mix(in srgb, #{$secondary} 18%, #{$surface} 82%),
+    color-mix(in srgb, #{$secondary} 12%, transparent 88%),
+    color-mix(in srgb, #{$secondary} 28%, color-mix(in srgb, #{$warning} 60%, #{$surface} 40%) 72%)
+  );
+}
+
+@mixin trip-next-progress() {
+  background-color: var(--route-search-state-progress-track);
+  .route-search__item-progress-bar {
+    background-color: var(--route-search-state-progress-fill);
+  }
+}
+
+@mixin trip-previous-progress() {
+  background-color: var(--route-search-state-progress-track);
+  .route-search__item-progress-bar {
+    background-color: var(--route-search-state-progress-fill);
+  }
+}
+
+@mixin trip-next-pill() {
+  background-color: var(--route-search-state-badge-background);
+  border: 1px solid var(--route-search-state-badge-border);
+  color: var(--route-search-state-badge-text);
+}
+
+@mixin trip-previous-pill() {
+  background-color: var(--route-search-state-badge-background);
+  border: 1px solid var(--route-search-state-badge-border);
+  color: var(--route-search-state-badge-text);
+}
+
 .route-search__timeline {
   display: flex;
   flex-direction: column;
@@ -18,11 +115,38 @@
 }
 
 .route-search__item {
+  --route-search-state-background: transparent;
+  --route-search-state-border: var(--color-border-subtle);
+  --route-search-state-strong: var(--color-text-strong);
+  --route-search-state-muted: var(--color-text-muted);
+  --route-search-state-soft: color-mix(
+    in srgb,
+    var(--color-text-muted) 16%,
+    var(--color-surface) 84%
+  );
+  --route-search-state-progress-track: color-mix(
+    in srgb,
+    var(--color-text-muted) 14%,
+    transparent 86%
+  );
+  --route-search-state-progress-fill: color-mix(
+    in srgb,
+    var(--color-text-strong) 78%,
+    var(--color-surface) 22%
+  );
+  --route-search-state-badge-background: color-mix(
+    in srgb,
+    var(--color-text-muted) 18%,
+    var(--color-surface) 82%
+  );
+  --route-search-state-badge-border: transparent;
+  --route-search-state-badge-text: var(--color-text-strong);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 0.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--route-search-state-border);
+  background: var(--route-search-state-background);
 }
 
 .route-search__item:last-child {
@@ -31,20 +155,35 @@
 }
 
 .route-search__item--next {
+  @include trip-next-surface();
   border-radius: 0.75rem;
-  background: linear-gradient(90deg, var(--color-upcoming-soft) 0%, transparent 100%);
   padding: 0.75rem;
   margin: -0.75rem;
+  border: 1px solid var(--route-search-state-border);
 }
 
 .route-search__item--next + .route-search__item {
   margin-top: 0.75rem;
 }
 
+.route-search__item--past {
+  @include trip-previous-surface();
+}
+
 .route-search__item-time {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 0.5rem;
+  row-gap: 0.25rem;
+  align-items: flex-start;
+}
+
+.route-search__item-time-primary {
+  display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
+  min-inline-size: 0;
 }
 
 .route-search__item-clock {
@@ -55,14 +194,16 @@
 .route-search__item-relative {
   font-size: 0.875rem;
   font-weight: 600;
+  flex: 1 1 auto;
+  min-inline-size: 0;
 }
 
 .route-search__item-relative[data-kind='upcoming'] {
-  color: var(--color-upcoming-strong);
+  color: var(--route-search-state-strong);
 }
 
 .route-search__item-relative[data-kind='past'] {
-  color: var(--color-past-strong);
+  color: var(--route-search-state-muted);
 }
 
 .route-search__item-badge {
@@ -71,22 +212,24 @@
   gap: 0.25rem;
   padding: 0.25rem 0.5rem;
   border-radius: 999px;
+  border: 1px solid var(--route-search-state-badge-border);
   font-size: 0.75rem;
   font-weight: 600;
 }
 
-.route-search__item-badge--align-end {
-  margin-left: auto;
+.route-search__item-time-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  justify-self: end;
 }
 
 .route-search__item-badge--next {
-  background-color: var(--color-upcoming-soft);
-  color: var(--color-upcoming-strong);
+  @include trip-next-pill();
 }
 
 .route-search__item-badge--previous {
-  background-color: var(--color-past-soft);
-  color: var(--color-past-strong);
+  @include trip-previous-pill();
 }
 
 .route-search__item-details {
@@ -105,6 +248,7 @@
 
 .route-search__item-line {
   font-size: 1.1rem;
+  color: var(--route-search-state-strong);
 }
 
 .route-search__item-frequency {
@@ -122,7 +266,7 @@
 }
 
 .route-search__item-destination {
-  color: var(--color-text-muted);
+  color: var(--route-search-state-muted);
 }
 
 .route-search__item-arrival {
@@ -130,16 +274,16 @@
   align-items: center;
   gap: 0.35rem;
   font-size: 0.8rem;
-  color: var(--color-text-muted);
+  color: var(--route-search-state-muted);
 }
 
 .route-search__item-arrival-time {
   font-weight: 600;
-  color: var(--color-text-strong);
+  color: var(--route-search-state-strong);
 }
 
 .route-search__item-travel {
-  color: var(--color-text-muted);
+  color: var(--route-search-state-muted);
 }
 
 .route-search__item-flags {
@@ -175,19 +319,11 @@
 }
 
 .route-search__item-progress--upcoming {
-  background-color: var(--color-upcoming-track);
+  @include trip-next-progress();
 }
 
 .route-search__item-progress--past {
-  background-color: var(--color-past-track);
-}
-
-.route-search__item-progress-bar--upcoming {
-  background-color: var(--color-upcoming-strong);
-}
-
-.route-search__item-progress--past .route-search__item-progress-bar {
-  background-color: var(--color-past-strong);
+  @include trip-previous-progress();
 }
 
 .route-search__item-progress-group {

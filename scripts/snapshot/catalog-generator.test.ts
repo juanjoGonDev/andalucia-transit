@@ -1,7 +1,6 @@
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
-
-import { buildCatalog, CatalogConfig, CatalogDependencies } from './catalog-generator';
+import { CatalogConfig, CatalogDependencies, buildCatalog } from './catalog-generator';
 
 describe('catalog generator', () => {
   it('collects municipalities, nuclei and lines for every consortium', async () => {
