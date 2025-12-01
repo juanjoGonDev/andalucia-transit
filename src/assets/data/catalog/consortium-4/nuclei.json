@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-11-18T05:07:01.046Z",
+    "generatedAt": "2025-12-01T05:13:13.852Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 208
+    "itemCount": 209
   },
   "nuclei": [
     {
@@ -127,6 +127,12 @@
       "municipalityId": "1",
       "zone": "A",
       "name": "Azucarera"
+    },
+    {
+      "id": "214",
+      "municipalityId": "22",
+      "zone": "C",
+      "name": "Barriada Pastelero"
     },
     {
       "id": "117",

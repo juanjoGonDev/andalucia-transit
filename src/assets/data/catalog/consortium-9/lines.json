@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-11-18T05:07:01.046Z",
+    "generatedAt": "2025-12-01T05:13:13.852Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 9,
     "consortiumName": "Costa de Huelva",
-    "itemCount": 41
+    "itemCount": 42
   },
   "lines": [
     {
@@ -900,6 +900,30 @@
       "id": "30",
       "code": "M-211",
       "name": "Huelva-Villanueva De Los Castillejos-Santa Barbara",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "7",
+      "code": "M-314",
+      "name": "Isla Cristina-Ayamonte",
       "mode": "AUTOBUS",
       "modeId": "2",
       "operators": [

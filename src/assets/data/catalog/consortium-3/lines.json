@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-11-18T05:07:01.046Z",
+    "generatedAt": "2025-12-01T05:13:13.852Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -9,7 +9,7 @@
   },
   "lines": [
     {
-      "id": "653",
+      "id": "1128",
       "code": "0104",
       "name": "A.Humeya - Jun - S.Jerónimo",
       "mode": "AUTOBUS",
@@ -683,7 +683,7 @@
       "inboundPath": []
     },
     {
-      "id": "806",
+      "id": "1125",
       "code": "0100",
       "name": "Granada - Jun - A.Humeya - Víznar",
       "mode": "AUTOBUS",
@@ -708,9 +708,9 @@
       "inboundPath": []
     },
     {
-      "id": "639",
+      "id": "1127",
       "code": "0102",
-      "name": "Granada - Jun - Alfacar",
+      "name": "Granada - Jun - Alfacar ",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
@@ -733,7 +733,7 @@
       "inboundPath": []
     },
     {
-      "id": "1069",
+      "id": "1126",
       "code": "0101",
       "name": "Granada - Jun - Alfacar - Víznar",
       "mode": "AUTOBUS",

@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-11-18T05:06:56.849Z",
+    "generatedAt": "2025-12-01T05:13:10.830Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 3994
+    "totalStops": 3996
   },
   "chunks": [
     {
@@ -75,7 +75,7 @@
       "id": "consortium-4",
       "consortiumId": 4,
       "path": "chunks/consortium-4.json",
-      "stopCount": 980
+      "stopCount": 982
     },
     {
       "id": "consortium-5",
@@ -14657,8 +14657,8 @@
       "name": "Ciudad Jardin",
       "municipality": "La Guardia de Jaén",
       "municipalityId": "3",
-      "nucleus": "La Guardia de Jaén",
-      "nucleusId": "5",
+      "nucleus": "Ciudad Jardin",
+      "nucleusId": "6",
       "consortiumId": 7,
       "chunkId": "consortium-7"
     },
@@ -23274,6 +23274,17 @@
       "nucleusId": "3227",
       "consortiumId": 1,
       "chunkId": "consortium-1"
+    },
+    {
+      "stopId": "2168",
+      "stopCode": "2168",
+      "name": "Glorieta el Pandero",
+      "municipality": "Almogía",
+      "municipalityId": "9",
+      "nucleus": "Almogía",
+      "nucleusId": "100",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "3080",
@@ -32734,6 +32745,17 @@
       "nucleusId": "202",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "2170",
+      "stopCode": "2170",
+      "name": "Pastelero",
+      "municipality": "Villanueva de la Concepción",
+      "municipalityId": "22",
+      "nucleus": "Barriada Pastelero",
+      "nucleusId": "214",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "2428",
