@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-12-07T05:06:42.318Z",
+    "generatedAt": "2025-12-08T05:09:07.594Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 89
+    "itemCount": 88
   },
   "lines": [
     {
@@ -1904,31 +1904,6 @@
       "id": "296",
       "code": "M-262",
       "name": "Rincón de la Victoria-Benagalbón-Moclinejo-El Valdés (Av)",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Avanza Movilidad Integral",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "310",
-      "code": "M-165",
-      "name": "Rinconsol-El Palo",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
