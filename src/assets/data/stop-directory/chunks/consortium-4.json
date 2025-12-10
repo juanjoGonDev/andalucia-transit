@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-12-09T05:07:32.172Z",
+    "generatedAt": "2025-12-10T05:08:37.097Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "stopCount": 982
+    "stopCount": 981
   },
   "stops": [
     {
@@ -3325,36 +3325,6 @@
     },
     {
       "consortiumId": 4,
-      "stopId": "1450",
-      "stopCode": "1450",
-      "name": "Cementerio San Cayetano 1",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Cementerio Fuengirola",
-      "nucleusId": "130",
-      "zone": "C",
-      "location": {
-        "latitude": 36.53015833333333,
-        "longitude": -4.6457138888888885
-      }
-    },
-    {
-      "consortiumId": 4,
-      "stopId": "1451",
-      "stopCode": "1451",
-      "name": "Cementerio San Cayetano 2",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Cementerio Fuengirola",
-      "nucleusId": "130",
-      "zone": "C",
-      "location": {
-        "latitude": 36.529513888888886,
-        "longitude": -4.647736111111111
-      }
-    },
-    {
-      "consortiumId": 4,
       "stopId": "2114",
       "stopCode": "2114",
       "name": "Centro",
@@ -5305,6 +5275,51 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "1940",
+      "stopCode": "1940",
+      "name": "El Gran Parque",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Mijas",
+      "nucleusId": "44",
+      "zone": "C",
+      "location": {
+        "latitude": 36.54288333333333,
+        "longitude": -4.655283333333334
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "1450",
+      "stopCode": "1450",
+      "name": "El Gran Parque/Cementerio San Cayetano",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Cementerio Fuengirola",
+      "nucleusId": "130",
+      "zone": "C",
+      "location": {
+        "latitude": 36.53015833333333,
+        "longitude": -4.6457138888888885
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "1451",
+      "stopCode": "1451",
+      "name": "El Gran Parque/Cementerio San Cayetano",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Cementerio Fuengirola",
+      "nucleusId": "130",
+      "zone": "C",
+      "location": {
+        "latitude": 36.529513888888886,
+        "longitude": -4.647736111111111
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "732",
       "stopCode": "732",
       "name": "El Higuerón",
@@ -6940,21 +6955,6 @@
     },
     {
       "consortiumId": 4,
-      "stopId": "2001",
-      "stopCode": "2001",
-      "name": "Grua Municipal",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Mijas",
-      "nucleusId": "44",
-      "zone": "C",
-      "location": {
-        "latitude": 36.55464166666666,
-        "longitude": -4.689452777777778
-      }
-    },
-    {
-      "consortiumId": 4,
       "stopId": "1369",
       "stopCode": "1369",
       "name": "Guadalhorce (Tren)",
@@ -7461,21 +7461,6 @@
       "location": {
         "latitude": 36.62815555555556,
         "longitude": -4.499447222222222
-      }
-    },
-    {
-      "consortiumId": 4,
-      "stopId": "1940",
-      "stopCode": "1940",
-      "name": "Hoyo 19",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Mijas",
-      "nucleusId": "44",
-      "zone": "C",
-      "location": {
-        "latitude": 36.54288333333333,
-        "longitude": -4.655283333333334
       }
     },
     {
@@ -10632,7 +10617,7 @@
       "consortiumId": 4,
       "stopId": "2093",
       "stopCode": "2093",
-      "name": "P.I. La Torre",
+      "name": "P.I. La Torre/Grúa Municipal",
       "municipality": "Mijas",
       "municipalityId": "2",
       "nucleus": "Mijas",

@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-12-09T05:07:32.172Z",
+    "generatedAt": "2025-12-10T05:08:37.097Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 3996
+    "totalStops": 3995
   },
   "chunks": [
     {
@@ -75,7 +75,7 @@
       "id": "consortium-4",
       "consortiumId": 4,
       "path": "chunks/consortium-4.json",
-      "stopCount": 982
+      "stopCount": 981
     },
     {
       "id": "consortium-5",
@@ -13706,28 +13706,6 @@
       "chunkId": "consortium-4"
     },
     {
-      "stopId": "1450",
-      "stopCode": "1450",
-      "name": "Cementerio San Cayetano 1",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Cementerio Fuengirola",
-      "nucleusId": "130",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
-      "stopId": "1451",
-      "stopCode": "1451",
-      "name": "Cementerio San Cayetano 2",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Cementerio Fuengirola",
-      "nucleusId": "130",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
       "stopId": "2906",
       "stopCode": "2906",
       "name": "CEMENTERIO SAN JUAN A. (I)",
@@ -19767,6 +19745,39 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "1940",
+      "stopCode": "1940",
+      "name": "El Gran Parque",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Mijas",
+      "nucleusId": "44",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "1450",
+      "stopCode": "1450",
+      "name": "El Gran Parque/Cementerio San Cayetano",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Cementerio Fuengirola",
+      "nucleusId": "130",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "1451",
+      "stopCode": "1451",
+      "name": "El Gran Parque/Cementerio San Cayetano",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Cementerio Fuengirola",
+      "nucleusId": "130",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "732",
       "stopCode": "732",
       "name": "El Higuerón",
@@ -23672,17 +23683,6 @@
       "chunkId": "consortium-3"
     },
     {
-      "stopId": "2001",
-      "stopCode": "2001",
-      "name": "Grua Municipal",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Mijas",
-      "nucleusId": "44",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
       "stopId": "3027",
       "stopCode": "3027",
       "name": "GRUPO PLANETA",
@@ -25109,17 +25109,6 @@
       "municipalityId": "13",
       "nucleus": "Torremolinos",
       "nucleusId": "107",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
-      "stopId": "1940",
-      "stopCode": "1940",
-      "name": "Hoyo 19",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Mijas",
-      "nucleusId": "44",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -31495,7 +31484,7 @@
     {
       "stopId": "2093",
       "stopCode": "2093",
-      "name": "P.I. La Torre",
+      "name": "P.I. La Torre/Grúa Municipal",
       "municipality": "Mijas",
       "municipalityId": "2",
       "nucleus": "Mijas",
