@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-12-14T05:07:53.929Z",
+    "generatedAt": "2025-12-15T05:10:27.639Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 88
+    "itemCount": 87
   },
   "lines": [
     {
@@ -1008,31 +1008,6 @@
       "id": "177",
       "code": "M-253",
       "name": "Málaga-Antequera",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Nex Continental Holdings",
-        "S.L.U."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "305",
-      "code": "M-255",
-      "name": "Málaga-Antequera (Directo)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
