@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-12-23T05:09:33.958Z",
+    "generatedAt": "2025-12-24T05:09:41.992Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 6,
     "consortiumName": "Área de Almería",
-    "itemCount": 164
+    "itemCount": 170
   },
   "nuclei": [
     {
@@ -39,6 +39,12 @@
       "name": "ALCAUDIQUE"
     },
     {
+      "id": "175",
+      "municipalityId": "75",
+      "zone": "N",
+      "name": "ALHAMA DE ALMERÍA"
+    },
+    {
       "id": "10",
       "municipalityId": "2",
       "zone": "A",
@@ -67,6 +73,12 @@
       "municipalityId": "4",
       "zone": "I",
       "name": "BALANEGRA"
+    },
+    {
+      "id": "180",
+      "municipalityId": "74",
+      "zone": "I",
+      "name": "BALANEGRA NN"
     },
     {
       "id": "32",
@@ -169,6 +181,12 @@
       "municipalityId": "18",
       "zone": "F",
       "name": "CAÑADA SEBASTIANA"
+    },
+    {
+      "id": "176",
+      "municipalityId": "76",
+      "zone": "P",
+      "name": "CARBONERAS"
     },
     {
       "id": "126",
@@ -681,6 +699,12 @@
       "name": "MATAGORDA"
     },
     {
+      "id": "178",
+      "municipalityId": "77",
+      "zone": "K",
+      "name": "MINIHOLLIWOOD"
+    },
+    {
       "id": "169",
       "municipalityId": "10",
       "zone": "C",
@@ -909,6 +933,12 @@
       "name": "SANTA MARIA DEL ÁGUILA"
     },
     {
+      "id": "177",
+      "municipalityId": "77",
+      "zone": "L",
+      "name": "TABERNAS"
+    },
+    {
       "id": "172",
       "municipalityId": "2",
       "zone": "B",
@@ -931,6 +961,12 @@
       "municipalityId": "18",
       "zone": "G",
       "name": "VENTA COSARIO"
+    },
+    {
+      "id": "179",
+      "municipalityId": "77",
+      "zone": "M",
+      "name": "VENTA DE LOS YESOS"
     },
     {
       "id": "166",
