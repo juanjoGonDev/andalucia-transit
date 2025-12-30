@@ -239,7 +239,23 @@
 </ng-template>
 
 <ng-template #noLines>
-  <section class="route-search__empty">
-    <p>{{ translationKeys.emptyResults | translate }}</p>
+  <section
+    class="route-search__empty route-search__empty--results"
+    role="status"
+    aria-live="polite"
+  >
+    <h2 class="route-search__empty-title">
+      {{ translationKeys.emptyResults | translate }}
+    </h2>
+    <p class="route-search__empty-description">
+      {{ translationKeys.emptyResultsDescription | translate }}
+    </p>
+    <div
+      appAccessibleButton
+      class="app-solid-button route-search__empty-action"
+      (appAccessibleButtonActivated)="focusSearchForm()"
+    >
+      {{ translationKeys.emptyResultsAction | translate }}
+    </div>
   </section>
 </ng-template>

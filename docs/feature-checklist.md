@@ -73,7 +73,7 @@ This backlog records only outstanding work discovered during the latest in-app r
     - After (tablet): https://filebin.net/4ikg3dm0akrmhdyx/stop-detail-timeline-tablet-2025-10-30T22-00-34-058Z_es_1024_768_full.png
 
 ### Functional Behaviour
-- [ ] **Persist Home tab selection across navigation cycles** [P1] [functional]
+- [x] **Persist Home tab selection across navigation cycles** [P1] [functional]
   - **Rationale:** Returning from subroutes resets the active tab to default, conflicting with user expectations and recorded behaviour in earlier releases.
   - **Repro (text only):** Desktop 1366×768, activate "Favorites" tab, enter a favorite stop detail, use browser back; active tab reverts to "Overview".
   - **Observed vs Expected:** Observed: default tab reselected, focus lost. Expected: previously active tab remains selected with focus restored per AGENTS navigation rules.
@@ -85,8 +85,14 @@ This backlog records only outstanding work discovered during the latest in-app r
   - **Tests:** Extend component unit tests for navigation restore; add Cypress regression `cypress/e2e/home-tabs-persistence.cy.ts` covering history/back scenarios.
   - **Affected Areas (guess):** `src/app/features/home/components/home-dashboard-tabs/*`, routing setup in `src/app/app.routes.ts`, optional storage service.
   - **Docs to Update:** `docs/audit/home-dashboard.md`, `docs/feature-checklist.md` notes.
+  - _Done on 2025-10-30 – persisted tab selection with router query params and storage, restored focus on return, and added unit plus Cypress regression coverage._
+  - **Evidence:**
+    - Before (desktop): https://filebin.net/72qmiesm9zomhdzm/home-tab-persistence-before-2025-10-30T22-20-17-481Z_es_1280_800_full.png
+    - Before (mobile): https://filebin.net/72qmiesm9zomhdzm/home-tab-persistence-before-2025-10-30T22-20-17-481Z_es_414_896_full.png
+    - After (desktop): https://filebin.net/72qmiesm9zomhdzm/home-tab-persistence-after-2025-10-30T22-32-37-413Z_es_1280_800_full.png
+    - After (mobile): https://filebin.net/72qmiesm9zomhdzm/home-tab-persistence-after-2025-10-30T22-32-37-413Z_es_414_896_full.png
 
-- [ ] **Surface actionable messaging for empty route search results** [P2] [functional] [i18n]
+- [x] **Surface actionable messaging for empty route search results** [P2] [functional] [i18n]
   - **Rationale:** Invalid stop pair search returns silent card with blank state, leaving users without guidance; contradicts UX copy standards.
   - **Repro (text only):** Mobile 414×896, switch to EN, search for nonexistent stop pair "AAA" → "BBB"; result area stays blank.
   - **Observed vs Expected:** Observed: empty container without message. Expected: localized guidance explaining no direct routes found and suggesting filters per docs.
@@ -98,6 +104,7 @@ This backlog records only outstanding work discovered during the latest in-app r
   - **Tests:** Add unit test for `route-search.component.spec.ts` verifying empty-state render; Playwright scenario ensuring localized copy present in ES/EN.
   - **Affected Areas (guess):** `src/app/features/route-search/components/route-search/*`, translation files, potential shared empty-state component.
   - **Docs to Update:** `docs/audit/route-search.md`, i18n glossary.
+  - _Done on 2025-10-31 – Added localized empty-state guidance with focus shortcut for the search form, verified on desktop 1366×768 and mobile 414×896, documented textual evidence in `docs/audit/route-search.md`, and covered behaviour with `route-search.component.spec.ts` plus Playwright `tests/playwright/route-search.empty-state.spec.ts`._
 
 ### Documentation & Tooling
 - [ ] **Record textual evidence workflow in accessibility audits** [P1] [docs] [tooling]

@@ -54,3 +54,26 @@
   text-align: center;
 }
 
+.route-search__empty--results {
+  max-width: 32rem;
+  margin: 0 auto;
+  color: var(--color-text-strong);
+}
+
+.route-search__empty-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: inherit;
+}
+
+.route-search__empty-description {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.route-search__empty-action {
+  min-width: 12rem;
+}
+
