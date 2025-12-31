@@ -43,9 +43,8 @@ pnpm run record -- \
 ## Sharing demo captures
 
 - Generate showcases against stable public pages such as Wikipedia so reviewers can reproduce the run.
-- Upload the resulting screenshot and video to https://filebin.net/ by running `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"` (append additional recorder flags after a `--` separator when scenarios require interaction scripts); the helper streams logs, saves captures under `artifacts/screenshots`, prints the markdown block to paste into documentation, and you must verify the Filebin links before sharing them.
-- The automated publisher enforces PNG metadata on each upload to guarantee downstream viewers receive the correct format; avoid renaming captures after publishing.
-- After each upload, open the returned `https://filebin.net/<bin>/<filename>` URLs in a browser or perform a verification request (`curl -I` or `curl -s -o /dev/null`) to confirm they return the asset before sharing them.
+- Keep recorded videos and screenshots in gitignored directories such as `artifacts/screenshots` and log the run using textual evidence only.
+- Textual evidence should include the viewport, reproduction steps, selectors or components exercised, and observed vs expected outcomes.
 - Keep the repository free of committed media assets to avoid bloating the history.
 
 ## Troubleshooting

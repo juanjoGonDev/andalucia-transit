@@ -28,8 +28,9 @@
 - `tests/playwright/stop-detail.accessibility.spec.ts` → Asserts exactly one polite live region with populated narration.
 
 ## Evidence
-- Desktop: https://filebin.net/stop-timeline-live-region/stop-detail-timeline-2025-10-30T00-13-07-821Z_es_1280_800_full.png
-- Mobile: https://filebin.net/stop-timeline-live-region/stop-detail-timeline-2025-10-30T00-13-07-821Z_es_414_896_full.png
+- Viewports: Desktop 1280×800, Mobile 414×896 (ES locale).
+- Observed: Single polite announcement on progress changes, no duplicate reads of static labels.
+- Expected: Live region updates once per data change with concise, localized summary.
 
 ---
 
@@ -58,12 +59,8 @@
 2. Inspect `.stop-detail__list-item` padding and `.stop-detail__list` gap; ensure they resolve to `var(--space-md)` and `var(--space-lg)` respectively.
 3. Repeat at 1280×800 and 414×896 to confirm desktop/mobile regressions have not been introduced.
 
-## Evidence (Before)
-- Desktop: https://filebin.net/m8fd24w991mhdytp/stop-detail-timeline-2025-10-30T21-57-33-292Z_es_1280_800_full.png
-- Tablet: https://filebin.net/j475ach25komhdyu/stop-detail-timeline-tablet-2025-10-30T21-58-19-940Z_es_1024_768_full.png
-- Mobile: https://filebin.net/m8fd24w991mhdytp/stop-detail-timeline-2025-10-30T21-57-33-292Z_es_414_896_full.png
-
-## Evidence (After)
-- Desktop: https://filebin.net/lc4vmt0ky9mhdywz/stop-detail-timeline-2025-10-30T22-00-08-645Z_es_1280_800_full.png
-- Tablet: https://filebin.net/4ikg3dm0akrmhdyx/stop-detail-timeline-tablet-2025-10-30T22-00-34-058Z_es_1024_768_full.png
-- Mobile: https://filebin.net/lc4vmt0ky9mhdywz/stop-detail-timeline-2025-10-30T22-00-08-645Z_es_414_896_full.png
+## Evidence
+- Viewports: Tablet 1024×768, Desktop 1280×800, Mobile 414×896 (ES locale).
+- Observed (pre-fix): 8px card padding, 12px list gap, metadata wrapped.
+- Observed (post-fix): 16px padding via `var(--space-md)`, 24px gap via `var(--space-lg)`, no wrapping at 90% zoom.
+- Expected: Tablet spacing matches design rhythm and scales consistently with desktop while preserving mobile density.

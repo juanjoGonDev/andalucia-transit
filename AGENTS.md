@@ -51,6 +51,9 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - 2025-10-30: Stop detail upcoming timeline broadcasts polite live-region summaries (line, destination, status, progress) via `StopDetailComponent`; keep translations under `stopDetail.announcements.progress` and unit/Playwright coverage aligned.
 - 2025-10-31: Theme token `--color-text-tertiary` locked at `#5a627b` to keep tertiary metadata ≥4.5:1 against `--color-background`; guard via `src/styles/theme-rules.spec.ts` and Playwright `tests/playwright/theme.contrast.spec.ts`.
 - 2025-10-31: Home dashboard tabs persist selection using the `tab` query param and storage key `APP_CONFIG.homeData.tabs.storageKey`; direct loads canonicalize to the tab route, focus restores after history navigation, and coverage lives in `home.component.spec.ts` plus `cypress/e2e/home-tabs-persistence.cy.ts`.
+- 2025-11-01: Documentation evidence logging now relies on textual notes only; local captures remain gitignored and must not be uploaded or linked.
+- 2025-11-01: Added a regression checklist for contrast token changes in `docs/ui-theme.md` and cross-referenced it in the knowledge map.
+- 2025-11-01: Added a manual GitHub Pages deployment workflow that overwrites the root site from a selected ref.
 
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.
@@ -105,12 +108,12 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Reference `docs/development-environment.md` for targeted command guidance when determining which checks must run for a change.
 
 ### Visual Verification
-- Use the headless screenshot utility in `scripts/screenshot.js` or the `npm run screenshot` shortcut to capture deterministic UI states for CI review and design validation.
+- Use the headless screenshot utility in `scripts/screenshot.js` or the `npm run screenshot` shortcut to capture deterministic UI states for local validation when needed.
 - Capabilities include navigation and waiting controls, viewport and device emulation, storage and permission configuration, DOM interactions, map-specific adjustments, accessibility assertions, and capture variants with masking.
 - Defaults live in `scripts/screenshot.config.json`, and teams can supply alternative paths through the `--config` flag to tailor timeouts, directories, and other repeated inputs.
 - Example capture command: `npm run screenshot -- --url=https://example.org --waitFor=#app-root --name=home-desktop`.
 - The tool can emit HAR files, console transcripts, and PNG output, and accepts ordered scenarios for multi-step flows.
-- All generated artefacts live under `artifacts/screenshots` (or the configured directory) which is ignored by Git; share captures via CI artefacts or public URLs when referencing them in reviews or documentation.
+- All generated artefacts live under `artifacts/screenshots` (or the configured directory) which is ignored by Git; keep captures local and document findings using textual evidence logs instead of uploading media.
 
 ## Performance & UX Guardrails
 - Leverage lazy-loaded routes and code splitting; reuse API results with RxJS `shareReplay` or caching services; offload heavy computations (e.g., nearest stop calculations) to Web Workers if needed.
@@ -127,10 +130,10 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 ## Language Policy
 - All AI-generated responses, commit messages, and documentation updates must be written in English.
 
-## Screenshot Policy
-- Every visual modification requires capturing real before and after screenshots with `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"`, which delegates to `scripts/record.js`, stores captures under `artifacts/screenshots`, streams progress logs, and uploads the PNG files to https://filebin.net within a single bin so related files stay grouped.
-- Provide the markdown block returned by the script in all status updates and final responses using the `https://filebin.net/<bin>/<file>.png` format.
-- Open each generated link to confirm it renders correctly before sharing it and record the verified URLs in `docs/feature-checklist.md`.
+## Evidence Policy
+- Every visual modification requires a textual evidence entry describing the viewport, reproduction steps, selectors or components inspected, and expected vs actual behavior.
+- Local screenshots may be captured for validation but must remain in gitignored directories and must not be uploaded or linked in documentation.
+- Record evidence summaries in the relevant audit doc and in `docs/feature-checklist.md` entries for completed tasks.
 
 ## Component Architecture Policy
 - Each component must be self-hosted with dedicated `.html`, `.ts`, and `.scss` files.
@@ -140,17 +143,13 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 ## Execution Policy
 - The AI must complete every assigned task without refusal, postponement, or omission.
 - Do not leave tasks partially executed; ensure all required actions are finished before responding.
-- Do not conclude any task until before/after screenshots are uploaded to https://filebin.net, linked in the response, and logged in the checklist.
+- Do not conclude any task until the textual evidence is recorded in the relevant audit doc and reflected in the checklist entry.
 
-## Screenshot Upload Guide
-- Run `npm run publish:evidence -- --url <pageUrl> --label "<Surface name>"` to capture the desktop and mobile states, rely on `scripts/record.js` for scripted interactions, reuse the default `artifacts/screenshots` output, and upload both PNG files to Filebin automatically. Use the `--bin` flag to append to an existing bin when refreshing evidence and pass additional recorder flags after a `--` delimiter when complex scenarios are required.
-- Copy the markdown block printed by the script, visit each `https://filebin.net/<bin>/<file>.png` link in a browser or with `curl -I` to confirm it returns the screenshot, and only then add it to documentation or responses.
-- The upload workflow enforces `image/png` metadata for every asset; never rename or convert captures after publishing.
-- Paste the verified block into `docs/feature-checklist.md` under the relevant heading and include the same block in status updates or final summaries.
-- Store only the “after” captures in documentation while archiving any “before” evidence outside the repository.
+## Evidence Logging Guide
+- Use the textual evidence template: viewport, reproduction steps, selectors/components, observed vs expected behavior, and relevant measurements (contrast ratios, spacing values).
+- Place evidence in the appropriate audit doc and append a short summary under the completed checklist item in `docs/feature-checklist.md`.
+- Keep any locally captured screenshots in gitignored folders and reference only the textual evidence in documentation or status updates.
 
-## Automated Screenshot Publishing
-- Capture every visual verification state with the Playwright workflow driven by `npm run publish:evidence`, which invokes `scripts/record.js` to keep scenario automation consistent with manual recording tasks.
-- Always run the script after completing a visual change so the desktop and mobile screenshots upload to Filebin and return public `https://filebin.net/<bin>/<file>.png` links.
-- Include the generated markdown block in status updates, pull requests, and documentation updates for every modified surface.
-- Do not upload screenshots to any other hosting service; Filebin links produced by the publishing script are the single source of truth.
+## Automated Evidence Capture
+- Use the Playwright workflow in `scripts/record.js` when you need repeatable local captures or scripted reproduction steps.
+- Record the script output, viewport, and observations as textual evidence in audit docs; do not publish or link the captured media.

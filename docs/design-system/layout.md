@@ -8,5 +8,5 @@
 - **Verification:** Measure with devtools rulers at 1024×768 and confirm no text wrapping at 90% zoom. Re-run Playwright layout regression once updated (tracked in `tests/e2e/stop-detail.layout.spec.ts`).
 
 ## Evidence Logging
-- Capture before/after screenshots for desktop (1280×800), tablet (1024×768), and mobile (414×896) using `npm run publish:evidence`.
-- Record links inside `docs/audit/stop-detail.md` together with measurement notes and QA steps.
+- Log textual evidence for desktop (1280×800), tablet (1024×768), and mobile (414×896) views.
+- Record viewport, reproduction steps, selectors, measured spacing, and observed vs expected outcomes inside `docs/audit/stop-detail.md` together with QA steps.
