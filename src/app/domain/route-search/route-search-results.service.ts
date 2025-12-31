@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, map, of, switchMap, timer } from 'rxjs';
+import { Observable, catchError, forkJoin, map, of, switchMap, timer } from 'rxjs';
+import { RouteLineStop, RouteLinesApiService } from '@data/route-search/route-lines-api.service';
 import { RouteTimetableEntry } from '@data/route-search/route-timetable.mapper';
 import { RouteTimetableRequest, RouteTimetableService } from '@data/route-search/route-timetable.service';
 import { RouteSearchLineMatch, RouteSearchSelection } from '@domain/route-search/route-search-state.service';
@@ -53,14 +54,12 @@ interface RouteSearchResultsOptions {
 @Injectable({ providedIn: 'root' })
 export class RouteSearchResultsService {
   private readonly timetable = inject(RouteTimetableService);
+  private readonly linesApi = inject(RouteLinesApiService);
 
   loadResults(
     selection: RouteSearchSelection,
     options?: RouteSearchResultsOptions
   ): Observable<RouteSearchResultsViewModel> {
-    if (!selection.lineMatches.length) {
-      return of({ departures: [], hasUpcoming: false, nextDepartureId: null });
-    }
     const nowProvider = options?.nowProvider ?? (() => new Date());
     const refreshInterval = options?.refreshIntervalMs ?? RESULTS_REFRESH_INTERVAL_MS;
     const request: RouteTimetableRequest = {
@@ -73,16 +72,87 @@ export class RouteSearchResultsService {
     return this.timetable
       .loadTimetable(request)
       .pipe(
-        switchMap((entries) =>
-          timer(0, refreshInterval).pipe(
-            map(() => {
-              const actualNow = nowProvider();
-              const referenceContext = resolveReferenceContext(selection.queryDate, actualNow);
-              return buildResults(selection, entries, actualNow, referenceContext);
-            })
+        switchMap((entries) => this.resolveLineMatches(selection, entries).pipe(
+          switchMap((lineMatches) =>
+            timer(0, refreshInterval).pipe(
+              map(() => {
+                const actualNow = nowProvider();
+                const referenceContext = resolveReferenceContext(selection.queryDate, actualNow);
+                return buildResults(
+                  { ...selection, lineMatches },
+                  entries,
+                  actualNow,
+                  referenceContext
+                );
+              })
+            )
           )
-        )
+        ))
       );
+  }
+
+  private resolveLineMatches(
+    selection: RouteSearchSelection,
+    entries: readonly RouteTimetableEntry[]
+  ): Observable<readonly RouteSearchLineMatch[]> {
+    const existing = selection.lineMatches;
+
+    if (!entries.length) {
+      return of(existing);
+    }
+
+    const originStopIds = selection.origin.stopIds;
+    const destinationStopIds = selection.destination.stopIds;
+
+    if (!originStopIds.length || !destinationStopIds.length) {
+      return of(existing);
+    }
+
+    const lineCodeMap = new Map<string, string>();
+
+    for (const entry of entries) {
+      if (!lineCodeMap.has(entry.lineId)) {
+        lineCodeMap.set(entry.lineId, entry.lineCode);
+      }
+    }
+
+    const existingLineIds = new Set(existing.map((match) => match.lineId));
+    const missing: LineDescriptor[] = [];
+
+    lineCodeMap.forEach((lineCode, lineId) => {
+      if (!existingLineIds.has(lineId)) {
+        missing.push({ lineId, lineCode });
+      }
+    });
+
+    if (!missing.length) {
+      return of(existing);
+    }
+
+    const requests = missing.map(({ lineId, lineCode }) =>
+      this.linesApi
+        .getLineStops(selection.origin.consortiumId, lineId)
+        .pipe(
+          map((stops) =>
+            buildLineMatchFromStops(lineId, lineCode, stops, originStopIds, destinationStopIds)
+          ),
+          catchError(() => of(null))
+        )
+    );
+
+    return forkJoin(requests).pipe(
+      map((matches) => {
+        const merged = [...existing];
+
+        for (const match of matches) {
+          if (match) {
+            merged.push(match);
+          }
+        }
+
+        return Object.freeze(merged);
+      })
+    );
   }
 }
 
@@ -375,6 +445,118 @@ function toStartOfDay(date: Date): Date {
   const copy = new Date(date);
   copy.setHours(0, 0, 0, 0);
   return copy;
+}
+
+interface LineDescriptor {
+  readonly lineId: string;
+  readonly lineCode: string;
+}
+
+interface DirectionMatch {
+  readonly direction: number;
+  readonly originStops: readonly RouteLineStop[];
+  readonly destinationStops: readonly RouteLineStop[];
+  readonly gap: number;
+}
+
+function buildLineMatchFromStops(
+  lineId: string,
+  lineCode: string,
+  stops: readonly RouteLineStop[],
+  originStopIds: readonly string[],
+  destinationStopIds: readonly string[]
+): RouteSearchLineMatch | null {
+  if (!stops.length) {
+    return null;
+  }
+
+  const originSet = new Set(originStopIds);
+  const destinationSet = new Set(destinationStopIds);
+  const groupedStops = groupStopsByDirection(stops);
+  const matches: DirectionMatch[] = [];
+
+  groupedStops.forEach((directionStops, direction) => {
+    const originStops = directionStops.filter((stop) => originSet.has(stop.stopId));
+    const destinationStops = directionStops.filter((stop) => destinationSet.has(stop.stopId));
+
+    if (!originStops.length || !destinationStops.length) {
+      return;
+    }
+
+    const orderedOrigins = [...originStops].sort((first, second) => first.order - second.order);
+    const orderedDestinations = [...destinationStops].sort(
+      (first, second) => first.order - second.order
+    );
+    const gap = calculateShortestGap(orderedOrigins, orderedDestinations);
+
+    if (!Number.isFinite(gap)) {
+      return;
+    }
+
+    matches.push({
+      direction,
+      originStops: orderedOrigins,
+      destinationStops: orderedDestinations,
+      gap
+    });
+  });
+
+  if (!matches.length) {
+    return null;
+  }
+
+  const bestMatch = matches.reduce((currentBest, candidate) =>
+    candidate.gap < currentBest.gap ? candidate : currentBest
+  );
+
+  return {
+    lineId,
+    lineCode,
+    direction: bestMatch.direction,
+    originStopIds: Object.freeze(bestMatch.originStops.map((stop) => stop.stopId)),
+    destinationStopIds: Object.freeze(bestMatch.destinationStops.map((stop) => stop.stopId))
+  } satisfies RouteSearchLineMatch;
+}
+
+function groupStopsByDirection(
+  stops: readonly RouteLineStop[]
+): Map<number, RouteLineStop[]> {
+  const grouped = new Map<number, RouteLineStop[]>();
+
+  for (const stop of stops) {
+    const bucket = grouped.get(stop.direction);
+
+    if (bucket) {
+      bucket.push(stop);
+    } else {
+      grouped.set(stop.direction, [stop]);
+    }
+  }
+
+  return grouped;
+}
+
+function calculateShortestGap(
+  origins: readonly RouteLineStop[],
+  destinations: readonly RouteLineStop[]
+): number {
+  let best = Number.POSITIVE_INFINITY;
+
+  for (const origin of origins) {
+    for (const destination of destinations) {
+      if (destination.order <= origin.order) {
+        continue;
+      }
+
+      const gap = destination.order - origin.order;
+
+      if (gap < best) {
+        best = gap;
+      }
+    }
+  }
+
+  return best;
 }
 
 const DESTINATION_NOTE_SEPARATOR = ' • ' as const;

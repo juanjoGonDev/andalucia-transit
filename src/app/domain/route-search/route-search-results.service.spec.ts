@@ -1,5 +1,6 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { RouteLineStop, RouteLinesApiService } from '@data/route-search/route-lines-api.service';
 import { RouteTimetableEntry } from '@data/route-search/route-timetable.mapper';
 import { RouteTimetableRequest, RouteTimetableService } from '@data/route-search/route-timetable.service';
 import { StopDirectoryOption } from '@data/stops/stop-directory.service';
@@ -17,6 +18,17 @@ class RouteTimetableServiceStub {
   loadTimetable(request: RouteTimetableRequest) {
     this.requests.push(request);
     return of(this.entries);
+  }
+}
+
+class RouteLinesApiServiceStub {
+  constructor(private readonly stopsByLineId: Record<string, RouteLineStop[]>) {}
+
+  readonly requests: { consortiumId: number; lineId: string }[] = [];
+
+  getLineStops(consortiumId: number, lineId: string) {
+    this.requests.push({ consortiumId, lineId });
+    return of(this.stopsByLineId[lineId] ?? []);
   }
 }
 
@@ -48,9 +60,15 @@ describe('RouteSearchResultsService', () => {
   };
 
   function setup(
-    entries: RouteTimetableEntry[]
-  ): { service: RouteSearchResultsService; timetable: RouteTimetableServiceStub } {
+    entries: RouteTimetableEntry[],
+    lineStopsByLineId: Record<string, RouteLineStop[]> = {}
+  ): {
+    service: RouteSearchResultsService;
+    timetable: RouteTimetableServiceStub;
+    linesApi: RouteLinesApiServiceStub;
+  } {
     const timetableStub = new RouteTimetableServiceStub(entries);
+    const linesStub = new RouteLinesApiServiceStub(lineStopsByLineId);
 
     TestBed.configureTestingModule({
       providers: [
@@ -58,13 +76,18 @@ describe('RouteSearchResultsService', () => {
         {
           provide: RouteTimetableService,
           useValue: timetableStub
+        },
+        {
+          provide: RouteLinesApiService,
+          useValue: linesStub
         }
       ]
     });
 
     return {
       service: TestBed.inject(RouteSearchResultsService),
-      timetable: TestBed.inject(RouteTimetableService) as unknown as RouteTimetableServiceStub
+      timetable: TestBed.inject(RouteTimetableService) as unknown as RouteTimetableServiceStub,
+      linesApi: TestBed.inject(RouteLinesApiService) as unknown as RouteLinesApiServiceStub
     };
   }
 
@@ -339,6 +362,46 @@ describe('RouteSearchResultsService', () => {
     expect(resolved.departures.every((item) => item.kind === 'upcoming')).toBeTrue();
   }));
 
+  it('derives line matches from line stops when the selection is missing lines', fakeAsync(() => {
+    const entries: RouteTimetableEntry[] = [
+      buildEntry(referenceTime, 10, 15, 'L1', '001'),
+      buildEntry(referenceTime, 20, 15, 'L2', '002')
+    ];
+    const lineStops: Record<string, RouteLineStop[]> = {
+      L1: [
+        buildLineStop('origin-a', 'L1', 1, 1),
+        buildLineStop('destination-a', 'L1', 1, 2)
+      ],
+      L2: [buildLineStop('origin-a', 'L2', 1, 1)]
+    };
+
+    const { service } = setup(entries, lineStops);
+
+    const selection: RouteSearchSelection = {
+      origin,
+      destination,
+      queryDate: referenceTime,
+      lineMatches: []
+    };
+
+    let viewModel: RouteSearchResultsViewModel | null = null;
+    const subscription = service
+      .loadResults(selection, {
+        nowProvider: () => referenceTime,
+        refreshIntervalMs: 1_000
+      })
+      .subscribe((result) => {
+        viewModel = result;
+      });
+
+    tick(0);
+    subscription.unsubscribe();
+
+    const resolved = ensureResults(viewModel);
+    expect(resolved.departures.length).toBe(1);
+    expect(resolved.departures[0].lineId).toBe('L1');
+  }));
+
   it('marks departures as past when the query date is before today', fakeAsync(() => {
     const pastDate = new Date('2025-05-20T00:00:00Z');
     const entries: RouteTimetableEntry[] = [buildEntry(pastDate, 90, 25, 'L1', '001')];
@@ -480,6 +543,25 @@ describe('RouteSearchResultsService', () => {
   interface BuildEntryOptions {
     readonly notes?: string;
     readonly isHolidayOnly?: boolean;
+  }
+
+  function buildLineStop(
+    stopId: string,
+    lineId: string,
+    direction: number,
+    order: number
+  ): RouteLineStop {
+    return {
+      stopId,
+      lineId,
+      direction,
+      order,
+      nucleusId: 'nucleus',
+      zoneId: null,
+      latitude: 0,
+      longitude: 0,
+      name: 'Stop'
+    } satisfies RouteLineStop;
   }
 
   function buildEntry(
