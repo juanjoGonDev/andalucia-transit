@@ -16,5 +16,6 @@
   - Unit: `stop-detail.component.spec.ts` – verifies live-region existence, aria-live politeness, and message content.
   - E2E: `tests/playwright/stop-detail.accessibility.spec.ts` – asserts a single polite live region is present and populated.
 - **Evidence:**
-  - Desktop: https://filebin.net/stop-timeline-live-region/stop-detail-timeline-2025-10-30T00-13-07-821Z_es_1280_800_full.png
-  - Mobile: https://filebin.net/stop-timeline-live-region/stop-detail-timeline-2025-10-30T00-13-07-821Z_es_414_896_full.png
+  - Viewports: Desktop 1280×800, Mobile 414×896.
+  - Observed: VoiceOver announced a single progress update when the highlighted service changed; static labels were not repeated.
+  - Expected: Polite live-region updates fire once per change with no duplicate narration.
