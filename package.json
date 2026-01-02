@@ -87,6 +87,7 @@
     "@types/pixelmatch": "^5.2.6",
     "actionlint": "^2.0.6",
     "angular-eslint": "20.4.0",
+    "baseline-browser-mapping": "^2.9.11",
     "cli-table3": "^0.6.5",
     "cypress": "^15.5.0",
     "depcheck": "^1.4.7",
