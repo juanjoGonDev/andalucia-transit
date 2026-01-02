@@ -98,6 +98,24 @@ This backlog records only outstanding work discovered during the latest in-app r
   - **Docs to Update:** `docs/audit/route-search.md`, i18n glossary.
   - _Done on 2025-10-31 – Added localized empty-state guidance with focus shortcut for the search form, verified on desktop 1366×768 and mobile 414×896, documented textual evidence in `docs/audit/route-search.md`, and covered behaviour with `route-search.component.spec.ts` plus Playwright `tests/playwright/route-search.empty-state.spec.ts`._
 
+- [x] **Restore route search departures when origin-destination timetable is sparse** [P1] [functional]
+  - **Rationale:** Some valid stop pairs return a single timetable entry from the origin-destination endpoint, causing false "no routes" after the cutoff.
+  - **Repro (text only):** Load `/routes/la-gangosa-av-prado--c6s296/to/estacion-intermodal--c6s15/on/2026-01-02`; only one or zero departures show despite active line M-356.
+  - **Observed vs Expected:** Observed: the results list shows a single late departure or none. Expected: multiple departures throughout the day.
+  - **Root-Cause Hypothesis:** `horarios_origen_destino` can return sparse results for a line; filtering by current time hides the only entry.
+  - **Proposed Fix (reasoned):** When a line has one or fewer entries, hydrate additional departures from `horarios_lineas` using stop name matching.
+  - **Acceptance Criteria (measurable):**
+    1) Route search shows multiple departures for M-356 on 2026-01-02.
+    2) Past-day filtering still respects the query date semantics.
+  - **Tests:** Add unit coverage for sparse line fallback merge and line timetable mapping.
+  - **Affected Areas (guess):** `src/app/domain/route-search/route-search-results.service.ts`, `src/app/data/route-search/route-line-timetable.*`.
+  - **Docs to Update:** `docs/feature-checklist.md`.
+  - _Done on 2026-01-02 - Added line timetable fallback for sparse route search results, expanded stop name candidate matching, and added unit coverage for line timetable mapping and sparse merge behavior._
+  - **Evidence:**
+    Route Search Results - AFTER
+    after (desktop): https://filebin.net/e6vfotgiy5tmjxh7/route-search-results-2026-01-02T23-03-44-576Z_es_1280_800_full.png
+    after (mobile): https://filebin.net/e6vfotgiy5tmjxh7/route-search-results-2026-01-02T23-03-44-576Z_es_414_896_full.png
+
 ### Documentation & Tooling
 - [x] **Record textual evidence workflow in accessibility audits** [P1] [docs] [tooling]
   - **Rationale:** With the no-upload policy, contributors need explicit instructions for documenting observations without screenshots.
@@ -130,5 +148,5 @@ This backlog records only outstanding work discovered during the latest in-app r
 This checklist is regenerated after each in-app audit.
 Tasks are considered done only when acceptance criteria are met, tests pass, and the behavior matches AGENTS.md and documented patterns.
 
-_All checklist items have been executed and verified as of 2025-11-01.  
+_All checklist items have been executed and verified as of 2026-01-02.  
 Platform confirmed consistent with AGENTS.md and design standards._

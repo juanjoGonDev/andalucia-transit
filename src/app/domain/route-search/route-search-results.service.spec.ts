@@ -1,5 +1,12 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { DateTime } from 'luxon';
 import { of } from 'rxjs';
+import { APP_CONFIG } from '@core/config';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
+import {
+  RouteLineTimetableRequest,
+  RouteLineTimetableService
+} from '@data/route-search/route-line-timetable.service';
 import { RouteLineStop, RouteLinesApiService } from '@data/route-search/route-lines-api.service';
 import { RouteTimetableEntry } from '@data/route-search/route-timetable.mapper';
 import { RouteTimetableRequest, RouteTimetableService } from '@data/route-search/route-timetable.service';
@@ -32,6 +39,17 @@ class RouteLinesApiServiceStub {
   }
 }
 
+class RouteLineTimetableServiceStub {
+  constructor(private readonly entriesByLineId: Record<string, RouteTimetableEntry[]>) {}
+
+  readonly requests: RouteLineTimetableRequest[] = [];
+
+  loadLineTimetable(request: RouteLineTimetableRequest) {
+    this.requests.push(request);
+    return of(this.entriesByLineId[request.lineId] ?? []);
+  }
+}
+
 describe('RouteSearchResultsService', () => {
   const referenceTime = new Date('2025-06-01T10:00:00Z');
 
@@ -61,14 +79,17 @@ describe('RouteSearchResultsService', () => {
 
   function setup(
     entries: RouteTimetableEntry[],
-    lineStopsByLineId: Record<string, RouteLineStop[]> = {}
+    lineStopsByLineId: Record<string, RouteLineStop[]> = {},
+    lineTimetablesByLineId: Record<string, RouteTimetableEntry[]> = {}
   ): {
     service: RouteSearchResultsService;
     timetable: RouteTimetableServiceStub;
     linesApi: RouteLinesApiServiceStub;
+    lineTimetable: RouteLineTimetableServiceStub;
   } {
     const timetableStub = new RouteTimetableServiceStub(entries);
     const linesStub = new RouteLinesApiServiceStub(lineStopsByLineId);
+    const lineTimetableStub = new RouteLineTimetableServiceStub(lineTimetablesByLineId);
 
     TestBed.configureTestingModule({
       providers: [
@@ -80,6 +101,14 @@ describe('RouteSearchResultsService', () => {
         {
           provide: RouteLinesApiService,
           useValue: linesStub
+        },
+        {
+          provide: RouteLineTimetableService,
+          useValue: lineTimetableStub
+        },
+        {
+          provide: APP_CONFIG_TOKEN,
+          useValue: APP_CONFIG
         }
       ]
     });
@@ -87,7 +116,8 @@ describe('RouteSearchResultsService', () => {
     return {
       service: TestBed.inject(RouteSearchResultsService),
       timetable: TestBed.inject(RouteTimetableService) as unknown as RouteTimetableServiceStub,
-      linesApi: TestBed.inject(RouteLinesApiService) as unknown as RouteLinesApiServiceStub
+      linesApi: TestBed.inject(RouteLinesApiService) as unknown as RouteLinesApiServiceStub,
+      lineTimetable: TestBed.inject(RouteLineTimetableService) as unknown as RouteLineTimetableServiceStub
     };
   }
 
@@ -243,6 +273,46 @@ describe('RouteSearchResultsService', () => {
     expect(resolved.nextDepartureId).toBeNull();
   }));
 
+  it('keeps past-day results even when the local day differs from the configured timezone', fakeAsync(() => {
+    const queryDate = new Date('2025-06-01T00:00:00Z');
+    const currentTime = DateTime.fromISO('2025-06-01T23:30:00Z').toJSDate();
+    const entries: RouteTimetableEntry[] = [buildEntry(queryDate, 8 * 60, 20, 'L1', '001')];
+
+    const { service } = setup(entries);
+
+    const selection: RouteSearchSelection = {
+      origin,
+      destination,
+      queryDate,
+      lineMatches: [
+        {
+          lineId: 'L1',
+          lineCode: '001',
+          direction: 0,
+          originStopIds: ['origin-a'],
+          destinationStopIds: ['destination-a']
+        }
+      ]
+    };
+
+    let viewModel: RouteSearchResultsViewModel | null = null;
+    const subscription = service
+      .loadResults(selection, {
+        nowProvider: () => currentTime,
+        refreshIntervalMs: 1_000
+      })
+      .subscribe((result) => {
+        viewModel = result;
+      });
+
+    tick(0);
+    subscription.unsubscribe();
+
+    const resolved = ensureResults(viewModel);
+    expect(resolved.departures.length).toBe(1);
+    expect(resolved.departures[0].kind).toBe('past');
+  }));
+
   it('keeps a visible past progress immediately after departure', fakeAsync(() => {
     const entries: RouteTimetableEntry[] = [buildEntry(referenceTime, -0.1, 12, 'L1', '001')];
 
@@ -360,6 +430,49 @@ describe('RouteSearchResultsService', () => {
 
     const resolved = ensureResults(viewModel);
     expect(resolved.departures.every((item) => item.kind === 'upcoming')).toBeTrue();
+  }));
+
+  it('appends line timetable entries when line results are sparse', fakeAsync(() => {
+    const entries: RouteTimetableEntry[] = [buildEntry(referenceTime, 10, 15, 'L1', '001')];
+    const fallbackEntries: Record<string, RouteTimetableEntry[]> = {
+      L1: [buildEntry(referenceTime, 30, 15, 'L1', '001')]
+    };
+    const { service, lineTimetable } = setup(entries, {}, fallbackEntries);
+
+    const selection: RouteSearchSelection = {
+      origin,
+      destination,
+      queryDate: referenceTime,
+      lineMatches: [
+        {
+          lineId: 'L1',
+          lineCode: '001',
+          direction: 0,
+          originStopIds: ['origin-a'],
+          destinationStopIds: ['destination-a']
+        }
+      ]
+    };
+
+    let viewModel: RouteSearchResultsViewModel | null = null;
+    const subscription = service
+      .loadResults(selection, {
+        nowProvider: () => referenceTime,
+        refreshIntervalMs: 1_000
+      })
+      .subscribe((result) => {
+        viewModel = result;
+      });
+
+    tick(0);
+    subscription.unsubscribe();
+
+    const resolved = ensureResults(viewModel);
+    expect(lineTimetable.requests.length).toBe(1);
+    expect(lineTimetable.requests[0].lineId).toBe('L1');
+    expect(lineTimetable.requests[0].originNames).toContain(origin.name);
+    expect(lineTimetable.requests[0].destinationNames).toContain(destination.name);
+    expect(resolved.departures.length).toBe(2);
   }));
 
   it('derives line matches from line stops when the selection is missing lines', fakeAsync(() => {

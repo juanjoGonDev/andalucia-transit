@@ -1,5 +1,9 @@
 import { Injectable, inject } from '@angular/core';
+import { DateTime } from 'luxon';
 import { Observable, catchError, forkJoin, map, of, switchMap, timer } from 'rxjs';
+import { AppConfig } from '@core/config';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
+import { RouteLineTimetableService } from '@data/route-search/route-line-timetable.service';
 import { RouteLineStop, RouteLinesApiService } from '@data/route-search/route-lines-api.service';
 import { RouteTimetableEntry } from '@data/route-search/route-timetable.mapper';
 import { RouteTimetableRequest, RouteTimetableService } from '@data/route-search/route-timetable.service';
@@ -16,6 +20,7 @@ const SECONDS_PER_HOUR = 3_600;
 const SECONDS_PER_MINUTE = 60;
 const PAST_WINDOW_MINUTES = 30;
 const RESULTS_REFRESH_INTERVAL_MS = 1_000;
+const MIN_ENTRIES_FOR_LINE_FALLBACK = 1;
 
 export interface RouteSearchResultsViewModel {
   readonly departures: readonly RouteSearchDepartureView[];
@@ -55,6 +60,8 @@ interface RouteSearchResultsOptions {
 export class RouteSearchResultsService {
   private readonly timetable = inject(RouteTimetableService);
   private readonly linesApi = inject(RouteLinesApiService);
+  private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
+  private readonly lineTimetable = inject(RouteLineTimetableService);
 
   loadResults(
     selection: RouteSearchSelection,
@@ -62,6 +69,7 @@ export class RouteSearchResultsService {
   ): Observable<RouteSearchResultsViewModel> {
     const nowProvider = options?.nowProvider ?? (() => new Date());
     const refreshInterval = options?.refreshIntervalMs ?? RESULTS_REFRESH_INTERVAL_MS;
+    const timezone = this.config.data.timezone;
     const request: RouteTimetableRequest = {
       consortiumId: selection.origin.consortiumId,
       originNucleusId: selection.origin.nucleusId,
@@ -72,22 +80,32 @@ export class RouteSearchResultsService {
     return this.timetable
       .loadTimetable(request)
       .pipe(
-        switchMap((entries) => this.resolveLineMatches(selection, entries).pipe(
-          switchMap((lineMatches) =>
-            timer(0, refreshInterval).pipe(
-              map(() => {
-                const actualNow = nowProvider();
-                const referenceContext = resolveReferenceContext(selection.queryDate, actualNow);
-                return buildResults(
-                  { ...selection, lineMatches },
-                  entries,
-                  actualNow,
-                  referenceContext
-                );
-              })
+        switchMap((entries) =>
+          this.resolveLineMatches(selection, entries).pipe(
+            switchMap((lineMatches) =>
+              this.mergeFallbackTimetables(selection, entries, lineMatches).pipe(
+                switchMap((mergedEntries) =>
+                  timer(0, refreshInterval).pipe(
+                    map(() => {
+                      const actualNow = nowProvider();
+                      const referenceContext = resolveReferenceContext(
+                        selection.queryDate,
+                        actualNow,
+                        timezone
+                      );
+                      return buildResults(
+                        { ...selection, lineMatches },
+                        mergedEntries,
+                        actualNow,
+                        referenceContext
+                      );
+                    })
+                  )
+                )
+              )
             )
           )
-        ))
+        )
       );
   }
 
@@ -152,6 +170,54 @@ export class RouteSearchResultsService {
 
         return Object.freeze(merged);
       })
+    );
+  }
+
+  private mergeFallbackTimetables(
+    selection: RouteSearchSelection,
+    entries: readonly RouteTimetableEntry[],
+    lineMatches: readonly RouteSearchLineMatch[]
+  ): Observable<readonly RouteTimetableEntry[]> {
+    if (!lineMatches.length) {
+      return of(entries);
+    }
+
+    const entryCounts = new Map<string, number>();
+
+    for (const entry of entries) {
+      entryCounts.set(entry.lineId, (entryCounts.get(entry.lineId) ?? 0) + 1);
+    }
+
+    const fallbackMatches = lineMatches.filter((match) =>
+      (entryCounts.get(match.lineId) ?? 0) <= MIN_ENTRIES_FOR_LINE_FALLBACK
+    );
+
+    if (!fallbackMatches.length) {
+      return of(entries);
+    }
+
+    const originNames = buildStopNameCandidates(selection.origin.name);
+    const destinationNames = buildStopNameCandidates(selection.destination.name);
+
+    if (!originNames.length || !destinationNames.length) {
+      return of(entries);
+    }
+
+    const requests = fallbackMatches.map((match) =>
+      this.lineTimetable
+        .loadLineTimetable({
+          consortiumId: selection.origin.consortiumId,
+          lineId: match.lineId,
+          lineCode: match.lineCode,
+          queryDate: selection.queryDate,
+          originNames,
+          destinationNames
+        })
+        .pipe(catchError(() => of([])))
+    );
+
+    return forkJoin(requests).pipe(
+      map((fallbackEntries) => Object.freeze([...entries, ...fallbackEntries.flat()]))
     );
   }
 }
@@ -230,19 +296,25 @@ function buildResults(
   } satisfies RouteSearchResultsViewModel;
 }
 
-function resolveReferenceContext(queryDate: Date, currentTime: Date): ReferenceContext {
-  const queryStart = toStartOfDay(queryDate);
-  const currentStart = toStartOfDay(currentTime);
+function resolveReferenceContext(
+  queryDate: Date,
+  currentTime: Date,
+  timezone: string
+): ReferenceContext {
+  const queryStart = DateTime.fromJSDate(queryDate, { zone: timezone }).startOf('day');
+  const currentStart = DateTime.fromJSDate(currentTime, { zone: timezone }).startOf('day');
+  const queryStartMillis = queryStart.toMillis();
+  const currentStartMillis = currentStart.toMillis();
 
-  if (queryStart.getTime() === currentStart.getTime()) {
+  if (queryStartMillis === currentStartMillis) {
     return { referenceTime: currentTime, relation: 'today' } satisfies ReferenceContext;
   }
 
-  if (queryStart.getTime() < currentStart.getTime()) {
-    return { referenceTime: queryStart, relation: 'past' } satisfies ReferenceContext;
+  if (queryStartMillis < currentStartMillis) {
+    return { referenceTime: queryStart.toJSDate(), relation: 'past' } satisfies ReferenceContext;
   }
 
-  return { referenceTime: queryStart, relation: 'future' } satisfies ReferenceContext;
+  return { referenceTime: queryStart.toJSDate(), relation: 'future' } satisfies ReferenceContext;
 }
 
 interface RouteSearchDepartureCandidate {
@@ -441,12 +513,6 @@ function formatDurationLabel(parts: DurationParts): string {
   return segments.join(' ');
 }
 
-function toStartOfDay(date: Date): Date {
-  const copy = new Date(date);
-  copy.setHours(0, 0, 0, 0);
-  return copy;
-}
-
 interface LineDescriptor {
   readonly lineId: string;
   readonly lineCode: string;
@@ -561,6 +627,57 @@ function calculateShortestGap(
 
 const DESTINATION_NOTE_SEPARATOR = ' • ' as const;
 const MILLISECONDS_PER_DAY = 86_400_000;
+
+function buildStopNameCandidates(name: string): readonly string[] {
+  const trimmed = name.trim();
+
+  if (!trimmed) {
+    return [];
+  }
+
+  const candidates = new Set<string>();
+  const addCandidate = (value: string): void => {
+    const normalized = value.replace(/\s+/g, ' ').trim();
+    if (normalized) {
+      candidates.add(normalized);
+    }
+  };
+
+  addCandidate(trimmed);
+
+  const withoutParentheses = trimmed
+    .replace(/\s*\([^)]*\)\s*/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  addCandidate(withoutParentheses);
+
+  const dashSegments = trimmed.split(/\s*-\s*/).map((segment) => segment.trim()).filter(Boolean);
+  if (dashSegments.length > 1) {
+    dashSegments.forEach(addCandidate);
+  }
+
+  const slashSegments = trimmed.split(/\s*\/\s*/).map((segment) => segment.trim()).filter(Boolean);
+  if (slashSegments.length > 1) {
+    slashSegments.forEach(addCandidate);
+  }
+
+  const replacements: readonly { readonly pattern: RegExp; readonly replacement: string }[] = [
+    { pattern: /\bav(?:da|d)?\.?\b/gi, replacement: 'avenida' },
+    { pattern: /\bctra\.?\b/gi, replacement: 'carretera' },
+    { pattern: /\best\.?\b/gi, replacement: 'estacion' }
+  ];
+
+  for (const value of Array.from(candidates)) {
+    for (const replacement of replacements) {
+      const updated = value.replace(replacement.pattern, replacement.replacement);
+      if (updated !== value) {
+        addCandidate(updated);
+      }
+    }
+  }
+
+  return Object.freeze(Array.from(candidates));
+}
 
 interface CandidateContext {
   readonly actualNow: Date;
