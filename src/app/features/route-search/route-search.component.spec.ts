@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, ParamMap, Router, convertToParamMap, provideRouter } from '@angular/router';
-import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateTime } from 'luxon';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, of } from 'rxjs';
@@ -21,7 +21,10 @@ import { RouteSearchComponent } from '@features/route-search/route-search.compon
 class TranslateTestingLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
     return of({
-      'routeSearch.scheduleAccuracyWarning': 'Schedules may change'
+      'routeSearch.scheduleAccuracyWarning': 'Schedules may change',
+      'routeSearch.emptyResults': 'No routes found',
+      'routeSearch.emptyResultsDescription': 'Try another combination',
+      'routeSearch.emptyResultsAction': 'Adjust search'
     });
   }
 }
@@ -47,6 +50,7 @@ class RouteSearchFormStubComponent {
   @Input() initialSelection: RouteSearchSelection | null = null;
   @Input() originDraft: StopDirectoryOption | null = null;
   @Output() readonly selectionConfirmed = new EventEmitter<RouteSearchSelection>();
+  focusOriginField = jasmine.createSpy('focusOriginField');
 }
 
 class RouteSearchSelectionResolverServiceStub {
@@ -183,6 +187,9 @@ describe('RouteSearchComponent', () => {
     resolver = TestBed.inject(
       RouteSearchSelectionResolverService
     ) as unknown as RouteSearchSelectionResolverServiceStub;
+    const translate = TestBed.inject(TranslateService);
+    translate.setDefaultLang('en');
+    translate.use('en');
     fixture = TestBed.createComponent(RouteSearchComponent);
   });
 
@@ -341,6 +348,38 @@ describe('RouteSearchComponent', () => {
 
     const empty = fixture.debugElement.query(By.css('.route-search__empty'));
     expect(empty).not.toBeNull();
+  });
+
+  it('renders actionable guidance when a selection has no results', () => {
+    state.setSelection({
+      origin,
+      destination,
+      queryDate: new Date('2025-02-02T00:00:00Z'),
+      lineMatches: []
+    });
+
+    fixture.detectChanges();
+
+    const title = fixture.debugElement.query(By.css('.route-search__empty-title'));
+    expect(title).not.toBeNull();
+    const titleContent = (title?.nativeElement as HTMLElement).textContent?.trim() ?? '';
+    expect(titleContent).toBe('No routes found');
+
+    const description = fixture.debugElement.query(By.css('.route-search__empty-description'));
+    expect(description).not.toBeNull();
+    const descriptionContent = (description?.nativeElement as HTMLElement).textContent?.trim() ?? '';
+    expect(descriptionContent).toBe('Try another combination');
+
+    const action = fixture.debugElement.query(By.css('.route-search__empty-action'));
+    expect(action).not.toBeNull();
+
+    const formDebugElement = fixture.debugElement.query(By.directive(RouteSearchFormStubComponent));
+    const form = formDebugElement.componentInstance as RouteSearchFormStubComponent;
+    Reflect.set(fixture.componentInstance as object, 'formComponent', form);
+
+    action?.triggerEventHandler('appAccessibleButtonActivated', {});
+
+    expect(form.focusOriginField).toHaveBeenCalled();
   });
 
   it('shows the no upcoming message when all lines lack future services', () => {

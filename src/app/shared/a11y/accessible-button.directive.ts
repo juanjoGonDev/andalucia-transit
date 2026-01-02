@@ -36,7 +36,9 @@ export class AccessibleButtonDirective {
   @Input() appAccessibleButtonChecked: boolean | null = null;
   @Input() appAccessibleButtonExpanded: boolean | null = null;
   @Input() appAccessibleButtonHasPopup: AccessibleButtonPopupValue | null = null;
+  @Input() appAccessibleButtonTabIndex: number | null = null;
   @Output() readonly appAccessibleButtonActivated = new EventEmitter<MouseEvent>();
+  @Output() readonly appAccessibleButtonKeydown = new EventEmitter<KeyboardEvent>();
 
   @HostBinding('attr.role')
   get role(): string | null {
@@ -45,7 +47,17 @@ export class AccessibleButtonDirective {
 
   @HostBinding('attr.tabindex')
   get tabIndex(): number {
-    return this.appAccessibleButtonDisabled ? TAB_INDEX_DISABLED : TAB_INDEX_ENABLED;
+    if (this.appAccessibleButtonDisabled) {
+      return TAB_INDEX_DISABLED;
+    }
+
+    const configured = this.appAccessibleButtonTabIndex;
+
+    if (typeof configured === 'number' && Number.isInteger(configured)) {
+      return configured;
+    }
+
+    return TAB_INDEX_ENABLED;
   }
 
   @HostBinding('attr.aria-disabled')
@@ -106,6 +118,8 @@ export class AccessibleButtonDirective {
       this.cancelSpaceActivation();
       return;
     }
+
+    this.appAccessibleButtonKeydown.emit(event);
 
     const resolvedRole = this.resolveRole();
 
@@ -204,6 +218,10 @@ export class AccessibleButtonDirective {
 
     event.preventDefault();
     event.stopPropagation();
+  }
+
+  focus(): void {
+    this.hostElementRef.nativeElement.focus();
   }
 
   private invokeHostClick(event: KeyboardEvent): void {

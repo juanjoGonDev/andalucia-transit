@@ -30,6 +30,9 @@ const STOP_FAVORITES_STORAGE_KEY = 'andalucia-transit.stopFavorites' as const;
 const ROUTE_SEARCH_SCHEDULE_ACCURACY_THRESHOLD_DAYS = 30 as const;
 const HOME_RECENT_ROUTE = 'recents' as const;
 const HOME_FAVORITES_ROUTE = 'favs' as const;
+const HOME_TAB_QUERY_PARAM = 'tab' as const;
+const HOME_TAB_STORAGE_KEY = 'andalucia-transit.homeTab' as const;
+const HOME_TAB_DEFAULT = 'search' as const;
 const LOCALE_ES_STANDARD = 'es-ES' as const;
 const LOCALE_EN_STANDARD = 'en-GB' as const;
 const LANGUAGE_LOCALE_MAP = {
@@ -290,6 +293,9 @@ export const APP_CONFIG = {
         arrivingNow: 'stopDetail.status.arrivingNow',
         departedAgo: 'stopDetail.status.departedAgo'
       },
+      announcements: {
+        progress: 'stopDetail.announcements.progress'
+      },
       badges: {
         accessible: 'stopDetail.badges.accessible',
         universityOnly: 'stopDetail.badges.universityOnly'
@@ -316,6 +322,8 @@ export const APP_CONFIG = {
       noUpcoming: 'routeSearch.noUpcoming',
       changeDate: 'routeSearch.changeDate',
       emptyResults: 'routeSearch.emptyResults',
+      emptyResultsDescription: 'routeSearch.emptyResultsDescription',
+      emptyResultsAction: 'routeSearch.emptyResultsAction',
       arrivalAt: 'routeSearch.arrivalAt',
       travelDuration: 'routeSearch.travelDuration',
       holidayBadge: 'routeSearch.holidayBadge',
@@ -475,6 +483,11 @@ export const APP_CONFIG = {
         storageKey: ROUTE_SEARCH_PREFERENCES_STORAGE_KEY,
         previewEnabledDefault: true
       }
+    },
+    tabs: {
+      storageKey: HOME_TAB_STORAGE_KEY,
+      queryParam: HOME_TAB_QUERY_PARAM,
+      defaultTab: HOME_TAB_DEFAULT
     },
     nearbyStops: {
       maxDistanceInMeters: 3_000,

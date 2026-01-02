@@ -1,11 +1,18 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { BehaviorSubject, delay, of, throwError } from 'rxjs';
+import {
+  TranslateCompiler,
+  TranslateLoader,
+  TranslateModule,
+  TranslateService
+} from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
+import { BehaviorSubject, delay, firstValueFrom, of, throwError } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { StopScheduleFacade } from '@domain/stop-schedule/stop-schedule.facade';
-import { StopSchedule, StopScheduleResult } from '@domain/stop-schedule/stop-schedule.model';
+import { StopSchedule, StopScheduleResult, StopService } from '@domain/stop-schedule/stop-schedule.model';
 import { StopDirectoryFacade, StopDirectoryRecord } from '@domain/stops/stop-directory.facade';
+import { addMinutesToDate } from '@domain/utils/time.util';
 import {
   STOP_TIMELINE_PAST_TAB_ID,
   STOP_TIMELINE_UPCOMING_TAB_ID,
@@ -19,7 +26,53 @@ const ASSERTIVE_LIVE_REGION = 'assertive';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
-    return of({});
+    return of({
+      stopDetail: {
+        title: 'stopDetail.title',
+        subtitle: 'stopDetail.subtitle',
+        loading: 'stopDetail.loading',
+        actions: {
+          stopInfo: 'stopDetail.actions.stopInfo'
+        },
+        error: {
+          title: 'stopDetail.error.title',
+          description: 'stopDetail.error.description'
+        },
+        header: {
+          stopCodeLabel: 'stopDetail.header.stopCodeLabel',
+          scheduleDateLabel: 'stopDetail.header.scheduleDateLabel',
+          lastUpdatedLabel: 'stopDetail.header.lastUpdatedLabel'
+        },
+        filters: {
+          destinationLabel: 'stopDetail.filters.destinationLabel',
+          allDestinations: 'stopDetail.filters.allDestinations'
+        },
+        schedule: {
+          upcomingTitle: 'stopDetail.schedule.upcomingTitle',
+          upcomingSubtitle: 'stopDetail.schedule.upcomingSubtitle',
+          pastTitle: 'stopDetail.schedule.pastTitle',
+          pastSubtitle: 'stopDetail.schedule.pastSubtitle',
+          emptyUpcoming: 'stopDetail.schedule.emptyUpcoming',
+          emptyPast: 'stopDetail.schedule.emptyPast'
+        },
+        status: {
+          arrivesIn: 'Arrives in {minutes} min',
+          arrivingNow: 'Arriving now',
+          departedAgo: 'Departed {minutes} min ago'
+        },
+        announcements: {
+          progress: 'lineCode:{lineCode}|destination:{destination}|status:{statusText}|progress:{percentage}'
+        },
+        badges: {
+          accessible: 'stopDetail.badges.accessible',
+          universityOnly: 'stopDetail.badges.universityOnly'
+        },
+        source: {
+          live: 'stopDetail.source.live',
+          snapshot: 'stopDetail.source.snapshot'
+        }
+      }
+    });
   }
 }
 
@@ -62,7 +115,8 @@ describe('StopDetailComponent', () => {
       imports: [
         StopDetailComponent,
         TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
         })
       ],
       providers: [
@@ -73,6 +127,9 @@ describe('StopDetailComponent', () => {
         { provide: APP_LAYOUT_CONTEXT, useValue: layoutContext }
       ]
     }).compileComponents();
+
+    const translate = TestBed.inject(TranslateService);
+    await firstValueFrom(translate.use('en'));
 
     router = TestBed.inject(Router);
   });
@@ -234,9 +291,36 @@ describe('StopDetailComponent', () => {
 
     expect(layoutContext.clearTabs).toHaveBeenCalledTimes(1);
   }));
+
+  it('announces upcoming progress changes through a live region', fakeAsync(() => {
+    const service = createUpcomingService({
+      serviceId: 'service-42',
+      lineCode: 'M-112',
+      destination: 'Centro',
+      minutesUntilArrival: 5
+    });
+    scheduleFacade.loadStopSchedule.and.returnValue(of(createResult('stop-main-street', [service])));
+
+    fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const liveRegion = fixture.nativeElement.querySelector('.stop-detail__live-region') as HTMLElement | null;
+
+    expect(liveRegion).not.toBeNull();
+    expect(liveRegion?.getAttribute('aria-live')).toBe(POLITE_LIVE_REGION);
+
+    const textContent = liveRegion?.textContent?.trim() ?? '';
+
+    expect(textContent).toContain('lineCode:M-112');
+    expect(textContent).toContain('destination:Centro');
+    expect(textContent).toContain('status:Arrives in 5 min');
+    expect(textContent).toContain('progress:83');
+  }));
 });
 
-function createResult(stopId: string): StopScheduleResult {
+function createResult(stopId: string, services: readonly StopService[] = []): StopScheduleResult {
   const now = new Date();
   const schedule: StopSchedule = {
     stopId,
@@ -244,7 +328,7 @@ function createResult(stopId: string): StopScheduleResult {
     stopName: 'Test Stop',
     queryDate: now,
     generatedAt: now,
-    services: []
+    services
   } as const;
 
   return {
@@ -271,4 +355,22 @@ function createDirectoryRecord(stopId: string): StopDirectoryRecord {
     zone: 'A',
     location: { latitude: 37.389, longitude: -5.984 }
   } as const;
+}
+
+function createUpcomingService(
+  overrides: Partial<StopService> & { minutesUntilArrival?: number } = {}
+): StopService {
+  const minutesUntilArrival = overrides.minutesUntilArrival ?? 5;
+  const currentTime = new Date();
+
+  return {
+    serviceId: overrides.serviceId ?? 'service-1',
+    lineId: overrides.lineId ?? 'line-1',
+    lineCode: overrides.lineCode ?? 'L-1',
+    direction: overrides.direction ?? 1,
+    destination: overrides.destination ?? 'Central Station',
+    arrivalTime: addMinutesToDate(currentTime, minutesUntilArrival),
+    isAccessible: overrides.isAccessible ?? false,
+    isUniversityOnly: overrides.isUniversityOnly ?? false
+  } as StopService;
 }
