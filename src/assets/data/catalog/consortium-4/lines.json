@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-01T05:12:45.513Z",
+    "generatedAt": "2026-01-02T05:10:55.610Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -68,7 +68,7 @@
         "Autocares Vázquez Olmedo",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -216,7 +216,7 @@
       "operators": [
         "Metro Málaga"
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -241,7 +241,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -266,7 +266,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -316,7 +316,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -341,7 +341,7 @@
         "Autocares Vázquez Olmedo",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -416,7 +416,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -441,7 +441,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -491,7 +491,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -541,7 +541,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -565,7 +565,7 @@
       "operators": [
         "Renfe Cercanías"
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -590,7 +590,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -740,7 +740,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -765,7 +765,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -839,7 +839,7 @@
       "operators": [
         "Renfe Cercanías"
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -864,7 +864,7 @@
         "Autocares Vázquez Olmedo",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -889,7 +889,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -914,7 +914,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -964,7 +964,7 @@
         "Nex Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1014,7 +1014,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1064,7 +1064,7 @@
         "Automóviles Mérida",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1114,7 +1114,7 @@
         "Nex Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1213,7 +1213,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1238,7 +1238,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1313,7 +1313,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1338,7 +1338,7 @@
         "Nex Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1412,7 +1412,7 @@
       "operators": [
         "Damas S.A. e Interurbana de Autobuses S.A."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1437,7 +1437,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1462,7 +1462,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1487,7 +1487,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1512,7 +1512,7 @@
         "Nex Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1537,7 +1537,7 @@
         "Nex Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1587,7 +1587,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1612,7 +1612,7 @@
         "Nex Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1662,7 +1662,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1711,7 +1711,7 @@
       "operators": [
         "Metro Málaga"
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1885,7 +1885,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1910,7 +1910,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1960,7 +1960,7 @@
         "Nex Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -2010,7 +2010,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -2035,7 +2035,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -2060,7 +2060,7 @@
         "Avanza Movilidad Integral",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
