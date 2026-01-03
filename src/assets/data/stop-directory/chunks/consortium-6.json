@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-02T05:10:51.664Z",
+    "generatedAt": "2026-01-03T05:07:54.301Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 6,
@@ -227,7 +227,7 @@
       "municipalityId": "12",
       "nucleus": "AGUAMARGA",
       "nucleusId": "62",
-      "zone": "E",
+      "zone": "P",
       "location": {
         "latitude": 36.941034,
         "longitude": -1.935025
@@ -1817,7 +1817,7 @@
       "municipalityId": "12",
       "nucleus": "CALA CARBÓN",
       "nucleusId": "159",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.733276,
         "longitude": -2.159992
@@ -1832,7 +1832,7 @@
       "municipalityId": "12",
       "nucleus": "CALA MEDIA LUNA",
       "nucleusId": "174",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.733554,
         "longitude": -2.150421
@@ -2582,7 +2582,7 @@
       "municipalityId": "12",
       "nucleus": "CRUCE AGUA AMARGA",
       "nucleusId": "151",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.96681,
         "longitude": -1.986624
@@ -2597,7 +2597,7 @@
       "municipalityId": "12",
       "nucleus": "CRUCE AGUA AMARGA",
       "nucleusId": "151",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.966726,
         "longitude": -1.987168
@@ -4247,7 +4247,7 @@
       "municipalityId": "12",
       "nucleus": "ISLETA DEL MORO",
       "nucleusId": "96",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.814074,
         "longitude": -2.051914
@@ -4937,7 +4937,7 @@
       "municipalityId": "12",
       "nucleus": "LAS NEGRAS",
       "nucleusId": "59",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.879887,
         "longitude": -2.006184
@@ -5297,7 +5297,7 @@
       "municipalityId": "12",
       "nucleus": "LOS ESCULLOS",
       "nucleusId": "115",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.805992,
         "longitude": -2.076469
@@ -5312,7 +5312,7 @@
       "municipalityId": "12",
       "nucleus": "LOS ESCULLOS",
       "nucleusId": "115",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.806111,
         "longitude": -2.076383
@@ -5327,7 +5327,7 @@
       "municipalityId": "12",
       "nucleus": "LOS ESCULLOS",
       "nucleusId": "115",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.806736,
         "longitude": -2.065008
@@ -5597,7 +5597,7 @@
       "municipalityId": "12",
       "nucleus": "NÍJAR",
       "nucleusId": "45",
-      "zone": "D",
+      "zone": "E",
       "location": {
         "latitude": 36.963511,
         "longitude": -2.206027
@@ -5822,7 +5822,7 @@
       "municipalityId": "12",
       "nucleus": "PLAYA BARRONAL",
       "nucleusId": "158",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.734071,
         "longitude": -2.142802
@@ -5837,7 +5837,7 @@
       "municipalityId": "12",
       "nucleus": "PLAYA LOS GENOVESES",
       "nucleusId": "157",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.747366,
         "longitude": -2.127341
@@ -5852,7 +5852,7 @@
       "municipalityId": "12",
       "nucleus": "PLAYA MÓNSUL",
       "nucleusId": "156",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.732973,
         "longitude": -2.146639
@@ -6557,7 +6557,7 @@
       "municipalityId": "12",
       "nucleus": "RODALQUILAR",
       "nucleusId": "57",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.846734,
         "longitude": -2.04055
@@ -7112,7 +7112,7 @@
       "municipalityId": "12",
       "nucleus": "SAN JOSÉ",
       "nucleusId": "55",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.763734,
         "longitude": -2.10984
@@ -7127,7 +7127,7 @@
       "municipalityId": "12",
       "nucleus": "SAN JOSÉ",
       "nucleusId": "55",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.76382219099946,
         "longitude": -2.109863162040711
@@ -7457,7 +7457,7 @@
       "municipalityId": "12",
       "nucleus": "VENTA DEL POBRE",
       "nucleusId": "99",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.992709,
         "longitude": -2.067691

@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-02T05:10:55.610Z",
+    "generatedAt": "2026-01-03T05:07:57.372Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 6,
     "consortiumName": "Área de Almería",
-    "itemCount": 170
+    "itemCount": 173
   },
   "nuclei": [
     {
@@ -29,7 +29,7 @@
     {
       "id": "62",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "P",
       "name": "AGUAMARGA"
     },
     {
@@ -155,13 +155,13 @@
     {
       "id": "159",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "CALA CARBÓN"
     },
     {
       "id": "174",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "CALA MEDIA LUNA"
     },
     {
@@ -269,13 +269,13 @@
     {
       "id": "151",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "CRUCE AGUA AMARGA"
     },
     {
       "id": "152",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "CRUCE ARGAMASÓN"
     },
     {
@@ -303,6 +303,12 @@
       "name": "CUATRO VIENTOS"
     },
     {
+      "id": "183",
+      "municipalityId": "76",
+      "zone": "P",
+      "name": "CUEVA DEL PÁJARO"
+    },
+    {
       "id": "19",
       "municipalityId": "2",
       "zone": "D",
@@ -325,6 +331,12 @@
       "municipalityId": "2",
       "zone": "B",
       "name": "EL ALQUIAN"
+    },
+    {
+      "id": "181",
+      "municipalityId": "76",
+      "zone": "P",
+      "name": "EL ARGAMASÓN"
     },
     {
       "id": "53",
@@ -361,6 +373,12 @@
       "municipalityId": "6",
       "zone": "H",
       "name": "EL EJIDO"
+    },
+    {
+      "id": "182",
+      "municipalityId": "76",
+      "zone": "P",
+      "name": "EL LLANO DE DON ANTONIO"
     },
     {
       "id": "93",
@@ -503,7 +521,7 @@
     {
       "id": "96",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "ISLETA DEL MORO"
     },
     {
@@ -611,7 +629,7 @@
     {
       "id": "59",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "LAS NEGRAS"
     },
     {
@@ -653,7 +671,7 @@
     {
       "id": "115",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "LOS ESCULLOS"
     },
     {
@@ -713,7 +731,7 @@
     {
       "id": "45",
       "municipalityId": "12",
-      "zone": "D",
+      "zone": "E",
       "name": "NÍJAR"
     },
     {
@@ -749,19 +767,19 @@
     {
       "id": "158",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "PLAYA BARRONAL"
     },
     {
       "id": "157",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "PLAYA LOS GENOVESES"
     },
     {
       "id": "156",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "PLAYA MÓNSUL"
     },
     {
@@ -869,7 +887,7 @@
     {
       "id": "57",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "RODALQUILAR"
     },
     {
@@ -905,7 +923,7 @@
     {
       "id": "55",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "SAN JOSÉ"
     },
     {
@@ -977,7 +995,7 @@
     {
       "id": "99",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "VENTA DEL POBRE"
     },
     {
