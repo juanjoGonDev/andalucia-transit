@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-08T05:10:03.326Z",
+    "generatedAt": "2026-01-09T05:10:23.222Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 6,
     "consortiumName": "Área de Almería",
-    "stopCount": 515
+    "stopCount": 529
   },
   "stops": [
     {
@@ -606,6 +606,36 @@
       "location": {
         "latitude": 36.81132,
         "longitude": -2.582989
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "738",
+      "stopCode": "738",
+      "name": "Alhama de Almería",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "zone": "N",
+      "location": {
+        "latitude": 36.956793,
+        "longitude": -2.565456
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "743",
+      "stopCode": "743",
+      "name": "Alhama de Almería",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "zone": "N",
+      "location": {
+        "latitude": 36.956804,
+        "longitude": -2.565508
       }
     },
     {
@@ -3655,6 +3685,36 @@
     },
     {
       "consortiumId": 6,
+      "stopId": "739",
+      "stopCode": "739",
+      "name": "Fábrica Cirera",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "zone": "N",
+      "location": {
+        "latitude": 36.958573,
+        "longitude": -2.566954
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "742",
+      "stopCode": "742",
+      "name": "Farmacia",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "zone": "N",
+      "location": {
+        "latitude": 36.958482,
+        "longitude": -2.566919
+      }
+    },
+    {
+      "consortiumId": 6,
       "stopId": "69",
       "stopCode": "69",
       "name": "Felix",
@@ -5455,6 +5515,36 @@
     },
     {
       "consortiumId": 6,
+      "stopId": "745",
+      "stopCode": "745",
+      "name": "Los Talleres",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "zone": "L",
+      "location": {
+        "latitude": 37.055391,
+        "longitude": -2.388851
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "748",
+      "stopCode": "748",
+      "name": "Los Talleres",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "zone": "L",
+      "location": {
+        "latitude": 37.05563,
+        "longitude": -2.388832
+      }
+    },
+    {
+      "consortiumId": 6,
       "stopId": "89",
       "stopCode": "89",
       "name": "Matagorda - Balsa",
@@ -5571,6 +5661,36 @@
       "location": {
         "latitude": 36.861085,
         "longitude": -2.411003
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "750",
+      "stopCode": "750",
+      "name": "MiniHollywood",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "MINIHOLLYWOOD",
+      "nucleusId": "178",
+      "zone": "K",
+      "location": {
+        "latitude": 37.021111,
+        "longitude": -2.434571
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "751",
+      "stopCode": "751",
+      "name": "MiniHollywood",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "MINIHOLLYWOOD",
+      "nucleusId": "178",
+      "zone": "K",
+      "location": {
+        "latitude": 37.021272,
+        "longitude": -2.134777
       }
     },
     {
@@ -5901,6 +6021,36 @@
       "location": {
         "latitude": 36.741801,
         "longitude": -2.615993
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "744",
+      "stopCode": "744",
+      "name": "Plaza Pueblo",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "zone": "L",
+      "location": {
+        "latitude": 37.049798,
+        "longitude": -2.392326
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "749",
+      "stopCode": "749",
+      "name": "Plaza Pueblo",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "zone": "L",
+      "location": {
+        "latitude": 37.049807,
+        "longitude": -2.392544
       }
     },
     {
@@ -6366,6 +6516,36 @@
       "location": {
         "latitude": 36.856912,
         "longitude": -2.420179
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "740",
+      "stopCode": "740",
+      "name": "Rest. El Molinero",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "zone": "N",
+      "location": {
+        "latitude": 36.958995,
+        "longitude": -2.572091
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "741",
+      "stopCode": "741",
+      "name": "Rest. El Molinero",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "zone": "N",
+      "location": {
+        "latitude": 36.959086,
+        "longitude": -2.57221
       }
     },
     {
@@ -7416,6 +7596,36 @@
       "location": {
         "latitude": 36.742518,
         "longitude": -2.616124
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "746",
+      "stopCode": "746",
+      "name": "V.Yesos",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "zone": "L",
+      "location": {
+        "latitude": 37.083623,
+        "longitude": -2.31168
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "747",
+      "stopCode": "747",
+      "name": "V.Yesos",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "zone": "L",
+      "location": {
+        "latitude": 37.083463,
+        "longitude": -2.31443
       }
     },
     {
