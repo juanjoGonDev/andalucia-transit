@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-08T05:10:06.428Z",
+    "generatedAt": "2026-01-09T05:10:27.497Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 6,
@@ -347,7 +347,7 @@
     {
       "id": "10",
       "code": "M-213",
-      "name": "Almería - Hospital El Toyo - Venta Del Pobre - Agua Amarga NN",
+      "name": "Almería - Hospital El Toyo - Venta Del Pobre - Agua Amarga - Carboneras NN",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
@@ -443,7 +443,7 @@
     {
       "id": "4",
       "code": "M-103",
-      "name": "Almería - Los Pinos - Benahadux - Gádor NN",
+      "name": "Almería - Los Pinos - Benahadux - Gádor - Alhama de Almería NN",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
@@ -467,7 +467,7 @@
     {
       "id": "11",
       "code": "M-105",
-      "name": "Almería - Los Pinos - Benahadux - Rioja NN",
+      "name": "Almería - Los Pinos - Benahadux - Rioja - Tabernas NN",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [

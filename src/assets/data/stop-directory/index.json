@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-08T05:10:03.326Z",
+    "generatedAt": "2026-01-09T05:10:23.222Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 3995
+    "totalStops": 4009
   },
   "chunks": [
     {
@@ -87,7 +87,7 @@
       "id": "consortium-6",
       "consortiumId": 6,
       "path": "chunks/consortium-6.json",
-      "stopCount": 515
+      "stopCount": 529
     },
     {
       "id": "consortium-7",
@@ -1274,6 +1274,28 @@
       "nucleusId": "44",
       "consortiumId": 4,
       "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "738",
+      "stopCode": "738",
+      "name": "Alhama de Almería",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "743",
+      "stopCode": "743",
+      "name": "Alhama de Almería",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "25",
@@ -21945,6 +21967,17 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "739",
+      "stopCode": "739",
+      "name": "Fábrica Cirera",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "2885",
       "stopCode": "2885",
       "name": "FABRICA DE LADRILLO",
@@ -22020,6 +22053,17 @@
       "nucleusId": "11",
       "consortiumId": 4,
       "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "742",
+      "stopCode": "742",
+      "name": "Farmacia",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "1267",
@@ -29568,6 +29612,28 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "745",
+      "stopCode": "745",
+      "name": "Los Talleres",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "748",
+      "stopCode": "748",
+      "name": "Los Talleres",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "121",
       "stopCode": "121",
       "name": "Los Toruños",
@@ -30545,6 +30611,28 @@
       "nucleusId": "153",
       "consortiumId": 4,
       "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "750",
+      "stopCode": "750",
+      "name": "MiniHollywood",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "MINIHOLLYWOOD",
+      "nucleusId": "178",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "751",
+      "stopCode": "751",
+      "name": "MiniHollywood",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "MINIHOLLYWOOD",
+      "nucleusId": "178",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "159",
@@ -34562,6 +34650,28 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "744",
+      "stopCode": "744",
+      "name": "Plaza Pueblo",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "749",
+      "stopCode": "749",
+      "name": "Plaza Pueblo",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "608",
       "stopCode": "608",
       "name": "Plaza San Isidro",
@@ -37145,6 +37255,28 @@
       "nucleusId": "109",
       "consortiumId": 4,
       "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "740",
+      "stopCode": "740",
+      "name": "Rest. El Molinero",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "741",
+      "stopCode": "741",
+      "name": "Rest. El Molinero",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "2134",
@@ -42579,6 +42711,28 @@
       "nucleusId": "22",
       "consortiumId": 9,
       "chunkId": "consortium-9"
+    },
+    {
+      "stopId": "746",
+      "stopCode": "746",
+      "name": "V.Yesos",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "747",
+      "stopCode": "747",
+      "name": "V.Yesos",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "123",
