@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-12T05:14:15.594Z",
+    "generatedAt": "2026-01-13T05:11:09.832Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -20306,17 +20306,6 @@
       "chunkId": "consortium-4"
     },
     {
-      "stopId": "270",
-      "stopCode": "270",
-      "name": "EL PUNTO",
-      "municipality": "HUELVA",
-      "municipalityId": "2",
-      "nucleus": "HUELVA",
-      "nucleusId": "2",
-      "consortiumId": 9,
-      "chunkId": "consortium-9"
-    },
-    {
       "stopId": "311",
       "stopCode": "311",
       "name": "EL PUNTO - ESTACION",
@@ -20324,6 +20313,17 @@
       "municipalityId": "24",
       "nucleus": "LA PALMA DEL CDO",
       "nucleusId": "59",
+      "consortiumId": 9,
+      "chunkId": "consortium-9"
+    },
+    {
+      "stopId": "270",
+      "stopCode": "270",
+      "name": "EL PUNTO I",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
       "consortiumId": 9,
       "chunkId": "consortium-9"
     },
@@ -42718,8 +42718,8 @@
       "name": "V.Yesos",
       "municipality": "TABERNAS",
       "municipalityId": "77",
-      "nucleus": "TABERNAS",
-      "nucleusId": "177",
+      "nucleus": "VENTA DE LOS YESOS",
+      "nucleusId": "179",
       "consortiumId": 6,
       "chunkId": "consortium-6"
     },
@@ -42729,8 +42729,8 @@
       "name": "V.Yesos",
       "municipality": "TABERNAS",
       "municipalityId": "77",
-      "nucleus": "TABERNAS",
-      "nucleusId": "177",
+      "nucleus": "VENTA DE LOS YESOS",
+      "nucleusId": "179",
       "consortiumId": 6,
       "chunkId": "consortium-6"
     },

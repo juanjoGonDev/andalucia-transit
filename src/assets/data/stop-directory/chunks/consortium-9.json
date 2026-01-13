@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-12T05:14:15.594Z",
+    "generatedAt": "2026-01-13T05:11:09.832Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 9,
@@ -745,21 +745,6 @@
     },
     {
       "consortiumId": 9,
-      "stopId": "270",
-      "stopCode": "270",
-      "name": "EL PUNTO",
-      "municipality": "HUELVA",
-      "municipalityId": "2",
-      "nucleus": "HUELVA",
-      "nucleusId": "2",
-      "zone": "A",
-      "location": {
-        "latitude": 37.25452242990414,
-        "longitude": -6.945681176690641
-      }
-    },
-    {
-      "consortiumId": 9,
       "stopId": "311",
       "stopCode": "311",
       "name": "EL PUNTO - ESTACION",
@@ -771,6 +756,21 @@
       "location": {
         "latitude": 37.39066810349785,
         "longitude": -6.555506328067832
+      }
+    },
+    {
+      "consortiumId": 9,
+      "stopId": "270",
+      "stopCode": "270",
+      "name": "EL PUNTO I",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
+      "zone": "A",
+      "location": {
+        "latitude": 37.25452242990414,
+        "longitude": -6.945681176690641
       }
     },
     {
