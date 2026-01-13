@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-12T05:14:19.781Z",
+    "generatedAt": "2026-01-13T05:11:13.278Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
     "consortiumName": "Bahía de Cádiz",
-    "itemCount": 69
+    "itemCount": 64
   },
   "lines": [
     {
@@ -901,30 +901,6 @@
       "inboundPath": []
     },
     {
-      "id": "221",
-      "code": "M-231",
-      "name": "Chiclana De La Frontera-Campus Universitario De Puerto Real",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes S.A."
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "26",
       "code": "M-230",
       "name": "Chiclana De La Frontera-Hospital De Puerto Real (Por Marquesado)",
@@ -1262,81 +1238,9 @@
       "inboundPath": []
     },
     {
-      "id": "226",
-      "code": "M-340",
-      "name": "El Puerto De Santa María-Campus Universitario De Puerto Real",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes S.A."
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "27",
       "code": "M-350",
       "name": "Jerez De La Frontera-Campus Universitario De Puerto Real",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes S.A."
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "223",
-      "code": "M-351",
-      "name": "Jerez De La Frontera-Campus Universitario De Puerto Real  (Por Cuatro Caminos)",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes S.A."
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "224",
-      "code": "M-352",
-      "name": "Jerez De La Frontera-Campus Universitario De Puerto Real (Por El Puerto De Santa María)",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
@@ -1457,30 +1361,6 @@
       "id": "46",
       "code": "M-945",
       "name": "Medina-Jerez De La Frontera",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes S.A."
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "222",
-      "code": "M-330",
-      "name": "Puerto Real-Escuela De Ingeniería",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
