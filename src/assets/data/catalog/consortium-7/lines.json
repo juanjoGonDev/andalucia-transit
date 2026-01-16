@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-15T05:11:12.991Z",
+    "generatedAt": "2026-01-16T05:10:52.252Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 7,
     "consortiumName": "Área de Jaén",
-    "itemCount": 28
+    "itemCount": 37
   },
   "lines": [
     {
@@ -16,6 +16,81 @@
       "modeId": "1",
       "operators": [
         "Transportes Muñoz Amezcua",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "216",
+      "code": "M15-3",
+      "name": "Andújar - Jaén",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Marcos Muñoz",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "62",
+      "code": "M15-2",
+      "name": "Andújar - Jaén Por Fuerte Del Rey",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Marcos Muñoz",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "255",
+      "code": "M15-5",
+      "name": "Andújar-Arjonilla-Arjona",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Marcos Muñoz",
         "S.L."
       ],
       "hasNews": false,
@@ -133,6 +208,56 @@
       "inboundPath": []
     },
     {
+      "id": "321",
+      "code": "M15-6",
+      "name": "Jaén - Andújar - Lopera",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Marcos Muñoz",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "276",
+      "code": "M15-7",
+      "name": "Jaén - Andújar - Marmolejo",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Marcos Muñoz",
+        "S.L."
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "322",
       "code": "M20-22",
       "name": "Jaén - Ciudad Jardín (La Guardia)",
@@ -191,6 +316,31 @@
       "operators": [
         "Autocares Samar",
         "S.A."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "61",
+      "code": "M15-1",
+      "name": "Jaén - Fuerte Del Rey",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Marcos Muñoz",
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -407,6 +557,31 @@
       "inboundPath": []
     },
     {
+      "id": "205",
+      "code": "M04-15",
+      "name": "Jaén - Mengibar",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Jaén",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "286",
       "code": "M20-10",
       "name": "Jaén - Torredelcampo, 2024",
@@ -505,6 +680,31 @@
       "inboundPath": []
     },
     {
+      "id": "254",
+      "code": "M15-4",
+      "name": "Jaén-Lahiguera-Arjona-Andújar",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Marcos Muñoz",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "15",
       "code": "M1-6",
       "name": "Jódar - Jaén",
@@ -512,6 +712,31 @@
       "modeId": "1",
       "operators": [
         "Transportes Muñoz Amezcua",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "203",
+      "code": "M04-8",
+      "name": "Linares - Jaén",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Jaén",
         "S.L."
       ],
       "hasNews": false,
