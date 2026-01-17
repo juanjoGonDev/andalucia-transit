@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-16T05:10:52.252Z",
+    "generatedAt": "2026-01-17T05:07:37.817Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 6,
@@ -735,6 +735,30 @@
       "name": "NÍJAR"
     },
     {
+      "id": "133",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "P.I. LA CEPA"
+    },
+    {
+      "id": "105",
+      "municipalityId": "6",
+      "zone": "H",
+      "name": "P.I. LA REDONDA"
+    },
+    {
+      "id": "122",
+      "municipalityId": "15",
+      "zone": "G",
+      "name": "P.I. LAS SALINAS"
+    },
+    {
+      "id": "110",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "P.I. SAN RAFAEL"
+    },
+    {
       "id": "28",
       "municipalityId": "6",
       "zone": "H",
@@ -787,30 +811,6 @@
       "municipalityId": "15",
       "zone": "G",
       "name": "PLAYA SERENA"
-    },
-    {
-      "id": "133",
-      "municipalityId": "10",
-      "zone": "C",
-      "name": "POLÍGONO INDUSTRIAL LA CEPA"
-    },
-    {
-      "id": "105",
-      "municipalityId": "6",
-      "zone": "H",
-      "name": "POLÍGONO INDUSTRIAL LA REDONDA"
-    },
-    {
-      "id": "122",
-      "municipalityId": "15",
-      "zone": "G",
-      "name": "POLÍGONO INDUSTRIAL LAS SALINAS"
-    },
-    {
-      "id": "110",
-      "municipalityId": "10",
-      "zone": "C",
-      "name": "POLÍGONO INDUSTRIAL SAN RAFAEL"
     },
     {
       "id": "54",

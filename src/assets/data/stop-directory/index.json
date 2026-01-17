@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-16T05:10:47.809Z",
+    "generatedAt": "2026-01-17T05:07:34.414Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -31570,6 +31570,94 @@
       "chunkId": "consortium-6"
     },
     {
+      "stopId": "173",
+      "stopCode": "173",
+      "name": "P.I. La Algaida",
+      "municipality": "ROQUETAS DE MAR",
+      "municipalityId": "15",
+      "nucleus": "P.I. LAS SALINAS",
+      "nucleusId": "122",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "211",
+      "stopCode": "211",
+      "name": "P.I. La Algaida",
+      "municipality": "ROQUETAS DE MAR",
+      "municipalityId": "15",
+      "nucleus": "P.I. LAS SALINAS",
+      "nucleusId": "122",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "415",
+      "stopCode": "415",
+      "name": "P.I. La Cepa",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. LA CEPA",
+      "nucleusId": "133",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "416",
+      "stopCode": "416",
+      "name": "P.I. La Cepa",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. LA CEPA",
+      "nucleusId": "133",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "313",
+      "stopCode": "313",
+      "name": "P.I. La Redonda-I",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "314",
+      "stopCode": "314",
+      "name": "P.I. La Redonda-I",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "86",
+      "stopCode": "86",
+      "name": "P.I. La Redonda-VI",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "312",
+      "stopCode": "312",
+      "name": "P.I. La Redonda-VI",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "2093",
       "stopCode": "2093",
       "name": "P.I. La Torre/Grúa Municipal",
@@ -31579,6 +31667,50 @@
       "nucleusId": "44",
       "consortiumId": 4,
       "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "625",
+      "stopCode": "625",
+      "name": "P.I. San Nicolás",
+      "municipality": "LA MOJONERA",
+      "municipalityId": "11",
+      "nucleus": "SAN NICOLÁS",
+      "nucleusId": "165",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "626",
+      "stopCode": "626",
+      "name": "P.I. San Nicolás",
+      "municipality": "LA MOJONERA",
+      "municipalityId": "11",
+      "nucleus": "SAN NICOLÁS",
+      "nucleusId": "165",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "119",
+      "stopCode": "119",
+      "name": "P.I. San Rafael",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. SAN RAFAEL",
+      "nucleusId": "110",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "383",
+      "stopCode": "383",
+      "name": "P.I. San Rafael",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. SAN RAFAEL",
+      "nucleusId": "110",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "102",
@@ -34782,50 +34914,6 @@
       "chunkId": "consortium-3"
     },
     {
-      "stopId": "173",
-      "stopCode": "173",
-      "name": "Pol. Ind. La Algaida",
-      "municipality": "ROQUETAS DE MAR",
-      "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
-      "nucleusId": "122",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "211",
-      "stopCode": "211",
-      "name": "Pol. Ind. La Algaida",
-      "municipality": "ROQUETAS DE MAR",
-      "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
-      "nucleusId": "122",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "415",
-      "stopCode": "415",
-      "name": "Pol. Ind. La Cepa",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL LA CEPA",
-      "nucleusId": "133",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "416",
-      "stopCode": "416",
-      "name": "Pol. Ind. La Cepa",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL LA CEPA",
-      "nucleusId": "133",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
       "stopId": "613",
       "stopCode": "613",
       "name": "Pol. Ind. la Fuente",
@@ -34837,50 +34925,6 @@
       "chunkId": "consortium-3"
     },
     {
-      "stopId": "313",
-      "stopCode": "313",
-      "name": "Pol. Ind. La Redonda - I",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "314",
-      "stopCode": "314",
-      "name": "Pol. Ind. La Redonda - I",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "86",
-      "stopCode": "86",
-      "name": "Pol. Ind. La Redonda - VI",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "312",
-      "stopCode": "312",
-      "name": "Pol. Ind. La Redonda - VI",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
       "stopId": "614",
       "stopCode": "614",
       "name": "Pol. Ind. Olinda",
@@ -34890,50 +34934,6 @@
       "nucleusId": "471",
       "consortiumId": 3,
       "chunkId": "consortium-3"
-    },
-    {
-      "stopId": "119",
-      "stopCode": "119",
-      "name": "Pol. Ind. San Rafael",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL SAN RAFAEL",
-      "nucleusId": "110",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "383",
-      "stopCode": "383",
-      "name": "Pol. Ind. San Rafael",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL SAN RAFAEL",
-      "nucleusId": "110",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "625",
-      "stopCode": "625",
-      "name": "Pol. San Nicolás",
-      "municipality": "LA MOJONERA",
-      "municipalityId": "11",
-      "nucleus": "SAN NICOLÁS",
-      "nucleusId": "165",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "626",
-      "stopCode": "626",
-      "name": "Pol. San Nicolás",
-      "municipality": "LA MOJONERA",
-      "municipalityId": "11",
-      "nucleus": "SAN NICOLÁS",
-      "nucleusId": "165",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
     },
     {
       "stopId": "2592",
@@ -37988,7 +37988,7 @@
       "name": "Roquetas - Hortamar",
       "municipality": "ROQUETAS DE MAR",
       "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
+      "nucleus": "P.I. LAS SALINAS",
       "nucleusId": "122",
       "consortiumId": 6,
       "chunkId": "consortium-6"
@@ -37999,7 +37999,7 @@
       "name": "Roquetas - Hortamar",
       "municipality": "ROQUETAS DE MAR",
       "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
+      "nucleus": "P.I. LAS SALINAS",
       "nucleusId": "122",
       "consortiumId": 6,
       "chunkId": "consortium-6"
