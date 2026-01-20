@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-19T05:15:28.770Z",
+    "generatedAt": "2026-01-20T05:13:30.677Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -318,7 +318,7 @@
         "Transportes Rober",
         "S.A."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1092,7 +1092,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1667,7 +1667,7 @@
         "Empresa Liñan",
         "S.A."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
