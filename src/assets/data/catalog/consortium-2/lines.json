@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-20T05:13:30.677Z",
+    "generatedAt": "2026-01-21T05:12:54.902Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
     "consortiumName": "Bahía de Cádiz",
-    "itemCount": 64
+    "itemCount": 65
   },
   "lines": [
     {
@@ -588,6 +588,30 @@
       "id": "18",
       "code": "M-052",
       "name": "Cádiz-Jerez De La Frontera (Por Campus Universitario De Puerto Real Y El Puerto De Santa María)",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "Transportes Generales Comes S.A."
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "17",
+      "code": "M-051",
+      "name": "Cádiz-Jerez De La Frontera (Por El Puerto De Santa María)",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
