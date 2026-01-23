@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-22T05:13:25.749Z",
+    "generatedAt": "2026-01-23T05:12:00.699Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4009
+    "totalStops": 4015
   },
   "chunks": [
     {
@@ -87,7 +87,7 @@
       "id": "consortium-6",
       "consortiumId": 6,
       "path": "chunks/consortium-6.json",
-      "stopCount": 529
+      "stopCount": 535
     },
     {
       "id": "consortium-7",
@@ -2374,6 +2374,28 @@
       "nucleusId": "2",
       "consortiumId": 2,
       "chunkId": "consortium-2"
+    },
+    {
+      "stopId": "752",
+      "stopCode": "752",
+      "name": "Argamasón",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL ARGAMASÓN",
+      "nucleusId": "181",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "757",
+      "stopCode": "757",
+      "name": "Argamasón",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL ARGAMASÓN",
+      "nucleusId": "181",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "15781",
@@ -12714,6 +12736,28 @@
       "nucleusId": "3151",
       "consortiumId": 1,
       "chunkId": "consortium-1"
+    },
+    {
+      "stopId": "754",
+      "stopCode": "754",
+      "name": "Carboneras",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "CARBONERAS",
+      "nucleusId": "176",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "755",
+      "stopCode": "755",
+      "name": "Carboneras",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "CARBONERAS",
+      "nucleusId": "176",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "495",
@@ -28642,6 +28686,28 @@
       "nucleusId": "301",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "753",
+      "stopCode": "753",
+      "name": "Llano Don Antonio",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL LLANO DE DON ANTONIO",
+      "nucleusId": "182",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "756",
+      "stopCode": "756",
+      "name": "Llano Don Antonio",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL LLANO DE DON ANTONIO",
+      "nucleusId": "182",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "372",
