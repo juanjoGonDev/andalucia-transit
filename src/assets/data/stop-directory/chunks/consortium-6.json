@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-01-22T05:13:25.749Z",
+    "generatedAt": "2026-01-23T05:12:00.699Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 6,
     "consortiumName": "Área de Almería",
-    "stopCount": 529
+    "stopCount": 535
   },
   "stops": [
     {
@@ -1120,6 +1120,36 @@
     },
     {
       "consortiumId": 6,
+      "stopId": "752",
+      "stopCode": "752",
+      "name": "Argamasón",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL ARGAMASÓN",
+      "nucleusId": "181",
+      "zone": "P",
+      "location": {
+        "latitude": 36.971101,
+        "longitude": -1.979727
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "757",
+      "stopCode": "757",
+      "name": "Argamasón",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL ARGAMASÓN",
+      "nucleusId": "181",
+      "zone": "P",
+      "location": {
+        "latitude": 36.971331,
+        "longitude": -1.980009
+      }
+    },
+    {
+      "consortiumId": 6,
       "stopId": "56",
       "stopCode": "56",
       "name": "Atochares",
@@ -1986,6 +2016,36 @@
       "location": {
         "latitude": 36.793229,
         "longitude": -2.613812
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "754",
+      "stopCode": "754",
+      "name": "Carboneras",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "CARBONERAS",
+      "nucleusId": "176",
+      "zone": "P",
+      "location": {
+        "latitude": 36.999641,
+        "longitude": -1.895541
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "755",
+      "stopCode": "755",
+      "name": "Carboneras",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "CARBONERAS",
+      "nucleusId": "176",
+      "zone": "P",
+      "location": {
+        "latitude": 36.999641,
+        "longitude": -1.895541
       }
     },
     {
@@ -5301,6 +5361,36 @@
       "location": {
         "latitude": 36.75052,
         "longitude": -2.218243
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "753",
+      "stopCode": "753",
+      "name": "Llano Don Antonio",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL LLANO DE DON ANTONIO",
+      "nucleusId": "182",
+      "zone": "P",
+      "location": {
+        "latitude": 36.998009,
+        "longitude": -1.932919
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "756",
+      "stopCode": "756",
+      "name": "Llano Don Antonio",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL LLANO DE DON ANTONIO",
+      "nucleusId": "182",
+      "zone": "P",
+      "location": {
+        "latitude": 36.998009,
+        "longitude": -1.932919
       }
     },
     {
