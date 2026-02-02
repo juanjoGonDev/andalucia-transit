@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-12-01T05:13:10.830Z",
+    "generatedAt": "2026-02-02T05:34:44.557Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 6,
     "consortiumName": "Área de Almería",
-    "stopCount": 515
+    "stopCount": 535
   },
   "stops": [
     {
@@ -227,7 +227,7 @@
       "municipalityId": "12",
       "nucleus": "AGUAMARGA",
       "nucleusId": "62",
-      "zone": "E",
+      "zone": "P",
       "location": {
         "latitude": 36.941034,
         "longitude": -1.935025
@@ -606,6 +606,36 @@
       "location": {
         "latitude": 36.81132,
         "longitude": -2.582989
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "738",
+      "stopCode": "738",
+      "name": "Alhama de Almería",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "zone": "N",
+      "location": {
+        "latitude": 36.956793,
+        "longitude": -2.565456
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "743",
+      "stopCode": "743",
+      "name": "Alhama de Almería",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "zone": "N",
+      "location": {
+        "latitude": 36.956804,
+        "longitude": -2.565508
       }
     },
     {
@@ -1090,6 +1120,36 @@
     },
     {
       "consortiumId": 6,
+      "stopId": "752",
+      "stopCode": "752",
+      "name": "Argamasón",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL ARGAMASÓN",
+      "nucleusId": "181",
+      "zone": "P",
+      "location": {
+        "latitude": 36.971101,
+        "longitude": -1.979727
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "757",
+      "stopCode": "757",
+      "name": "Argamasón",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL ARGAMASÓN",
+      "nucleusId": "181",
+      "zone": "P",
+      "location": {
+        "latitude": 36.971331,
+        "longitude": -1.980009
+      }
+    },
+    {
+      "consortiumId": 6,
       "stopId": "56",
       "stopCode": "56",
       "name": "Atochares",
@@ -1213,10 +1273,10 @@
       "stopId": "335",
       "stopCode": "335",
       "name": "Balanegra - Buena Vista",
-      "municipality": "BERJA",
-      "municipalityId": "4",
-      "nucleus": "BALANEGRA",
-      "nucleusId": "23",
+      "municipality": "BALANEGRA",
+      "municipalityId": "74",
+      "nucleus": "BALANEGRA NN",
+      "nucleusId": "180",
       "zone": "I",
       "location": {
         "latitude": 36.749245,
@@ -1228,10 +1288,10 @@
       "stopId": "336",
       "stopCode": "336",
       "name": "Balanegra - Buena Vista",
-      "municipality": "BERJA",
-      "municipalityId": "4",
-      "nucleus": "BALANEGRA",
-      "nucleusId": "23",
+      "municipality": "BALANEGRA",
+      "municipalityId": "74",
+      "nucleus": "BALANEGRA NN",
+      "nucleusId": "180",
       "zone": "I",
       "location": {
         "latitude": 36.749033,
@@ -1243,10 +1303,10 @@
       "stopId": "337",
       "stopCode": "337",
       "name": "Balanegra - Cabo Gata",
-      "municipality": "BERJA",
-      "municipalityId": "4",
-      "nucleus": "BALANEGRA",
-      "nucleusId": "23",
+      "municipality": "BALANEGRA",
+      "municipalityId": "74",
+      "nucleus": "BALANEGRA NN",
+      "nucleusId": "180",
       "zone": "I",
       "location": {
         "latitude": 36.753127,
@@ -1258,10 +1318,10 @@
       "stopId": "338",
       "stopCode": "338",
       "name": "Balanegra - Cabo Gata",
-      "municipality": "BERJA",
-      "municipalityId": "4",
-      "nucleus": "BALANEGRA",
-      "nucleusId": "23",
+      "municipality": "BALANEGRA",
+      "municipalityId": "74",
+      "nucleus": "BALANEGRA NN",
+      "nucleusId": "180",
       "zone": "I",
       "location": {
         "latitude": 36.752864,
@@ -1817,7 +1877,7 @@
       "municipalityId": "12",
       "nucleus": "CALA CARBÓN",
       "nucleusId": "159",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.733276,
         "longitude": -2.159992
@@ -1832,7 +1892,7 @@
       "municipalityId": "12",
       "nucleus": "CALA MEDIA LUNA",
       "nucleusId": "174",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.733554,
         "longitude": -2.150421
@@ -1956,6 +2016,36 @@
       "location": {
         "latitude": 36.793229,
         "longitude": -2.613812
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "754",
+      "stopCode": "754",
+      "name": "Carboneras",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "CARBONERAS",
+      "nucleusId": "176",
+      "zone": "P",
+      "location": {
+        "latitude": 36.999641,
+        "longitude": -1.895541
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "755",
+      "stopCode": "755",
+      "name": "Carboneras",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "CARBONERAS",
+      "nucleusId": "176",
+      "zone": "P",
+      "location": {
+        "latitude": 36.999641,
+        "longitude": -1.895541
       }
     },
     {
@@ -2582,7 +2672,7 @@
       "municipalityId": "12",
       "nucleus": "CRUCE AGUA AMARGA",
       "nucleusId": "151",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.96681,
         "longitude": -1.986624
@@ -2597,7 +2687,7 @@
       "municipalityId": "12",
       "nucleus": "CRUCE AGUA AMARGA",
       "nucleusId": "151",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.966726,
         "longitude": -1.987168
@@ -3655,6 +3745,36 @@
     },
     {
       "consortiumId": 6,
+      "stopId": "739",
+      "stopCode": "739",
+      "name": "Fábrica Cirera",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "zone": "N",
+      "location": {
+        "latitude": 36.958573,
+        "longitude": -2.566954
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "742",
+      "stopCode": "742",
+      "name": "Farmacia",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "zone": "N",
+      "location": {
+        "latitude": 36.958482,
+        "longitude": -2.566919
+      }
+    },
+    {
+      "consortiumId": 6,
       "stopId": "69",
       "stopCode": "69",
       "name": "Felix",
@@ -4247,7 +4367,7 @@
       "municipalityId": "12",
       "nucleus": "ISLETA DEL MORO",
       "nucleusId": "96",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.814074,
         "longitude": -2.051914
@@ -4937,7 +5057,7 @@
       "municipalityId": "12",
       "nucleus": "LAS NEGRAS",
       "nucleusId": "59",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.879887,
         "longitude": -2.006184
@@ -5245,6 +5365,36 @@
     },
     {
       "consortiumId": 6,
+      "stopId": "753",
+      "stopCode": "753",
+      "name": "Llano Don Antonio",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL LLANO DE DON ANTONIO",
+      "nucleusId": "182",
+      "zone": "P",
+      "location": {
+        "latitude": 36.998009,
+        "longitude": -1.932919
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "756",
+      "stopCode": "756",
+      "name": "Llano Don Antonio",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL LLANO DE DON ANTONIO",
+      "nucleusId": "182",
+      "zone": "P",
+      "location": {
+        "latitude": 36.998009,
+        "longitude": -1.932919
+      }
+    },
+    {
+      "consortiumId": 6,
       "stopId": "372",
       "stopCode": "372",
       "name": "Llanos de Vícar",
@@ -5297,7 +5447,7 @@
       "municipalityId": "12",
       "nucleus": "LOS ESCULLOS",
       "nucleusId": "115",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.805992,
         "longitude": -2.076469
@@ -5312,7 +5462,7 @@
       "municipalityId": "12",
       "nucleus": "LOS ESCULLOS",
       "nucleusId": "115",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.806111,
         "longitude": -2.076383
@@ -5327,7 +5477,7 @@
       "municipalityId": "12",
       "nucleus": "LOS ESCULLOS",
       "nucleusId": "115",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.806736,
         "longitude": -2.065008
@@ -5428,7 +5578,7 @@
       "stopId": "21",
       "stopCode": "21",
       "name": "Los Millares",
-      "municipality": "SANTA FE DE MONDUJAR",
+      "municipality": "SANTA FE DE MONDÚJAR",
       "municipalityId": "16",
       "nucleus": "LOS MILLARES",
       "nucleusId": "97",
@@ -5443,7 +5593,7 @@
       "stopId": "660",
       "stopCode": "660",
       "name": "Los Millares",
-      "municipality": "SANTA FE DE MONDUJAR",
+      "municipality": "SANTA FE DE MONDÚJAR",
       "municipalityId": "16",
       "nucleus": "LOS MILLARES",
       "nucleusId": "97",
@@ -5451,6 +5601,36 @@
       "location": {
         "latitude": 36.962229,
         "longitude": -2.527048
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "745",
+      "stopCode": "745",
+      "name": "Los Talleres",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "zone": "L",
+      "location": {
+        "latitude": 37.055391,
+        "longitude": -2.388851
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "748",
+      "stopCode": "748",
+      "name": "Los Talleres",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "zone": "L",
+      "location": {
+        "latitude": 37.05563,
+        "longitude": -2.388832
       }
     },
     {
@@ -5575,6 +5755,36 @@
     },
     {
       "consortiumId": 6,
+      "stopId": "750",
+      "stopCode": "750",
+      "name": "MiniHollywood",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "MINIHOLLYWOOD",
+      "nucleusId": "178",
+      "zone": "K",
+      "location": {
+        "latitude": 37.021111,
+        "longitude": -2.434571
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "751",
+      "stopCode": "751",
+      "name": "MiniHollywood",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "MINIHOLLYWOOD",
+      "nucleusId": "178",
+      "zone": "K",
+      "location": {
+        "latitude": 37.021272,
+        "longitude": -2.134777
+      }
+    },
+    {
+      "consortiumId": 6,
       "stopId": "129",
       "stopCode": "129",
       "name": "Mirador Del Mediterráneo",
@@ -5597,7 +5807,7 @@
       "municipalityId": "12",
       "nucleus": "NÍJAR",
       "nucleusId": "45",
-      "zone": "D",
+      "zone": "E",
       "location": {
         "latitude": 36.963511,
         "longitude": -2.206027
@@ -5629,8 +5839,188 @@
       "nucleusId": "41",
       "zone": "C",
       "location": {
-        "latitude": 36.8692004457096,
-        "longitude": -2.44578763169823
+        "latitude": 36.868983,
+        "longitude": -2.445869
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "173",
+      "stopCode": "173",
+      "name": "P.I. La Algaida",
+      "municipality": "ROQUETAS DE MAR",
+      "municipalityId": "15",
+      "nucleus": "P.I. LAS SALINAS",
+      "nucleusId": "122",
+      "zone": "G",
+      "location": {
+        "latitude": 36.786126,
+        "longitude": -2.606968
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "211",
+      "stopCode": "211",
+      "name": "P.I. La Algaida",
+      "municipality": "ROQUETAS DE MAR",
+      "municipalityId": "15",
+      "nucleus": "P.I. LAS SALINAS",
+      "nucleusId": "122",
+      "zone": "G",
+      "location": {
+        "latitude": 36.785968,
+        "longitude": -2.606743
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "415",
+      "stopCode": "415",
+      "name": "P.I. La Cepa",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. LA CEPA",
+      "nucleusId": "133",
+      "zone": "C",
+      "location": {
+        "latitude": 36.87303,
+        "longitude": -2.444751
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "416",
+      "stopCode": "416",
+      "name": "P.I. La Cepa",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. LA CEPA",
+      "nucleusId": "133",
+      "zone": "C",
+      "location": {
+        "latitude": 36.874135,
+        "longitude": -2.445165
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "313",
+      "stopCode": "313",
+      "name": "P.I. La Redonda-I",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "zone": "H",
+      "location": {
+        "latitude": 36.783361,
+        "longitude": -2.753843
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "314",
+      "stopCode": "314",
+      "name": "P.I. La Redonda-I",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "zone": "H",
+      "location": {
+        "latitude": 36.783485,
+        "longitude": -2.753223
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "86",
+      "stopCode": "86",
+      "name": "P.I. La Redonda-VI",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "zone": "H",
+      "location": {
+        "latitude": 36.784761,
+        "longitude": -2.746289
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "312",
+      "stopCode": "312",
+      "name": "P.I. La Redonda-VI",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "zone": "H",
+      "location": {
+        "latitude": 36.784069,
+        "longitude": -2.747087
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "625",
+      "stopCode": "625",
+      "name": "P.I. San Nicolás",
+      "municipality": "LA MOJONERA",
+      "municipalityId": "11",
+      "nucleus": "SAN NICOLÁS",
+      "nucleusId": "165",
+      "zone": "G",
+      "location": {
+        "latitude": 36.790588,
+        "longitude": -2.710548
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "626",
+      "stopCode": "626",
+      "name": "P.I. San Nicolás",
+      "municipality": "LA MOJONERA",
+      "municipalityId": "11",
+      "nucleus": "SAN NICOLÁS",
+      "nucleusId": "165",
+      "zone": "G",
+      "location": {
+        "latitude": 36.790272,
+        "longitude": -2.709562
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "119",
+      "stopCode": "119",
+      "name": "P.I. San Rafael",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. SAN RAFAEL",
+      "nucleusId": "110",
+      "zone": "C",
+      "location": {
+        "latitude": 36.866556,
+        "longitude": -2.441018
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "383",
+      "stopCode": "383",
+      "name": "P.I. San Rafael",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. SAN RAFAEL",
+      "nucleusId": "110",
+      "zone": "C",
+      "location": {
+        "latitude": 36.866553,
+        "longitude": -2.441284
       }
     },
     {
@@ -5822,7 +6212,7 @@
       "municipalityId": "12",
       "nucleus": "PLAYA BARRONAL",
       "nucleusId": "158",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.734071,
         "longitude": -2.142802
@@ -5837,7 +6227,7 @@
       "municipalityId": "12",
       "nucleus": "PLAYA LOS GENOVESES",
       "nucleusId": "157",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.747366,
         "longitude": -2.127341
@@ -5852,7 +6242,7 @@
       "municipalityId": "12",
       "nucleus": "PLAYA MÓNSUL",
       "nucleusId": "156",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.732973,
         "longitude": -2.146639
@@ -5905,182 +6295,32 @@
     },
     {
       "consortiumId": 6,
-      "stopId": "173",
-      "stopCode": "173",
-      "name": "Pol. Ind. La Algaida",
-      "municipality": "ROQUETAS DE MAR",
-      "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
-      "nucleusId": "122",
-      "zone": "G",
+      "stopId": "744",
+      "stopCode": "744",
+      "name": "Plaza Pueblo",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "zone": "L",
       "location": {
-        "latitude": 36.786126,
-        "longitude": -2.606968
+        "latitude": 37.049798,
+        "longitude": -2.392326
       }
     },
     {
       "consortiumId": 6,
-      "stopId": "211",
-      "stopCode": "211",
-      "name": "Pol. Ind. La Algaida",
-      "municipality": "ROQUETAS DE MAR",
-      "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
-      "nucleusId": "122",
-      "zone": "G",
+      "stopId": "749",
+      "stopCode": "749",
+      "name": "Plaza Pueblo",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "zone": "L",
       "location": {
-        "latitude": 36.785968,
-        "longitude": -2.606743
-      }
-    },
-    {
-      "consortiumId": 6,
-      "stopId": "415",
-      "stopCode": "415",
-      "name": "Pol. Ind. La Cepa",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL LA CEPA",
-      "nucleusId": "133",
-      "zone": "C",
-      "location": {
-        "latitude": 36.870523,
-        "longitude": -2.445017
-      }
-    },
-    {
-      "consortiumId": 6,
-      "stopId": "416",
-      "stopCode": "416",
-      "name": "Pol. Ind. La Cepa",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL LA CEPA",
-      "nucleusId": "133",
-      "zone": "C",
-      "location": {
-        "latitude": 36.870389,
-        "longitude": -2.445265
-      }
-    },
-    {
-      "consortiumId": 6,
-      "stopId": "313",
-      "stopCode": "313",
-      "name": "Pol. Ind. La Redonda - I",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "zone": "H",
-      "location": {
-        "latitude": 36.783361,
-        "longitude": -2.753843
-      }
-    },
-    {
-      "consortiumId": 6,
-      "stopId": "314",
-      "stopCode": "314",
-      "name": "Pol. Ind. La Redonda - I",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "zone": "H",
-      "location": {
-        "latitude": 36.783485,
-        "longitude": -2.753223
-      }
-    },
-    {
-      "consortiumId": 6,
-      "stopId": "86",
-      "stopCode": "86",
-      "name": "Pol. Ind. La Redonda - VI",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "zone": "H",
-      "location": {
-        "latitude": 36.784761,
-        "longitude": -2.746289
-      }
-    },
-    {
-      "consortiumId": 6,
-      "stopId": "312",
-      "stopCode": "312",
-      "name": "Pol. Ind. La Redonda - VI",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "zone": "H",
-      "location": {
-        "latitude": 36.784069,
-        "longitude": -2.747087
-      }
-    },
-    {
-      "consortiumId": 6,
-      "stopId": "119",
-      "stopCode": "119",
-      "name": "Pol. Ind. San Rafael",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL SAN RAFAEL",
-      "nucleusId": "110",
-      "zone": "C",
-      "location": {
-        "latitude": 36.866556,
-        "longitude": -2.441018
-      }
-    },
-    {
-      "consortiumId": 6,
-      "stopId": "383",
-      "stopCode": "383",
-      "name": "Pol. Ind. San Rafael",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL SAN RAFAEL",
-      "nucleusId": "110",
-      "zone": "C",
-      "location": {
-        "latitude": 36.866553,
-        "longitude": -2.441284
-      }
-    },
-    {
-      "consortiumId": 6,
-      "stopId": "625",
-      "stopCode": "625",
-      "name": "Pol. San Nicolás",
-      "municipality": "LA MOJONERA",
-      "municipalityId": "11",
-      "nucleus": "SAN NICOLÁS",
-      "nucleusId": "165",
-      "zone": "G",
-      "location": {
-        "latitude": 36.790588,
-        "longitude": -2.710548
-      }
-    },
-    {
-      "consortiumId": 6,
-      "stopId": "626",
-      "stopCode": "626",
-      "name": "Pol. San Nicolás",
-      "municipality": "LA MOJONERA",
-      "municipalityId": "11",
-      "nucleus": "SAN NICOLÁS",
-      "nucleusId": "165",
-      "zone": "G",
-      "location": {
-        "latitude": 36.790272,
-        "longitude": -2.709562
+        "latitude": 37.049807,
+        "longitude": -2.392544
       }
     },
     {
@@ -6370,6 +6610,36 @@
     },
     {
       "consortiumId": 6,
+      "stopId": "740",
+      "stopCode": "740",
+      "name": "Rest. El Molinero",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "zone": "N",
+      "location": {
+        "latitude": 36.958995,
+        "longitude": -2.572091
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "741",
+      "stopCode": "741",
+      "name": "Rest. El Molinero",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "zone": "N",
+      "location": {
+        "latitude": 36.959086,
+        "longitude": -2.57221
+      }
+    },
+    {
+      "consortiumId": 6,
       "stopId": "598",
       "stopCode": "598",
       "name": "Retamar -  C. Marquesa",
@@ -6557,7 +6827,7 @@
       "municipalityId": "12",
       "nucleus": "RODALQUILAR",
       "nucleusId": "57",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.846734,
         "longitude": -2.04055
@@ -6720,7 +6990,7 @@
       "name": "Roquetas - Hortamar",
       "municipality": "ROQUETAS DE MAR",
       "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
+      "nucleus": "P.I. LAS SALINAS",
       "nucleusId": "122",
       "zone": "G",
       "location": {
@@ -6735,7 +7005,7 @@
       "name": "Roquetas - Hortamar",
       "municipality": "ROQUETAS DE MAR",
       "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
+      "nucleus": "P.I. LAS SALINAS",
       "nucleusId": "122",
       "zone": "G",
       "location": {
@@ -7112,7 +7382,7 @@
       "municipalityId": "12",
       "nucleus": "SAN JOSÉ",
       "nucleusId": "55",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.763734,
         "longitude": -2.10984
@@ -7127,7 +7397,7 @@
       "municipalityId": "12",
       "nucleus": "SAN JOSÉ",
       "nucleusId": "55",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.76382219099946,
         "longitude": -2.109863162040711
@@ -7138,7 +7408,7 @@
       "stopId": "22",
       "stopCode": "22",
       "name": "Santa Fe de Mondújar",
-      "municipality": "SANTA FE DE MONDUJAR",
+      "municipality": "SANTA FE DE MONDÚJAR",
       "municipalityId": "16",
       "nucleus": "SANTA FE DE MONDÚJAR",
       "nucleusId": "64",
@@ -7420,6 +7690,36 @@
     },
     {
       "consortiumId": 6,
+      "stopId": "746",
+      "stopCode": "746",
+      "name": "V.Yesos",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "VENTA DE LOS YESOS",
+      "nucleusId": "179",
+      "zone": "M",
+      "location": {
+        "latitude": 37.083623,
+        "longitude": -2.31168
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "747",
+      "stopCode": "747",
+      "name": "V.Yesos",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "VENTA DE LOS YESOS",
+      "nucleusId": "179",
+      "zone": "M",
+      "location": {
+        "latitude": 37.083463,
+        "longitude": -2.31443
+      }
+    },
+    {
+      "consortiumId": 6,
       "stopId": "84",
       "stopCode": "84",
       "name": "Venta Cosario",
@@ -7457,7 +7757,7 @@
       "municipalityId": "12",
       "nucleus": "VENTA DEL POBRE",
       "nucleusId": "99",
-      "zone": "E",
+      "zone": "O",
       "location": {
         "latitude": 36.992709,
         "longitude": -2.067691

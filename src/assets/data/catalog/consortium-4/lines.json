@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-12-01T05:13:13.852Z",
+    "generatedAt": "2026-02-02T05:34:49.160Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 88
+    "itemCount": 84
   },
   "lines": [
     {
@@ -66,56 +66,6 @@
       "modeId": "1",
       "operators": [
         "Autocares Vázquez Olmedo",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "301",
-      "code": "M-171",
-      "name": "Alhaurín el Grande (Circular)",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Avanza Movilidad Integral",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "302",
-      "code": "M-159B",
-      "name": "Alhaurín el Grande-Villa del Guadalhorce-Hospital Guadalhorce",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Avanza Movilidad Integral",
         "S.L."
       ],
       "hasNews": false,
@@ -584,7 +534,7 @@
     {
       "id": "313",
       "code": "M-060B",
-      "name": "Fuengirola-La Cala de Mijas-Marbella",
+      "name": "Fuengirola-La Cala de Mijas-Marbella (Directo)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -713,6 +663,31 @@
       "modeId": "1",
       "operators": [
         "Autocares Vázquez Olmedo",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "314",
+      "code": "M-165B",
+      "name": "La Cala del Moral-El Palo",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
         "S.L."
       ],
       "hasNews": false,
@@ -1005,31 +980,6 @@
       "inboundPath": []
     },
     {
-      "id": "305",
-      "code": "M-255",
-      "name": "Málaga-Antequera (Directo)",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Nex Continental Holdings",
-        "S.L.U."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "284",
       "code": "M-256",
       "name": "Málaga-Antequera-Valle de Abdalajís",
@@ -1087,31 +1037,6 @@
       "modeId": "1",
       "operators": [
         "Avanza Movilidad Integral",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "300",
-      "code": "M-351",
-      "name": "Málaga-Casabermeja (Directo)",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Automóviles Mérida",
         "S.L."
       ],
       "hasNews": false,
@@ -1879,31 +1804,6 @@
       "id": "296",
       "code": "M-262",
       "name": "Rincón de la Victoria-Benagalbón-Moclinejo-El Valdés (Av)",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Avanza Movilidad Integral",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "310",
-      "code": "M-165",
-      "name": "Rinconsol-El Palo",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [

@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-12-01T05:13:13.852Z",
+    "generatedAt": "2026-02-02T05:34:49.160Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 6,
     "consortiumName": "Área de Almería",
-    "itemCount": 164
+    "itemCount": 173
   },
   "nuclei": [
     {
@@ -29,7 +29,7 @@
     {
       "id": "62",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "P",
       "name": "AGUAMARGA"
     },
     {
@@ -37,6 +37,12 @@
       "municipalityId": "4",
       "zone": "J",
       "name": "ALCAUDIQUE"
+    },
+    {
+      "id": "175",
+      "municipalityId": "75",
+      "zone": "N",
+      "name": "ALHAMA DE ALMERÍA"
     },
     {
       "id": "10",
@@ -67,6 +73,12 @@
       "municipalityId": "4",
       "zone": "I",
       "name": "BALANEGRA"
+    },
+    {
+      "id": "180",
+      "municipalityId": "74",
+      "zone": "I",
+      "name": "BALANEGRA NN"
     },
     {
       "id": "32",
@@ -143,13 +155,13 @@
     {
       "id": "159",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "CALA CARBÓN"
     },
     {
       "id": "174",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "CALA MEDIA LUNA"
     },
     {
@@ -169,6 +181,12 @@
       "municipalityId": "18",
       "zone": "F",
       "name": "CAÑADA SEBASTIANA"
+    },
+    {
+      "id": "176",
+      "municipalityId": "76",
+      "zone": "P",
+      "name": "CARBONERAS"
     },
     {
       "id": "126",
@@ -251,13 +269,13 @@
     {
       "id": "151",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "CRUCE AGUA AMARGA"
     },
     {
       "id": "152",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "CRUCE ARGAMASÓN"
     },
     {
@@ -285,6 +303,12 @@
       "name": "CUATRO VIENTOS"
     },
     {
+      "id": "183",
+      "municipalityId": "76",
+      "zone": "P",
+      "name": "CUEVA DEL PÁJARO"
+    },
+    {
       "id": "19",
       "municipalityId": "2",
       "zone": "D",
@@ -307,6 +331,12 @@
       "municipalityId": "2",
       "zone": "B",
       "name": "EL ALQUIAN"
+    },
+    {
+      "id": "181",
+      "municipalityId": "76",
+      "zone": "P",
+      "name": "EL ARGAMASÓN"
     },
     {
       "id": "53",
@@ -343,6 +373,12 @@
       "municipalityId": "6",
       "zone": "H",
       "name": "EL EJIDO"
+    },
+    {
+      "id": "182",
+      "municipalityId": "76",
+      "zone": "P",
+      "name": "EL LLANO DE DON ANTONIO"
     },
     {
       "id": "93",
@@ -485,7 +521,7 @@
     {
       "id": "96",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "ISLETA DEL MORO"
     },
     {
@@ -593,7 +629,7 @@
     {
       "id": "59",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "LAS NEGRAS"
     },
     {
@@ -635,7 +671,7 @@
     {
       "id": "115",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "LOS ESCULLOS"
     },
     {
@@ -681,6 +717,12 @@
       "name": "MATAGORDA"
     },
     {
+      "id": "178",
+      "municipalityId": "77",
+      "zone": "K",
+      "name": "MINIHOLLYWOOD"
+    },
+    {
       "id": "169",
       "municipalityId": "10",
       "zone": "C",
@@ -689,8 +731,32 @@
     {
       "id": "45",
       "municipalityId": "12",
-      "zone": "D",
+      "zone": "E",
       "name": "NÍJAR"
+    },
+    {
+      "id": "133",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "P.I. LA CEPA"
+    },
+    {
+      "id": "105",
+      "municipalityId": "6",
+      "zone": "H",
+      "name": "P.I. LA REDONDA"
+    },
+    {
+      "id": "122",
+      "municipalityId": "15",
+      "zone": "G",
+      "name": "P.I. LAS SALINAS"
+    },
+    {
+      "id": "110",
+      "municipalityId": "10",
+      "zone": "C",
+      "name": "P.I. SAN RAFAEL"
     },
     {
       "id": "28",
@@ -725,19 +791,19 @@
     {
       "id": "158",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "PLAYA BARRONAL"
     },
     {
       "id": "157",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "PLAYA LOS GENOVESES"
     },
     {
       "id": "156",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "PLAYA MÓNSUL"
     },
     {
@@ -745,30 +811,6 @@
       "municipalityId": "15",
       "zone": "G",
       "name": "PLAYA SERENA"
-    },
-    {
-      "id": "133",
-      "municipalityId": "10",
-      "zone": "C",
-      "name": "POLÍGONO INDUSTRIAL LA CEPA"
-    },
-    {
-      "id": "105",
-      "municipalityId": "6",
-      "zone": "H",
-      "name": "POLÍGONO INDUSTRIAL LA REDONDA"
-    },
-    {
-      "id": "122",
-      "municipalityId": "15",
-      "zone": "G",
-      "name": "POLÍGONO INDUSTRIAL LAS SALINAS"
-    },
-    {
-      "id": "110",
-      "municipalityId": "10",
-      "zone": "C",
-      "name": "POLÍGONO INDUSTRIAL SAN RAFAEL"
     },
     {
       "id": "54",
@@ -845,7 +887,7 @@
     {
       "id": "57",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "RODALQUILAR"
     },
     {
@@ -881,7 +923,7 @@
     {
       "id": "55",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "SAN JOSÉ"
     },
     {
@@ -909,6 +951,12 @@
       "name": "SANTA MARIA DEL ÁGUILA"
     },
     {
+      "id": "177",
+      "municipalityId": "77",
+      "zone": "L",
+      "name": "TABERNAS"
+    },
+    {
       "id": "172",
       "municipalityId": "2",
       "zone": "B",
@@ -933,6 +981,12 @@
       "name": "VENTA COSARIO"
     },
     {
+      "id": "179",
+      "municipalityId": "77",
+      "zone": "M",
+      "name": "VENTA DE LOS YESOS"
+    },
+    {
       "id": "166",
       "municipalityId": "12",
       "zone": "D",
@@ -941,7 +995,7 @@
     {
       "id": "99",
       "municipalityId": "12",
-      "zone": "E",
+      "zone": "O",
       "name": "VENTA DEL POBRE"
     },
     {

@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-12-01T05:13:10.830Z",
+    "generatedAt": "2026-02-02T05:34:44.557Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -6499,8 +6499,8 @@
       "nucleusId": "202",
       "zone": "A",
       "location": {
-        "latitude": 37.144826216000965,
-        "longitude": -3.6017887729001057
+        "latitude": 37.1443974,
+        "longitude": -3.6021047
       }
     },
     {
@@ -10369,8 +10369,8 @@
       "nucleusId": "241",
       "zone": "B",
       "location": {
-        "latitude": 37.23423857170162,
-        "longitude": -3.6506058275699615
+        "latitude": 37.2341915,
+        "longitude": -3.6506042
       }
     },
     {

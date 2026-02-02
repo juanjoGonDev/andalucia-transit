@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-12-01T05:13:10.830Z",
+    "generatedAt": "2026-02-02T05:34:44.557Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 3996
+    "totalStops": 4015
   },
   "chunks": [
     {
@@ -75,7 +75,7 @@
       "id": "consortium-4",
       "consortiumId": 4,
       "path": "chunks/consortium-4.json",
-      "stopCount": 982
+      "stopCount": 981
     },
     {
       "id": "consortium-5",
@@ -87,7 +87,7 @@
       "id": "consortium-6",
       "consortiumId": 6,
       "path": "chunks/consortium-6.json",
-      "stopCount": 515
+      "stopCount": 535
     },
     {
       "id": "consortium-7",
@@ -1276,6 +1276,28 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "738",
+      "stopCode": "738",
+      "name": "Alhama de Almería",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "743",
+      "stopCode": "743",
+      "name": "Alhama de Almería",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "25",
       "stopCode": "25",
       "name": "Alhambra",
@@ -2352,6 +2374,28 @@
       "nucleusId": "2",
       "consortiumId": 2,
       "chunkId": "consortium-2"
+    },
+    {
+      "stopId": "752",
+      "stopCode": "752",
+      "name": "Argamasón",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL ARGAMASÓN",
+      "nucleusId": "181",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "757",
+      "stopCode": "757",
+      "name": "Argamasón",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL ARGAMASÓN",
+      "nucleusId": "181",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "15781",
@@ -7989,10 +8033,10 @@
       "stopId": "335",
       "stopCode": "335",
       "name": "Balanegra - Buena Vista",
-      "municipality": "BERJA",
-      "municipalityId": "4",
-      "nucleus": "BALANEGRA",
-      "nucleusId": "23",
+      "municipality": "BALANEGRA",
+      "municipalityId": "74",
+      "nucleus": "BALANEGRA NN",
+      "nucleusId": "180",
       "consortiumId": 6,
       "chunkId": "consortium-6"
     },
@@ -8000,10 +8044,10 @@
       "stopId": "336",
       "stopCode": "336",
       "name": "Balanegra - Buena Vista",
-      "municipality": "BERJA",
-      "municipalityId": "4",
-      "nucleus": "BALANEGRA",
-      "nucleusId": "23",
+      "municipality": "BALANEGRA",
+      "municipalityId": "74",
+      "nucleus": "BALANEGRA NN",
+      "nucleusId": "180",
       "consortiumId": 6,
       "chunkId": "consortium-6"
     },
@@ -8011,10 +8055,10 @@
       "stopId": "337",
       "stopCode": "337",
       "name": "Balanegra - Cabo Gata",
-      "municipality": "BERJA",
-      "municipalityId": "4",
-      "nucleus": "BALANEGRA",
-      "nucleusId": "23",
+      "municipality": "BALANEGRA",
+      "municipalityId": "74",
+      "nucleus": "BALANEGRA NN",
+      "nucleusId": "180",
       "consortiumId": 6,
       "chunkId": "consortium-6"
     },
@@ -8022,10 +8066,10 @@
       "stopId": "338",
       "stopCode": "338",
       "name": "Balanegra - Cabo Gata",
-      "municipality": "BERJA",
-      "municipalityId": "4",
-      "nucleus": "BALANEGRA",
-      "nucleusId": "23",
+      "municipality": "BALANEGRA",
+      "municipalityId": "74",
+      "nucleus": "BALANEGRA NN",
+      "nucleusId": "180",
       "consortiumId": 6,
       "chunkId": "consortium-6"
     },
@@ -12694,6 +12738,28 @@
       "chunkId": "consortium-1"
     },
     {
+      "stopId": "754",
+      "stopCode": "754",
+      "name": "Carboneras",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "CARBONERAS",
+      "nucleusId": "176",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "755",
+      "stopCode": "755",
+      "name": "Carboneras",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "CARBONERAS",
+      "nucleusId": "176",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "495",
       "stopCode": "495",
       "name": "Cárcel",
@@ -13702,28 +13768,6 @@
       "municipalityId": "4",
       "nucleus": "Rincón de la Victoria",
       "nucleusId": "57",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
-      "stopId": "1450",
-      "stopCode": "1450",
-      "name": "Cementerio San Cayetano 1",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Cementerio Fuengirola",
-      "nucleusId": "130",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
-      "stopId": "1451",
-      "stopCode": "1451",
-      "name": "Cementerio San Cayetano 2",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Cementerio Fuengirola",
-      "nucleusId": "130",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -19767,6 +19811,39 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "1940",
+      "stopCode": "1940",
+      "name": "El Gran Parque",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Mijas",
+      "nucleusId": "44",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "1450",
+      "stopCode": "1450",
+      "name": "El Gran Parque/Cementerio San Cayetano",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Cementerio Fuengirola",
+      "nucleusId": "130",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "1451",
+      "stopCode": "1451",
+      "name": "El Gran Parque/Cementerio San Cayetano",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Cementerio Fuengirola",
+      "nucleusId": "130",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "732",
       "stopCode": "732",
       "name": "El Higuerón",
@@ -20273,17 +20350,6 @@
       "chunkId": "consortium-4"
     },
     {
-      "stopId": "270",
-      "stopCode": "270",
-      "name": "EL PUNTO",
-      "municipality": "HUELVA",
-      "municipalityId": "2",
-      "nucleus": "HUELVA",
-      "nucleusId": "2",
-      "consortiumId": 9,
-      "chunkId": "consortium-9"
-    },
-    {
       "stopId": "311",
       "stopCode": "311",
       "name": "EL PUNTO - ESTACION",
@@ -20291,6 +20357,17 @@
       "municipalityId": "24",
       "nucleus": "LA PALMA DEL CDO",
       "nucleusId": "59",
+      "consortiumId": 9,
+      "chunkId": "consortium-9"
+    },
+    {
+      "stopId": "270",
+      "stopCode": "270",
+      "name": "EL PUNTO I",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
       "consortiumId": 9,
       "chunkId": "consortium-9"
     },
@@ -21934,6 +22011,17 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "739",
+      "stopCode": "739",
+      "name": "Fábrica Cirera",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "2885",
       "stopCode": "2885",
       "name": "FABRICA DE LADRILLO",
@@ -22009,6 +22097,17 @@
       "nucleusId": "11",
       "consortiumId": 4,
       "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "742",
+      "stopCode": "742",
+      "name": "Farmacia",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "1267",
@@ -23672,17 +23771,6 @@
       "chunkId": "consortium-3"
     },
     {
-      "stopId": "2001",
-      "stopCode": "2001",
-      "name": "Grua Municipal",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Mijas",
-      "nucleusId": "44",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
       "stopId": "3027",
       "stopCode": "3027",
       "name": "GRUPO PLANETA",
@@ -25109,17 +25197,6 @@
       "municipalityId": "13",
       "nucleus": "Torremolinos",
       "nucleusId": "107",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
-      "stopId": "1940",
-      "stopCode": "1940",
-      "name": "Hoyo 19",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Mijas",
-      "nucleusId": "44",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -28611,6 +28688,28 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "753",
+      "stopCode": "753",
+      "name": "Llano Don Antonio",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL LLANO DE DON ANTONIO",
+      "nucleusId": "182",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "756",
+      "stopCode": "756",
+      "name": "Llano Don Antonio",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL LLANO DE DON ANTONIO",
+      "nucleusId": "182",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "372",
       "stopCode": "372",
       "name": "Llanos de Vícar",
@@ -29307,7 +29406,7 @@
       "stopId": "21",
       "stopCode": "21",
       "name": "Los Millares",
-      "municipality": "SANTA FE DE MONDUJAR",
+      "municipality": "SANTA FE DE MONDÚJAR",
       "municipalityId": "16",
       "nucleus": "LOS MILLARES",
       "nucleusId": "97",
@@ -29318,7 +29417,7 @@
       "stopId": "660",
       "stopCode": "660",
       "name": "Los Millares",
-      "municipality": "SANTA FE DE MONDUJAR",
+      "municipality": "SANTA FE DE MONDÚJAR",
       "municipalityId": "16",
       "nucleus": "LOS MILLARES",
       "nucleusId": "97",
@@ -29577,6 +29676,28 @@
       "nucleusId": "232",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "745",
+      "stopCode": "745",
+      "name": "Los Talleres",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "748",
+      "stopCode": "748",
+      "name": "Los Talleres",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "121",
@@ -30558,6 +30679,28 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "750",
+      "stopCode": "750",
+      "name": "MiniHollywood",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "MINIHOLLYWOOD",
+      "nucleusId": "178",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "751",
+      "stopCode": "751",
+      "name": "MiniHollywood",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "MINIHOLLYWOOD",
+      "nucleusId": "178",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "159",
       "stopCode": "159",
       "name": "Mirador de Tarifa",
@@ -31493,15 +31636,147 @@
       "chunkId": "consortium-6"
     },
     {
+      "stopId": "173",
+      "stopCode": "173",
+      "name": "P.I. La Algaida",
+      "municipality": "ROQUETAS DE MAR",
+      "municipalityId": "15",
+      "nucleus": "P.I. LAS SALINAS",
+      "nucleusId": "122",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "211",
+      "stopCode": "211",
+      "name": "P.I. La Algaida",
+      "municipality": "ROQUETAS DE MAR",
+      "municipalityId": "15",
+      "nucleus": "P.I. LAS SALINAS",
+      "nucleusId": "122",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "415",
+      "stopCode": "415",
+      "name": "P.I. La Cepa",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. LA CEPA",
+      "nucleusId": "133",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "416",
+      "stopCode": "416",
+      "name": "P.I. La Cepa",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. LA CEPA",
+      "nucleusId": "133",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "313",
+      "stopCode": "313",
+      "name": "P.I. La Redonda-I",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "314",
+      "stopCode": "314",
+      "name": "P.I. La Redonda-I",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "86",
+      "stopCode": "86",
+      "name": "P.I. La Redonda-VI",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "312",
+      "stopCode": "312",
+      "name": "P.I. La Redonda-VI",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "2093",
       "stopCode": "2093",
-      "name": "P.I. La Torre",
+      "name": "P.I. La Torre/Grúa Municipal",
       "municipality": "Mijas",
       "municipalityId": "2",
       "nucleus": "Mijas",
       "nucleusId": "44",
       "consortiumId": 4,
       "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "625",
+      "stopCode": "625",
+      "name": "P.I. San Nicolás",
+      "municipality": "LA MOJONERA",
+      "municipalityId": "11",
+      "nucleus": "SAN NICOLÁS",
+      "nucleusId": "165",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "626",
+      "stopCode": "626",
+      "name": "P.I. San Nicolás",
+      "municipality": "LA MOJONERA",
+      "municipalityId": "11",
+      "nucleus": "SAN NICOLÁS",
+      "nucleusId": "165",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "119",
+      "stopCode": "119",
+      "name": "P.I. San Rafael",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. SAN RAFAEL",
+      "nucleusId": "110",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "383",
+      "stopCode": "383",
+      "name": "P.I. San Rafael",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. SAN RAFAEL",
+      "nucleusId": "110",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "102",
@@ -34573,6 +34848,28 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "744",
+      "stopCode": "744",
+      "name": "Plaza Pueblo",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "749",
+      "stopCode": "749",
+      "name": "Plaza Pueblo",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "608",
       "stopCode": "608",
       "name": "Plaza San Isidro",
@@ -34683,50 +34980,6 @@
       "chunkId": "consortium-3"
     },
     {
-      "stopId": "173",
-      "stopCode": "173",
-      "name": "Pol. Ind. La Algaida",
-      "municipality": "ROQUETAS DE MAR",
-      "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
-      "nucleusId": "122",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "211",
-      "stopCode": "211",
-      "name": "Pol. Ind. La Algaida",
-      "municipality": "ROQUETAS DE MAR",
-      "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
-      "nucleusId": "122",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "415",
-      "stopCode": "415",
-      "name": "Pol. Ind. La Cepa",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL LA CEPA",
-      "nucleusId": "133",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "416",
-      "stopCode": "416",
-      "name": "Pol. Ind. La Cepa",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL LA CEPA",
-      "nucleusId": "133",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
       "stopId": "613",
       "stopCode": "613",
       "name": "Pol. Ind. la Fuente",
@@ -34738,50 +34991,6 @@
       "chunkId": "consortium-3"
     },
     {
-      "stopId": "313",
-      "stopCode": "313",
-      "name": "Pol. Ind. La Redonda - I",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "314",
-      "stopCode": "314",
-      "name": "Pol. Ind. La Redonda - I",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "86",
-      "stopCode": "86",
-      "name": "Pol. Ind. La Redonda - VI",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "312",
-      "stopCode": "312",
-      "name": "Pol. Ind. La Redonda - VI",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
       "stopId": "614",
       "stopCode": "614",
       "name": "Pol. Ind. Olinda",
@@ -34791,50 +35000,6 @@
       "nucleusId": "471",
       "consortiumId": 3,
       "chunkId": "consortium-3"
-    },
-    {
-      "stopId": "119",
-      "stopCode": "119",
-      "name": "Pol. Ind. San Rafael",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL SAN RAFAEL",
-      "nucleusId": "110",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "383",
-      "stopCode": "383",
-      "name": "Pol. Ind. San Rafael",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL SAN RAFAEL",
-      "nucleusId": "110",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "625",
-      "stopCode": "625",
-      "name": "Pol. San Nicolás",
-      "municipality": "LA MOJONERA",
-      "municipalityId": "11",
-      "nucleus": "SAN NICOLÁS",
-      "nucleusId": "165",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "626",
-      "stopCode": "626",
-      "name": "Pol. San Nicolás",
-      "municipality": "LA MOJONERA",
-      "municipalityId": "11",
-      "nucleus": "SAN NICOLÁS",
-      "nucleusId": "165",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
     },
     {
       "stopId": "2592",
@@ -37158,6 +37323,28 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "740",
+      "stopCode": "740",
+      "name": "Rest. El Molinero",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "741",
+      "stopCode": "741",
+      "name": "Rest. El Molinero",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "2134",
       "stopCode": "2134",
       "name": "Restaurante la Cruz de Piedra",
@@ -37867,7 +38054,7 @@
       "name": "Roquetas - Hortamar",
       "municipality": "ROQUETAS DE MAR",
       "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
+      "nucleus": "P.I. LAS SALINAS",
       "nucleusId": "122",
       "consortiumId": 6,
       "chunkId": "consortium-6"
@@ -37878,7 +38065,7 @@
       "name": "Roquetas - Hortamar",
       "municipality": "ROQUETAS DE MAR",
       "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
+      "nucleus": "P.I. LAS SALINAS",
       "nucleusId": "122",
       "consortiumId": 6,
       "chunkId": "consortium-6"
@@ -39273,7 +39460,7 @@
       "stopId": "22",
       "stopCode": "22",
       "name": "Santa Fe de Mondújar",
-      "municipality": "SANTA FE DE MONDUJAR",
+      "municipality": "SANTA FE DE MONDÚJAR",
       "municipalityId": "16",
       "nucleus": "SANTA FE DE MONDÚJAR",
       "nucleusId": "64",
@@ -42590,6 +42777,28 @@
       "nucleusId": "22",
       "consortiumId": 9,
       "chunkId": "consortium-9"
+    },
+    {
+      "stopId": "746",
+      "stopCode": "746",
+      "name": "V.Yesos",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "VENTA DE LOS YESOS",
+      "nucleusId": "179",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "747",
+      "stopCode": "747",
+      "name": "V.Yesos",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "VENTA DE LOS YESOS",
+      "nucleusId": "179",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "123",
