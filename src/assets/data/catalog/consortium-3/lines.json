@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-01T05:32:08.278Z",
+    "generatedAt": "2026-02-02T05:34:49.160Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -343,7 +343,7 @@
         "Ureña e Hijos",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -567,7 +567,7 @@
         "Ureña e Hijos",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -742,7 +742,7 @@
         "Carlos Fernández de la Torre",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
