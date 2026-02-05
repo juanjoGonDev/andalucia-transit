@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-04T05:24:11.069Z",
+    "generatedAt": "2026-02-05T05:29:30.761Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 7,
     "consortiumName": "Área de Jaén",
-    "itemCount": 37
+    "itemCount": 41
   },
   "lines": [
     {
@@ -43,7 +43,7 @@
         "Autocares Marcos Muñoz",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -68,7 +68,7 @@
         "Autocares Marcos Muñoz",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -93,7 +93,7 @@
         "Autocares Marcos Muñoz",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -317,7 +317,7 @@
         "Autocares Samar",
         "S.A."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -342,7 +342,7 @@
         "Autocares Marcos Muñoz",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -582,6 +582,56 @@
       "inboundPath": []
     },
     {
+      "id": "49",
+      "code": "M11-2",
+      "name": "Jaén - Pegalajar (N-323-a)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Montijano",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "44",
+      "code": "M10-1",
+      "name": "Jaén - Sotogordo Por Vados De Torralba",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Montijano",
+        "S.L."
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "286",
       "code": "M20-10",
       "name": "Jaén - Torredelcampo, 2024",
@@ -640,7 +690,32 @@
         "Autocares Samar",
         "S.A."
       ],
-      "hasNews": false,
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "45",
+      "code": "M10-2",
+      "name": "Jaén - Villargordo",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Montijano",
+        "S.L."
+      ],
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -680,6 +755,31 @@
       "inboundPath": []
     },
     {
+      "id": "176",
+      "code": "M10-6",
+      "name": "Jaén -Torreblascopedro Por Vados de Torralba",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Montijano",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "254",
       "code": "M15-4",
       "name": "Jaén-Lahiguera-Arjona-Andújar",
@@ -689,7 +789,7 @@
         "Autocares Marcos Muñoz",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
