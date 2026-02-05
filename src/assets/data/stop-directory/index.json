@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-04T05:24:07.434Z",
+    "generatedAt": "2026-02-05T05:29:27.284Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4015
+    "totalStops": 4014
   },
   "chunks": [
     {
@@ -75,7 +75,7 @@
       "id": "consortium-4",
       "consortiumId": 4,
       "path": "chunks/consortium-4.json",
-      "stopCount": 981
+      "stopCount": 980
     },
     {
       "id": "consortium-5",
@@ -11506,6 +11506,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "815",
+      "stopCode": "815",
+      "name": "Calahonda",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Calahonda",
+      "nucleusId": "47",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "2747",
       "stopCode": "2747",
       "name": "CALAHOYAS",
@@ -22920,17 +22931,6 @@
       "municipalityId": "14",
       "nucleus": "Fuengirola",
       "nucleusId": "111",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
-      "stopId": "816",
-      "stopCode": "816",
-      "name": "Garu Calahonda",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Calahonda",
-      "nucleusId": "47",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -37772,17 +37772,6 @@
       "nucleusId": "224",
       "consortiumId": 8,
       "chunkId": "consortium-8"
-    },
-    {
-      "stopId": "815",
-      "stopCode": "815",
-      "name": "Riviera Del Sol",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Calahonda",
-      "nucleusId": "47",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
     },
     {
       "stopId": "1602",
