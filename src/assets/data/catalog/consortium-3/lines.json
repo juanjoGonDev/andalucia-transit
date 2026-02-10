@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-05T05:29:30.761Z",
+    "generatedAt": "2026-02-10T05:35:28.176Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "itemCount": 72
+    "itemCount": 71
   },
   "lines": [
     {
@@ -318,7 +318,7 @@
         "Transportes Rober",
         "S.A."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -542,7 +542,7 @@
         "Transportes Trinidad Nievas",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1167,7 +1167,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1242,7 +1242,7 @@
         "Empresa Liñan",
         "S.A."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1583,31 +1583,6 @@
       "inboundPath": []
     },
     {
-      "id": "1112",
-      "code": "0245",
-      "name": "Granada-Aeropuerto",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Alsa Granada Airport",
-        "S.L."
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "1029",
       "code": "0325",
       "name": "Granada-P.Puente-Zujaira-Obéilar-Illora-Alomartes-Bracana-Tocón",
@@ -1617,7 +1592,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
