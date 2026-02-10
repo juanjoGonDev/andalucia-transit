@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-05T05:29:27.284Z",
+    "generatedAt": "2026-02-10T05:35:24.064Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -11506,8 +11506,8 @@
       "chunkId": "consortium-4"
     },
     {
-      "stopId": "815",
-      "stopCode": "815",
+      "stopId": "816",
+      "stopCode": "816",
       "name": "Calahonda",
       "municipality": "Mijas",
       "municipalityId": "2",
