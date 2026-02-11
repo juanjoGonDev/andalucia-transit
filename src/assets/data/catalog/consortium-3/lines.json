@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-10T05:35:28.176Z",
+    "generatedAt": "2026-02-11T05:34:45.347Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "itemCount": 71
+    "itemCount": 72
   },
   "lines": [
     {
@@ -1565,6 +1565,31 @@
       "modeId": "1",
       "operators": [
         "Autotransportes Tocina",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "1112",
+      "code": "0245",
+      "name": "Granada-Aeropuerto",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "Alsa Granada Airport",
         "S.L."
       ],
       "hasNews": false,
