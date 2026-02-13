@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-12T05:34:03.601Z",
+    "generatedAt": "2026-02-13T05:32:03.071Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 7,
@@ -306,6 +306,21 @@
       "location": {
         "latitude": 38.03169,
         "longitude": -3.863429
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "85",
+      "stopCode": "85",
+      "name": "Calle Párroco Casado (Junto Cooperativa)",
+      "municipality": "Carcheles",
+      "municipalityId": "18",
+      "nucleus": "Carchel",
+      "nucleusId": "46",
+      "zone": "D",
+      "location": {
+        "latitude": 37.65276,
+        "longitude": -3.63454
       }
     },
     {
@@ -861,21 +876,6 @@
       "location": {
         "latitude": 37.688314,
         "longitude": -3.817892
-      }
-    },
-    {
-      "consortiumId": 7,
-      "stopId": "85",
-      "stopCode": "85",
-      "name": "Plaza De La Fuente",
-      "municipality": "Carcheles",
-      "municipalityId": "18",
-      "nucleus": "Carchel",
-      "nucleusId": "46",
-      "zone": "D",
-      "location": {
-        "latitude": 37.65218,
-        "longitude": -3.636409
       }
     },
     {
