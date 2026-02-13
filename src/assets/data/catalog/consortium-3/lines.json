@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-12T05:34:06.815Z",
+    "generatedAt": "2026-02-13T05:32:06.817Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -193,7 +193,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -218,7 +218,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1217,7 +1217,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1233,16 +1233,16 @@
       "inboundPath": []
     },
     {
-      "id": "1056",
-      "code": "0390",
-      "name": "Granada - Pinos Genil - Güejar Sierra",
+      "id": "1130",
+      "code": "0390P",
+      "name": "Granada - Pinos Genil - Güejar Sierra provisional",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
         "S.A."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1592,7 +1592,7 @@
         "Alsa Granada Airport",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1767,7 +1767,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
