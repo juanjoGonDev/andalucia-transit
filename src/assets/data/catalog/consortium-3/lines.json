@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-16T05:35:13.362Z",
+    "generatedAt": "2026-02-17T05:32:29.782Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -318,7 +318,7 @@
         "Transportes Rober",
         "S.A."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -343,7 +343,7 @@
         "Ureña e Hijos",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -542,7 +542,7 @@
         "Transportes Trinidad Nievas",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -567,7 +567,7 @@
         "Ureña e Hijos",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1167,7 +1167,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1617,7 +1617,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
