@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-17T05:32:29.782Z",
+    "generatedAt": "2026-02-18T05:33:49.327Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
     "consortiumName": "Área de Sevilla",
-    "itemCount": 127
+    "itemCount": 128
   },
   "nuclei": [
     {
@@ -697,6 +697,12 @@
       "municipalityId": "37",
       "zone": "C",
       "name": "TARAZONA (La Rinconada)"
+    },
+    {
+      "id": "3293",
+      "municipalityId": "61",
+      "zone": "X",
+      "name": "TOCINA"
     },
     {
       "id": "3227",
