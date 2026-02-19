@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-18T05:33:46.041Z",
+    "generatedAt": "2026-02-19T05:32:56.272Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4014
+    "totalStops": 4015
   },
   "chunks": [
     {
@@ -87,7 +87,7 @@
       "id": "consortium-6",
       "consortiumId": 6,
       "path": "chunks/consortium-6.json",
-      "stopCount": 535
+      "stopCount": 536
     },
     {
       "id": "consortium-7",
@@ -40863,6 +40863,17 @@
       "nucleusId": "202",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "672",
+      "stopCode": "672",
+      "name": "Universidad",
+      "municipality": "ALMERÍA",
+      "municipalityId": "2",
+      "nucleus": "UNIVERSIDAD",
+      "nucleusId": "172",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "1539",
