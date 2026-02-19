@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-18T05:33:46.041Z",
+    "generatedAt": "2026-02-19T05:32:56.272Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 6,
     "consortiumName": "Área de Almería",
-    "stopCount": 535
+    "stopCount": 536
   },
   "stops": [
     {
@@ -7416,6 +7416,21 @@
       "location": {
         "latitude": 36.973177,
         "longitude": -2.532343
+      }
+    },
+    {
+      "consortiumId": 6,
+      "stopId": "672",
+      "stopCode": "672",
+      "name": "Universidad",
+      "municipality": "ALMERÍA",
+      "municipalityId": "2",
+      "nucleus": "UNIVERSIDAD",
+      "nucleusId": "172",
+      "zone": "B",
+      "location": {
+        "latitude": 36.827804,
+        "longitude": -2.40387
       }
     },
     {
