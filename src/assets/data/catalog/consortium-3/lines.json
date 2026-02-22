@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-21T05:23:02.913Z",
+    "generatedAt": "2026-02-22T05:28:18.919Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "itemCount": 72
+    "itemCount": 71
   },
   "lines": [
     {
@@ -193,7 +193,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -218,7 +218,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -318,7 +318,7 @@
         "Transportes Rober",
         "S.A."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -343,7 +343,7 @@
         "Ureña e Hijos",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -542,7 +542,7 @@
         "Transportes Trinidad Nievas",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -567,7 +567,7 @@
         "Ureña e Hijos",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1167,7 +1167,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1567,32 +1567,7 @@
         "Autotransportes Tocina",
         "S.L."
       ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "1112",
-      "code": "0245",
-      "name": "Granada-Aeropuerto",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Alsa Granada Airport",
-        "S.L."
-      ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1617,7 +1592,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
