@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-23T05:35:13.116Z",
+    "generatedAt": "2026-02-24T05:32:33.325Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 7,
     "consortiumName": "Área de Jaén",
-    "itemCount": 40
+    "itemCount": 41
   },
   "lines": [
     {
@@ -862,6 +862,31 @@
       "modeId": "1",
       "operators": [
         "Transportes Muñoz Amezcua",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "60",
+      "code": "M14-1",
+      "name": "Noalejo - Jaén",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Transportes Romero",
         "S.L."
       ],
       "hasNews": false,

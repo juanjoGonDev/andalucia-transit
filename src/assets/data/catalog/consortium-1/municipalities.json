@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-23T05:35:13.116Z",
+    "generatedAt": "2026-02-24T05:32:33.325Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
     "consortiumName": "Área de Sevilla",
-    "itemCount": 59
+    "itemCount": 60
   },
   "municipalities": [
     {
@@ -107,6 +107,10 @@
     {
       "id": "23",
       "name": "ESPARTINAS"
+    },
+    {
+      "id": "67",
+      "name": "FUENTES DE ANDALUCÍA"
     },
     {
       "id": "24",
