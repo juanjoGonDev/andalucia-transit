@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-25T05:33:25.321Z",
+    "generatedAt": "2026-02-26T05:31:05.523Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 6,
     "consortiumName": "Área de Almería",
-    "itemCount": 29
+    "itemCount": 31
   },
   "lines": [
     {
@@ -36,6 +36,30 @@
       "id": "49",
       "code": "M-999",
       "name": "Aguadulce - Roquetas - Las Marinas",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "NEX CONTINENTAL HOLDINGS"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "115",
+      "code": "M-109",
+      "name": "Alhama de Almería - Universidad",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
@@ -636,6 +660,30 @@
       "id": "37",
       "code": "M-372",
       "name": "Santa María Del Águila - El Ejido - Dalías - Berja NN",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "NEX CONTINENTAL HOLDINGS"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "116",
+      "code": "M-110",
+      "name": "Tabernas - Universidad",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
