@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-03-02T05:27:50.373Z",
+    "generatedAt": "2026-03-03T05:26:21.982Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
     "consortiumName": "Bahía de Cádiz",
-    "itemCount": 67
+    "itemCount": 68
   },
   "lines": [
     {
@@ -1481,6 +1481,30 @@
       "id": "28",
       "code": "M-360",
       "name": "Rota-Costa Oeste-El Puerto de Santa María-Hospital de Puerto Real",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "Transportes Generales Comes S.A."
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "32",
+      "code": "M-560",
+      "name": "Rota-Jerez De La Frontera",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
