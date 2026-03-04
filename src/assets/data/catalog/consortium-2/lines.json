@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-03-03T05:26:21.982Z",
+    "generatedAt": "2026-03-04T05:22:57.177Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
     "consortiumName": "Bahía de Cádiz",
-    "itemCount": 68
+    "itemCount": 70
   },
   "lines": [
     {
@@ -304,6 +304,30 @@
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "15",
+      "code": "B-042",
+      "name": "Cádiz-El Puerto De Santa María",
+      "mode": "BARCO",
+      "modeId": "2",
+      "operators": [
+        "UTE Catamaranes Consorcio Bahía de Cádiz"
       ],
       "hasNews": true,
       "concession": null,
@@ -808,6 +832,30 @@
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "22",
+      "code": "B-065",
+      "name": "Cádiz-Rota",
+      "mode": "BARCO",
+      "modeId": "2",
+      "operators": [
+        "UTE Catamaranes Consorcio Bahía de Cádiz"
       ],
       "hasNews": true,
       "concession": null,
