@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-03-03T05:26:21.982Z",
+    "generatedAt": "2026-03-04T05:22:57.177Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 86
+    "itemCount": 88
   },
   "lines": [
     {
@@ -482,9 +482,59 @@
       "inboundPath": []
     },
     {
+      "id": "294",
+      "code": "M-429",
+      "name": "Coín-Alhaurín el Grande-Feria de Málaga",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "274",
       "code": "M-167",
       "name": "Coín-Alhaurín el Grande-Málaga",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "293",
+      "code": "M-591",
+      "name": "Coín-Fuengirola (servicio de verano)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
