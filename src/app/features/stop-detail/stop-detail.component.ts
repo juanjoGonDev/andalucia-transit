@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   Observable,
   catchError,
@@ -93,6 +93,7 @@ export class StopDetailComponent {
   private readonly stopScheduleFacade = inject(StopScheduleFacade);
   private readonly layoutContext: AppLayoutContext = inject(APP_LAYOUT_CONTEXT);
   private readonly stopDirectoryFacade = inject(StopDirectoryFacade);
+  private readonly translate = inject(TranslateService);
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.stopDetail;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.stopDetailBase;
@@ -195,6 +196,15 @@ export class StopDetailComponent {
 
   protected readonly trackByServiceId = (_: number, item: ScheduleItem): string => item.serviceId;
 
+  protected readonly timelineAnnouncement$ = combineLatest([
+    this.viewModel$,
+    this.translate.onLangChange.pipe(startWith(null))
+  ]).pipe(
+    map(([viewModel]) => this.buildTimelineAnnouncement(viewModel)),
+    distinctUntilChanged(),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
   constructor() {
     this.layoutContext.configureTabs(this.timelineTabs);
     this.layoutContext.setActiveTab(STOP_TIMELINE_UPCOMING_TAB_ID);
@@ -231,5 +241,42 @@ export class StopDetailComponent {
       viewModel.upcoming.length > 0 ? STOP_TIMELINE_UPCOMING_TAB_ID : STOP_TIMELINE_PAST_TAB_ID;
 
     this.layoutContext.setActiveTab(nextActive);
+  }
+
+  private buildTimelineAnnouncement(viewModel: StopScheduleUiModel): string | null {
+    if (!viewModel.upcoming.length) {
+      return null;
+    }
+
+    const nextService = viewModel.upcoming.find((service) => service.isNext) ?? viewModel.upcoming[0];
+
+    if (!nextService) {
+      return null;
+    }
+
+    const statusKey =
+      nextService.minutesUntilArrival <= 0
+        ? this.translationKeys.status.arrivingNow
+        : this.translationKeys.status.arrivesIn;
+
+    const statusParams =
+      nextService.minutesUntilArrival <= 0
+        ? undefined
+        : { minutes: nextService.minutesUntilArrival };
+
+    const statusText = this.translate.instant(statusKey, statusParams ?? {});
+
+    const boundedProgress = Math.max(0, Math.min(100, Math.round(nextService.progressPercentage)));
+
+    const message = this.translate.instant(this.translationKeys.announcements.progress, {
+      lineCode: nextService.lineCode,
+      destination: nextService.destination,
+      statusText,
+      percentage: boundedProgress
+    });
+
+    const normalized = message.trim();
+
+    return normalized.length > 0 ? normalized : null;
   }
 }

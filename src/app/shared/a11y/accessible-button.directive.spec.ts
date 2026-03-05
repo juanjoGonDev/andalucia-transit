@@ -45,7 +45,9 @@ function setKeyboardEventIdentifier(event: ExtendedKeyboardEvent, value: string)
       [appAccessibleButtonChecked]="checked"
       [appAccessibleButtonExpanded]="expanded"
       [appAccessibleButtonHasPopup]="hasPopup"
+      [appAccessibleButtonTabIndex]="tabIndex"
       (appAccessibleButtonActivated)="onActivated($event)"
+      (appAccessibleButtonKeydown)="onKeydown($event)"
     >
       Action
     </div>
@@ -58,7 +60,9 @@ class HostComponent {
   checked: boolean | null = null;
   expanded: boolean | null = null;
   hasPopup: boolean | AccessibleButtonPopupToken | null = null;
+  tabIndex: number | null = null;
   readonly onActivated: jasmine.Spy<(event: MouseEvent) => void> = jasmine.createSpy();
+  readonly onKeydown: jasmine.Spy<(event: KeyboardEvent) => void> = jasmine.createSpy();
 }
 
 @Component({
@@ -117,6 +121,16 @@ describe('AccessibleButtonDirective', () => {
     const nativeElement = element.nativeElement as HTMLElement;
 
     expect(nativeElement.getAttribute('role')).toBe('menuitem');
+  });
+
+  it('should expose the configured tabindex when provided', () => {
+    hostComponent.tabIndex = -1;
+    fixture.detectChanges();
+
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    expect(nativeElement.getAttribute('tabindex')).toBe('-1');
   });
 
   it('should disable keyboard focus and mark aria-disabled when disabled', () => {
@@ -515,6 +529,25 @@ describe('AccessibleButtonDirective', () => {
 
     expect(spaceUpEvent.defaultPrevented).toBeFalse();
     expect(hostComponent.onActivated).not.toHaveBeenCalled();
+  });
+
+  it('should focus the host element when focus is invoked', () => {
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const directive = element.injector.get(AccessibleButtonDirective);
+
+    directive.focus();
+
+    expect(document.activeElement).toBe(element.nativeElement);
+  });
+
+  it('should emit keyboard events through the keydown output', () => {
+    const element = fixture.debugElement.query(By.directive(AccessibleButtonDirective));
+    const nativeElement = element.nativeElement as HTMLElement;
+
+    const event = new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true });
+    nativeElement.dispatchEvent(event);
+
+    expect(hostComponent.onKeydown).toHaveBeenCalledWith(event);
   });
 });
 

@@ -6,6 +6,7 @@ import {
   DestroyRef,
   ElementRef,
   QueryList,
+  ViewChild,
   ViewChildren,
   computed,
   inject,
@@ -62,6 +63,8 @@ const BACK_ICON_NAME = 'arrow_back' as const;
 export class RouteSearchComponent implements AfterViewInit {
   @ViewChildren('itemElement', { read: ElementRef })
   private readonly itemElements!: QueryList<ElementRef<HTMLElement>>;
+  @ViewChild(RouteSearchFormComponent)
+  private readonly formComponent?: RouteSearchFormComponent;
   private pendingScroll = false;
   private lastScrollTargetId: string | null = null;
 
@@ -285,6 +288,10 @@ export class RouteSearchComponent implements AfterViewInit {
       ...current,
       queryDate: today
     });
+  }
+
+  protected focusSearchForm(): void {
+    this.formComponent?.focusOriginField();
   }
 
   private queueScrollToNext(): void {

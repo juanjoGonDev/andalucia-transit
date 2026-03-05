@@ -22,11 +22,14 @@
             </div>
             <div class="home__tabs" role="tablist">
               <div
-                *ngFor="let tab of tabs"
+                *ngFor="let tab of tabs; let index = index"
                 appAccessibleButton
+                #homeTabButton="appAccessibleButton"
                 class="home__tab"
-                appAccessibleButtonRole="tab"
+                [appAccessibleButtonRole]="tabRole"
+                [appAccessibleButtonTabIndex]="tabButtonTabIndex(tab.id)"
                 [attr.aria-selected]="isTabActive(tab.id)"
+                (appAccessibleButtonKeydown)="onTabKeydown($event, index)"
                 (appAccessibleButtonActivated)="selectTab(tab.id)"
               >
                 {{ tab.labelKey | translate }}

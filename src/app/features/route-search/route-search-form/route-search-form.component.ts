@@ -3,11 +3,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
   Output,
   SimpleChanges,
+  ViewChild,
   inject
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -163,6 +165,8 @@ export class RouteSearchFormComponent implements OnChanges {
   @Input() initialSelection: RouteSearchSelection | null = null;
   @Input() originDraft: StopAutocompleteOption | null = null;
   @Output() readonly selectionConfirmed = new EventEmitter<RouteSearchSelection>();
+  @ViewChild('originInput', { read: ElementRef })
+  private originInput?: ElementRef<HTMLInputElement>;
 
   private readonly translation = APP_CONFIG.translationKeys.home.sections.search;
   private readonly distanceTranslation = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
@@ -197,6 +201,16 @@ export class RouteSearchFormComponent implements OnChanges {
   readonly destinationIcon: MaterialSymbolName = 'flag';
   readonly dateIcon: MaterialSymbolName = 'calendar_today';
   readonly swapIcon: MaterialSymbolName = 'swap_vert';
+
+  focusOriginField(): void {
+    const element = this.originInput?.nativeElement;
+
+    if (!element) {
+      return;
+    }
+
+    element.focus();
+  }
 
   readonly searchForm: FormGroup<RouteSearchFormGroup> = this.formBuilder.group({
     origin: this.formBuilder.control<StopAutocompleteValue>(null, {
