@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-02-02T05:34:49.160Z",
+    "generatedAt": "2026-03-05T05:25:00.108Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 84
+    "itemCount": 88
   },
   "lines": [
     {
@@ -36,7 +36,7 @@
     {
       "id": "93",
       "code": "M-143",
-      "name": "Alhaurín De La Torre-Churriana-Teatinos (del 10/09/25 al 26/05/26)",
+      "name": "Alh. de La Torre-Churriana-Teatinos",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -66,6 +66,56 @@
       "modeId": "1",
       "operators": [
         "Autocares Vázquez Olmedo",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "301",
+      "code": "M-171",
+      "name": "Alhaurín el Grande (Circular)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "302",
+      "code": "M-159B",
+      "name": "Alhaurín el Grande-Villa del Guadalhorce-Hospital Guadalhorce",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
         "S.L."
       ],
       "hasNews": false,
@@ -432,9 +482,59 @@
       "inboundPath": []
     },
     {
+      "id": "294",
+      "code": "M-429",
+      "name": "Coín-Alhaurín el Grande-Feria de Málaga",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "274",
       "code": "M-167",
       "name": "Coín-Alhaurín el Grande-Málaga",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "293",
+      "code": "M-591",
+      "name": "Coín-Fuengirola (servicio de verano)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -1055,31 +1155,6 @@
       "inboundPath": []
     },
     {
-      "id": "96",
-      "code": "M-151",
-      "name": "Málaga-Casabermeja-Arroyo Coche-Villanueva de la Concepción",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Automóviles Mérida",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "307",
       "code": "M-252",
       "name": "Málaga-Casabermeja-Colmenar",
@@ -1113,6 +1188,31 @@
       "operators": [
         "Nex Continental Holdings",
         "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "96",
+      "code": "M-151",
+      "name": "Málaga-Casabermeja-VVa.Concepción",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Automóviles Mérida",
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -1206,7 +1306,7 @@
     {
       "id": "23",
       "code": "M-230",
-      "name": "Málaga-Coín (Por Alhaurín De La Torre Y Alhaurín El Grande)",
+      "name": "Málaga-Coín (Por los Alhaurines)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -1828,7 +1928,7 @@
     {
       "id": "7",
       "code": "M-116",
-      "name": "Teatinos-Torremolinos-Benalmádena (del 15/09/25 al 29/05/26)",
+      "name": "Teatinos-Torremolinos-Benalmádena",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -1978,7 +2078,7 @@
     {
       "id": "137",
       "code": "M-166",
-      "name": "Universidad-Clínico-Rincón de la Victoria (del 15/09/25 al 29/05/26)",
+      "name": "Universidad-Clínico-Rincón de la Victoria",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
