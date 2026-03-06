@@ -47,6 +47,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - 2025-10-16: Deployment verification relies on `npm run deploy:prepare`, which mirrors the GitHub Pages build and fallback creation. Run `npm run test:deploy` in pull requests that modify deployment workflows or `scripts/deploy/*` utilities.
 - 2025-10-21: Angular unit tests default to the Playwright-managed `ChromeHeadlessNoSandbox` launcher with headless flags forced and watch mode disabled (`angular.json`, `karma.conf.js`); use `ng test --watch` to opt back into the interactive runner when needed.
 - 2025-10-19: Puppeteer tooling replaced with Playwright (Chromium-only) while preserving Cypress end-to-end coverage.
+- 2026-03-06: `appLayoutContent` now applies the shared surface classes (`app-layout__surface` + hero by default) directly on host sections so all existing and future routed views inherit the Home layout baseline without repeating root layout classes in feature templates.
 
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.
