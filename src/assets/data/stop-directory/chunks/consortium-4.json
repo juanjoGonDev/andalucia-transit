@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-03-09T05:30:54.775Z",
+    "generatedAt": "2026-03-10T05:24:45.187Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -6919,8 +6919,8 @@
       "nucleusId": "1",
       "zone": "A",
       "location": {
-        "latitude": 36.04808467165,
-        "longitude": -4.4393951191755
+        "latitude": 36.70482777777778,
+        "longitude": -4.4393722222222225
       }
     },
     {
