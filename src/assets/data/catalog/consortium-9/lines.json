@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-03-12T05:27:20.625Z",
+    "generatedAt": "2026-03-13T05:26:21.071Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 9,
     "consortiumName": "Costa de Huelva",
-    "itemCount": 42
+    "itemCount": 40
   },
   "lines": [
     {
@@ -132,30 +132,6 @@
       "id": "29",
       "code": "M-210",
       "name": "Huelva-Alosno-Santa Barbara",
-      "mode": "AUTOBUS",
-      "modeId": "2",
-      "operators": [
-        "DAMAS SA"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "19",
-      "code": "M-200",
-      "name": "Huelva-Alosno-Villanueva De Las Cruces",
       "mode": "AUTOBUS",
       "modeId": "2",
       "operators": [
@@ -420,30 +396,6 @@
       "id": "23",
       "code": "M-204",
       "name": "Huelva-Higuera-Aracena",
-      "mode": "AUTOBUS",
-      "modeId": "2",
-      "operators": [
-        "DAMAS SA"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "18",
-      "code": "M-103",
-      "name": "Huelva-Hospitales (Circular)",
       "mode": "AUTOBUS",
       "modeId": "2",
       "operators": [
