@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-01T05:43:18.800Z",
+    "generatedAt": "2026-04-02T05:36:24.179Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 90
+    "itemCount": 91
   },
   "lines": [
     {
@@ -315,6 +315,31 @@
       "operators": [
         "Avanza Movilidad Integral",
         "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "191",
+      "code": "M-347",
+      "name": "Caminito Del Rey/El Chorro-El Kiosco",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Rivero",
+        "S.A."
       ],
       "hasNews": false,
       "concession": null,
