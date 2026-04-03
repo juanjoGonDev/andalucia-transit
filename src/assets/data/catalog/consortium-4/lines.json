@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-02T05:36:24.179Z",
+    "generatedAt": "2026-04-03T05:36:46.475Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 91
+    "itemCount": 89
   },
   "lines": [
     {
@@ -389,31 +389,6 @@
       "modeId": "1",
       "operators": [
         "Autocares Vázquez Olmedo",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "142",
-      "code": "M-650",
-      "name": "Casabermeja-Málaga (Semana Santa)",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Automóviles Mérida",
         "S.L."
       ],
       "hasNews": false,
@@ -1959,31 +1934,6 @@
       "operators": [
         "Avanza Movilidad Integral",
         "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "199",
-      "code": "M-651",
-      "name": "Riogordo-Colmenar-Casabermeja-Málaga",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Nex Continental Holdings",
-        "S.L.U."
       ],
       "hasNews": false,
       "concession": null,
