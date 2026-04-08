@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-06T05:46:23.703Z",
+    "generatedAt": "2026-04-08T05:38:38.886Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 209
+    "itemCount": 218
   },
   "nuclei": [
     {
@@ -31,6 +31,12 @@
       "municipalityId": "7",
       "zone": "C",
       "name": "Aljaima"
+    },
+    {
+      "id": "218",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Almayate"
     },
     {
       "id": "100",
@@ -147,6 +153,12 @@
       "name": "Benagalbón"
     },
     {
+      "id": "220",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Benajarafe"
+    },
+    {
       "id": "49",
       "municipalityId": "3",
       "zone": "B",
@@ -193,6 +205,12 @@
       "municipalityId": "2",
       "zone": "C",
       "name": "Calahonda"
+    },
+    {
+      "id": "223",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Caleta de Vélez"
     },
     {
       "id": "3",
@@ -283,6 +301,12 @@
       "municipalityId": "2",
       "zone": "C",
       "name": "Cerros del Águila"
+    },
+    {
+      "id": "221",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Chilches"
     },
     {
       "id": "15",
@@ -577,6 +601,12 @@
       "municipalityId": "7",
       "zone": "B",
       "name": "Hospital Valle del Guadalhorce"
+    },
+    {
+      "id": "222",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Hospital Vélez Málaga"
     },
     {
       "id": "17",
@@ -1101,6 +1131,12 @@
       "name": "Torre Benagalbón"
     },
     {
+      "id": "216",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Torre del Mar"
+    },
+    {
       "id": "78",
       "municipalityId": "5",
       "zone": "B",
@@ -1129,6 +1165,12 @@
       "municipalityId": "12",
       "zone": "B",
       "name": "Totalán"
+    },
+    {
+      "id": "217",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Trapiche"
     },
     {
       "id": "50",
@@ -1173,10 +1215,22 @@
       "name": "Valle de Abdalajís"
     },
     {
+      "id": "219",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Valleniza"
+    },
+    {
       "id": "212",
       "municipalityId": "2",
       "zone": "C",
       "name": "Valtocado"
+    },
+    {
+      "id": "215",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Vélez Málaga"
     },
     {
       "id": "178",
