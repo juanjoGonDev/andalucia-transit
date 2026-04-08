@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-06T05:46:20.518Z",
+    "generatedAt": "2026-04-08T05:38:35.277Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4016
+    "totalStops": 4017
   },
   "chunks": [
     {
@@ -63,7 +63,7 @@
       "id": "consortium-2",
       "consortiumId": 2,
       "path": "chunks/consortium-2.json",
-      "stopCount": 175
+      "stopCount": 176
     },
     {
       "id": "consortium-3",
@@ -24312,7 +24312,7 @@
     {
       "stopId": "202",
       "stopCode": "202",
-      "name": "Hospital De Jerez",
+      "name": "Hospital De Jerez-carretera A-2000",
       "municipality": "Jerez de la Frontera",
       "municipalityId": "6",
       "nucleus": "Jerez",
@@ -24583,6 +24583,17 @@
       "nucleusId": "10",
       "consortiumId": 6,
       "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "361",
+      "stopCode": "361",
+      "name": "Hospital Universitario de Jerez",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "consortiumId": 2,
+      "chunkId": "consortium-2"
     },
     {
       "stopId": "1615",

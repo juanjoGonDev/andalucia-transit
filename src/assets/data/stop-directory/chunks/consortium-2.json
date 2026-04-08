@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-06T05:46:20.518Z",
+    "generatedAt": "2026-04-08T05:38:35.277Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
     "consortiumName": "Bahía de Cádiz",
-    "stopCount": 175
+    "stopCount": 176
   },
   "stops": [
     {
@@ -1437,7 +1437,7 @@
       "consortiumId": 2,
       "stopId": "202",
       "stopCode": "202",
-      "name": "Hospital De Jerez",
+      "name": "Hospital De Jerez-carretera A-2000",
       "municipality": "Jerez de la Frontera",
       "municipalityId": "6",
       "nucleus": "Jerez",
@@ -1566,6 +1566,21 @@
       "location": {
         "latitude": 36.47931003858101,
         "longitude": -6.195349549614012
+      }
+    },
+    {
+      "consortiumId": 2,
+      "stopId": "361",
+      "stopCode": "361",
+      "name": "Hospital Universitario de Jerez",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.699289838552495,
+        "longitude": -6.148633480981442
       }
     },
     {
