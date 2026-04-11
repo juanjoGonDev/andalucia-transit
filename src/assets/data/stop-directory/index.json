@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-10T05:45:24.228Z",
+    "generatedAt": "2026-04-11T05:33:58.669Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4017
+    "totalStops": 4036
   },
   "chunks": [
     {
@@ -75,7 +75,7 @@
       "id": "consortium-4",
       "consortiumId": 4,
       "path": "chunks/consortium-4.json",
-      "stopCount": 980
+      "stopCount": 999
     },
     {
       "id": "consortium-5",
@@ -1384,6 +1384,28 @@
       "nucleusId": "233",
       "consortiumId": 8,
       "chunkId": "consortium-8"
+    },
+    {
+      "stopId": "2194",
+      "stopCode": "2194",
+      "name": "Almayate Entrada",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Almayate",
+      "nucleusId": "218",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2192",
+      "stopCode": "2192",
+      "name": "Almayate Tanger",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Almayate",
+      "nucleusId": "218",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "568",
@@ -9251,6 +9273,17 @@
       "chunkId": "consortium-6"
     },
     {
+      "stopId": "2180",
+      "stopCode": "2180",
+      "name": "Benajarafe Centro",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Benajarafe",
+      "nucleusId": "220",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "2147",
       "stopCode": "2147",
       "name": "Benalma ",
@@ -13530,6 +13563,17 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "2188",
+      "stopCode": "2188",
+      "name": "Castillo del Marqués",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Valleniza",
+      "nucleusId": "219",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "15719",
       "stopCode": "15719",
       "name": "Catedral",
@@ -14553,6 +14597,28 @@
       "chunkId": "consortium-9"
     },
     {
+      "stopId": "2174",
+      "stopCode": "2174",
+      "name": "Chilches Costa/Mercadona",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Chilches",
+      "nucleusId": "221",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2172",
+      "stopCode": "2172",
+      "name": "Chilches Estación",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Chilches",
+      "nucleusId": "221",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "239",
       "stopCode": "239",
       "name": "Chimeneas 1",
@@ -15530,6 +15596,17 @@
       "nucleusId": "3266",
       "consortiumId": 1,
       "chunkId": "consortium-1"
+    },
+    {
+      "stopId": "2206",
+      "stopCode": "2206",
+      "name": "Colegio Andalucía/Avda. de las Naciones",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Vélez Málaga",
+      "nucleusId": "215",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "1698",
@@ -19558,6 +19635,17 @@
       "chunkId": "consortium-6"
     },
     {
+      "stopId": "2176",
+      "stopCode": "2176",
+      "name": "El Cañuelo",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Chilches",
+      "nucleusId": "221",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "45",
       "stopCode": "45",
       "name": "El Carpio (Ecce Homo)",
@@ -20632,6 +20720,17 @@
       "municipalityId": "1",
       "nucleus": "El Palo",
       "nucleusId": "4",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2201",
+      "stopCode": "2201",
+      "name": "El Tomillar",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -21802,6 +21901,17 @@
       "chunkId": "consortium-9"
     },
     {
+      "stopId": "2200",
+      "stopCode": "2200",
+      "name": "Estación Torre del Mar",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "1613",
       "stopCode": "1613",
       "name": "Estación Tren Cártama",
@@ -21820,6 +21930,17 @@
       "municipalityId": "1",
       "nucleus": "Málaga",
       "nucleusId": "1",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2171",
+      "stopCode": "2171",
+      "name": "Estación Vélez Málaga",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Vélez Málaga",
+      "nucleusId": "215",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -22315,6 +22436,17 @@
       "municipalityId": "2",
       "nucleus": "Mijas",
       "nucleusId": "44",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2196",
+      "stopCode": "2196",
+      "name": "Finca Poliester",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Almayate",
+      "nucleusId": "218",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -27148,6 +27280,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "2203",
+      "stopCode": "2203",
+      "name": "La Mata",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Vélez Málaga",
+      "nucleusId": "215",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "249",
       "stopCode": "249",
       "name": "La Mojonera - Alhóndiga",
@@ -27586,6 +27729,17 @@
       "nucleusId": "202",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "2190",
+      "stopCode": "2190",
+      "name": "La Tiendecilla",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Valleniza",
+      "nucleusId": "219",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "136",
@@ -29742,6 +29896,17 @@
       "nucleusId": "8",
       "consortiumId": 2,
       "chunkId": "consortium-2"
+    },
+    {
+      "stopId": "2198",
+      "stopCode": "2198",
+      "name": "Los Toscanos/Camping",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Almayate",
+      "nucleusId": "218",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "15765",
@@ -33966,6 +34131,17 @@
       "nucleusId": "157",
       "consortiumId": 6,
       "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "2178",
+      "stopCode": "2178",
+      "name": "Playa Malaya",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Benajarafe",
+      "nucleusId": "220",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "800",
@@ -40359,6 +40535,17 @@
       "chunkId": "consortium-1"
     },
     {
+      "stopId": "2182",
+      "stopCode": "2182",
+      "name": "Torre Vigía",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Benajarafe",
+      "nucleusId": "220",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "12",
       "stopCode": "12",
       "name": "Torrealba",
@@ -42867,6 +43054,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "2184",
+      "stopCode": "2184",
+      "name": "Valleniza",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Valleniza",
+      "nucleusId": "219",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "1997",
       "stopCode": "1997",
       "name": "Valtocado",
@@ -42874,6 +43072,17 @@
       "municipalityId": "2",
       "nucleus": "Valtocado",
       "nucleusId": "212",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2186",
+      "stopCode": "2186",
+      "name": "Varadero",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Valleniza",
+      "nucleusId": "219",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
