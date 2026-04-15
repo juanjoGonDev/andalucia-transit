@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-14T05:45:09.748Z",
+    "generatedAt": "2026-04-15T05:45:40.568Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -510,31 +510,6 @@
       "id": "274",
       "code": "M-167",
       "name": "Coín-Alhaurín el Grande-Málaga",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Avanza Movilidad Integral",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "293",
-      "code": "M-591",
-      "name": "Coín-Fuengirola (servicio de verano)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -2159,6 +2134,30 @@
       "operators": [
         "Avanza Movilidad Integral",
         "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "315",
+      "code": "M-270",
+      "name": "Valle de Abdalajís-Estación de Álora",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Damas S.A. e Interurbana de Autobuses S.A."
       ],
       "hasNews": false,
       "concession": null,
