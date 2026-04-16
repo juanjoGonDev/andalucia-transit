@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-15T05:45:40.568Z",
+    "generatedAt": "2026-04-16T05:47:32.506Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 89
+    "itemCount": 90
   },
   "lines": [
     {
@@ -1661,6 +1661,31 @@
       "operators": [
         "Avanza Movilidad Integral",
         "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "321",
+      "code": "M-260D",
+      "name": "Málaga-Torre Benagalbón-Torre del Mar-Vélez Málaga",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
       ],
       "hasNews": false,
       "concession": null,
