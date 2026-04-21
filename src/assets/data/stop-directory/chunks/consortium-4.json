@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-20T05:55:28.332Z",
+    "generatedAt": "2026-04-21T05:46:31.818Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "stopCount": 999
+    "stopCount": 1006
   },
   "stops": [
     {
@@ -276,6 +276,21 @@
       "location": {
         "latitude": 36.56500555555555,
         "longitude": -4.646075
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2220",
+      "stopCode": "2220",
+      "name": "Algarrobo/Muebles García",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "zone": "C",
+      "location": {
+        "latitude": 36.74802777777778,
+        "longitude": -4.057963888888889
       }
     },
     {
@@ -2196,6 +2211,21 @@
       "location": {
         "latitude": 36.49082777777778,
         "longitude": -4.7070083333333335
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2210",
+      "stopCode": "2210",
+      "name": "Caleta de Vélez Hotel",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7495308,
+        "longitude": -4.0678194
       }
     },
     {
@@ -4270,6 +4300,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2208",
+      "stopCode": "2208",
+      "name": "Comisaría",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
+      "zone": "C",
+      "location": {
+        "latitude": 36.745166,
+        "longitude": -4.0873792
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "757",
       "stopCode": "757",
       "name": "Comisaría De Policía",
@@ -5721,6 +5766,21 @@
       "location": {
         "latitude": 36.712657,
         "longitude": -4.431596
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2212",
+      "stopCode": "2212",
+      "name": "El Pilarillo",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "zone": "C",
+      "location": {
+        "latitude": 36.749097,
+        "longitude": -4.0631764
       }
     },
     {
@@ -8950,6 +9010,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2218",
+      "stopCode": "2218",
+      "name": "Lagos",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7437378,
+        "longitude": -4.0194212
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "471",
       "stopCode": "471",
       "name": "Las Acacias",
@@ -10326,6 +10401,36 @@
       "location": {
         "latitude": 36.70612777777778,
         "longitude": -4.514716666666667
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2216",
+      "stopCode": "2216",
+      "name": "Mezquitilla Farmacia",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7442211,
+        "longitude": -4.0396109
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2214",
+      "stopCode": "2214",
+      "name": "Mezquitilla Iglesia",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7451966,
+        "longitude": -4.0442361
       }
     },
     {
