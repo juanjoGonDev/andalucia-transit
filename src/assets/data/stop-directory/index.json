@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-20T05:55:28.332Z",
+    "generatedAt": "2026-04-21T05:46:31.818Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4036
+    "totalStops": 4043
   },
   "chunks": [
     {
@@ -75,7 +75,7 @@
       "id": "consortium-4",
       "consortiumId": 4,
       "path": "chunks/consortium-4.json",
-      "stopCount": 999
+      "stopCount": 1006
     },
     {
       "id": "consortium-5",
@@ -1272,6 +1272,17 @@
       "municipalityId": "2",
       "nucleus": "Mijas",
       "nucleusId": "44",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2220",
+      "stopCode": "2220",
+      "name": "Algarrobo/Muebles García",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -11627,6 +11638,17 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "2210",
+      "stopCode": "2210",
+      "name": "Caleta de Vélez Hotel",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "1262",
       "stopCode": "1262",
       "name": "Caliza I",
@@ -15937,6 +15959,17 @@
       "nucleusId": "1",
       "consortiumId": 2,
       "chunkId": "consortium-2"
+    },
+    {
+      "stopId": "2208",
+      "stopCode": "2208",
+      "name": "Comisaría",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "757",
@@ -20359,6 +20392,17 @@
       "nucleusId": "152",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "2212",
+      "stopCode": "2212",
+      "name": "El Pilarillo",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "653",
@@ -27896,6 +27940,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "2218",
+      "stopCode": "2218",
+      "name": "Lagos",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "107",
       "stopCode": "107",
       "name": "Lance De La Virgen",
@@ -30787,6 +30842,28 @@
       "nucleusId": "176",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "2216",
+      "stopCode": "2216",
+      "name": "Mezquitilla Farmacia",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2214",
+      "stopCode": "2214",
+      "name": "Mezquitilla Iglesia",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "2029",
