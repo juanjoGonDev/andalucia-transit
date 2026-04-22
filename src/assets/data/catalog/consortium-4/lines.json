@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-21T05:46:35.031Z",
+    "generatedAt": "2026-04-22T05:46:20.780Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 89
+    "itemCount": 93
   },
   "lines": [
     {
@@ -117,6 +117,31 @@
       "operators": [
         "Avanza Movilidad Integral",
         "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "324",
+      "code": "M-369",
+      "name": "Almería-Torre del Mar-Málaga",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
       ],
       "hasNews": false,
       "concession": null,
@@ -1429,6 +1454,31 @@
       "inboundPath": []
     },
     {
+      "id": "322",
+      "code": "M-362D",
+      "name": "Málaga-Nerja",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "115",
       "code": "M-362",
       "name": "Málaga-Nerja (Por Torre Benagalbón)",
@@ -1678,6 +1728,31 @@
       "inboundPath": []
     },
     {
+      "id": "318",
+      "code": "M-368",
+      "name": "Málaga-Torre del Mar-Motril",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "1",
       "code": "M-110",
       "name": "Málaga-Torremolinos-Benalmádena Costa",
@@ -1909,6 +1984,31 @@
       "operators": [
         "Avanza Movilidad Integral",
         "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "323",
+      "code": "M-370",
+      "name": "Sevilla-Málaga-Torre del Mar-Almería",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
       ],
       "hasNews": false,
       "concession": null,
