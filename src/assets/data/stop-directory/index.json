@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-22T05:46:17.206Z",
+    "generatedAt": "2026-04-23T05:48:19.074Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -24486,6 +24486,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "2207",
+      "stopCode": "2207",
+      "name": "Hospital Comarcal Vélez Málaga",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Hospital Vélez Málaga",
+      "nucleusId": "222",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "202",
       "stopCode": "202",
       "name": "Hospital De Jerez-carretera A-2000",
@@ -30847,17 +30858,6 @@
       "stopId": "2216",
       "stopCode": "2216",
       "name": "Mezquitilla Farmacia",
-      "municipality": "Vélez Málaga",
-      "municipalityId": "23",
-      "nucleus": "Caleta de Vélez",
-      "nucleusId": "223",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
-      "stopId": "2214",
-      "stopCode": "2214",
-      "name": "Mezquitilla Iglesia",
       "municipality": "Vélez Málaga",
       "municipalityId": "23",
       "nucleus": "Caleta de Vélez",
