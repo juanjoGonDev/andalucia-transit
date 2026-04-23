@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-22T05:46:17.206Z",
+    "generatedAt": "2026-04-23T05:48:19.074Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -7405,6 +7405,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2207",
+      "stopCode": "2207",
+      "name": "Hospital Comarcal Vélez Málaga",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Hospital Vélez Málaga",
+      "nucleusId": "222",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7505634,
+        "longitude": -4.0879721
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "1284",
       "stopCode": "1284",
       "name": "Hospital Marítimo",
@@ -10416,21 +10431,6 @@
       "location": {
         "latitude": 36.7442211,
         "longitude": -4.0396109
-      }
-    },
-    {
-      "consortiumId": 4,
-      "stopId": "2214",
-      "stopCode": "2214",
-      "name": "Mezquitilla Iglesia",
-      "municipality": "Vélez Málaga",
-      "municipalityId": "23",
-      "nucleus": "Caleta de Vélez",
-      "nucleusId": "223",
-      "zone": "C",
-      "location": {
-        "latitude": 36.7451966,
-        "longitude": -4.0442361
       }
     },
     {
