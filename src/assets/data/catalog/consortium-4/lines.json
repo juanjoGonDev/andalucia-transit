@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-24T05:50:59.779Z",
+    "generatedAt": "2026-04-25T05:39:23.570Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 95
+    "itemCount": 96
   },
   "lines": [
     {
@@ -290,6 +290,31 @@
       "modeId": "4",
       "operators": [
         "Metro Málaga"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "281",
+      "code": "M-257",
+      "name": "Antequera-Málaga-Torre del Mar",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
       ],
       "hasNews": false,
       "concession": null,
@@ -1653,31 +1678,6 @@
       "inboundPath": []
     },
     {
-      "id": "281",
-      "code": "M-257",
-      "name": "Málaga-Sevilla por Antequera",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Nex Continental Holdings",
-        "S.L.U."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "163",
       "code": "M-344",
       "name": "Málaga-Tolox",
@@ -1781,6 +1781,56 @@
       "id": "318",
       "code": "M-368",
       "name": "Málaga-Torre del Mar-Motril",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "328",
+      "code": "M-364D",
+      "name": "Málaga-Torre del Mar-Vélez Málaga-Periana",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "329",
+      "code": "M-365D",
+      "name": "Málaga-Torre del Mar-Vélez Málaga-Riogordo",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -2034,31 +2084,6 @@
       "operators": [
         "Avanza Movilidad Integral",
         "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "323",
-      "code": "M-370",
-      "name": "Sevilla-Málaga-Torre del Mar-Almería",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Nex Continental Holdings",
-        "S.L.U."
       ],
       "hasNews": false,
       "concession": null,
