@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-28T06:04:21.577Z",
+    "generatedAt": "2026-04-29T06:02:53.779Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
     "consortiumName": "Área de Sevilla",
-    "itemCount": 129
+    "itemCount": 130
   },
   "nuclei": [
     {
@@ -211,6 +211,12 @@
       "municipalityId": "57",
       "zone": "X",
       "name": "EL GARROBO"
+    },
+    {
+      "id": "3295",
+      "municipalityId": "56",
+      "zone": "X",
+      "name": "El Palmar de Troya"
     },
     {
       "id": "3289",
