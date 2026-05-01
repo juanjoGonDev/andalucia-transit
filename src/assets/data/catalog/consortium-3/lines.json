@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-30T06:04:03.484Z",
+    "generatedAt": "2026-05-01T06:05:50.961Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "itemCount": 71
+    "itemCount": 72
   },
   "lines": [
     {
@@ -267,6 +267,31 @@
       "operators": [
         "NEX Continental Holdings",
         "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "1131",
+      "code": "0180D",
+      "name": "Granada - Cájar (Directo)",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "Empresa Liñan",
+        "S.A."
       ],
       "hasNews": false,
       "concession": null,
