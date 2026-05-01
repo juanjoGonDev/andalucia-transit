@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-04-30T06:04:03.484Z",
+    "generatedAt": "2026-05-01T06:05:50.961Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 94
+    "itemCount": 96
   },
   "lines": [
     {
@@ -1479,6 +1479,31 @@
       "inboundPath": []
     },
     {
+      "id": "322",
+      "code": "M-362D",
+      "name": "Málaga-Nerja (desde el 01 mayo 2026)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "110",
       "code": "M-162",
       "name": "Málaga-Olías",
@@ -1661,6 +1686,31 @@
       "operators": [
         "Avanza Movilidad Integral",
         "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "321",
+      "code": "M-260D",
+      "name": "Málaga-Torre Benagalbón-Torre del Mar-Vélez Málaga (desde el 01 mayo 2026)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
       ],
       "hasNews": false,
       "concession": null,
