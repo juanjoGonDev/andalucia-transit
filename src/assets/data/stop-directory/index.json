@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-04T06:04:53.018Z",
+    "generatedAt": "2026-05-05T05:56:23.372Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -20518,10 +20518,10 @@
       "stopId": "311",
       "stopCode": "311",
       "name": "EL PUNTO - ESTACION",
-      "municipality": "NIEBLA",
-      "municipalityId": "25",
-      "nucleus": "NIEBLA",
-      "nucleusId": "60",
+      "municipality": "LA PALMA DEL CONDADO",
+      "municipalityId": "24",
+      "nucleus": "LA PALMA DEL CDO",
+      "nucleusId": "59",
       "consortiumId": 9,
       "chunkId": "consortium-9"
     },
