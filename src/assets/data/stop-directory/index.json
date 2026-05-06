@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-05T05:56:23.372Z",
+    "generatedAt": "2026-05-06T06:03:42.070Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -1272,17 +1272,6 @@
       "municipalityId": "2",
       "nucleus": "Mijas",
       "nucleusId": "44",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
-      "stopId": "2220",
-      "stopCode": "2220",
-      "name": "Algarrobo/Muebles García",
-      "municipality": "Vélez Málaga",
-      "municipalityId": "23",
-      "nucleus": "Caleta de Vélez",
-      "nucleusId": "223",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -31436,6 +31425,17 @@
       "nucleusId": "3164",
       "consortiumId": 1,
       "chunkId": "consortium-1"
+    },
+    {
+      "stopId": "2220",
+      "stopCode": "2220",
+      "name": "Muebles García",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "554",
