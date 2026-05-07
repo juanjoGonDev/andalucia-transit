@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-06T06:03:45.266Z",
+    "generatedAt": "2026-05-07T06:04:58.974Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
@@ -213,10 +213,10 @@
       "name": "EL GARROBO"
     },
     {
-      "id": "3295",
-      "municipalityId": "56",
+      "id": "3296",
+      "municipalityId": "68",
       "zone": "X",
-      "name": "El Palmar de Troya"
+      "name": "EL PALMAR DE TROYA"
     },
     {
       "id": "3289",
