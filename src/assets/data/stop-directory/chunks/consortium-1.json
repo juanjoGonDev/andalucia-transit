@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-12T06:05:41.022Z",
+    "generatedAt": "2026-05-13T06:10:48.247Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
@@ -3319,8 +3319,8 @@
       "nucleusId": "3202",
       "zone": "E",
       "location": {
-        "latitude": 37.303583333333,
-        "longitude": -6.311583333333
+        "latitude": 37.30516761149746,
+        "longitude": -6.312067049955733
       }
     },
     {
@@ -3334,8 +3334,8 @@
       "nucleusId": "3202",
       "zone": "E",
       "location": {
-        "latitude": 37.303925,
-        "longitude": -6.311575
+        "latitude": 37.30514625382021,
+        "longitude": -6.311954464650415
       }
     },
     {
@@ -5757,7 +5757,7 @@
       "consortiumId": 1,
       "stopId": "2850",
       "stopCode": "2850",
-      "name": "C PARROCO VICENTE MORA LA FABRICA(I)",
+      "name": "C PARROCO VICENTE MOYA LA FABRICA(I)",
       "municipality": "PILAS",
       "municipalityId": "34",
       "nucleus": "PILAS",
@@ -5772,7 +5772,7 @@
       "consortiumId": 1,
       "stopId": "2849",
       "stopCode": "2849",
-      "name": "C PARROCO VICENTE MORA LA FABRICA(V)",
+      "name": "C PARROCO VICENTE MOYA LA FABRICA(V)",
       "municipality": "PILAS",
       "municipalityId": "34",
       "nucleus": "PILAS",
