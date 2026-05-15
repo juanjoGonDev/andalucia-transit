@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-14T06:10:01.130Z",
+    "generatedAt": "2026-05-15T06:16:13.800Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 219
+    "itemCount": 218
   },
   "nuclei": [
     {
@@ -679,12 +679,6 @@
       "municipalityId": "23",
       "zone": "C",
       "name": "Lagos"
-    },
-    {
-      "id": "33",
-      "municipalityId": "1",
-      "zone": "A",
-      "name": "Las Castañetas"
     },
     {
       "id": "46",
