@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-15T06:16:09.741Z",
+    "generatedAt": "2026-05-16T06:02:15.247Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4044
+    "totalStops": 4045
   },
   "chunks": [
     {
@@ -81,7 +81,7 @@
       "id": "consortium-5",
       "consortiumId": 5,
       "path": "chunks/consortium-5.json",
-      "stopCount": 74
+      "stopCount": 75
     },
     {
       "id": "consortium-6",
@@ -28664,6 +28664,17 @@
       "nucleusId": "47",
       "consortiumId": 4,
       "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "160",
+      "stopCode": "160",
+      "name": "Las Presas sentido Los Barrios",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Los Barrios",
+      "nucleusId": "5",
+      "consortiumId": 5,
+      "chunkId": "consortium-5"
     },
     {
       "stopId": "269",
