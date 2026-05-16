@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-15T06:16:09.741Z",
+    "generatedAt": "2026-05-16T06:02:15.247Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 5,
     "consortiumName": "Campo de Gibraltar",
-    "stopCount": 74
+    "stopCount": 75
   },
   "stops": [
     {
@@ -636,6 +636,21 @@
       "location": {
         "latitude": 36.082487243392414,
         "longitude": -5.503666251897812
+      }
+    },
+    {
+      "consortiumId": 5,
+      "stopId": "160",
+      "stopCode": "160",
+      "name": "Las Presas sentido Los Barrios",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Los Barrios",
+      "nucleusId": "5",
+      "zone": "A",
+      "location": {
+        "latitude": 36.17802278219906,
+        "longitude": -5.475327854207065
       }
     },
     {
