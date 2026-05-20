@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-19T06:27:01.287Z",
+    "generatedAt": "2026-05-20T06:26:34.335Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 218
+    "itemCount": 217
   },
   "nuclei": [
     {
@@ -109,12 +109,6 @@
       "municipalityId": "1",
       "zone": "A",
       "name": "Asociación Los Verdiales"
-    },
-    {
-      "id": "30",
-      "municipalityId": "1",
-      "zone": "A",
-      "name": "Asperones"
     },
     {
       "id": "92",
