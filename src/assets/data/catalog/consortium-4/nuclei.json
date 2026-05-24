@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-22T06:25:49.898Z",
+    "generatedAt": "2026-05-24T06:19:49.676Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 193
+    "itemCount": 192
   },
   "nuclei": [
     {
@@ -81,7 +81,7 @@
       "name": "Ampliación de Teatinos"
     },
     {
-      "id": "202",
+      "id": "186",
       "municipalityId": "20",
       "zone": "E",
       "name": "Antequera"
@@ -451,12 +451,6 @@
       "municipalityId": "15",
       "zone": "D",
       "name": "Est. FFCC Álora"
-    },
-    {
-      "id": "186",
-      "municipalityId": "20",
-      "zone": "E",
-      "name": "Estación Autobuses Antequera"
     },
     {
       "id": "127",

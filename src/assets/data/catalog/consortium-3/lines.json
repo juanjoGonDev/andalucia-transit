@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-22T06:25:49.898Z",
+    "generatedAt": "2026-05-24T06:19:49.676Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -1567,7 +1567,7 @@
         "Alsa Granada Airport",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
