@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-25T06:34:09.219Z",
+    "generatedAt": "2026-05-26T06:26:16.042Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 96
+    "itemCount": 95
   },
   "lines": [
     {
@@ -17,31 +17,6 @@
       "operators": [
         "Nex Continental Holdings",
         "S.L.U."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "93",
-      "code": "M-143",
-      "name": "Alh. de La Torre-Churriana-Teatinos",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Autocares Vázquez Olmedo",
-        "S.L."
       ],
       "hasNews": false,
       "concession": null,
