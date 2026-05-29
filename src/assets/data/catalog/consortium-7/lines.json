@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-28T06:28:20.888Z",
+    "generatedAt": "2026-05-29T06:28:57.171Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 7,
     "consortiumName": "Área de Jaén",
-    "itemCount": 41
+    "itemCount": 43
   },
   "lines": [
     {
@@ -43,7 +43,7 @@
         "Autocares Marcos Muñoz",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -68,7 +68,7 @@
         "Autocares Marcos Muñoz",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -93,7 +93,32 @@
         "Autocares Marcos Muñoz",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "73",
+      "code": "M16-3",
+      "name": "Bailén - Jaén",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Samar",
+        "S.A."
+      ],
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -342,7 +367,7 @@
         "Autocares Marcos Muñoz",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -715,7 +740,7 @@
         "Autocares Montijano",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -789,7 +814,7 @@
         "Autocares Marcos Muñoz",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -813,6 +838,31 @@
       "operators": [
         "Transportes Muñoz Amezcua",
         "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "72",
+      "code": "M16-2",
+      "name": "La Carolina - Jaén",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Samar",
+        "S.A."
       ],
       "hasNews": false,
       "concession": null,

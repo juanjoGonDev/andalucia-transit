@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-28T06:28:20.888Z",
+    "generatedAt": "2026-05-29T06:28:57.171Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 95
+    "itemCount": 92
   },
   "lines": [
     {
@@ -1928,31 +1928,6 @@
       "inboundPath": []
     },
     {
-      "id": "5",
-      "code": "M-114",
-      "name": "Mijas-Teatinos (del 15/09/25 al 29/05/26)",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Avanza Movilidad Integral",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "186",
       "code": "METRO2",
       "name": "Palacio De Los Deportes-Guadalmedina",
@@ -2054,31 +2029,6 @@
       "id": "296",
       "code": "M-262",
       "name": "Rincón de la Victoria-Benagalbón-Moclinejo-El Valdés (Av)",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Avanza Movilidad Integral",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "7",
-      "code": "M-116",
-      "name": "Teatinos-Torremolinos-Benalmádena",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -2204,31 +2154,6 @@
       "id": "282",
       "code": "M-258",
       "name": "Ubeda-Málaga por Antequera",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Nex Continental Holdings",
-        "S.L.U."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "137",
-      "code": "M-166",
-      "name": "Universidad-Clínico-Rincón de la Victoria",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
