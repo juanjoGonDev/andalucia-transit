@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-02T06:34:41.291Z",
+    "generatedAt": "2026-06-03T06:38:17.784Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "stopCount": 1006
+    "stopCount": 1012
   },
   "stops": [
     {
@@ -561,6 +561,21 @@
       "location": {
         "latitude": 36.718791,
         "longitude": -4.494391
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2227",
+      "stopCode": "2227",
+      "name": "Antequera Centro",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "zone": "E",
+      "location": {
+        "latitude": 37.01844444444444,
+        "longitude": -4.557888888888889
       }
     },
     {
@@ -3445,6 +3460,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2224",
+      "stopCode": "2224",
+      "name": "Centro Comercial La Verónica",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "zone": "E",
+      "location": {
+        "latitude": 37.0255,
+        "longitude": -4.573416666666667
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "657",
       "stopCode": "657",
       "name": "Centro Cultural Pablo Ruiz Picasso",
@@ -6295,6 +6325,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2226",
+      "stopCode": "2226",
+      "name": "Estación Tren Antequera",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "zone": "E",
+      "location": {
+        "latitude": 37.028083333333335,
+        "longitude": -4.5609166666666665
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "1613",
       "stopCode": "1613",
       "name": "Estación Tren Cártama",
@@ -7810,6 +7855,36 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2228",
+      "stopCode": "2228",
+      "name": "IES Pedro Espinosa",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "zone": "E",
+      "location": {
+        "latitude": 37.01891666666666,
+        "longitude": -4.555805555555556
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2229",
+      "stopCode": "2229",
+      "name": "IES Pintor Jose Mª Fernández",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "zone": "E",
+      "location": {
+        "latitude": 37.02327777777778,
+        "longitude": -4.547166666666667
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "881",
       "stopCode": "881",
       "name": "Iglesia",
@@ -8931,6 +9006,21 @@
       "location": {
         "latitude": 36.755633333333336,
         "longitude": -4.530475
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2225",
+      "stopCode": "2225",
+      "name": "La Vilecha",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "zone": "E",
+      "location": {
+        "latitude": 37.03861111111111,
+        "longitude": -4.56025
       }
     },
     {

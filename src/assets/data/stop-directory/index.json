@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-02T06:34:41.291Z",
+    "generatedAt": "2026-06-03T06:38:17.784Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4045
+    "totalStops": 4051
   },
   "chunks": [
     {
@@ -75,7 +75,7 @@
       "id": "consortium-4",
       "consortiumId": 4,
       "path": "chunks/consortium-4.json",
-      "stopCount": 1006
+      "stopCount": 1012
     },
     {
       "id": "consortium-5",
@@ -2088,6 +2088,17 @@
       "nucleusId": "241",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "2227",
+      "stopCode": "2227",
+      "name": "Antequera Centro",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "272",
@@ -14036,6 +14047,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "2224",
+      "stopCode": "2224",
+      "name": "Centro Comercial La Verónica",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "2971",
       "stopCode": "2971",
       "name": "CENTRO COMERCIAL LOS ARCOS LOS PAJARITOS",
@@ -21945,6 +21967,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "2226",
+      "stopCode": "2226",
+      "name": "Estación Tren Antequera",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "1613",
       "stopCode": "1613",
       "name": "Estación Tren Cártama",
@@ -25729,6 +25762,28 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "2228",
+      "stopCode": "2228",
+      "name": "IES Pedro Espinosa",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2229",
+      "stopCode": "2229",
+      "name": "IES Pintor Jose Mª Fernández",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "154",
       "stopCode": "154",
       "name": "IES Portocarrero",
@@ -27861,6 +27916,17 @@
       "nucleusId": "229",
       "consortiumId": 8,
       "chunkId": "consortium-8"
+    },
+    {
+      "stopId": "2225",
+      "stopCode": "2225",
+      "name": "La Vilecha",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "538",

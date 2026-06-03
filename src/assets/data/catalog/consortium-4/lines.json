@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-02T06:34:44.455Z",
+    "generatedAt": "2026-06-03T06:38:21.113Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 92
+    "itemCount": 93
   },
   "lines": [
     {
@@ -863,6 +863,31 @@
       "modeId": "1",
       "operators": [
         "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "288",
+      "code": "M-269",
+      "name": "Las Pedrizas-Antequera",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Automóviles Mérida",
         "S.L."
       ],
       "hasNews": false,
