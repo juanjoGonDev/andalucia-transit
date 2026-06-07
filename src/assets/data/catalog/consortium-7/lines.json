@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-06T06:14:24.042Z",
+    "generatedAt": "2026-06-07T06:32:19.813Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 7,
     "consortiumName": "Área de Jaén",
-    "itemCount": 49
+    "itemCount": 45
   },
   "lines": [
     {
@@ -657,56 +657,6 @@
       "inboundPath": []
     },
     {
-      "id": "49",
-      "code": "M11-2",
-      "name": "Jaén - Pegalajar (N-323-a)",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Autocares Montijano",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "44",
-      "code": "M10-1",
-      "name": "Jaén - Sotogordo Por Vados De Torralba",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Autocares Montijano",
-        "S.L."
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "326",
       "code": "M10-01",
       "name": "Jaén - Sotogordo Por Vados De Torralba(2026)",
@@ -831,31 +781,6 @@
       "inboundPath": []
     },
     {
-      "id": "45",
-      "code": "M10-2",
-      "name": "Jaén - Villargordo",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Autocares Montijano",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "327",
       "code": "M10-02",
       "name": "Jaén - Villargordo (2026)",
@@ -888,31 +813,6 @@
       "modeId": "1",
       "operators": [
         "Nex Continental Holdings S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "176",
-      "code": "M10-6",
-      "name": "Jaén -Torreblascopedro Por Vados de Torralba",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Autocares Montijano",
-        "S.L."
       ],
       "hasNews": false,
       "concession": null,
