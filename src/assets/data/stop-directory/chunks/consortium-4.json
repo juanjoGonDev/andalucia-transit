@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-08T06:34:35.849Z",
+    "generatedAt": "2026-06-09T06:26:26.093Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -7622,7 +7622,7 @@
       "municipalityId": "20",
       "nucleus": "Las Pedrizas",
       "nucleusId": "193",
-      "zone": "E",
+      "zone": "D",
       "location": {
         "latitude": 36.96188333333333,
         "longitude": -4.448580555555556
