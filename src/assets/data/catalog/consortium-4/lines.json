@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-08T06:34:40.199Z",
+    "generatedAt": "2026-06-09T06:26:30.021Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -757,7 +757,7 @@
     },
     {
       "id": "279",
-      "code": "M-153B",
+      "code": "M-153",
       "name": "Hospital-Cártama-Maqueda",
       "mode": "Autobús",
       "modeId": "1",
@@ -782,7 +782,7 @@
     },
     {
       "id": "314",
-      "code": "M-165B",
+      "code": "M-165",
       "name": "La Cala del Moral-El Palo",
       "mode": "Autobús",
       "modeId": "1",
@@ -1405,7 +1405,7 @@
     },
     {
       "id": "308",
-      "code": "M-152B",
+      "code": "M-152",
       "name": "Málaga-Los Gámez",
       "mode": "Autobús",
       "modeId": "1",
