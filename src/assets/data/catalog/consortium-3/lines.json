@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-11T06:36:03.835Z",
+    "generatedAt": "2026-06-12T06:35:07.633Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -291,7 +291,7 @@
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
-        "S.A."
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -590,7 +590,7 @@
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
-        "S.A."
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -615,7 +615,7 @@
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
-        "S.A."
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -640,7 +640,7 @@
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
-        "S.A."
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -665,7 +665,7 @@
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
-        "S.A."
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -1240,7 +1240,7 @@
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
-        "S.A."
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -1640,7 +1640,7 @@
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
-        "S.A."
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
