@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-12T06:35:03.374Z",
+    "generatedAt": "2026-06-13T06:29:17.726Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "stopCount": 839
+    "stopCount": 840
   },
   "stops": [
     {
@@ -11166,6 +11166,21 @@
       "location": {
         "latitude": 37.1914205184145,
         "longitude": -3.608377128839493
+      }
+    },
+    {
+      "consortiumId": 3,
+      "stopId": "16108",
+      "stopCode": "16108",
+      "name": "Ribera del Beiro Mondragones",
+      "municipality": "Granada",
+      "municipalityId": "18087",
+      "nucleus": "Granada",
+      "nucleusId": "202",
+      "zone": "A",
+      "location": {
+        "latitude": 37.189310013615085,
+        "longitude": -3.6112476496822508
       }
     },
     {

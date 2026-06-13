@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-12T06:35:03.374Z",
+    "generatedAt": "2026-06-13T06:29:17.726Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4051
+    "totalStops": 4052
   },
   "chunks": [
     {
@@ -69,7 +69,7 @@
       "id": "consortium-3",
       "consortiumId": 3,
       "path": "chunks/consortium-3.json",
-      "stopCount": 839
+      "stopCount": 840
     },
     {
       "id": "consortium-4",
@@ -37854,6 +37854,17 @@
       "stopId": "15635",
       "stopCode": "15635",
       "name": "Ribera del Beiro 2",
+      "municipality": "Granada",
+      "municipalityId": "18087",
+      "nucleus": "Granada",
+      "nucleusId": "202",
+      "consortiumId": 3,
+      "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "16108",
+      "stopCode": "16108",
+      "name": "Ribera del Beiro Mondragones",
       "municipality": "Granada",
       "municipalityId": "18087",
       "nucleus": "Granada",
