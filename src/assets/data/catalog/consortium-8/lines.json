@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-15T06:50:40.695Z",
+    "generatedAt": "2026-06-16T06:50:52.830Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 8,
     "consortiumName": "Área de Córdoba",
-    "itemCount": 11
+    "itemCount": 12
   },
   "lines": [
     {
@@ -38,9 +38,7 @@
       "name": "Córdoba - Cordobesas",
       "mode": "Bus",
       "modeId": "1",
-      "operators": [
-        "Hermanos Alcaide Pérez"
-      ],
+      "operators": [],
       "hasNews": true,
       "concession": null,
       "notes": null,
@@ -252,6 +250,30 @@
       "id": "8",
       "code": "M-110",
       "name": "Córdoba - Villaviciosa De Córdoba",
+      "mode": "Bus",
+      "modeId": "1",
+      "operators": [
+        "Autotransportes San Sebastián"
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "62",
+      "code": "M-221A",
+      "name": "Especial Aquasierra",
       "mode": "Bus",
       "modeId": "1",
       "operators": [

@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-15T06:50:36.340Z",
+    "generatedAt": "2026-06-16T06:50:49.154Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
@@ -11335,24 +11335,9 @@
     },
     {
       "consortiumId": 1,
-      "stopId": "2379",
-      "stopCode": "2379",
-      "name": "MUEBLES CASTELLANO (I)",
-      "municipality": "CASTILLEJA DE LA CUESTA",
-      "municipalityId": "18",
-      "nucleus": "CASTILLEJA DE LA CUESTA",
-      "nucleusId": "3164",
-      "zone": "B",
-      "location": {
-        "latitude": 37.38474024001079,
-        "longitude": -6.0635114337840745
-      }
-    },
-    {
-      "consortiumId": 1,
       "stopId": "2378",
       "stopCode": "2378",
-      "name": "MUEBLES CASTELLANO (V)",
+      "name": "MUEBLES CASTELLANO (I)",
       "municipality": "CASTILLEJA DE LA CUESTA",
       "municipalityId": "18",
       "nucleus": "CASTILLEJA DE LA CUESTA",
@@ -11361,6 +11346,21 @@
       "location": {
         "latitude": 37.38453468428843,
         "longitude": -6.062248097228208
+      }
+    },
+    {
+      "consortiumId": 1,
+      "stopId": "2379",
+      "stopCode": "2379",
+      "name": "MUEBLES CASTELLANO (V)",
+      "municipality": "CASTILLEJA DE LA CUESTA",
+      "municipalityId": "18",
+      "nucleus": "CASTILLEJA DE LA CUESTA",
+      "nucleusId": "3164",
+      "zone": "B",
+      "location": {
+        "latitude": 37.38474024001079,
+        "longitude": -6.0635114337840745
       }
     },
     {
@@ -15430,24 +15430,9 @@
     },
     {
       "consortiumId": 1,
-      "stopId": "2563",
-      "stopCode": "2563",
-      "name": "URB EL RETIRO",
-      "municipality": "ESPARTINAS",
-      "municipalityId": "23",
-      "nucleus": "EL RETIRO (Espatinas)",
-      "nucleusId": "3177",
-      "zone": "C",
-      "location": {
-        "latitude": 37.384572041613026,
-        "longitude": -6.107282638549805
-      }
-    },
-    {
-      "consortiumId": 1,
       "stopId": "2562",
       "stopCode": "2562",
-      "name": "URB EL RETIRO (V)",
+      "name": "URB EL RETIRO (I)",
       "municipality": "ESPARTINAS",
       "municipalityId": "23",
       "nucleus": "EL RETIRO (Espatinas)",
@@ -15456,6 +15441,21 @@
       "location": {
         "latitude": 37.38438982168426,
         "longitude": -6.107116341590881
+      }
+    },
+    {
+      "consortiumId": 1,
+      "stopId": "2563",
+      "stopCode": "2563",
+      "name": "URB EL RETIRO (V)",
+      "municipality": "ESPARTINAS",
+      "municipalityId": "23",
+      "nucleus": "EL RETIRO (Espatinas)",
+      "nucleusId": "3177",
+      "zone": "C",
+      "location": {
+        "latitude": 37.384572041613026,
+        "longitude": -6.107282638549805
       }
     },
     {
