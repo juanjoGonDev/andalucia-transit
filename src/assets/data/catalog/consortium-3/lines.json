@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-16T06:50:52.830Z",
+    "generatedAt": "2026-06-17T06:45:52.005Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "itemCount": 71
+    "itemCount": 72
   },
   "lines": [
     {
@@ -1210,6 +1210,31 @@
     {
       "id": "1099",
       "code": "0110",
+      "name": "Granada - Peligros -Caserío Fonseca - Monteluz",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "NEX Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "971",
+      "code": "0110-V",
       "name": "Granada - Peligros -Caserío Fonseca - Monteluz",
       "mode": "AUTOBUS",
       "modeId": "1",
