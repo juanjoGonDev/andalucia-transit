@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-17T06:45:52.005Z",
+    "generatedAt": "2026-06-18T06:37:29.425Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
     "consortiumName": "Bahía de Cádiz",
-    "itemCount": 66
+    "itemCount": 68
   },
   "lines": [
     {
@@ -1238,6 +1238,30 @@
       "inboundPath": []
     },
     {
+      "id": "173",
+      "code": "M-562",
+      "name": "Costa Ballena-Chipiona-Jerez De La Frontera",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "Empresa Monforte S.A.U."
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "231",
       "code": "M-974",
       "name": "Costa Ballena-Chipiona-Sanlúcar De Barrameda (Sevilla)",
@@ -1265,6 +1289,30 @@
       "id": "172",
       "code": "M-561",
       "name": "Costa Ballena-Chipiona-Sanlúcar-Jerez",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "Empresa Monforte S.A.U."
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "211",
+      "code": "M-564",
+      "name": "Costa Ballena-Jerez De La Frontera (Directo)",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
