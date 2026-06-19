@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-18T06:37:29.425Z",
+    "generatedAt": "2026-06-19T06:48:03.635Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
     "consortiumName": "Bahía de Cádiz",
-    "itemCount": 68
+    "itemCount": 63
   },
   "lines": [
     {
@@ -112,30 +112,6 @@
       "modeId": "1",
       "operators": [
         "UTE VJA-089 (DAMAS)"
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "240",
-      "code": "M-037",
-      "name": "Cádiz-Campus De Puerto Real (Por CA-35)",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes S.A."
       ],
       "hasNews": true,
       "concession": null,
@@ -513,30 +489,6 @@
       "inboundPath": []
     },
     {
-      "id": "220",
-      "code": "M-035",
-      "name": "Cádiz-Escuela De Ingeniería",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes S.A."
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "12",
       "code": "M-034",
       "name": "Cádiz-Hospital De Puerto Real (Por Autovía)",
@@ -708,30 +660,6 @@
       "id": "11",
       "code": "M-033",
       "name": "Cádiz-Puerto Real (Directo)",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes S.A."
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "267",
-      "code": "M-038",
-      "name": "Cádiz-Puerto Real (por Av. Constitución de 1812 y CA-35)",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
@@ -1334,30 +1262,6 @@
       "inboundPath": []
     },
     {
-      "id": "27",
-      "code": "M-350",
-      "name": "Jerez De La Frontera-Campus Universitario De Puerto Real",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes S.A."
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "48",
       "code": "M-947",
       "name": "Medina-Chiclana De La Frontera",
@@ -1529,30 +1433,6 @@
       "id": "39",
       "code": "M-905",
       "name": "Rota-Jerez De La Frontera (Sevilla)",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes S.A."
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "23",
-      "code": "M-130",
-      "name": "San Fernando-Campus Universitario",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
