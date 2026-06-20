@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-19T06:48:03.635Z",
+    "generatedAt": "2026-06-20T06:35:13.057Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
     "consortiumName": "Bahía de Cádiz",
-    "itemCount": 63
+    "itemCount": 64
   },
   "lines": [
     {
@@ -112,6 +112,30 @@
       "modeId": "1",
       "operators": [
         "UTE VJA-089 (DAMAS)"
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "240",
+      "code": "M-037",
+      "name": "Cádiz-Campus De Puerto Real (Por CA-35)",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "Transportes Generales Comes S.A."
       ],
       "hasNews": true,
       "concession": null,
