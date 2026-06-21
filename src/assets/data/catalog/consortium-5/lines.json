@@ -1,61 +1,13 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-20T06:35:13.057Z",
+    "generatedAt": "2026-06-21T06:37:25.360Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 5,
     "consortiumName": "Campo de Gibraltar",
-    "itemCount": 13
+    "itemCount": 5
   },
   "lines": [
-    {
-      "id": "4",
-      "code": "M-120",
-      "name": "Algeciras-La Línea",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes"
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "7",
-      "code": "M-150",
-      "name": "Algeciras-Tarifa",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes"
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
     {
       "id": "12",
       "code": "M-240",
@@ -90,54 +42,6 @@
       "operators": [
         "AVANZA Movilidad Urbana",
         "S.L.",
-        "Transportes Generales Comes"
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "27",
-      "code": "M-260",
-      "name": "La Línea-Tahivilla",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes"
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "14",
-      "code": "M-271",
-      "name": "La Línea-Tesorillo",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
         "Transportes Generales Comes"
       ],
       "hasNews": true,
@@ -206,78 +110,6 @@
       "inboundPath": []
     },
     {
-      "id": "5",
-      "code": "M-121",
-      "name": "Los Barrios-La Línea",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes"
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "10",
-      "code": "M-170",
-      "name": "San Pablo-Jimena-Castellar-Algeciras",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes"
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "28",
-      "code": "M-272",
-      "name": "San Pablo-Jimena-Castellar-Hospital-La Línea",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes"
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "6",
       "code": "M-130",
       "name": "San Roque-Algeciras",
@@ -286,30 +118,6 @@
       "operators": [
         "Empresa Esteban",
         "S.A."
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "8",
-      "code": "M-160",
-      "name": "Tahivilla-Facinas-Tarifa-Algeciras",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes"
       ],
       "hasNews": true,
       "concession": null,
