@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-26T06:27:01.757Z",
+    "generatedAt": "2026-06-27T06:14:31.513Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 9,
     "consortiumName": "Costa de Huelva",
-    "itemCount": 40
+    "itemCount": 53
   },
   "lines": [
     {
@@ -84,6 +84,78 @@
       "id": "6",
       "code": "M-312",
       "name": "Ayamonte-Punta Del Moral (Circular)",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "81",
+      "code": "M-414B",
+      "name": "Beas - Mazagon",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "58",
+      "code": "M-415",
+      "name": "Bonares-Mazagon",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "37",
+      "code": "M-311",
+      "name": "Cartaya-Punta Umbria",
       "mode": "AUTOBUS",
       "modeId": "2",
       "operators": [
@@ -201,6 +273,30 @@
       "inboundPath": []
     },
     {
+      "id": "44",
+      "code": "M-401",
+      "name": "Huelva-Base Del Espigon Juan Carlos I",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "32",
       "code": "M-300",
       "name": "Huelva-Bellavista-Aljaraque",
@@ -276,6 +372,30 @@
       "id": "50",
       "code": "M-407",
       "name": "Huelva-Bonares-Almonte-Bollullos Par Del Condado",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "13",
+      "code": "M-303",
+      "name": "Huelva-Corrales-Ayamonte",
       "mode": "AUTOBUS",
       "modeId": "2",
       "operators": [
@@ -513,6 +633,54 @@
       "inboundPath": []
     },
     {
+      "id": "53",
+      "code": "M-410",
+      "name": "Huelva-Mazagon-Torre Higuera-Almonte",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "56",
+      "code": "M-413",
+      "name": "Huelva-Moguer-Mazagon",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "24",
       "code": "M-205",
       "name": "Huelva-Nerva",
@@ -564,6 +732,30 @@
       "id": "46",
       "code": "M-403",
       "name": "Huelva-Palos de la Frontera-Moguer",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "52",
+      "code": "M-409",
+      "name": "Huelva-Palos De La Frontera-Torre Higuera",
       "mode": "AUTOBUS",
       "modeId": "2",
       "operators": [
@@ -897,6 +1089,78 @@
       "inboundPath": []
     },
     {
+      "id": "38",
+      "code": "M-313",
+      "name": "Lepe-La Antilla",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "60",
+      "code": "M-417",
+      "name": "Paterna-Torre Higuera",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "57",
+      "code": "M-414",
+      "name": "San Juan Del Puerto-Moguer-Palos-Mazagon",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "70",
       "code": "M-906",
       "name": "Sevilla-Hinojos-Almonte-Bollullos-Rociana",
@@ -924,6 +1188,54 @@
       "id": "75",
       "code": "M-911",
       "name": "Sevilla-Hinojos-Almonte-Caño Guerrero",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "69",
+      "code": "M-905",
+      "name": "Sevilla-Huelva-La Antilla-Isla Cristina",
+      "mode": "AUTOBUS",
+      "modeId": "2",
+      "operators": [
+        "DAMAS SA"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "74",
+      "code": "M-910",
+      "name": "Sevilla-Mazagon",
       "mode": "AUTOBUS",
       "modeId": "2",
       "operators": [

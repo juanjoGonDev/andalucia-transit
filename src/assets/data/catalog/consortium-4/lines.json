@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-26T06:27:01.757Z",
+    "generatedAt": "2026-06-27T06:14:31.513Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -1506,7 +1506,7 @@
     {
       "id": "322",
       "code": "M-362",
-      "name": "Málaga-Nerja",
+      "name": "Málaga-Nerja (No se permite el viaje entre Vélez-Málaga y Torre del Mar en ambos sentidos)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -1730,7 +1730,7 @@
     {
       "id": "321",
       "code": "M-260",
-      "name": "Málaga-Torre Benagalbón-Torre del Mar-Vélez Málaga",
+      "name": "Málaga-Torre Benagalbón-Torre del Mar-Vélez Málaga (prohibido entre Vélez-Málaga y Torre del M\u0000\u0000a",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
