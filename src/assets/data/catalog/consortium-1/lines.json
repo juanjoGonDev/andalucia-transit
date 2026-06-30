@@ -1,42 +1,17 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-29T06:35:53.512Z",
+    "generatedAt": "2026-06-30T06:29:23.521Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
     "consortiumName": "Área de Sevilla",
-    "itemCount": 123
+    "itemCount": 117
   },
   "lines": [
     {
       "id": "259",
       "code": "1011",
       "name": "M-101A Circular Bormujos - Castilleja - Tomares - S Juan A - Mairena (sent A)",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "DAMAS S.A",
-        "TRANVIAS DE SEVILLA S.A"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "298",
-      "code": "1013",
-      "name": "M-101B Circular Bormujos - Mairena - S Juan A - Tomares - Castilleja (sent B)",
       "mode": "Bus",
       "modeId": "1",
       "operators": [
@@ -445,30 +420,6 @@
       "inboundPath": []
     },
     {
-      "id": "209",
-      "code": "1121",
-      "name": "M-112 La Rinconada - Sevilla (Directo)",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "CASAL S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "208",
       "code": "1120",
       "name": "M-112 San José de la Rinconada-  Sevilla (por La Rinconada)",
@@ -613,30 +564,6 @@
       "inboundPath": []
     },
     {
-      "id": "468",
-      "code": "1213",
-      "name": "M-121  Alcalá de Guadaíra - Sevilla (nocturno-sábados)",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "CASAL S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "438",
       "code": "1211",
       "name": "M-121  Alcalá de Guadaíra - Sevilla (parada en Goya y Hda Dolores)",
@@ -757,30 +684,6 @@
       "inboundPath": []
     },
     {
-      "id": "501",
-      "code": "1231",
-      "name": "M-123B Alcalá de Guadaíra - Univ Pablo de Olavide (UPO)",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "CASAL S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "221",
       "code": "1241",
       "name": "M-124 Carmona - El Viso del Alcor - Sevilla",
@@ -880,30 +783,6 @@
       "id": "498",
       "code": "1245",
       "name": "M-124 El Corzo, La Celada (Carmona) - Sevilla (servicio a demanda)",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "CASAL S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "222",
-      "code": "1242",
-      "name": "M-124 Sevilla - Carmona -  La Campana (directo, Est Prado)",
       "mode": "Bus",
       "modeId": "1",
       "operators": [
@@ -1744,30 +1623,6 @@
       "id": "420",
       "code": "1581",
       "name": "M-158 Bollullos de la Mitación - Sevilla (por El Barrero, Bormujos)",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "DAMAS S.A"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "276",
-      "code": "1591",
-      "name": "M-159 Bollullos de la Mitación - Sevilla (por A-49)",
       "mode": "Bus",
       "modeId": "1",
       "operators": [
