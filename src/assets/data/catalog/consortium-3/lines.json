@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-29T06:35:53.512Z",
+    "generatedAt": "2026-06-30T06:29:23.521Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "itemCount": 72
+    "itemCount": 70
   },
   "lines": [
     {
@@ -412,31 +412,6 @@
       "id": "1114",
       "code": "0153",
       "name": "Granada - Churriana V. - Híjar (Directo)",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "NEX Continental Holdings",
-        "S.L.U."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "1123",
-      "code": "0256C",
-      "name": "Granada - CITAI",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
@@ -1186,31 +1161,6 @@
       "id": "1049",
       "code": "0361",
       "name": "Granada - Padul - Marchena - Dúrcal - Nigüelas",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "NEX Continental Holdings",
-        "S.L.U."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "1099",
-      "code": "0110",
-      "name": "Granada - Peligros -Caserío Fonseca - Monteluz",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [

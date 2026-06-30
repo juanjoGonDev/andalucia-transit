@@ -1,41 +1,17 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-29T06:35:53.512Z",
+    "generatedAt": "2026-06-30T06:29:23.521Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 9,
     "consortiumName": "Costa de Huelva",
-    "itemCount": 53
+    "itemCount": 46
   },
   "lines": [
     {
       "id": "59",
       "code": "M-416",
       "name": "Almonte-Torre Higuera",
-      "mode": "AUTOBUS",
-      "modeId": "2",
-      "operators": [
-        "DAMAS SA"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "9",
-      "code": "M-318",
-      "name": "Ayamonte-El Almendro",
       "mode": "AUTOBUS",
       "modeId": "2",
       "operators": [
@@ -225,30 +201,6 @@
       "inboundPath": []
     },
     {
-      "id": "28",
-      "code": "M-209",
-      "name": "Huelva-Aracena-Hinojales-Cumbres Mayores",
-      "mode": "AUTOBUS",
-      "modeId": "2",
-      "operators": [
-        "DAMAS SA"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "8",
       "code": "M-316",
       "name": "Huelva-Ayamonte-San Silvestre De Guzman",
@@ -417,30 +369,6 @@
       "inboundPath": []
     },
     {
-      "id": "3",
-      "code": "M-306",
-      "name": "Huelva-Corrales-La Redondela-Isla Cristina",
-      "mode": "AUTOBUS",
-      "modeId": "2",
-      "operators": [
-        "DAMAS SA"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "26",
       "code": "M-207",
       "name": "Huelva-Cortegana-Aroche",
@@ -540,30 +468,6 @@
       "id": "5",
       "code": "M-310",
       "name": "Huelva-Isla Cristina-Ayamonte",
-      "mode": "AUTOBUS",
-      "modeId": "2",
-      "operators": [
-        "DAMAS SA"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "17",
-      "code": "M-102",
-      "name": "Huelva-La Alqueria-Centro Penitenciario",
       "mode": "AUTOBUS",
       "modeId": "2",
       "operators": [
@@ -849,30 +753,6 @@
       "inboundPath": []
     },
     {
-      "id": "43",
-      "code": "M-400",
-      "name": "Huelva-San Juan Del Puerto-Moguer",
-      "mode": "AUTOBUS",
-      "modeId": "2",
-      "operators": [
-        "DAMAS SA"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "64",
       "code": "M-900",
       "name": "Huelva-Sevilla Por CN-431",
@@ -969,30 +849,6 @@
       "inboundPath": []
     },
     {
-      "id": "31",
-      "code": "M-212",
-      "name": "Huelva-Valverde Del Camino-El Cerro Del Andevalo",
-      "mode": "AUTOBUS",
-      "modeId": "2",
-      "operators": [
-        "DAMAS SA"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "20",
       "code": "M-201",
       "name": "Huelva-Villanueva De Los Castillejos-Paymogo",
@@ -1044,30 +900,6 @@
       "id": "30",
       "code": "M-211",
       "name": "Huelva-Villanueva De Los Castillejos-Santa Barbara",
-      "mode": "AUTOBUS",
-      "modeId": "2",
-      "operators": [
-        "DAMAS SA"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "7",
-      "code": "M-314",
-      "name": "Isla Cristina-Ayamonte",
       "mode": "AUTOBUS",
       "modeId": "2",
       "operators": [
