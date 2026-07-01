@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-30T06:29:20.188Z",
+    "generatedAt": "2026-07-01T06:33:09.905Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "stopCount": 840
+    "stopCount": 841
   },
   "stops": [
     {
@@ -4146,6 +4146,21 @@
       "location": {
         "latitude": 37.159684354102,
         "longitude": -3.6958613991737366
+      }
+    },
+    {
+      "consortiumId": 3,
+      "stopId": "16109",
+      "stopCode": "16109",
+      "name": "Clavel 3",
+      "municipality": "Cúllar Vega",
+      "municipalityId": "18057",
+      "nucleus": "El Ventorrillo",
+      "nucleusId": "488",
+      "zone": "B",
+      "location": {
+        "latitude": 37.1594166,
+        "longitude": -3.6987118
       }
     },
     {

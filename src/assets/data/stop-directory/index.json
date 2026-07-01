@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-06-30T06:29:20.188Z",
+    "generatedAt": "2026-07-01T06:33:09.905Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4052
+    "totalStops": 4053
   },
   "chunks": [
     {
@@ -69,7 +69,7 @@
       "id": "consortium-3",
       "consortiumId": 3,
       "path": "chunks/consortium-3.json",
-      "stopCount": 840
+      "stopCount": 841
     },
     {
       "id": "consortium-4",
@@ -14897,6 +14897,17 @@
       "stopId": "966",
       "stopCode": "966",
       "name": "Clavel 2",
+      "municipality": "Cúllar Vega",
+      "municipalityId": "18057",
+      "nucleus": "El Ventorrillo",
+      "nucleusId": "488",
+      "consortiumId": 3,
+      "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "16109",
+      "stopCode": "16109",
+      "name": "Clavel 3",
       "municipality": "Cúllar Vega",
       "municipalityId": "18057",
       "nucleus": "El Ventorrillo",
