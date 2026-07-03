@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-02T06:19:37.806Z",
+    "generatedAt": "2026-07-03T08:10:32.491Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 98
+    "itemCount": 99
   },
   "lines": [
     {
@@ -340,6 +340,31 @@
       "operators": [
         "Nex Continental Holdings",
         "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "330",
+      "code": "M-570",
+      "name": "Antequera-Torremolinos (Servicio de Playa)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Automóviles Mérida",
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
