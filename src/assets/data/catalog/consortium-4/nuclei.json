@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-05T07:57:40.200Z",
+    "generatedAt": "2026-07-06T09:00:34.307Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 192
+    "itemCount": 193
   },
   "nuclei": [
     {
@@ -13,6 +13,12 @@
       "municipalityId": "1",
       "zone": "A",
       "name": "Aeropuerto de Málaga"
+    },
+    {
+      "id": "225",
+      "municipalityId": "24",
+      "zone": "C",
+      "name": "Algarrobo"
     },
     {
       "id": "66",
