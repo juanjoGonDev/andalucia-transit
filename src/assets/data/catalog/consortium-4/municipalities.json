@@ -1,13 +1,17 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-05T07:57:40.200Z",
+    "generatedAt": "2026-07-06T09:00:34.307Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 22
+    "itemCount": 23
   },
   "municipalities": [
+    {
+      "id": "24",
+      "name": "Algarrobo"
+    },
     {
       "id": "5",
       "name": "Alhaurín de la Torre"
