@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-07T08:24:05.170Z",
+    "generatedAt": "2026-07-08T07:29:38.773Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -261,6 +261,21 @@
       "location": {
         "latitude": 36.640680555555555,
         "longitude": -4.697177777777778
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2220",
+      "stopCode": "2220",
+      "name": "Algarrobo Costa / Muebles García ",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Costa",
+      "nucleusId": "226",
+      "zone": "C",
+      "location": {
+        "latitude": 36.74802777777778,
+        "longitude": -4.057963888888889
       }
     },
     {
@@ -10896,21 +10911,6 @@
       "location": {
         "latitude": 36.73455277777778,
         "longitude": -4.684180555555556
-      }
-    },
-    {
-      "consortiumId": 4,
-      "stopId": "2220",
-      "stopCode": "2220",
-      "name": "Muebles García",
-      "municipality": "Vélez Málaga",
-      "municipalityId": "23",
-      "nucleus": "Caleta de Vélez",
-      "nucleusId": "223",
-      "zone": "C",
-      "location": {
-        "latitude": 36.74802777777778,
-        "longitude": -4.057963888888889
       }
     },
     {
