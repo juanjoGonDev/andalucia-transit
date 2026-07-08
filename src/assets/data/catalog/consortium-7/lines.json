@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-07T08:24:08.958Z",
+    "generatedAt": "2026-07-08T07:29:42.025Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 7,
     "consortiumName": "Área de Jaén",
-    "itemCount": 30
+    "itemCount": 33
   },
   "lines": [
     {
@@ -483,6 +483,31 @@
       "inboundPath": []
     },
     {
+      "id": "326",
+      "code": "M10-01",
+      "name": "Jaén - Sotogordo Por Vados De Torralba(2026)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Samar",
+        "S.A."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "286",
       "code": "M20-10",
       "name": "Jaén - Torredelcampo, 2024",
@@ -558,6 +583,31 @@
       "inboundPath": []
     },
     {
+      "id": "327",
+      "code": "M10-02",
+      "name": "Jaén - Villargordo (2026)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Samar",
+        "S.A."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "34",
       "code": "M3-80",
       "name": "Jaén - Villarrodrigo",
@@ -565,6 +615,31 @@
       "modeId": "1",
       "operators": [
         "Nex Continental Holdings S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "324",
+      "code": "M10-03",
+      "name": "Jaén -Torreblascopedro Por Vados de Torralba (2026)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Samar",
+        "S.A."
       ],
       "hasNews": false,
       "concession": null,
