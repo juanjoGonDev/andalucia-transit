@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-08T07:29:42.025Z",
+    "generatedAt": "2026-07-09T08:29:09.030Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 99
+    "itemCount": 101
   },
   "lines": [
     {
@@ -17,6 +17,54 @@
       "operators": [
         "Nex Continental Holdings",
         "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "331",
+      "code": "M-371",
+      "name": "Algarrobo-Torre del Mar",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Ruiz y Ávila S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "323",
+      "code": "M-370",
+      "name": "Algarrobo-Torre del Mar-Málaga",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Ruiz y Ávila S.L."
       ],
       "hasNews": false,
       "concession": null,

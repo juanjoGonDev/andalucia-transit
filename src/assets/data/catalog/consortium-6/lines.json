@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-08T07:29:42.025Z",
+    "generatedAt": "2026-07-09T08:29:09.030Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 6,
     "consortiumName": "Área de Almería",
-    "itemCount": 26
+    "itemCount": 27
   },
   "lines": [
     {
@@ -616,6 +616,30 @@
       "modeId": "1",
       "operators": [
         "NEX CONTINENTAL HOLDINGS"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "64",
+      "code": "M-216",
+      "name": "Servicio Lanzadera San José - Calas P.Natural",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "AUTOCARES BERNARDO"
       ],
       "hasNews": false,
       "concession": null,

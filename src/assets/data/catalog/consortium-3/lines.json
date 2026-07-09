@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-08T07:29:42.025Z",
+    "generatedAt": "2026-07-09T08:29:09.030Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -318,7 +318,7 @@
         "Transportes Rober",
         "S.A."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1217,7 +1217,7 @@
         "Empresa Liñan",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
