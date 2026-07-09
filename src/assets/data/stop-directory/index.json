@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-08T07:29:38.773Z",
+    "generatedAt": "2026-07-09T08:29:05.906Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4053
+    "totalStops": 4060
   },
   "chunks": [
     {
@@ -75,7 +75,7 @@
       "id": "consortium-4",
       "consortiumId": 4,
       "path": "chunks/consortium-4.json",
-      "stopCount": 1012
+      "stopCount": 1019
     },
     {
       "id": "consortium-5",
@@ -1283,6 +1283,17 @@
       "municipalityId": "2",
       "nucleus": "Mijas",
       "nucleusId": "44",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2234",
+      "stopCode": "2234",
+      "name": "Algarrobo Pueblo",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -7304,6 +7315,17 @@
       "chunkId": "consortium-2"
     },
     {
+      "stopId": "2236",
+      "stopCode": "2236",
+      "name": "Avda. Karat",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "1676",
       "stopCode": "1676",
       "name": "Avda. La Candelaria",
@@ -10965,6 +10987,17 @@
       "nucleusId": "66",
       "consortiumId": 6,
       "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "2232",
+      "stopCode": "2232",
+      "name": "C.C. Ingenio",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Vélez Málaga",
+      "nucleusId": "215",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "251",
@@ -15596,6 +15629,17 @@
       "nucleusId": "3225",
       "consortiumId": 1,
       "chunkId": "consortium-1"
+    },
+    {
+      "stopId": "2241",
+      "stopCode": "2241",
+      "name": "Cochinillo",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "2123",
@@ -29018,6 +29062,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "2238",
+      "stopCode": "2238",
+      "name": "Lidl",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "511",
       "stopCode": "511",
       "name": "Limones",
@@ -40711,6 +40766,17 @@
       "chunkId": "consortium-1"
     },
     {
+      "stopId": "2243",
+      "stopCode": "2243",
+      "name": "Torre del Mar Dr Fleming",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "2630",
       "stopCode": "2630",
       "name": "TORRE LA REINA URB LA REINA",
@@ -41105,6 +41171,17 @@
       "nucleusId": "215",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "2239",
+      "stopCode": "2239",
+      "name": "Trayamar",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "249",

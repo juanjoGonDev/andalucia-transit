@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-08T07:29:38.773Z",
+    "generatedAt": "2026-07-09T08:29:05.906Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "stopCount": 1012
+    "stopCount": 1019
   },
   "stops": [
     {
@@ -291,6 +291,21 @@
       "location": {
         "latitude": 36.56500555555555,
         "longitude": -4.646075
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2234",
+      "stopCode": "2234",
+      "name": "Algarrobo Pueblo",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "zone": "C",
+      "location": {
+        "latitude": 36.77158333333333,
+        "longitude": -4.039027777777777
       }
     },
     {
@@ -1101,6 +1116,21 @@
       "location": {
         "latitude": 36.62210833333334,
         "longitude": -4.503533333333333
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2236",
+      "stopCode": "2236",
+      "name": "Avda. Karat",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "zone": "C",
+      "location": {
+        "latitude": 36.75483333333333,
+        "longitude": -4.098455555555555
       }
     },
     {
@@ -2016,6 +2046,21 @@
       "location": {
         "latitude": 36.71325,
         "longitude": -4.424127777777778
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2232",
+      "stopCode": "2232",
+      "name": "C.C. Ingenio",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Vélez Málaga",
+      "nucleusId": "215",
+      "zone": "C",
+      "location": {
+        "latitude": 36.75481111111111,
+        "longitude": -4.097630555555555
       }
     },
     {
@@ -4056,6 +4101,21 @@
       "location": {
         "latitude": 36.725611111111114,
         "longitude": -4.541158333333334
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2241",
+      "stopCode": "2241",
+      "name": "Cochinillo",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "zone": "C",
+      "location": {
+        "latitude": 36.75498888888889,
+        "longitude": -4.05348333333333
       }
     },
     {
@@ -9475,6 +9535,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2238",
+      "stopCode": "2238",
+      "name": "Lidl",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "zone": "C",
+      "location": {
+        "latitude": 36.74836111111111,
+        "longitude": -4.055333333333333
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "891",
       "stopCode": "891",
       "name": "Lo Cea",
@@ -14185,6 +14260,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2243",
+      "stopCode": "2243",
+      "name": "Torre del Mar Dr Fleming",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
+      "zone": "C",
+      "location": {
+        "latitude": 36.74470833333333,
+        "longitude": -4.091780555555555
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "2182",
       "stopCode": "2182",
       "name": "Torre Vigía",
@@ -14391,6 +14481,21 @@
       "location": {
         "latitude": 36.70651388888889,
         "longitude": -4.4665944444444445
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2239",
+      "stopCode": "2239",
+      "name": "Trayamar",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "zone": "C",
+      "location": {
+        "latitude": 36.758805555555554,
+        "longitude": -4.052444444444444
       }
     },
     {
