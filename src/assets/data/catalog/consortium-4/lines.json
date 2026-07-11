@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-10T08:23:50.956Z",
+    "generatedAt": "2026-07-11T07:11:42.684Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 101
+    "itemCount": 102
   },
   "lines": [
     {
@@ -2504,6 +2504,31 @@
       "modeId": "1",
       "operators": [
         "Automóviles Mérida",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "332",
+      "code": "M-554",
+      "name": "Zalea- Cerralba-Parque Acuático de Torremolinos",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Sierra de las Nieves",
         "S.L."
       ],
       "hasNews": false,
