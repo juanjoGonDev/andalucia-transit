@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-11T07:11:39.032Z",
+    "generatedAt": "2026-07-12T07:29:27.059Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4060
+    "totalStops": 4061
   },
   "chunks": [
     {
@@ -75,7 +75,7 @@
       "id": "consortium-4",
       "consortiumId": 4,
       "path": "chunks/consortium-4.json",
-      "stopCount": 1019
+      "stopCount": 1020
     },
     {
       "id": "consortium-5",
@@ -7445,6 +7445,17 @@
       "nucleusId": "176",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "2246",
+      "stopCode": "2246",
+      "name": "Avda. Mar de Alboran esq Paseo Marítimo Los Álam\u0000f",
+      "municipality": "Torremolinos",
+      "municipalityId": "13",
+      "nucleus": "Torremolinos",
+      "nucleusId": "107",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "1285",

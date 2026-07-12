@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-11T07:11:39.032Z",
+    "generatedAt": "2026-07-12T07:29:27.059Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "stopCount": 1019
+    "stopCount": 1020
   },
   "stops": [
     {
@@ -1221,6 +1221,21 @@
       "location": {
         "latitude": 36.50333055555556,
         "longitude": -4.717447222222222
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2246",
+      "stopCode": "2246",
+      "name": "Avda. Mar de Alboran esq Paseo Marítimo Los Álam\u0000f",
+      "municipality": "Torremolinos",
+      "municipalityId": "13",
+      "nucleus": "Torremolinos",
+      "nucleusId": "107",
+      "zone": "B",
+      "location": {
+        "latitude": 36.64411555459281,
+        "longitude": -4.478412532057075
       }
     },
     {

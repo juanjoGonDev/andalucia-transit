@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-11T07:11:42.684Z",
+    "generatedAt": "2026-07-12T07:29:31.372Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
     "consortiumName": "Área de Sevilla",
-    "itemCount": 117
+    "itemCount": 113
   },
   "lines": [
     {
@@ -2340,30 +2340,6 @@
       "inboundPath": []
     },
     {
-      "id": "255",
-      "code": "1753",
-      "name": "M-175  Albaida - Sevilla (por Gines, ida) (sab, dom y fest)",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "DAMAS S.A"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "250",
       "code": "1750",
       "name": "M-175 Albaida - Olivares - Salteras - Camas - Sevilla (Directo)",
@@ -2412,81 +2388,9 @@
       "inboundPath": []
     },
     {
-      "id": "253",
-      "code": "1781",
-      "name": "M-175 Albaida - Sevilla (por Señorío de Guzmán y Gines) (vier, sab, dom y fest)",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "DAMAS S.A"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "252",
-      "code": "1780",
-      "name": "M-175 Albaida -Sevilla(por Señorío de Guzmán) (sab, dom y fest)",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "DAMAS S.A"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "254",
       "code": "1752",
       "name": "M-175 Parcial Valencina - Sevilla (por Señorío de Guzmán)",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "DAMAS S.A"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "493",
-      "code": "1759",
-      "name": "M-175 Refuerzo Apeadero Camas - Sevilla",
       "mode": "Bus",
       "modeId": "1",
       "operators": [
