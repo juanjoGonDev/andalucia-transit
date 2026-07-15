@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-14T07:11:00.154Z",
+    "generatedAt": "2026-07-15T07:15:34.414Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -7449,7 +7449,7 @@
     {
       "stopId": "2246",
       "stopCode": "2246",
-      "name": "Avda. Mar de Alboran esq Paseo Marítimo Los Álam\u0000f",
+      "name": "Avda. Mar Alboran esq Paseo Marítimo Los Álamos",
       "municipality": "Torremolinos",
       "municipalityId": "13",
       "nucleus": "Torremolinos",

@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-14T07:11:04.674Z",
+    "generatedAt": "2026-07-15T07:15:38.289Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -380,14 +380,14 @@
       "inboundPath": []
     },
     {
-      "id": "281",
-      "code": "M-257",
-      "name": "Antequera-Málaga-Torre del Mar",
+      "id": "330",
+      "code": "M-570",
+      "name": "Antequera-Casabermeja-Torremolinos (Servicio de Playa)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
-        "Nex Continental Holdings",
-        "S.L.U."
+        "Automóviles Mérida",
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -405,14 +405,14 @@
       "inboundPath": []
     },
     {
-      "id": "330",
-      "code": "M-570",
-      "name": "Antequera-Torremolinos (Servicio de Playa)",
+      "id": "281",
+      "code": "M-257",
+      "name": "Antequera-Málaga-Torre del Mar",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
-        "Automóviles Mérida",
-        "S.L."
+        "Nex Continental Holdings",
+        "S.L.U."
       ],
       "hasNews": false,
       "concession": null,
@@ -1803,7 +1803,7 @@
     {
       "id": "321",
       "code": "M-260",
-      "name": "Málaga-Torre Benagalbón-Torre del Mar-Vélez Málaga (prohibido entre Vélez-Málaga y Torre del M\u0000\u0000a",
+      "name": "Málaga-Torre Benagalbón-Torre del Mar-Vélez Málaga (prohibido entre Vélez y T. del Mar)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
