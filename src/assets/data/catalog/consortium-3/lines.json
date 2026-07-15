@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-14T07:11:04.674Z",
+    "generatedAt": "2026-07-15T07:15:38.289Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -93,7 +93,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -243,7 +243,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -268,7 +268,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -792,7 +792,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -817,7 +817,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1017,7 +1017,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
