@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-15T07:15:34.414Z",
+    "generatedAt": "2026-07-16T07:22:37.045Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4061
+    "totalStops": 4060
   },
   "chunks": [
     {
@@ -75,7 +75,7 @@
       "id": "consortium-4",
       "consortiumId": 4,
       "path": "chunks/consortium-4.json",
-      "stopCount": 1020
+      "stopCount": 1019
     },
     {
       "id": "consortium-5",
@@ -27718,17 +27718,6 @@
       "nucleusId": "43",
       "consortiumId": 8,
       "chunkId": "consortium-8"
-    },
-    {
-      "stopId": "1014",
-      "stopCode": "1014",
-      "name": "La Peñita",
-      "municipality": "Alhaurín el Grande",
-      "municipalityId": "6",
-      "nucleus": "Alhaurín el Grande",
-      "nucleusId": "83",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
     },
     {
       "stopId": "1032",
