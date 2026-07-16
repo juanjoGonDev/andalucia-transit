@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-15T07:15:34.414Z",
+    "generatedAt": "2026-07-16T07:22:37.045Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "stopCount": 1020
+    "stopCount": 1019
   },
   "stops": [
     {
@@ -7159,8 +7159,8 @@
       "nucleusId": "83",
       "zone": "C",
       "location": {
-        "latitude": 36.646166666666666,
-        "longitude": -4.677675000000001
+        "latitude": 36.64729166666667,
+        "longitude": -4.676211111111112
       }
     },
     {
@@ -8901,21 +8901,6 @@
       "location": {
         "latitude": 36.67720277777777,
         "longitude": -4.695394444444445
-      }
-    },
-    {
-      "consortiumId": 4,
-      "stopId": "1014",
-      "stopCode": "1014",
-      "name": "La Peñita",
-      "municipality": "Alhaurín el Grande",
-      "municipalityId": "6",
-      "nucleus": "Alhaurín el Grande",
-      "nucleusId": "83",
-      "zone": "C",
-      "location": {
-        "latitude": 36.647866666666665,
-        "longitude": -4.675877777777778
       }
     },
     {
