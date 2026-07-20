@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-19T07:27:40.370Z",
+    "generatedAt": "2026-07-20T08:06:19.203Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
     "consortiumName": "Área de Sevilla",
-    "itemCount": 113
+    "itemCount": 116
   },
   "lines": [
     {
@@ -2340,6 +2340,30 @@
       "inboundPath": []
     },
     {
+      "id": "255",
+      "code": "1753",
+      "name": "M-175  Albaida - Sevilla (por Gines, ida) (sab, dom y fest)",
+      "mode": "Bus",
+      "modeId": "1",
+      "operators": [
+        "DAMAS S.A"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "250",
       "code": "1750",
       "name": "M-175 Albaida - Olivares - Salteras - Camas - Sevilla (Directo)",
@@ -2367,6 +2391,54 @@
       "id": "251",
       "code": "1751",
       "name": "M-175 Albaida - Olivares - Salteras - Valencina - Camas - Sevilla (por Est Cerc Salteras)",
+      "mode": "Bus",
+      "modeId": "1",
+      "operators": [
+        "DAMAS S.A"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "253",
+      "code": "1781",
+      "name": "M-175 Albaida - Sevilla (por Señorío de Guzmán y Gines) (vier, sab, dom y fest)",
+      "mode": "Bus",
+      "modeId": "1",
+      "operators": [
+        "DAMAS S.A"
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "252",
+      "code": "1780",
+      "name": "M-175 Albaida -Sevilla(por Señorío de Guzmán) (sab, dom y fest)",
       "mode": "Bus",
       "modeId": "1",
       "operators": [
