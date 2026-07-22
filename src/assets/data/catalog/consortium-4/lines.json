@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-21T07:33:14.925Z",
+    "generatedAt": "2026-07-22T07:34:53.247Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 102
+    "itemCount": 103
   },
   "lines": [
     {
@@ -2149,6 +2149,30 @@
       "inboundPath": []
     },
     {
+      "id": "333",
+      "code": "M-541",
+      "name": "Pizarra-Zalea-Cerralba-Los Álamos",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Damas S.A. e Interurbana de Autobuses S.A."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "296",
       "code": "M-262",
       "name": "Rincón de la Victoria-Benagalbón-Moclinejo-El Valdés (Av)",
@@ -2401,7 +2425,7 @@
     {
       "id": "233",
       "code": "M-540",
-      "name": "Valle de Abdalajís-Álora-Pizarra-Playamar",
+      "name": "Valle de Abdalajís-Álora-Pizarra-Los Álamos",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [

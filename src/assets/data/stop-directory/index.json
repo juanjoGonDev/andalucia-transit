@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-21T07:33:11.804Z",
+    "generatedAt": "2026-07-22T07:34:46.874Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -29282,6 +29282,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "654",
+      "stopCode": "654",
+      "name": "Los Álamos Playa",
+      "municipality": "Torremolinos",
+      "municipalityId": "13",
+      "nucleus": "Torremolinos",
+      "nucleusId": "107",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "17",
       "stopCode": "17",
       "name": "Los Albaricoques",
@@ -34437,17 +34448,6 @@
       "municipalityId": "13",
       "nucleus": "Playamar",
       "nucleusId": "109",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
-      "stopId": "654",
-      "stopCode": "654",
-      "name": "Playamar Playa",
-      "municipality": "Torremolinos",
-      "municipalityId": "13",
-      "nucleus": "Torremolinos",
-      "nucleusId": "107",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },

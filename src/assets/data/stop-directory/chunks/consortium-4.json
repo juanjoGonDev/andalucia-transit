@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-21T07:33:11.804Z",
+    "generatedAt": "2026-07-22T07:34:46.874Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -9700,6 +9700,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "654",
+      "stopCode": "654",
+      "name": "Los Álamos Playa",
+      "municipality": "Torremolinos",
+      "municipalityId": "13",
+      "nucleus": "Torremolinos",
+      "nucleusId": "107",
+      "zone": "B",
+      "location": {
+        "latitude": 36.648649999999996,
+        "longitude": -4.475291666666667
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "1036",
       "stopCode": "1036",
       "name": "Los Baltasares",
@@ -11976,21 +11991,6 @@
       "location": {
         "latitude": 36.63205833333333,
         "longitude": -4.499736111111111
-      }
-    },
-    {
-      "consortiumId": 4,
-      "stopId": "654",
-      "stopCode": "654",
-      "name": "Playamar Playa",
-      "municipality": "Torremolinos",
-      "municipalityId": "13",
-      "nucleus": "Torremolinos",
-      "nucleusId": "107",
-      "zone": "B",
-      "location": {
-        "latitude": 36.648649999999996,
-        "longitude": -4.475291666666667
       }
     },
     {
