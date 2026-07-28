@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-27T08:31:23.861Z",
+    "generatedAt": "2026-07-28T07:40:02.639Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "stopCount": 1019
+    "stopCount": 1021
   },
   "stops": [
     {
@@ -261,6 +261,21 @@
       "location": {
         "latitude": 36.640680555555555,
         "longitude": -4.697177777777778
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2222",
+      "stopCode": "2222",
+      "name": "Algarrobo Costa / Los Tizos",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Costa",
+      "nucleusId": "226",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7470133,
+        "longitude": -4.052918
       }
     },
     {
@@ -1129,8 +1144,8 @@
       "nucleusId": "225",
       "zone": "C",
       "location": {
-        "latitude": 36.75483333333333,
-        "longitude": -4.098455555555555
+        "latitude": 36.76874444444444,
+        "longitude": -4.041438888888889
       }
     },
     {
@@ -10611,6 +10626,21 @@
       "location": {
         "latitude": 36.7442211,
         "longitude": -4.0396109
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2214",
+      "stopCode": "2214",
+      "name": "Mezquitilla Iglesia",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7451966,
+        "longitude": -4.0442361
       }
     },
     {

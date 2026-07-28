@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-27T08:31:23.861Z",
+    "generatedAt": "2026-07-28T07:40:02.639Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,7 +50,7 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 4060
+    "totalStops": 4062
   },
   "chunks": [
     {
@@ -75,7 +75,7 @@
       "id": "consortium-4",
       "consortiumId": 4,
       "path": "chunks/consortium-4.json",
-      "stopCount": 1019
+      "stopCount": 1021
     },
     {
       "id": "consortium-5",
@@ -1261,6 +1261,17 @@
       "municipalityId": "6",
       "nucleus": "Alhaurín el Grande",
       "nucleusId": "83",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2222",
+      "stopCode": "2222",
+      "name": "Algarrobo Costa / Los Tizos",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Costa",
+      "nucleusId": "226",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -31012,6 +31023,17 @@
       "stopId": "2216",
       "stopCode": "2216",
       "name": "Mezquitilla Farmacia",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2214",
+      "stopCode": "2214",
+      "name": "Mezquitilla Iglesia",
       "municipality": "Vélez Málaga",
       "municipalityId": "23",
       "nucleus": "Caleta de Vélez",
