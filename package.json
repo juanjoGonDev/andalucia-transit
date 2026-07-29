@@ -62,7 +62,7 @@
     "@angular/build": "^20.3.4",
     "@angular/cli": "^20.3.4",
     "@angular/compiler-cli": "^20.3.0",
-    "@cypress/schematic": "^4.1.4",
+    "@cypress/schematic": "^5.0.0",
     "@eslint/js": "^9.15.0",
     "@types/jasmine": "~5.1.0",
     "@types/luxon": "^3.7.1",
