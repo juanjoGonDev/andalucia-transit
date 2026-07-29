@@ -63,7 +63,7 @@ jobs:
           grep -RIl 'ChangeDetectionStrategy\.Eager' src --include='*.ts' \
             | xargs sed -i 's/ChangeDetectionStrategy\.Eager/ChangeDetectionStrategy.OnPush/g'
 
-      - name: Align runtime, workflow and formatter versions
+      - name: Align runtime, workflow and dependency policy
         run: |
           node <<'NODE'
           const fs = require('node:fs');
@@ -85,6 +85,7 @@ jobs:
           NODE
 
           npm install
+          npm uninstall --save-dev istanbul-lib-instrument
           npm install --save-dev --save-exact prettier@3.8.4
           git diff --name-only --diff-filter=ACM -z | xargs -0 -r npx prettier --write --ignore-unknown
 
