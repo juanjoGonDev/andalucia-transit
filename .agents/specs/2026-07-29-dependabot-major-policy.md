@@ -2,7 +2,7 @@
 
 ## Status
 
-In progress.
+Ready for review.
 
 ## Request
 
@@ -10,7 +10,7 @@ Prevent every semantic-version major Dependabot update from being approved or qu
 
 ## Evidence
 
-The current workflow marks development-only major updates as eligible. Open standalone Angular, TypeScript, ESLint and GitHub Actions majors have incompatible peer requirements or require coordinated migrations.
+The previous workflow marked development-only major updates as eligible. Open standalone Angular, TypeScript, ESLint and GitHub Actions majors had incompatible peer requirements or required coordinated migrations.
 
 ## Decision
 
@@ -26,11 +26,17 @@ Classify only patch and minor updates as eligible. Classify every major update a
 
 ## Validation
 
-Pending workflow syntax review, pull-request checks and runtime evidence from the next Dependabot event.
+- CI run `30471282684`: success.
+- The Dependabot job is skipped as expected because this corrective PR is owner-authored.
+- Incompatible standalone Angular, Zone.js, TypeScript, Material and ESLint pull requests were closed with deterministic peer-conflict evidence.
+- Remaining major Action updates are labeled `requires-manual-qa`; stale automated approvals were dismissed.
+- Runtime activation for patch/minor updates remains blocked because `PAT_FINE` resolves to an empty value in Dependabot-triggered runs; the secret must exist in the Dependabot repository-secret scope.
+- Coordinated Angular migration: pull request `#386`.
 
 ## Delivery
 
 Branch: `agent/fix-dependabot-major-policy`.
+Pull request: `#385`.
 
 ## Rollback
 
