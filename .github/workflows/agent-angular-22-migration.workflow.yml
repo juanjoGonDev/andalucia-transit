@@ -1,9 +1,6 @@
 name: Agent Angular 22 migration
 
 on:
-  push:
-    branches:
-      - agent/feat-angular-22-migration
   pull_request:
     branches:
       - main
@@ -19,8 +16,8 @@ jobs:
   migrate:
     if: >-
       github.repository == 'juanjoGonDev/andalucia-transit' &&
-      ((github.event_name == 'push' && github.ref == 'refs/heads/agent/feat-angular-22-migration') ||
-       (github.event_name == 'pull_request' && github.head_ref == 'agent/feat-angular-22-migration' && github.event.pull_request.head.repo.full_name == github.repository))
+      github.head_ref == 'agent/feat-angular-22-migration' &&
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
