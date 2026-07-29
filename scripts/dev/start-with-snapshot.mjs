@@ -17,7 +17,7 @@ async function main() {
     await writeFile(runtimeFlagsPath, originalContent, { encoding: 'utf-8' });
   };
 
-  const handleExit = async (code: number | null) => {
+  const handleExit = async (code) => {
     await restoreFlags();
     process.exit(code ?? 0);
   };
