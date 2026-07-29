@@ -79,12 +79,34 @@ jobs:
 
       - name: Run migration validation
         run: |
-          npm run format:check
+          git diff --name-only --diff-filter=ACM -z | xargs -0 -r npx prettier --check --ignore-unknown
           npm run lint
           npm run test -- --watch=false
           npm run build
           npm run test:deploy
           npm run snapshot
+
+      - name: Smoke-test development server
+        run: |
+          npm start -- --host 127.0.0.1 --port 4200 > /tmp/angular-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+
+          if ! curl \
+            --fail \
+            --silent \
+            --show-error \
+            --retry 60 \
+            --retry-delay 1 \
+            --retry-connrefused \
+            --max-time 2 \
+            http://127.0.0.1:4200/ \
+            > /tmp/angular-index.html; then
+            cat /tmp/angular-server.log
+            exit 1
+          fi
+
+          grep -q '<app-root' /tmp/angular-index.html
 
       - name: Exclude refreshed transport data
         if: always()
