@@ -52,6 +52,17 @@ jobs:
           npx ng update @angular/core@22.0.8 @angular/cli@22.0.8 angular-eslint@22.1.0 --allow-dirty
           npx ng update @angular/material@22 --allow-dirty
 
+      - name: Adopt project change-detection policy
+        run: |
+          eager_count=$(grep -Rho 'ChangeDetectionStrategy\.Eager' src --include='*.ts' | wc -l | tr -d ' ')
+          if [ "$eager_count" -ne 4 ]; then
+            echo "::error title=Unexpected Angular migration output::Expected four generated Eager change-detection declarations, found $eager_count."
+            exit 1
+          fi
+
+          grep -RIl 'ChangeDetectionStrategy\.Eager' src --include='*.ts' \
+            | xargs sed -i 's/ChangeDetectionStrategy\.Eager/ChangeDetectionStrategy.OnPush/g'
+
       - name: Align runtime, workflow and formatter versions
         run: |
           node <<'NODE'
