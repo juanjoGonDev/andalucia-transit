@@ -49,9 +49,8 @@ jobs:
 
       - name: Migrate Angular 21 to 22
         run: |
-          npx ng update @angular/core@22.0.8 @angular/cli@22.0.8 --allow-dirty
+          npx ng update @angular/core@22.0.8 @angular/cli@22.0.8 angular-eslint@22.1.0 --allow-dirty
           npx ng update @angular/material@22 --allow-dirty
-          npx ng update angular-eslint@22.1.0 --allow-dirty
 
       - name: Align Node.js declarations and CI
         run: |
