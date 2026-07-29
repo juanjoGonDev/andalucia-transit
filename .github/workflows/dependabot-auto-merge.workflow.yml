@@ -52,7 +52,7 @@ jobs:
             version-update:semver-major)
               if [ "$DEPENDENCY_TYPE" = "direct:development" ]; then
                 eligible=true
-              elif [ "$DEPENDENDENCY_TYPE" = "direct:production" ]; then
+              elif [ "$DEPENDENCY_TYPE" = "direct:production" ]; then
                 requires_manual_qa=true
               fi
               ;;
