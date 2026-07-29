@@ -41,7 +41,7 @@ jobs:
             version-update:semver-patch|version-update:semver-minor) eligible=true ;;
             version-update:semver-major)
               if [ "$DEPENDENCY_TYPE" = "direct:development" ]; then eligible=true; fi
-              if [ "$DEPENDENDENCY_TYPE" = "direct:production" ]; then manual=true; fi
+              if [ "$DEPENDENCY_TYPE" = "direct:production" ]; then manual=true; fi
               ;;
           esac
           echo "eligible=$eligible" >> "$GITHUB_OUTPUT"
