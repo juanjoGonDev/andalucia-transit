@@ -52,7 +52,7 @@ jobs:
           npx ng update @angular/core@22.0.8 @angular/cli@22.0.8 angular-eslint@22.1.0 --allow-dirty
           npx ng update @angular/material@22 --allow-dirty
 
-      - name: Align Node.js declarations and CI
+      - name: Align runtime, workflow and formatter versions
         run: |
           node <<'NODE'
           const fs = require('node:fs');
@@ -74,6 +74,8 @@ jobs:
           NODE
 
           npm install
+          npm install --save-dev --save-exact prettier@3.8.4
+          git diff --name-only --diff-filter=ACM -z | xargs -0 -r npx prettier --write --ignore-unknown
 
       - name: Run migration validation
         run: |
