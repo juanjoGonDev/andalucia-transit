@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-28T07:40:06.233Z",
+    "generatedAt": "2026-07-30T07:33:55.997Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -956,31 +956,6 @@
       "inboundPath": []
     },
     {
-      "id": "288",
-      "code": "M-269",
-      "name": "Las Pedrizas-Antequera",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Automóviles Mérida",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "215",
       "code": "R-2",
       "name": "Los Delgado-Centro Comercial-Lo Cea-Benagalbón",
@@ -1806,6 +1781,31 @@
       "id": "325",
       "code": "M-363",
       "name": "Málaga-Torre de Mar-Hospital Vélez-Torrox",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "334",
+      "code": "M-380",
+      "name": "Málaga-Torre del Mar Directo (desde el 30 de julio)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
