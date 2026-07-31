@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-07-30T07:33:55.997Z",
+    "generatedAt": "2026-07-31T07:51:47.864Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
     "consortiumName": "Área de Sevilla",
-    "itemCount": 116
+    "itemCount": 112
   },
   "lines": [
     {
@@ -1284,30 +1284,6 @@
       "inboundPath": []
     },
     {
-      "id": "303",
-      "code": "1423",
-      "name": "M-142B Coria del Río - Sevilla (recorrido B)",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "TRANVIAS DE SEVILLA S.A"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "324",
       "code": "1431",
       "name": "M-143 Isla Mayor - Sevilla",
@@ -1335,30 +1311,6 @@
       "id": "448",
       "code": "1432",
       "name": "M-143 Isla Mayor - Sevilla (sab, dom y fest)",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "TRANVIAS DE SEVILLA S.A"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "306",
-      "code": "1511",
-      "name": "M-151 Urb Puebla del Marques - Sevilla",
       "mode": "Bus",
       "modeId": "1",
       "operators": [
@@ -1863,54 +1815,6 @@
       "id": "279",
       "code": "1661",
       "name": "M-166 Sanlúcar la Mayor - Sevilla",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "DAMAS S.A"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "278",
-      "code": "1660",
-      "name": "M-166 Sanlúcar la Mayor - Sevilla (directo, laborables)",
-      "mode": "Bus",
-      "modeId": "1",
-      "operators": [
-        "DAMAS S.A"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "283",
-      "code": "1665",
-      "name": "M-166 Sanlúcar la Mayor - Sevilla (por A-49, laborables)",
       "mode": "Bus",
       "modeId": "1",
       "operators": [
