@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-03T08:30:37.959Z",
+    "generatedAt": "2026-08-07T06:09:36.773Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -492,7 +492,7 @@
       "operators": [
         "BUS Madrid-Almería S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -917,7 +917,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -942,7 +942,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1042,7 +1042,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1617,7 +1617,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1642,7 +1642,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
