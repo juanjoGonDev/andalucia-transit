@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-07T06:09:36.773Z",
+    "generatedAt": "2026-08-08T05:43:29.154Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 101
+    "itemCount": 110
   },
   "lines": [
     {
@@ -482,6 +482,31 @@
       "inboundPath": []
     },
     {
+      "id": "198",
+      "code": "M-410",
+      "name": "Cártama -Feria De Málaga (del 15 al 22 de agosto)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "90",
       "code": "M-136",
       "name": "Cártama-Alhaurín De La Torre-Plaza Mayor-Los Álamos",
@@ -607,6 +632,31 @@
       "inboundPath": []
     },
     {
+      "id": "294",
+      "code": "M-429",
+      "name": "Coín-Alhaurín el Grande-Feria de Málaga 15 al 22 agosto",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "274",
       "code": "M-167",
       "name": "Coín-Alhaurín el Grande-Málaga",
@@ -685,6 +735,106 @@
       "id": "227",
       "code": "M-223",
       "name": "Entrerríos-Las Lagunas-Fuengirola",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "28",
+      "code": "M-424",
+      "name": "Fería de Málaga-Alh.Torre-Pinos Alh. 15 al 22 agosto",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "197",
+      "code": "M-451",
+      "name": "Feria de Málaga-Colmenar-Riogordo 15 al 22 agosto",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "29",
+      "code": "M-428",
+      "name": "Feria de Málaga-Rincón de la Victoria 15 al 22 agosto",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "26",
+      "code": "M-421",
+      "name": "Feria De Málaga-Torremolinos-Benalmádena Costa 15 al 22 agosto",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -909,6 +1059,31 @@
       "id": "15",
       "code": "M-127",
       "name": "Las Lagunas-Estación De Autobuses",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "212",
+      "code": "M-426",
+      "name": "Las Lagunas-Fuengirola-Feria de Málaga 15 al 22 agosto",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -2375,6 +2550,30 @@
       "inboundPath": []
     },
     {
+      "id": "235",
+      "code": "M-430",
+      "name": "Valle de Abdalajís-Álora-Pizarra-Feria de Málaga (del 15 al 22 de agosto)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Damas S.A. e Interurbana de Autobuses S.A."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "233",
       "code": "M-540",
       "name": "Valle de Abdalajís-Álora-Pizarra-Los Álamos",
@@ -2476,6 +2675,31 @@
       "id": "146",
       "code": "M-550",
       "name": "Villanueva de la Concepción-Casabermeja-El Palo",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Automóviles Mérida",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "150",
+      "code": "M-450",
+      "name": "Vva.Concepción-Casabermeja-Feria de Málaga 15 al 22 agosto",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
