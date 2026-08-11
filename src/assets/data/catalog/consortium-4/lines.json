@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-10T06:10:58.713Z",
+    "generatedAt": "2026-08-11T05:54:04.555Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 110
+    "itemCount": 111
   },
   "lines": [
     {
@@ -142,6 +142,31 @@
       "operators": [
         "Nex Continental Holdings",
         "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "335",
+      "code": "M-460",
+      "name": "Almogía-Feria de Málaga (del 17 al 22 de agosto)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Sierra de las Nieves",
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
