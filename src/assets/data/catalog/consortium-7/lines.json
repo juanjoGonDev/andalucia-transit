@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-07T06:09:36.773Z",
+    "generatedAt": "2026-08-15T05:25:41.718Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 7,
     "consortiumName": "Área de Jaén",
-    "itemCount": 34
+    "itemCount": 35
   },
   "lines": [
     {
@@ -441,6 +441,31 @@
       "operators": [
         "Transportes Romero",
         "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "282",
+      "code": "M20-05",
+      "name": "Jaén - Martos (Directo), 2024",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Samar",
+        "S.A."
       ],
       "hasNews": false,
       "concession": null,
