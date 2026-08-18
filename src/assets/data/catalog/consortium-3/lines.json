@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-17T05:35:46.592Z",
+    "generatedAt": "2026-08-18T05:31:05.902Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -368,7 +368,7 @@
         "Alsa Granada Airport",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1267,7 +1267,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1367,7 +1367,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,

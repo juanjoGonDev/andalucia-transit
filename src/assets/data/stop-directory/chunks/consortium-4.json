@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-17T05:35:42.213Z",
+    "generatedAt": "2026-08-18T05:31:02.626Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
@@ -3520,6 +3520,36 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "1450",
+      "stopCode": "1450",
+      "name": "Cementerio San Cayetano",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Cementerio Fuengirola",
+      "nucleusId": "130",
+      "zone": "C",
+      "location": {
+        "latitude": 36.53015833333333,
+        "longitude": -4.6457138888888885
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "1451",
+      "stopCode": "1451",
+      "name": "Cementerio San Cayetano",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Cementerio Fuengirola",
+      "nucleusId": "130",
+      "zone": "C",
+      "location": {
+        "latitude": 36.529513888888886,
+        "longitude": -4.647736111111111
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "2114",
       "stopCode": "2114",
       "name": "Centro",
@@ -5586,36 +5616,6 @@
       "location": {
         "latitude": 36.54288333333333,
         "longitude": -4.655283333333334
-      }
-    },
-    {
-      "consortiumId": 4,
-      "stopId": "1450",
-      "stopCode": "1450",
-      "name": "El Gran Parque/Cementerio San Cayetano",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Cementerio Fuengirola",
-      "nucleusId": "130",
-      "zone": "C",
-      "location": {
-        "latitude": 36.53015833333333,
-        "longitude": -4.6457138888888885
-      }
-    },
-    {
-      "consortiumId": 4,
-      "stopId": "1451",
-      "stopCode": "1451",
-      "name": "El Gran Parque/Cementerio San Cayetano",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Cementerio Fuengirola",
-      "nucleusId": "130",
-      "zone": "C",
-      "location": {
-        "latitude": 36.529513888888886,
-        "longitude": -4.647736111111111
       }
     },
     {
