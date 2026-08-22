@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-21T05:33:46.702Z",
+    "generatedAt": "2026-08-22T05:28:54.924Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
     "consortiumName": "Bahía de Cádiz",
-    "itemCount": 61
+    "itemCount": 62
   },
   "lines": [
     {
@@ -756,6 +756,30 @@
       "id": "6",
       "code": "M-030",
       "name": "Cádiz-Río San Pedro-Campus Universitario-Puerto Real-Hospital",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "Transportes Generales Comes S.A."
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "10",
+      "code": "M-032",
+      "name": "Cádiz-Río San Pedro-Puerto Real (512 Viviendas)",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
