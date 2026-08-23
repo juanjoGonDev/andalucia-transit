@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-22T05:28:54.924Z",
+    "generatedAt": "2026-08-23T05:30:47.725Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
@@ -1192,7 +1192,7 @@
         "Empresa Liñan",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
