@@ -158,7 +158,9 @@ test.describe('home tabs responsive layout', () => {
     );
 
     await page.locator('.shell-actions__button--quick[href="/"]').click();
-    await expect(page).toHaveURL(new URL(HOME_PATH, resolvedBaseUrl).toString());
+    await expect(page).toHaveURL(
+      (url) => url.pathname === HOME_PATH && url.searchParams.get('tab') === 'search',
+    );
     await expect(page.locator('.shell-actions__button--quick[href="/"]')).toHaveAttribute(
       'aria-current',
       'page',
