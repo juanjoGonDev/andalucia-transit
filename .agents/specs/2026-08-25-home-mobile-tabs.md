@@ -7,9 +7,9 @@ Fix the Home route-planner tablist on narrow mobile viewports. The first and las
 ## Evidence
 
 - `src/app/features/home/home.component.html` owns the three-tab `role="tablist"` and preserves roving tabindex via `appAccessibleButton`.
-- `src/app/features/home/home.component.scss` currently uses `inline-flex`, horizontal scrolling, per-tab `min-width: clamp(7rem, 20vw, 9.5rem)`, and additional responsive inline padding. Three tabs therefore exceed the available card width on narrow screens.
+- `src/app/features/home/home.component.scss` originally used `inline-flex`, horizontal scrolling, per-tab `min-width: clamp(7rem, 20vw, 9.5rem)`, and additional responsive inline padding. Three tabs therefore exceeded the available card width on narrow screens.
 - Existing `tests/playwright/home-tabs.keyboard.spec.ts` covers keyboard semantics but not responsive bounds.
-- PR visual evidence already captures Home at 390×844 and 1440×900 from the exact head SHA.
+- PR visual evidence captures Home at 390×844 and 1440×900 from the exact head SHA.
 
 ## Decision
 
@@ -32,13 +32,14 @@ Run that focused layout test inside the canonical visual-evidence workflow after
 ## Checks
 
 - Focused Playwright mobile layout regression through PR visual-evidence workflow.
-- Existing deterministic screenshot generation and stale-head verification.
-- Relevant repository CI/check status on the final head.
+- Prettier, lint/dependency validation, script tests, Angular tests, and build through the same exact-head workflow.
+- Deterministic screenshot generation, retained short-lived workflow artifact, and stale-head verification.
+- Manual inspection of the generated Home 390×844 and 1440×900 screenshots.
 
 ## Delivery
 
-Atomic commits: specification, failing regression coverage, minimum CSS fix. No force-push, merge, base retarget, new dependency, or committed binary evidence.
+Atomic commits for specification, failing regression coverage, minimum CSS fix, validation workflow hardening, formatting, and dependency cleanup. No force-push, merge, base retarget, new UI dependency, or committed binary evidence.
 
 ## Status
 
-In progress.
+Completed.
