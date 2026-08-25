@@ -6,7 +6,7 @@ This backlog records only outstanding work discovered during the latest in-app r
 ## Conventions
 - **Priority**: P0 (critical), P1 (important), P2 (nice-to-have)
 - **Tags**: [accessibility], [visual], [functional], [docs], [testing], [i18n], [tooling]
-- **Evidence Policy**: Record textual evidence for desktop, tablet, and mobile viewports (viewport, reproduction steps, selectors, observed vs expected, measurements). Keep any local captures in gitignored folders and do not upload media.
+- **Evidence Policy**: Record textual evidence for relevant desktop, tablet, and mobile viewports (viewport, reproduction steps, selectors, observed vs expected, measurements). Keep ad-hoc local captures gitignored. Every PR that can affect rendered UI must also publish deterministic CI screenshots from its exact head SHA through the repository visual-evidence workflow; generated media is temporary and never committed.
 
 ## Backlog (Pending Items Only)
 
@@ -117,19 +117,29 @@ This backlog records only outstanding work discovered during the latest in-app r
     after (mobile): https://filebin.net/e6vfotgiy5tmjxh7/route-search-results-2026-01-02T23-03-44-576Z_es_414_896_full.png
 
 ### Documentation & Tooling
-- [x] **Record textual evidence workflow in accessibility audits** [P1] [docs] [tooling]
-  - **Rationale:** With the no-upload policy, contributors need explicit instructions for documenting observations without screenshots.
-  - **Repro (text only):** Review existing audit docs; they still instruct using upload-based evidence.
-  - **Observed vs Expected:** Observed: outdated instructions referencing Filebin. Expected: text-based evidence workflow per current mandate.
-  - **Root-Cause Hypothesis:** Documentation not updated after policy change.
-  - **Proposed Fix (reasoned):** Update audit templates to emphasize textual capture (viewport, selectors, contrast ratios) and remove upload steps, while keeping local capture guidance.
+- [x] **Require deterministic PR screenshot evidence** [P0] [visual] [testing] [tooling]
+  - **Rationale:** Reviewers need real mobile and desktop evidence for UI changes; textual notes alone cannot verify rendered regressions.
   - **Acceptance Criteria (measurable):**
-    1) All audit templates instruct textual evidence capture only.
-    2) `AGENTS.md` references the updated workflow.
+    1) CI captures Home, Route search, Favorites, Settings, and News at 390×844 and 1440×900 from deterministic mock data.
+    2) Evidence is bound to the exact current PR head SHA and stale publication is rejected.
+    3) Screenshots are visible in one maintained PR comment, are never committed, and are removed when the PR closes.
+  - **Tests:** GitHub Actions run `32850470747` generated ten screenshots and completed capture, SHA verification, temporary release publication, and PR-comment publication successfully for PR #86.
+  - **Affected Areas:** `.github/workflows/pr-visual-evidence.yml`, `.github/workflows/pr-visual-evidence-cleanup.yml`, `AGENTS.md`, `.agents/specs/2026-08-25-pr-visual-evidence.md`.
+  - _Done on 2026-08-25 – implemented and runtime-validated the mandatory PR visual-evidence workflow._
+
+- [x] **Record textual evidence workflow in accessibility audits** [P1] [docs] [tooling]
+  - **Rationale:** With the historical no-upload policy, contributors needed explicit instructions for documenting observations without screenshots.
+  - **Repro (text only):** Review existing audit docs; they still instruct using upload-based evidence.
+  - **Observed vs Expected:** Observed at the time: outdated instructions referencing Filebin. Expected at the time: text-based evidence workflow per the 2025 mandate.
+  - **Root-Cause Hypothesis:** Documentation drift after policy change.
+  - **Proposed Fix (reasoned):** Update audit templates to emphasize textual capture (viewport, selectors, contrast ratios) while keeping local capture guidance.
+  - **Acceptance Criteria (historical):**
+    1) Audit templates documented textual evidence capture.
+    2) `AGENTS.md` referenced that workflow.
   - **Tests:** NA (documentation review suffices).
   - **Affected Areas (guess):** `docs/audit/_template.md`, `docs/accessibility/index.md`, `AGENTS.md` evidence policy section.
   - **Docs to Update:** Same as affected areas plus knowledge map references.
-  - _Done on 2025-11-01 – updated evidence guidance to text-only in audits, recording guide, layout docs, and AGENTS, and removed upload references._
+  - _Done on 2025-11-01 – updated evidence guidance to text-only in audits, recording guide, layout docs, and AGENTS. This historical policy was superseded on 2026-08-25 by mandatory CI-published PR screenshots while retaining textual audit notes._
 
 - [x] **Define regression checklist for contrast token changes** [P2] [docs] [testing]
   - **Rationale:** Past regressions stemmed from token tweaks without a repeatable checklist; formalize steps to prevent recurrence.
@@ -148,5 +158,4 @@ This backlog records only outstanding work discovered during the latest in-app r
 This checklist is regenerated after each in-app audit.
 Tasks are considered done only when acceptance criteria are met, tests pass, and the behavior matches AGENTS.md and documented patterns.
 
-_All checklist items have been executed and verified as of 2026-01-02.  
-Platform confirmed consistent with AGENTS.md and design standards._
+_All previously listed audit items remain recorded as completed. Mandatory PR screenshot evidence was runtime-validated on 2026-08-25._
