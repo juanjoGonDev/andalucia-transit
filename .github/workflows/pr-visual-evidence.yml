@@ -14,7 +14,7 @@ on:
 permissions: read-all
 
 concurrency:
-  group: pr-visual-evidence-${{ github.event.pull_request.number || github.ref_name }}
+  group: pr-visual-evidence-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -93,6 +93,21 @@ jobs:
           corepack enable
           corepack prepare pnpm@9.12.3 --activate
           pnpm install --frozen-lockfile
+
+      - name: Verify UI quality gates
+        if: steps.pr.outputs.found == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm exec prettier --check \
+            .agents/specs/2026-08-25-home-mobile-tabs.md \
+            .github/workflows/pr-visual-evidence.yml \
+            src/app/features/home/home.component.scss \
+            tests/playwright/home-tabs.layout.spec.ts
+          pnpm run lint
+          pnpm run test:scripts
+          pnpm run test:angular
+          pnpm run build
 
       - name: Start deterministic mock application
         if: steps.pr.outputs.found == 'true'
