@@ -7,19 +7,25 @@ on:
       - synchronize
       - reopened
       - ready_for_review
+  push:
+    branches-ignore:
+      - main
 
 permissions: read-all
 
 concurrency:
-  group: pr-visual-evidence-${{ github.event.pull_request.number }}
+  group: pr-visual-evidence-${{ github.event.pull_request.number || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
   publish:
     name: "🖼️ Publish PR screenshots"
     if: >-
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)
+      github.event_name == 'push' ||
+      (
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)
+      )
     runs-on: ubuntu-latest
     timeout-minutes: 25
     permissions:
@@ -29,22 +35,58 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       REPOSITORY: ${{ github.repository }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-      EVIDENCE_TAG: pr-${{ github.event.pull_request.number }}-visual-evidence
     steps:
+      - name: Resolve open pull request and immutable head
+        id: pr
+        shell: bash
+        env:
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
+          EVENT_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            pr_number="$EVENT_PR_NUMBER"
+            head_sha="$EVENT_HEAD_SHA"
+          else
+            head_query="$GITHUB_REPOSITORY_OWNER:$GITHUB_REF_NAME"
+            pr_number=$(gh api "repos/$REPOSITORY/pulls?state=open&head=$head_query&per_page=2" --jq '.[0].number // empty')
+            if [ -z "$pr_number" ]; then
+              echo "found=false" >> "$GITHUB_OUTPUT"
+              echo "No open pull request for $head_query; visual evidence is not required for this branch push."
+              exit 0
+            fi
+            head_sha=$(gh api "repos/$REPOSITORY/pulls/$pr_number" --jq '.head.sha')
+          fi
+
+          if [ "$head_sha" != "$GITHUB_SHA" ] && [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            echo "Push SHA $GITHUB_SHA is no longer the current PR head $head_sha; skipping stale capture."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$head_sha" >> "$GITHUB_OUTPUT"
+          echo "PR_NUMBER=$pr_number" >> "$GITHUB_ENV"
+          echo "HEAD_SHA=$head_sha" >> "$GITHUB_ENV"
+          echo "EVIDENCE_TAG=pr-$pr_number-visual-evidence" >> "$GITHUB_ENV"
+
       - name: Checkout validated head
+        if: steps.pr.outputs.found == 'true'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ steps.pr.outputs.head_sha }}
 
       - name: Set up Node.js
+        if: steps.pr.outputs.found == 'true'
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 20.19.0
 
       - name: Install deterministic tooling
+        if: steps.pr.outputs.found == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -54,6 +96,7 @@ jobs:
           pnpm exec playwright install --with-deps chromium
 
       - name: Start deterministic mock application
+        if: steps.pr.outputs.found == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -69,6 +112,7 @@ jobs:
           exit 1
 
       - name: Capture canonical mobile and desktop screens
+        if: steps.pr.outputs.found == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -99,16 +143,18 @@ jobs:
           done < <(find evidence-assets -maxdepth 1 -type f -name '*.png' -print)
 
       - name: Verify evidence belongs to current PR head
+        if: steps.pr.outputs.found == 'true'
         shell: bash
         run: |
           set -euo pipefail
           current_head=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
           if [ "$current_head" != "$HEAD_SHA" ]; then
-            echo "Refusing stale visual evidence publication: event head $HEAD_SHA, current PR head $current_head" >&2
+            echo "Refusing stale visual evidence publication: captured head $HEAD_SHA, current PR head $current_head" >&2
             exit 1
           fi
 
       - name: Replace temporary visual-evidence release
+        if: steps.pr.outputs.found == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -131,6 +177,7 @@ jobs:
             --notes "Temporary screenshots generated from $HEAD_SHA. Removed automatically when the pull request closes."
 
       - name: Publish or update PR visual-evidence comment
+        if: steps.pr.outputs.found == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -169,7 +216,7 @@ jobs:
           fi
 
       - name: Stop application
-        if: always()
+        if: always() && steps.pr.outputs.found == 'true'
         shell: bash
         run: |
           if [ -f "$RUNNER_TEMP/andalucia-transit.pid" ]; then
