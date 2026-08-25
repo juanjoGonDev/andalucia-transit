@@ -162,10 +162,31 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
           gh release delete "$EVIDENCE_TAG" \
             --repo "$REPOSITORY" \
-            --cleanup-tag \
             --yes >/dev/null 2>&1 || true
+          gh api --method DELETE \
+            "repos/$REPOSITORY/git/refs/tags/$EVIDENCE_TAG" >/dev/null 2>&1 || true
+
+          for attempt in $(seq 1 10); do
+            release_exists=false
+            tag_exists=false
+            if gh release view "$EVIDENCE_TAG" --repo "$REPOSITORY" >/dev/null 2>&1; then
+              release_exists=true
+            fi
+            if gh api "repos/$REPOSITORY/git/ref/tags/$EVIDENCE_TAG" >/dev/null 2>&1; then
+              tag_exists=true
+            fi
+            if [ "$release_exists" = false ] && [ "$tag_exists" = false ]; then
+              break
+            fi
+            if [ "$attempt" -eq 10 ]; then
+              echo "Temporary visual-evidence release or tag still exists after cleanup" >&2
+              exit 1
+            fi
+            sleep 1
+          done
 
           current_head=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
           if [ "$current_head" != "$HEAD_SHA" ]; then
@@ -197,11 +218,11 @@ jobs:
 
           | Screen | Mobile · 390×844 | Desktop · 1440×900 |
           | --- | --- | --- |
-          | Home | <img src="$base/home_es_390_844.png" width="220" alt="Home screen at 390 by 844 pixels"> | <img src="$base/home_es_1440_900.png" width="420" alt="Home screen at 1440 by 900 pixels"> |
-          | Route search | <img src="$base/route-search_es_390_844.png" width="220" alt="Route search at 390 by 844 pixels"> | <img src="$base/route-search_es_1440_900.png" width="420" alt="Route search at 1440 by 900 pixels"> |
-          | Favorites | <img src="$base/favorites_es_390_844.png" width="220" alt="Favorites at 390 by 844 pixels"> | <img src="$base/favorites_es_1440_900.png" width="420" alt="Favorites at 1440 by 900 pixels"> |
-          | Settings | <img src="$base/settings_es_390_844.png" width="220" alt="Settings at 390 by 844 pixels"> | <img src="$base/settings_es_1440_900.png" width="420" alt="Settings at 1440 by 900 pixels"> |
-          | News | <img src="$base/news_es_390_844.png" width="220" alt="News at 390 by 844 pixels"> | <img src="$base/news_es_1440_900.png" width="420" alt="News at 1440 by 900 pixels"> |
+          | Home | <img src="$base/home_es_390_844_full.png" width="220" alt="Home screen at 390 by 844 pixels"> | <img src="$base/home_es_1440_900_full.png" width="420" alt="Home screen at 1440 by 900 pixels"> |
+          | Route search | <img src="$base/route-search_es_390_844_full.png" width="220" alt="Route search at 390 by 844 pixels"> | <img src="$base/route-search_es_1440_900_full.png" width="420" alt="Route search at 1440 by 900 pixels"> |
+          | Favorites | <img src="$base/favorites_es_390_844_full.png" width="220" alt="Favorites at 390 by 844 pixels"> | <img src="$base/favorites_es_1440_900_full.png" width="420" alt="Favorites at 1440 by 900 pixels"> |
+          | Settings | <img src="$base/settings_es_390_844_full.png" width="220" alt="Settings at 390 by 844 pixels"> | <img src="$base/settings_es_1440_900_full.png" width="420" alt="Settings at 1440 by 900 pixels"> |
+          | News | <img src="$base/news_es_390_844_full.png" width="220" alt="News at 390 by 844 pixels"> | <img src="$base/news_es_1440_900_full.png" width="420" alt="News at 1440 by 900 pixels"> |
           EOF
 
           current_head=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
