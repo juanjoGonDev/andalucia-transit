@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const HOME_PATH = '/';
+const MAP_PATH = '/map';
 const MOBILE_VIEWPORT_WIDTHS = [320, 360, 390, 430] as const;
 const MOBILE_VIEWPORT_HEIGHT = 844;
 const GEOMETRY_TOLERANCE_PX = 1;
@@ -128,4 +129,39 @@ test.describe('home tabs responsive layout', () => {
       expectContained(selectedAfterSwitch[0], switchedMetrics.tabList);
     });
   }
+
+  test('navigates between Home and Map through persistent shell shortcuts', async ({ page }) => {
+    const resolvedBaseUrl = BASE_URL as string;
+    await page.setViewportSize({ width: 390, height: MOBILE_VIEWPORT_HEIGHT });
+    await page.goto(new URL(HOME_PATH, resolvedBaseUrl).toString());
+
+    const homeLink = page.locator('.shell-actions__button--quick[href="/"]');
+    const mapLink = page.locator('.shell-actions__button--quick[href="/map"]');
+
+    await expect(homeLink).toBeVisible();
+    await expect(mapLink).toBeVisible();
+    await expect(homeLink).toHaveAttribute('aria-current', 'page');
+    await expect(mapLink).not.toHaveAttribute('aria-current', 'page');
+
+    const homeBounds = await homeLink.boundingBox();
+    const mapBounds = await mapLink.boundingBox();
+    expect(homeBounds?.width ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
+    expect(homeBounds?.height ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
+    expect(mapBounds?.width ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
+    expect(mapBounds?.height ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
+
+    await mapLink.click();
+    await expect(page).toHaveURL(new URL(MAP_PATH, resolvedBaseUrl).toString());
+    await expect(page.locator('.shell-actions__button--quick[href="/map"]')).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+
+    await page.locator('.shell-actions__button--quick[href="/"]').click();
+    await expect(page).toHaveURL(new URL(HOME_PATH, resolvedBaseUrl).toString());
+    await expect(page.locator('.shell-actions__button--quick[href="/"]')).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+  });
 });
