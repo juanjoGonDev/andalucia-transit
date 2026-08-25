@@ -16,7 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateTime } from 'luxon';
-import { distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
+import { Subject, catchError, distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { RouteSearchExecutionService } from '@domain/route-search/route-search-execution.service';
 import {
@@ -39,6 +39,17 @@ import { buildNavigationCommands } from '@shared/navigation/navigation.util';
 import { SectionComponent } from '@shared/ui/section/section.component';
 
 const BACK_ICON_NAME = 'arrow_back' as const;
+const EMPTY_RESULTS: RouteSearchResultsViewModel = Object.freeze({
+  departures: [],
+  hasUpcoming: false,
+  nextDepartureId: null
+});
+
+type RouteSearchResultsState =
+  | { readonly status: 'idle' }
+  | { readonly status: 'loading' }
+  | { readonly status: 'error' }
+  | { readonly status: 'ready'; readonly result: RouteSearchResultsViewModel };
 
 @Component({
   selector: 'app-route-search',
@@ -80,9 +91,13 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly scheduleAccuracyThresholdDays =
     APP_CONFIG.routeSearchData.scheduleAccuracy.warningThresholdDays;
   private readonly originQueryParamKey = APP_CONFIG.routeSearchData.queryParams.originStopId;
+  private readonly resultsRetry = new Subject<void>();
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.routeSearch;
   protected readonly badgeTranslationKeys = APP_CONFIG.translationKeys.stopDetail.badges;
+  protected readonly loadingKey = APP_CONFIG.translationKeys.home.sections.recentStops.previewLoading;
+  protected readonly loadErrorKey = APP_CONFIG.translationKeys.home.sections.recentStops.previewError;
+  protected readonly retryKey = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.retry;
   private readonly routeSegments = APP_CONFIG.routeSegments.routeSearch;
   protected readonly formTitleKey = this.translationKeys.action;
   protected readonly scheduleAccuracyWarningKey = this.translationKeys.scheduleAccuracyWarning;
@@ -90,17 +105,17 @@ export class RouteSearchComponent implements AfterViewInit {
   protected readonly backIcon = BACK_ICON_NAME;
 
   protected readonly selection = signal<RouteSearchSelection | null>(this.state.getSelection());
-  protected readonly results = signal<RouteSearchResultsViewModel>({
-    departures: [],
-    hasUpcoming: false,
-    nextDepartureId: null
-  });
+  protected readonly results = signal<RouteSearchResultsViewModel>(EMPTY_RESULTS);
+  protected readonly resultsStatus = signal<RouteSearchResultsState['status']>('idle');
   protected readonly originDraft = signal<StopDirectoryOption | null>(null);
   protected readonly hasSelection = computed(() => this.selection() !== null);
   protected readonly departures = computed(() => this.results().departures);
   protected readonly hasResults = computed(() => this.departures().length > 0);
-  protected readonly showNoUpcoming = computed(() =>
-    this.hasResults() && !this.results().hasUpcoming
+  protected readonly isResultsLoading = computed(() => this.resultsStatus() === 'loading');
+  protected readonly isResultsError = computed(() => this.resultsStatus() === 'error');
+  protected readonly areResultsReady = computed(() => this.resultsStatus() === 'ready');
+  protected readonly showNoUpcoming = computed(
+    () => this.areResultsReady() && this.hasResults() && !this.results().hasUpcoming
   );
   protected readonly showPastSearchNotice = computed(() => {
     const current = this.selection();
@@ -217,39 +232,22 @@ export class RouteSearchComponent implements AfterViewInit {
         takeUntilDestroyed(this.destroyRef),
         switchMap((value) => {
           if (!value) {
-            return of<RouteSearchResultsViewModel>({
-              departures: [],
-              hasUpcoming: false,
-              nextDepartureId: null
-            });
+            return of<RouteSearchResultsState>({ status: 'idle' });
           }
 
-          return this.resultsService.loadResults(value);
+          return this.resultsRetry.pipe(
+            startWith(undefined),
+            switchMap(() =>
+              this.resultsService.loadResults(value).pipe(
+                map((result) => ({ status: 'ready', result }) as const),
+                startWith<RouteSearchResultsState>({ status: 'loading' }),
+                catchError(() => of<RouteSearchResultsState>({ status: 'error' }))
+              )
+            )
+          );
         })
       )
-      .subscribe((result) => {
-        const previousNextId = this.results().nextDepartureId;
-
-        this.results.set(result);
-
-        if (!result.nextDepartureId) {
-          this.lastScrollTargetId = null;
-          this.pendingScroll = false;
-          return;
-        }
-
-        const isInitialTarget = this.lastScrollTargetId === null;
-
-        if (!isInitialTarget && result.nextDepartureId === this.lastScrollTargetId) {
-          return;
-        }
-
-        this.lastScrollTargetId = result.nextDepartureId;
-
-        if (isInitialTarget || result.nextDepartureId !== previousNextId) {
-          this.queueScrollToNext();
-        }
-      });
+      .subscribe((resultState) => this.applyResultsState(resultState));
   }
 
   ngAfterViewInit(): void {
@@ -275,6 +273,14 @@ export class RouteSearchComponent implements AfterViewInit {
     await this.router.navigate(commands);
   }
 
+  protected retryResults(): void {
+    if (!this.selection() || this.isResultsLoading()) {
+      return;
+    }
+
+    this.resultsRetry.next();
+  }
+
   protected searchToday(): void {
     const current = this.selection();
 
@@ -292,6 +298,39 @@ export class RouteSearchComponent implements AfterViewInit {
 
   protected focusSearchForm(): void {
     this.formComponent?.focusOriginField();
+  }
+
+  private applyResultsState(resultState: RouteSearchResultsState): void {
+    this.resultsStatus.set(resultState.status);
+
+    if (resultState.status !== 'ready') {
+      this.results.set(EMPTY_RESULTS);
+      this.lastScrollTargetId = null;
+      this.pendingScroll = false;
+      return;
+    }
+
+    const previousNextId = this.results().nextDepartureId;
+    const result = resultState.result;
+    this.results.set(result);
+
+    if (!result.nextDepartureId) {
+      this.lastScrollTargetId = null;
+      this.pendingScroll = false;
+      return;
+    }
+
+    const isInitialTarget = this.lastScrollTargetId === null;
+
+    if (!isInitialTarget && result.nextDepartureId === this.lastScrollTargetId) {
+      return;
+    }
+
+    this.lastScrollTargetId = result.nextDepartureId;
+
+    if (isInitialTarget || result.nextDepartureId !== previousNextId) {
+      this.queueScrollToNext();
+    }
   }
 
   private queueScrollToNext(): void {
@@ -313,7 +352,7 @@ export class RouteSearchComponent implements AfterViewInit {
     }
 
     this.pendingScroll = false;
-    target.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.nativeElement.scrollIntoView({ behavior: 'auto', block: 'center' });
   }
 
   private extractParams(paramMap: ParamMap): RouteSearchRouteParams {

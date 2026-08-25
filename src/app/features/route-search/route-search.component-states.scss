@@ -44,6 +44,31 @@
   color: inherit;
 }
 
+.route-search__async {
+  margin-top: var(--space-lg);
+}
+
+.route-search__loading-lines {
+  display: grid;
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 30rem;
+  margin-top: var(--space-xs);
+}
+
+.route-search__loading-line {
+  width: 58%;
+  height: 0.65rem;
+}
+
+.route-search__loading-line--medium {
+  width: 74%;
+}
+
+.route-search__loading-line--wide {
+  width: 92%;
+}
+
 .route-search__empty {
   display: flex;
   flex-direction: column;
@@ -76,4 +101,3 @@
 .route-search__empty-action {
   min-width: 12rem;
 }
-
