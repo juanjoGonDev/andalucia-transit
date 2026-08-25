@@ -93,14 +93,13 @@ jobs:
           corepack enable
           corepack prepare pnpm@9.12.3 --activate
           pnpm install --frozen-lockfile
-          pnpm exec playwright install --with-deps chromium
 
       - name: Start deterministic mock application
         if: steps.pr.outputs.found == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          pnpm run dev:mock-data -- --host 127.0.0.1 --port 4200 > "$RUNNER_TEMP/andalucia-transit.log" 2>&1 &
+          node scripts/dev/start-with-mock-mode.mjs data --host 127.0.0.1 --port 4200 > "$RUNNER_TEMP/andalucia-transit.log" 2>&1 &
           echo $! > "$RUNNER_TEMP/andalucia-transit.pid"
           for attempt in $(seq 1 60); do
             if curl --fail --silent --show-error http://127.0.0.1:4200/ >/dev/null; then
