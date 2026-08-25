@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   Observable,
+  Subject,
   catchError,
   combineLatest,
   distinctUntilChanged,
@@ -94,8 +95,10 @@ export class StopDetailComponent {
   private readonly layoutContext: AppLayoutContext = inject(APP_LAYOUT_CONTEXT);
   private readonly stopDirectoryFacade = inject(StopDirectoryFacade);
   private readonly translate = inject(TranslateService);
+  private readonly scheduleRefresh = new Subject<void>();
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.stopDetail;
+  protected readonly retryKey = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.retry;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.stopDetailBase;
   protected readonly actionKeys = this.translationKeys.actions;
   protected readonly destinationControl = new FormControl<string>(ALL_DESTINATIONS_OPTION, {
@@ -129,10 +132,15 @@ export class StopDetailComponent {
 
   private readonly scheduleState$: Observable<ScheduleState> = this.stopId$.pipe(
     switchMap((stopId) =>
-      this.stopScheduleFacade.loadStopSchedule(stopId).pipe(
-        map((result) => ({ status: 'success', result }) as const),
-        startWith({ status: 'loading' } as const),
-        catchError(() => of({ status: 'error' } as const)),
+      this.scheduleRefresh.pipe(
+        startWith(undefined),
+        switchMap(() =>
+          this.stopScheduleFacade.loadStopSchedule(stopId).pipe(
+            map((result) => ({ status: 'success', result }) as const),
+            startWith({ status: 'loading' } as const),
+            catchError(() => of({ status: 'error' } as const)),
+          ),
+        ),
       ),
     ),
     shareReplay({ bufferSize: 1, refCount: true }),
@@ -230,6 +238,10 @@ export class StopDetailComponent {
 
   protected async openStopInfo(commands: readonly string[]): Promise<void> {
     await this.router.navigate(commands);
+  }
+
+  protected retrySchedule(): void {
+    this.scheduleRefresh.next();
   }
 
   private redirectToHome(): void {

@@ -6,23 +6,25 @@
   <div class="utility-container">
     <div class="app-layout__body">
       <ng-container *ngIf="isLoading$ | async; else scheduleContent">
-        <section class="stop-detail__card stop-detail__card--centered">
+        <section class="stop-detail__card stop-detail__card--centered app-async-reveal">
           <div
             class="stop-detail__status stop-detail__loading"
             [attr.role]="statusRole"
             [attr.aria-live]="politeLiveRegion"
           >
-            <span class="material-symbols-outlined stop-detail__status-icon stop-detail__loading-icon"
-              >hourglass_top</span
-            >
+            <span class="app-loading-indicator app-loading-indicator--lg" aria-hidden="true"></span>
             <p class="stop-detail__loading-text">{{ translationKeys.loading | translate }}</p>
+            <div class="stop-detail__loading-preview" aria-hidden="true">
+              <span class="app-loading-skeleton stop-detail__loading-line stop-detail__loading-line--wide"></span>
+              <span class="app-loading-skeleton stop-detail__loading-line"></span>
+            </div>
           </div>
         </section>
       </ng-container>
 
       <ng-template #scheduleContent>
         <ng-container *ngIf="loadError$ | async; else scheduleLoaded">
-          <section class="stop-detail__card stop-detail__card--centered">
+          <section class="stop-detail__card stop-detail__card--centered app-async-reveal">
             <div
               class="stop-detail__status stop-detail__error"
               [attr.role]="statusRole"
@@ -35,6 +37,13 @@
               <p class="stop-detail__error-description">
                 {{ translationKeys.error.description | translate }}
               </p>
+              <div
+                appAccessibleButton
+                class="app-outline-button stop-detail__retry"
+                (appAccessibleButtonActivated)="retrySchedule()"
+              >
+                {{ retryKey | translate }}
+              </div>
             </div>
           </section>
         </ng-container>
@@ -42,7 +51,7 @@
 
       <ng-template #scheduleLoaded>
         <ng-container *ngIf="viewModel$ | async as viewModel">
-          <section class="stop-detail__card">
+          <section class="stop-detail__card app-async-reveal">
             <div class="stop-detail__summary">
               <div class="stop-detail__summary-heading">
                 <span class="stop-detail__tag">{{ viewModel.stopCode }}</span>
@@ -127,146 +136,146 @@
             </div>
           </section>
 
-          <section class="stop-detail__panels">
-              <section class="stop-detail__panel">
-            <header class="stop-detail__panel-header">
-              <div>
-                <h2 class="stop-detail__panel-title">
-                  {{ translationKeys.schedule.upcomingTitle | translate }}
-                </h2>
-                <p class="stop-detail__panel-subtitle">
-                  {{
-                    translationKeys.schedule.upcomingSubtitle
-                      | translate: { count: viewModel.upcoming.length }
-                  }}
-                </p>
+          <section class="stop-detail__panels app-async-reveal">
+            <section class="stop-detail__panel">
+              <header class="stop-detail__panel-header">
+                <div>
+                  <h2 class="stop-detail__panel-title">
+                    {{ translationKeys.schedule.upcomingTitle | translate }}
+                  </h2>
+                  <p class="stop-detail__panel-subtitle">
+                    {{
+                      translationKeys.schedule.upcomingSubtitle
+                        | translate: { count: viewModel.upcoming.length }
+                    }}
+                  </p>
+                </div>
+              </header>
+              <div
+                *ngIf="timelineAnnouncement$ | async as announcement"
+                class="app-visually-hidden stop-detail__live-region"
+                aria-live="polite"
+              >
+                {{ announcement }}
               </div>
-            </header>
-            <div
-              *ngIf="timelineAnnouncement$ | async as announcement"
-              class="app-visually-hidden stop-detail__live-region"
-              aria-live="polite"
-            >
-              {{ announcement }}
-            </div>
-            <ng-container *ngIf="viewModel.upcoming.length; else emptyUpcoming">
-              <ul class="stop-detail__list">
-                <li
-                  *ngFor="let item of viewModel.upcoming; trackBy: trackByServiceId"
-                  class="stop-detail__list-item"
-                  [class.stop-detail__list-item--highlight]="item.isNext"
-                >
-                  <div class="stop-detail__list-main">
-                    <div class="stop-detail__time-block">
-                      <span class="stop-detail__time">{{ item.arrivalTime | date: 'HH:mm' }}</span>
-                      <span class="stop-detail__relative" *ngIf="item.minutesUntilArrival > 0">
-                        {{
-                          translationKeys.status.arrivesIn
-                            | translate: { minutes: item.minutesUntilArrival }
-                        }}
+              <ng-container *ngIf="viewModel.upcoming.length; else emptyUpcoming">
+                <ul class="stop-detail__list">
+                  <li
+                    *ngFor="let item of viewModel.upcoming; trackBy: trackByServiceId"
+                    class="stop-detail__list-item"
+                    [class.stop-detail__list-item--highlight]="item.isNext"
+                  >
+                    <div class="stop-detail__list-main">
+                      <div class="stop-detail__time-block">
+                        <span class="stop-detail__time">{{ item.arrivalTime | date: 'HH:mm' }}</span>
+                        <span class="stop-detail__relative" *ngIf="item.minutesUntilArrival > 0">
+                          {{
+                            translationKeys.status.arrivesIn
+                              | translate: { minutes: item.minutesUntilArrival }
+                          }}
+                        </span>
+                        <span class="stop-detail__relative" *ngIf="item.minutesUntilArrival === 0">
+                          {{ translationKeys.status.arrivingNow | translate }}
+                        </span>
+                      </div>
+                      <div class="stop-detail__info">
+                        <span class="stop-detail__line">{{ item.lineCode }}</span>
+                        <span class="stop-detail__destination">{{ item.destination }}</span>
+                      </div>
+                    </div>
+                    <div class="stop-detail__badges">
+                      <span
+                        *ngIf="item.isAccessible"
+                        class="stop-detail__badge-icon"
+                        role="img"
+                        [attr.aria-label]="translationKeys.badges.accessible | translate"
+                      >
+                        <span class="material-symbols-outlined">accessible_forward</span>
                       </span>
-                      <span class="stop-detail__relative" *ngIf="item.minutesUntilArrival === 0">
-                        {{ translationKeys.status.arrivingNow | translate }}
+                      <span
+                        *ngIf="item.isUniversityOnly"
+                        class="stop-detail__badge-icon"
+                        role="img"
+                        [attr.aria-label]="translationKeys.badges.universityOnly | translate"
+                      >
+                        <span class="material-symbols-outlined">school</span>
                       </span>
                     </div>
-                    <div class="stop-detail__info">
-                      <span class="stop-detail__line">{{ item.lineCode }}</span>
-                      <span class="stop-detail__destination">{{ item.destination }}</span>
+                    <div class="stop-detail__progress" aria-hidden="true">
+                      <div
+                        class="stop-detail__progress-bar"
+                        [style.width.%]="item.progressPercentage"
+                      ></div>
                     </div>
-                  </div>
-                  <div class="stop-detail__badges">
-                    <span
-                      *ngIf="item.isAccessible"
-                      class="stop-detail__badge-icon"
-                      role="img"
-                      [attr.aria-label]="translationKeys.badges.accessible | translate"
-                    >
-                      <span class="material-symbols-outlined">accessible_forward</span>
-                    </span>
-                    <span
-                      *ngIf="item.isUniversityOnly"
-                      class="stop-detail__badge-icon"
-                      role="img"
-                      [attr.aria-label]="translationKeys.badges.universityOnly | translate"
-                    >
-                      <span class="material-symbols-outlined">school</span>
-                    </span>
-                  </div>
-                  <div class="stop-detail__progress" aria-hidden="true">
-                    <div
-                      class="stop-detail__progress-bar"
-                      [style.width.%]="item.progressPercentage"
-                    ></div>
-                  </div>
-                </li>
-              </ul>
-            </ng-container>
-            <ng-template #emptyUpcoming>
-              <p class="stop-detail__empty">
-                {{ translationKeys.schedule.emptyUpcoming | translate }}
-              </p>
-            </ng-template>
+                  </li>
+                </ul>
+              </ng-container>
+              <ng-template #emptyUpcoming>
+                <p class="stop-detail__empty">
+                  {{ translationKeys.schedule.emptyUpcoming | translate }}
+                </p>
+              </ng-template>
             </section>
 
             <section class="stop-detail__panel">
-          <header class="stop-detail__panel-header">
-            <div>
-              <h2 class="stop-detail__panel-title">
-                {{ translationKeys.schedule.pastTitle | translate }}
-              </h2>
-              <p class="stop-detail__panel-subtitle">
-                {{
-                  translationKeys.schedule.pastSubtitle
-                    | translate: { count: viewModel.past.length }
-                }}
-              </p>
-            </div>
-          </header>
-          <ng-container *ngIf="viewModel.past.length; else emptyPast">
-            <ul class="stop-detail__list">
-              <li
-                *ngFor="let item of viewModel.past; trackBy: trackByServiceId"
-                class="stop-detail__list-item stop-detail__list-item--muted"
-              >
-                <div class="stop-detail__list-main">
-                  <div class="stop-detail__time-block">
-                    <span class="stop-detail__time">{{ item.arrivalTime | date: 'HH:mm' }}</span>
-                    <span class="stop-detail__relative">
-                      {{
-                        translationKeys.status.departedAgo
-                          | translate: { minutes: item.minutesSinceDeparture }
-                      }}
-                    </span>
-                  </div>
-                  <div class="stop-detail__info">
-                    <span class="stop-detail__line">{{ item.lineCode }}</span>
-                    <span class="stop-detail__destination">{{ item.destination }}</span>
-                  </div>
+              <header class="stop-detail__panel-header">
+                <div>
+                  <h2 class="stop-detail__panel-title">
+                    {{ translationKeys.schedule.pastTitle | translate }}
+                  </h2>
+                  <p class="stop-detail__panel-subtitle">
+                    {{
+                      translationKeys.schedule.pastSubtitle
+                        | translate: { count: viewModel.past.length }
+                    }}
+                  </p>
                 </div>
-                <div class="stop-detail__badges">
-                  <span
-                    *ngIf="item.isAccessible"
-                    class="stop-detail__badge-icon"
-                    role="img"
-                    [attr.aria-label]="translationKeys.badges.accessible | translate"
+              </header>
+              <ng-container *ngIf="viewModel.past.length; else emptyPast">
+                <ul class="stop-detail__list">
+                  <li
+                    *ngFor="let item of viewModel.past; trackBy: trackByServiceId"
+                    class="stop-detail__list-item stop-detail__list-item--muted"
                   >
-                    <span class="material-symbols-outlined">accessible_forward</span>
-                  </span>
-                  <span
-                    *ngIf="item.isUniversityOnly"
-                    class="stop-detail__badge-icon"
-                    role="img"
-                    [attr.aria-label]="translationKeys.badges.universityOnly | translate"
-                  >
-                    <span class="material-symbols-outlined">school</span>
-                  </span>
-                </div>
-              </li>
-            </ul>
-          </ng-container>
-          <ng-template #emptyPast>
-            <p class="stop-detail__empty">{{ translationKeys.schedule.emptyPast | translate }}</p>
-          </ng-template>
+                    <div class="stop-detail__list-main">
+                      <div class="stop-detail__time-block">
+                        <span class="stop-detail__time">{{ item.arrivalTime | date: 'HH:mm' }}</span>
+                        <span class="stop-detail__relative">
+                          {{
+                            translationKeys.status.departedAgo
+                              | translate: { minutes: item.minutesSinceDeparture }
+                          }}
+                        </span>
+                      </div>
+                      <div class="stop-detail__info">
+                        <span class="stop-detail__line">{{ item.lineCode }}</span>
+                        <span class="stop-detail__destination">{{ item.destination }}</span>
+                      </div>
+                    </div>
+                    <div class="stop-detail__badges">
+                      <span
+                        *ngIf="item.isAccessible"
+                        class="stop-detail__badge-icon"
+                        role="img"
+                        [attr.aria-label]="translationKeys.badges.accessible | translate"
+                      >
+                        <span class="material-symbols-outlined">accessible_forward</span>
+                      </span>
+                      <span
+                        *ngIf="item.isUniversityOnly"
+                        class="stop-detail__badge-icon"
+                        role="img"
+                        [attr.aria-label]="translationKeys.badges.universityOnly | translate"
+                      >
+                        <span class="material-symbols-outlined">school</span>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </ng-container>
+              <ng-template #emptyPast>
+                <p class="stop-detail__empty">{{ translationKeys.schedule.emptyPast | translate }}</p>
+              </ng-template>
             </section>
           </section>
         </ng-container>
