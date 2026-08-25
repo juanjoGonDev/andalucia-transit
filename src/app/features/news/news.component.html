@@ -1,56 +1,136 @@
-<section
-  class="news"
-  appLayoutContent
-  [appLayoutContentNavigationKey]="layoutNavigationKey"
->
+<section class="news" appLayoutContent [appLayoutContentNavigationKey]="layoutNavigationKey">
   <div class="utility-container">
     <div class="app-layout__body">
-      <header class="news__hero app-hero">
-        <div class="app-hero__intro">
-          <h1 class="app-hero__title">{{ titleKey | translate }}</h1>
-          <p class="app-hero__description">{{ descriptionKey | translate }}</p>
-        </div>
-        <div class="app-hero__actions">
-          <div
-            appAccessibleButton
-            class="app-outline-button app-outline-button--compact news__refresh"
-            (appAccessibleButtonActivated)="refresh()"
-          >
-            <span class="material-symbols-outlined news__refresh-icon" aria-hidden="true">{{ refreshIconName }}</span>
-            {{ refreshLabelKey | translate }}
+      <ng-container *ngIf="state$ | async as state">
+        <header class="news__hero app-hero">
+          <div class="app-hero__intro">
+            <h1 class="app-hero__title">{{ translation.title | translate }}</h1>
+            <p class="app-hero__description">{{ translation.description | translate }}</p>
           </div>
-        </div>
-      </header>
+          <div class="app-hero__actions">
+            <div
+              appAccessibleButton
+              class="app-outline-button app-outline-button--compact news__refresh"
+              [appAccessibleButtonDisabled]="isBusy(state)"
+              [attr.aria-busy]="isBusy(state) ? 'true' : null"
+              (appAccessibleButtonActivated)="refresh()"
+            >
+              <span
+                *ngIf="isBusy(state); else refreshIcon"
+                class="app-loading-indicator app-loading-indicator--sm"
+                aria-hidden="true"
+              ></span>
+              <ng-template #refreshIcon>
+                <span class="material-symbols-outlined news__refresh-icon" aria-hidden="true">refresh</span>
+              </ng-template>
+              {{ translation.refresh | translate }}
+            </div>
+          </div>
+        </header>
 
-      <ng-container *ngIf="articles$ | async as articles">
-        <div *ngIf="articles.length === 0" class="news__empty">
-          <p class="news__empty-message">{{ emptyKey | translate }}</p>
-        </div>
-
-        <ul *ngIf="articles.length > 0" class="news__list" role="list">
-          <li *ngFor="let article of articles; trackBy: trackArticle" class="news__item">
-            <article class="news__card">
-              <header class="news__card-header">
-                <h2 class="news__card-title">{{ article.titleKey | translate }}</h2>
-                <time class="news__card-date" [attr.datetime]="article.publishedAt">
-                  {{ updatedLabelKey | translate:{ date: (article.publishedAt | date: dateFormat : timezone) } }}
-                </time>
-              </header>
-              <p class="news__card-summary">{{ article.summaryKey | translate }}</p>
-              <div class="news__card-actions">
-                <a
-                  appAccessibleButton
-                  class="app-solid-button app-solid-button--compact news__card-link"
-                  [attr.href]="article.link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {{ readMoreLabelKey | translate }}
-                </a>
-              </div>
+        <main class="news__content" [attr.aria-busy]="isBusy(state) ? 'true' : null">
+          <section
+            *ngIf="state.status === 'loading'"
+            class="news__loading app-async-reveal"
+            role="status"
+            aria-live="polite"
+          >
+            <div class="app-visually-hidden">{{ statusTranslation.loading | translate }}</div>
+            <article class="news__card news__card--skeleton" *ngFor="let item of [0, 1, 2]">
+              <span class="app-loading-skeleton news__skeleton-line news__skeleton-line--title"></span>
+              <span class="app-loading-skeleton news__skeleton-line news__skeleton-line--date"></span>
+              <span class="app-loading-skeleton news__skeleton-line"></span>
+              <span class="app-loading-skeleton news__skeleton-line news__skeleton-line--short"></span>
             </article>
-          </li>
-        </ul>
+          </section>
+
+          <div
+            *ngIf="state.status === 'refreshing'"
+            class="news__status app-async-status app-async-status--compact"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="app-loading-indicator app-loading-indicator--sm" aria-hidden="true"></span>
+            <div class="app-async-status__body">
+              <p class="app-async-status__description">{{ statusTranslation.refreshing | translate }}</p>
+            </div>
+          </div>
+
+          <div
+            *ngIf="state.status === 'stale'"
+            class="news__status app-async-status app-async-status--warning app-async-reveal"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">cloud_off</span>
+            <div class="app-async-status__body">
+              <p class="app-async-status__description">{{ statusTranslation.stale | translate }}</p>
+              <div class="app-async-status__actions">
+                <div
+                  appAccessibleButton
+                  class="app-outline-button app-outline-button--compact"
+                  (appAccessibleButtonActivated)="refresh()"
+                >
+                  {{ statusTranslation.retry | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            *ngIf="state.status === 'error'"
+            class="news__status app-async-status app-async-status--error app-async-reveal"
+            role="alert"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">error</span>
+            <div class="app-async-status__body">
+              <p class="app-async-status__title">{{ statusTranslation.error | translate }}</p>
+              <div class="app-async-status__actions">
+                <div
+                  appAccessibleButton
+                  class="app-outline-button app-outline-button--compact"
+                  (appAccessibleButtonActivated)="refresh()"
+                >
+                  {{ statusTranslation.retry | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ng-container *ngIf="state.status !== 'loading' && state.status !== 'error'">
+            <ng-container *ngIf="state.articles.length > 0; else emptyState">
+              <ul class="news__list app-async-reveal">
+                <li *ngFor="let article of state.articles; trackBy: trackArticle" class="news__item">
+                  <article class="news__card">
+                    <header class="news__card-header">
+                      <h2 class="news__card-title">{{ article.titleKey | translate }}</h2>
+                      <time class="news__card-date" [attr.datetime]="article.publishedAt">
+                        {{ article.publishedAt | date: 'longDate' }}
+                      </time>
+                    </header>
+                    <p class="news__card-summary">{{ article.summaryKey | translate }}</p>
+                    <div class="news__card-actions">
+                      <a
+                        class="app-outline-button app-outline-button--compact news__card-link"
+                        [href]="article.link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {{ translation.readMore | translate }}
+                      </a>
+                    </div>
+                  </article>
+                </li>
+              </ul>
+            </ng-container>
+          </ng-container>
+        </main>
+
+        <ng-template #emptyState>
+          <div class="news__empty app-async-reveal" role="status" aria-live="polite">
+            <p class="news__empty-message">{{ translation.empty | translate }}</p>
+          </div>
+        </ng-template>
       </ng-container>
     </div>
   </div>
