@@ -99,11 +99,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm exec prettier --check \
-            .agents/specs/2026-08-25-home-mobile-tabs.md \
-            .github/workflows/pr-visual-evidence.yml \
-            src/app/features/home/home.component.scss \
+          format_paths=(
+            .agents/specs/2026-08-25-home-mobile-tabs.md
+            .github/workflows/pr-visual-evidence.yml
+            src/app/features/home/home.component.scss
             tests/playwright/home-tabs.layout.spec.ts
+          )
+          if ! pnpm exec prettier --check "${format_paths[@]}"; then
+            pnpm exec prettier --write "${format_paths[@]}"
+            git diff -- "${format_paths[@]}"
+            exit 1
+          fi
           pnpm run lint
           pnpm run test:scripts
           pnpm run test:angular
