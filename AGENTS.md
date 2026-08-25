@@ -51,9 +51,10 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - 2025-10-30: Stop detail upcoming timeline broadcasts polite live-region summaries (line, destination, status, progress) via `StopDetailComponent`; keep translations under `stopDetail.announcements.progress` and unit/Playwright coverage aligned.
 - 2025-10-31: Theme token `--color-text-tertiary` locked at `#5a627b` to keep tertiary metadata ≥4.5:1 against `--color-background`; guard via `src/styles/theme-rules.spec.ts` and Playwright `tests/playwright/theme.contrast.spec.ts`.
 - 2025-10-31: Home dashboard tabs persist selection using the `tab` query param and storage key `APP_CONFIG.homeData.tabs.storageKey`; direct loads canonicalize to the tab route, focus restores after history navigation, and coverage lives in `home.component.spec.ts` plus `cypress/e2e/home-tabs-persistence.cy.ts`.
-- 2025-11-01: Documentation evidence logging now relies on textual notes only; local captures remain gitignored and must not be uploaded or linked.
+- 2025-11-01: Documentation evidence logging uses textual observations in audit docs while local captures remain gitignored.
 - 2025-11-01: Added a regression checklist for contrast token changes in `docs/ui-theme.md` and cross-referenced it in the knowledge map.
 - 2025-11-01: Added a manual GitHub Pages deployment workflow that overwrites the root site from a selected ref.
+- 2026-08-25: Pull requests use `.github/workflows/pr-visual-evidence.yml` to publish temporary mobile and desktop screenshots from the exact PR head SHA; generated media is never committed and is removed when the PR closes.
 
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.
@@ -84,7 +85,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 
 ## Legal & Regulatory Compliance
 - **GDPR / RGPD (Reglamento UE 2016/679 & LO 3/2018):** collect only necessary data; geolocation requires explicit browser consent and an in-app explanation; publish an accessible privacy notice covering controller identity, processing purposes, lawful basis, retention, third parties (none by default), and user rights (access, rectification, erasure, restriction, portability, objection). Document procedures for handling rights requests and reporting personal data breaches within 72 hours.
-- **Accessibility (Real Decreto 1112/2018, BOE-A-2018-12699 & EN 301 549):** maintain WCAG 2.1 AA compliance (structure, contrast, keyboard support, focus management, ARIA roles, language attributes). Provide an accessibility statement in `docs/`, perform automated (axe, Lighthouse) and manual audits, and track remediation tasks.
+- **Accessibility (Real Decreto 1112/2018, BOE-A-2018-12699 & EN 301 549):** target WCAG 2.2 AA compliance for frontend changes (structure, contrast, keyboard support, focus management, reflow, target size, motion, and ARIA semantics). Provide an accessibility statement in `docs/`, perform automated (axe, Lighthouse) and manual audits, and track remediation tasks.
 - **Additional obligations:** serve the app over HTTPS, provide legal notice/contact information, and ensure cookies or analytics (if added) respect EU ePrivacy consent rules.
 
 ## PWA, Offline, and Caching Strategy
@@ -113,7 +114,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Defaults live in `scripts/screenshot.config.json`, and teams can supply alternative paths through the `--config` flag to tailor timeouts, directories, and other repeated inputs.
 - Example capture command: `npm run screenshot -- --url=https://example.org --waitFor=#app-root --name=home-desktop`.
 - The tool can emit HAR files, console transcripts, and PNG output, and accepts ordered scenarios for multi-step flows.
-- All generated artefacts live under `artifacts/screenshots` (or the configured directory) which is ignored by Git; keep captures local and document findings using textual evidence logs instead of uploading media.
+- Local generated artefacts live under `artifacts/screenshots` (or the configured directory) and remain gitignored. Pull-request evidence is generated separately by `.github/workflows/pr-visual-evidence.yml`, published as temporary release assets, and rendered in the PR conversation.
 
 ## Performance & UX Guardrails
 - Leverage lazy-loaded routes and code splitting; reuse API results with RxJS `shareReplay` or caching services; offload heavy computations (e.g., nearest stop calculations) to Web Workers if needed.
@@ -131,8 +132,10 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - All AI-generated responses, commit messages, and documentation updates must be written in English.
 
 ## Evidence Policy
-- Every visual modification requires a textual evidence entry describing the viewport, reproduction steps, selectors or components inspected, and expected vs actual behavior.
-- Local screenshots may be captured for validation but must remain in gitignored directories and must not be uploaded or linked in documentation.
+- Every pull request that can affect rendered UI must publish deterministic visual evidence from the exact PR head SHA. The canonical baseline is Spanish at 390×844 and 1440×900 for the affected or canonical product surfaces.
+- CI-generated screenshots are temporary review artefacts: publish them through `.github/workflows/pr-visual-evidence.yml`, never commit them to Git, and remove them automatically when the pull request closes.
+- Every visual modification also requires a textual evidence entry describing the viewport, reproduction steps, selectors or components inspected, and expected vs actual behavior.
+- Use deterministic mock or seeded data for screenshot publication. Never expose credentials, personal data, tokens, private URLs, or other sensitive values in visual evidence.
 - Record evidence summaries in the relevant audit doc and in `docs/feature-checklist.md` entries for completed tasks.
 
 ## Component Architecture Policy
@@ -143,13 +146,15 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 ## Execution Policy
 - The AI must complete every assigned task without refusal, postponement, or omission.
 - Do not leave tasks partially executed; ensure all required actions are finished before responding.
-- Do not conclude any task until the textual evidence is recorded in the relevant audit doc and reflected in the checklist entry.
+- Do not conclude UI work until textual evidence is recorded and the PR visual-evidence workflow has successfully published screenshots for the current head SHA.
 
 ## Evidence Logging Guide
 - Use the textual evidence template: viewport, reproduction steps, selectors/components, observed vs expected behavior, and relevant measurements (contrast ratios, spacing values).
 - Place evidence in the appropriate audit doc and append a short summary under the completed checklist item in `docs/feature-checklist.md`.
-- Keep any locally captured screenshots in gitignored folders and reference only the textual evidence in documentation or status updates.
+- Keep ad-hoc local screenshots in gitignored folders. CI-generated PR screenshots are the only review media that should be published by default.
 
 ## Automated Evidence Capture
-- Use the Playwright workflow in `scripts/record.js` when you need repeatable local captures or scripted reproduction steps.
-- Record the script output, viewport, and observations as textual evidence in audit docs; do not publish or link the captured media.
+- Use `scripts/record.js` / `scripts/screenshot.js` for repeatable captures and scripted reproduction steps.
+- `.github/workflows/pr-visual-evidence.yml` is the canonical PR publisher: it resolves the open PR, checks out its exact head SHA, starts deterministic mock data, captures mobile and desktop screenshots, verifies the head is still current, publishes temporary release assets, and updates one PR comment.
+- `.github/workflows/pr-visual-evidence-cleanup.yml` removes the temporary release/tag and marks the evidence comment expired when the pull request closes.
+- Do not weaken stale-head checks, fork/trust guards, size limits, or cleanup behavior to make evidence publication pass.
