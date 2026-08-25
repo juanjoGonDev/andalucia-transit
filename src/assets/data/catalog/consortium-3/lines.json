@@ -1,65 +1,15 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:18.364Z",
+    "generatedAt": "2026-08-25T05:32:37.541Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "itemCount": 72
+    "itemCount": 70
   },
   "lines": [
     {
-      "id": "1121",
-      "code": "0180D",
-      "name": "0180D - Granada - Cájar (Directo)",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Empresa Liñan",
-        "S.A."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "1123",
-      "code": "0256C",
-      "name": "0256 CITAI",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "NEX Continental Holdings",
-        "S.L.U."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "653",
+      "id": "1128",
       "code": "0104",
       "name": "A.Humeya - Jun - S.Jerónimo",
       "mode": "AUTOBUS",
@@ -68,7 +18,7 @@
         "Carlos Fernández de la Torre",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -334,6 +284,31 @@
       "inboundPath": []
     },
     {
+      "id": "1131",
+      "code": "0180D",
+      "name": "Granada - Cájar (Directo)",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "Empresa Liñan",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "727",
       "code": "0395",
       "name": "Granada - Cenes de la Vega - Dúdar - Quéntar",
@@ -368,7 +343,7 @@
         "Ureña e Hijos",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -567,7 +542,7 @@
         "Ureña e Hijos",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -590,7 +565,7 @@
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
-        "S.A."
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -615,7 +590,7 @@
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
-        "S.A."
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -640,7 +615,7 @@
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
-        "S.A."
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -665,7 +640,7 @@
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
-        "S.A."
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -683,7 +658,7 @@
       "inboundPath": []
     },
     {
-      "id": "806",
+      "id": "1125",
       "code": "0100",
       "name": "Granada - Jun - A.Humeya - Víznar",
       "mode": "AUTOBUS",
@@ -692,7 +667,7 @@
         "Carlos Fernández de la Torre",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -708,16 +683,16 @@
       "inboundPath": []
     },
     {
-      "id": "639",
+      "id": "1127",
       "code": "0102",
-      "name": "Granada - Jun - Alfacar",
+      "name": "Granada - Jun - Alfacar ",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Carlos Fernández de la Torre",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -733,7 +708,7 @@
       "inboundPath": []
     },
     {
-      "id": "1069",
+      "id": "1126",
       "code": "0101",
       "name": "Granada - Jun - Alfacar - Víznar",
       "mode": "AUTOBUS",
@@ -742,7 +717,7 @@
         "Carlos Fernández de la Torre",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -983,39 +958,12 @@
       "inboundPath": []
     },
     {
-      "id": "995",
-      "code": "0174A",
-      "name": "Granada - Ogíjares - Zubia (Circular)",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Bus Metropolitano de Granada",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "1027",
       "code": "0323",
       "name": "Granada - Olivares - Tiena - Moclín - Tózar - Limones",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
-        "Autocares Rona",
-        "S.L.",
         "NEX Continental Holdings",
         "S.L.U."
       ],
@@ -1235,14 +1183,39 @@
       "inboundPath": []
     },
     {
-      "id": "1056",
-      "code": "0390",
-      "name": "Granada - Pinos Genil - Güejar Sierra",
+      "id": "971",
+      "code": "0110-V",
+      "name": "Granada - Peligros -Caserío Fonseca - Monteluz",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "NEX Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "1130",
+      "code": "0390P",
+      "name": "Granada - Pinos Genil - Güejar Sierra provisional",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
-        "S.A."
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -1344,7 +1317,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1369,7 +1342,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1394,7 +1367,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1560,31 +1533,6 @@
       "inboundPath": []
     },
     {
-      "id": "944",
-      "code": "SNV",
-      "name": "Granada y Sierra Nevada-Verano",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "Autotransportes Tocina",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "1112",
       "code": "0245",
       "name": "Granada-Aeropuerto",
@@ -1594,7 +1542,7 @@
         "Alsa Granada Airport",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1667,7 +1615,7 @@
       "modeId": "1",
       "operators": [
         "Empresa Liñan",
-        "S.A."
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,

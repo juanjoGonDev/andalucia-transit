@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:14.624Z",
+    "generatedAt": "2026-08-25T05:32:33.413Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "stopCount": 839
+    "stopCount": 841
   },
   "stops": [
     {
@@ -4150,6 +4150,21 @@
     },
     {
       "consortiumId": 3,
+      "stopId": "16109",
+      "stopCode": "16109",
+      "name": "Clavel 3",
+      "municipality": "Cúllar Vega",
+      "municipalityId": "18057",
+      "nucleus": "El Ventorrillo",
+      "nucleusId": "488",
+      "zone": "B",
+      "location": {
+        "latitude": 37.1594166,
+        "longitude": -3.6987118
+      }
+    },
+    {
+      "consortiumId": 3,
       "stopId": "132",
       "stopCode": "132",
       "name": "Cno. Ancho",
@@ -6499,8 +6514,8 @@
       "nucleusId": "202",
       "zone": "A",
       "location": {
-        "latitude": 37.144826216000965,
-        "longitude": -3.6017887729001057
+        "latitude": 37.1443974,
+        "longitude": -3.6021047
       }
     },
     {
@@ -10369,8 +10384,8 @@
       "nucleusId": "241",
       "zone": "B",
       "location": {
-        "latitude": 37.23423857170162,
-        "longitude": -3.6506058275699615
+        "latitude": 37.2341915,
+        "longitude": -3.6506042
       }
     },
     {
@@ -11166,6 +11181,21 @@
       "location": {
         "latitude": 37.1914205184145,
         "longitude": -3.608377128839493
+      }
+    },
+    {
+      "consortiumId": 3,
+      "stopId": "16108",
+      "stopCode": "16108",
+      "name": "Ribera del Beiro Mondragones",
+      "municipality": "Granada",
+      "municipalityId": "18087",
+      "nucleus": "Granada",
+      "nucleusId": "202",
+      "zone": "A",
+      "location": {
+        "latitude": 37.189310013615085,
+        "longitude": -3.6112476496822508
       }
     },
     {

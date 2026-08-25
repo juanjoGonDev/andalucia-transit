@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:14.624Z",
+    "generatedAt": "2026-08-25T05:32:33.413Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
     "consortiumName": "Bahía de Cádiz",
-    "stopCount": 175
+    "stopCount": 176
   },
   "stops": [
     {
@@ -64,8 +64,8 @@
       "nucleusId": "42",
       "zone": "K",
       "location": {
-        "latitude": 36.750376,
-        "longitude": -6.064607
+        "latitude": 36.75033683761318,
+        "longitude": -6.064587212548067
       }
     },
     {
@@ -814,8 +814,8 @@
       "nucleusId": "3",
       "zone": "C",
       "location": {
-        "latitude": 36.432479,
-        "longitude": -6.129915
+        "latitude": 36.432902007264104,
+        "longitude": -6.13138010943027
       }
     },
     {
@@ -904,8 +904,8 @@
       "nucleusId": "3",
       "zone": "C",
       "location": {
-        "latitude": 36.42195038574302,
-        "longitude": -6.096100413619987
+        "latitude": 36.42153388542836,
+        "longitude": -6.093550941016199
       }
     },
     {
@@ -1437,7 +1437,7 @@
       "consortiumId": 2,
       "stopId": "202",
       "stopCode": "202",
-      "name": "Hospital De Jerez",
+      "name": "Hospital De Jerez-carretera A-2000",
       "municipality": "Jerez de la Frontera",
       "municipalityId": "6",
       "nucleus": "Jerez",
@@ -1570,6 +1570,21 @@
     },
     {
       "consortiumId": 2,
+      "stopId": "361",
+      "stopCode": "361",
+      "name": "Hospital Universitario de Jerez",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "zone": "K",
+      "location": {
+        "latitude": 36.699289838552495,
+        "longitude": -6.148633480981442
+      }
+    },
+    {
+      "consortiumId": 2,
       "stopId": "226",
       "stopCode": "226",
       "name": "Hospital Virgen Del Camino",
@@ -1617,7 +1632,7 @@
       "consortiumId": 2,
       "stopId": "360",
       "stopCode": "360",
-      "name": "Intercambiador de Transporte El Pto. de Santa Mª",
+      "name": "Intercambiador de Transporte",
       "municipality": "El Puerto de Santa María",
       "municipalityId": "5",
       "nucleus": "El Puerto de Santa María",

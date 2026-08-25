@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:18.364Z",
+    "generatedAt": "2026-08-25T05:32:37.541Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 208
+    "itemCount": 194
   },
   "nuclei": [
     {
@@ -13,6 +13,18 @@
       "municipalityId": "1",
       "zone": "A",
       "name": "Aeropuerto de Málaga"
+    },
+    {
+      "id": "226",
+      "municipalityId": "24",
+      "zone": "C",
+      "name": "Algarrobo Costa"
+    },
+    {
+      "id": "225",
+      "municipalityId": "24",
+      "zone": "C",
+      "name": "Algarrobo Pueblo"
     },
     {
       "id": "66",
@@ -31,6 +43,12 @@
       "municipalityId": "7",
       "zone": "C",
       "name": "Aljaima"
+    },
+    {
+      "id": "218",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Almayate"
     },
     {
       "id": "100",
@@ -75,7 +93,7 @@
       "name": "Ampliación de Teatinos"
     },
     {
-      "id": "202",
+      "id": "186",
       "municipalityId": "20",
       "zone": "E",
       "name": "Antequera"
@@ -105,12 +123,6 @@
       "name": "Asociación Los Verdiales"
     },
     {
-      "id": "30",
-      "municipalityId": "1",
-      "zone": "A",
-      "name": "Asperones"
-    },
-    {
       "id": "92",
       "municipalityId": "7",
       "zone": "B",
@@ -129,6 +141,12 @@
       "name": "Azucarera"
     },
     {
+      "id": "214",
+      "municipalityId": "22",
+      "zone": "C",
+      "name": "Barriada Pastelero"
+    },
+    {
       "id": "117",
       "municipalityId": "15",
       "zone": "D",
@@ -139,6 +157,12 @@
       "municipalityId": "4",
       "zone": "B",
       "name": "Benagalbón"
+    },
+    {
+      "id": "220",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Benajarafe"
     },
     {
       "id": "49",
@@ -189,6 +213,12 @@
       "name": "Calahonda"
     },
     {
+      "id": "223",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Caleta de Vélez"
+    },
+    {
       "id": "3",
       "municipalityId": "1",
       "zone": "A",
@@ -205,12 +235,6 @@
       "municipalityId": "3",
       "zone": "B",
       "name": "Carola"
-    },
-    {
-      "id": "182",
-      "municipalityId": "2",
-      "zone": "C",
-      "name": "Carretera Mijas-Fuengirola"
     },
     {
       "id": "141",
@@ -279,6 +303,12 @@
       "name": "Cerros del Águila"
     },
     {
+      "id": "221",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Chilches"
+    },
+    {
       "id": "15",
       "municipalityId": "1",
       "zone": "A",
@@ -303,22 +333,10 @@
       "name": "Colmenarejo"
     },
     {
-      "id": "35",
-      "municipalityId": "1",
-      "zone": "A",
-      "name": "Colonia Santa Inés"
-    },
-    {
       "id": "157",
       "municipalityId": "4",
       "zone": "B",
       "name": "Cortijo Blanco"
-    },
-    {
-      "id": "133",
-      "municipalityId": "1",
-      "zone": "B",
-      "name": "Cortijo de Mazas"
     },
     {
       "id": "10",
@@ -331,24 +349,6 @@
       "municipalityId": "13",
       "zone": "B",
       "name": "Cortijo Maza"
-    },
-    {
-      "id": "191",
-      "municipalityId": "20",
-      "zone": "E",
-      "name": "Cortijo Pachén"
-    },
-    {
-      "id": "28",
-      "municipalityId": "1",
-      "zone": "A",
-      "name": "Cortijo Pizarro"
-    },
-    {
-      "id": "94",
-      "municipalityId": "8",
-      "zone": "C",
-      "name": "Cortijo Ratón"
     },
     {
       "id": "58",
@@ -375,22 +375,10 @@
       "name": "Cruce Guardia Civil"
     },
     {
-      "id": "82",
-      "municipalityId": "5",
-      "zone": "B",
-      "name": "Cruce Peñón"
-    },
-    {
       "id": "65",
       "municipalityId": "4",
       "zone": "B",
       "name": "Ctra. Benagalbón"
-    },
-    {
-      "id": "74",
-      "municipalityId": "5",
-      "zone": "B",
-      "name": "Cuatro Vientos"
     },
     {
       "id": "160",
@@ -409,12 +397,6 @@
       "municipalityId": "7",
       "zone": "B",
       "name": "Doñana"
-    },
-    {
-      "id": "76",
-      "municipalityId": "5",
-      "zone": "B",
-      "name": "Doñana (antiguo)"
     },
     {
       "id": "169",
@@ -483,12 +465,6 @@
       "name": "Est. FFCC Álora"
     },
     {
-      "id": "186",
-      "municipalityId": "20",
-      "zone": "E",
-      "name": "Estación Autobuses Antequera"
-    },
-    {
       "id": "127",
       "municipalityId": "7",
       "zone": "B",
@@ -531,12 +507,6 @@
       "name": "Gibralgalia"
     },
     {
-      "id": "97",
-      "municipalityId": "8",
-      "zone": "C",
-      "name": "Gibralgalia (antiguo)"
-    },
-    {
       "id": "207",
       "municipalityId": "1",
       "zone": "A",
@@ -555,12 +525,6 @@
       "name": "Hipódromo"
     },
     {
-      "id": "129",
-      "municipalityId": "3",
-      "zone": "B",
-      "name": "Holiday World"
-    },
-    {
       "id": "192",
       "municipalityId": "20",
       "zone": "E",
@@ -571,6 +535,12 @@
       "municipalityId": "7",
       "zone": "B",
       "name": "Hospital Valle del Guadalhorce"
+    },
+    {
+      "id": "222",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Hospital Vélez Málaga"
     },
     {
       "id": "17",
@@ -633,16 +603,10 @@
       "name": "La Redonda"
     },
     {
-      "id": "79",
-      "municipalityId": "5",
-      "zone": "B",
-      "name": "La Trampa"
-    },
-    {
-      "id": "33",
-      "municipalityId": "1",
-      "zone": "A",
-      "name": "Las Castañetas"
+      "id": "224",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Lagos"
     },
     {
       "id": "46",
@@ -659,14 +623,8 @@
     {
       "id": "193",
       "municipalityId": "20",
-      "zone": "E",
+      "zone": "D",
       "name": "Las Pedrizas"
-    },
-    {
-      "id": "155",
-      "municipalityId": "4",
-      "zone": "B",
-      "name": "Lo Cea"
     },
     {
       "id": "156",
@@ -693,12 +651,6 @@
       "name": "Los Boliches"
     },
     {
-      "id": "72",
-      "municipalityId": "5",
-      "zone": "B",
-      "name": "Los Cañitos"
-    },
-    {
       "id": "154",
       "municipalityId": "4",
       "zone": "B",
@@ -721,12 +673,6 @@
       "municipalityId": "20",
       "zone": "E",
       "name": "Los Llanos Antequera"
-    },
-    {
-      "id": "34",
-      "municipalityId": "1",
-      "zone": "A",
-      "name": "Los Manceras"
     },
     {
       "id": "63",
@@ -793,12 +739,6 @@
       "municipalityId": "2",
       "zone": "C",
       "name": "Mijas Pueblo"
-    },
-    {
-      "id": "134",
-      "municipalityId": "1",
-      "zone": "B",
-      "name": "Monsálvez"
     },
     {
       "id": "209",
@@ -921,12 +861,6 @@
       "name": "Pol. Ind. Alh. de la Torre"
     },
     {
-      "id": "32",
-      "municipalityId": "1",
-      "zone": "A",
-      "name": "Portales Victoria"
-    },
-    {
       "id": "71",
       "municipalityId": "5",
       "zone": "B",
@@ -981,28 +915,10 @@
       "name": "Romeral"
     },
     {
-      "id": "173",
-      "municipalityId": "2",
-      "zone": "C",
-      "name": "Rotonda Ford"
-    },
-    {
-      "id": "38",
-      "municipalityId": "1",
-      "zone": "A",
-      "name": "Rotonda PTA"
-    },
-    {
       "id": "26",
       "municipalityId": "1",
       "zone": "A",
       "name": "San Cayetano"
-    },
-    {
-      "id": "27",
-      "municipalityId": "1",
-      "zone": "A",
-      "name": "San Isidro"
     },
     {
       "id": "148",
@@ -1021,12 +937,6 @@
       "municipalityId": "20",
       "zone": "E",
       "name": "Santa Ana"
-    },
-    {
-      "id": "31",
-      "municipalityId": "1",
-      "zone": "A",
-      "name": "Santa Matilde"
     },
     {
       "id": "12",
@@ -1095,6 +1005,12 @@
       "name": "Torre Benagalbón"
     },
     {
+      "id": "216",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Torre del Mar"
+    },
+    {
       "id": "78",
       "municipalityId": "5",
       "zone": "B",
@@ -1125,12 +1041,6 @@
       "name": "Totalán"
     },
     {
-      "id": "50",
-      "municipalityId": "3",
-      "zone": "B",
-      "name": "Tritón"
-    },
-    {
       "id": "104",
       "municipalityId": "11",
       "zone": "B",
@@ -1155,22 +1065,28 @@
       "name": "Urb. Miraflores"
     },
     {
-      "id": "121",
-      "municipalityId": "15",
-      "zone": "D",
-      "name": "Vado del Álamo"
-    },
-    {
       "id": "185",
       "municipalityId": "19",
       "zone": "E",
       "name": "Valle de Abdalajís"
     },
     {
+      "id": "219",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Valleniza"
+    },
+    {
       "id": "212",
       "municipalityId": "2",
       "zone": "C",
       "name": "Valtocado"
+    },
+    {
+      "id": "215",
+      "municipalityId": "23",
+      "zone": "C",
+      "name": "Vélez Málaga"
     },
     {
       "id": "178",

@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:18.364Z",
+    "generatedAt": "2026-08-25T05:32:37.541Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 7,
     "consortiumName": "Área de Jaén",
-    "itemCount": 40
+    "itemCount": 42
   },
   "lines": [
     {
@@ -92,6 +92,31 @@
       "operators": [
         "Autocares Marcos Muñoz",
         "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "73",
+      "code": "M16-3",
+      "name": "Bailén - Jaén",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Samar",
+        "S.A."
       ],
       "hasNews": false,
       "concession": null,
@@ -242,7 +267,32 @@
         "Autocares Marcos Muñoz",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "322",
+      "code": "M20-22",
+      "name": "Jaén - Ciudad Jardín (La Guardia)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Samar",
+        "S.A."
+      ],
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -458,13 +508,14 @@
       "inboundPath": []
     },
     {
-      "id": "55",
-      "code": "M17-1",
-      "name": "Jaén - Los Villares",
+      "id": "328",
+      "code": "M17-01",
+      "name": "Jaén - Los Villares (2026)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
-        "MONTIJANOBUS S.L."
+        "Transportes Romero",
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -557,9 +608,9 @@
       "inboundPath": []
     },
     {
-      "id": "49",
-      "code": "M11-2",
-      "name": "Jaén - Pegalajar (N-323-a)",
+      "id": "325",
+      "code": "M11-01",
+      "name": "Jaén - Pegalajar (2026)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -582,14 +633,14 @@
       "inboundPath": []
     },
     {
-      "id": "44",
-      "code": "M10-1",
-      "name": "Jaén - Sotogordo Por Vados De Torralba",
+      "id": "326",
+      "code": "M10-01",
+      "name": "Jaén - Sotogordo Por Vados De Torralba(2026)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
-        "Autocares Montijano",
-        "S.L."
+        "Autocares Samar",
+        "S.A."
       ],
       "hasNews": false,
       "concession": null,
@@ -632,13 +683,14 @@
       "inboundPath": []
     },
     {
-      "id": "56",
-      "code": "M17-2",
-      "name": "Jaén - Valdepeñas",
+      "id": "329",
+      "code": "M17-02",
+      "name": "Jaén - Valdepeñas (2026)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
-        "MONTIJANOBUS S.L."
+        "Transportes Romero",
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -681,14 +733,14 @@
       "inboundPath": []
     },
     {
-      "id": "45",
-      "code": "M10-2",
-      "name": "Jaén - Villargordo",
+      "id": "327",
+      "code": "M10-02",
+      "name": "Jaén - Villargordo (2026)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
-        "Autocares Montijano",
-        "S.L."
+        "Autocares Samar",
+        "S.A."
       ],
       "hasNews": false,
       "concession": null,
@@ -730,14 +782,14 @@
       "inboundPath": []
     },
     {
-      "id": "176",
-      "code": "M10-6",
-      "name": "Jaén -Torreblascopedro Por Vados de Torralba",
+      "id": "324",
+      "code": "M10-03",
+      "name": "Jaén -Torreblascopedro Por Vados de Torralba (2026)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
-        "Autocares Montijano",
-        "S.L."
+        "Autocares Samar",
+        "S.A."
       ],
       "hasNews": false,
       "concession": null,
@@ -805,6 +857,31 @@
       "inboundPath": []
     },
     {
+      "id": "72",
+      "code": "M16-2",
+      "name": "La Carolina - Jaén",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Samar",
+        "S.A."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "203",
       "code": "M04-8",
       "name": "Linares - Jaén",
@@ -837,31 +914,6 @@
       "modeId": "1",
       "operators": [
         "Transportes Muñoz Amezcua",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "60",
-      "code": "M14-1",
-      "name": "Noalejo - Jaén",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Transportes Romero",
         "S.L."
       ],
       "hasNews": false,

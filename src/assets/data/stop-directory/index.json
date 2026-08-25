@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:14.624Z",
+    "generatedAt": "2026-08-25T05:32:33.413Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiums": [
@@ -50,50 +50,50 @@
         "shortName": "CTHU"
       }
     ],
-    "totalStops": 3996
+    "totalStops": 4062
   },
   "chunks": [
     {
       "id": "consortium-1",
       "consortiumId": 1,
       "path": "chunks/consortium-1.json",
-      "stopCount": 1148
+      "stopCount": 1147
     },
     {
       "id": "consortium-2",
       "consortiumId": 2,
       "path": "chunks/consortium-2.json",
-      "stopCount": 175
+      "stopCount": 176
     },
     {
       "id": "consortium-3",
       "consortiumId": 3,
       "path": "chunks/consortium-3.json",
-      "stopCount": 839
+      "stopCount": 841
     },
     {
       "id": "consortium-4",
       "consortiumId": 4,
       "path": "chunks/consortium-4.json",
-      "stopCount": 980
+      "stopCount": 1021
     },
     {
       "id": "consortium-5",
       "consortiumId": 5,
       "path": "chunks/consortium-5.json",
-      "stopCount": 74
+      "stopCount": 75
     },
     {
       "id": "consortium-6",
       "consortiumId": 6,
       "path": "chunks/consortium-6.json",
-      "stopCount": 515
+      "stopCount": 536
     },
     {
       "id": "consortium-7",
       "consortiumId": 7,
       "path": "chunks/consortium-7.json",
-      "stopCount": 64
+      "stopCount": 65
     },
     {
       "id": "consortium-8",
@@ -1265,6 +1265,28 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "2222",
+      "stopCode": "2222",
+      "name": "Algarrobo Costa / Los Tizos",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Costa",
+      "nucleusId": "226",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2220",
+      "stopCode": "2220",
+      "name": "Algarrobo Costa / Muebles García ",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Costa",
+      "nucleusId": "226",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "2032",
       "stopCode": "2032",
       "name": "Algarrobo del Hornillo",
@@ -1274,6 +1296,39 @@
       "nucleusId": "44",
       "consortiumId": 4,
       "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2234",
+      "stopCode": "2234",
+      "name": "Algarrobo Pueblo",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "738",
+      "stopCode": "738",
+      "name": "Alhama de Almería",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "743",
+      "stopCode": "743",
+      "name": "Alhama de Almería",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "25",
@@ -1362,6 +1417,28 @@
       "nucleusId": "233",
       "consortiumId": 8,
       "chunkId": "consortium-8"
+    },
+    {
+      "stopId": "2194",
+      "stopCode": "2194",
+      "name": "Almayate Entrada",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Almayate",
+      "nucleusId": "218",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2192",
+      "stopCode": "2192",
+      "name": "Almayate Tanger",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Almayate",
+      "nucleusId": "218",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "568",
@@ -1892,17 +1969,6 @@
       "chunkId": "consortium-1"
     },
     {
-      "stopId": "2584",
-      "stopCode": "2584",
-      "name": "AMBULATORIO GERENA (FRENTE)",
-      "municipality": "GERENA",
-      "municipalityId": "25",
-      "nucleus": "GERENA",
-      "nucleusId": "3183",
-      "consortiumId": 1,
-      "chunkId": "consortium-1"
-    },
-    {
       "stopId": "1591",
       "stopCode": "1591",
       "name": "Ambulatorio La Cala",
@@ -2055,6 +2121,17 @@
       "nucleusId": "241",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "2227",
+      "stopCode": "2227",
+      "name": "Antequera Centro",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "272",
@@ -2363,6 +2440,28 @@
       "nucleusId": "2",
       "consortiumId": 2,
       "chunkId": "consortium-2"
+    },
+    {
+      "stopId": "752",
+      "stopCode": "752",
+      "name": "Argamasón",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL ARGAMASÓN",
+      "nucleusId": "181",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "757",
+      "stopCode": "757",
+      "name": "Argamasón",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL ARGAMASÓN",
+      "nucleusId": "181",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "15781",
@@ -7227,6 +7326,17 @@
       "chunkId": "consortium-2"
     },
     {
+      "stopId": "2236",
+      "stopCode": "2236",
+      "name": "Avda. Karat",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "1676",
       "stopCode": "1676",
       "name": "Avda. La Candelaria",
@@ -7346,6 +7456,17 @@
       "nucleusId": "176",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "2246",
+      "stopCode": "2246",
+      "name": "Avda. Mar Alboran esq Paseo Marítimo Los Álamos",
+      "municipality": "Torremolinos",
+      "municipalityId": "13",
+      "nucleus": "Torremolinos",
+      "nucleusId": "107",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "1285",
@@ -8000,10 +8121,10 @@
       "stopId": "335",
       "stopCode": "335",
       "name": "Balanegra - Buena Vista",
-      "municipality": "BERJA",
-      "municipalityId": "4",
-      "nucleus": "BALANEGRA",
-      "nucleusId": "23",
+      "municipality": "BALANEGRA",
+      "municipalityId": "74",
+      "nucleus": "BALANEGRA NN",
+      "nucleusId": "180",
       "consortiumId": 6,
       "chunkId": "consortium-6"
     },
@@ -8011,10 +8132,10 @@
       "stopId": "336",
       "stopCode": "336",
       "name": "Balanegra - Buena Vista",
-      "municipality": "BERJA",
-      "municipalityId": "4",
-      "nucleus": "BALANEGRA",
-      "nucleusId": "23",
+      "municipality": "BALANEGRA",
+      "municipalityId": "74",
+      "nucleus": "BALANEGRA NN",
+      "nucleusId": "180",
       "consortiumId": 6,
       "chunkId": "consortium-6"
     },
@@ -8022,10 +8143,10 @@
       "stopId": "337",
       "stopCode": "337",
       "name": "Balanegra - Cabo Gata",
-      "municipality": "BERJA",
-      "municipalityId": "4",
-      "nucleus": "BALANEGRA",
-      "nucleusId": "23",
+      "municipality": "BALANEGRA",
+      "municipalityId": "74",
+      "nucleus": "BALANEGRA NN",
+      "nucleusId": "180",
       "consortiumId": 6,
       "chunkId": "consortium-6"
     },
@@ -8033,10 +8154,10 @@
       "stopId": "338",
       "stopCode": "338",
       "name": "Balanegra - Cabo Gata",
-      "municipality": "BERJA",
-      "municipalityId": "4",
-      "nucleus": "BALANEGRA",
-      "nucleusId": "23",
+      "municipality": "BALANEGRA",
+      "municipalityId": "74",
+      "nucleus": "BALANEGRA NN",
+      "nucleusId": "180",
       "consortiumId": 6,
       "chunkId": "consortium-6"
     },
@@ -9218,6 +9339,17 @@
       "chunkId": "consortium-6"
     },
     {
+      "stopId": "2180",
+      "stopCode": "2180",
+      "name": "Benajarafe Centro",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Benajarafe",
+      "nucleusId": "220",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "2147",
       "stopCode": "2147",
       "name": "Benalma ",
@@ -10397,7 +10529,7 @@
     {
       "stopId": "2850",
       "stopCode": "2850",
-      "name": "C PARROCO VICENTE MORA LA FABRICA(I)",
+      "name": "C PARROCO VICENTE MOYA LA FABRICA(I)",
       "municipality": "PILAS",
       "municipalityId": "34",
       "nucleus": "PILAS",
@@ -10408,7 +10540,7 @@
     {
       "stopId": "2849",
       "stopCode": "2849",
-      "name": "C PARROCO VICENTE MORA LA FABRICA(V)",
+      "name": "C PARROCO VICENTE MOYA LA FABRICA(V)",
       "municipality": "PILAS",
       "municipalityId": "34",
       "nucleus": "PILAS",
@@ -10600,6 +10732,17 @@
       "municipalityId": "8",
       "nucleus": "AZNALCOLLAR",
       "nucleusId": "3140",
+      "consortiumId": 1,
+      "chunkId": "consortium-1"
+    },
+    {
+      "stopId": "3436",
+      "stopCode": "3436",
+      "name": "C SEVILLA Nº 13",
+      "municipality": "GERENA",
+      "municipalityId": "25",
+      "nucleus": "GERENA",
+      "nucleusId": "3183",
       "consortiumId": 1,
       "chunkId": "consortium-1"
     },
@@ -10866,6 +11009,17 @@
       "nucleusId": "66",
       "consortiumId": 6,
       "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "2232",
+      "stopCode": "2232",
+      "name": "C.C. Ingenio",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Vélez Málaga",
+      "nucleusId": "215",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "251",
@@ -11473,6 +11627,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "816",
+      "stopCode": "816",
+      "name": "Calahonda",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Calahonda",
+      "nucleusId": "47",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "2747",
       "stopCode": "2747",
       "name": "CALAHOYAS",
@@ -11537,6 +11702,17 @@
       "nucleusId": "488",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "2210",
+      "stopCode": "2210",
+      "name": "Caleta de Vélez Hotel",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "1262",
@@ -11680,6 +11856,17 @@
       "nucleusId": "3196",
       "consortiumId": 1,
       "chunkId": "consortium-1"
+    },
+    {
+      "stopId": "85",
+      "stopCode": "85",
+      "name": "Calle Párroco Casado (Junto Cooperativa)",
+      "municipality": "Carcheles",
+      "municipalityId": "18",
+      "nucleus": "Carchel",
+      "nucleusId": "46",
+      "consortiumId": 7,
+      "chunkId": "consortium-7"
     },
     {
       "stopId": "70",
@@ -12705,6 +12892,28 @@
       "chunkId": "consortium-1"
     },
     {
+      "stopId": "754",
+      "stopCode": "754",
+      "name": "Carboneras",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "CARBONERAS",
+      "nucleusId": "176",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "755",
+      "stopCode": "755",
+      "name": "Carboneras",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "CARBONERAS",
+      "nucleusId": "176",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "495",
       "stopCode": "495",
       "name": "Cárcel",
@@ -13442,6 +13651,17 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "2188",
+      "stopCode": "2188",
+      "name": "Castillo del Marqués",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Valleniza",
+      "nucleusId": "219",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "15719",
       "stopCode": "15719",
       "name": "Catedral",
@@ -13719,7 +13939,7 @@
     {
       "stopId": "1450",
       "stopCode": "1450",
-      "name": "Cementerio San Cayetano 1",
+      "name": "Cementerio San Cayetano",
       "municipality": "Mijas",
       "municipalityId": "2",
       "nucleus": "Cementerio Fuengirola",
@@ -13730,7 +13950,7 @@
     {
       "stopId": "1451",
       "stopCode": "1451",
-      "name": "Cementerio San Cayetano 2",
+      "name": "Cementerio San Cayetano",
       "municipality": "Mijas",
       "municipalityId": "2",
       "nucleus": "Cementerio Fuengirola",
@@ -13911,6 +14131,17 @@
       "municipalityId": "13",
       "nucleus": "Torremolinos",
       "nucleusId": "107",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2224",
+      "stopCode": "2224",
+      "name": "Centro Comercial La Verónica",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -14487,6 +14718,28 @@
       "chunkId": "consortium-9"
     },
     {
+      "stopId": "2174",
+      "stopCode": "2174",
+      "name": "Chilches Costa/Mercadona",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Chilches",
+      "nucleusId": "221",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2172",
+      "stopCode": "2172",
+      "name": "Chilches Estación",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Chilches",
+      "nucleusId": "221",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "239",
       "stopCode": "239",
       "name": "Chimeneas 1",
@@ -14668,8 +14921,8 @@
       "name": "Ciudad Jardin",
       "municipality": "La Guardia de Jaén",
       "municipalityId": "3",
-      "nucleus": "La Guardia de Jaén",
-      "nucleusId": "5",
+      "nucleus": "Ciudad Jardin",
+      "nucleusId": "6",
       "consortiumId": 7,
       "chunkId": "consortium-7"
     },
@@ -14732,6 +14985,17 @@
       "stopId": "966",
       "stopCode": "966",
       "name": "Clavel 2",
+      "municipality": "Cúllar Vega",
+      "municipalityId": "18057",
+      "nucleus": "El Ventorrillo",
+      "nucleusId": "488",
+      "consortiumId": 3,
+      "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "16109",
+      "stopCode": "16109",
+      "name": "Clavel 3",
       "municipality": "Cúllar Vega",
       "municipalityId": "18057",
       "nucleus": "El Ventorrillo",
@@ -15411,6 +15675,17 @@
       "chunkId": "consortium-1"
     },
     {
+      "stopId": "2241",
+      "stopCode": "2241",
+      "name": "Cochinillo",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "2123",
       "stopCode": "2123",
       "name": "Coín",
@@ -15464,6 +15739,17 @@
       "nucleusId": "3266",
       "consortiumId": 1,
       "chunkId": "consortium-1"
+    },
+    {
+      "stopId": "2206",
+      "stopCode": "2206",
+      "name": "Colegio Andalucía/Avda. de las Naciones",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Vélez Málaga",
+      "nucleusId": "215",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "1698",
@@ -15794,6 +16080,17 @@
       "nucleusId": "1",
       "consortiumId": 2,
       "chunkId": "consortium-2"
+    },
+    {
+      "stopId": "2208",
+      "stopCode": "2208",
+      "name": "Comisaría",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "757",
@@ -19492,6 +19789,17 @@
       "chunkId": "consortium-6"
     },
     {
+      "stopId": "2176",
+      "stopCode": "2176",
+      "name": "El Cañuelo",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Chilches",
+      "nucleusId": "221",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "45",
       "stopCode": "45",
       "name": "El Carpio (Ecce Homo)",
@@ -19776,6 +20084,17 @@
       "nucleusId": "434",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "1940",
+      "stopCode": "1940",
+      "name": "El Gran Parque",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Mijas",
+      "nucleusId": "44",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "732",
@@ -20174,6 +20493,17 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "2212",
+      "stopCode": "2212",
+      "name": "El Pilarillo",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "653",
       "stopCode": "653",
       "name": "El Pinar",
@@ -20284,17 +20614,6 @@
       "chunkId": "consortium-4"
     },
     {
-      "stopId": "270",
-      "stopCode": "270",
-      "name": "EL PUNTO",
-      "municipality": "HUELVA",
-      "municipalityId": "2",
-      "nucleus": "HUELVA",
-      "nucleusId": "2",
-      "consortiumId": 9,
-      "chunkId": "consortium-9"
-    },
-    {
       "stopId": "311",
       "stopCode": "311",
       "name": "EL PUNTO - ESTACION",
@@ -20302,6 +20621,17 @@
       "municipalityId": "24",
       "nucleus": "LA PALMA DEL CDO",
       "nucleusId": "59",
+      "consortiumId": 9,
+      "chunkId": "consortium-9"
+    },
+    {
+      "stopId": "270",
+      "stopCode": "270",
+      "name": "EL PUNTO I",
+      "municipality": "HUELVA",
+      "municipalityId": "2",
+      "nucleus": "HUELVA",
+      "nucleusId": "2",
       "consortiumId": 9,
       "chunkId": "consortium-9"
     },
@@ -20533,6 +20863,17 @@
       "municipalityId": "1",
       "nucleus": "El Palo",
       "nucleusId": "4",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2201",
+      "stopCode": "2201",
+      "name": "El Tomillar",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -21290,7 +21631,7 @@
       "name": "Estación de Autobuses Antequera",
       "municipality": "Antequera",
       "municipalityId": "20",
-      "nucleus": "Estación Autobuses Antequera",
+      "nucleus": "Antequera",
       "nucleusId": "186",
       "consortiumId": 4,
       "chunkId": "consortium-4"
@@ -21703,6 +22044,28 @@
       "chunkId": "consortium-9"
     },
     {
+      "stopId": "2200",
+      "stopCode": "2200",
+      "name": "Estación Torre del Mar",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2226",
+      "stopCode": "2226",
+      "name": "Estación Tren Antequera",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "1613",
       "stopCode": "1613",
       "name": "Estación Tren Cártama",
@@ -21721,6 +22084,17 @@
       "municipalityId": "1",
       "nucleus": "Málaga",
       "nucleusId": "1",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2171",
+      "stopCode": "2171",
+      "name": "Estación Vélez Málaga",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Vélez Málaga",
+      "nucleusId": "215",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -21945,6 +22319,17 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "739",
+      "stopCode": "739",
+      "name": "Fábrica Cirera",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "2885",
       "stopCode": "2885",
       "name": "FABRICA DE LADRILLO",
@@ -22020,6 +22405,17 @@
       "nucleusId": "11",
       "consortiumId": 4,
       "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "742",
+      "stopCode": "742",
+      "name": "Farmacia",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "1267",
@@ -22194,6 +22590,17 @@
       "municipalityId": "2",
       "nucleus": "Mijas",
       "nucleusId": "44",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2196",
+      "stopCode": "2196",
+      "name": "Finca Poliester",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Almayate",
+      "nucleusId": "218",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -22836,17 +23243,6 @@
       "chunkId": "consortium-4"
     },
     {
-      "stopId": "816",
-      "stopCode": "816",
-      "name": "Garu Calahonda",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Calahonda",
-      "nucleusId": "47",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
       "stopId": "553",
       "stopCode": "553",
       "name": "Gasolinera",
@@ -23287,6 +23683,17 @@
       "chunkId": "consortium-1"
     },
     {
+      "stopId": "2168",
+      "stopCode": "2168",
+      "name": "Glorieta el Pandero",
+      "municipality": "Almogía",
+      "municipalityId": "9",
+      "nucleus": "Almogía",
+      "nucleusId": "100",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "3080",
       "stopCode": "3080",
       "name": "GLORIETA EL SALADO (FRENTE A PARQUE)",
@@ -23672,17 +24079,6 @@
       "chunkId": "consortium-3"
     },
     {
-      "stopId": "2001",
-      "stopCode": "2001",
-      "name": "Grua Municipal",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Mijas",
-      "nucleusId": "44",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
       "stopId": "3027",
       "stopCode": "3027",
       "name": "GRUPO PLANETA",
@@ -23769,17 +24165,6 @@
       "nucleusId": "5",
       "consortiumId": 6,
       "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "2583",
-      "stopCode": "2583",
-      "name": "GUARDIA CIVIL GERENA (I)",
-      "municipality": "GERENA",
-      "municipalityId": "25",
-      "nucleus": "GERENA",
-      "nucleusId": "3183",
-      "consortiumId": 1,
-      "chunkId": "consortium-1"
     },
     {
       "stopId": "2582",
@@ -24211,9 +24596,20 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "2207",
+      "stopCode": "2207",
+      "name": "Hospital Comarcal Vélez Málaga",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Hospital Vélez Málaga",
+      "nucleusId": "222",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "202",
       "stopCode": "202",
-      "name": "Hospital De Jerez",
+      "name": "Hospital De Jerez-carretera A-2000",
       "municipality": "Jerez de la Frontera",
       "municipalityId": "6",
       "nucleus": "Jerez",
@@ -24484,6 +24880,17 @@
       "nucleusId": "10",
       "consortiumId": 6,
       "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "361",
+      "stopCode": "361",
+      "name": "Hospital Universitario de Jerez",
+      "municipality": "Jerez de la Frontera",
+      "municipalityId": "6",
+      "nucleus": "Jerez",
+      "nucleusId": "14",
+      "consortiumId": 2,
+      "chunkId": "consortium-2"
     },
     {
       "stopId": "1615",
@@ -25124,17 +25531,6 @@
       "chunkId": "consortium-4"
     },
     {
-      "stopId": "1940",
-      "stopCode": "1940",
-      "name": "Hoyo 19",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Mijas",
-      "nucleusId": "44",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
       "stopId": "37",
       "stopCode": "37",
       "name": "Hoyo Los Caballos",
@@ -25450,6 +25846,28 @@
       "municipalityId": "1",
       "nucleus": "Málaga",
       "nucleusId": "1",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2228",
+      "stopCode": "2228",
+      "name": "IES Pedro Espinosa",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2229",
+      "stopCode": "2229",
+      "name": "IES Pintor Jose Mª Fernández",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -25819,7 +26237,7 @@
     {
       "stopId": "360",
       "stopCode": "360",
-      "name": "Intercambiador de Transporte El Pto. de Santa Mª",
+      "name": "Intercambiador de Transporte",
       "municipality": "El Puerto de Santa María",
       "municipalityId": "5",
       "nucleus": "El Puerto de Santa María",
@@ -27049,6 +27467,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "2203",
+      "stopCode": "2203",
+      "name": "La Mata",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Vélez Málaga",
+      "nucleusId": "215",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "249",
       "stopCode": "249",
       "name": "La Mojonera - Alhóndiga",
@@ -27302,17 +27731,6 @@
       "chunkId": "consortium-8"
     },
     {
-      "stopId": "1014",
-      "stopCode": "1014",
-      "name": "La Peñita",
-      "municipality": "Alhaurín el Grande",
-      "municipalityId": "6",
-      "nucleus": "Alhaurín el Grande",
-      "nucleusId": "83",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
       "stopId": "1032",
       "stopCode": "1032",
       "name": "La Pepa",
@@ -27489,6 +27907,17 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "2190",
+      "stopCode": "2190",
+      "name": "La Tiendecilla",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Valleniza",
+      "nucleusId": "219",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "136",
       "stopCode": "136",
       "name": "LA TORRE",
@@ -27566,6 +27995,17 @@
       "chunkId": "consortium-8"
     },
     {
+      "stopId": "2225",
+      "stopCode": "2225",
+      "name": "La Vilecha",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "538",
       "stopCode": "538",
       "name": "La Yesera",
@@ -27639,6 +28079,17 @@
       "municipalityId": "5",
       "nucleus": "Romeral",
       "nucleusId": "77",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2218",
+      "stopCode": "2218",
+      "name": "Lagos",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Lagos",
+      "nucleusId": "224",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -28358,6 +28809,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "160",
+      "stopCode": "160",
+      "name": "Las Presas sentido Los Barrios",
+      "municipality": "Los Barrios",
+      "municipalityId": "2",
+      "nucleus": "Los Barrios",
+      "nucleusId": "5",
+      "consortiumId": 5,
+      "chunkId": "consortium-5"
+    },
+    {
       "stopId": "269",
       "stopCode": "269",
       "name": "Las Redes/Los Esteros",
@@ -28611,6 +29073,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "2238",
+      "stopCode": "2238",
+      "name": "Lidl",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "511",
       "stopCode": "511",
       "name": "Limones",
@@ -28620,6 +29093,28 @@
       "nucleusId": "301",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "753",
+      "stopCode": "753",
+      "name": "Llano Don Antonio",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL LLANO DE DON ANTONIO",
+      "nucleusId": "182",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "756",
+      "stopCode": "756",
+      "name": "Llano Don Antonio",
+      "municipality": "CARBONERAS",
+      "municipalityId": "76",
+      "nucleus": "EL LLANO DE DON ANTONIO",
+      "nucleusId": "182",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "372",
@@ -28790,6 +29285,17 @@
       "stopId": "1373",
       "stopCode": "1373",
       "name": "Los Álamos (Tren)",
+      "municipality": "Torremolinos",
+      "municipalityId": "13",
+      "nucleus": "Torremolinos",
+      "nucleusId": "107",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "654",
+      "stopCode": "654",
+      "name": "Los Álamos Playa",
       "municipality": "Torremolinos",
       "municipalityId": "13",
       "nucleus": "Torremolinos",
@@ -29318,7 +29824,7 @@
       "stopId": "21",
       "stopCode": "21",
       "name": "Los Millares",
-      "municipality": "SANTA FE DE MONDUJAR",
+      "municipality": "SANTA FE DE MONDÚJAR",
       "municipalityId": "16",
       "nucleus": "LOS MILLARES",
       "nucleusId": "97",
@@ -29329,7 +29835,7 @@
       "stopId": "660",
       "stopCode": "660",
       "name": "Los Millares",
-      "municipality": "SANTA FE DE MONDUJAR",
+      "municipality": "SANTA FE DE MONDÚJAR",
       "municipalityId": "16",
       "nucleus": "LOS MILLARES",
       "nucleusId": "97",
@@ -29590,6 +30096,28 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "745",
+      "stopCode": "745",
+      "name": "Los Talleres",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "748",
+      "stopCode": "748",
+      "name": "Los Talleres",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "121",
       "stopCode": "121",
       "name": "Los Toruños",
@@ -29599,6 +30127,17 @@
       "nucleusId": "8",
       "consortiumId": 2,
       "chunkId": "consortium-2"
+    },
+    {
+      "stopId": "2198",
+      "stopCode": "2198",
+      "name": "Los Toscanos/Camping",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Almayate",
+      "nucleusId": "218",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "15765",
@@ -30481,6 +31020,28 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "2216",
+      "stopCode": "2216",
+      "name": "Mezquitilla Farmacia",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2214",
+      "stopCode": "2214",
+      "name": "Mezquitilla Iglesia",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "2029",
       "stopCode": "2029",
       "name": "Miami",
@@ -30567,6 +31128,28 @@
       "nucleusId": "153",
       "consortiumId": 4,
       "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "750",
+      "stopCode": "750",
+      "name": "MiniHollywood",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "MINIHOLLYWOOD",
+      "nucleusId": "178",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "751",
+      "stopCode": "751",
+      "name": "MiniHollywood",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "MINIHOLLYWOOD",
+      "nucleusId": "178",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "159",
@@ -31009,8 +31592,8 @@
       "chunkId": "consortium-3"
     },
     {
-      "stopId": "2379",
-      "stopCode": "2379",
+      "stopId": "2378",
+      "stopCode": "2378",
       "name": "MUEBLES CASTELLANO (I)",
       "municipality": "CASTILLEJA DE LA CUESTA",
       "municipalityId": "18",
@@ -31020,8 +31603,8 @@
       "chunkId": "consortium-1"
     },
     {
-      "stopId": "2378",
-      "stopCode": "2378",
+      "stopId": "2379",
+      "stopCode": "2379",
       "name": "MUEBLES CASTELLANO (V)",
       "municipality": "CASTILLEJA DE LA CUESTA",
       "municipalityId": "18",
@@ -31504,15 +32087,147 @@
       "chunkId": "consortium-6"
     },
     {
+      "stopId": "173",
+      "stopCode": "173",
+      "name": "P.I. La Algaida",
+      "municipality": "ROQUETAS DE MAR",
+      "municipalityId": "15",
+      "nucleus": "P.I. LAS SALINAS",
+      "nucleusId": "122",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "211",
+      "stopCode": "211",
+      "name": "P.I. La Algaida",
+      "municipality": "ROQUETAS DE MAR",
+      "municipalityId": "15",
+      "nucleus": "P.I. LAS SALINAS",
+      "nucleusId": "122",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "415",
+      "stopCode": "415",
+      "name": "P.I. La Cepa",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. LA CEPA",
+      "nucleusId": "133",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "416",
+      "stopCode": "416",
+      "name": "P.I. La Cepa",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. LA CEPA",
+      "nucleusId": "133",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "313",
+      "stopCode": "313",
+      "name": "P.I. La Redonda-I",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "314",
+      "stopCode": "314",
+      "name": "P.I. La Redonda-I",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "86",
+      "stopCode": "86",
+      "name": "P.I. La Redonda-VI",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "312",
+      "stopCode": "312",
+      "name": "P.I. La Redonda-VI",
+      "municipality": "EL EJIDO",
+      "municipalityId": "6",
+      "nucleus": "P.I. LA REDONDA",
+      "nucleusId": "105",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "2093",
       "stopCode": "2093",
-      "name": "P.I. La Torre",
+      "name": "P.I. La Torre/Grúa Municipal",
       "municipality": "Mijas",
       "municipalityId": "2",
       "nucleus": "Mijas",
       "nucleusId": "44",
       "consortiumId": 4,
       "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "625",
+      "stopCode": "625",
+      "name": "P.I. San Nicolás",
+      "municipality": "LA MOJONERA",
+      "municipalityId": "11",
+      "nucleus": "SAN NICOLÁS",
+      "nucleusId": "165",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "626",
+      "stopCode": "626",
+      "name": "P.I. San Nicolás",
+      "municipality": "LA MOJONERA",
+      "municipalityId": "11",
+      "nucleus": "SAN NICOLÁS",
+      "nucleusId": "165",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "119",
+      "stopCode": "119",
+      "name": "P.I. San Rafael",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. SAN RAFAEL",
+      "nucleusId": "110",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "383",
+      "stopCode": "383",
+      "name": "P.I. San Rafael",
+      "municipality": "HUERCAL DE ALMERÍA",
+      "municipalityId": "10",
+      "nucleus": "P.I. SAN RAFAEL",
+      "nucleusId": "110",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "102",
@@ -32758,6 +33473,17 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "2170",
+      "stopCode": "2170",
+      "name": "Pastelero",
+      "municipality": "Villanueva de la Concepción",
+      "municipalityId": "22",
+      "nucleus": "Barriada Pastelero",
+      "nucleusId": "214",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "2428",
       "stopCode": "2428",
       "name": "PAULA MONTAL MERCADONA",
@@ -33660,6 +34386,17 @@
       "chunkId": "consortium-6"
     },
     {
+      "stopId": "2178",
+      "stopCode": "2178",
+      "name": "Playa Malaya",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Benajarafe",
+      "nucleusId": "220",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "800",
       "stopCode": "800",
       "name": "Playa Marina",
@@ -33733,17 +34470,6 @@
       "municipalityId": "13",
       "nucleus": "Playamar",
       "nucleusId": "109",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
-      "stopId": "654",
-      "stopCode": "654",
-      "name": "Playamar Playa",
-      "municipality": "Torremolinos",
-      "municipalityId": "13",
-      "nucleus": "Torremolinos",
-      "nucleusId": "107",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },
@@ -34096,17 +34822,6 @@
       "municipalityId": "4",
       "nucleus": "Los Villares",
       "nucleusId": "22",
-      "consortiumId": 7,
-      "chunkId": "consortium-7"
-    },
-    {
-      "stopId": "85",
-      "stopCode": "85",
-      "name": "Plaza De La Fuente",
-      "municipality": "Carcheles",
-      "municipalityId": "18",
-      "nucleus": "Carchel",
-      "nucleusId": "46",
       "consortiumId": 7,
       "chunkId": "consortium-7"
     },
@@ -34573,6 +35288,39 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "130",
+      "stopCode": "130",
+      "name": "Plaza Pilar Bombo",
+      "municipality": "Cazalilla",
+      "municipalityId": "29",
+      "nucleus": "Cazalilla",
+      "nucleusId": "59",
+      "consortiumId": 7,
+      "chunkId": "consortium-7"
+    },
+    {
+      "stopId": "744",
+      "stopCode": "744",
+      "name": "Plaza Pueblo",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "749",
+      "stopCode": "749",
+      "name": "Plaza Pueblo",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "TABERNAS",
+      "nucleusId": "177",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "608",
       "stopCode": "608",
       "name": "Plaza San Isidro",
@@ -34683,50 +35431,6 @@
       "chunkId": "consortium-3"
     },
     {
-      "stopId": "173",
-      "stopCode": "173",
-      "name": "Pol. Ind. La Algaida",
-      "municipality": "ROQUETAS DE MAR",
-      "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
-      "nucleusId": "122",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "211",
-      "stopCode": "211",
-      "name": "Pol. Ind. La Algaida",
-      "municipality": "ROQUETAS DE MAR",
-      "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
-      "nucleusId": "122",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "415",
-      "stopCode": "415",
-      "name": "Pol. Ind. La Cepa",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL LA CEPA",
-      "nucleusId": "133",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "416",
-      "stopCode": "416",
-      "name": "Pol. Ind. La Cepa",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL LA CEPA",
-      "nucleusId": "133",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
       "stopId": "613",
       "stopCode": "613",
       "name": "Pol. Ind. la Fuente",
@@ -34738,50 +35442,6 @@
       "chunkId": "consortium-3"
     },
     {
-      "stopId": "313",
-      "stopCode": "313",
-      "name": "Pol. Ind. La Redonda - I",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "314",
-      "stopCode": "314",
-      "name": "Pol. Ind. La Redonda - I",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "86",
-      "stopCode": "86",
-      "name": "Pol. Ind. La Redonda - VI",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "312",
-      "stopCode": "312",
-      "name": "Pol. Ind. La Redonda - VI",
-      "municipality": "EL EJIDO",
-      "municipalityId": "6",
-      "nucleus": "POLÍGONO INDUSTRIAL LA REDONDA",
-      "nucleusId": "105",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
       "stopId": "614",
       "stopCode": "614",
       "name": "Pol. Ind. Olinda",
@@ -34791,50 +35451,6 @@
       "nucleusId": "471",
       "consortiumId": 3,
       "chunkId": "consortium-3"
-    },
-    {
-      "stopId": "119",
-      "stopCode": "119",
-      "name": "Pol. Ind. San Rafael",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL SAN RAFAEL",
-      "nucleusId": "110",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "383",
-      "stopCode": "383",
-      "name": "Pol. Ind. San Rafael",
-      "municipality": "HUERCAL DE ALMERÍA",
-      "municipalityId": "10",
-      "nucleus": "POLÍGONO INDUSTRIAL SAN RAFAEL",
-      "nucleusId": "110",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "625",
-      "stopCode": "625",
-      "name": "Pol. San Nicolás",
-      "municipality": "LA MOJONERA",
-      "municipalityId": "11",
-      "nucleus": "SAN NICOLÁS",
-      "nucleusId": "165",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
-    },
-    {
-      "stopId": "626",
-      "stopCode": "626",
-      "name": "Pol. San Nicolás",
-      "municipality": "LA MOJONERA",
-      "municipalityId": "11",
-      "nucleus": "SAN NICOLÁS",
-      "nucleusId": "165",
-      "consortiumId": 6,
-      "chunkId": "consortium-6"
     },
     {
       "stopId": "2592",
@@ -37158,6 +37774,28 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "740",
+      "stopCode": "740",
+      "name": "Rest. El Molinero",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "741",
+      "stopCode": "741",
+      "name": "Rest. El Molinero",
+      "municipality": "ALHAMA DE ALMERÍA",
+      "municipalityId": "75",
+      "nucleus": "ALHAMA DE ALMERÍA",
+      "nucleusId": "175",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "2134",
       "stopCode": "2134",
       "name": "Restaurante la Cruz de Piedra",
@@ -37304,6 +37942,17 @@
       "stopId": "15635",
       "stopCode": "15635",
       "name": "Ribera del Beiro 2",
+      "municipality": "Granada",
+      "municipalityId": "18087",
+      "nucleus": "Granada",
+      "nucleusId": "202",
+      "consortiumId": 3,
+      "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "16108",
+      "stopCode": "16108",
+      "name": "Ribera del Beiro Mondragones",
       "municipality": "Granada",
       "municipalityId": "18087",
       "nucleus": "Granada",
@@ -37587,17 +38236,6 @@
       "chunkId": "consortium-8"
     },
     {
-      "stopId": "815",
-      "stopCode": "815",
-      "name": "Riviera Del Sol",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Calahonda",
-      "nucleusId": "47",
-      "consortiumId": 4,
-      "chunkId": "consortium-4"
-    },
-    {
       "stopId": "1602",
       "stopCode": "1602",
       "name": "Riviera Park",
@@ -37867,7 +38505,7 @@
       "name": "Roquetas - Hortamar",
       "municipality": "ROQUETAS DE MAR",
       "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
+      "nucleus": "P.I. LAS SALINAS",
       "nucleusId": "122",
       "consortiumId": 6,
       "chunkId": "consortium-6"
@@ -37878,7 +38516,7 @@
       "name": "Roquetas - Hortamar",
       "municipality": "ROQUETAS DE MAR",
       "municipalityId": "15",
-      "nucleus": "POLÍGONO INDUSTRIAL LAS SALINAS",
+      "nucleus": "P.I. LAS SALINAS",
       "nucleusId": "122",
       "consortiumId": 6,
       "chunkId": "consortium-6"
@@ -39273,7 +39911,7 @@
       "stopId": "22",
       "stopCode": "22",
       "name": "Santa Fe de Mondújar",
-      "municipality": "SANTA FE DE MONDUJAR",
+      "municipality": "SANTA FE DE MONDÚJAR",
       "municipalityId": "16",
       "nucleus": "SANTA FE DE MONDÚJAR",
       "nucleusId": "64",
@@ -40150,6 +40788,17 @@
       "chunkId": "consortium-1"
     },
     {
+      "stopId": "2243",
+      "stopCode": "2243",
+      "name": "Torre del Mar Dr Fleming",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "2630",
       "stopCode": "2630",
       "name": "TORRE LA REINA URB LA REINA",
@@ -40159,6 +40808,17 @@
       "nucleusId": "3187",
       "consortiumId": 1,
       "chunkId": "consortium-1"
+    },
+    {
+      "stopId": "2182",
+      "stopCode": "2182",
+      "name": "Torre Vigía",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Benajarafe",
+      "nucleusId": "220",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
     },
     {
       "stopId": "12",
@@ -40535,6 +41195,17 @@
       "chunkId": "consortium-3"
     },
     {
+      "stopId": "2239",
+      "stopCode": "2239",
+      "name": "Trayamar",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "249",
       "stopCode": "249",
       "name": "Tres Caminos",
@@ -40687,6 +41358,17 @@
       "nucleusId": "202",
       "consortiumId": 3,
       "chunkId": "consortium-3"
+    },
+    {
+      "stopId": "672",
+      "stopCode": "672",
+      "name": "Universidad",
+      "municipality": "ALMERÍA",
+      "municipalityId": "2",
+      "nucleus": "UNIVERSIDAD",
+      "nucleusId": "172",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
     },
     {
       "stopId": "1539",
@@ -40986,9 +41668,9 @@
       "chunkId": "consortium-1"
     },
     {
-      "stopId": "2563",
-      "stopCode": "2563",
-      "name": "URB EL RETIRO",
+      "stopId": "2562",
+      "stopCode": "2562",
+      "name": "URB EL RETIRO (I)",
       "municipality": "ESPARTINAS",
       "municipalityId": "23",
       "nucleus": "EL RETIRO (Espatinas)",
@@ -40997,8 +41679,8 @@
       "chunkId": "consortium-1"
     },
     {
-      "stopId": "2562",
-      "stopCode": "2562",
+      "stopId": "2563",
+      "stopCode": "2563",
       "name": "URB EL RETIRO (V)",
       "municipality": "ESPARTINAS",
       "municipalityId": "23",
@@ -42592,6 +43274,28 @@
       "chunkId": "consortium-9"
     },
     {
+      "stopId": "746",
+      "stopCode": "746",
+      "name": "V.Yesos",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "VENTA DE LOS YESOS",
+      "nucleusId": "179",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
+      "stopId": "747",
+      "stopCode": "747",
+      "name": "V.Yesos",
+      "municipality": "TABERNAS",
+      "municipalityId": "77",
+      "nucleus": "VENTA DE LOS YESOS",
+      "nucleusId": "179",
+      "consortiumId": 6,
+      "chunkId": "consortium-6"
+    },
+    {
       "stopId": "123",
       "stopCode": "123",
       "name": "Valdelagrana-Caballo Blanco",
@@ -42636,6 +43340,17 @@
       "chunkId": "consortium-4"
     },
     {
+      "stopId": "2184",
+      "stopCode": "2184",
+      "name": "Vallemar",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Valleniza",
+      "nucleusId": "219",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
       "stopId": "1997",
       "stopCode": "1997",
       "name": "Valtocado",
@@ -42643,6 +43358,17 @@
       "municipalityId": "2",
       "nucleus": "Valtocado",
       "nucleusId": "212",
+      "consortiumId": 4,
+      "chunkId": "consortium-4"
+    },
+    {
+      "stopId": "2186",
+      "stopCode": "2186",
+      "name": "Varadero",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Valleniza",
+      "nucleusId": "219",
       "consortiumId": 4,
       "chunkId": "consortium-4"
     },

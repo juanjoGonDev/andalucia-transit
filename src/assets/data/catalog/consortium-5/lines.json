@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:18.364Z",
+    "generatedAt": "2026-08-25T05:32:37.541Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 5,
     "consortiumName": "Campo de Gibraltar",
-    "itemCount": 13
+    "itemCount": 15
   },
   "lines": [
     {
@@ -36,6 +36,54 @@
       "id": "7",
       "code": "M-150",
       "name": "Algeciras-Tarifa",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Transportes Generales Comes"
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "9",
+      "code": "M-161",
+      "name": "Barbate-Facinas-Algeciras",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Transportes Generales Comes"
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "19",
+      "code": "M-470",
+      "name": "Bus Playa",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [

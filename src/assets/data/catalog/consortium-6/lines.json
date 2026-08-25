@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:18.364Z",
+    "generatedAt": "2026-08-25T05:32:37.541Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 6,
     "consortiumName": "Área de Almería",
-    "itemCount": 29
+    "itemCount": 27
   },
   "lines": [
     {
@@ -347,7 +347,7 @@
     {
       "id": "10",
       "code": "M-213",
-      "name": "Almería - Hospital El Toyo - Venta Del Pobre - Agua Amarga NN",
+      "name": "Almería - Hospital El Toyo - Venta Del Pobre - Agua Amarga - Carboneras NN",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
@@ -443,7 +443,7 @@
     {
       "id": "4",
       "code": "M-103",
-      "name": "Almería - Los Pinos - Benahadux - Gádor NN",
+      "name": "Almería - Los Pinos - Benahadux - Gádor - Alhama de Almería NN",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
@@ -467,7 +467,7 @@
     {
       "id": "11",
       "code": "M-105",
-      "name": "Almería - Los Pinos - Benahadux - Rioja NN",
+      "name": "Almería - Los Pinos - Benahadux - Rioja - Tabernas NN",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
@@ -561,30 +561,6 @@
       "inboundPath": []
     },
     {
-      "id": "52",
-      "code": "M-108",
-      "name": "Pechina - Huércal - Universidad NN",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "AUTODISCRECIONAL ALMERIENSE"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "22",
       "code": "M-334",
       "name": "Roquetas - La Mojonera - Las Norias - Hospital Poniente NN",
@@ -657,37 +633,13 @@
       "inboundPath": []
     },
     {
-      "id": "31",
-      "code": "M-356",
-      "name": "Universidad - Aguadulce - El Ejido - Adra - Berja NN",
+      "id": "64",
+      "code": "M-216",
+      "name": "Servicio Lanzadera San José - Calas P.Natural",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
-        "NEX CONTINENTAL HOLDINGS"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "50",
-      "code": "M-336",
-      "name": "Universidad - Roquetas - Las Marinas - La Mojonera - Cortijos de Marín NN",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "NEX CONTINENTAL HOLDINGS"
+        "AUTOCARES BERNARDO"
       ],
       "hasNews": false,
       "concession": null,

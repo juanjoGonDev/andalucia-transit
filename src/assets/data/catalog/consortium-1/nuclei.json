@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:18.364Z",
+    "generatedAt": "2026-08-25T05:32:37.541Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
     "consortiumName": "Área de Sevilla",
-    "itemCount": 127
+    "itemCount": 130
   },
   "nuclei": [
     {
@@ -213,6 +213,12 @@
       "name": "EL GARROBO"
     },
     {
+      "id": "3296",
+      "municipalityId": "68",
+      "zone": "X",
+      "name": "EL PALMAR DE TROYA"
+    },
+    {
       "id": "3289",
       "municipalityId": "63",
       "zone": "X",
@@ -313,6 +319,12 @@
       "municipalityId": "21",
       "zone": "C",
       "name": "FUENTE DEL REY (Dos Hermanas) zonaC"
+    },
+    {
+      "id": "3294",
+      "municipalityId": "67",
+      "zone": "X",
+      "name": "FUENTES DE ANDALUCÍA"
     },
     {
       "id": "3180",
@@ -697,6 +709,12 @@
       "municipalityId": "37",
       "zone": "C",
       "name": "TARAZONA (La Rinconada)"
+    },
+    {
+      "id": "3293",
+      "municipalityId": "61",
+      "zone": "X",
+      "name": "TOCINA"
     },
     {
       "id": "3227",

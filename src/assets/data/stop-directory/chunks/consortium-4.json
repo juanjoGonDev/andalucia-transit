@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:14.624Z",
+    "generatedAt": "2026-08-25T05:32:33.413Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "stopCount": 980
+    "stopCount": 1021
   },
   "stops": [
     {
@@ -265,6 +265,36 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2222",
+      "stopCode": "2222",
+      "name": "Algarrobo Costa / Los Tizos",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Costa",
+      "nucleusId": "226",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7470133,
+        "longitude": -4.052918
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2220",
+      "stopCode": "2220",
+      "name": "Algarrobo Costa / Muebles García ",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Costa",
+      "nucleusId": "226",
+      "zone": "C",
+      "location": {
+        "latitude": 36.74802777777778,
+        "longitude": -4.057963888888889
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "2032",
       "stopCode": "2032",
       "name": "Algarrobo del Hornillo",
@@ -276,6 +306,21 @@
       "location": {
         "latitude": 36.56500555555555,
         "longitude": -4.646075
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2234",
+      "stopCode": "2234",
+      "name": "Algarrobo Pueblo",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "zone": "C",
+      "location": {
+        "latitude": 36.77158333333333,
+        "longitude": -4.039027777777777
       }
     },
     {
@@ -336,6 +381,36 @@
       "location": {
         "latitude": 36.73285,
         "longitude": -4.6643388888888895
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2194",
+      "stopCode": "2194",
+      "name": "Almayate Entrada",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Almayate",
+      "nucleusId": "218",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7274245,
+        "longitude": -4.1296796
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2192",
+      "stopCode": "2192",
+      "name": "Almayate Tanger",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Almayate",
+      "nucleusId": "218",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7230795,
+        "longitude": -4.1418167
       }
     },
     {
@@ -531,6 +606,21 @@
       "location": {
         "latitude": 36.718791,
         "longitude": -4.494391
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2227",
+      "stopCode": "2227",
+      "name": "Antequera Centro",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "zone": "E",
+      "location": {
+        "latitude": 37.01844444444444,
+        "longitude": -4.557888888888889
       }
     },
     {
@@ -1045,6 +1135,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2236",
+      "stopCode": "2236",
+      "name": "Avda. Karat",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "zone": "C",
+      "location": {
+        "latitude": 36.76874444444444,
+        "longitude": -4.041438888888889
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "1676",
       "stopCode": "1676",
       "name": "Avda. La Candelaria",
@@ -1131,6 +1236,21 @@
       "location": {
         "latitude": 36.50333055555556,
         "longitude": -4.717447222222222
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2246",
+      "stopCode": "2246",
+      "name": "Avda. Mar Alboran esq Paseo Marítimo Los Álamos",
+      "municipality": "Torremolinos",
+      "municipalityId": "13",
+      "nucleus": "Torremolinos",
+      "nucleusId": "107",
+      "zone": "B",
+      "location": {
+        "latitude": 36.64411555459281,
+        "longitude": -4.478412532057075
       }
     },
     {
@@ -1645,6 +1765,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2180",
+      "stopCode": "2180",
+      "name": "Benajarafe Centro",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Benajarafe",
+      "nucleusId": "220",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7160689,
+        "longitude": -4.195215
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "2147",
       "stopCode": "2147",
       "name": "Benalma ",
@@ -1945,6 +2080,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2232",
+      "stopCode": "2232",
+      "name": "C.C. Ingenio",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Vélez Málaga",
+      "nucleusId": "215",
+      "zone": "C",
+      "location": {
+        "latitude": 36.75481111111111,
+        "longitude": -4.097630555555555
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "1021",
       "stopCode": "1021",
       "name": "C.C.Rincón De La Victoria",
@@ -2136,6 +2286,36 @@
       "location": {
         "latitude": 36.659416666666665,
         "longitude": -4.569094444444445
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "816",
+      "stopCode": "816",
+      "name": "Calahonda",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Calahonda",
+      "nucleusId": "47",
+      "zone": "C",
+      "location": {
+        "latitude": 36.49082777777778,
+        "longitude": -4.7070083333333335
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2210",
+      "stopCode": "2210",
+      "name": "Caleta de Vélez Hotel",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7495308,
+        "longitude": -4.0678194
       }
     },
     {
@@ -3220,6 +3400,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2188",
+      "stopCode": "2188",
+      "name": "Castillo del Marqués",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Valleniza",
+      "nucleusId": "219",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7202133,
+        "longitude": -4.1610133
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "1612",
       "stopCode": "1612",
       "name": "Cementerio",
@@ -3327,7 +3522,7 @@
       "consortiumId": 4,
       "stopId": "1450",
       "stopCode": "1450",
-      "name": "Cementerio San Cayetano 1",
+      "name": "Cementerio San Cayetano",
       "municipality": "Mijas",
       "municipalityId": "2",
       "nucleus": "Cementerio Fuengirola",
@@ -3342,7 +3537,7 @@
       "consortiumId": 4,
       "stopId": "1451",
       "stopCode": "1451",
-      "name": "Cementerio San Cayetano 2",
+      "name": "Cementerio San Cayetano",
       "municipality": "Mijas",
       "municipalityId": "2",
       "nucleus": "Cementerio Fuengirola",
@@ -3381,6 +3576,21 @@
       "location": {
         "latitude": 36.61298055555556,
         "longitude": -4.51325
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2224",
+      "stopCode": "2224",
+      "name": "Centro Comercial La Verónica",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "zone": "E",
+      "location": {
+        "latitude": 37.0255,
+        "longitude": -4.573416666666667
       }
     },
     {
@@ -3700,6 +3910,36 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2174",
+      "stopCode": "2174",
+      "name": "Chilches Costa/Mercadona",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Chilches",
+      "nucleusId": "221",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7134013,
+        "longitude": -4.2258552
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2172",
+      "stopCode": "2172",
+      "name": "Chilches Estación",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Chilches",
+      "nucleusId": "221",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7131532,
+        "longitude": -4.2307677
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "2003",
       "stopCode": "2003",
       "name": "Churriana",
@@ -3925,6 +4165,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2241",
+      "stopCode": "2241",
+      "name": "Cochinillo",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "zone": "C",
+      "location": {
+        "latitude": 36.75498888888889,
+        "longitude": -4.05348333333333
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "2123",
       "stopCode": "2123",
       "name": "Coín",
@@ -3966,6 +4221,21 @@
       "location": {
         "latitude": 36.66352777777777,
         "longitude": -4.505225
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2206",
+      "stopCode": "2206",
+      "name": "Colegio Andalucía/Avda. de las Naciones",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Vélez Málaga",
+      "nucleusId": "215",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7751962,
+        "longitude": -4.1047899
       }
     },
     {
@@ -4176,6 +4446,21 @@
       "location": {
         "latitude": 36.73272777777778,
         "longitude": -4.531888888888889
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2208",
+      "stopCode": "2208",
+      "name": "Comisaría",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
+      "zone": "C",
+      "location": {
+        "latitude": 36.745166,
+        "longitude": -4.0873792
       }
     },
     {
@@ -5140,6 +5425,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2176",
+      "stopCode": "2176",
+      "name": "El Cañuelo",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Chilches",
+      "nucleusId": "221",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7141439,
+        "longitude": -4.2170033
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "913",
       "stopCode": "913",
       "name": "El Casino",
@@ -5301,6 +5601,21 @@
       "location": {
         "latitude": 36.54848333333333,
         "longitude": -4.675366666666667
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "1940",
+      "stopCode": "1940",
+      "name": "El Gran Parque",
+      "municipality": "Mijas",
+      "municipalityId": "2",
+      "nucleus": "Mijas",
+      "nucleusId": "44",
+      "zone": "C",
+      "location": {
+        "latitude": 36.54288333333333,
+        "longitude": -4.655283333333334
       }
     },
     {
@@ -5575,6 +5890,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2212",
+      "stopCode": "2212",
+      "name": "El Pilarillo",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "zone": "C",
+      "location": {
+        "latitude": 36.749097,
+        "longitude": -4.0631764
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "653",
       "stopCode": "653",
       "name": "El Pinar",
@@ -5751,6 +6081,21 @@
       "location": {
         "latitude": 36.717111111111116,
         "longitude": -4.348372222222222
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2201",
+      "stopCode": "2201",
+      "name": "El Tomillar",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7505163,
+        "longitude": -4.09753
       }
     },
     {
@@ -6030,7 +6375,7 @@
       "name": "Estación de Autobuses Antequera",
       "municipality": "Antequera",
       "municipalityId": "20",
-      "nucleus": "Estación Autobuses Antequera",
+      "nucleus": "Antequera",
       "nucleusId": "186",
       "zone": "E",
       "location": {
@@ -6070,6 +6415,36 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2200",
+      "stopCode": "2200",
+      "name": "Estación Torre del Mar",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7407703,
+        "longitude": -4.0983554
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2226",
+      "stopCode": "2226",
+      "name": "Estación Tren Antequera",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "zone": "E",
+      "location": {
+        "latitude": 37.028083333333335,
+        "longitude": -4.5609166666666665
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "1613",
       "stopCode": "1613",
       "name": "Estación Tren Cártama",
@@ -6096,6 +6471,21 @@
       "location": {
         "latitude": 36.7111881331,
         "longitude": -4.4309750248
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2171",
+      "stopCode": "2171",
+      "name": "Estación Vélez Málaga",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Vélez Málaga",
+      "nucleusId": "215",
+      "zone": "C",
+      "location": {
+        "latitude": 36.781992,
+        "longitude": -4.1106766
       }
     },
     {
@@ -6154,8 +6544,8 @@
       "nucleusId": "52",
       "zone": "B",
       "location": {
-        "latitude": 36.58943333333334,
-        "longitude": -4.5816888888888885
+        "latitude": 36.589505555555554,
+        "longitude": -4.581827777777778
       }
     },
     {
@@ -6334,8 +6724,8 @@
       "nucleusId": "37",
       "zone": "A",
       "location": {
-        "latitude": 36.701280555555556,
-        "longitude": -4.460825
+        "latitude": 36.70053333333334,
+        "longitude": -4.459475
       }
     },
     {
@@ -6366,6 +6756,21 @@
       "location": {
         "latitude": 36.55741666666666,
         "longitude": -4.728891666666667
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2196",
+      "stopCode": "2196",
+      "name": "Finca Poliester",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Almayate",
+      "nucleusId": "218",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7295221,
+        "longitude": -4.123915
       }
     },
     {
@@ -6625,21 +7030,6 @@
     },
     {
       "consortiumId": 4,
-      "stopId": "816",
-      "stopCode": "816",
-      "name": "Garu Calahonda",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Calahonda",
-      "nucleusId": "47",
-      "zone": "C",
-      "location": {
-        "latitude": 36.49082777777778,
-        "longitude": -4.7070083333333335
-      }
-    },
-    {
-      "consortiumId": 4,
       "stopId": "553",
       "stopCode": "553",
       "name": "Gasolinera",
@@ -6784,8 +7174,8 @@
       "nucleusId": "83",
       "zone": "C",
       "location": {
-        "latitude": 36.646166666666666,
-        "longitude": -4.677675000000001
+        "latitude": 36.64729166666667,
+        "longitude": -4.676211111111112
       }
     },
     {
@@ -6831,6 +7221,21 @@
       "location": {
         "latitude": 36.646633333333334,
         "longitude": -4.681983333333334
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2168",
+      "stopCode": "2168",
+      "name": "Glorieta el Pandero",
+      "municipality": "Almogía",
+      "municipalityId": "9",
+      "nucleus": "Almogía",
+      "nucleusId": "100",
+      "zone": "B",
+      "location": {
+        "latitude": 36.82278055555556,
+        "longitude": -4.52968333333333
       }
     },
     {
@@ -6889,8 +7294,8 @@
       "nucleusId": "1",
       "zone": "A",
       "location": {
-        "latitude": 36.70573055555556,
-        "longitude": -4.4379583333333334
+        "latitude": 36.70482777777778,
+        "longitude": -4.4393722222222225
       }
     },
     {
@@ -6921,21 +7326,6 @@
       "location": {
         "latitude": 36.717647222222226,
         "longitude": -4.280175
-      }
-    },
-    {
-      "consortiumId": 4,
-      "stopId": "2001",
-      "stopCode": "2001",
-      "name": "Grua Municipal",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Mijas",
-      "nucleusId": "44",
-      "zone": "C",
-      "location": {
-        "latitude": 36.55464166666666,
-        "longitude": -4.689452777777778
       }
     },
     {
@@ -7150,6 +7540,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2207",
+      "stopCode": "2207",
+      "name": "Hospital Comarcal Vélez Málaga",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Hospital Vélez Málaga",
+      "nucleusId": "222",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7505634,
+        "longitude": -4.0879721
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "1284",
       "stopCode": "1284",
       "name": "Hospital Marítimo",
@@ -7322,7 +7727,7 @@
       "municipalityId": "20",
       "nucleus": "Las Pedrizas",
       "nucleusId": "193",
-      "zone": "E",
+      "zone": "D",
       "location": {
         "latitude": 36.96188333333333,
         "longitude": -4.448580555555556
@@ -7450,21 +7855,6 @@
     },
     {
       "consortiumId": 4,
-      "stopId": "1940",
-      "stopCode": "1940",
-      "name": "Hoyo 19",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Mijas",
-      "nucleusId": "44",
-      "zone": "C",
-      "location": {
-        "latitude": 36.54288333333333,
-        "longitude": -4.655283333333334
-      }
-    },
-    {
-      "consortiumId": 4,
       "stopId": "842",
       "stopCode": "842",
       "name": "Huerta Chávarri",
@@ -7566,6 +7956,36 @@
       "location": {
         "latitude": 36.7329111111,
         "longitude": -4.428983333333334
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2228",
+      "stopCode": "2228",
+      "name": "IES Pedro Espinosa",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "zone": "E",
+      "location": {
+        "latitude": 37.01891666666666,
+        "longitude": -4.555805555555556
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2229",
+      "stopCode": "2229",
+      "name": "IES Pintor Jose Mª Fernández",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "zone": "E",
+      "location": {
+        "latitude": 37.02327777777778,
+        "longitude": -4.547166666666667
       }
     },
     {
@@ -7834,8 +8254,8 @@
       "nucleusId": "1",
       "zone": "A",
       "location": {
-        "latitude": 36.70741666666667,
-        "longitude": -4.435791666666667
+        "latitude": 36.706594618909,
+        "longitude": -4.4370438818984
       }
     },
     {
@@ -8410,6 +8830,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2203",
+      "stopCode": "2203",
+      "name": "La Mata",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Vélez Málaga",
+      "nucleusId": "215",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7687363,
+        "longitude": -4.099276
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "1203",
       "stopCode": "1203",
       "name": "La Mota",
@@ -8481,21 +8916,6 @@
       "location": {
         "latitude": 36.67720277777777,
         "longitude": -4.695394444444445
-      }
-    },
-    {
-      "consortiumId": 4,
-      "stopId": "1014",
-      "stopCode": "1014",
-      "name": "La Peñita",
-      "municipality": "Alhaurín el Grande",
-      "municipalityId": "6",
-      "nucleus": "Alhaurín el Grande",
-      "nucleusId": "83",
-      "zone": "C",
-      "location": {
-        "latitude": 36.647866666666665,
-        "longitude": -4.675877777777778
       }
     },
     {
@@ -8605,6 +9025,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2190",
+      "stopCode": "2190",
+      "name": "La Tiendecilla",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Valleniza",
+      "nucleusId": "219",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7207492,
+        "longitude": -4.1538088
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "1309",
       "stopCode": "1309",
       "name": "La Trampa",
@@ -8661,6 +9096,21 @@
       "location": {
         "latitude": 36.755633333333336,
         "longitude": -4.530475
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2225",
+      "stopCode": "2225",
+      "name": "La Vilecha",
+      "municipality": "Antequera",
+      "municipalityId": "20",
+      "nucleus": "Antequera",
+      "nucleusId": "186",
+      "zone": "E",
+      "location": {
+        "latitude": 37.03861111111111,
+        "longitude": -4.56025
       }
     },
     {
@@ -8736,6 +9186,21 @@
       "location": {
         "latitude": 36.68527777777778,
         "longitude": -4.570727777777778
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2218",
+      "stopCode": "2218",
+      "name": "Lagos",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Lagos",
+      "nucleusId": "224",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7437378,
+        "longitude": -4.0194212
       }
     },
     {
@@ -9085,6 +9550,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2238",
+      "stopCode": "2238",
+      "name": "Lidl",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "zone": "C",
+      "location": {
+        "latitude": 36.74836111111111,
+        "longitude": -4.055333333333333
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "891",
       "stopCode": "891",
       "name": "Lo Cea",
@@ -9231,6 +9711,21 @@
       "location": {
         "latitude": 36.64488611111111,
         "longitude": -4.4853555555555555
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "654",
+      "stopCode": "654",
+      "name": "Los Álamos Playa",
+      "municipality": "Torremolinos",
+      "municipalityId": "13",
+      "nucleus": "Torremolinos",
+      "nucleusId": "107",
+      "zone": "B",
+      "location": {
+        "latitude": 36.648649999999996,
+        "longitude": -4.475291666666667
       }
     },
     {
@@ -9775,6 +10270,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2198",
+      "stopCode": "2198",
+      "name": "Los Toscanos/Camping",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Almayate",
+      "nucleusId": "218",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7326526,
+        "longitude": -4.1149407
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "1461",
       "stopCode": "1461",
       "name": "M. Curros Enríquez",
@@ -10101,6 +10611,36 @@
       "location": {
         "latitude": 36.70612777777778,
         "longitude": -4.514716666666667
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2216",
+      "stopCode": "2216",
+      "name": "Mezquitilla Farmacia",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7442211,
+        "longitude": -4.0396109
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2214",
+      "stopCode": "2214",
+      "name": "Mezquitilla Iglesia",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Caleta de Vélez",
+      "nucleusId": "223",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7451966,
+        "longitude": -4.0442361
       }
     },
     {
@@ -10617,7 +11157,7 @@
       "consortiumId": 4,
       "stopId": "2093",
       "stopCode": "2093",
-      "name": "P.I. La Torre",
+      "name": "P.I. La Torre/Grúa Municipal",
       "municipality": "Mijas",
       "municipalityId": "2",
       "nucleus": "Mijas",
@@ -11050,6 +11590,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2170",
+      "stopCode": "2170",
+      "name": "Pastelero",
+      "municipality": "Villanueva de la Concepción",
+      "municipalityId": "22",
+      "nucleus": "Barriada Pastelero",
+      "nucleusId": "214",
+      "zone": "C",
+      "location": {
+        "latitude": 36.89678333333333,
+        "longitude": -4.568925
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "907",
       "stopCode": "907",
       "name": "Peñablanca",
@@ -11410,6 +11965,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2178",
+      "stopCode": "2178",
+      "name": "Playa Malaya",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Benajarafe",
+      "nucleusId": "220",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7150637,
+        "longitude": -4.2052314
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "800",
       "stopCode": "800",
       "name": "Playa Marina",
@@ -11451,21 +12021,6 @@
       "location": {
         "latitude": 36.63205833333333,
         "longitude": -4.499736111111111
-      }
-    },
-    {
-      "consortiumId": 4,
-      "stopId": "654",
-      "stopCode": "654",
-      "name": "Playamar Playa",
-      "municipality": "Torremolinos",
-      "municipalityId": "13",
-      "nucleus": "Torremolinos",
-      "nucleusId": "107",
-      "zone": "B",
-      "location": {
-        "latitude": 36.648649999999996,
-        "longitude": -4.475291666666667
       }
     },
     {
@@ -12670,21 +13225,6 @@
     },
     {
       "consortiumId": 4,
-      "stopId": "815",
-      "stopCode": "815",
-      "name": "Riviera Del Sol",
-      "municipality": "Mijas",
-      "municipalityId": "2",
-      "nucleus": "Calahonda",
-      "nucleusId": "47",
-      "zone": "C",
-      "location": {
-        "latitude": 36.490611111111114,
-        "longitude": -4.70585
-      }
-    },
-    {
-      "consortiumId": 4,
       "stopId": "1602",
       "stopCode": "1602",
       "name": "Riviera Park",
@@ -13579,8 +14119,8 @@
       "nucleusId": "51",
       "zone": "B",
       "location": {
-        "latitude": 36.59811944444445,
-        "longitude": -4.540511111111111
+        "latitude": 36.59820833333334,
+        "longitude": -4.54073333333333
       }
     },
     {
@@ -13746,6 +14286,36 @@
       "location": {
         "latitude": 36.66070555555555,
         "longitude": -4.498991666666667
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2243",
+      "stopCode": "2243",
+      "name": "Torre del Mar Dr Fleming",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Torre del Mar",
+      "nucleusId": "216",
+      "zone": "C",
+      "location": {
+        "latitude": 36.74470833333333,
+        "longitude": -4.091780555555555
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2182",
+      "stopCode": "2182",
+      "name": "Torre Vigía",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Benajarafe",
+      "nucleusId": "220",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7158159,
+        "longitude": -4.1854631
       }
     },
     {
@@ -13941,6 +14511,21 @@
       "location": {
         "latitude": 36.70651388888889,
         "longitude": -4.4665944444444445
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2239",
+      "stopCode": "2239",
+      "name": "Trayamar",
+      "municipality": "Algarrobo",
+      "municipalityId": "24",
+      "nucleus": "Algarrobo Pueblo",
+      "nucleusId": "225",
+      "zone": "C",
+      "location": {
+        "latitude": 36.758805555555554,
+        "longitude": -4.052444444444444
       }
     },
     {
@@ -14200,6 +14785,21 @@
     },
     {
       "consortiumId": 4,
+      "stopId": "2184",
+      "stopCode": "2184",
+      "name": "Vallemar",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Valleniza",
+      "nucleusId": "219",
+      "zone": "C",
+      "location": {
+        "latitude": 36.7179058,
+        "longitude": -4.1734658
+      }
+    },
+    {
+      "consortiumId": 4,
       "stopId": "1997",
       "stopCode": "1997",
       "name": "Valtocado",
@@ -14211,6 +14811,21 @@
       "location": {
         "latitude": 36.59547777777778,
         "longitude": -4.691394444444445
+      }
+    },
+    {
+      "consortiumId": 4,
+      "stopId": "2186",
+      "stopCode": "2186",
+      "name": "Varadero",
+      "municipality": "Vélez Málaga",
+      "municipalityId": "23",
+      "nucleus": "Valleniza",
+      "nucleusId": "219",
+      "zone": "C",
+      "location": {
+        "latitude": 36.718939,
+        "longitude": -4.1678568
       }
     },
     {

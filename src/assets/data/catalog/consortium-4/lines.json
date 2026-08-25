@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:18.364Z",
+    "generatedAt": "2026-08-25T05:32:37.541Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 87
+    "itemCount": 101
   },
   "lines": [
     {
@@ -17,31 +17,6 @@
       "operators": [
         "Nex Continental Holdings",
         "S.L.U."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "93",
-      "code": "M-143",
-      "name": "Alhaurín De La Torre-Churriana-Teatinos (del 10/09/25 al 26/05/26)",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Autocares Vázquez Olmedo",
-        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -109,6 +84,31 @@
       "inboundPath": []
     },
     {
+      "id": "243",
+      "code": "M-590",
+      "name": "Alhaurín el Grande-Fuengirola",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "302",
       "code": "M-159B",
       "name": "Alhaurín el Grande-Villa del Guadalhorce-Hospital Guadalhorce",
@@ -116,6 +116,56 @@
       "modeId": "1",
       "operators": [
         "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "324",
+      "code": "M-369",
+      "name": "Almería-Torre del Mar-Málaga",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "147",
+      "code": "M-551",
+      "name": "Almogía-Plaza Mayor-Playamar",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Sierra de las Nieves",
         "S.L."
       ],
       "hasNews": false,
@@ -282,6 +332,56 @@
       "inboundPath": []
     },
     {
+      "id": "330",
+      "code": "M-570",
+      "name": "Antequera-Casabermeja-Torremolinos (Servicio de Playa)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Automóviles Mérida",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "281",
+      "code": "M-257",
+      "name": "Antequera-Málaga-Torre del Mar",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "14",
       "code": "M-126",
       "name": "Benalmádena-Torremolinos",
@@ -407,6 +507,31 @@
       "inboundPath": []
     },
     {
+      "id": "91",
+      "code": "M-140",
+      "name": "Cártama-Alhaurín De La Torre-Torremolinos",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Vázquez Olmedo",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "214",
       "code": "R-1",
       "name": "Centro Comercial-Benagalbón",
@@ -507,6 +632,31 @@
       "inboundPath": []
     },
     {
+      "id": "293",
+      "code": "M-591",
+      "name": "Coín-Fuengirola (servicio de verano)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "283",
       "code": "M-259",
       "name": "Córdoba-Málaga por Antequera",
@@ -560,6 +710,31 @@
       "id": "22",
       "code": "M-221",
       "name": "Fuengirola-Coín",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "313",
+      "code": "M-060B",
+      "name": "Fuengirola-La Cala de Mijas-Marbella (Directo)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -682,7 +857,7 @@
     },
     {
       "id": "279",
-      "code": "M-153B",
+      "code": "M-153",
       "name": "Hospital-Cártama-Maqueda",
       "mode": "Autobús",
       "modeId": "1",
@@ -980,31 +1155,6 @@
       "inboundPath": []
     },
     {
-      "id": "305",
-      "code": "M-255",
-      "name": "Málaga-Antequera (Directo)",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Nex Continental Holdings",
-        "S.L.U."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "284",
       "code": "M-256",
       "name": "Málaga-Antequera-Valle de Abdalajís",
@@ -1105,31 +1255,6 @@
       "inboundPath": []
     },
     {
-      "id": "96",
-      "code": "M-151",
-      "name": "Málaga-Casabermeja-Arroyo Coche-Villanueva de la Concepción",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Automóviles Mérida",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "307",
       "code": "M-252",
       "name": "Málaga-Casabermeja-Colmenar",
@@ -1163,6 +1288,31 @@
       "operators": [
         "Nex Continental Holdings",
         "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "96",
+      "code": "M-151",
+      "name": "Málaga-Casabermeja-VVa.Concepción",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Automóviles Mérida",
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -1256,7 +1406,7 @@
     {
       "id": "23",
       "code": "M-230",
-      "name": "Málaga-Coín (Por Alhaurín De La Torre Y Alhaurín El Grande)",
+      "name": "Málaga-Coín (Por los Alhaurines)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -1305,37 +1455,12 @@
     },
     {
       "id": "308",
-      "code": "M-152B",
+      "code": "M-152",
       "name": "Málaga-Los Gámez",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
         "Automóviles Mérida",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "25",
-      "code": "M-320",
-      "name": "Málaga-Marbella",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Avanza Movilidad Integral",
         "S.L."
       ],
       "hasNews": false,
@@ -1379,9 +1504,9 @@
       "inboundPath": []
     },
     {
-      "id": "115",
+      "id": "322",
       "code": "M-362",
-      "name": "Málaga-Nerja (Por Torre Benagalbón)",
+      "name": "Málaga-Nerja (No se permite el viaje entre Vélez-Málaga y Torre del Mar en ambos sentidos)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -1578,31 +1703,6 @@
       "inboundPath": []
     },
     {
-      "id": "281",
-      "code": "M-257",
-      "name": "Málaga-Sevilla por Antequera",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Nex Continental Holdings",
-        "S.L.U."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "163",
       "code": "M-344",
       "name": "Málaga-Tolox",
@@ -1628,14 +1728,14 @@
       "inboundPath": []
     },
     {
-      "id": "1",
-      "code": "M-110",
-      "name": "Málaga-Torremolinos-Benalmádena Costa",
+      "id": "321",
+      "code": "M-260",
+      "name": "Málaga-Torre Benagalbón-Torre del Mar-Vélez Málaga (prohibido entre Vélez y T. del Mar)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
-        "Avanza Movilidad Integral",
-        "S.L."
+        "Nex Continental Holdings",
+        "S.L.U."
       ],
       "hasNews": false,
       "concession": null,
@@ -1653,14 +1753,189 @@
       "inboundPath": []
     },
     {
-      "id": "113",
-      "code": "M-260",
-      "name": "Málaga-Vélez Málaga (Por Torre Benagalbón)",
+      "id": "326",
+      "code": "M-366",
+      "name": "Málaga-Torre de Mar-Cuevas de Nerja",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
         "Nex Continental Holdings",
         "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "325",
+      "code": "M-363",
+      "name": "Málaga-Torre de Mar-Hospital Vélez-Torrox",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "334",
+      "code": "M-380",
+      "name": "Málaga-Torre del Mar Directo (desde el 30 de julio)",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "327",
+      "code": "M-367",
+      "name": "Málaga-Torre del Mar-Maro",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "318",
+      "code": "M-368",
+      "name": "Málaga-Torre del Mar-Motril",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "328",
+      "code": "M-364",
+      "name": "Málaga-Torre del Mar-Vélez Málaga-Periana",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "329",
+      "code": "M-365",
+      "name": "Málaga-Torre del Mar-Vélez Málaga-Riogordo",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Nex Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "1",
+      "code": "M-110",
+      "name": "Málaga-Torremolinos-Benalmádena Costa",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Avanza Movilidad Integral",
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -1706,31 +1981,6 @@
       "id": "9",
       "code": "M-121",
       "name": "Mijas-Benalmádena-Torremolinos",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Avanza Movilidad Integral",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "5",
-      "code": "M-114",
-      "name": "Mijas-Teatinos (del 15/09/25 al 29/05/26)",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -1851,6 +2101,30 @@
       "inboundPath": []
     },
     {
+      "id": "333",
+      "code": "M-541",
+      "name": "Pizarra-Zalea-Cerralba-Los Álamos",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Damas S.A. e Interurbana de Autobuses S.A."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "296",
       "code": "M-262",
       "name": "Rincón de la Victoria-Benagalbón-Moclinejo-El Valdés (Av)",
@@ -1876,39 +2150,14 @@
       "inboundPath": []
     },
     {
-      "id": "310",
-      "code": "M-165",
-      "name": "Rinconsol-El Palo",
+      "id": "149",
+      "code": "M-552",
+      "name": "Riogordo-Colmenar-Casabermeja-El Palo",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
-        "Avanza Movilidad Integral",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "7",
-      "code": "M-116",
-      "name": "Teatinos-Torremolinos-Benalmádena (del 15/09/25 al 29/05/26)",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Avanza Movilidad Integral",
-        "S.L."
+        "Nex Continental Holdings",
+        "S.L.U."
       ],
       "hasNews": false,
       "concession": null,
@@ -2026,9 +2275,9 @@
       "inboundPath": []
     },
     {
-      "id": "282",
-      "code": "M-258",
-      "name": "Ubeda-Málaga por Antequera",
+      "id": "148",
+      "code": "M-560",
+      "name": "Totalán-Centro Comercial Rincón-La Cala",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -2051,9 +2300,9 @@
       "inboundPath": []
     },
     {
-      "id": "137",
-      "code": "M-166",
-      "name": "Universidad-Clínico-Rincón de la Victoria (del 15/09/25 al 29/05/26)",
+      "id": "282",
+      "code": "M-258",
+      "name": "Ubeda-Málaga por Antequera",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [
@@ -2126,6 +2375,54 @@
       "inboundPath": []
     },
     {
+      "id": "233",
+      "code": "M-540",
+      "name": "Valle de Abdalajís-Álora-Pizarra-Los Álamos",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Damas S.A. e Interurbana de Autobuses S.A."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "315",
+      "code": "M-270",
+      "name": "Valle de Abdalajís-Estación de Álora",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Damas S.A. e Interurbana de Autobuses S.A."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
       "id": "226",
       "code": "M-222",
       "name": "Valtocado-El Barrio-La Alquería-Fuengirola",
@@ -2159,6 +2456,56 @@
       "operators": [
         "Nex Continental Holdings",
         "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "146",
+      "code": "M-550",
+      "name": "Villanueva de la Concepción-Casabermeja-El Palo",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Automóviles Mérida",
+        "S.L."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "332",
+      "code": "M-554",
+      "name": "Zalea- Cerralba-Parque Acuático de Torremolinos",
+      "mode": "Autobús",
+      "modeId": "1",
+      "operators": [
+        "Autocares Sierra de las Nieves",
+        "S.L."
       ],
       "hasNews": false,
       "concession": null,

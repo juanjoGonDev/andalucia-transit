@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:14.624Z",
+    "generatedAt": "2026-08-25T05:32:33.413Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
     "consortiumName": "Área de Sevilla",
-    "stopCount": 1148
+    "stopCount": 1147
   },
   "stops": [
     {
@@ -231,21 +231,6 @@
       "location": {
         "latitude": 37.52995301578372,
         "longitude": -6.151654780983282
-      }
-    },
-    {
-      "consortiumId": 1,
-      "stopId": "2584",
-      "stopCode": "2584",
-      "name": "AMBULATORIO GERENA (FRENTE)",
-      "municipality": "GERENA",
-      "municipalityId": "25",
-      "nucleus": "GERENA",
-      "nucleusId": "3183",
-      "zone": "D",
-      "location": {
-        "latitude": 37.529486017644885,
-        "longitude": -6.151111274957657
       }
     },
     {
@@ -814,8 +799,8 @@
       "nucleusId": "3171",
       "zone": "C",
       "location": {
-        "latitude": 37.293923231360964,
-        "longitude": -5.9398457407951355
+        "latitude": 37.29485007866419,
+        "longitude": -5.938467804268956
       }
     },
     {
@@ -1249,8 +1234,8 @@
       "nucleusId": "3167",
       "zone": "C",
       "location": {
-        "latitude": 37.282635066666664,
-        "longitude": -6.062618645
+        "latitude": 37.2823486580694,
+        "longitude": -6.062533714799303
       }
     },
     {
@@ -3334,8 +3319,8 @@
       "nucleusId": "3202",
       "zone": "E",
       "location": {
-        "latitude": 37.303583333333,
-        "longitude": -6.311583333333
+        "latitude": 37.30516761149746,
+        "longitude": -6.312067049955733
       }
     },
     {
@@ -3349,8 +3334,8 @@
       "nucleusId": "3202",
       "zone": "E",
       "location": {
-        "latitude": 37.303925,
-        "longitude": -6.311575
+        "latitude": 37.30514625382021,
+        "longitude": -6.311954464650415
       }
     },
     {
@@ -5772,7 +5757,7 @@
       "consortiumId": 1,
       "stopId": "2850",
       "stopCode": "2850",
-      "name": "C PARROCO VICENTE MORA LA FABRICA(I)",
+      "name": "C PARROCO VICENTE MOYA LA FABRICA(I)",
       "municipality": "PILAS",
       "municipalityId": "34",
       "nucleus": "PILAS",
@@ -5787,7 +5772,7 @@
       "consortiumId": 1,
       "stopId": "2849",
       "stopCode": "2849",
-      "name": "C PARROCO VICENTE MORA LA FABRICA(V)",
+      "name": "C PARROCO VICENTE MOYA LA FABRICA(V)",
       "municipality": "PILAS",
       "municipalityId": "34",
       "nucleus": "PILAS",
@@ -6051,6 +6036,21 @@
       "location": {
         "latitude": 37.523315158905916,
         "longitude": -6.26875085125295
+      }
+    },
+    {
+      "consortiumId": 1,
+      "stopId": "3436",
+      "stopCode": "3436",
+      "name": "C SEVILLA Nº 13",
+      "municipality": "GERENA",
+      "municipalityId": "25",
+      "nucleus": "GERENA",
+      "nucleusId": "3183",
+      "zone": "D",
+      "location": {
+        "latitude": 37.52869802343303,
+        "longitude": -6.151233942220045
       }
     },
     {
@@ -9595,21 +9595,6 @@
     },
     {
       "consortiumId": 1,
-      "stopId": "2583",
-      "stopCode": "2583",
-      "name": "GUARDIA CIVIL GERENA (I)",
-      "municipality": "GERENA",
-      "municipalityId": "25",
-      "nucleus": "GERENA",
-      "nucleusId": "3183",
-      "zone": "D",
-      "location": {
-        "latitude": 37.52783872707969,
-        "longitude": -6.150032761614683
-      }
-    },
-    {
-      "consortiumId": 1,
       "stopId": "2582",
       "stopCode": "2582",
       "name": "GUARDIA CIVIL GERENA (V)",
@@ -11350,24 +11335,9 @@
     },
     {
       "consortiumId": 1,
-      "stopId": "2379",
-      "stopCode": "2379",
-      "name": "MUEBLES CASTELLANO (I)",
-      "municipality": "CASTILLEJA DE LA CUESTA",
-      "municipalityId": "18",
-      "nucleus": "CASTILLEJA DE LA CUESTA",
-      "nucleusId": "3164",
-      "zone": "B",
-      "location": {
-        "latitude": 37.38474024001079,
-        "longitude": -6.0635114337840745
-      }
-    },
-    {
-      "consortiumId": 1,
       "stopId": "2378",
       "stopCode": "2378",
-      "name": "MUEBLES CASTELLANO (V)",
+      "name": "MUEBLES CASTELLANO (I)",
       "municipality": "CASTILLEJA DE LA CUESTA",
       "municipalityId": "18",
       "nucleus": "CASTILLEJA DE LA CUESTA",
@@ -11376,6 +11346,21 @@
       "location": {
         "latitude": 37.38453468428843,
         "longitude": -6.062248097228208
+      }
+    },
+    {
+      "consortiumId": 1,
+      "stopId": "2379",
+      "stopCode": "2379",
+      "name": "MUEBLES CASTELLANO (V)",
+      "municipality": "CASTILLEJA DE LA CUESTA",
+      "municipalityId": "18",
+      "nucleus": "CASTILLEJA DE LA CUESTA",
+      "nucleusId": "3164",
+      "zone": "B",
+      "location": {
+        "latitude": 37.38474024001079,
+        "longitude": -6.0635114337840745
       }
     },
     {
@@ -15445,24 +15430,9 @@
     },
     {
       "consortiumId": 1,
-      "stopId": "2563",
-      "stopCode": "2563",
-      "name": "URB EL RETIRO",
-      "municipality": "ESPARTINAS",
-      "municipalityId": "23",
-      "nucleus": "EL RETIRO (Espatinas)",
-      "nucleusId": "3177",
-      "zone": "C",
-      "location": {
-        "latitude": 37.384572041613026,
-        "longitude": -6.107282638549805
-      }
-    },
-    {
-      "consortiumId": 1,
       "stopId": "2562",
       "stopCode": "2562",
-      "name": "URB EL RETIRO (V)",
+      "name": "URB EL RETIRO (I)",
       "municipality": "ESPARTINAS",
       "municipalityId": "23",
       "nucleus": "EL RETIRO (Espatinas)",
@@ -15471,6 +15441,21 @@
       "location": {
         "latitude": 37.38438982168426,
         "longitude": -6.107116341590881
+      }
+    },
+    {
+      "consortiumId": 1,
+      "stopId": "2563",
+      "stopCode": "2563",
+      "name": "URB EL RETIRO (V)",
+      "municipality": "ESPARTINAS",
+      "municipalityId": "23",
+      "nucleus": "EL RETIRO (Espatinas)",
+      "nucleusId": "3177",
+      "zone": "C",
+      "location": {
+        "latitude": 37.384572041613026,
+        "longitude": -6.107282638549805
       }
     },
     {
@@ -16129,8 +16114,8 @@
       "nucleusId": "3171",
       "zone": "C",
       "location": {
-        "latitude": 37.27118193333333,
-        "longitude": -5.936436875
+        "latitude": 37.269931411537954,
+        "longitude": -5.936192970459372
       }
     },
     {

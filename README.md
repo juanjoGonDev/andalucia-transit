@@ -14,3 +14,13 @@ The workspace ships with ESLint, Prettier, Jasmine/Karma unit testing, and Cypre
 
 - `pnpm run record` launches the Playwright-based recorder that captures screenshots and videos with the same DOM automation flow as the legacy screenshot utility. Refer to [docs/recording-guide.md](docs/recording-guide.md) for full flag descriptions and troubleshooting tips.
 - Document demo captures with textual evidence (viewport, reproduction steps, selectors, observed vs expected) and keep any locally captured media in gitignored directories such as `artifacts/screenshots`.
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=juanjoGonDev%2Fandalucia-transit&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=juanjoGonDev/andalucia-transit&type=date&theme=dark&legend=top-left&sealed_token=M1KIQyMU9eOS2Vp4CpBe3vPhrPb67AMnfa7fAmQfXzWG3vWlrq9iuKAIcFrDt6ajj8VSJfUf55d-qpBpVGGhqgCQPVd4L2yTqrb-wFQsHEkdfZKKc8ECQAjn5aK2HeXEfiHbZvhN3MaNWW5pgCcE9Rt2wm_p0XDdQiBuiH8ouXApjeR1ZOvHCpjjMTUd" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=juanjoGonDev/andalucia-transit&type=date&legend=top-left&sealed_token=M1KIQyMU9eOS2Vp4CpBe3vPhrPb67AMnfa7fAmQfXzWG3vWlrq9iuKAIcFrDt6ajj8VSJfUf55d-qpBpVGGhqgCQPVd4L2yTqrb-wFQsHEkdfZKKc8ECQAjn5aK2HeXEfiHbZvhN3MaNWW5pgCcE9Rt2wm_p0XDdQiBuiH8ouXApjeR1ZOvHCpjjMTUd" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=juanjoGonDev/andalucia-transit&type=date&legend=top-left&sealed_token=M1KIQyMU9eOS2Vp4CpBe3vPhrPb67AMnfa7fAmQfXzWG3vWlrq9iuKAIcFrDt6ajj8VSJfUf55d-qpBpVGGhqgCQPVd4L2yTqrb-wFQsHEkdfZKKc8ECQAjn5aK2HeXEfiHbZvhN3MaNWW5pgCcE9Rt2wm_p0XDdQiBuiH8ouXApjeR1ZOvHCpjjMTUd" />
+ </picture>
+</a>

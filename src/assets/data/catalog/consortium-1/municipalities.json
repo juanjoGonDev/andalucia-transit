@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:18.364Z",
+    "generatedAt": "2026-08-25T05:32:37.541Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 1,
     "consortiumName": "Área de Sevilla",
-    "itemCount": 59
+    "itemCount": 61
   },
   "municipalities": [
     {
@@ -97,6 +97,10 @@
       "name": "EL GARROBO"
     },
     {
+      "id": "68",
+      "name": "EL PALMAR DE TROYA"
+    },
+    {
       "id": "63",
       "name": "EL PEDROSO"
     },
@@ -107,6 +111,10 @@
     {
       "id": "23",
       "name": "ESPARTINAS"
+    },
+    {
+      "id": "67",
+      "name": "FUENTES DE ANDALUCÍA"
     },
     {
       "id": "24",

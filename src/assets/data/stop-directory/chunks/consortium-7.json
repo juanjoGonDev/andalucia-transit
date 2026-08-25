@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2025-10-22T05:07:14.624Z",
+    "generatedAt": "2026-08-25T05:32:33.413Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 7,
     "consortiumName": "Área de Jaén",
-    "stopCount": 64
+    "stopCount": 65
   },
   "stops": [
     {
@@ -310,6 +310,21 @@
     },
     {
       "consortiumId": 7,
+      "stopId": "85",
+      "stopCode": "85",
+      "name": "Calle Párroco Casado (Junto Cooperativa)",
+      "municipality": "Carcheles",
+      "municipalityId": "18",
+      "nucleus": "Carchel",
+      "nucleusId": "46",
+      "zone": "D",
+      "location": {
+        "latitude": 37.65276,
+        "longitude": -3.63454
+      }
+    },
+    {
+      "consortiumId": 7,
       "stopId": "70",
       "stopCode": "70",
       "name": "Calle Santísimo ",
@@ -375,8 +390,8 @@
       "name": "Ciudad Jardin",
       "municipality": "La Guardia de Jaén",
       "municipalityId": "3",
-      "nucleus": "La Guardia de Jaén",
-      "nucleusId": "5",
+      "nucleus": "Ciudad Jardin",
+      "nucleusId": "6",
       "zone": "B",
       "location": {
         "latitude": 37.763064,
@@ -865,21 +880,6 @@
     },
     {
       "consortiumId": 7,
-      "stopId": "85",
-      "stopCode": "85",
-      "name": "Plaza De La Fuente",
-      "municipality": "Carcheles",
-      "municipalityId": "18",
-      "nucleus": "Carchel",
-      "nucleusId": "46",
-      "zone": "D",
-      "location": {
-        "latitude": 37.65218,
-        "longitude": -3.636409
-      }
-    },
-    {
-      "consortiumId": 7,
       "stopId": "46",
       "stopCode": "46",
       "name": "Plaza Manuel Carrasco-I/V",
@@ -891,6 +891,21 @@
       "location": {
         "latitude": 37.644051,
         "longitude": -3.984906
+      }
+    },
+    {
+      "consortiumId": 7,
+      "stopId": "130",
+      "stopCode": "130",
+      "name": "Plaza Pilar Bombo",
+      "municipality": "Cazalilla",
+      "municipalityId": "29",
+      "nucleus": "Cazalilla",
+      "nucleusId": "59",
+      "zone": "D",
+      "location": {
+        "latitude": 37.98296,
+        "longitude": -3.88109
       }
     },
     {
