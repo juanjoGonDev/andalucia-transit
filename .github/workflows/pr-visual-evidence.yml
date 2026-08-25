@@ -115,6 +115,15 @@ jobs:
           cat "$RUNNER_TEMP/andalucia-transit.log" >&2
           exit 1
 
+      - name: Verify Home mobile tab layout
+        if: steps.pr.outputs.found == 'true'
+        shell: bash
+        env:
+          E2E_BASE_URL: http://127.0.0.1:4200
+        run: |
+          set -euo pipefail
+          pnpm exec playwright test tests/playwright/home-tabs.layout.spec.ts
+
       - name: Capture canonical mobile and desktop screens
         if: steps.pr.outputs.found == 'true'
         shell: bash
