@@ -145,8 +145,13 @@ class GeolocationStub {
     timestamp: Date.now(),
     toJSON: () => ({})
   };
+  error: unknown | null = null;
 
   async getCurrentPosition(): Promise<GeolocationPosition> {
+    if (this.error !== null) {
+      throw this.error;
+    }
+
     return this.position;
   }
 }
@@ -313,10 +318,7 @@ describe('RouteSearchFormComponent', () => {
 
     const builtSelection = await (
       component as unknown as RouteSearchFormComponentPublicApi
-    ).buildSelection(
-      ORIGIN_OPTION,
-      DESTINATION_OPTION
-    );
+    ).buildSelection(ORIGIN_OPTION, DESTINATION_OPTION);
     expect(builtSelection).not.toBeNull();
 
     const emitSpy = spyOn(component.selectionConfirmed, 'emit');
@@ -327,6 +329,40 @@ describe('RouteSearchFormComponent', () => {
     expect(emitted.origin).toEqual(ORIGIN_OPTION);
     expect(emitted.destination).toEqual(DESTINATION_OPTION);
     expect(emitted.lineMatches.length).toBe(1);
+  });
+
+  it('prevents duplicate submissions while a route selection is resolving', async () => {
+    component.searchForm.controls.origin.setValue(ORIGIN_OPTION);
+    component.searchForm.controls.destination.setValue(DESTINATION_OPTION);
+
+    let resolveSelection: ((value: RouteSearchSelection | null) => void) | null = null;
+    const pendingSelection = new Promise<RouteSearchSelection | null>((resolve) => {
+      resolveSelection = resolve;
+    });
+    const api = component as unknown as RouteSearchFormComponentPublicApi;
+    const buildSelectionSpy = spyOn(api, 'buildSelection').and.returnValue(pendingSelection);
+    const emitSpy = spyOn(component.selectionConfirmed, 'emit');
+
+    const firstSubmit = component.submit();
+    const secondSubmit = component.submit();
+    fixture.detectChanges();
+
+    expect(buildSelectionSpy).toHaveBeenCalledTimes(1);
+    expect(api.submitLoading$.getValue()).toBeTrue();
+    expect(fixture.nativeElement.querySelector('.route-search-form__submit')?.getAttribute('aria-busy')).toBe(
+      'true'
+    );
+
+    resolveSelection?.({
+      origin: ORIGIN_OPTION,
+      destination: DESTINATION_OPTION,
+      queryDate: new Date(component.minSearchDate),
+      lineMatches: []
+    });
+    await Promise.all([firstSubmit, secondSubmit]);
+
+    expect(emitSpy).toHaveBeenCalledTimes(1);
+    expect(api.submitLoading$.getValue()).toBeFalse();
   });
 
   it('shows the no routes feedback when nothing matches', async () => {
@@ -399,6 +435,19 @@ describe('RouteSearchFormComponent', () => {
     });
   });
 
+  it('surfaces geolocation permission failures instead of silently clearing results', async () => {
+    geolocation.error = { code: 1 };
+
+    await component.recommendOriginFromLocation();
+    fixture.detectChanges();
+
+    const api = component as unknown as RouteSearchFormComponentPublicApi;
+    expect(api.originLocationErrorKey).toBe(
+      APP_CONFIG.translationKeys.home.dialogs.nearbyStops.permissionDenied
+    );
+    expect(fixture.nativeElement.querySelector('.app-async-status--error')).not.toBeNull();
+  });
+
   it('hides recommended origins when they do not match the query', fakeAsync(() => {
     nearbyStops.results = [
       {
@@ -443,6 +492,8 @@ describe('RouteSearchFormComponent', () => {
 });
 
 interface RouteSearchFormComponentPublicApi {
+  readonly submitLoading$: BehaviorSubject<boolean>;
+  readonly originLocationErrorKey: string | null;
   buildSelection(
     origin: StopDirectoryOption,
     destination: StopDirectoryOption
@@ -454,9 +505,7 @@ function buildConnection(stopId: string, consortiumId: number): StopConnection {
     consortiumId,
     stopId,
     originStopIds: ORIGIN_OPTION.stopIds,
-    lineSignatures: [
-      { lineId: 'line', lineCode: '001', direction: 0 }
-    ]
+    lineSignatures: [{ lineId: 'line', lineCode: '001', direction: 0 }]
   };
 }
 

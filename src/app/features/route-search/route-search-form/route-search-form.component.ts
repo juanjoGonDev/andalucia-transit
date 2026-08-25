@@ -46,6 +46,7 @@ import {
   switchMap
 } from 'rxjs/operators';
 import { APP_CONFIG } from '@core/config';
+import { classifyGeolocationError } from '@core/services/geolocation-error.util';
 import { GEOLOCATION_REQUEST_OPTIONS } from '@core/services/geolocation-request.options';
 import { GeolocationService } from '@core/services/geolocation.service';
 import {
@@ -169,7 +170,8 @@ export class RouteSearchFormComponent implements OnChanges {
   private originInput?: ElementRef<HTMLInputElement>;
 
   private readonly translation = APP_CONFIG.translationKeys.home.sections.search;
-  private readonly distanceTranslation = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
+  private readonly nearbyTranslation = APP_CONFIG.translationKeys.home.dialogs.nearbyStops;
+  private readonly distanceTranslation = this.nearbyTranslation.distance;
   private readonly searchIds = APP_CONFIG.homeData.search;
   private readonly maxAutocompleteOptions = APP_CONFIG.homeData.search.maxAutocompleteOptions;
   private readonly searchDebounceMs = APP_CONFIG.homeData.search.debounceMs;
@@ -196,6 +198,8 @@ export class RouteSearchFormComponent implements OnChanges {
   readonly favoritesGroupLabelKey = this.translation.favoritesGroupLabel;
   readonly addFavoriteLabelKey = this.translation.addFavoriteLabel;
   readonly removeFavoriteLabelKey = this.translation.removeFavoriteLabel;
+  readonly originLocationLoadingKey = this.nearbyTranslation.loading;
+  readonly submitErrorKey = APP_CONFIG.translationKeys.home.sections.recentStops.previewError;
 
   readonly originIcon: MaterialSymbolName = 'my_location';
   readonly destinationIcon: MaterialSymbolName = 'flag';
@@ -374,8 +378,11 @@ export class RouteSearchFormComponent implements OnChanges {
   readonly trackOption = (_: number, option: StopAutocompleteOption): string => option.id;
 
   readonly noRoutes$ = new BehaviorSubject<boolean>(false);
+  readonly submitLoading$ = new BehaviorSubject<boolean>(false);
+  readonly submitError$ = new BehaviorSubject<boolean>(false);
   protected readonly originLocationActionLabelKey = this.translation.originLocationActionLabel;
   protected originLocationLoading = false;
+  protected originLocationErrorKey: string | null = null;
 
   private lastPatchedSelectionId: string | null = null;
 
@@ -413,7 +420,7 @@ export class RouteSearchFormComponent implements OnChanges {
   }
 
   protected onSubmitTrigger(): void {
-    if (this.searchForm.invalid) {
+    if (this.searchForm.invalid || this.submitLoading$.getValue()) {
       return;
     }
 
@@ -421,6 +428,10 @@ export class RouteSearchFormComponent implements OnChanges {
   }
 
   async submit(): Promise<void> {
+    if (this.submitLoading$.getValue()) {
+      return;
+    }
+
     const origin = this.toStopOption(this.originControl.value);
     const destination = this.toStopOption(this.destinationControl.value);
 
@@ -429,15 +440,24 @@ export class RouteSearchFormComponent implements OnChanges {
       return;
     }
 
-    const selection = await this.buildSelection(origin, destination);
+    this.submitLoading$.next(true);
+    this.submitError$.next(false);
 
-    if (!selection) {
-      this.showNoRoutes();
-      return;
+    try {
+      const selection = await this.buildSelection(origin, destination);
+
+      if (!selection) {
+        this.showNoRoutes();
+        return;
+      }
+
+      this.hideNoRoutes();
+      this.selectionConfirmed.emit(selection);
+    } catch {
+      this.submitError$.next(true);
+    } finally {
+      this.submitLoading$.next(false);
     }
-
-    this.hideNoRoutes();
-    this.selectionConfirmed.emit(selection);
   }
 
   swap(): void {
@@ -458,6 +478,7 @@ export class RouteSearchFormComponent implements OnChanges {
     }
 
     this.originLocationLoading = true;
+    this.originLocationErrorKey = null;
 
     try {
       const position = await this.geolocation.getCurrentPosition(GEOLOCATION_REQUEST_OPTIONS);
@@ -468,8 +489,9 @@ export class RouteSearchFormComponent implements OnChanges {
       const nearbyStops = await this.nearbyStops.findClosestStops(coordinates);
       const options = await firstValueFrom(this.loadRecommendedOptions(nearbyStops));
       this.recommendedOriginOptions.next(options);
-    } catch {
+    } catch (error) {
       this.recommendedOriginOptions.next(EMPTY_OPTIONS);
+      this.originLocationErrorKey = this.resolveOriginLocationErrorKey(error);
     } finally {
       this.originLocationLoading = false;
     }
@@ -881,6 +903,8 @@ export class RouteSearchFormComponent implements OnChanges {
       .subscribe(([origin, destination]) => {
         this.ensureDistinctStops(origin, destination);
         this.hideNoRoutes();
+        this.submitError$.next(false);
+        this.originLocationErrorKey = null;
       });
   }
 
@@ -1057,6 +1081,21 @@ export class RouteSearchFormComponent implements OnChanges {
   private hideNoRoutes(): void {
     if (this.noRoutes$.getValue()) {
       this.noRoutes$.next(false);
+    }
+  }
+
+  private resolveOriginLocationErrorKey(error: unknown): string {
+    const kind = classifyGeolocationError(error);
+
+    switch (kind) {
+      case 'notSupported':
+        return this.nearbyTranslation.notSupported;
+      case 'permissionDenied':
+        return this.nearbyTranslation.permissionDenied;
+      case 'positionUnavailable':
+      case 'timeout':
+      case 'unknown':
+        return this.nearbyTranslation.unknownError;
     }
   }
 

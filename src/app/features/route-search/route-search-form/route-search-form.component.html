@@ -12,9 +12,17 @@
         class="route-search-form__location-button"
         [appAccessibleButtonDisabled]="originLocationLoading"
         [attr.aria-label]="originLocationActionLabelKey | translate"
+        [attr.aria-busy]="originLocationLoading ? 'true' : null"
         (appAccessibleButtonActivated)="recommendOriginFromLocation()"
       >
-        <span class="material-symbols-outlined route-search-form__icon">{{ originIcon }}</span>
+        <span
+          *ngIf="originLocationLoading; else originLocationIcon"
+          class="app-loading-indicator app-loading-indicator--sm"
+          aria-hidden="true"
+        ></span>
+        <ng-template #originLocationIcon>
+          <span class="material-symbols-outlined route-search-form__icon">{{ originIcon }}</span>
+        </ng-template>
       </div>
       <input
         #originInput
@@ -26,10 +34,7 @@
         autocomplete="off"
         placeholder=""
       />
-      <mat-autocomplete
-        #originAutocomplete="matAutocomplete"
-        [displayWith]="displayStop"
-      >
+      <mat-autocomplete #originAutocomplete="matAutocomplete" [displayWith]="displayStop">
         <ng-container *ngFor="let group of originGroups$ | async; trackBy: trackGroup">
           <mat-optgroup
             [label]="group.translateLabel ? (group.label | translate) : group.label"
@@ -37,10 +42,7 @@
               group.translateLabel ? (group.municipality | translate) : group.municipality
             "
           >
-          <mat-option
-            *ngFor="let option of group.options; trackBy: trackOption"
-            [value]="option"
-          >
+            <mat-option *ngFor="let option of group.options; trackBy: trackOption" [value]="option">
               <div class="route-search-form__option">
                 <div class="route-search-form__option-text">
                   <span class="route-search-form__option-name">{{ option.name }}</span>
@@ -95,10 +97,7 @@
         autocomplete="off"
         placeholder=""
       />
-      <mat-autocomplete
-        #destinationAutocomplete="matAutocomplete"
-        [displayWith]="displayStop"
-      >
+      <mat-autocomplete #destinationAutocomplete="matAutocomplete" [displayWith]="displayStop">
         <ng-container *ngFor="let group of destinationGroups$ | async; trackBy: trackGroup">
           <mat-optgroup
             [label]="group.translateLabel ? (group.label | translate) : group.label"
@@ -106,10 +105,7 @@
               group.translateLabel ? (group.municipality | translate) : group.municipality
             "
           >
-          <mat-option
-            *ngFor="let option of group.options; trackBy: trackOption"
-            [value]="option"
-          >
+            <mat-option *ngFor="let option of group.options; trackBy: trackOption" [value]="option">
               <div class="route-search-form__option">
                 <div class="route-search-form__option-text">
                   <span class="route-search-form__option-name">{{ option.name }}</span>
@@ -162,12 +158,41 @@
   </div>
 
   <div
+    *ngIf="originLocationLoading"
+    class="route-search-form__inline-status app-async-status app-async-status--compact"
+    role="status"
+    aria-live="polite"
+  >
+    <span class="app-loading-indicator app-loading-indicator--sm" aria-hidden="true"></span>
+    <div class="app-async-status__body">
+      <p class="app-async-status__description">{{ originLocationLoadingKey | translate }}</p>
+    </div>
+  </div>
+
+  <div
+    *ngIf="originLocationErrorKey as locationErrorKey"
+    class="route-search-form__inline-status app-async-status app-async-status--error app-async-reveal"
+    role="alert"
+  >
+    <span class="material-symbols-outlined" aria-hidden="true">location_off</span>
+    <div class="app-async-status__body">
+      <p class="app-async-status__description">{{ locationErrorKey | translate }}</p>
+    </div>
+  </div>
+
+  <div
     appAccessibleButton
     class="app-button app-button--primary app-button--lg app-button--block-mobile route-search-form__submit"
-    [appAccessibleButtonDisabled]="searchForm.invalid"
+    [appAccessibleButtonDisabled]="searchForm.invalid || (submitLoading$ | async) === true"
+    [attr.aria-busy]="(submitLoading$ | async) === true ? 'true' : null"
     (appAccessibleButtonActivated)="onSubmitTrigger()"
   >
-    {{ submitLabelKey | translate }}
+    <span
+      *ngIf="(submitLoading$ | async) === true"
+      class="app-loading-indicator app-loading-indicator--sm"
+      aria-hidden="true"
+    ></span>
+    <span>{{ submitLabelKey | translate }}</span>
   </div>
 
   <p
@@ -178,4 +203,15 @@
   >
     {{ noRoutesMessageKey | translate }}
   </p>
+
+  <div
+    *ngIf="submitError$ | async"
+    class="route-search-form__inline-status app-async-status app-async-status--error app-async-reveal"
+    role="alert"
+  >
+    <span class="material-symbols-outlined" aria-hidden="true">error</span>
+    <div class="app-async-status__body">
+      <p class="app-async-status__description">{{ submitErrorKey | translate }}</p>
+    </div>
+  </div>
 </form>
