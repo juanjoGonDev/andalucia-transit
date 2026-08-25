@@ -232,4 +232,4 @@ Every commit performing changes under this plan must include:
 
 - At least one browser screenshot URL demonstrating identical rendering.
 - A recorded comparison result (0 px diff) from the visual regression tool.
-- Updated checklist progress in `docs/features-checklist.md`.
+- Updated checklist progress in `docs/feature-checklist.md`.

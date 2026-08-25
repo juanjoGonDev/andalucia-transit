@@ -8,7 +8,7 @@ import {
   inject,
   signal
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '@core/config';
 import { HomeTabId } from '@features/home/home.types';
@@ -52,6 +52,7 @@ export class AppShellTopActionsComponent {
   private readonly layoutContextStore = inject(AppLayoutContextStore);
 
   private readonly translation = APP_CONFIG.translationKeys.home;
+  private readonly tabQueryParam = APP_CONFIG.homeData.tabs.queryParam;
   private readonly homeCommands = buildNavigationCommands(APP_CONFIG.routes.home);
   private readonly homeRecentCommands = buildNavigationCommands(APP_CONFIG.routes.homeRecent);
   private readonly homeFavoritesCommands = buildNavigationCommands(APP_CONFIG.routes.homeFavorites);
@@ -114,6 +115,14 @@ export class AppShellTopActionsComponent {
   protected readonly focusableTabIndex = FOCUSABLE_TAB_INDEX;
   protected readonly disabledTabIndex = DISABLED_TAB_INDEX;
 
+  private buildHomeTabNavigationExtras(tab: HomeTabId, replaceUrl = false): NavigationExtras {
+    return {
+      queryParams: { [this.tabQueryParam]: tab },
+      queryParamsHandling: 'merge',
+      replaceUrl,
+    };
+  }
+
   protected toggleMenu(): void {
     this.menuOpen.update((open) => !open);
   }
@@ -156,6 +165,6 @@ export class AppShellTopActionsComponent {
     }
 
     const commands = this.homeTabCommands.get(entry.action.tab) ?? this.homeCommands;
-    await this.router.navigate(commands);
+    await this.router.navigate(commands, this.buildHomeTabNavigationExtras(entry.action.tab));
   }
 }

@@ -215,6 +215,9 @@
       "arrivingNow": "Arriving now",
       "departedAgo": "Departed {minutes} min ago"
     },
+    "announcements": {
+      "progress": "Service {lineCode} toward {destination}. {statusText}. Progress {percentage}% complete"
+    },
     "badges": {
       "accessible": "Accessible bus",
       "universityOnly": "University service"
@@ -269,7 +272,9 @@
     "previousBadge": "Previous",
     "noUpcoming": "No more direct departures for this date within the next hours.",
     "changeDate": "Choose another date",
-    "emptyResults": "No services were found for this route.",
+    "emptyResults": "We couldn't find a direct route for this search.",
+    "emptyResultsDescription": "Try swapping your stops or picking nearby alternatives to explore other routes.",
+    "emptyResultsAction": "Adjust search filters",
     "arrivalAt": "Arrives at {time}",
     "travelDuration": "Trip {duration}",
     "holidayBadge": "Holiday service",

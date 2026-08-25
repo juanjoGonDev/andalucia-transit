@@ -1,1 +1,1 @@
-window.__ANDALUCIA_TRANSIT_FLAGS__ = Object.freeze({ forceSnapshot: false, mockDataMode: null });
+window.__ANDALUCIA_TRANSIT_FLAGS__ = Object.freeze({ forceSnapshot: true, mockDataMode: null });

@@ -2,7 +2,7 @@
 title: Components and Features Index
 intent: Highlight major application features, their files, and verification hooks
 tags: [angular,features,testing]
-last_scanned: 2025-10-21
+last_scanned: 2025-10-30
 source_of_truth: [src/app/app.ts, src/app/features, src/app/shared, src/app/core, tests/playwright, cypress/e2e]
 ---
 **When to use:** Understand which files deliver a feature, its supporting services, and associated tests.
@@ -37,6 +37,7 @@ source_of_truth: [src/app/app.ts, src/app/features, src/app/shared, src/app/core
 - Stop detail: `src/app/features/stop-detail`, `stop-info`, domain `stop-schedule` and `stops` modules.
 - Data: `stop-schedule.api-service.ts`, `stop-directory.service.ts`.
 - Tests: Feature specs plus stop facades/services specs.
+- Docs: [`../docs-index/overview.md`](../docs-index/overview.md#accessibility-guidance) → `accessibility/stop-detail.md`, [`../docs-index/overview.md`](../docs-index/overview.md#audit-notes) → `audit/stop-detail.md`.
 
 ## News Feed
 - Files: `src/app/features/news`.
@@ -55,7 +56,7 @@ source_of_truth: [src/app/app.ts, src/app/features, src/app/shared, src/app/core
 ## A11y and Shared UI
 - Shared assets: `src/app/shared/a11y`, `shared/ui`, `shared/layout`.
 - Tests: Directive specs, dialog specs, form component specs.
-- Docs: `docs/features-checklist.md` accessibility tasks.
+- Docs: `docs/feature-checklist.md` accessibility tasks.
 
 ## Design System
 - Tokens: `src/styles/`, `src/styles.scss`, theme declarations.
@@ -70,7 +71,7 @@ source_of_truth: [src/app/app.ts, src/app/features, src/app/shared, src/app/core
 - Impacted files: `src/app/shared/layout`, `src/app/features/*`, `src/app/shared/ui`.
 
 ## Feature Coverage
-- Checklist: `docs/features-checklist.md` for completed scopes.
+- Checklist: `docs/feature-checklist.md` for completed scopes.
 - QA Evidence: screenshot workflow in `docs/development-environment.md` and `scripts/screenshot.js`.
 
 ## Open Initiatives

@@ -1,0 +1,289 @@
+name: Publish PR visual evidence
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+  push:
+    branches-ignore:
+      - main
+
+permissions: read-all
+
+concurrency:
+  group: pr-visual-evidence-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: '🖼️ Publish PR screenshots'
+    if: >-
+      github.event_name == 'push' ||
+      (
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPOSITORY: ${{ github.repository }}
+    steps:
+      - name: Resolve open pull request and immutable head
+        id: pr
+        shell: bash
+        env:
+          EVENT_PR_NUMBER: ${{ github.event.pull_request.number }}
+          EVENT_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            pr_number="$EVENT_PR_NUMBER"
+            head_sha="$EVENT_HEAD_SHA"
+          else
+            head_query="$GITHUB_REPOSITORY_OWNER:$GITHUB_REF_NAME"
+            pr_number=$(gh api "repos/$REPOSITORY/pulls?state=open&head=$head_query&per_page=2" --jq '.[0].number // empty')
+            if [ -z "$pr_number" ]; then
+              echo "found=false" >> "$GITHUB_OUTPUT"
+              echo "No open pull request for $head_query; visual evidence is not required for this branch push."
+              exit 0
+            fi
+            head_sha=$(gh api "repos/$REPOSITORY/pulls/$pr_number" --jq '.head.sha')
+          fi
+
+          if [ "$head_sha" != "$GITHUB_SHA" ] && [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            echo "Push SHA $GITHUB_SHA is no longer the current PR head $head_sha; skipping stale capture."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$head_sha" >> "$GITHUB_OUTPUT"
+          echo "PR_NUMBER=$pr_number" >> "$GITHUB_ENV"
+          echo "HEAD_SHA=$head_sha" >> "$GITHUB_ENV"
+          echo "EVIDENCE_TAG=pr-$pr_number-visual-evidence" >> "$GITHUB_ENV"
+
+      - name: Checkout validated head
+        if: steps.pr.outputs.found == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ steps.pr.outputs.head_sha }}
+
+      - name: Set up Node.js
+        if: steps.pr.outputs.found == 'true'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20.19.0
+
+      - name: Install deterministic tooling
+        if: steps.pr.outputs.found == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@9.12.3 --activate
+          pnpm install --frozen-lockfile
+
+      - name: Verify UI quality gates
+        if: steps.pr.outputs.found == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          format_paths=(
+            .agents/specs/2026-08-25-home-mobile-tabs.md
+            .github/workflows/pr-visual-evidence.yml
+            src/app/features/home/home.component.scss
+            tests/playwright/home-tabs.layout.spec.ts
+          )
+          if ! pnpm exec prettier --check "${format_paths[@]}"; then
+            pnpm exec prettier --write "${format_paths[@]}"
+            git diff -- "${format_paths[@]}"
+            exit 1
+          fi
+          pnpm run lint
+          pnpm run test:scripts
+          pnpm run test:angular
+          pnpm run build
+
+      - name: Start deterministic mock application
+        if: steps.pr.outputs.found == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm run dev:mock-data --host 127.0.0.1 --port 4200 > "$RUNNER_TEMP/andalucia-transit.log" 2>&1 &
+          app_pid=$!
+          echo "$app_pid" > "$RUNNER_TEMP/andalucia-transit.pid"
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent --show-error http://127.0.0.1:4200/ >/dev/null; then
+              exit 0
+            fi
+            if ! kill -0 "$app_pid" >/dev/null 2>&1; then
+              cat "$RUNNER_TEMP/andalucia-transit.log" >&2
+              exit 1
+            fi
+            sleep 2
+          done
+          cat "$RUNNER_TEMP/andalucia-transit.log" >&2
+          exit 1
+
+      - name: Verify Home mobile tab layout
+        if: steps.pr.outputs.found == 'true'
+        shell: bash
+        env:
+          E2E_BASE_URL: http://127.0.0.1:4200
+        run: |
+          set -euo pipefail
+          pnpm exec playwright test tests/playwright/home-tabs.layout.spec.ts
+
+      - name: Capture canonical mobile and desktop screens
+        if: steps.pr.outputs.found == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence-assets
+
+          capture() {
+            route=$1
+            slug=$2
+            pnpm run screenshot -- \
+              --url="http://127.0.0.1:4200${route}" \
+              --waitFor=app-root \
+              --outDir=evidence-assets \
+              --name="$slug" \
+              --locale=es \
+              --breakpoints=390x844,1440x900 \
+              --fullPage=true
+          }
+
+          capture / home
+          capture /routes route-search
+          capture /favorites favorites
+          capture /settings settings
+          capture /news news
+
+          test "$(find evidence-assets -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 10
+          while IFS= read -r file; do
+            test "$(stat -c %s "$file")" -le 25000000
+          done < <(find evidence-assets -maxdepth 1 -type f -name '*.png' -print)
+
+      - name: Verify evidence belongs to current PR head
+        if: steps.pr.outputs.found == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          current_head=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
+          if [ "$current_head" != "$HEAD_SHA" ]; then
+            echo "Refusing stale visual evidence publication: captured head $HEAD_SHA, current PR head $current_head" >&2
+            exit 1
+          fi
+
+      - name: Retain final visual evidence artifact
+        if: steps.pr.outputs.found == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pr-${{ steps.pr.outputs.pr_number }}-visual-evidence-${{ steps.pr.outputs.head_sha }}
+          path: evidence-assets/*.png
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+
+      - name: Replace temporary visual-evidence release
+        if: steps.pr.outputs.found == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          gh release delete "$EVIDENCE_TAG" \
+            --repo "$REPOSITORY" \
+            --yes >/dev/null 2>&1 || true
+          gh api --method DELETE \
+            "repos/$REPOSITORY/git/refs/tags/$EVIDENCE_TAG" >/dev/null 2>&1 || true
+
+          for attempt in $(seq 1 10); do
+            release_exists=false
+            tag_exists=false
+            if gh release view "$EVIDENCE_TAG" --repo "$REPOSITORY" >/dev/null 2>&1; then
+              release_exists=true
+            fi
+            if gh api "repos/$REPOSITORY/git/ref/tags/$EVIDENCE_TAG" >/dev/null 2>&1; then
+              tag_exists=true
+            fi
+            if [ "$release_exists" = false ] && [ "$tag_exists" = false ]; then
+              break
+            fi
+            if [ "$attempt" -eq 10 ]; then
+              echo "Temporary visual-evidence release or tag still exists after cleanup" >&2
+              exit 1
+            fi
+            sleep 1
+          done
+
+          current_head=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
+          if [ "$current_head" != "$HEAD_SHA" ]; then
+            echo "Refusing stale visual evidence publication after cleanup" >&2
+            exit 1
+          fi
+
+          gh release create "$EVIDENCE_TAG" evidence-assets/*.png \
+            --repo "$REPOSITORY" \
+            --target "$HEAD_SHA" \
+            --prerelease \
+            --title "PR #$PR_NUMBER visual evidence" \
+            --notes "Temporary screenshots generated from $HEAD_SHA. Removed automatically when the pull request closes."
+
+      - name: Publish or update PR visual-evidence comment
+        if: steps.pr.outputs.found == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker='<!-- andalucia-transit-visual-evidence -->'
+          base="https://github.com/$REPOSITORY/releases/download/$EVIDENCE_TAG"
+          run_url="https://github.com/$REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          cat > comment.md <<EOF
+          $marker
+          ## Visual evidence
+
+          Mandatory screenshots generated from final head \`$HEAD_SHA\` by the [visual evidence workflow]($run_url). Media is temporary and is not committed to the repository.
+
+          | Screen | Mobile · 390×844 | Desktop · 1440×900 |
+          | --- | --- | --- |
+          | Home | <img src="$base/home_es_390_844_full.png" width="220" alt="Home screen at 390 by 844 pixels"> | <img src="$base/home_es_1440_900_full.png" width="420" alt="Home screen at 1440 by 900 pixels"> |
+          | Route search | <img src="$base/route-search_es_390_844_full.png" width="220" alt="Route search at 390 by 844 pixels"> | <img src="$base/route-search_es_1440_900_full.png" width="420" alt="Route search at 1440 by 900 pixels"> |
+          | Favorites | <img src="$base/favorites_es_390_844_full.png" width="220" alt="Favorites at 390 by 844 pixels"> | <img src="$base/favorites_es_1440_900_full.png" width="420" alt="Favorites at 1440 by 900 pixels"> |
+          | Settings | <img src="$base/settings_es_390_844_full.png" width="220" alt="Settings at 390 by 844 pixels"> | <img src="$base/settings_es_1440_900_full.png" width="420" alt="Settings at 1440 by 900 pixels"> |
+          | News | <img src="$base/news_es_390_844_full.png" width="220" alt="News at 390 by 844 pixels"> | <img src="$base/news_es_1440_900_full.png" width="420" alt="News at 1440 by 900 pixels"> |
+          EOF
+
+          current_head=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
+          if [ "$current_head" != "$HEAD_SHA" ]; then
+            echo "Refusing stale visual evidence comment" >&2
+            exit 1
+          fi
+
+          comment_id=$(gh api --paginate "repos/$REPOSITORY/issues/$PR_NUMBER/comments" \
+            --jq ".[] | select(.body | contains(\"$marker\")) | .id" | head -n 1)
+          jq -n --rawfile body comment.md '{body: $body}' > payload.json
+          if [ -n "$comment_id" ]; then
+            gh api --method PATCH "repos/$REPOSITORY/issues/comments/$comment_id" --input payload.json >/dev/null
+          else
+            gh api --method POST "repos/$REPOSITORY/issues/$PR_NUMBER/comments" --input payload.json >/dev/null
+          fi
+
+      - name: Stop application
+        if: always() && steps.pr.outputs.found == 'true'
+        shell: bash
+        run: |
+          if [ -f "$RUNNER_TEMP/andalucia-transit.pid" ]; then
+            kill "$(cat "$RUNNER_TEMP/andalucia-transit.pid")" >/dev/null 2>&1 || true
+          fi
