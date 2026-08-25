@@ -118,6 +118,14 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .recent-search-card__skeleton {
+    animation: none;
+    background-image: none;
+    background-color: var(--color-skeleton-highlight);
+  }
+}
+
 @media (min-width: 48rem) {
   .recent-search-card__route {
     font-size: 1.15rem;
