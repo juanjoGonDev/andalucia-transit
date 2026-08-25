@@ -335,12 +335,9 @@ describe('RouteSearchFormComponent', () => {
     component.searchForm.controls.origin.setValue(ORIGIN_OPTION);
     component.searchForm.controls.destination.setValue(DESTINATION_OPTION);
 
-    let resolveSelection: ((value: RouteSearchSelection | null) => void) | null = null;
-    const pendingSelection = new Promise<RouteSearchSelection | null>((resolve) => {
-      resolveSelection = resolve;
-    });
+    const pendingSelection = createDeferred<RouteSearchSelection | null>();
     const api = component as unknown as RouteSearchFormComponentPublicApi;
-    const buildSelectionSpy = spyOn(api, 'buildSelection').and.returnValue(pendingSelection);
+    const buildSelectionSpy = spyOn(api, 'buildSelection').and.returnValue(pendingSelection.promise);
     const emitSpy = spyOn(component.selectionConfirmed, 'emit');
 
     const firstSubmit = component.submit();
@@ -349,11 +346,11 @@ describe('RouteSearchFormComponent', () => {
 
     expect(buildSelectionSpy).toHaveBeenCalledTimes(1);
     expect(api.submitLoading$.getValue()).toBeTrue();
-    expect(fixture.nativeElement.querySelector('.route-search-form__submit')?.getAttribute('aria-busy')).toBe(
-      'true'
-    );
+    expect(
+      fixture.nativeElement.querySelector('.route-search-form__submit')?.getAttribute('aria-busy')
+    ).toBe('true');
 
-    resolveSelection?.({
+    pendingSelection.resolve({
       origin: ORIGIN_OPTION,
       destination: DESTINATION_OPTION,
       queryDate: new Date(component.minSearchDate),
@@ -498,6 +495,20 @@ interface RouteSearchFormComponentPublicApi {
     origin: StopDirectoryOption,
     destination: StopDirectoryOption
   ): Promise<RouteSearchSelection | null>;
+}
+
+interface Deferred<T> {
+  readonly promise: Promise<T>;
+  readonly resolve: (value: T | PromiseLike<T>) => void;
+}
+
+function createDeferred<T>(): Deferred<T> {
+  let resolve!: Deferred<T>['resolve'];
+  const promise = new Promise<T>((resolver) => {
+    resolve = resolver;
+  });
+
+  return { promise, resolve };
 }
 
 function buildConnection(stopId: string, consortiumId: number): StopConnection {
