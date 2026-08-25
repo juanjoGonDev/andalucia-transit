@@ -40,7 +40,7 @@ $warning: var(--color-warning);
     ),
     color-mix(in srgb, #{$primary} 18%, #{$surface} 82%),
     color-mix(in srgb, #{$primary-midnight} 85%, #{$surface} 15%),
-    color-mix(in srgb, #{$primary-midnight} 58%, #{$surface} 42%),
+    color-mix(in srgb, #{$primary-midnight} 72%, #{$surface} 28%),
     color-mix(in srgb, #{$primary} 24%, #{$surface} 76%),
     color-mix(in srgb, #{$primary} 22%, #{$surface} 78%),
     color-mix(in srgb, #{$primary-midnight} 82%, #{$contrast} 18%),
@@ -59,7 +59,7 @@ $warning: var(--color-warning);
     ),
     color-mix(in srgb, #{$secondary} 12%, #{$surface} 88%),
     color-mix(in srgb, #{$secondary} 82%, #{$surface} 18%),
-    color-mix(in srgb, #{$secondary} 50%, #{$surface} 50%),
+    color-mix(in srgb, #{$secondary} 62%, #{$surface} 38%),
     color-mix(in srgb, #{$secondary} 24%, #{$surface} 76%),
     color-mix(in srgb, #{$warning} 16%, #{$surface} 84%),
     color-mix(in srgb, #{$secondary} 76%, #{$surface} 24%),
@@ -118,7 +118,7 @@ $warning: var(--color-warning);
   --route-search-state-background: transparent;
   --route-search-state-border: var(--color-border-subtle);
   --route-search-state-strong: var(--color-text-strong);
-  --route-search-state-muted: var(--color-text-muted);
+  --route-search-state-muted: var(--color-text-secondary);
   --route-search-state-soft: color-mix(
     in srgb,
     var(--color-text-muted) 16%,

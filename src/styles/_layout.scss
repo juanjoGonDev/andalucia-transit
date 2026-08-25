@@ -5,6 +5,11 @@
   background-color: var(--color-surface-muted);
 }
 
+.app-layout__surface--plain {
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-primary);
+}
+
 .app-layout__surface--hero {
   position: relative;
   min-height: 100dvh;
