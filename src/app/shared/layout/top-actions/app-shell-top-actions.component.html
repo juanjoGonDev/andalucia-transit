@@ -2,6 +2,26 @@
   <div class="shell-actions__container">
     <div class="shell-actions__shell">
       <div class="shell-actions__buttons">
+        <a
+          class="shell-actions__button shell-actions__button--quick"
+          [class.shell-actions__button--active]="homeActive()"
+          [routerLink]="homeLinkCommands"
+          [attr.aria-current]="homeActive() ? 'page' : null"
+          [attr.aria-label]="homeLabelKey | translate"
+          [attr.title]="homeLabelKey | translate"
+        >
+          <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">home</span>
+        </a>
+        <a
+          class="shell-actions__button shell-actions__button--quick"
+          [class.shell-actions__button--active]="mapActive()"
+          [routerLink]="mapLinkCommands"
+          [attr.aria-current]="mapActive() ? 'page' : null"
+          [attr.aria-label]="mapLabelKey | translate"
+          [attr.title]="mapLabelKey | translate"
+        >
+          <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">map</span>
+        </a>
         <div class="shell-actions__menu">
           <div
             appAccessibleButton
@@ -15,7 +35,7 @@
             [attr.tabindex]="focusableTabIndex"
             (keydown.escape)="closeMenu()"
           >
-            <span class="material-symbols-outlined shell-actions__button-icon">menu</span>
+            <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">menu</span>
           </div>
           <div class="shell-actions__panel" *ngIf="menuOpen()">
             <ul class="shell-actions__list" role="menu">

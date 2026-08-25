@@ -8,7 +8,7 @@ import {
   inject,
   signal
 } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { NavigationExtras, Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '@core/config';
 import { HomeTabId } from '@features/home/home.types';
@@ -41,7 +41,7 @@ const DISABLED_TAB_INDEX = -1;
 @Component({
   selector: 'app-app-shell-top-actions',
   standalone: true,
-  imports: [CommonModule, TranslateModule, AccessibleButtonDirective],
+  imports: [CommonModule, RouterLink, TranslateModule, AccessibleButtonDirective],
   templateUrl: './app-shell-top-actions.component.html',
   styleUrl: './app-shell-top-actions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -59,6 +59,11 @@ export class AppShellTopActionsComponent {
   private readonly settingsCommands = buildNavigationCommands(APP_CONFIG.routes.settings);
   private readonly mapCommands = buildNavigationCommands(APP_CONFIG.routes.map);
   private readonly newsCommands = buildNavigationCommands(APP_CONFIG.routes.news);
+  private readonly homeNavigationKeys: ReadonlySet<AppLayoutNavigationKey> = new Set([
+    APP_CONFIG.routes.home,
+    APP_CONFIG.routes.homeRecent,
+    APP_CONFIG.routes.homeFavorites
+  ]);
 
   private readonly homeTabCommands: ReadonlyMap<HomeTabId, NavigationCommands> = new Map([
     ['search', this.homeCommands],
@@ -66,10 +71,12 @@ export class AppShellTopActionsComponent {
     ['favorites', this.homeFavoritesCommands]
   ]);
 
-  protected readonly settingsLabelKey = this.translation.topBar.settingsLabel;
+  protected readonly homeLabelKey = APP_CONFIG.translationKeys.navigation.home;
   protected readonly menuLabelKey = this.translation.topBar.menuLabel;
   protected readonly mapLabelKey = this.translation.topBar.mapLabel;
   protected readonly menuInProgressKey = this.translation.menu.inProgress;
+  protected readonly homeLinkCommands = [...this.homeCommands];
+  protected readonly mapLinkCommands = [...this.mapCommands];
 
   private readonly entries = signal<readonly ShellMenuEntry[]>([
     {
@@ -102,6 +109,13 @@ export class AppShellTopActionsComponent {
     }
   ]);
 
+  protected readonly homeActive = computed(() => {
+    const activeNavigationKey = this.layoutContextStore.snapshot().activeNavigationKey;
+    return activeNavigationKey !== null && this.homeNavigationKeys.has(activeNavigationKey);
+  });
+  protected readonly mapActive = computed(
+    () => this.layoutContextStore.snapshot().activeNavigationKey === APP_CONFIG.routes.map
+  );
   protected readonly menuEntries = computed<readonly ShellMenuViewEntry[]>(() => {
     const activeNavigationKey = this.layoutContextStore.snapshot().activeNavigationKey;
 
@@ -119,7 +133,7 @@ export class AppShellTopActionsComponent {
     return {
       queryParams: { [this.tabQueryParam]: tab },
       queryParamsHandling: 'merge',
-      replaceUrl,
+      replaceUrl
     };
   }
 
@@ -142,14 +156,6 @@ export class AppShellTopActionsComponent {
     if (target instanceof Node && !this.host.nativeElement.contains(target)) {
       this.closeMenu();
     }
-  }
-
-  protected async openSettings(): Promise<void> {
-    await this.router.navigate(this.settingsCommands);
-  }
-
-  protected async openMap(): Promise<void> {
-    await this.router.navigate(this.mapCommands);
   }
 
   protected async handleMenuEntry(entry: ShellMenuViewEntry): Promise<void> {

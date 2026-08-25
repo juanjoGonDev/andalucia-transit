@@ -70,6 +70,7 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 24%, transpa
   border-radius: calc(var(--space-xl) - var(--space-sm));
   background: $shell-actions-button-base;
   color: $shell-actions-foreground;
+  text-decoration: none;
   box-shadow:
     inset 0 1px 0 $shell-actions-button-shadow-inner,
     0 calc(var(--space-lg) - var(--space-xs))
@@ -117,6 +118,10 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 24%, transpa
 
 .shell-actions__button--active .shell-actions__button-icon {
   transform: rotate(90deg);
+}
+
+.shell-actions__button--quick.shell-actions__button--active .shell-actions__button-icon {
+  transform: none;
 }
 
 .shell-actions__menu {
@@ -189,3 +194,10 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 24%, transpa
   gap: var(--space-xs);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .shell-actions__button,
+  .shell-actions__button-icon,
+  .shell-actions__menu-button {
+    transition: none;
+  }
+}
