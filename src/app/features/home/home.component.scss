@@ -21,7 +21,11 @@
 }
 
 .home__main {
-  gap: clamp(calc(var(--space-lg) + var(--space-3xs)), 4vw, calc(var(--space-2xl) + var(--space-3xs)));
+  gap: clamp(
+    calc(var(--space-lg) + var(--space-3xs)),
+    4vw,
+    calc(var(--space-2xl) + var(--space-3xs))
+  );
 }
 
 .home__card {
@@ -97,7 +101,11 @@
   font-weight: 600;
   color: var(--color-text-secondary);
   white-space: nowrap;
-  transition: color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
   cursor: pointer;
 }
 

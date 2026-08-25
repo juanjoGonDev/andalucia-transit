@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   publish:
-    name: "🖼️ Publish PR screenshots"
+    name: '🖼️ Publish PR screenshots'
     if: >-
       github.event_name == 'push' ||
       (

@@ -106,9 +106,7 @@ test.describe('home tabs responsive layout', () => {
       }
 
       const widths = metrics.tabs.map((tab) => tab.width);
-      expect(Math.max(...widths) - Math.min(...widths)).toBeLessThanOrEqual(
-        GEOMETRY_TOLERANCE_PX,
-      );
+      expect(Math.max(...widths) - Math.min(...widths)).toBeLessThanOrEqual(GEOMETRY_TOLERANCE_PX);
 
       const initiallySelected = metrics.tabs.filter((tab) => tab.selected);
       expect(initiallySelected).toHaveLength(1);
