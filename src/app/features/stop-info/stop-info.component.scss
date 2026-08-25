@@ -1,3 +1,7 @@
+:host {
+  display: block;
+}
+
 .stop-info {
   display: flex;
   flex-direction: column;
@@ -17,6 +21,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-xs);
+  min-width: 10rem;
 }
 
 .stop-info__refresh-icon {
@@ -37,12 +42,13 @@
 }
 
 .stop-info__status--error {
-  color: var(--color-error);
-  background: var(--color-error-soft);
+  color: var(--color-text-primary);
 }
 
 .stop-info__status-icon {
+  flex: 0 0 auto;
   font-size: calc(var(--font-size-base) + var(--space-3xs));
+  color: var(--color-error);
 }
 
 .stop-info__status-text {
@@ -194,6 +200,17 @@
 
 .stop-info__notice-text {
   margin: 0;
+}
+
+@media (max-width: 30rem) {
+  .stop-info__meta-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3xs);
+  }
+
+  .stop-info__refresh {
+    width: 100%;
+  }
 }
 
 @media (min-width: 48rem) {
