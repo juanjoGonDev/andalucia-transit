@@ -17,6 +17,7 @@ import { firstValueFrom, map, startWith } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { createPluralRules } from '@core/i18n/pluralization';
 import { PluralizationService } from '@core/i18n/pluralization.service';
+import { classifyGeolocationError } from '@core/services/geolocation-error.util';
 import { GEOLOCATION_REQUEST_OPTIONS } from '@core/services/geolocation-request.options';
 import { GeolocationService } from '@core/services/geolocation.service';
 import { NearbyStopResult, NearbyStopsService } from '@core/services/nearby-stops.service';
@@ -76,14 +77,6 @@ const ROUTE_CARD_ACTIVE_BODY_CLASSES: readonly string[] = [
 ];
 const ROUTE_CARD_ROLE = 'button' as const;
 const EMPTY_STRING = '' as const;
-
-const GEOLOCATION_PERMISSION_DENIED = 1;
-const GEOLOCATION_POSITION_UNAVAILABLE = 2;
-const GEOLOCATION_TIMEOUT = 3;
-
-interface PositionErrorLike {
-  readonly code: number;
-}
 
 @Component({
   selector: 'app-map',
@@ -308,7 +301,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
       if (markers.length) {
         this.mapHandle?.renderStops(markers);
-        const focusPoints = this.buildFocusPoints(markers.map((marker) => marker.coordinate), coordinate);
+        const focusPoints = this.buildFocusPoints(
+          markers.map((marker) => marker.coordinate),
+          coordinate
+        );
         this.mapHandle?.fitToCoordinates(focusPoints);
       } else {
         this.mapHandle?.fitToCoordinates([coordinate]);
@@ -574,30 +570,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   private resolveErrorKey(error: unknown): string {
-    if (this.isPositionError(error)) {
-      if (error.code === GEOLOCATION_PERMISSION_DENIED) {
+    switch (classifyGeolocationError(error)) {
+      case 'notSupported':
+        return APP_CONFIG.errors.geolocationNotSupported;
+      case 'permissionDenied':
         return this.translations.errors.permissionDenied;
-      }
-
-      if (error.code === GEOLOCATION_POSITION_UNAVAILABLE) {
+      case 'positionUnavailable':
         return this.translations.errors.positionUnavailable;
-      }
-
-      if (error.code === GEOLOCATION_TIMEOUT) {
+      case 'timeout':
         return this.translations.errors.timeout;
-      }
+      case 'unknown':
+        return this.translations.errors.generic;
     }
-
-    return this.translations.errors.generic;
-  }
-
-  private isPositionError(value: unknown): value is PositionErrorLike {
-    return (
-      typeof value === 'object' &&
-      value !== null &&
-      'code' in value &&
-      typeof (value as PositionErrorLike).code === 'number'
-    );
   }
 
   private toCoordinate(position: GeolocationPosition): GeoCoordinate {

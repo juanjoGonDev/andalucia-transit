@@ -19,6 +19,11 @@
             (click)="locate()"
             [attr.aria-busy]="isLocating() ? 'true' : null"
           >
+            <span
+              *ngIf="isLocating()"
+              class="app-loading-indicator app-loading-indicator--sm"
+              aria-hidden="true"
+            ></span>
             <ng-container *ngIf="!isLocating(); else locatingLabel">
               {{ translationKeys.locate | translate }}
             </ng-container>
@@ -29,26 +34,59 @@
         </div>
       </header>
       <div class="map__content">
-        <div class="map__canvas">
+        <div class="map__canvas" [attr.aria-busy]="isLocating() ? 'true' : null">
           <div
             #mapCanvas
             class="map__leaflet"
             role="img"
             [attr.aria-label]="translationKeys.accessibleMapLabel | translate"
           ></div>
+          <div *ngIf="isLocating()" class="map__canvas-progress" role="status" aria-live="polite">
+            <span class="app-loading-indicator app-loading-indicator--lg" aria-hidden="true"></span>
+            <span>{{ translationKeys.locating | translate }}</span>
+          </div>
         </div>
-        <aside class="map__panel">
+        <aside
+          class="map__panel"
+          [attr.aria-busy]="isLocating() || isRouteLoading() ? 'true' : null"
+        >
           <h2 class="map__panel-title">{{ translationKeys.panelTitle | translate }}</h2>
+          <div
+            *ngIf="isLocating()"
+            class="app-async-status app-async-status--compact map__panel-loading"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="app-loading-indicator" aria-hidden="true"></span>
+            <span>{{ translationKeys.locating | translate }}</span>
+          </div>
           <p *ngIf="showPrompt()" class="map__panel-message">
             {{ translationKeys.permissionPrompt | translate }}
           </p>
-          <p *ngIf="errorKey()" class="map__panel-message map__panel-message--error">
-            {{ errorKey() | translate }}
-          </p>
+          <div
+            *ngIf="errorKey()"
+            class="app-async-status app-async-status--error map__panel-error"
+            role="alert"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">location_off</span>
+            <div class="app-async-status__body">
+              <p class="app-async-status__description">{{ errorKey() | translate }}</p>
+              <div class="app-async-status__actions">
+                <button
+                  type="button"
+                  class="app-outline-button app-outline-button--compact"
+                  appAccessibleButton
+                  (click)="locate()"
+                >
+                  {{ translationKeys.locate | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
           <p *ngIf="showEmptyState()" class="map__panel-message">
             {{ translationKeys.empty | translate }}
           </p>
-          <ul *ngIf="hasStops()" class="map__stop-list">
+          <ul *ngIf="hasStops()" class="map__stop-list app-async-reveal">
             <li *ngFor="let stop of stops(); trackBy: trackStop" class="map__stop-item">
               <app-interactive-card
                 [bodyClasses]="stopCardBodyClasses"
@@ -74,7 +112,7 @@
               </app-interactive-card>
             </li>
           </ul>
-          <section class="map__routes">
+          <section class="map__routes" [attr.aria-busy]="isRouteLoading() ? 'true' : null">
             <header class="map__routes-header">
               <h3 class="map__routes-title">{{ translationKeys.routes.title | translate }}</h3>
               <button
@@ -83,7 +121,13 @@
                 appAccessibleButton
                 [disabled]="!hasRouteSelection() || isRouteLoading()"
                 (click)="refreshRoutes()"
+                [attr.aria-busy]="isRouteLoading() ? 'true' : null"
               >
+                <span
+                  *ngIf="isRouteLoading()"
+                  class="app-loading-indicator app-loading-indicator--sm"
+                  aria-hidden="true"
+                ></span>
                 {{ translationKeys.routes.refresh | translate }}
               </button>
             </header>
@@ -106,16 +150,47 @@
             <p *ngIf="!hasRouteSelection()" class="map__routes-message">
               {{ translationKeys.routes.prompt | translate }}
             </p>
-            <p *ngIf="isRouteLoading()" class="map__routes-message">
-              {{ translationKeys.routes.loading | translate }}
-            </p>
-            <p *ngIf="routeErrorKey()" class="map__routes-message map__routes-message--error">
-              {{ routeErrorKey() | translate }}
-            </p>
-            <p *ngIf="hasRouteSelection() && !isRouteLoading() && !routeErrorKey() && !hasRouteResults()" class="map__routes-message">
+            <div
+              *ngIf="isRouteLoading()"
+              class="app-async-status app-async-status--compact map__routes-loading"
+              role="status"
+              aria-live="polite"
+            >
+              <span class="app-loading-indicator" aria-hidden="true"></span>
+              <span>{{ translationKeys.routes.loading | translate }}</span>
+            </div>
+            <div
+              *ngIf="routeErrorKey()"
+              class="app-async-status app-async-status--error map__routes-error"
+              role="alert"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">sync_problem</span>
+              <div class="app-async-status__body">
+                <p class="app-async-status__description">{{ routeErrorKey() | translate }}</p>
+                <div class="app-async-status__actions">
+                  <button
+                    type="button"
+                    class="app-outline-button app-outline-button--compact"
+                    appAccessibleButton
+                    (click)="refreshRoutes()"
+                  >
+                    {{ translationKeys.routes.refresh | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <p
+              *ngIf="
+                hasRouteSelection() &&
+                !isRouteLoading() &&
+                !routeErrorKey() &&
+                !hasRouteResults()
+              "
+              class="map__routes-message"
+            >
               {{ translationKeys.routes.empty | translate }}
             </p>
-            <ul *ngIf="hasRouteResults()" class="map__route-list">
+            <ul *ngIf="hasRouteResults()" class="map__route-list app-async-reveal">
               <li *ngFor="let route of routeViews(); trackBy: trackRoute" class="map__route-item">
                 <app-interactive-card
                   [bodyClasses]="routeCardBodyClasses(route.id)"
@@ -132,10 +207,16 @@
                       <span class="map-route__code">{{ route.lineCode }}</span>
                       <div class="map-route__metrics">
                         <span class="map-route__stops">
-                          {{ route.stopCountTranslationKey | translate: { value: route.stopCountValue } }}
+                          {{
+                            route.stopCountTranslationKey
+                              | translate: { value: route.stopCountValue }
+                          }}
                         </span>
                         <span class="map-route__distance">
-                          {{ route.distanceTranslationKey | translate: { value: route.distanceValue } }}
+                          {{
+                            route.distanceTranslationKey
+                              | translate: { value: route.distanceValue }
+                          }}
                         </span>
                       </div>
                     </div>
