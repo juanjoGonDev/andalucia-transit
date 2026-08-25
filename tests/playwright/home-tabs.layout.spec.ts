@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const HOME_PATH = '/';
@@ -25,7 +25,7 @@ interface TabLayoutMetrics {
   readonly documentScrollWidth: number;
 }
 
-async function readTabLayoutMetrics(page: Parameters<typeof test>[0] extends never ? never : any) {
+async function readTabLayoutMetrics(page: Page): Promise<TabLayoutMetrics> {
   return page.locator('[role="tablist"]').evaluate((tabListElement: HTMLElement) => {
     const toBounds = (element: HTMLElement): ElementBounds => {
       const rect = element.getBoundingClientRect();
@@ -84,7 +84,7 @@ test.describe('home tabs responsive layout', () => {
       await expect(tabList).toBeVisible();
       await expect(tabs).toHaveCount(3);
 
-      const metrics = (await readTabLayoutMetrics(page)) as TabLayoutMetrics;
+      const metrics = await readTabLayoutMetrics(page);
       expectContained(metrics.tabList, metrics.parent);
       expect(metrics.tabList.scrollWidth).toBeLessThanOrEqual(
         metrics.tabList.clientWidth + GEOMETRY_TOLERANCE_PX,
@@ -124,7 +124,7 @@ test.describe('home tabs responsive layout', () => {
       await lastTab.click();
       await expect(lastTab).toHaveAttribute('aria-selected', 'true');
 
-      const switchedMetrics = (await readTabLayoutMetrics(page)) as TabLayoutMetrics;
+      const switchedMetrics = await readTabLayoutMetrics(page);
       const selectedAfterSwitch = switchedMetrics.tabs.filter((tab) => tab.selected);
       expect(selectedAfterSwitch).toHaveLength(1);
       expectContained(selectedAfterSwitch[0], switchedMetrics.tabList);
