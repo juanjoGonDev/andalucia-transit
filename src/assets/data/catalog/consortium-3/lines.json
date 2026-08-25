@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-24T05:38:57.463Z",
+    "generatedAt": "2026-08-25T05:32:37.541Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "itemCount": 69
+    "itemCount": 70
   },
   "lines": [
     {
@@ -343,7 +343,7 @@
         "Ureña e Hijos",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -542,7 +542,7 @@
         "Ureña e Hijos",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1136,6 +1136,31 @@
       "id": "1049",
       "code": "0361",
       "name": "Granada - Padul - Marchena - Dúrcal - Nigüelas",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "NEX Continental Holdings",
+        "S.L.U."
+      ],
+      "hasNews": false,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "1099",
+      "code": "0110",
+      "name": "Granada - Peligros -Caserío Fonseca - Monteluz",
       "mode": "AUTOBUS",
       "modeId": "1",
       "operators": [
