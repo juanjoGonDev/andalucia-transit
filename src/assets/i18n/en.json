@@ -66,6 +66,7 @@
         "submit": "Search schedules",
         "swapLabel": "Swap origin and destination",
         "noRoutes": "No direct routes are available between these stops.",
+        "loadError": "We could not check connections between these stops. Your selection is preserved so you can try again.",
         "nearbyGroupLabel": "Near you",
         "originLocationActionLabel": "Find stops near your location",
         "favoritesGroupLabel": "Favorites",
@@ -191,7 +192,8 @@
     },
     "error": {
       "title": "Schedule unavailable",
-      "description": "We can't load departures for this stop right now. Try again in a moment."
+      "description": "We can't load departures for this stop right now. Try again in a moment.",
+      "retry": "Try again"
     },
     "header": {
       "stopCodeLabel": "Stop code",
@@ -275,6 +277,9 @@
     "emptyResults": "We couldn't find a direct route for this search.",
     "emptyResultsDescription": "Try swapping your stops or picking nearby alternatives to explore other routes.",
     "emptyResultsAction": "Adjust search filters",
+    "loading": "Loading schedules for this route…",
+    "loadError": "We could not load the schedules. Your search is preserved so you can try again.",
+    "retry": "Try again",
     "arrivalAt": "Arrives at {time}",
     "travelDuration": "Trip {duration}",
     "holidayBadge": "Holiday service",
@@ -359,6 +364,13 @@
     "readMore": "Read more",
     "refresh": "Refresh",
     "empty": "No news items are available right now.",
+    "status": {
+      "loading": "Loading news…",
+      "refreshing": "Refreshing news while keeping the previous information visible…",
+      "error": "We could not load the news. Check your connection and try again.",
+      "stale": "We could not refresh the news. You are still seeing the last available information.",
+      "retry": "Try again"
+    },
     "feed": {
       "sevillaMetroUpdates": {
         "title": "Extended night service on Seville metro",

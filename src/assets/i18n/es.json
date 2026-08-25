@@ -66,6 +66,7 @@
         "submit": "Buscar horarios",
         "swapLabel": "Intercambiar origen y destino",
         "noRoutes": "No hay rutas directas disponibles entre estas paradas.",
+        "loadError": "No pudimos comprobar las conexiones entre estas paradas. Conservamos tu selección para que puedas intentarlo de nuevo.",
         "nearbyGroupLabel": "Cerca de ti",
         "originLocationActionLabel": "Buscar paradas cercanas a tu ubicación",
         "favoritesGroupLabel": "Favoritas",
@@ -191,7 +192,8 @@
     },
     "error": {
       "title": "Horario no disponible",
-      "description": "No podemos cargar las salidas de esta parada en este momento. Inténtalo de nuevo en unos instantes."
+      "description": "No podemos cargar las salidas de esta parada en este momento. Inténtalo de nuevo en unos instantes.",
+      "retry": "Intentar de nuevo"
     },
     "header": {
       "stopCodeLabel": "Código de parada",
@@ -275,6 +277,9 @@
     "emptyResults": "No encontramos una ruta directa para esta búsqueda.",
     "emptyResultsDescription": "Prueba a intercambiar las paradas o elige alternativas cercanas para explorar otras opciones.",
     "emptyResultsAction": "Ajustar filtros de búsqueda",
+    "loading": "Cargando horarios para esta ruta…",
+    "loadError": "No pudimos cargar los horarios. Conservamos tu búsqueda para que puedas intentarlo de nuevo.",
+    "retry": "Intentar de nuevo",
     "arrivalAt": "Llega a las {time}",
     "travelDuration": "Trayecto {duration}",
     "holidayBadge": "Servicio festivo",
@@ -359,6 +364,13 @@
     "readMore": "Leer más",
     "refresh": "Actualizar",
     "empty": "No hay noticias disponibles en este momento.",
+    "status": {
+      "loading": "Cargando noticias…",
+      "refreshing": "Actualizando noticias sin ocultar la información anterior…",
+      "error": "No pudimos cargar las noticias. Comprueba tu conexión e inténtalo de nuevo.",
+      "stale": "No pudimos actualizar las noticias. Sigues viendo la última información disponible.",
+      "retry": "Intentar de nuevo"
+    },
     "feed": {
       "sevillaMetroUpdates": {
         "title": "Ampliación nocturna del metro de Sevilla",
