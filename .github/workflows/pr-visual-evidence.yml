@@ -99,11 +99,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/dev/start-with-mock-mode.mjs data --host 127.0.0.1 --port 4200 > "$RUNNER_TEMP/andalucia-transit.log" 2>&1 &
-          echo $! > "$RUNNER_TEMP/andalucia-transit.pid"
+          pnpm run dev:mock-data --host 127.0.0.1 --port 4200 > "$RUNNER_TEMP/andalucia-transit.log" 2>&1 &
+          app_pid=$!
+          echo "$app_pid" > "$RUNNER_TEMP/andalucia-transit.pid"
           for attempt in $(seq 1 60); do
             if curl --fail --silent --show-error http://127.0.0.1:4200/ >/dev/null; then
               exit 0
+            fi
+            if ! kill -0 "$app_pid" >/dev/null 2>&1; then
+              cat "$RUNNER_TEMP/andalucia-transit.log" >&2
+              exit 1
             fi
             sleep 2
           done
