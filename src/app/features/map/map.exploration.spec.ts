@@ -301,16 +301,22 @@ describe('MapComponent network exploration', () => {
       {
         id: buildStopIdentity(SEVILLE_CONSORTIUM_ID, SEVILLE_STOP_ID),
         name: 'Prado de San Sebastián',
+        code: '001',
+        municipality: 'Sevilla',
         coordinate: { latitude: 37.377, longitude: -5.986 }
       },
       {
         id: buildStopIdentity(MALAGA_CONSORTIUM_ID, MALAGA_STOP_ID),
         name: 'Estación de Málaga',
+        code: '002',
+        municipality: 'Málaga',
         coordinate: { latitude: 36.721, longitude: -4.421 }
       },
       {
         id: buildStopIdentity(GRANADA_CONSORTIUM_ID, GRANADA_STOP_ID),
         name: 'Estación de Granada',
+        code: '003',
+        municipality: 'Granada',
         coordinate: { latitude: 37.188, longitude: -3.609 }
       }
     ]);
