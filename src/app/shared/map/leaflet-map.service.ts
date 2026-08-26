@@ -45,6 +45,7 @@ export interface MapHandle {
     interactions?: MapStopInteractionOptions
   ): void;
   fitToCoordinates(points: readonly GeoCoordinate[], animate?: boolean): void;
+  restrictToCoordinates(points: readonly GeoCoordinate[]): void;
   highlightStop(stopId: string | null): void;
   focusStop(stopId: string, zoom: number, animate?: boolean): boolean;
   renderRoutes(routes: readonly MapRoutePolyline[], activeRouteId: string | null): void;
@@ -68,6 +69,7 @@ const TILE_LAYER_ATTRIBUTION =
 const DEFAULT_MIN_ZOOM = 6;
 const DEFAULT_MAX_ZOOM = 17;
 const MAP_PADDING: [number, number] = [32, 32];
+const NETWORK_BOUNDS_PADDING_RATIO = 0.08;
 const CAMERA_ANIMATION_DURATION_SECONDS = 0.65;
 const STOP_MARKER_RADIUS = 7;
 const STOP_MARKER_ACTIVE_RADIUS = 11;
@@ -216,6 +218,15 @@ export class LeafletMapService {
 
         map.fitBounds(bounds, { padding: MAP_PADDING });
       },
+      restrictToCoordinates: (points) => {
+        if (!points.length) {
+          return;
+        }
+
+        const bounds = this.buildBounds(points).pad(NETWORK_BOUNDS_PADDING_RATIO);
+        map.setMaxBounds(bounds);
+        map.panInsideBounds(bounds, { animate: false });
+      },
       highlightStop: (stopId) => {
         const previous = highlightedStopId;
         highlightedStopId = stopId;
@@ -281,13 +292,15 @@ export class LeafletMapService {
       touchZoom: true,
       doubleClickZoom: true,
       boxZoom: true,
-      keyboard: true
+      keyboard: true,
+      maxBoundsViscosity: 1
     });
 
     const tile = tileLayer(TILE_LAYER_URL, {
       attribution: TILE_LAYER_ATTRIBUTION,
       minZoom: options.minZoom ?? DEFAULT_MIN_ZOOM,
-      maxZoom: options.maxZoom ?? DEFAULT_MAX_ZOOM
+      maxZoom: options.maxZoom ?? DEFAULT_MAX_ZOOM,
+      noWrap: true
     });
 
     tile.addTo(map);
