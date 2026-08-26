@@ -1,4 +1,4 @@
-<div class="shell-actions">
+<nav class="shell-actions">
   <div class="shell-actions__container">
     <div class="shell-actions__shell">
       <div class="shell-actions__buttons">
@@ -8,9 +8,19 @@
           [routerLink]="homeLinkCommands"
           [attr.aria-current]="homeActive() ? 'page' : null"
           [attr.aria-label]="homeLabelKey | translate"
-          [attr.title]="homeLabelKey | translate"
         >
           <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">home</span>
+          <span class="shell-actions__button-label">{{ homeLabelKey | translate }}</span>
+        </a>
+        <a
+          class="shell-actions__button shell-actions__button--quick"
+          [class.shell-actions__button--active]="routeSearchActive()"
+          [routerLink]="routeSearchLinkCommands"
+          [attr.aria-current]="routeSearchActive() ? 'page' : null"
+          [attr.aria-label]="routeSearchLabelKey | translate"
+        >
+          <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">route</span>
+          <span class="shell-actions__button-label">{{ routeSearchShortLabelKey | translate }}</span>
         </a>
         <a
           class="shell-actions__button shell-actions__button--quick"
@@ -18,42 +28,51 @@
           [routerLink]="mapLinkCommands"
           [attr.aria-current]="mapActive() ? 'page' : null"
           [attr.aria-label]="mapLabelKey | translate"
-          [attr.title]="mapLabelKey | translate"
         >
           <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">map</span>
+          <span class="shell-actions__button-label">{{ mapLabelKey | translate }}</span>
+        </a>
+        <a
+          class="shell-actions__button shell-actions__button--quick"
+          [class.shell-actions__button--active]="favoritesActive()"
+          [routerLink]="favoritesLinkCommands"
+          [attr.aria-current]="favoritesActive() ? 'page' : null"
+          [attr.aria-label]="favoritesLabelKey | translate"
+        >
+          <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">star</span>
+          <span class="shell-actions__button-label">{{ favoritesLabelKey | translate }}</span>
         </a>
         <div class="shell-actions__menu">
-          <div
-            appAccessibleButton
+          <button
+            type="button"
             class="shell-actions__button shell-actions__button--menu"
-            [class.shell-actions__button--active]="menuOpen()"
-            [appAccessibleButtonPressed]="menuOpen()"
-            [appAccessibleButtonExpanded]="menuOpen()"
-            [appAccessibleButtonHasPopup]="menuPopupRole"
-            (appAccessibleButtonActivated)="toggleMenu()"
+            [class.shell-actions__button--active]="menuOpen() || moreActive()"
+            [attr.aria-expanded]="menuOpen()"
+            aria-haspopup="menu"
             [attr.aria-label]="menuLabelKey | translate"
-            [attr.tabindex]="focusableTabIndex"
+            (click)="toggleMenu()"
             (keydown.escape)="closeMenu()"
           >
             <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">menu</span>
-          </div>
+          </button>
           <div class="shell-actions__panel" *ngIf="menuOpen()">
             <ul class="shell-actions__list" role="menu">
               <li class="shell-actions__item" *ngFor="let entry of menuEntries()">
-                <div
-                  appAccessibleButton
+                <a
                   class="shell-actions__menu-button"
-                  [appAccessibleButtonDisabled]="entry.disabled"
-                  appAccessibleButtonRole="menuitem"
+                  role="menuitem"
+                  [routerLink]="entry.commands"
                   [attr.aria-current]="entry.isActive ? 'page' : null"
-                  [attr.tabindex]="entry.disabled ? disabledTabIndex : focusableTabIndex"
-                  (appAccessibleButtonActivated)="handleMenuEntry(entry)"
+                  (click)="closeMenu()"
                 >
                   <span class="shell-actions__menu-label">{{ entry.labelKey | translate }}</span>
-                  <span *ngIf="entry.disabled" class="shell-actions__menu-status">
-                    {{ menuInProgressKey | translate }}
-                  </span>
-                </div>
+                  <span
+                    *ngIf="entry.isActive"
+                    class="material-symbols-outlined shell-actions__menu-current"
+                    aria-hidden="true"
+                    >check</span
+                  >
+                </a>
               </li>
             </ul>
           </div>
@@ -61,4 +80,4 @@
       </div>
     </div>
   </div>
-</div>
+</nav>

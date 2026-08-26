@@ -1,149 +1,132 @@
 $shell-actions-offset: clamp(var(--space-md-plus), 4vw, calc(var(--space-2xl) - var(--space-sm)));
-$shell-actions-radius: calc(var(--radius-lg) + var(--space-sm));
-$shell-actions-padding: clamp(var(--space-xs), 2vw, var(--space-sm));
 $shell-actions-surface: var(--color-navigation-surface);
 $shell-actions-foreground: var(--color-navigation-item);
-$shell-actions-shadow-elevation: color-mix(in srgb, var(--color-secondary) 28%, transparent);
-$shell-actions-shadow-outline: color-mix(in srgb, var(--color-text-inverse) 24%, transparent);
-$shell-actions-button-base: var(--color-navigation-pill);
-$shell-actions-button-hover: color-mix(in srgb, var(--color-text-inverse) 16%, transparent);
-$shell-actions-button-shadow-inner: color-mix(in srgb, var(--color-text-inverse) 25%, transparent);
-$shell-actions-icon-shadow: 0 0 calc((var(--space-lg) - var(--space-2xs)) * 1 / 2)
-  color-mix(in srgb, var(--color-secondary) 60%, transparent);
-$shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 24%, transparent);
+$shell-actions-hover: color-mix(in srgb, var(--color-text-inverse) 14%, transparent);
+$shell-actions-active: color-mix(in srgb, var(--color-primary) 34%, transparent);
+$shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transparent);
+$shell-actions-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--color-secondary) 30%, transparent);
 
 :host {
-  display: block;
-  position: sticky;
-  top: calc(env(safe-area-inset-top, 0px) + #{$shell-actions-offset});
-  height: 0;
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
   z-index: var(--z-index-sticky);
+  display: block;
+  pointer-events: none;
 }
 
 .shell-actions {
-  position: relative;
   display: flex;
   justify-content: center;
-  margin-top: calc(#{$shell-actions-offset} * -1);
+  padding: var(--space-xs) var(--space-sm)
+    max(var(--space-xs), env(safe-area-inset-bottom, 0px));
   pointer-events: none;
 }
 
 .shell-actions__container {
-  width: min(100%, 64rem);
-  margin: 0 0 0 auto;
-  padding:
-    clamp(var(--space-lg), 5vw, var(--space-3xl))
-    clamp(var(--space-md), 6vw, var(--space-4xl))
-    var(--space-none);
-  display: flex;
-  justify-content: flex-end;
+  width: min(100%, 36rem);
 }
 
 .shell-actions__shell {
-  display: flex;
-  align-items: center;
-  padding: #{$shell-actions-padding};
-  border-radius: #{$shell-actions-radius};
+  width: 100%;
+  padding: var(--space-xs);
+  border: 1px solid $shell-actions-border;
+  border-radius: calc(var(--radius-xl) + var(--space-xs));
   background: $shell-actions-surface;
-  backdrop-filter: blur(calc(var(--space-lg) - var(--space-2xs)));
-  box-shadow:
-    0 calc(var(--space-lg) - var(--space-2xs))
-      calc((var(--space-lg) - var(--space-2xs)) * 2) $shell-actions-shadow-elevation,
-    0 0 0 1px $shell-actions-shadow-outline;
   color: $shell-actions-foreground;
+  box-shadow: $shell-actions-shadow;
   pointer-events: auto;
 }
 
 .shell-actions__buttons {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: stretch;
+  gap: var(--space-3xs);
 }
 
 .shell-actions__button {
+  min-width: 0;
+  min-height: 3.5rem;
+  padding: var(--space-xs) var(--space-3xs);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: color-mix(in srgb, $shell-actions-foreground 78%, transparent);
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: var(--space-3xl);
-  height: var(--space-3xl);
-  border: none;
-  border-radius: calc(var(--space-xl) - var(--space-sm));
-  background: $shell-actions-button-base;
-  color: $shell-actions-foreground;
+  gap: var(--space-4xs);
   text-decoration: none;
-  box-shadow:
-    inset 0 1px 0 $shell-actions-button-shadow-inner,
-    0 calc(var(--space-lg) - var(--space-xs))
-      calc((var(--space-lg) - var(--space-xs)) * 11 / 8) color-mix(
-        in srgb,
-        var(--color-secondary) 32%,
-        transparent
-      ),
-    0 0 0 1px $shell-actions-shadow-outline;
+  font: inherit;
   transition:
     background-color 180ms ease,
-    box-shadow 180ms ease,
+    color 180ms ease,
     transform 180ms ease;
 }
 
 .shell-actions__button:hover,
 .shell-actions__button:focus-visible {
-  background: $shell-actions-button-hover;
-  cursor: pointer;
+  background: $shell-actions-hover;
+  color: $shell-actions-foreground;
 }
 
-.shell-actions__button:focus-visible {
+.shell-actions__button:focus-visible,
+.shell-actions__menu-button:focus-visible {
   outline: 2px solid var(--color-text-inverse);
-  outline-offset: 3px;
-}
-
-.shell-actions__button .material-symbols-outlined {
-  text-shadow: $shell-actions-icon-shadow;
-}
-
-.shell-actions__button-icon {
-  transition:
-    transform 180ms ease,
-    opacity 180ms ease;
+  outline-offset: 2px;
 }
 
 .shell-actions__button--active {
-  background: $shell-actions-button-hover;
+  background: $shell-actions-active;
+  color: var(--color-text-inverse);
+}
+
+.shell-actions__button-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  transition: transform 180ms ease;
 }
 
 .shell-actions__button--active .shell-actions__button-icon {
-  transform: rotate(90deg);
+  font-variation-settings: 'FILL' 1, 'wght' 650, 'GRAD' 0, 'opsz' 24;
 }
 
-.shell-actions__button--quick.shell-actions__button--active .shell-actions__button-icon {
-  transform: none;
+.shell-actions__button-label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.1;
 }
 
 .shell-actions__menu {
   position: relative;
+  min-width: 0;
+}
+
+.shell-actions__menu > .shell-actions__button {
+  width: 100%;
 }
 
 .shell-actions__panel {
   position: absolute;
-  top: calc(100% + var(--space-xs) + var(--space-5xs));
   right: 0;
-  min-width: clamp(12rem, 30vw, 16rem);
-  padding: calc(var(--space-sm) + var(--space-5xs));
-  border-radius: var(--radius-lg);
+  bottom: calc(100% + var(--space-sm));
+  min-width: min(18rem, calc(100vw - (var(--space-lg) * 2)));
+  padding: var(--space-sm);
   border: 1px solid $shell-actions-border;
+  border-radius: var(--radius-lg);
   background: $shell-actions-surface;
   color: $shell-actions-foreground;
-  box-shadow:
-    0 calc(var(--space-lg) - var(--space-2xs))
-      calc((var(--space-lg) - var(--space-2xs)) * 2) $shell-actions-shadow-elevation,
-    0 0 0 1px $shell-actions-shadow-outline;
-  backdrop-filter: blur(calc(var(--space-lg) - var(--space-2xs)));
-  pointer-events: auto;
+  box-shadow: $shell-actions-shadow;
 }
 
 .shell-actions__list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--space-3xs);
   margin: 0;
   padding: 0;
@@ -154,50 +137,81 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 24%, transpa
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: calc(var(--space-xs) + var(--space-5xs)) calc(var(--space-sm) + var(--space-5xs));
-  border: none;
-  border-radius: calc(var(--space-md) - var(--space-4xs));
-  background: transparent;
-  font-weight: 600;
+  gap: var(--space-sm);
+  min-height: 2.75rem;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
   color: inherit;
-  transition: background 200ms ease;
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  transition: background-color 180ms ease;
 }
 
-.shell-actions__menu-button:not(:disabled):hover,
-.shell-actions__menu-button:not(:disabled):focus-visible {
-  background: color-mix(in srgb, var(--color-text-inverse) 16%, transparent);
+.shell-actions__menu-button:hover,
+.shell-actions__menu-button:focus-visible,
+.shell-actions__menu-button[aria-current='page'] {
+  background: $shell-actions-hover;
 }
 
-.shell-actions__menu-button:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-text-inverse) 70%, transparent);
-  outline-offset: 2px;
-}
-
-.shell-actions__menu-button:disabled {
-  color: color-mix(in srgb, var(--color-text-inverse) 55%, transparent);
-}
-
-.shell-actions__menu-status {
-  font-size: calc(var(--font-size-sm) - var(--space-6xs));
-  color: color-mix(in srgb, var(--color-text-inverse) 75%, transparent);
-}
-
-.shell-actions__menu-label {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xs);
+.shell-actions__menu-current {
+  color: var(--color-text-inverse);
+  font-size: 1.15rem;
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .shell-actions__button:hover {
-    transform: translateY(calc(var(--space-4xs) * -1));
+    transform: translateY(-2px);
+  }
+
+  .shell-actions__button:hover .shell-actions__button-icon {
+    transform: translateY(-1px) scale(1.06);
   }
 }
 
-@media (max-width: 40rem) {
+@media (min-width: 48rem) {
   :host {
-    height: var(--space-4xl);
+    position: sticky;
+    top: calc(env(safe-area-inset-top, 0px) + #{$shell-actions-offset});
+    bottom: auto;
+    height: 0;
+  }
+
+  .shell-actions {
+    justify-content: flex-end;
+    margin-top: calc(#{$shell-actions-offset} * -1);
+    padding: 0 clamp(var(--space-lg), 5vw, var(--space-4xl));
+  }
+
+  .shell-actions__container {
+    width: auto;
+  }
+
+  .shell-actions__shell {
+    width: auto;
+    border-radius: var(--radius-full);
+  }
+
+  .shell-actions__buttons {
+    display: flex;
+    gap: var(--space-xs);
+  }
+
+  .shell-actions__button {
+    min-width: 4.75rem;
+    min-height: 3rem;
+    padding: var(--space-xs) var(--space-sm);
+    flex-direction: row;
+  }
+
+  .shell-actions__button--menu {
+    min-width: 3rem;
+    width: 3rem;
+    padding-inline: var(--space-xs);
+  }
+
+  .shell-actions__panel {
+    top: calc(100% + var(--space-sm));
+    bottom: auto;
   }
 }
 
