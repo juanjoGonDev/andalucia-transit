@@ -15,12 +15,12 @@ import {
   MapSearchTarget,
   searchMapTargets
 } from '@features/map/map-search.util';
-import { AppTextFieldPrefixDirective } from '@shared/ui/forms/app-text-field-slots.directive';
 import {
   AppAutocompleteComponent,
   AppAutocompleteOption,
   AppAutocompleteSelection
 } from '@shared/ui/forms/app-autocomplete.component';
+import { AppTextFieldPrefixDirective } from '@shared/ui/forms/app-text-field-slots.directive';
 
 const EMPTY_TARGETS: readonly MapSearchTarget[] = Object.freeze([]);
 const EMPTY_OPTIONS: readonly AppAutocompleteOption<MapSearchTarget>[] = Object.freeze([]);

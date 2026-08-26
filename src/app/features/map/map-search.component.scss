@@ -1,0 +1,11 @@
+:host {
+  display: block;
+}
+
+.map-search {
+  width: min(100%, 32rem);
+}
+
+.map-search__icon {
+  color: var(--color-text-muted);
+}

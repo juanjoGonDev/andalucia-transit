@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Observable, firstValueFrom } from 'rxjs';
 import { GeoCoordinate, calculateDistanceInMeters } from '@domain/utils/geo-distance.util';
 
