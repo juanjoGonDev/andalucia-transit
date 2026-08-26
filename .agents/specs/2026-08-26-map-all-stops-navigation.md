@@ -10,7 +10,8 @@ Make the network map useful as an exploratory surface: show every available stop
 - `locate()` originally cleared and replaced the stop-marker layer with only nearby results, coupling the map's global network layer to the optional geolocation flow.
 - `NearbyStopsService` already loads all lightweight stop records from the canonical stop-directory snapshot before computing distances; reusing that loaded data avoids another endpoint or duplicate network model.
 - The stop-directory snapshot already contains stop name, municipality, nucleus, zone and coordinates, which are sufficient to derive stop and area search targets without adding a backend endpoint.
-- The browser acceptance initially derived its search seed from the nearby-stop presentation card. That is not a valid contract: the card's displayed code is presentation output and need not be a unique autocomplete search identity. Acceptance must instead derive a unique stop code from the packaged canonical stop-directory index that feeds the same map search dataset.
+- The browser acceptance initially derived its search seed from the nearby-stop presentation card. That is not a valid contract: the card's displayed code is presentation output and need not be a unique autocomplete search identity.
+- A second acceptance attempt selected a unique code from `index.json#searchIndex`, but CI proved that this derived index is not the exact source consumed by the map search: code `2565` (`1 SEMAFORO`, `ESPARTINAS`) existed in the index yet produced no map autocomplete option. `NearbyStopsService` instead loads the chunk descriptors from `index.json` and builds map search targets from the chunk stop records.
 - `LeafletMapService` uses `preferCanvas: true`, which is suitable for a large circle-marker layer and can retain one marker registry for selection/highlight state.
 - The shared autocomplete field already provides listbox semantics and keyboard navigation; map search should reuse that interaction model rather than invent another combobox.
 - The canonical stop destination is `stop-detail/:stopId`; existing nearby cards already navigate there.
@@ -28,7 +29,7 @@ Make the network map useful as an exploratory surface: show every available stop
 9. Keep `preferCanvas`; do not introduce clustering or a new dependency unless measured performance requires it.
 10. Enable visible Leaflet zoom controls while preserving drag, wheel, touch and keyboard navigation.
 11. Fit the initial map to the complete network after stops load. Geolocation may refocus the viewport on the user plus nearby results, but it must not remove global markers.
-12. Browser acceptance chooses its stop-search seed from `assets/data/stop-directory/index.json`, requiring a non-empty unique code of at least two characters. It must not depend on geolocation, the first nearby result, a hardcoded municipality, or external API data to determine the search target.
+12. Browser acceptance reads `index.json` only for its canonical chunk descriptors, loads the same chunk stop records consumed by `NearbyStopsService`, and chooses a non-empty stop code that is unique across those records. It must not use `searchIndex`, geolocation, the first nearby result, a hardcoded municipality, or external API data to determine the search target.
 13. Reuse existing design tokens, async feedback and translation infrastructure; no locale-specific product copy is hardcoded in TypeScript.
 
 ## Acceptance
@@ -47,7 +48,7 @@ Make the network map useful as an exploratory surface: show every available stop
 - Empty or failed all-stop loading does not crash map creation, search or geolocation.
 - Focused service/component tests cover all-stop exposure, initial rendering, popup/detail navigation, search focus, area focus, nearby-card marker highlighting and geolocation preserving the global layer.
 - Browser acceptance covers marker popup navigation plus search-driven camera movement and list-to-marker highlighting.
-- Browser acceptance derives the stop-search seed from the canonical packaged directory and remains deterministic when stop names, municipalities or nearby ordering change.
+- Browser acceptance derives the stop-search seed from the exact canonical chunk records consumed by map search and remains deterministic when stop names, municipalities or nearby ordering change.
 - Existing Angular, lint, scripts and deploy validation remain green.
 - Final deterministic browser/visual evidence is green for the exact final PR head and includes `/map` at mobile and desktop breakpoints.
 
@@ -68,7 +69,7 @@ Make the network map useful as an exploratory surface: show every available stop
 - `MapComponent`: nearby list hover/focus highlights the matching marker without replacing the global layer.
 - `MapComponent`: locating a user does not replace the global stop marker layer.
 - Existing route-overlay and error-state regression coverage remains intact.
-- Playwright reads the packaged stop-directory index, selects a unique searchable stop, and verifies search selection, marker popup/detail navigation, visible zoom controls and list-to-map highlighting against the deterministic mock app.
+- Playwright reads the packaged stop-directory chunk descriptors and records, selects a unique searchable stop, and verifies search selection, marker popup/detail navigation, visible zoom controls and list-to-map highlighting against the deterministic mock app.
 
 ## Rollback
 
