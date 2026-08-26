@@ -29,10 +29,12 @@ export interface MapStopMarker {
   readonly coordinate: GeoCoordinate;
 }
 
+export type MapStopSelectHandler = (stopId: string) => void;
+
 export interface MapHandle {
   setView(center: GeoCoordinate, zoom: number): void;
   renderUserLocation(coordinate: GeoCoordinate): void;
-  renderStops(stops: readonly MapStopMarker[]): void;
+  renderStops(stops: readonly MapStopMarker[], onSelect?: MapStopSelectHandler): void;
   fitToCoordinates(points: readonly GeoCoordinate[]): void;
   renderRoutes(routes: readonly MapRoutePolyline[], activeRouteId: string | null): void;
   invalidateSize(): void;
@@ -98,19 +100,22 @@ export class LeafletMapService {
           fillOpacity: USER_MARKER_FILL_OPACITY
         }).addTo(map);
       },
-      renderStops: (stops) => {
+      renderStops: (stops, onSelect) => {
         stopsLayer.clearLayers();
 
         for (const stop of stops) {
           const latLng = this.toLatLng(stop.coordinate);
-
-          circleMarker(latLng, {
+          const marker = circleMarker(latLng, {
             radius: STOP_MARKER_RADIUS,
             color: STOP_MARKER_STROKE_COLOR,
             weight: STOP_MARKER_WEIGHT,
             fillColor: STOP_MARKER_COLOR,
             fillOpacity: STOP_MARKER_FILL_OPACITY
           }).addTo(stopsLayer);
+
+          if (onSelect) {
+            marker.on('click', () => onSelect(stop.id));
+          }
         }
       },
       fitToCoordinates: (points) => {
@@ -156,9 +161,15 @@ export class LeafletMapService {
 
   private buildMap(container: HTMLElement, options: MapCreateOptions): Map {
     const map = createMap(container, {
-      zoomControl: false,
+      zoomControl: true,
       attributionControl: false,
-      preferCanvas: true
+      preferCanvas: true,
+      dragging: true,
+      scrollWheelZoom: true,
+      touchZoom: true,
+      doubleClickZoom: true,
+      boxZoom: true,
+      keyboard: true
     });
 
     const tile = tileLayer(TILE_LAYER_URL, {
