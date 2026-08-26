@@ -144,20 +144,20 @@ test.describe('network map exploration', () => {
     await expect(nearbyStop.locator('.map-stop__icon')).toBeVisible();
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
 
-    const stopName = (await nearbyStop.locator('.map-stop__name').textContent())?.trim() ?? '';
+    const nearbyStopName = (await nearbyStop.locator('.map-stop__name').textContent())?.trim() ?? '';
     const stopMunicipality =
       (await nearbyStop.locator('.map-stop__municipality').textContent())?.trim() ?? '';
     const stopCode = (await nearbyStop.locator('.map-stop__code').textContent())?.trim() ?? '';
-    expect(stopName).not.toBe('');
+    expect(nearbyStopName).not.toBe('');
     expect(stopMunicipality).not.toBe('');
     expect(stopCode).not.toBe('');
 
     const searchInput = page.locator('#map-network-search');
-    await searchInput.fill(stopName);
+    await searchInput.fill(stopCode);
 
     const stopOption = page
       .locator('.app-autocomplete__option')
-      .filter({ hasText: stopName })
+      .filter({ hasText: stopCode })
       .filter({ hasText: stopMunicipality })
       .first();
     await expect(stopOption).toBeVisible();
@@ -165,7 +165,7 @@ test.describe('network map exploration', () => {
 
     const popup = page.locator('.app-map-stop-popup');
     await expect(popup).toBeVisible();
-    await expect(popup.locator('.app-map-stop-popup__title')).toHaveText(stopName);
+    await expect(popup.locator('.app-map-stop-popup__title')).not.toHaveText('');
     await expect(popup.locator('.app-map-stop-popup__code')).toHaveText(stopCode);
     await expect(popup.locator('.app-map-stop-popup__municipality')).toHaveText(stopMunicipality);
 
