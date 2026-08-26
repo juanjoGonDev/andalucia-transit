@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { AppConfig } from '@core/config';
+import { RuntimeFlagsService } from '@core/runtime/runtime-flags.service';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 
 export interface RouteSearchPreferencesStored {
@@ -7,13 +8,21 @@ export interface RouteSearchPreferencesStored {
 }
 
 const JSON_PARSE_REVIVER = (_key: string, value: unknown): unknown => value;
+const MOCK_PREVIEW_PREFERENCES: RouteSearchPreferencesStored = Object.freeze({
+  previewEnabled: false,
+});
 
 @Injectable({ providedIn: 'root' })
 export class RouteSearchPreferencesStorage {
   private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
+  private readonly runtimeFlags = inject(RuntimeFlagsService);
   private memoryStore: string | null = null;
 
   load(): RouteSearchPreferencesStored | null {
+    if (this.isMockModeActive()) {
+      return MOCK_PREVIEW_PREFERENCES;
+    }
+
     const raw = this.readValue();
 
     if (!raw) {
@@ -40,8 +49,16 @@ export class RouteSearchPreferencesStorage {
   }
 
   save(preferences: RouteSearchPreferencesStored): void {
+    if (this.isMockModeActive()) {
+      return;
+    }
+
     const payload = JSON.stringify(preferences);
     this.writeValue(payload);
+  }
+
+  private isMockModeActive(): boolean {
+    return this.runtimeFlags.mockDataMode() !== null;
   }
 
   private readValue(): string | null {
