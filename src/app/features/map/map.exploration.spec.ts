@@ -9,16 +9,18 @@ import {
   NearbyStopResult,
   NearbyStopsService
 } from '@core/services/nearby-stops.service';
+import { buildStopIdentity } from '@core/services/stop-identity.util';
 import { StopDirectoryRecord, StopDirectoryService } from '@data/stops/stop-directory.service';
 import { RouteOverlayFacade, RouteOverlayState } from '@domain/map/route-overlay.facade';
 import { MapComponent } from '@features/map/map.component';
+import { MapSearchTarget } from '@features/map/map-search.util';
 import {
   LeafletMapService,
   MapCreateOptions,
   MapHandle,
   MapRoutePolyline,
-  MapStopMarker,
-  MapStopSelectHandler
+  MapStopInteractionOptions,
+  MapStopMarker
 } from '@shared/map/leaflet-map.service';
 
 class FakeTranslateLoader implements TranslateLoader {
@@ -27,10 +29,19 @@ class FakeTranslateLoader implements TranslateLoader {
   }
 }
 
+interface MapFocusCall {
+  readonly stopId: string;
+  readonly zoom: number;
+  readonly animate: boolean;
+}
+
 class MapHandleStub implements MapHandle {
   readonly renderedStops: readonly MapStopMarker[][] = [];
   readonly focusedPoints: readonly GeoCoordinateStub[][] = [];
-  stopSelectHandler: MapStopSelectHandler | undefined;
+  readonly restrictedPoints: readonly GeoCoordinateStub[][] = [];
+  readonly highlightedStopIds: Array<string | null> = [];
+  readonly focusCalls: MapFocusCall[] = [];
+  interactions: MapStopInteractionOptions | undefined;
   setViewCount = 0;
   userLocationRenderCount = 0;
   routeRenderCount = 0;
@@ -45,13 +56,29 @@ class MapHandleStub implements MapHandle {
     this.userLocationRenderCount += 1;
   }
 
-  renderStops(stops: readonly MapStopMarker[], onSelect?: MapStopSelectHandler): void {
+  renderStops(
+    stops: readonly MapStopMarker[],
+    interactions?: MapStopInteractionOptions
+  ): void {
     (this.renderedStops as MapStopMarker[][]).push([...stops]);
-    this.stopSelectHandler = onSelect;
+    this.interactions = interactions;
   }
 
   fitToCoordinates(points: readonly GeoCoordinateStub[]): void {
     (this.focusedPoints as GeoCoordinateStub[][]).push([...points]);
+  }
+
+  restrictToCoordinates(points: readonly GeoCoordinateStub[]): void {
+    (this.restrictedPoints as GeoCoordinateStub[][]).push([...points]);
+  }
+
+  highlightStop(stopId: string | null): void {
+    this.highlightedStopIds.push(stopId);
+  }
+
+  focusStop(stopId: string, zoom: number, animate = false): boolean {
+    this.focusCalls.push({ stopId, zoom, animate });
+    return true;
   }
 
   renderRoutes(_routes: readonly MapRoutePolyline[], _activeRouteId: string | null): void {
@@ -100,11 +127,14 @@ class StopDirectoryServiceStub {
   private readonly records = new Map<string, StopDirectoryRecord>();
 
   addRecord(record: StopDirectoryRecord): void {
-    this.records.set(record.stopId, record);
+    this.records.set(buildStopIdentity(record.consortiumId, record.stopId), record);
   }
 
-  getStopById(stopId: string): Observable<StopDirectoryRecord | null> {
-    return of(this.records.get(stopId) ?? null);
+  getStopBySignature(
+    consortiumId: number,
+    stopId: string
+  ): Observable<StopDirectoryRecord | null> {
+    return of(this.records.get(buildStopIdentity(consortiumId, stopId)) ?? null);
   }
 }
 
@@ -133,24 +163,54 @@ interface GeoCoordinateStub {
 
 interface MapComponentAccess {
   locate(): Promise<void>;
+  selectSearchTarget(target: MapSearchTarget): void;
+  setStopHighlight(stopId: string | null): void;
 }
+
+const SEVILLE_CONSORTIUM_ID = 7;
+const MALAGA_CONSORTIUM_ID = 4;
+const GRANADA_CONSORTIUM_ID = 2;
+const SEVILLE_STOP_ID = 'sevilla:001';
+const MALAGA_STOP_ID = 'malaga:002';
+const GRANADA_STOP_ID = 'granada:003';
 
 const NETWORK_STOPS: readonly NearbyStopRecord[] = Object.freeze([
   {
-    stopId: 'sevilla:001',
+    consortiumId: SEVILLE_CONSORTIUM_ID,
+    stopId: SEVILLE_STOP_ID,
+    stopCode: '001',
     name: 'Prado de San Sebastián',
+    municipality: 'Sevilla',
+    municipalityId: 'sevilla',
+    nucleus: 'Centro',
+    nucleusId: 'centro',
+    zone: 'A',
     latitude: 37.377,
     longitude: -5.986
   },
   {
-    stopId: 'malaga:002',
+    consortiumId: MALAGA_CONSORTIUM_ID,
+    stopId: MALAGA_STOP_ID,
+    stopCode: '002',
     name: 'Estación de Málaga',
+    municipality: 'Málaga',
+    municipalityId: 'malaga',
+    nucleus: 'Centro',
+    nucleusId: 'centro',
+    zone: 'A',
     latitude: 36.721,
     longitude: -4.421
   },
   {
-    stopId: 'granada:003',
+    consortiumId: GRANADA_CONSORTIUM_ID,
+    stopId: GRANADA_STOP_ID,
+    stopCode: '003',
     name: 'Estación de Granada',
+    municipality: 'Granada',
+    municipalityId: 'granada',
+    nucleus: 'Centro',
+    nucleusId: 'centro',
+    zone: 'A',
     latitude: 37.188,
     longitude: -3.609
   }
@@ -219,37 +279,108 @@ describe('MapComponent network exploration', () => {
     component = fixture.componentInstance;
   });
 
-  it('renders and fits the complete stop network when the map opens', async () => {
+  it('renders, bounds and fits the complete stop network when the map opens', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
     expect(mapService.handle.renderedStops).toHaveSize(1);
     expect(mapService.handle.renderedStops[0]).toEqual([
-      { id: 'sevilla:001', coordinate: { latitude: 37.377, longitude: -5.986 } },
-      { id: 'malaga:002', coordinate: { latitude: 36.721, longitude: -4.421 } },
-      { id: 'granada:003', coordinate: { latitude: 37.188, longitude: -3.609 } }
+      {
+        id: buildStopIdentity(SEVILLE_CONSORTIUM_ID, SEVILLE_STOP_ID),
+        name: 'Prado de San Sebastián',
+        coordinate: { latitude: 37.377, longitude: -5.986 }
+      },
+      {
+        id: buildStopIdentity(MALAGA_CONSORTIUM_ID, MALAGA_STOP_ID),
+        name: 'Estación de Málaga',
+        coordinate: { latitude: 36.721, longitude: -4.421 }
+      },
+      {
+        id: buildStopIdentity(GRANADA_CONSORTIUM_ID, GRANADA_STOP_ID),
+        name: 'Estación de Granada',
+        coordinate: { latitude: 37.188, longitude: -3.609 }
+      }
+    ]);
+    expect(mapService.handle.restrictedPoints.at(-1)).toEqual([
+      { latitude: 37.377, longitude: -5.986 },
+      { latitude: 36.721, longitude: -4.421 },
+      { latitude: 37.188, longitude: -3.609 }
     ]);
     expect(mapService.handle.focusedPoints.at(-1)).toEqual([
       { latitude: 37.377, longitude: -5.986 },
       { latitude: 36.721, longitude: -4.421 },
       { latitude: 37.188, longitude: -3.609 }
     ]);
-    expect(mapService.handle.stopSelectHandler).toEqual(jasmine.any(Function));
+    expect(mapService.handle.interactions).toBeDefined();
   });
 
-  it('navigates a selected marker to the canonical stop detail route', async () => {
+  it('navigates from the marker popover action with consortium context', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    mapService.handle.stopSelectHandler?.('malaga:002');
+    mapService.handle.interactions?.onDetails(
+      buildStopIdentity(MALAGA_CONSORTIUM_ID, MALAGA_STOP_ID)
+    );
 
-    expect(router.navigate).toHaveBeenCalledOnceWith(['/', 'stop-detail', 'malaga:002']);
+    expect(router.navigate).toHaveBeenCalledOnceWith(
+      ['/', 'stop-detail', MALAGA_STOP_ID],
+      { queryParams: { consortiumId: String(MALAGA_CONSORTIUM_ID) } }
+    );
+  });
+
+  it('focuses stop search targets and forwards list highlight to the existing marker layer', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const access = component as unknown as MapComponentAccess;
+    const markerId = buildStopIdentity(SEVILLE_CONSORTIUM_ID, SEVILLE_STOP_ID);
+    access.selectSearchTarget({
+      kind: 'stop',
+      id: markerId,
+      name: 'Prado de San Sebastián',
+      code: '001',
+      municipality: 'Sevilla',
+      nucleus: 'Centro',
+      zone: 'A',
+      coordinate: { latitude: 37.377, longitude: -5.986 }
+    });
+    access.setStopHighlight(markerId);
+    access.setStopHighlight(null);
+
+    expect(mapService.handle.focusCalls).toEqual([
+      { stopId: markerId, zoom: 15, animate: false }
+    ]);
+    expect(mapService.handle.highlightedStopIds).toEqual([markerId, null]);
+  });
+
+  it('fits area search targets without replacing the stop layer', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const access = component as unknown as MapComponentAccess;
+    const networkRenderCount = mapService.handle.renderedStops.length;
+    const areaCoordinates = Object.freeze([
+      { latitude: 37.377, longitude: -5.986 },
+      { latitude: 37.39, longitude: -5.99 }
+    ]);
+
+    access.selectSearchTarget({
+      kind: 'area',
+      id: 'municipality|7|sevilla',
+      areaKind: 'municipality',
+      name: 'Sevilla',
+      context: null,
+      coordinates: areaCoordinates
+    });
+
+    expect(mapService.handle.renderedStops.length).toBe(networkRenderCount);
+    expect(mapService.handle.focusedPoints.at(-1)).toEqual(areaCoordinates);
   });
 
   it('keeps the full stop layer when geolocation focuses nearby stops', async () => {
     const nearbyRecord: StopDirectoryRecord = {
-      consortiumId: 7,
-      stopId: 'sevilla:001',
+      consortiumId: SEVILLE_CONSORTIUM_ID,
+      stopId: SEVILLE_STOP_ID,
       stopCode: '001',
       name: 'Prado de San Sebastián',
       municipality: 'Sevilla',
@@ -261,7 +392,12 @@ describe('MapComponent network exploration', () => {
     };
 
     nearbyStops.nearbyResults = [
-      { id: nearbyRecord.stopId, name: nearbyRecord.name, distanceInMeters: 150 }
+      {
+        consortiumId: nearbyRecord.consortiumId,
+        id: nearbyRecord.stopId,
+        name: nearbyRecord.name,
+        distanceInMeters: 150
+      }
     ];
     stopDirectory.addRecord(nearbyRecord);
 
