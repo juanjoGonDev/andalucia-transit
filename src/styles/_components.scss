@@ -66,7 +66,12 @@ button:focus:not(:focus-visible),
   background: transparent;
   color: var(--color-text-strong);
   text-decoration: none;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .app-button:disabled,
@@ -173,7 +178,10 @@ button:focus:not(:focus-visible),
   border: 1px solid var(--color-border-subtle);
   background: transparent;
   color: var(--color-icon-muted);
-  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .app-icon-button:hover,
@@ -195,7 +203,9 @@ button:focus:not(:focus-visible),
   box-shadow: var(--shadow-sm);
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .app-list-button:hover,
@@ -218,12 +228,16 @@ button:focus:not(:focus-visible),
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
-  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .app-outline-button--compact {
   --app-outline-button-gap: var(--space-xs);
-  --app-outline-button-padding: calc(var(--space-sm) - var(--space-5xs) - var(--space-6xs)) var(--space-md);
+  --app-outline-button-padding: calc(var(--space-sm) - var(--space-5xs) - var(--space-6xs))
+    var(--space-md);
 }
 
 .app-outline-button:focus-visible {
@@ -277,7 +291,10 @@ button:focus:not(:focus-visible),
   background-color: var(--app-field-background);
   border: 1px solid var(--app-field-border);
   box-shadow: var(--shadow-sm);
-  transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .app-field:hover .mat-mdc-text-field-wrapper {
