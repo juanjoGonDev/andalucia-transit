@@ -44,7 +44,10 @@ async function dismissDialog(page: Page): Promise<void> {
 }
 
 test.describe('deterministic interaction visual states', () => {
-  test.skip(!BASE_URL, 'E2E_BASE_URL environment variable is required for interaction-state tests.');
+  test.skip(
+    !BASE_URL,
+    'E2E_BASE_URL environment variable is required for interaction-state tests.',
+  );
   test.skip(MOCK_MODE !== 'data', 'E2E_MOCK_MODE=data is required for interaction-state tests.');
 
   test('keeps confirm dialogs on one coherent shared surface', async ({ page }) => {
@@ -80,19 +83,20 @@ test.describe('deterministic interaction visual states', () => {
       }
 
       expect(
-        Number.parseFloat(await title.evaluate((element) => getComputedStyle(element).borderBottomWidth)),
+        Number.parseFloat(
+          await title.evaluate((element) => getComputedStyle(element).borderBottomWidth),
+        ),
       ).toBeGreaterThan(0);
       expect(
-        Number.parseFloat(await actions.evaluate((element) => getComputedStyle(element).borderTopWidth)),
+        Number.parseFloat(
+          await actions.evaluate((element) => getComputedStyle(element).borderTopWidth),
+        ),
       ).toBeGreaterThan(0);
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(
-        true,
-      );
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
+      ).toBe(true);
 
-      await capture(
-        page,
-        `dialog-confirm_es_${viewport.width}_${viewport.height}_full.png`,
-      );
+      await capture(page, `dialog-confirm_es_${viewport.width}_${viewport.height}_full.png`);
       await dismissDialog(page);
     }
   });
