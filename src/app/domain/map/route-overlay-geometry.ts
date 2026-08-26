@@ -15,8 +15,20 @@ export interface RouteOverlayGeometryRequest {
   readonly direction: number;
 }
 
+export interface RouteDirectionIndicator {
+  readonly coordinate: GeoCoordinate;
+  readonly rotationDegrees: number;
+}
+
+interface RouteDirectionSegment {
+  readonly from: GeoCoordinate;
+  readonly to: GeoCoordinate;
+}
+
 const MINIMUM_COORDINATE_COUNT = 2;
 const INITIAL_LENGTH_IN_METERS = 0;
+const DEFAULT_DIRECTION_INDICATOR_COUNT = 3;
+const RADIANS_TO_DEGREES = 180 / Math.PI;
 
 export function buildRouteSegmentCoordinates(
   request: RouteOverlayGeometryRequest
@@ -76,6 +88,70 @@ export function calculateRouteLengthInMeters(
   }
 
   return lengthInMeters;
+}
+
+export function buildRouteDirectionIndicators(
+  coordinates: readonly GeoCoordinate[],
+  maxIndicators: number = DEFAULT_DIRECTION_INDICATOR_COUNT
+): readonly RouteDirectionIndicator[] {
+  if (coordinates.length < MINIMUM_COORDINATE_COUNT || maxIndicators <= 0) {
+    return Object.freeze([]);
+  }
+
+  const segments = buildDirectionSegments(coordinates);
+
+  if (!segments.length) {
+    return Object.freeze([]);
+  }
+
+  const indicatorCount = Math.min(Math.floor(maxIndicators), segments.length);
+  const indicators: RouteDirectionIndicator[] = [];
+
+  for (let index = 0; index < indicatorCount; index += 1) {
+    const segmentIndex = Math.min(
+      segments.length - 1,
+      Math.floor(((index + 0.5) * segments.length) / indicatorCount)
+    );
+    const segment = segments[segmentIndex]!;
+    indicators.push({
+      coordinate: midpoint(segment.from, segment.to),
+      rotationDegrees: calculateDirectionRotation(segment.from, segment.to)
+    });
+  }
+
+  return Object.freeze(indicators);
+}
+
+function buildDirectionSegments(
+  coordinates: readonly GeoCoordinate[]
+): readonly RouteDirectionSegment[] {
+  const segments: RouteDirectionSegment[] = [];
+
+  for (let index = 1; index < coordinates.length; index += 1) {
+    const from = coordinates[index - 1]!;
+    const to = coordinates[index]!;
+
+    if (from.latitude === to.latitude && from.longitude === to.longitude) {
+      continue;
+    }
+
+    segments.push({ from, to });
+  }
+
+  return segments;
+}
+
+function midpoint(from: GeoCoordinate, to: GeoCoordinate): GeoCoordinate {
+  return {
+    latitude: (from.latitude + to.latitude) / 2,
+    longitude: (from.longitude + to.longitude) / 2
+  };
+}
+
+function calculateDirectionRotation(from: GeoCoordinate, to: GeoCoordinate): number {
+  const verticalDelta = -(to.latitude - from.latitude);
+  const horizontalDelta = to.longitude - from.longitude;
+  return Math.atan2(verticalDelta, horizontalDelta) * RADIANS_TO_DEGREES;
 }
 
 function resolveOriginOrder(

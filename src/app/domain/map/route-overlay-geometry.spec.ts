@@ -1,5 +1,6 @@
 import {
   RouteOverlayGeometryRequest,
+  buildRouteDirectionIndicators,
   buildRouteSegmentCoordinates,
   calculateRouteLengthInMeters
 } from '@domain/map/route-overlay-geometry';
@@ -72,9 +73,7 @@ describe('calculateRouteLengthInMeters', () => {
   it('returns zero length when fewer than two coordinates are provided', () => {
     expect(calculateRouteLengthInMeters([])).toBe(0);
     expect(
-      calculateRouteLengthInMeters([
-        { latitude: 37.1, longitude: -5.1 }
-      ])
+      calculateRouteLengthInMeters([{ latitude: 37.1, longitude: -5.1 }])
     ).toBe(0);
   });
 
@@ -90,6 +89,59 @@ describe('calculateRouteLengthInMeters', () => {
       calculateDistanceInMeters(coordinates[1], coordinates[2]);
 
     expect(calculateRouteLengthInMeters(coordinates)).toBeCloseTo(expectedLength, 6);
+  });
+});
+
+describe('buildRouteDirectionIndicators', () => {
+  it('returns no indicators without a usable route segment', () => {
+    expect(buildRouteDirectionIndicators([])).toEqual([]);
+    expect(buildRouteDirectionIndicators([{ latitude: 37, longitude: -5 }])).toEqual([]);
+    expect(
+      buildRouteDirectionIndicators(
+        [
+          { latitude: 37, longitude: -5 },
+          { latitude: 37, longitude: -5 }
+        ],
+        2
+      )
+    ).toEqual([]);
+  });
+
+  it('samples route segments and follows coordinate order', () => {
+    const indicators = buildRouteDirectionIndicators(
+      [
+        { latitude: 37, longitude: -5 },
+        { latitude: 37, longitude: -4 },
+        { latitude: 38, longitude: -4 }
+      ],
+      2
+    );
+
+    expect(indicators).toEqual([
+      {
+        coordinate: { latitude: 37, longitude: -4.5 },
+        rotationDegrees: 0
+      },
+      {
+        coordinate: { latitude: 37.5, longitude: -4 },
+        rotationDegrees: -90
+      }
+    ]);
+  });
+
+  it('caps the number of direction indicators', () => {
+    const indicators = buildRouteDirectionIndicators(
+      [
+        { latitude: 37, longitude: -5 },
+        { latitude: 37, longitude: -4.5 },
+        { latitude: 37.1, longitude: -4 },
+        { latitude: 37.2, longitude: -3.5 }
+      ],
+      2
+    );
+
+    expect(indicators).toHaveSize(2);
+    expect(buildRouteDirectionIndicators(indicators.map((item) => item.coordinate), 0)).toEqual([]);
   });
 });
 
