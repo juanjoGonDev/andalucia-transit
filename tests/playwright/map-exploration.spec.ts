@@ -3,6 +3,7 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 const BASE_URL = process.env.E2E_BASE_URL;
 const MAP_PATH = '/map';
 const STOP_DIRECTORY_INDEX_PATH = '/assets/data/stop-directory/index.json';
+const STOP_DIRECTORY_BASE_PATH = '/assets/data/stop-directory/';
 const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 const MINIMUM_PAINTED_PIXELS = 100;
@@ -18,7 +19,15 @@ interface CanvasActivationPoint {
 }
 
 interface StopDirectoryIndexFile {
-  readonly searchIndex: readonly StopDirectorySearchEntry[];
+  readonly chunks: readonly StopDirectoryChunkDescriptor[];
+}
+
+interface StopDirectoryChunkDescriptor {
+  readonly path: string;
+}
+
+interface StopDirectoryChunkFile {
+  readonly stops: readonly StopDirectorySearchEntry[];
 }
 
 interface StopDirectorySearchEntry {
@@ -34,13 +43,27 @@ interface CanonicalSearchStop {
 }
 
 async function loadCanonicalSearchStop(page: Page, baseUrl: string): Promise<CanonicalSearchStop> {
-  const response = await page.request.get(new URL(STOP_DIRECTORY_INDEX_PATH, baseUrl).toString());
-  expect(response.ok()).toBe(true);
+  const indexResponse = await page.request.get(
+    new URL(STOP_DIRECTORY_INDEX_PATH, baseUrl).toString(),
+  );
+  expect(indexResponse.ok()).toBe(true);
 
-  const directory = (await response.json()) as StopDirectoryIndexFile;
+  const directory = (await indexResponse.json()) as StopDirectoryIndexFile;
+  const stops: StopDirectorySearchEntry[] = [];
+
+  for (const descriptor of directory.chunks) {
+    const chunkResponse = await page.request.get(
+      new URL(`${STOP_DIRECTORY_BASE_PATH}${descriptor.path}`, baseUrl).toString(),
+    );
+    expect(chunkResponse.ok()).toBe(true);
+
+    const chunk = (await chunkResponse.json()) as StopDirectoryChunkFile;
+    stops.push(...chunk.stops);
+  }
+
   const codeCounts = new Map<string, number>();
 
-  for (const entry of directory.searchIndex) {
+  for (const entry of stops) {
     const code = entry.stopCode.trim();
     if (code.length < MINIMUM_SEARCH_CODE_LENGTH) {
       continue;
@@ -49,7 +72,7 @@ async function loadCanonicalSearchStop(page: Page, baseUrl: string): Promise<Can
     codeCounts.set(code, (codeCounts.get(code) ?? 0) + 1);
   }
 
-  const candidate = directory.searchIndex.find((entry) => {
+  const candidate = stops.find((entry) => {
     const code = entry.stopCode.trim();
     return (
       code.length >= MINIMUM_SEARCH_CODE_LENGTH &&
@@ -61,7 +84,7 @@ async function loadCanonicalSearchStop(page: Page, baseUrl: string): Promise<Can
 
   expect(candidate).toBeDefined();
   if (!candidate) {
-    throw new Error('Canonical stop directory does not contain a unique searchable stop code.');
+    throw new Error('Canonical stop chunks do not contain a unique searchable stop code.');
   }
 
   return {
