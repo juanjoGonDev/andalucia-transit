@@ -3,7 +3,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Observable, Subject, of } from 'rxjs';
 import { GeolocationService } from '@core/services/geolocation.service';
-import { NearbyStopResult, NearbyStopsService } from '@core/services/nearby-stops.service';
+import {
+  NearbyStopRecord,
+  NearbyStopResult,
+  NearbyStopsService
+} from '@core/services/nearby-stops.service';
+import { buildStopIdentity } from '@core/services/stop-identity.util';
 import { StopDirectoryRecord, StopDirectoryService } from '@data/stops/stop-directory.service';
 import {
   RouteOverlayFacade,
@@ -16,6 +21,7 @@ import {
   MapCreateOptions,
   MapHandle,
   MapRoutePolyline,
+  MapStopInteractionOptions,
   MapStopMarker
 } from '@shared/map/leaflet-map.service';
 
@@ -31,7 +37,13 @@ class MapHandleStub implements MapHandle {
   readonly userLocations: GeoCoordinateStub[] = [];
   readonly renderedStops: readonly MapStopMarker[][] = [];
   readonly focusedPoints: readonly GeoCoordinateStub[][] = [];
-  readonly renderedRoutes: readonly { routes: readonly MapRoutePolyline[]; activeRouteId: string | null }[] = [];
+  readonly restrictedPoints: readonly GeoCoordinateStub[][] = [];
+  readonly highlightedStopIds: Array<string | null> = [];
+  readonly renderedRoutes: readonly {
+    routes: readonly MapRoutePolyline[];
+    activeRouteId: string | null;
+  }[] = [];
+  interactions: MapStopInteractionOptions | undefined;
   destroyed = false;
   invalidationCount = 0;
 
@@ -44,16 +56,37 @@ class MapHandleStub implements MapHandle {
     this.userLocations.push(coordinate);
   }
 
-  renderStops(stops: readonly MapStopMarker[]): void {
+  renderStops(
+    stops: readonly MapStopMarker[],
+    interactions?: MapStopInteractionOptions
+  ): void {
     (this.renderedStops as MapStopMarker[][]).push([...stops]);
+    this.interactions = interactions;
   }
 
   fitToCoordinates(points: readonly GeoCoordinateStub[]): void {
     (this.focusedPoints as GeoCoordinateStub[][]).push([...points]);
   }
 
+  restrictToCoordinates(points: readonly GeoCoordinateStub[]): void {
+    (this.restrictedPoints as GeoCoordinateStub[][]).push([...points]);
+  }
+
+  highlightStop(stopId: string | null): void {
+    this.highlightedStopIds.push(stopId);
+  }
+
+  focusStop(_stopId: string, _zoom: number, _animate = false): boolean {
+    return true;
+  }
+
   renderRoutes(routes: readonly MapRoutePolyline[], activeRouteId: string | null): void {
-    (this.renderedRoutes as { routes: readonly MapRoutePolyline[]; activeRouteId: string | null }[]).push({
+    (
+      this.renderedRoutes as {
+        routes: readonly MapRoutePolyline[];
+        activeRouteId: string | null;
+      }[]
+    ).push({
       routes: [...routes],
       activeRouteId
     });
@@ -106,7 +139,12 @@ class GeolocationServiceStub {
 }
 
 class NearbyStopsServiceStub {
+  allStops: readonly NearbyStopRecord[] = [];
   results: readonly NearbyStopResult[] = [];
+
+  async getAllStops(): Promise<readonly NearbyStopRecord[]> {
+    return this.allStops;
+  }
 
   async findClosestStops(): Promise<readonly NearbyStopResult[]> {
     return this.results;
@@ -117,11 +155,14 @@ class StopDirectoryServiceStub {
   private readonly records = new Map<string, StopDirectoryRecord>();
 
   addRecord(record: StopDirectoryRecord): void {
-    this.records.set(record.stopId, record);
+    this.records.set(buildStopIdentity(record.consortiumId, record.stopId), record);
   }
 
-  getStopById(stopId: string): Observable<StopDirectoryRecord | null> {
-    return of(this.records.get(stopId) ?? null);
+  getStopBySignature(
+    consortiumId: number,
+    stopId: string
+  ): Observable<StopDirectoryRecord | null> {
+    return of(this.records.get(buildStopIdentity(consortiumId, stopId)) ?? null);
   }
 }
 
@@ -147,7 +188,8 @@ interface MapComponentAccess {
 
 interface MapStopViewStub {
   readonly id: string;
-  readonly commands: readonly string[];
+  readonly consortiumId: number;
+  readonly stopId: string;
 }
 
 interface MapRouteViewAccess {
@@ -180,14 +222,14 @@ const NEARBY_DISTANCE_METERS = 150;
 
 function buildPosition(latitude: number, longitude: number): GeolocationPosition {
   const coords = {
-      latitude,
-      longitude,
-      accuracy: 0,
-      altitude: null,
-      altitudeAccuracy: null,
-      heading: null,
-      speed: null,
-      toJSON: () => ({})
+    latitude,
+    longitude,
+    accuracy: 0,
+    altitude: null,
+    altitudeAccuracy: null,
+    heading: null,
+    speed: null,
+    toJSON: () => ({})
   } satisfies GeolocationCoordinates;
 
   return {
@@ -282,7 +324,12 @@ describe('MapComponent', () => {
     };
 
     nearbyStops.results = [
-      { id: 'sevilla:001', name: stopRecord.name, distanceInMeters: NEARBY_DISTANCE_METERS }
+      {
+        consortiumId: stopRecord.consortiumId,
+        id: stopRecord.stopId,
+        name: stopRecord.name,
+        distanceInMeters: NEARBY_DISTANCE_METERS
+      }
     ];
     stopDirectory.addRecord(stopRecord);
 
@@ -295,10 +342,19 @@ describe('MapComponent', () => {
 
     expect(mapService.handle.userLocations.length).toBe(1);
     expect(mapService.handle.renderedStops.at(-1)).toEqual([
-      { id: 'sevilla:001', coordinate: stopRecord.location }
+      {
+        id: buildStopIdentity(stopRecord.consortiumId, stopRecord.stopId),
+        name: stopRecord.name,
+        coordinate: stopRecord.location
+      }
     ]);
-    expect(access.stops().length).toBe(1);
-    expect(access.stops()[0]?.commands).toEqual(['/', 'stop-detail', 'sevilla:001']);
+    expect(access.stops()).toEqual([
+      jasmine.objectContaining({
+        id: buildStopIdentity(stopRecord.consortiumId, stopRecord.stopId),
+        consortiumId: stopRecord.consortiumId,
+        stopId: stopRecord.stopId
+      })
+    ]);
   });
 
   it('surfaces an error key when location permission is denied', async () => {
@@ -312,7 +368,7 @@ describe('MapComponent', () => {
     await access.locate();
 
     expect(access.errorKey()).toBe('map.errors.permissionDenied');
-    expect(mapService.handle.renderedStops.length).toBe(0);
+    expect(mapService.handle.renderedStops.at(-1) ?? []).toHaveSize(0);
   });
 
   it('renders route overlays when overlay facade returns routes', async () => {
@@ -704,16 +760,19 @@ describe('MapComponent', () => {
 });
 
 function emitIdleOverlayState(facade: RouteOverlayFacadeStub): void {
-  facade.emit(buildRouteOverlayState({ status: 'idle', routes: [], selectionKey: null, errorKey: null }));
+  facade.emit(
+    buildRouteOverlayState({ status: 'idle', routes: [], selectionKey: null, errorKey: null })
+  );
 }
 
 function buildRouteOverlayState(
   overrides: Partial<RouteOverlayState> &
     Pick<RouteOverlayState, 'status' | 'routes' | 'selectionKey' | 'errorKey'>
 ): RouteOverlayState {
-  const summary: RouteOverlaySelectionSummary | null = overrides.status === 'idle'
-    ? null
-    : { originName: 'Origin', destinationName: 'Destination' };
+  const summary: RouteOverlaySelectionSummary | null =
+    overrides.status === 'idle'
+      ? null
+      : { originName: 'Origin', destinationName: 'Destination' };
 
   return {
     status: overrides.status,
