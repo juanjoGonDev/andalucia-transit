@@ -11,6 +11,7 @@ $shell-actions-button-shadow-inner: color-mix(in srgb, var(--color-text-inverse)
 $shell-actions-icon-shadow: 0 0 calc((var(--space-lg) - var(--space-2xs)) * 1 / 2)
   color-mix(in srgb, var(--color-secondary) 60%, transparent);
 $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 24%, transparent);
+$shell-actions-hover-lift: calc(var(--space-4xs) * -1);
 
 :host {
   display: block;
@@ -71,6 +72,7 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 24%, transpa
   background: $shell-actions-button-base;
   color: $shell-actions-foreground;
   text-decoration: none;
+  transform: translateY(0);
   box-shadow:
     inset 0 1px 0 $shell-actions-button-shadow-inner,
     0 calc(var(--space-lg) - var(--space-xs))
@@ -80,7 +82,10 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 24%, transpa
         transparent
       ),
     0 0 0 1px $shell-actions-shadow-outline;
-  transition: background-color 220ms ease, box-shadow 220ms ease;
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
 }
 
 .shell-actions__button:hover,
@@ -100,8 +105,8 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 24%, transpa
 
 .shell-actions__button-icon {
   transition:
-    transform 220ms ease,
-    opacity 220ms ease;
+    transform 180ms ease,
+    opacity 180ms ease;
 }
 
 .shell-actions__button--active {
@@ -194,6 +199,16 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 24%, transpa
   gap: var(--space-xs);
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .shell-actions__button:hover {
+    transform: translateY($shell-actions-hover-lift);
+  }
+
+  .shell-actions__button:active {
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 40rem) {
   :host {
     height: var(--space-4xl);
@@ -205,5 +220,11 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 24%, transpa
   .shell-actions__button-icon,
   .shell-actions__menu-button {
     transition: none;
+  }
+
+  .shell-actions__button,
+  .shell-actions__button:hover,
+  .shell-actions__button:active {
+    transform: none;
   }
 }
