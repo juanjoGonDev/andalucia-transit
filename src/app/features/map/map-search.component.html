@@ -1,0 +1,15 @@
+<div class="map-search">
+  <app-autocomplete
+    [label]="translationKeys.label | translate"
+    [placeholder]="translationKeys.placeholder | translate"
+    [options]="options()"
+    fieldId="map-network-search"
+    autocomplete="off"
+    (valueChange)="handleValueChange($event)"
+    (selectionChange)="handleSelection($event)"
+  >
+    <span appTextFieldPrefix class="material-symbols-outlined map-search__icon" aria-hidden="true">
+      search
+    </span>
+  </app-autocomplete>
+</div>
