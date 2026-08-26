@@ -235,6 +235,19 @@ function buildPosition(latitude: number, longitude: number): GeolocationPosition
   } satisfies GeolocationPosition;
 }
 
+function buildMediaQueryList(matches: boolean, media: string): MediaQueryList {
+  return {
+    matches,
+    media,
+    onchange: null,
+    addListener: () => undefined,
+    removeListener: () => undefined,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+    dispatchEvent: () => true
+  } satisfies MediaQueryList;
+}
+
 describe('MapComponent network exploration', () => {
   let fixture: ComponentFixture<MapComponent>;
   let component: MapComponent;
@@ -328,7 +341,8 @@ describe('MapComponent network exploration', () => {
     );
   });
 
-  it('focuses stop search targets and forwards list highlight to the existing marker layer', async () => {
+  it('focuses stop search targets with motion and forwards list highlight to the marker layer', async () => {
+    spyOn(window, 'matchMedia').and.callFake((query) => buildMediaQueryList(false, query));
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -348,9 +362,33 @@ describe('MapComponent network exploration', () => {
     access.setStopHighlight(null);
 
     expect(mapService.handle.focusCalls).toEqual([
-      { stopId: markerId, zoom: 15, animate: false }
+      { stopId: markerId, zoom: 15, animate: true }
     ]);
     expect(mapService.handle.highlightedStopIds).toEqual([markerId, null]);
+  });
+
+  it('focuses stop search targets without animation when reduced motion is requested', async () => {
+    spyOn(window, 'matchMedia').and.callFake((query) => buildMediaQueryList(true, query));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const access = component as unknown as MapComponentAccess;
+    const markerId = buildStopIdentity(SEVILLE_CONSORTIUM_ID, SEVILLE_STOP_ID);
+
+    access.selectSearchTarget({
+      kind: 'stop',
+      id: markerId,
+      name: 'Prado de San Sebastián',
+      code: '001',
+      municipality: 'Sevilla',
+      nucleus: 'Centro',
+      zone: 'A',
+      coordinate: { latitude: 37.377, longitude: -5.986 }
+    });
+
+    expect(mapService.handle.focusCalls).toEqual([
+      { stopId: markerId, zoom: 15, animate: false }
+    ]);
   });
 
   it('fits area search targets without replacing the stop layer', async () => {
