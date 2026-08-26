@@ -1,4 +1,5 @@
 import { Observable, firstValueFrom } from 'rxjs';
+import { buildStopIdentity } from '@core/services/stop-identity.util';
 import { GeoCoordinate, calculateDistanceInMeters } from '@domain/utils/geo-distance.util';
 
 interface StopDirectoryIndexFile {
@@ -56,7 +57,6 @@ export interface NearbyStopResult {
 
 const EMPTY_RECORDS: readonly NearbyStopRecord[] = Object.freeze([]);
 const EMPTY_RESULTS: readonly NearbyStopResult[] = Object.freeze([]);
-const STOP_IDENTITY_SEPARATOR = ':' as const;
 
 export async function loadNearbyStopRecords(
   http: NearbyStopsHttpClient,
@@ -78,7 +78,7 @@ export async function loadNearbyStopRecords(
     );
 
     for (const stop of chunk.stops) {
-      const identity = buildNearbyStopIdentity(stop.consortiumId, stop.stopId);
+      const identity = buildStopIdentity(stop.consortiumId, stop.stopId);
 
       if (seen.has(identity)) {
         continue;
@@ -140,10 +140,6 @@ export function buildNearbyStopResults(
 
   candidates.sort((first, second) => first.distanceInMeters - second.distanceInMeters);
   return Object.freeze(candidates.slice(0, limit));
-}
-
-export function buildNearbyStopIdentity(consortiumId: number, stopId: string): string {
-  return `${consortiumId}${STOP_IDENTITY_SEPARATOR}${stopId}`;
 }
 
 function resolveChunkBasePath(indexPath: string): string {

@@ -1,4 +1,5 @@
 import { NearbyStopRecord } from '@core/services/nearby-stops.service';
+import { buildStopIdentity } from '@core/services/stop-identity.util';
 import { GeoCoordinate } from '@domain/utils/geo-distance.util';
 
 export type MapAreaKind = 'municipality' | 'nucleus' | 'zone';
@@ -84,7 +85,7 @@ export function searchMapTargets(
 function toStopTarget(record: NearbyStopRecord): MapStopSearchTarget {
   return {
     kind: 'stop',
-    id: record.stopId,
+    id: buildStopIdentity(record.consortiumId, record.stopId),
     name: record.name,
     code: record.stopCode,
     municipality: record.municipality,
@@ -102,10 +103,12 @@ function buildAreaTargets(records: readonly NearbyStopRecord[]): readonly MapAre
 
   for (const record of records) {
     const coordinate = { latitude: record.latitude, longitude: record.longitude };
+    const consortiumKey = String(record.consortiumId);
+    const municipalityKey = normalize(record.municipalityId || record.municipality);
 
     addArea(
       areas,
-      `municipality${AREA_KEY_SEPARATOR}${normalize(record.municipalityId || record.municipality)}`,
+      ['municipality', consortiumKey, municipalityKey].join(AREA_KEY_SEPARATOR),
       'municipality',
       record.municipality,
       null,
@@ -117,7 +120,8 @@ function buildAreaTargets(records: readonly NearbyStopRecord[]): readonly MapAre
         areas,
         [
           'nucleus',
-          normalize(record.municipalityId || record.municipality),
+          consortiumKey,
+          municipalityKey,
           normalize(record.nucleusId || record.nucleus)
         ].join(AREA_KEY_SEPARATOR),
         'nucleus',
@@ -132,8 +136,8 @@ function buildAreaTargets(records: readonly NearbyStopRecord[]): readonly MapAre
         areas,
         [
           'zone',
-          String(record.consortiumId),
-          normalize(record.municipalityId || record.municipality),
+          consortiumKey,
+          municipalityKey,
           normalize(record.zone)
         ].join(AREA_KEY_SEPARATOR),
         'zone',
