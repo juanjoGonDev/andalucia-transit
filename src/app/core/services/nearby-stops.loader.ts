@@ -15,8 +15,15 @@ interface StopDirectoryChunkFile {
 }
 
 interface StopDirectoryChunkEntry {
+  readonly consortiumId: number;
   readonly stopId: string;
+  readonly stopCode: string;
   readonly name: string;
+  readonly municipality: string;
+  readonly municipalityId: string;
+  readonly nucleus: string;
+  readonly nucleusId: string;
+  readonly zone: string | null;
   readonly location: {
     readonly latitude: number;
     readonly longitude: number;
@@ -24,8 +31,15 @@ interface StopDirectoryChunkEntry {
 }
 
 export interface NearbyStopRecord {
+  readonly consortiumId: number;
   readonly stopId: string;
+  readonly stopCode: string;
   readonly name: string;
+  readonly municipality: string;
+  readonly municipalityId: string;
+  readonly nucleus: string;
+  readonly nucleusId: string;
+  readonly zone: string | null;
   readonly latitude: number;
   readonly longitude: number;
 }
@@ -65,8 +79,15 @@ export async function loadNearbyStopRecords(
 
       seen.add(stop.stopId);
       records.push({
+        consortiumId: stop.consortiumId,
         stopId: stop.stopId,
+        stopCode: stop.stopCode,
         name: stop.name,
+        municipality: stop.municipality,
+        municipalityId: stop.municipalityId,
+        nucleus: stop.nucleus,
+        nucleusId: stop.nucleusId,
+        zone: stop.zone,
         latitude: stop.location.latitude,
         longitude: stop.location.longitude
       });
