@@ -6,6 +6,7 @@ const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const MINIMUM_PAINTED_PIXELS = 100;
 const MINIMUM_MARKER_RUN_PIXELS = 4;
 const SEARCH_STOP_NAME = 'Apeadero Torredonjimeno';
+const SEVILLE_LOCATION = { latitude: 37.389092, longitude: -5.984459 } as const;
 
 interface CanvasActivationPoint {
   readonly x: number;
@@ -140,5 +141,35 @@ test.describe('network map exploration', () => {
     const popup = page.locator('.app-map-stop-popup');
     await expect(popup).toBeVisible();
     await expect(popup.locator('.app-map-stop-popup__title')).toHaveText(SEARCH_STOP_NAME);
+  });
+
+  test('highlights the matching map marker when a nearby stop card is hovered', async ({
+    page,
+    context,
+  }) => {
+    const resolvedBaseUrl = BASE_URL as string;
+    const origin = new URL(resolvedBaseUrl).origin;
+    await context.grantPermissions(['geolocation'], { origin });
+    await context.setGeolocation(SEVILLE_LOCATION);
+    await page.setViewportSize(MOBILE_VIEWPORT);
+    await page.goto(new URL(MAP_PATH, resolvedBaseUrl).toString());
+
+    const mapSurface = page.locator('.map__canvas');
+    const overlayCanvas = page.locator('.leaflet-overlay-pane canvas').first();
+    const locateButton = page.locator('.map__locate-button');
+
+    await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
+    await locateButton.click();
+
+    const nearbyStop = page.locator('.map__stop-item').first();
+    await expect(nearbyStop).toBeVisible({ timeout: 15_000 });
+    await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
+
+    const baselinePaintedPixels = await countPaintedPixels(overlayCanvas);
+    await nearbyStop.hover();
+
+    await expect
+      .poll(() => countPaintedPixels(overlayCanvas), { timeout: 5_000 })
+      .toBeGreaterThan(baselinePaintedPixels);
   });
 });
