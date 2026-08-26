@@ -2,25 +2,20 @@ $shell-actions-offset: clamp(var(--space-md-plus), 4vw, calc(var(--space-2xl) - 
 $shell-actions-surface: var(--color-navigation-surface);
 $shell-actions-foreground: var(--color-navigation-item);
 $shell-actions-hover: color-mix(in srgb, var(--color-text-inverse) 14%, transparent);
-$shell-actions-active: color-mix(in srgb, var(--color-primary) 34%, transparent);
 $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transparent);
-$shell-actions-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--color-secondary) 30%, transparent);
 
 :host {
   position: fixed;
   inset-inline: 0;
   bottom: 0;
   z-index: var(--z-index-sticky);
-  display: block;
   pointer-events: none;
 }
 
 .shell-actions {
   display: flex;
   justify-content: center;
-  padding: var(--space-xs) var(--space-sm)
-    max(var(--space-xs), env(safe-area-inset-bottom, 0px));
-  pointer-events: none;
+  padding: var(--space-xs) var(--space-sm) max(var(--space-xs), env(safe-area-inset-bottom, 0px));
 }
 
 .shell-actions__container {
@@ -31,21 +26,25 @@ $shell-actions-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--color-secondary) 3
   width: 100%;
   padding: var(--space-xs);
   border: 1px solid $shell-actions-border;
-  border-radius: calc(var(--radius-xl) + var(--space-xs));
+  border-radius: var(--radius-xl);
   background: $shell-actions-surface;
   color: $shell-actions-foreground;
-  box-shadow: $shell-actions-shadow;
+  box-shadow: var(--shadow-lg);
   pointer-events: auto;
 }
 
 .shell-actions__buttons {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  align-items: stretch;
   gap: var(--space-3xs);
 }
 
 .shell-actions__button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4xs);
   min-width: 0;
   min-height: 3.5rem;
   padding: var(--space-xs) var(--space-3xs);
@@ -53,21 +52,14 @@ $shell-actions-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--color-secondary) 3
   border-radius: var(--radius-lg);
   background: transparent;
   color: color-mix(in srgb, $shell-actions-foreground 78%, transparent);
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-4xs);
   text-decoration: none;
   font: inherit;
-  transition:
-    background-color 180ms ease,
-    color 180ms ease,
-    transform 180ms ease;
+  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
 }
 
 .shell-actions__button:hover,
-.shell-actions__button:focus-visible {
+.shell-actions__button:focus-visible,
+.shell-actions__button--active {
   background: $shell-actions-hover;
   color: $shell-actions-foreground;
 }
@@ -79,14 +71,7 @@ $shell-actions-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--color-secondary) 3
 }
 
 .shell-actions__button--active {
-  background: $shell-actions-active;
-  color: var(--color-text-inverse);
-}
-
-.shell-actions__button-icon {
-  font-size: 1.4rem;
-  line-height: 1;
-  transition: transform 180ms ease;
+  background: color-mix(in srgb, var(--color-primary) 34%, transparent);
 }
 
 .shell-actions__button--active .shell-actions__button-icon {
@@ -100,7 +85,6 @@ $shell-actions-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--color-secondary) 3
   white-space: nowrap;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-  line-height: 1.1;
 }
 
 .shell-actions__menu {
@@ -122,7 +106,7 @@ $shell-actions-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--color-secondary) 3
   border-radius: var(--radius-lg);
   background: $shell-actions-surface;
   color: $shell-actions-foreground;
-  box-shadow: $shell-actions-shadow;
+  box-shadow: var(--shadow-lg);
 }
 
 .shell-actions__list {
@@ -144,7 +128,6 @@ $shell-actions-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--color-secondary) 3
   color: inherit;
   text-decoration: none;
   font-weight: var(--font-weight-semibold);
-  transition: background-color 180ms ease;
 }
 
 .shell-actions__menu-button:hover,
@@ -162,10 +145,6 @@ $shell-actions-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--color-secondary) 3
   .shell-actions__button:hover {
     transform: translateY(-2px);
   }
-
-  .shell-actions__button:hover .shell-actions__button-icon {
-    transform: translateY(-1px) scale(1.06);
-  }
 }
 
 @media (min-width: 48rem) {
@@ -182,12 +161,12 @@ $shell-actions-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--color-secondary) 3
     padding: 0 clamp(var(--space-lg), 5vw, var(--space-4xl));
   }
 
-  .shell-actions__container {
+  .shell-actions__container,
+  .shell-actions__shell {
     width: auto;
   }
 
   .shell-actions__shell {
-    width: auto;
     border-radius: var(--radius-full);
   }
 
@@ -216,9 +195,7 @@ $shell-actions-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--color-secondary) 3
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .shell-actions__button,
-  .shell-actions__button-icon,
-  .shell-actions__menu-button {
+  .shell-actions__button {
     transition: none;
   }
 }
