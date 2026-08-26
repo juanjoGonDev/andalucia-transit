@@ -38,7 +38,7 @@ class MapHandleStub implements MapHandle {
   readonly renderedStops: readonly MapStopMarker[][] = [];
   readonly focusedPoints: readonly GeoCoordinateStub[][] = [];
   readonly restrictedPoints: readonly GeoCoordinateStub[][] = [];
-  readonly highlightedStopIds: Array<string | null> = [];
+  readonly highlightedStopIds: (string | null)[] = [];
   readonly renderedRoutes: readonly {
     routes: readonly MapRoutePolyline[];
     activeRouteId: string | null;
