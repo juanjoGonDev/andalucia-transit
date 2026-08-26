@@ -77,6 +77,8 @@ export class AppAutocompleteComponent<T> implements ControlValueAccessor, AfterV
   private readonly destroyRef = inject(DestroyRef);
   private ngControl: NgControl | null = null;
   private errorTemplateRef: TemplateRef<unknown> | null = null;
+  private optionState: readonly AppAutocompleteOption<T>[] = [];
+  private isFocused = false;
 
   @ViewChild(AppTextFieldComponent)
   private textField?: AppTextFieldComponent;
@@ -95,7 +97,16 @@ export class AppAutocompleteComponent<T> implements ControlValueAccessor, AfterV
   @Input() name?: string;
   @Input() fieldId?: string;
   @Input() displayWith?: AppAutocompleteDisplayFn<T>;
-  @Input() options: readonly AppAutocompleteOption<T>[] = [];
+  @Input()
+  set options(value: readonly AppAutocompleteOption<T>[] | null | undefined) {
+    this.optionState = value ?? [];
+    this.activeOptionIndex = -1;
+    this.syncPanelVisibility();
+  }
+
+  get options(): readonly AppAutocompleteOption<T>[] {
+    return this.optionState;
+  }
 
   @Output() readonly selectionChange = new EventEmitter<AppAutocompleteSelection<T>>();
   @Output() readonly valueChange = new EventEmitter<string>();
@@ -152,6 +163,11 @@ export class AppAutocompleteComponent<T> implements ControlValueAccessor, AfterV
 
   setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
+    if (isDisabled) {
+      this.closePanel();
+    } else {
+      this.syncPanelVisibility();
+    }
     this.applyTextFieldState();
   }
 
@@ -163,6 +179,8 @@ export class AppAutocompleteComponent<T> implements ControlValueAccessor, AfterV
   }
 
   handleFocusChange(isFocused: boolean): void {
+    this.isFocused = isFocused;
+
     if (this.isDisabled || this.readonly) {
       if (!isFocused) {
         this.closePanel();
@@ -250,8 +268,19 @@ export class AppAutocompleteComponent<T> implements ControlValueAccessor, AfterV
     this.changeDetectorRef.markForCheck();
   }
 
-  private openPanel(): void {
+  private syncPanelVisibility(): void {
     if (!this.hasOptions) {
+      this.closePanel();
+      return;
+    }
+
+    if (this.isFocused && !this.isDisabled && !this.readonly) {
+      this.openPanel();
+    }
+  }
+
+  private openPanel(): void {
+    if (!this.hasOptions || this.isPanelOpen) {
       return;
     }
 
