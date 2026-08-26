@@ -12,8 +12,8 @@ import {
 import { buildStopIdentity } from '@core/services/stop-identity.util';
 import { StopDirectoryRecord, StopDirectoryService } from '@data/stops/stop-directory.service';
 import { RouteOverlayFacade, RouteOverlayState } from '@domain/map/route-overlay.facade';
-import { MapComponent } from '@features/map/map.component';
 import { MapSearchTarget } from '@features/map/map-search.util';
+import { MapComponent } from '@features/map/map.component';
 import {
   LeafletMapService,
   MapCreateOptions,
@@ -39,7 +39,7 @@ class MapHandleStub implements MapHandle {
   readonly renderedStops: readonly MapStopMarker[][] = [];
   readonly focusedPoints: readonly GeoCoordinateStub[][] = [];
   readonly restrictedPoints: readonly GeoCoordinateStub[][] = [];
-  readonly highlightedStopIds: Array<string | null> = [];
+  readonly highlightedStopIds: (string | null)[] = [];
   readonly focusCalls: MapFocusCall[] = [];
   interactions: MapStopInteractionOptions | undefined;
   setViewCount = 0;
@@ -359,10 +359,10 @@ describe('MapComponent network exploration', () => {
 
     const access = component as unknown as MapComponentAccess;
     const networkRenderCount = mapService.handle.renderedStops.length;
-    const areaCoordinates = Object.freeze([
+    const areaCoordinates = [
       { latitude: 37.377, longitude: -5.986 },
       { latitude: 37.39, longitude: -5.99 }
-    ]);
+    ];
 
     access.selectSearchTarget({
       kind: 'area',
