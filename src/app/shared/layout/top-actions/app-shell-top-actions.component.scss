@@ -194,6 +194,12 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 24%, transpa
   gap: var(--space-xs);
 }
 
+@media (max-width: 40rem) {
+  :host {
+    height: var(--space-4xl);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .shell-actions__button,
   .shell-actions__button-icon,
