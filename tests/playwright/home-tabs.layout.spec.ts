@@ -174,7 +174,9 @@ test.describe('home tabs responsive layout', () => {
         continue;
       }
 
-      expect(rectanglesOverlap(shellBounds, titleBounds), `${path} shell/title overlap`).toBe(false);
+      expect(rectanglesOverlap(shellBounds, titleBounds), `${path} shell/title overlap`).toBe(
+        false,
+      );
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
         `${path} horizontal overflow`,
