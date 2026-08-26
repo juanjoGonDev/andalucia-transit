@@ -1,0 +1,180 @@
+.app-map-stop-popup.leaflet-popup {
+  margin-bottom: var(--space-sm);
+}
+
+.app-map-stop-popup .leaflet-popup-content-wrapper {
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+.app-map-stop-popup .leaflet-popup-content {
+  width: auto !important;
+  margin: 0;
+  line-height: var(--line-height-base);
+}
+
+.app-map-stop-popup .leaflet-popup-tip {
+  background: var(--color-surface);
+  box-shadow: none;
+}
+
+.app-map-stop-popup .leaflet-popup-close-button {
+  top: var(--space-sm);
+  right: var(--space-sm);
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border-radius: var(--radius-full);
+  color: var(--color-text-muted);
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.app-map-stop-popup .leaflet-popup-close-button:hover,
+.app-map-stop-popup .leaflet-popup-close-button:focus-visible {
+  background: var(--color-surface-muted);
+  color: var(--color-text-strong);
+}
+
+.app-map-stop-popup .leaflet-popup-close-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.app-map-stop-popup__content {
+  display: grid;
+  gap: var(--space-lg);
+  min-width: min(16rem, calc(100vw - var(--space-3xl)));
+  padding: var(--space-lg);
+  padding-right: var(--space-2xl);
+  font-family: var(--font-family-base);
+}
+
+.app-map-stop-popup__header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-sm);
+  align-items: start;
+}
+
+.app-map-stop-popup__icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  background: var(--color-success-soft);
+  color: var(--color-success);
+  font-size: 1.35rem;
+}
+
+.app-map-stop-popup__identity {
+  display: grid;
+  gap: var(--space-xs);
+  min-width: 0;
+}
+
+.app-map-stop-popup__title {
+  padding-right: var(--space-md);
+  color: var(--color-text-strong);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-snug);
+}
+
+.app-map-stop-popup__meta {
+  display: flex;
+  gap: var(--space-xs);
+  align-items: center;
+  flex-wrap: wrap;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.app-map-stop-popup__code {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  padding: var(--space-3xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  background: var(--color-success-soft);
+  color: var(--color-success);
+  font-weight: var(--font-weight-semibold);
+}
+
+.app-map-stop-popup__municipality {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.app-map-stop-popup__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  width: 100%;
+  padding: var(--space-sm) var(--space-lg);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font: inherit;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.app-map-stop-popup__action:hover {
+  background: var(--color-primary-strong);
+}
+
+.app-map-stop-popup__action:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+.app-map-stop-popup__action:active {
+  transform: translateY(1px);
+}
+
+.app-map-route-direction.leaflet-div-icon {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.app-map-route-direction__glyph {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--color-surface);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-midnight);
+  color: var(--color-primary-contrast);
+  box-shadow: var(--shadow-sm);
+  font-size: 1rem;
+  font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 20;
+  transform-origin: center;
+}
+
+.app-map-route-direction--active .app-map-route-direction__glyph {
+  width: 1.7rem;
+  height: 1.7rem;
+  background: var(--color-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-map-stop-popup__action {
+    transition: none;
+  }
+}

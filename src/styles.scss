@@ -2,6 +2,7 @@
 @use 'styles/components';
 @use 'styles/layout';
 @use 'styles/async-feedback';
+@use 'styles/map';
 
 @import 'styles/theme-rules.css';
 @include mat.core();
