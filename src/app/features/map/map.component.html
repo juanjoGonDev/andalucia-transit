@@ -33,6 +33,14 @@
           </button>
         </div>
       </header>
+
+      <div class="map__search-row">
+        <app-map-search
+          [targets]="searchTargets()"
+          (targetSelected)="selectSearchTarget($event)"
+        ></app-map-search>
+      </div>
+
       <div class="map__content">
         <div
           class="map__canvas"
@@ -42,7 +50,7 @@
             #mapCanvas
             class="map__leaflet"
             role="region"
-            [attr.aria-label]="translationKeys.description | translate"
+            [attr.aria-label]="translationKeys.accessibleMapLabel | translate"
           ></div>
           <div
             *ngIf="isLocating() || isLoadingNetworkStops()"
@@ -54,6 +62,7 @@
             <span *ngIf="isLocating()">{{ translationKeys.locating | translate }}</span>
           </div>
         </div>
+
         <aside
           class="map__panel"
           [attr.aria-busy]="isLocating() || isRouteLoading() ? 'true' : null"
@@ -95,14 +104,22 @@
             {{ translationKeys.empty | translate }}
           </p>
           <ul *ngIf="hasStops()" class="map__stop-list app-async-reveal">
-            <li *ngFor="let stop of stops(); trackBy: trackStop" class="map__stop-item">
+            <li
+              *ngFor="let stop of stops(); trackBy: trackStop"
+              class="map__stop-item"
+              (mouseenter)="setStopHighlight(stop.id)"
+              (mouseleave)="setStopHighlight(null)"
+              (focusin)="setStopHighlight(stop.id)"
+              (focusout)="setStopHighlight(null)"
+            >
               <app-interactive-card
                 [bodyClasses]="stopCardBodyClasses"
-                [primaryCommands]="stop.commands"
+                [primaryRole]="stopCardRole"
                 [primaryAriaLabel]="
                   translationKeys.stopAriaLabel |
                     translate: { code: stop.code, municipality: stop.municipality }
                 "
+                (primaryActivated)="openNearbyStop(stop)"
               >
                 <div class="map-stop">
                   <div class="map-stop__header">
@@ -120,6 +137,7 @@
               </app-interactive-card>
             </li>
           </ul>
+
           <section class="map__routes" [attr.aria-busy]="isRouteLoading() ? 'true' : null">
             <header class="map__routes-header">
               <h3 class="map__routes-title">{{ translationKeys.routes.title | translate }}</h3>

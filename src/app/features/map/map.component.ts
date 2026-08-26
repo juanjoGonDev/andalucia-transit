@@ -16,7 +16,6 @@ import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom, map, startWith } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
-import { createPluralRules } from '@core/i18n/pluralization';
 import { PluralizationService } from '@core/i18n/pluralization.service';
 import { classifyGeolocationError } from '@core/services/geolocation-error.util';
 import { GEOLOCATION_REQUEST_OPTIONS } from '@core/services/geolocation-request.options';
@@ -26,6 +25,7 @@ import {
   NearbyStopResult,
   NearbyStopsService
 } from '@core/services/nearby-stops.service';
+import { buildStopIdentity } from '@core/services/stop-identity.util';
 import { StopDirectoryService } from '@data/stops/stop-directory.service';
 import {
   RouteOverlayFacade,
@@ -36,18 +36,26 @@ import {
 } from '@domain/map/route-overlay.facade';
 import { buildDistanceDisplay } from '@domain/utils/distance-display.util';
 import { GeoCoordinate } from '@domain/utils/geo-distance.util';
+import { MapSearchComponent } from '@features/map/map-search.component';
+import {
+  MapSearchTarget,
+  buildMapSearchTargets
+} from '@features/map/map-search.util';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import {
   LeafletMapService,
   MapHandle,
   MapRoutePolyline,
+  MapStopInteractionOptions,
   MapStopMarker
 } from '@shared/map/leaflet-map.service';
 import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/interactive-card.component';
 
 interface MapStopView {
   readonly id: string;
+  readonly consortiumId: number;
+  readonly stopId: string;
   readonly name: string;
   readonly code: string;
   readonly municipality: string;
@@ -56,7 +64,6 @@ interface MapStopView {
   readonly distanceTranslationKey: string;
   readonly distanceValue: string;
   readonly distanceInMeters: number;
-  readonly commands: readonly string[];
 }
 
 interface MapRouteView {
@@ -69,10 +76,17 @@ interface MapRouteView {
   readonly distanceValue: string;
 }
 
+interface StopNavigationTarget {
+  readonly consortiumId: number;
+  readonly stopId: string;
+}
+
 const DEFAULT_CENTER: GeoCoordinate = Object.freeze({ latitude: 37.389092, longitude: -5.984459 });
 const DEFAULT_ZOOM = 7;
 const MAP_MIN_ZOOM = 6;
 const MAP_MAX_ZOOM = 17;
+const MAP_SEARCH_STOP_ZOOM = 15;
+const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)' as const;
 const ROOT_ROUTE_SEGMENT = '/' as const;
 const STOP_CARD_BODY_CLASSES: readonly string[] = ['map__stop-card-body'];
 const ROUTE_CARD_BODY_CLASSES: readonly string[] = ['map__route-card-body'];
@@ -80,6 +94,7 @@ const ROUTE_CARD_ACTIVE_BODY_CLASSES: readonly string[] = [
   'map__route-card-body',
   'map__route-card-body--active'
 ];
+const LINK_ROLE = 'link' as const;
 const ROUTE_CARD_ROLE = 'button' as const;
 const EMPTY_STRING = '' as const;
 
@@ -91,6 +106,7 @@ const EMPTY_STRING = '' as const;
     TranslateModule,
     AccessibleButtonDirective,
     AppLayoutContentDirective,
+    MapSearchComponent,
     InteractiveCardComponent
   ],
   templateUrl: './map.component.html',
@@ -111,13 +127,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly translate = inject(TranslateService);
   private readonly pluralization = inject(PluralizationService);
 
-  private readonly stopCountPluralRules = signal(
-    createPluralRules(this.resolveLanguage(this.translate.currentLang))
-  );
-
   private mapHandle: MapHandle | null = null;
   private userCoordinate: GeoCoordinate | null = null;
   private networkStopMarkers: readonly MapStopMarker[] = Object.freeze([]);
+  private stopNavigationIndex = new Map<string, StopNavigationTarget>();
   private isDestroyed = false;
   private currentSelectionKey: string | null = null;
   private hasFittedRoutes = false;
@@ -139,6 +152,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly routeAnnouncementErrorKey =
     APP_CONFIG.translationKeys.map.routes.announcements.error;
   private readonly stopDetailRouteKey = APP_CONFIG.routes.stopDetailBase;
+
+  private readonly stopMarkerInteractions: MapStopInteractionOptions = {
+    getDetailsLabel: () => this.translate.instant(APP_CONFIG.translationKeys.navigation.stopDetail),
+    onDetails: (markerId) => this.openMarkerDetails(markerId)
+  };
 
   private readonly language = toSignal(
     this.translate.onLangChange.pipe(
@@ -163,9 +181,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected readonly translationKeys = this.translations;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.map;
   protected readonly stopCardBodyClasses = STOP_CARD_BODY_CLASSES;
+  protected readonly stopCardRole = LINK_ROLE;
   protected readonly routeCardRole = ROUTE_CARD_ROLE;
 
   protected readonly stops = signal<readonly MapStopView[]>([]);
+  protected readonly searchTargets = signal<readonly MapSearchTarget[]>(Object.freeze([]));
   protected readonly isLoadingNetworkStops = signal(false);
   protected readonly isLocating = signal(false);
   protected readonly hasAttemptedLocation = signal(false);
@@ -223,14 +243,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     () => this.routeStatus() === 'ready' && this.routes().length > 0
   );
 
-  private resolveLanguage(language: string | undefined): string {
-    if (language) {
-      return language;
-    }
-
-    return this.translate.defaultLang ?? APP_CONFIG.locales.default;
-  }
-
   async ngAfterViewInit(): Promise<void> {
     if (!this.isRunningInBrowser()) {
       return;
@@ -285,7 +297,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
       const coordinate = this.toCoordinate(position);
       this.userCoordinate = coordinate;
-
       this.mapHandle?.renderUserLocation(coordinate);
 
       const results = await this.nearbyStops.findClosestStops(coordinate);
@@ -308,11 +319,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.renderNearbyFallbackIfNeeded(stops);
 
       const nearbyCoordinates = stops.map((stop) => stop.coordinate);
+      const animate = this.shouldAnimateMapMovement();
 
       if (nearbyCoordinates.length) {
-        this.mapHandle?.fitToCoordinates(this.buildFocusPoints(nearbyCoordinates, coordinate));
+        this.mapHandle?.fitToCoordinates(this.buildFocusPoints(nearbyCoordinates, coordinate), animate);
       } else {
-        this.mapHandle?.fitToCoordinates([coordinate]);
+        this.mapHandle?.fitToCoordinates([coordinate], animate);
       }
     } catch (error) {
       if (this.isDestroyed) {
@@ -327,6 +339,29 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.hasAttemptedLocation.set(true);
       }
     }
+  }
+
+  protected selectSearchTarget(target: MapSearchTarget): void {
+    if (!this.mapHandle) {
+      return;
+    }
+
+    const animate = this.shouldAnimateMapMovement();
+
+    if (target.kind === 'stop') {
+      this.mapHandle.focusStop(target.id, MAP_SEARCH_STOP_ZOOM, animate);
+      return;
+    }
+
+    this.mapHandle.fitToCoordinates(target.coordinates, animate);
+  }
+
+  protected setStopHighlight(stopId: string | null): void {
+    this.mapHandle?.highlightStop(stopId);
+  }
+
+  protected openNearbyStop(stop: MapStopView): void {
+    void this.navigateToStop(stop.consortiumId, stop.stopId);
   }
 
   protected routeCardBodyClasses(routeId: string): readonly string[] {
@@ -349,7 +384,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     const selectedRoute = this.routes().find((route) => route.id === routeId);
 
     if (selectedRoute && selectedRoute.coordinates.length > 0) {
-      this.mapHandle?.fitToCoordinates(selectedRoute.coordinates);
+      this.mapHandle?.fitToCoordinates(
+        selectedRoute.coordinates,
+        this.shouldAnimateMapMovement()
+      );
       this.announceRouteSelected(selectedRoute);
     }
   }
@@ -373,14 +411,20 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       }
 
       const markers = this.buildNetworkMarkers(records);
+      const coordinates = markers.map((marker) => marker.coordinate);
       this.networkStopMarkers = markers;
-      this.mapHandle.renderStops(markers, this.handleStopMarkerSelect);
+      this.stopNavigationIndex = this.buildStopNavigationIndex(records);
+      this.searchTargets.set(buildMapSearchTargets(records));
+      this.mapHandle.renderStops(markers, this.stopMarkerInteractions);
+      this.mapHandle.restrictToCoordinates(coordinates);
 
       if (markers.length && !this.userCoordinate && !this.hasRouteSelection()) {
-        this.mapHandle.fitToCoordinates(markers.map((marker) => marker.coordinate));
+        this.mapHandle.fitToCoordinates(coordinates);
       }
     } catch {
       this.networkStopMarkers = Object.freeze([]);
+      this.stopNavigationIndex.clear();
+      this.searchTargets.set(Object.freeze([]));
     } finally {
       if (!this.isDestroyed) {
         this.isLoadingNetworkStops.set(false);
@@ -391,12 +435,24 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private buildNetworkMarkers(records: readonly NearbyStopRecord[]): readonly MapStopMarker[] {
     return Object.freeze(
       records.map((record) => ({
-        id: record.stopId,
+        id: buildStopIdentity(record.consortiumId, record.stopId),
+        name: record.name,
         coordinate: {
           latitude: record.latitude,
           longitude: record.longitude
         }
       }))
+    );
+  }
+
+  private buildStopNavigationIndex(
+    records: readonly NearbyStopRecord[]
+  ): Map<string, StopNavigationTarget> {
+    return new Map(
+      records.map((record) => [
+        buildStopIdentity(record.consortiumId, record.stopId),
+        { consortiumId: record.consortiumId, stopId: record.stopId }
+      ] as const)
     );
   }
 
@@ -406,14 +462,39 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     const fallbackMarkers = Object.freeze(
-      stops.map((stop) => ({ id: stop.id, coordinate: stop.coordinate }))
+      stops.map((stop) => ({
+        id: stop.id,
+        name: stop.name,
+        coordinate: stop.coordinate
+      }))
     );
-    this.mapHandle.renderStops(fallbackMarkers, this.handleStopMarkerSelect);
+
+    for (const stop of stops) {
+      this.stopNavigationIndex.set(stop.id, {
+        consortiumId: stop.consortiumId,
+        stopId: stop.stopId
+      });
+    }
+
+    this.mapHandle.renderStops(fallbackMarkers, this.stopMarkerInteractions);
   }
 
-  private readonly handleStopMarkerSelect = (stopId: string): void => {
-    void this.router.navigate([ROOT_ROUTE_SEGMENT, this.stopDetailRouteKey, stopId]);
-  };
+  private openMarkerDetails(markerId: string): void {
+    const target = this.stopNavigationIndex.get(markerId);
+
+    if (!target) {
+      return;
+    }
+
+    void this.navigateToStop(target.consortiumId, target.stopId);
+  }
+
+  private navigateToStop(consortiumId: number, stopId: string): Promise<boolean> {
+    return this.router.navigate(
+      [ROOT_ROUTE_SEGMENT, this.stopDetailRouteKey, stopId],
+      { queryParams: { consortiumId: String(consortiumId) } }
+    );
+  }
 
   private async loadStops(
     results: readonly NearbyStopResult[]
@@ -432,7 +513,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private async buildStopView(result: NearbyStopResult): Promise<MapStopView | null> {
     try {
-      const record = await firstValueFrom(this.stopDirectory.getStopById(result.id));
+      const record = await firstValueFrom(
+        this.stopDirectory.getStopBySignature(result.consortiumId, result.id)
+      );
 
       if (!record) {
         return null;
@@ -441,7 +524,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       const distance = buildDistanceDisplay(result.distanceInMeters, this.distanceTranslations);
 
       return {
-        id: record.stopId,
+        id: buildStopIdentity(record.consortiumId, record.stopId),
+        consortiumId: record.consortiumId,
+        stopId: record.stopId,
         name: record.name,
         code: record.stopCode,
         municipality: record.municipality,
@@ -452,16 +537,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         },
         distanceTranslationKey: distance.translationKey,
         distanceValue: distance.value,
-        distanceInMeters: result.distanceInMeters,
-        commands: this.buildCommands(record.stopId)
+        distanceInMeters: result.distanceInMeters
       } satisfies MapStopView;
     } catch {
       return null;
     }
-  }
-
-  private buildCommands(stopId: string): readonly string[] {
-    return [ROOT_ROUTE_SEGMENT, this.stopDetailRouteKey, stopId] as const;
   }
 
   private buildFocusPoints(
@@ -646,6 +726,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  private resolveLanguage(language: string | undefined): string {
+    if (language) {
+      return language;
+    }
+
+    return this.translate.defaultLang ?? APP_CONFIG.locales.default;
+  }
+
+  private shouldAnimateMapMovement(): boolean {
+    if (!this.isRunningInBrowser() || typeof window.matchMedia !== 'function') {
+      return false;
+    }
+
+    return !window.matchMedia(REDUCED_MOTION_QUERY).matches;
+  }
+
   private toCoordinate(position: GeolocationPosition): GeoCoordinate {
     return {
       latitude: position.coords.latitude,
@@ -658,12 +754,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   constructor() {
-    this.translate.onLangChange
-      .pipe(takeUntilDestroyed())
-      .subscribe(({ lang }) => {
-        this.stopCountPluralRules.set(createPluralRules(this.resolveLanguage(lang)));
-      });
-
     this.overlayFacade
       .watchOverlay()
       .pipe(takeUntilDestroyed())
