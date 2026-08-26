@@ -9,10 +9,10 @@ import {
   Polyline,
   PolylineOptions,
   circleMarker,
-  map as createMap,
   divIcon,
   latLngBounds,
   layerGroup,
+  map as createMap,
   marker,
   polyline,
   tileLayer
@@ -36,6 +36,7 @@ export interface MapStopMarker {
 }
 
 export type MapStopSelectHandler = (stopId: string) => void;
+export type MapViewportSettledHandler = (center: GeoCoordinate) => void;
 
 export interface MapStopInteractionOptions {
   readonly getDetailsLabel: () => string;
@@ -54,6 +55,7 @@ export interface MapHandle {
   highlightStop(stopId: string | null): void;
   focusStop(stopId: string, zoom: number, animate?: boolean): boolean;
   renderRoutes(routes: readonly MapRoutePolyline[], activeRouteId: string | null): void;
+  onViewportSettled(handler: MapViewportSettledHandler): () => void;
   invalidateSize(): void;
   destroy(): void;
 }
@@ -317,6 +319,19 @@ export class LeafletMapService {
           this.renderRouteDirections(routeDirectionLayer, route, isActive);
         }
       },
+      onViewportSettled: (handler) => {
+        const notify = (): void => {
+          const center = map.getCenter();
+          handler({ latitude: center.lat, longitude: center.lng });
+        };
+
+        map.on('moveend', notify);
+        notify();
+
+        return () => {
+          map.off('moveend', notify);
+        };
+      },
       invalidateSize: () => {
         map.invalidateSize();
       },
@@ -439,11 +454,11 @@ export class LeafletMapService {
   }
 
   private buildBounds(points: readonly GeoCoordinate[]): LatLngBounds {
-    const first = points[0];
+    const first = points[0]!;
     let bounds = latLngBounds(this.toLatLng(first), this.toLatLng(first));
 
     for (let index = 1; index < points.length; index += 1) {
-      const point = points[index];
+      const point = points[index]!;
       bounds = bounds.extend(this.toLatLng(point));
     }
 

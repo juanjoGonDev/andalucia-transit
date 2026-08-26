@@ -77,11 +77,106 @@
       id="map-results"
       class="map__panel"
       tabindex="-1"
-      [attr.aria-busy]="isLocating() || isRouteLoading() ? 'true' : null"
+      [attr.aria-busy]="
+        isLocating() || isRouteLoading() || isFocusedLinesLoading() || isFocusedLinePreviewLoading()
+          ? 'true'
+          : null
+      "
     >
       <div class="map__panel-handle" aria-hidden="true"></div>
 
-      <section class="map__nearby">
+      <section
+        class="map__nearby map__focused-lines"
+        [attr.aria-busy]="isFocusedLinesLoading() ? 'true' : null"
+      >
+        <div class="map__section-heading">
+          <span class="map__section-icon material-symbols-outlined" aria-hidden="true">route</span>
+          <h2 class="map__panel-title">{{ focusedLineTranslationKeys.title | translate }}</h2>
+        </div>
+        <div
+          *ngIf="isFocusedLinesLoading()"
+          class="app-async-status app-async-status--compact map__panel-loading"
+          role="status"
+          aria-live="polite"
+        >
+          <span class="app-loading-indicator" aria-hidden="true"></span>
+          <span>{{ focusedLineTranslationKeys.loading | translate }}</span>
+        </div>
+        <div
+          *ngIf="focusedLinesErrorKey()"
+          class="app-async-status app-async-status--error map__panel-error"
+          role="alert"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">sync_problem</span>
+          <div class="app-async-status__body">
+            <p class="app-async-status__description">{{ focusedLinesErrorKey() | translate }}</p>
+            <div class="app-async-status__actions">
+              <button
+                type="button"
+                class="app-outline-button app-outline-button--compact"
+                appAccessibleButton
+                (click)="retryFocusedLines()"
+              >
+                {{ focusedLineTranslationKeys.retry | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <p
+          *ngIf="focusedLinesStatus() === 'ready' && !hasFocusedLines()"
+          class="map__panel-message"
+        >
+          {{ focusedLineTranslationKeys.empty | translate }}
+        </p>
+        <ul *ngIf="hasFocusedLines()" class="map__route-list app-async-reveal">
+          <li
+            *ngFor="let line of focusedLines(); trackBy: trackFocusedLine"
+            class="map__route-item"
+          >
+            <app-interactive-card
+              [bodyClasses]="focusedLineCardBodyClasses(line.lineId)"
+              [primaryRole]="routeCardRole"
+              [primaryAriaLabel]="
+                focusedLineTranslationKeys.cardAria
+                  | translate: { code: line.code, name: line.name }
+              "
+              [primaryPressed]="activeFocusedLineId() === line.lineId"
+              (primaryActivated)="toggleFocusedLine(line.lineId)"
+            >
+              <div class="map-route">
+                <div class="map-route__header">
+                  <span class="map-route__code">{{ line.code }}</span>
+                  <span *ngIf="line.mode" class="map-route__stops">{{ line.mode }}</span>
+                </div>
+                <div class="map-route__destination">{{ line.name }}</div>
+              </div>
+            </app-interactive-card>
+          </li>
+        </ul>
+        <div
+          *ngIf="isFocusedLinePreviewLoading()"
+          class="app-async-status app-async-status--compact map__routes-loading"
+          role="status"
+          aria-live="polite"
+        >
+          <span class="app-loading-indicator" aria-hidden="true"></span>
+          <span>{{ focusedLineTranslationKeys.previewLoading | translate }}</span>
+        </div>
+        <div
+          *ngIf="focusedLinePreviewErrorKey()"
+          class="app-async-status app-async-status--error map__routes-error"
+          role="alert"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">route</span>
+          <div class="app-async-status__body">
+            <p class="app-async-status__description">
+              {{ focusedLinePreviewErrorKey() | translate }}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="map__nearby map__routes">
         <div class="map__section-heading">
           <span class="map__section-icon material-symbols-outlined" aria-hidden="true"
             >location_on</span
@@ -167,9 +262,7 @@
       <section class="map__routes" [attr.aria-busy]="isRouteLoading() ? 'true' : null">
         <header class="map__routes-header">
           <div class="map__section-heading">
-            <span class="map__section-icon material-symbols-outlined" aria-hidden="true"
-              >route</span
-            >
+            <span class="map__section-icon material-symbols-outlined" aria-hidden="true">route</span>
             <h3 class="map__routes-title">{{ translationKeys.routes.title | translate }}</h3>
           </div>
           <button

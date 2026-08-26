@@ -298,6 +298,16 @@
     "accessibleMapLabel": "Mapa de Andalucía con paradas cercanas",
     "empty": "No encontramos paradas en tu área.",
     "stopAriaLabel": "Abrir la parada {code} en {municipality}",
+    "focusedLines": {
+      "title": "Líneas en esta zona",
+      "loading": "Buscando líneas alrededor del área visible…",
+      "empty": "No encontramos líneas próximas al área que estás viendo.",
+      "error": "No pudimos cargar las líneas de esta zona. Conservamos el mapa para que puedas intentarlo de nuevo.",
+      "retry": "Intentar de nuevo",
+      "cardAria": "Mostrar la línea {code}, {name}, en el mapa",
+      "previewLoading": "Cargando el recorrido oficial de la línea…",
+      "previewError": "No pudimos mostrar el recorrido oficial de esta línea. Selecciona otra línea o inténtalo de nuevo."
+    },
     "routes": {
       "title": "Líneas",
       "refresh": "Actualizar rutas",

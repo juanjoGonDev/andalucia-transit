@@ -14,7 +14,17 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { firstValueFrom, map, startWith } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  catchError,
+  debounceTime,
+  firstValueFrom,
+  map,
+  of,
+  startWith,
+  switchMap
+} from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { PluralizationService } from '@core/i18n/pluralization.service';
 import { classifyGeolocationError } from '@core/services/geolocation-error.util';
@@ -26,6 +36,10 @@ import {
   NearbyStopsService
 } from '@core/services/nearby-stops.service';
 import { buildStopIdentity } from '@core/services/stop-identity.util';
+import {
+  RouteLineSummary,
+  RouteLinesApiService
+} from '@data/route-search/route-lines-api.service';
 import { StopDirectoryService } from '@data/stops/stop-directory.service';
 import {
   RouteOverlayFacade,
@@ -35,12 +49,9 @@ import {
   RouteOverlayStatus
 } from '@domain/map/route-overlay.facade';
 import { buildDistanceDisplay } from '@domain/utils/distance-display.util';
-import { GeoCoordinate } from '@domain/utils/geo-distance.util';
+import { GeoCoordinate, calculateDistanceInMeters } from '@domain/utils/geo-distance.util';
 import { MapSearchComponent } from '@features/map/map-search.component';
-import {
-  MapSearchTarget,
-  buildMapSearchTargets
-} from '@features/map/map-search.util';
+import { MapSearchTarget, buildMapSearchTargets } from '@features/map/map-search.util';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import {
@@ -81,11 +92,41 @@ interface StopNavigationTarget {
   readonly stopId: string;
 }
 
+type FocusedLinesStatus = 'idle' | 'loading' | 'ready' | 'error';
+type FocusedLinePreviewStatus = 'idle' | 'loading' | 'ready' | 'error';
+
+interface FocusedLinesLoadState {
+  readonly status: FocusedLinesStatus;
+  readonly consortiumId: number | null;
+  readonly lines: readonly RouteLineSummary[];
+  readonly errorKey: string | null;
+}
+
+interface FocusedLinePreviewRequest {
+  readonly consortiumId: number;
+  readonly lineId: string;
+}
+
+interface FocusedLinePreviewState {
+  readonly status: FocusedLinePreviewStatus;
+  readonly lineId: string | null;
+  readonly coordinates: readonly GeoCoordinate[];
+  readonly errorKey: string | null;
+}
+
+interface FocusedLinePreview {
+  readonly id: string;
+  readonly lineId: string;
+  readonly coordinates: readonly GeoCoordinate[];
+}
+
 const DEFAULT_CENTER: GeoCoordinate = Object.freeze({ latitude: 37.389092, longitude: -5.984459 });
 const DEFAULT_ZOOM = 7;
 const MAP_MIN_ZOOM = 6;
 const MAP_MAX_ZOOM = 17;
 const MAP_SEARCH_STOP_ZOOM = 15;
+const FOCUSED_LINES_DEBOUNCE_MS = 250;
+const FOCUSED_LINE_ROUTE_PREFIX = 'focused-line:' as const;
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)' as const;
 const ROOT_ROUTE_SEGMENT = '/' as const;
 const STOP_CARD_BODY_CLASSES: readonly string[] = ['map__stop-card-body'];
@@ -97,6 +138,16 @@ const ROUTE_CARD_ACTIVE_BODY_CLASSES: readonly string[] = [
 const LINK_ROLE = 'link' as const;
 const ROUTE_CARD_ROLE = 'button' as const;
 const EMPTY_STRING = '' as const;
+const FOCUSED_LINE_TRANSLATION_KEYS = {
+  title: 'map.focusedLines.title',
+  loading: 'map.focusedLines.loading',
+  empty: 'map.focusedLines.empty',
+  error: 'map.focusedLines.error',
+  retry: 'map.focusedLines.retry',
+  cardAria: 'map.focusedLines.cardAria',
+  previewLoading: 'map.focusedLines.previewLoading',
+  previewError: 'map.focusedLines.previewError'
+} as const;
 
 @Component({
   selector: 'app-map',
@@ -121,6 +172,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly geolocation = inject(GeolocationService);
   private readonly nearbyStops = inject(NearbyStopsService);
   private readonly stopDirectory = inject(StopDirectoryService);
+  private readonly routeLines = inject(RouteLinesApiService);
   private readonly router = inject(Router);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly overlayFacade = inject(RouteOverlayFacade);
@@ -128,29 +180,29 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly pluralization = inject(PluralizationService);
 
   private mapHandle: MapHandle | null = null;
+  private removeViewportListener: (() => void) | null = null;
   private userCoordinate: GeoCoordinate | null = null;
   private networkStopMarkers: readonly MapStopMarker[] = Object.freeze([]);
+  private networkStopRecords: readonly NearbyStopRecord[] = Object.freeze([]);
   private stopNavigationIndex = new Map<string, StopNavigationTarget>();
   private isDestroyed = false;
   private currentSelectionKey: string | null = null;
   private hasFittedRoutes = false;
+  private latestViewportCenter: GeoCoordinate | null = null;
+
+  private readonly focusedViewportSubject = new Subject<GeoCoordinate>();
+  private readonly focusedLinePreviewSubject = new Subject<FocusedLinePreviewRequest>();
 
   private readonly translations = APP_CONFIG.translationKeys.map;
   private readonly distanceTranslations = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
   private readonly routeDistanceTranslations = APP_CONFIG.translationKeys.map.routes.distance;
   private readonly routeStopCountTranslations = APP_CONFIG.translationKeys.map.routes.stopCount;
-  private readonly routeAnnouncementSelectedKey =
-    APP_CONFIG.translationKeys.map.routes.announcements.selected;
-  private readonly routeAnnouncementClearedKey =
-    APP_CONFIG.translationKeys.map.routes.announcements.cleared;
-  private readonly routeAnnouncementLoadingKey =
-    APP_CONFIG.translationKeys.map.routes.announcements.loading;
-  private readonly routeAnnouncementLoadedTranslations =
-    APP_CONFIG.translationKeys.map.routes.announcements.loaded;
-  private readonly routeAnnouncementEmptyKey =
-    APP_CONFIG.translationKeys.map.routes.announcements.empty;
-  private readonly routeAnnouncementErrorKey =
-    APP_CONFIG.translationKeys.map.routes.announcements.error;
+  private readonly routeAnnouncementSelectedKey = APP_CONFIG.translationKeys.map.routes.announcements.selected;
+  private readonly routeAnnouncementClearedKey = APP_CONFIG.translationKeys.map.routes.announcements.cleared;
+  private readonly routeAnnouncementLoadingKey = APP_CONFIG.translationKeys.map.routes.announcements.loading;
+  private readonly routeAnnouncementLoadedTranslations = APP_CONFIG.translationKeys.map.routes.announcements.loaded;
+  private readonly routeAnnouncementEmptyKey = APP_CONFIG.translationKeys.map.routes.announcements.empty;
+  private readonly routeAnnouncementErrorKey = APP_CONFIG.translationKeys.map.routes.announcements.error;
   private readonly stopDetailRouteKey = APP_CONFIG.routes.stopDetailBase;
 
   private readonly stopMarkerInteractions: MapStopInteractionOptions = {
@@ -179,6 +231,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   );
 
   protected readonly translationKeys = this.translations;
+  protected readonly focusedLineTranslationKeys = FOCUSED_LINE_TRANSLATION_KEYS;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.map;
   protected readonly stopCardBodyClasses = STOP_CARD_BODY_CLASSES;
   protected readonly stopCardRole = LINK_ROLE;
@@ -218,6 +271,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   });
   protected readonly activeRouteId = signal<string | null>(null);
   protected readonly routeSelectionSummary = signal<RouteOverlaySelectionSummary | null>(null);
+  protected readonly focusedLinesStatus = signal<FocusedLinesStatus>('idle');
+  protected readonly focusedLines = signal<readonly RouteLineSummary[]>(Object.freeze([]));
+  protected readonly focusedLinesErrorKey = signal<string | null>(null);
+  protected readonly focusedConsortiumId = signal<number | null>(null);
+  protected readonly activeFocusedLineId = signal<string | null>(null);
+  protected readonly focusedLinePreviewStatus = signal<FocusedLinePreviewStatus>('idle');
+  protected readonly focusedLinePreviewErrorKey = signal<string | null>(null);
+  private readonly focusedLinePreview = signal<FocusedLinePreview | null>(null);
 
   private lastRouteStatus: RouteOverlayStatus | null = null;
   private lastRouteCount = -1;
@@ -226,11 +287,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   protected readonly hasStops = computed(() => this.stops().length > 0);
   protected readonly showEmptyState = computed(
-    () =>
-      this.hasAttemptedLocation() &&
-      !this.isLocating() &&
-      !this.errorKey() &&
-      !this.hasStops()
+    () => this.hasAttemptedLocation() && !this.isLocating() && !this.errorKey() && !this.hasStops()
   );
   protected readonly showPrompt = computed(
     () => !this.hasAttemptedLocation() && !this.errorKey() && !this.isLocating()
@@ -241,6 +298,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected readonly isRouteLoading = computed(() => this.routeStatus() === 'loading');
   protected readonly hasRouteResults = computed(
     () => this.routeStatus() === 'ready' && this.routes().length > 0
+  );
+  protected readonly isFocusedLinesLoading = computed(() => this.focusedLinesStatus() === 'loading');
+  protected readonly hasFocusedLines = computed(
+    () => this.focusedLinesStatus() === 'ready' && this.focusedLines().length > 0
+  );
+  protected readonly isFocusedLinePreviewLoading = computed(
+    () => this.focusedLinePreviewStatus() === 'loading'
   );
 
   async ngAfterViewInit(): Promise<void> {
@@ -260,6 +324,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       minZoom: MAP_MIN_ZOOM,
       maxZoom: MAP_MAX_ZOOM
     });
+    this.removeViewportListener = this.mapHandle.onViewportSettled((center) =>
+      this.handleViewportSettled(center)
+    );
 
     await this.invalidateMapSize();
     this.updateMapRoutes();
@@ -268,6 +335,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.isDestroyed = true;
+    this.removeViewportListener?.();
+    this.removeViewportListener = null;
     this.mapHandle?.destroy();
     this.mapHandle = null;
   }
@@ -278,6 +347,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   protected trackRoute(_: number, route: MapRouteView): string {
     return route.id;
+  }
+
+  protected trackFocusedLine(_: number, line: RouteLineSummary): string {
+    return line.lineId;
   }
 
   protected async locate(): Promise<void> {
@@ -365,7 +438,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   protected routeCardBodyClasses(routeId: string): readonly string[] {
-    return this.activeRouteId() === routeId
+    return this.activeRouteId() === routeId ? ROUTE_CARD_ACTIVE_BODY_CLASSES : ROUTE_CARD_BODY_CLASSES;
+  }
+
+  protected focusedLineCardBodyClasses(lineId: string): readonly string[] {
+    return this.activeFocusedLineId() === lineId
       ? ROUTE_CARD_ACTIVE_BODY_CLASSES
       : ROUTE_CARD_BODY_CLASSES;
   }
@@ -378,22 +455,48 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
+    this.clearFocusedLinePreview();
     this.activeRouteId.set(routeId);
     this.updateMapRoutes();
 
     const selectedRoute = this.routes().find((route) => route.id === routeId);
 
     if (selectedRoute && selectedRoute.coordinates.length > 0) {
-      this.mapHandle?.fitToCoordinates(
-        selectedRoute.coordinates,
-        this.shouldAnimateMapMovement()
-      );
+      this.mapHandle?.fitToCoordinates(selectedRoute.coordinates, this.shouldAnimateMapMovement());
       this.announceRouteSelected(selectedRoute);
     }
   }
 
+  protected toggleFocusedLine(lineId: string): void {
+    if (this.activeFocusedLineId() === lineId) {
+      this.clearFocusedLinePreview();
+      return;
+    }
+
+    const consortiumId = this.focusedConsortiumId();
+
+    if (consortiumId === null) {
+      return;
+    }
+
+    if (this.activeRouteId() !== null) {
+      this.activeRouteId.set(null);
+      this.announceRouteCleared();
+    }
+
+    this.activeFocusedLineId.set(lineId);
+    this.focusedLinePreviewErrorKey.set(null);
+    this.focusedLinePreviewSubject.next({ consortiumId, lineId });
+  }
+
   protected refreshRoutes(): void {
     this.overlayFacade.refresh();
+  }
+
+  protected retryFocusedLines(): void {
+    if (this.latestViewportCenter && this.networkStopRecords.length) {
+      this.focusedViewportSubject.next(this.latestViewportCenter);
+    }
   }
 
   private async loadNetworkStops(): Promise<void> {
@@ -412,16 +515,22 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
       const markers = this.buildNetworkMarkers(records);
       const coordinates = markers.map((marker) => marker.coordinate);
+      this.networkStopRecords = Object.freeze([...records]);
       this.networkStopMarkers = markers;
       this.stopNavigationIndex = this.buildStopNavigationIndex(records);
       this.searchTargets.set(buildMapSearchTargets(records));
       this.mapHandle.renderStops(markers, this.stopMarkerInteractions);
       this.mapHandle.restrictToCoordinates(coordinates);
 
+      if (this.latestViewportCenter) {
+        this.focusedViewportSubject.next(this.latestViewportCenter);
+      }
+
       if (markers.length && !this.userCoordinate && !this.hasRouteSelection()) {
         this.mapHandle.fitToCoordinates(coordinates);
       }
     } catch {
+      this.networkStopRecords = Object.freeze([]);
       this.networkStopMarkers = Object.freeze([]);
       this.stopNavigationIndex.clear();
       this.searchTargets.set(Object.freeze([]));
@@ -494,15 +603,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   private navigateToStop(consortiumId: number, stopId: string): Promise<boolean> {
-    return this.router.navigate(
-      [ROOT_ROUTE_SEGMENT, this.stopDetailRouteKey, stopId],
-      { queryParams: { consortiumId: String(consortiumId) } }
-    );
+    return this.router.navigate([ROOT_ROUTE_SEGMENT, this.stopDetailRouteKey, stopId], {
+      queryParams: { consortiumId: String(consortiumId) }
+    });
   }
 
-  private async loadStops(
-    results: readonly NearbyStopResult[]
-  ): Promise<readonly MapStopView[]> {
+  private async loadStops(results: readonly NearbyStopResult[]): Promise<readonly MapStopView[]> {
     if (!results.length) {
       return [];
     }
@@ -555,6 +661,149 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     return Object.freeze([...stopCoordinates, coordinate]);
   }
 
+  private handleViewportSettled(center: GeoCoordinate): void {
+    this.latestViewportCenter = center;
+
+    if (this.networkStopRecords.length) {
+      this.focusedViewportSubject.next(center);
+    }
+  }
+
+  private loadFocusedLines(center: GeoCoordinate): Observable<FocusedLinesLoadState> {
+    const consortiumId = this.resolveFocusedConsortium(center);
+
+    if (consortiumId === null) {
+      return of({
+        status: 'idle',
+        consortiumId: null,
+        lines: Object.freeze([]),
+        errorKey: null
+      });
+    }
+
+    return this.routeLines.getLinesNearLocation(consortiumId, center).pipe(
+      map((lines) => ({
+        status: 'ready' as const,
+        consortiumId,
+        lines: Object.freeze([...lines]),
+        errorKey: null
+      })),
+      startWith<FocusedLinesLoadState>({
+        status: 'loading',
+        consortiumId,
+        lines: Object.freeze([]),
+        errorKey: null
+      }),
+      catchError(() =>
+        of<FocusedLinesLoadState>({
+          status: 'error',
+          consortiumId,
+          lines: Object.freeze([]),
+          errorKey: FOCUSED_LINE_TRANSLATION_KEYS.error
+        })
+      )
+    );
+  }
+
+  private resolveFocusedConsortium(center: GeoCoordinate): number | null {
+    let nearestConsortiumId: number | null = null;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+
+    for (const stop of this.networkStopRecords) {
+      const distance = calculateDistanceInMeters(center, {
+        latitude: stop.latitude,
+        longitude: stop.longitude
+      });
+
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestConsortiumId = stop.consortiumId;
+      }
+    }
+
+    return nearestConsortiumId;
+  }
+
+  private handleFocusedLinesState(state: FocusedLinesLoadState): void {
+    this.focusedLinesStatus.set(state.status);
+    this.focusedConsortiumId.set(state.consortiumId);
+    this.focusedLines.set(state.lines);
+    this.focusedLinesErrorKey.set(state.errorKey);
+  }
+
+  private loadFocusedLinePreview(
+    request: FocusedLinePreviewRequest
+  ): Observable<FocusedLinePreviewState> {
+    return this.routeLines.getLineDetail(request.consortiumId, request.lineId).pipe(
+      map((detail) => {
+        if (detail.coordinates.length < 2) {
+          return {
+            status: 'error' as const,
+            lineId: request.lineId,
+            coordinates: Object.freeze([]),
+            errorKey: FOCUSED_LINE_TRANSLATION_KEYS.previewError
+          } satisfies FocusedLinePreviewState;
+        }
+
+        return {
+          status: 'ready' as const,
+          lineId: request.lineId,
+          coordinates: Object.freeze(detail.coordinates.map((coordinate) => ({ ...coordinate }))),
+          errorKey: null
+        } satisfies FocusedLinePreviewState;
+      }),
+      startWith<FocusedLinePreviewState>({
+        status: 'loading',
+        lineId: request.lineId,
+        coordinates: Object.freeze([]),
+        errorKey: null
+      }),
+      catchError(() =>
+        of<FocusedLinePreviewState>({
+          status: 'error',
+          lineId: request.lineId,
+          coordinates: Object.freeze([]),
+          errorKey: FOCUSED_LINE_TRANSLATION_KEYS.previewError
+        })
+      )
+    );
+  }
+
+  private handleFocusedLinePreviewState(state: FocusedLinePreviewState): void {
+    this.focusedLinePreviewStatus.set(state.status);
+    this.focusedLinePreviewErrorKey.set(state.errorKey);
+
+    if (state.status === 'loading') {
+      this.focusedLinePreview.set(null);
+      this.updateMapRoutes();
+      return;
+    }
+
+    if (state.status === 'error' || !state.lineId) {
+      this.activeFocusedLineId.set(null);
+      this.focusedLinePreview.set(null);
+      this.updateMapRoutes();
+      return;
+    }
+
+    const preview: FocusedLinePreview = {
+      id: buildFocusedLineRouteId(state.lineId),
+      lineId: state.lineId,
+      coordinates: state.coordinates
+    };
+    this.focusedLinePreview.set(preview);
+    this.updateMapRoutes();
+    this.mapHandle?.fitToCoordinates(state.coordinates, this.shouldAnimateMapMovement());
+  }
+
+  private clearFocusedLinePreview(): void {
+    this.activeFocusedLineId.set(null);
+    this.focusedLinePreviewStatus.set('idle');
+    this.focusedLinePreviewErrorKey.set(null);
+    this.focusedLinePreview.set(null);
+    this.updateMapRoutes();
+  }
+
   private handleOverlayState(state: RouteOverlayState): void {
     if (state.selectionKey !== this.currentSelectionKey) {
       const hadActiveRoute = this.activeRouteId() !== null;
@@ -599,13 +848,21 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const activeRoute = this.activeRouteId();
-    const mappedRoutes: readonly MapRoutePolyline[] = this.routes().map((route) => ({
+    const mappedRoutes: MapRoutePolyline[] = this.routes().map((route) => ({
       id: route.id,
       coordinates: route.coordinates
     }));
+    const focusedPreview = this.focusedLinePreview();
 
-    this.mapHandle.renderRoutes(mappedRoutes, activeRoute);
+    if (focusedPreview) {
+      mappedRoutes.push({
+        id: focusedPreview.id,
+        coordinates: focusedPreview.coordinates
+      });
+    }
+
+    const activeRouteId = this.activeRouteId() ?? focusedPreview?.id ?? null;
+    this.mapHandle.renderRoutes(Object.freeze(mappedRoutes), activeRouteId);
   }
 
   private announceRouteSelected(route: RouteOverlayRoute): void {
@@ -730,14 +987,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private resolveLanguage(language: string | undefined): string {
-    if (language) {
-      return language;
-    }
-
-    return this.translate.defaultLang ?? APP_CONFIG.locales.default;
-  }
-
   private shouldAnimateMapMovement(): boolean {
     if (!this.isRunningInBrowser() || typeof window.matchMedia !== 'function') {
       return false;
@@ -762,5 +1011,24 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       .watchOverlay()
       .pipe(takeUntilDestroyed())
       .subscribe((state) => this.handleOverlayState(state));
+
+    this.focusedViewportSubject
+      .pipe(
+        debounceTime(FOCUSED_LINES_DEBOUNCE_MS),
+        switchMap((center) => this.loadFocusedLines(center)),
+        takeUntilDestroyed()
+      )
+      .subscribe((state) => this.handleFocusedLinesState(state));
+
+    this.focusedLinePreviewSubject
+      .pipe(
+        switchMap((request) => this.loadFocusedLinePreview(request)),
+        takeUntilDestroyed()
+      )
+      .subscribe((state) => this.handleFocusedLinePreviewState(state));
   }
+}
+
+function buildFocusedLineRouteId(lineId: string): string {
+  return `${FOCUSED_LINE_ROUTE_PREFIX}${lineId}`;
 }

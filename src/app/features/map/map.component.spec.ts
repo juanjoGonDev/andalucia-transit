@@ -1,7 +1,13 @@
 import { PLATFORM_ID } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  flushMicrotasks,
+  tick
+} from '@angular/core/testing';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Observable, Subject, of } from 'rxjs';
+import { Observable, Subject, of, throwError } from 'rxjs';
 import { GeolocationService } from '@core/services/geolocation.service';
 import {
   NearbyStopRecord,
@@ -9,6 +15,11 @@ import {
   NearbyStopsService
 } from '@core/services/nearby-stops.service';
 import { buildStopIdentity } from '@core/services/stop-identity.util';
+import {
+  RouteLineDetail,
+  RouteLineSummary,
+  RouteLinesApiService
+} from '@data/route-search/route-lines-api.service';
 import { StopDirectoryRecord, StopDirectoryService } from '@data/stops/stop-directory.service';
 import {
   RouteOverlayFacade,
@@ -22,7 +33,8 @@ import {
   MapHandle,
   MapRoutePolyline,
   MapStopInteractionOptions,
-  MapStopMarker
+  MapStopMarker,
+  MapViewportSettledHandler
 } from '@shared/map/leaflet-map.service';
 
 class FakeTranslateLoader implements TranslateLoader {
@@ -46,6 +58,8 @@ class MapHandleStub implements MapHandle {
   interactions: MapStopInteractionOptions | undefined;
   destroyed = false;
   invalidationCount = 0;
+  viewportListenerRemoved = false;
+  private viewportHandler: MapViewportSettledHandler | null = null;
 
   setView(center: GeoCoordinateStub, zoom: number): void {
     this.viewCenters.push(center);
@@ -90,6 +104,20 @@ class MapHandleStub implements MapHandle {
       routes: [...routes],
       activeRouteId
     });
+  }
+
+  onViewportSettled(handler: MapViewportSettledHandler): () => void {
+    this.viewportHandler = handler;
+    handler(DEFAULT_CENTER);
+
+    return () => {
+      this.viewportHandler = null;
+      this.viewportListenerRemoved = true;
+    };
+  }
+
+  emitViewportSettled(center: GeoCoordinateStub): void {
+    this.viewportHandler?.(center);
   }
 
   invalidateSize(): void {
@@ -179,6 +207,22 @@ class RouteOverlayFacadeStub {
   }
 }
 
+class RouteLinesApiServiceStub {
+  readonly getLinesNearLocation = jasmine
+    .createSpy('getLinesNearLocation')
+    .and.returnValue(of<readonly RouteLineSummary[]>([]));
+  readonly getLineDetail = jasmine.createSpy('getLineDetail').and.callFake(
+    (_consortiumId: number, lineId: string) =>
+      of<RouteLineDetail>({
+        lineId,
+        code: lineId,
+        name: lineId,
+        mode: 'Autobús',
+        coordinates: Object.freeze([])
+      })
+  );
+}
+
 interface MapComponentAccess {
   locate(): Promise<void>;
   stops(): readonly MapStopViewStub[];
@@ -208,6 +252,16 @@ interface MapRouteSelectionAccess {
   routeLiveMessage(): string;
 }
 
+interface MapFocusedLinesAccess {
+  focusedLines(): readonly RouteLineSummary[];
+  focusedLinesStatus(): string;
+  focusedLinesErrorKey(): string | null;
+  activeFocusedLineId(): string | null;
+  focusedLinePreviewErrorKey(): string | null;
+  toggleFocusedLine(lineId: string): void;
+  retryFocusedLines(): void;
+}
+
 interface GeoCoordinateStub {
   readonly latitude: number;
   readonly longitude: number;
@@ -219,6 +273,14 @@ const ROUTE_LENGTH_METERS = 750;
 const MAP_MIN_ZOOM = 6;
 const MAP_MAX_ZOOM = 17;
 const NEARBY_DISTANCE_METERS = 150;
+const FOCUSED_LINES_DEBOUNCE_MS = 250;
+const FOCUSED_LINE: RouteLineSummary = Object.freeze({
+  lineId: '177',
+  code: 'M-110',
+  name: 'Málaga-Torremolinos-Benalmádena Costa',
+  mode: 'Autobús',
+  priority: 0
+});
 
 function buildPosition(latitude: number, longitude: number): GeolocationPosition {
   const coords = {
@@ -249,6 +311,27 @@ function permissionDeniedError(): GeolocationPositionError {
   } satisfies GeolocationPositionError;
 }
 
+function createNetworkStop(
+  consortiumId: number,
+  latitude: number,
+  longitude: number,
+  stopId = `stop-${consortiumId}`
+): NearbyStopRecord {
+  return {
+    consortiumId,
+    stopId,
+    stopCode: stopId,
+    name: stopId,
+    municipality: 'Municipality',
+    municipalityId: 'municipality',
+    nucleus: 'Nucleus',
+    nucleusId: 'nucleus',
+    zone: null,
+    latitude,
+    longitude
+  } satisfies NearbyStopRecord;
+}
+
 describe('MapComponent', () => {
   let fixture: ComponentFixture<MapComponent>;
   let component: MapComponent;
@@ -257,6 +340,7 @@ describe('MapComponent', () => {
   let nearbyStops: NearbyStopsServiceStub;
   let stopDirectory: StopDirectoryServiceStub;
   let overlayFacade: RouteOverlayFacadeStub;
+  let routeLines: RouteLinesApiServiceStub;
 
   beforeEach(async () => {
     spyOn(window, 'requestAnimationFrame').and.callFake((callback: FrameRequestCallback) => {
@@ -269,6 +353,7 @@ describe('MapComponent', () => {
     nearbyStops = new NearbyStopsServiceStub();
     stopDirectory = new StopDirectoryServiceStub();
     overlayFacade = new RouteOverlayFacadeStub();
+    routeLines = new RouteLinesApiServiceStub();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -281,6 +366,7 @@ describe('MapComponent', () => {
         { provide: NearbyStopsService, useValue: nearbyStops },
         { provide: StopDirectoryService, useValue: stopDirectory },
         { provide: RouteOverlayFacade, useValue: overlayFacade },
+        { provide: RouteLinesApiService, useValue: routeLines },
         { provide: PLATFORM_ID, useValue: 'browser' }
       ]
     }).compileComponents();
@@ -307,6 +393,17 @@ describe('MapComponent', () => {
         maxZoom: MAP_MAX_ZOOM
       })
     );
+  });
+
+  it('removes the viewport listener when the component is destroyed', async () => {
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    fixture.destroy();
+
+    expect(mapService.handle.viewportListenerRemoved).toBeTrue();
+    expect(mapService.handle.destroyed).toBeTrue();
   });
 
   it('requests the user location and renders nearby stops', async () => {
@@ -372,6 +469,134 @@ describe('MapComponent', () => {
     expect(access.errorKey()).toBe('map.errors.permissionDenied');
     expect(mapService.handle.renderedStops.at(-1) ?? []).toHaveSize(0);
   });
+
+  it('discovers focused-area lines from the settled map without geolocation', fakeAsync(() => {
+    nearbyStops.allStops = [createNetworkStop(7, DEFAULT_CENTER.latitude, DEFAULT_CENTER.longitude)];
+    routeLines.getLinesNearLocation.and.returnValue(of([FOCUSED_LINE]));
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    flushMicrotasks();
+    tick(FOCUSED_LINES_DEBOUNCE_MS);
+
+    const access = component as unknown as MapFocusedLinesAccess;
+
+    expect(routeLines.getLinesNearLocation).toHaveBeenCalledOnceWith(7, DEFAULT_CENTER);
+    expect(access.focusedLinesStatus()).toBe('ready');
+    expect(access.focusedLines()).toEqual([FOCUSED_LINE]);
+  }));
+
+  it('cancels stale focused-area requests when the viewport changes', fakeAsync(() => {
+    const firstResponse = new Subject<readonly RouteLineSummary[]>();
+    const secondResponse = new Subject<readonly RouteLineSummary[]>();
+    const secondCenter = { latitude: 36.7213, longitude: -4.4214 };
+    const staleLine: RouteLineSummary = { ...FOCUSED_LINE, lineId: 'stale', code: 'STALE' };
+    const currentLine: RouteLineSummary = { ...FOCUSED_LINE, lineId: 'current', code: 'CURRENT' };
+
+    nearbyStops.allStops = [
+      createNetworkStop(1, DEFAULT_CENTER.latitude, DEFAULT_CENTER.longitude),
+      createNetworkStop(4, secondCenter.latitude, secondCenter.longitude)
+    ];
+    routeLines.getLinesNearLocation.and.callFake(
+      (_consortiumId: number, coordinate: GeoCoordinateStub) =>
+        coordinate.latitude === DEFAULT_CENTER.latitude ? firstResponse : secondResponse
+    );
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    flushMicrotasks();
+    tick(FOCUSED_LINES_DEBOUNCE_MS);
+
+    mapService.handle.emitViewportSettled(secondCenter);
+    tick(FOCUSED_LINES_DEBOUNCE_MS);
+    secondResponse.next([currentLine]);
+    secondResponse.complete();
+    firstResponse.next([staleLine]);
+    firstResponse.complete();
+
+    const access = component as unknown as MapFocusedLinesAccess;
+
+    expect(routeLines.getLinesNearLocation).toHaveBeenCalledTimes(2);
+    expect(access.focusedLines()).toEqual([currentLine]);
+  }));
+
+  it('surfaces focused-area errors and retries the same viewport', fakeAsync(() => {
+    nearbyStops.allStops = [createNetworkStop(7, DEFAULT_CENTER.latitude, DEFAULT_CENTER.longitude)];
+    routeLines.getLinesNearLocation.and.returnValues(
+      throwError(() => new Error('failure')),
+      of([FOCUSED_LINE])
+    );
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    flushMicrotasks();
+    tick(FOCUSED_LINES_DEBOUNCE_MS);
+
+    const access = component as unknown as MapFocusedLinesAccess;
+    expect(access.focusedLinesStatus()).toBe('error');
+    expect(access.focusedLinesErrorKey()).toBe('map.focusedLines.error');
+
+    access.retryFocusedLines();
+    tick(FOCUSED_LINES_DEBOUNCE_MS);
+
+    expect(routeLines.getLinesNearLocation).toHaveBeenCalledTimes(2);
+    expect(access.focusedLines()).toEqual([FOCUSED_LINE]);
+  }));
+
+  it('previews official geometry for a focused-area line and fits the map', fakeAsync(() => {
+    const coordinates = Object.freeze([
+      { latitude: 36.7213, longitude: -4.4214 },
+      { latitude: 36.7192, longitude: -4.4238 },
+      { latitude: 36.7168, longitude: -4.4261 }
+    ]);
+    nearbyStops.allStops = [createNetworkStop(4, DEFAULT_CENTER.latitude, DEFAULT_CENTER.longitude)];
+    routeLines.getLinesNearLocation.and.returnValue(of([FOCUSED_LINE]));
+    routeLines.getLineDetail.and.returnValue(
+      of({
+        lineId: FOCUSED_LINE.lineId,
+        code: FOCUSED_LINE.code,
+        name: FOCUSED_LINE.name,
+        mode: FOCUSED_LINE.mode,
+        coordinates
+      })
+    );
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    flushMicrotasks();
+    tick(FOCUSED_LINES_DEBOUNCE_MS);
+
+    const access = component as unknown as MapFocusedLinesAccess;
+    access.toggleFocusedLine(FOCUSED_LINE.lineId);
+    flushMicrotasks();
+
+    const lastRender = mapService.handle.renderedRoutes.at(-1);
+    expect(routeLines.getLineDetail).toHaveBeenCalledOnceWith(4, FOCUSED_LINE.lineId);
+    expect(access.activeFocusedLineId()).toBe(FOCUSED_LINE.lineId);
+    expect(lastRender?.routes).toContain(
+      jasmine.objectContaining({ id: `focused-line:${FOCUSED_LINE.lineId}`, coordinates })
+    );
+    expect(lastRender?.activeRouteId).toBe(`focused-line:${FOCUSED_LINE.lineId}`);
+    expect(mapService.handle.focusedPoints.at(-1)).toEqual(coordinates);
+  }));
+
+  it('does not render a focused-line preview when official geometry is absent', fakeAsync(() => {
+    nearbyStops.allStops = [createNetworkStop(4, DEFAULT_CENTER.latitude, DEFAULT_CENTER.longitude)];
+    routeLines.getLinesNearLocation.and.returnValue(of([FOCUSED_LINE]));
+
+    emitIdleOverlayState(overlayFacade);
+    fixture.detectChanges();
+    flushMicrotasks();
+    tick(FOCUSED_LINES_DEBOUNCE_MS);
+
+    const access = component as unknown as MapFocusedLinesAccess;
+    access.toggleFocusedLine(FOCUSED_LINE.lineId);
+    flushMicrotasks();
+
+    expect(access.activeFocusedLineId()).toBeNull();
+    expect(access.focusedLinePreviewErrorKey()).toBe('map.focusedLines.previewError');
+    expect(mapService.handle.renderedRoutes.at(-1)?.routes).toEqual([]);
+  }));
 
   it('renders route overlays when overlay facade returns routes', async () => {
     const state = buildRouteOverlayState({

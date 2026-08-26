@@ -298,6 +298,16 @@
     "accessibleMapLabel": "Andalusia map with nearby stops",
     "empty": "No nearby stops were found in your area.",
     "stopAriaLabel": "Open stop {code} in {municipality}",
+    "focusedLines": {
+      "title": "Lines in this area",
+      "loading": "Finding lines around the visible area…",
+      "empty": "No lines were found near the area you are viewing.",
+      "error": "We could not load lines for this area. The map is preserved so you can try again.",
+      "retry": "Try again",
+      "cardAria": "Show line {code}, {name}, on the map",
+      "previewLoading": "Loading the official line route…",
+      "previewError": "We could not display the official route for this line. Select another line or try again."
+    },
     "routes": {
       "title": "Routes",
       "refresh": "Refresh routes",
