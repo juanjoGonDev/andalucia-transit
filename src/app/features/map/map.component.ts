@@ -437,6 +437,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       records.map((record) => ({
         id: buildStopIdentity(record.consortiumId, record.stopId),
         name: record.name,
+        code: record.stopCode,
+        municipality: record.municipality,
         coordinate: {
           latitude: record.latitude,
           longitude: record.longitude
@@ -465,6 +467,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       stops.map((stop) => ({
         id: stop.id,
         name: stop.name,
+        code: stop.code,
+        municipality: stop.municipality,
         coordinate: stop.coordinate
       }))
     );
