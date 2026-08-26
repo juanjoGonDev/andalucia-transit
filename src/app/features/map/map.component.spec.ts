@@ -345,6 +345,8 @@ describe('MapComponent', () => {
       {
         id: buildStopIdentity(stopRecord.consortiumId, stopRecord.stopId),
         name: stopRecord.name,
+        code: stopRecord.stopCode,
+        municipality: stopRecord.municipality,
         coordinate: stopRecord.location
       }
     ]);
