@@ -10,13 +10,14 @@ class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {
     return of({
       'navigation.home': 'Home',
-      'home.topBar.mapLabel': 'Open interactive map',
-      'home.topBar.menuLabel': 'Open sections menu',
+      'navigation.routeSearch': 'Route search',
+      'navigation.map': 'Map',
+      'navigation.favorites': 'Favorites',
+      'home.topBar.menuLabel': 'Open feature menu',
       'home.menu.recent': 'Recent searches',
-      'home.menu.favorites': 'Favorite stops',
       'home.menu.settings': 'Settings',
       'home.menu.news': 'News',
-      'home.menu.inProgress': 'In progress'
+      'map.routes.title': 'Routes'
     });
   }
 }
@@ -40,59 +41,88 @@ describe('AppShellTopActionsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('renders Home and Map as persistent quick links before the menu', () => {
-    const buttons = Array.from(
-      fixture.nativeElement.querySelectorAll('.shell-actions__button') as NodeListOf<HTMLElement>
+  it('exposes the four primary transit destinations before More', () => {
+    const links = Array.from(
+      fixture.nativeElement.querySelectorAll(
+        '.shell-actions__button--quick'
+      ) as NodeListOf<HTMLAnchorElement>
     );
-    const home = buttons[0] as HTMLAnchorElement | undefined;
-    const map = buttons[1] as HTMLAnchorElement | undefined;
-    const menu = buttons[2];
+    const menu = fixture.nativeElement.querySelector(
+      '.shell-actions__button--menu'
+    ) as HTMLButtonElement | null;
 
-    expect(buttons.length).toBe(3);
-    expect(home?.tagName).toBe('A');
-    expect(home?.getAttribute('href')).toBe('/');
-    expect(home?.getAttribute('aria-label')).toBeTruthy();
-    expect(map?.tagName).toBe('A');
-    expect(map?.getAttribute('href')).toBe('/map');
-    expect(map?.getAttribute('aria-label')).toBeTruthy();
-    expect(menu?.classList.contains('shell-actions__button--menu')).toBeTrue();
+    expect(links.length).toBe(4);
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      '/',
+      '/routes',
+      '/map',
+      '/favorites'
+    ]);
+    expect(links.every((link) => Boolean(link.getAttribute('aria-label')))).toBeTrue();
+    expect(links.every((link) => Boolean(link.textContent?.trim()))).toBeTrue();
+    expect(menu?.tagName).toBe('BUTTON');
+    expect(menu?.getAttribute('aria-haspopup')).toBe('menu');
   });
 
-  it('marks Map as the current quick destination', () => {
+  it('marks route search as the current primary destination', () => {
     layoutContextStore.registerContent({
-      identifier: Symbol('map'),
-      navigationKey: APP_CONFIG.routes.map
+      identifier: Symbol('routes'),
+      navigationKey: APP_CONFIG.routes.routeSearch
     });
     fixture.detectChanges();
 
-    const home = fixture.nativeElement.querySelector(
-      '.shell-actions__button--quick:first-of-type'
+    const routeSearch = fixture.nativeElement.querySelector(
+      '.shell-actions__button--quick[href="/routes"]'
     ) as HTMLAnchorElement | null;
-    const map = fixture.nativeElement.querySelector(
-      '.shell-actions__button--quick[href="/map"]'
-    ) as HTMLAnchorElement | null;
-
-    expect(home?.getAttribute('aria-current')).toBeNull();
-    expect(map?.getAttribute('aria-current')).toBe('page');
-    expect(map?.classList.contains('shell-actions__button--active')).toBeTrue();
-  });
-
-  it('keeps the Home quick destination active for Home subviews', () => {
-    layoutContextStore.registerContent({
-      identifier: Symbol('home-recent'),
-      navigationKey: APP_CONFIG.routes.homeRecent
-    });
-    fixture.detectChanges();
-
     const home = fixture.nativeElement.querySelector(
       '.shell-actions__button--quick[href="/"]'
     ) as HTMLAnchorElement | null;
-    const map = fixture.nativeElement.querySelector(
-      '.shell-actions__button--quick[href="/map"]'
+
+    expect(routeSearch?.getAttribute('aria-current')).toBe('page');
+    expect(routeSearch?.classList.contains('shell-actions__button--active')).toBeTrue();
+    expect(home?.getAttribute('aria-current')).toBeNull();
+  });
+
+  it('maps both favorite routes to the persistent Favorites destination', () => {
+    layoutContextStore.registerContent({
+      identifier: Symbol('home-favorites'),
+      navigationKey: APP_CONFIG.routes.homeFavorites
+    });
+    fixture.detectChanges();
+
+    const favorites = fixture.nativeElement.querySelector(
+      '.shell-actions__button--quick[href="/favorites"]'
+    ) as HTMLAnchorElement | null;
+    const home = fixture.nativeElement.querySelector(
+      '.shell-actions__button--quick[href="/"]'
     ) as HTMLAnchorElement | null;
 
-    expect(home?.getAttribute('aria-current')).toBe('page');
-    expect(home?.classList.contains('shell-actions__button--active')).toBeTrue();
-    expect(map?.getAttribute('aria-current')).toBeNull();
+    expect(favorites?.getAttribute('aria-current')).toBe('page');
+    expect(home?.getAttribute('aria-current')).toBeNull();
+  });
+
+  it('keeps only secondary destinations inside More', () => {
+    const menu = fixture.nativeElement.querySelector(
+      '.shell-actions__button--menu'
+    ) as HTMLButtonElement;
+    menu.click();
+    fixture.detectChanges();
+
+    const entries = Array.from(
+      fixture.nativeElement.querySelectorAll(
+        '.shell-actions__menu-button'
+      ) as NodeListOf<HTMLAnchorElement>
+    );
+
+    expect(entries.map((entry) => entry.getAttribute('href'))).toEqual([
+      '/recents',
+      '/news',
+      '/settings'
+    ]);
+    expect(entries.map((entry) => entry.textContent?.trim())).toEqual([
+      'Recent searches',
+      'News',
+      'Settings'
+    ]);
   });
 });
