@@ -8,8 +8,8 @@ const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 const MINIMUM_PAINTED_PIXELS = 100;
 const MINIMUM_MOBILE_MAP_HEIGHT = 360;
-const DESKTOP_COLUMN_DOMINANCE_RATIO = 1.3;
-const DESKTOP_HEIGHT_TOLERANCE_PX = 3;
+const MAXIMUM_MOBILE_PANEL_RATIO = 0.45;
+const MINIMUM_DESKTOP_PANEL_START_RATIO = 0.55;
 const MINIMUM_SEARCH_CODE_LENGTH = 2;
 const SEVILLE_LOCATION = { latitude: 37.389092, longitude: -5.984459 } as const;
 
@@ -184,7 +184,7 @@ test.describe('network map exploration', () => {
 
     const mapSurface = page.locator('.map__canvas');
     const overlayCanvas = page.locator('.leaflet-overlay-pane canvas').first();
-    const locateButton = page.locator('.map__locate-button');
+    const locateButton = page.locator('.map__controls button').first();
 
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
     await locateButton.click();
@@ -201,9 +201,7 @@ test.describe('network map exploration', () => {
       .toBeGreaterThan(baselinePaintedPixels);
   });
 
-  test('keeps the map dominant and the results panel bounded at canonical breakpoints', async ({
-    page,
-  }) => {
+  test('keeps the map immersive while search, controls and results remain usable', async ({ page }) => {
     const resolvedBaseUrl = BASE_URL as string;
     const mapUrl = new URL(MAP_PATH, resolvedBaseUrl).toString();
 
@@ -211,55 +209,71 @@ test.describe('network map exploration', () => {
     await page.goto(mapUrl);
 
     const workspace = page.locator('.map__workspace');
-    const primary = page.locator('.map__primary');
     const panel = page.locator('.map__panel');
     const mapSurface = page.locator('.map__canvas');
+    const searchShell = page.locator('.map__search-shell');
     const searchInput = page.locator('#map-network-search');
+    const controls = page.locator('.map__controls');
 
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
     await expect(searchInput).toBeVisible();
+    await expect(controls).toBeVisible();
 
     const workspaceBox = await workspace.boundingBox();
-    const primaryBox = await primary.boundingBox();
     const panelBox = await panel.boundingBox();
     const mapBox = await mapSurface.boundingBox();
-    const searchBox = await searchInput.boundingBox();
+    const searchBox = await searchShell.boundingBox();
+    const controlsBox = await controls.boundingBox();
 
     expect(workspaceBox).not.toBeNull();
-    expect(primaryBox).not.toBeNull();
     expect(panelBox).not.toBeNull();
     expect(mapBox).not.toBeNull();
     expect(searchBox).not.toBeNull();
+    expect(controlsBox).not.toBeNull();
 
-    if (!workspaceBox || !primaryBox || !panelBox || !mapBox || !searchBox) {
+    if (!workspaceBox || !panelBox || !mapBox || !searchBox || !controlsBox) {
       return;
     }
 
-    expect(primaryBox.width).toBeGreaterThan(panelBox.width * DESKTOP_COLUMN_DOMINANCE_RATIO);
-    expect(Math.abs(primaryBox.height - panelBox.height)).toBeLessThanOrEqual(
-      DESKTOP_HEIGHT_TOLERANCE_PX,
-    );
-    expect(searchBox.x).toBeGreaterThanOrEqual(primaryBox.x);
-    expect(searchBox.x + searchBox.width).toBeLessThanOrEqual(primaryBox.x + primaryBox.width + 1);
-    expect(mapBox.height).toBeGreaterThan(workspaceBox.height / 2);
+    expect(mapBox.width).toBeGreaterThanOrEqual(workspaceBox.width - 1);
+    expect(mapBox.height).toBeGreaterThanOrEqual(workspaceBox.height - 1);
+    expect(searchBox.x).toBeGreaterThanOrEqual(mapBox.x);
+    expect(searchBox.y).toBeGreaterThanOrEqual(mapBox.y);
+    expect(searchBox.x + searchBox.width).toBeLessThanOrEqual(mapBox.x + mapBox.width + 1);
+    expect(panelBox.x).toBeGreaterThan(mapBox.x + mapBox.width * MINIMUM_DESKTOP_PANEL_START_RATIO);
+    expect(panelBox.y).toBeGreaterThanOrEqual(mapBox.y);
+    expect(panelBox.y + panelBox.height).toBeLessThanOrEqual(mapBox.y + mapBox.height + 1);
+    expect(controlsBox.x + controlsBox.width).toBeLessThanOrEqual(panelBox.x + 1);
     expect(await panel.evaluate((element) => getComputedStyle(element).overflowY)).toBe('auto');
 
     await page.setViewportSize(MOBILE_VIEWPORT);
     await page.goto(mapUrl);
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
 
+    const mobileWorkspaceBox = await workspace.boundingBox();
     const mobileMapBox = await mapSurface.boundingBox();
     const mobilePanelBox = await panel.boundingBox();
+    const mobileSearchBox = await searchShell.boundingBox();
+    expect(mobileWorkspaceBox).not.toBeNull();
     expect(mobileMapBox).not.toBeNull();
     expect(mobilePanelBox).not.toBeNull();
+    expect(mobileSearchBox).not.toBeNull();
 
-    if (!mobileMapBox || !mobilePanelBox) {
+    if (!mobileWorkspaceBox || !mobileMapBox || !mobilePanelBox || !mobileSearchBox) {
       return;
     }
 
     expect(mobileMapBox.height).toBeGreaterThanOrEqual(MINIMUM_MOBILE_MAP_HEIGHT);
-    expect(mobilePanelBox.y).toBeGreaterThan(mobileMapBox.y + mobileMapBox.height);
-    expect(mobilePanelBox.height).toBeLessThan(MOBILE_VIEWPORT.height * 0.7);
+    expect(mobileMapBox.height).toBeGreaterThanOrEqual(mobileWorkspaceBox.height - 1);
+    expect(mobilePanelBox.y).toBeGreaterThan(mobileMapBox.y + mobileMapBox.height / 2);
+    expect(mobilePanelBox.y + mobilePanelBox.height).toBeLessThanOrEqual(
+      mobileMapBox.y + mobileMapBox.height + 1,
+    );
+    expect(mobilePanelBox.height).toBeLessThan(MOBILE_VIEWPORT.height * MAXIMUM_MOBILE_PANEL_RATIO);
+    expect(mobileSearchBox.x).toBeGreaterThanOrEqual(mobileMapBox.x);
+    expect(mobileSearchBox.x + mobileSearchBox.width).toBeLessThanOrEqual(
+      mobileMapBox.x + mobileMapBox.width + 1,
+    );
     expect(await panel.evaluate((element) => getComputedStyle(element).overflowY)).toBe('auto');
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
