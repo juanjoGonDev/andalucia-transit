@@ -80,3 +80,5 @@ Atomic spec, shared layout/surface fixes, deterministic visual-state tests, work
 ## Status
 
 In progress. Exact-head CI and visual evidence are still required after the latest interaction-state/workflow changes before this audit can be closed.
+
+Validation checkpoint: trigger the canonical workflows from the current tree and close this spec only after their exact-head evidence is inspected.
