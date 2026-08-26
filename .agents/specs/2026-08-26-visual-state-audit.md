@@ -2,7 +2,9 @@
 
 ## Request
 
-Audit the current PR screenshots in depth, fix visible hierarchy/surface/responsive defects, and make visual evidence deterministic across representative data and no-data states on both mobile and desktop. The evidence must catch low-contrast copy, disconnected surfaces, overlapping shell navigation, and state-specific regressions without depending on the current production snapshot.
+Audit the current PR screenshots in depth, fix visible hierarchy/surface/responsive defects, and make visual evidence deterministic across representative data and no-data states on both mobile and desktop. The evidence must catch low-contrast copy, disconnected surfaces, overlapping shell navigation, state-specific regressions, and missing interaction feedback without depending on the current production snapshot.
+
+Persistent browser navigation controls must also provide a clear hover/focus microinteraction on pointer-capable devices while respecting `prefers-reduced-motion`.
 
 ## Evidence
 
@@ -13,7 +15,8 @@ Audit the current PR screenshots in depth, fix visible hierarchy/surface/respons
 - The supplied Preferences screenshot shows a disconnected dark header / light body / dark footer treatment. The shared dialog owner should establish one coherent surface rather than allowing independently colored slabs.
 - `tests/playwright/theme.contrast.spec.ts` currently checks only one tertiary-text token against the application background; it does not validate rendered text against its actual painted surface.
 - The visual workflow already starts a deterministic mock application, so state-specific browser evidence should extend that owner instead of introducing another screenshot system.
-- The current map browser flow still has one deterministic locator failure because it assumes the nearby-card display code is always identical to the autocomplete label code. The product search result already includes the stop name and code, but the acceptance test should identify the selected canonical search target rather than couple two presentation models.
+- The current map browser flow still has one deterministic locator failure because it assumes the nearby-card display name is identical to the canonical autocomplete target name. The acceptance test should identify the selected stop using stable code/municipality presentation fields rather than couple two display-name variants.
+- `AppShellTopActionsComponent` already transitions background and shadow, but the persistent Home/Map/Menu controls do not visibly move on hover. The result is technically animated CSS with weak perceptual feedback.
 
 ## Decision
 
@@ -25,19 +28,21 @@ Audit the current PR screenshots in depth, fix visible hierarchy/surface/respons
 6. Extend Playwright visual evidence so representative scenarios are captured at 390×844 and 1440×900. Capture names must encode screen + state + viewport.
 7. Validate rendered text contrast on representative light, hero/dark, muted, error and dialog surfaces. Fail the browser gate when normal text falls below WCAG AA 4.5:1 unless the element qualifies as large text.
 8. Preserve exact-head evidence publication: no screenshot from a stale SHA may be published.
-9. Fix the map acceptance locator using canonical state exposed by the UI/test fixture rather than weakening the product identity model.
-10. Do not add a visual-regression dependency. Reuse Playwright, runtime mocks, existing design tokens and the current artifact/release publication path.
+9. Fix the map acceptance locator using stable stop code + municipality fields and assert the resulting popup metadata instead of relying on nearby-card and directory display names being byte-identical.
+10. Give persistent shell controls a short elevation/icon hover microinteraction in addition to color/shadow feedback. Keyboard focus remains explicit, active-route semantics remain unchanged, and all movement is disabled under `prefers-reduced-motion`.
+11. Do not add a visual-regression dependency. Reuse Playwright, runtime mocks, existing design tokens and the current artifact/release publication path.
 
 ## Acceptance
 
 - Persistent shell actions do not cover or truncate page titles at 390×844 on Home, Favorites, Settings, News, Route search or Map.
+- Persistent Home/Map/Menu controls have visible hover feedback on pointer-capable desktop browsers without layout shift; reduced-motion mode removes transform transitions/movement while preserving non-motion state feedback.
 - Dialog title/body/actions read as one coherent card surface with consistent text color, spacing and separators on mobile and desktop.
 - Desktop Home/Favorites/Settings/News/Route search/Map layouts use the available 1440×900 viewport intentionally without turning forms or prose into overly wide lines.
 - Route-search empty state is attached to the form/result flow rather than leaving an isolated CTA in the lower viewport.
 - Deterministic visual evidence includes representative populated and empty states; loading/error/dialog scenarios are exercised by browser assertions and captured where they materially change layout.
 - Visual evidence runs at 390×844 and 1440×900.
 - Browser contrast checks evaluate actual rendered foreground/background combinations for representative surfaces.
-- Map acceptance covers search -> focus/popover -> details navigation without coupling nearby-card code formatting to the search option label.
+- Map acceptance covers search -> focus/popover -> details navigation without coupling nearby-card and directory display-name variants.
 - `pnpm run lint`, script tests, Angular tests, build, focused Playwright and final visual workflow are green for the exact final head.
 
 ## Risks
@@ -46,14 +51,16 @@ Audit the current PR screenshots in depth, fix visible hierarchy/surface/respons
 - Browser contrast calculation must resolve transparent backgrounds through ancestors; a simplistic token-only comparison would produce false confidence.
 - Global shell clearance must not add unnecessary whitespace on desktop or pages that already reserve their own top actions.
 - Dialog surface changes are shared and can affect confirmations and nearby-stop dialogs; verify both generic layout tests and at least one rendered dialog.
+- Transform-based hover feedback can cause motion sensitivity or perceived jitter if overdone; keep movement small, avoid geometry reflow and disable movement for reduced-motion preferences.
 
 ## Tests
 
 - Playwright: all canonical screens at mobile and desktop, no horizontal overflow and no shell/title overlap.
+- Playwright: persistent shell hover changes visual transform/elevation without changing control dimensions; reduced-motion removes movement.
 - Playwright: representative data and empty visual scenarios driven by deterministic mocks.
 - Playwright: rendered contrast audit across hero text, cards, muted copy, error copy and dialog surfaces.
 - Playwright: representative dialog surface capture/assertions.
-- Playwright: map search/popover/details and nearby-list highlight.
+- Playwright: map search/popover/details by stable stop code/municipality and nearby-list highlight.
 - Angular: shared dialog/shell contracts where DOM-level behavior is deterministic.
 
 ## Rollback
