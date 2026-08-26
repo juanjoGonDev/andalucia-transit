@@ -8,6 +8,7 @@ import type {
 import type { GeoCoordinate } from '@domain/utils/geo-distance.util';
 
 export type NearbyStopResult = LoaderNearbyStopResult;
+export type { NearbyStopRecord };
 
 @Injectable({ providedIn: 'root' })
 export class NearbyStopsService {
@@ -20,6 +21,10 @@ export class NearbyStopsService {
 
   private stopsPromise: Promise<readonly NearbyStopRecord[]> | null = null;
   private loaderPromise: Promise<NearbyStopsLoaderModule> | null = null;
+
+  getAllStops(): Promise<readonly NearbyStopRecord[]> {
+    return this.loadStops();
+  }
 
   async findClosestStops(
     position: GeoCoordinate,
