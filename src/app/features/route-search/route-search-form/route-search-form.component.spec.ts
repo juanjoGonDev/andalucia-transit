@@ -409,6 +409,7 @@ describe('RouteSearchFormComponent', () => {
   it('recommends nearby origins after requesting location', async () => {
     nearbyStops.results = [
       {
+        consortiumId: ORIGIN_OPTION.consortiumId,
         id: ORIGIN_OPTION.stopIds[0] ?? '',
         name: ORIGIN_OPTION.name,
         distanceInMeters: 150
@@ -448,6 +449,7 @@ describe('RouteSearchFormComponent', () => {
   it('hides recommended origins when they do not match the query', fakeAsync(() => {
     nearbyStops.results = [
       {
+        consortiumId: ORIGIN_OPTION.consortiumId,
         id: ORIGIN_OPTION.stopIds[0] ?? '',
         name: ORIGIN_OPTION.name,
         distanceInMeters: 150
