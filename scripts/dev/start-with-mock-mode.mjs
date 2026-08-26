@@ -1,8 +1,6 @@
 import { spawn } from 'node:child_process';
-import { readFile, writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { installRuntimeFlagsBootstrap } from './runtime-flags-bootstrap.mjs';
 
-const runtimeFlagsPath = resolve('src/assets/runtime-flags.js');
 const validModes = new Set(['data', 'empty']);
 const routeSearchPreferencesStorageKey = 'andalucia-transit.routeSearchPreferences';
 const routeSearchPreferencesValue = JSON.stringify({ previewEnabled: false });
@@ -20,36 +18,46 @@ const mockFlags = [
 ].join('\n');
 
 async function main() {
-  const originalContent = await readFile(runtimeFlagsPath, 'utf-8');
-  await writeFile(runtimeFlagsPath, mockFlags, { encoding: 'utf-8' });
-
+  const restoreBootstrap = await installRuntimeFlagsBootstrap(mockFlags);
   const command = process.platform === 'win32' ? 'ng.cmd' : 'ng';
   const child = spawn(command, ['serve', ...serveExtraArgs], { stdio: 'inherit' });
+  let shutdownPromise = null;
 
-  const restoreFlags = async () => {
-    await writeFile(runtimeFlagsPath, originalContent, { encoding: 'utf-8' });
+  const shutdown = (code) => {
+    shutdownPromise ??= restoreBootstrap()
+      .catch((error) => {
+        console.error('Failed to restore runtime flag sources:', error);
+        return undefined;
+      })
+      .then(() => {
+        const exitCode = typeof code === 'number' ? code : 0;
+        process.exit(exitCode);
+      });
+
+    return shutdownPromise;
   };
 
-  const handleExit = async (code) => {
-    await restoreFlags();
-    const exitCode = typeof code === 'number' ? code : 0;
-    process.exit(exitCode);
-  };
+  child.on('exit', (code) => {
+    void shutdown(code);
+  });
 
-  child.on('exit', handleExit);
+  child.on('error', (error) => {
+    console.error(error);
+    void shutdown(1);
+  });
 
-  process.on('SIGINT', async () => {
+  process.on('SIGINT', () => {
     child.kill('SIGINT');
   });
 
-  process.on('SIGTERM', async () => {
+  process.on('SIGTERM', () => {
     child.kill('SIGTERM');
   });
 
-  process.on('uncaughtException', async (error) => {
+  process.on('uncaughtException', (error) => {
     console.error(error);
-    await restoreFlags();
-    process.exit(1);
+    child.kill('SIGTERM');
+    void shutdown(1);
   });
 }
 

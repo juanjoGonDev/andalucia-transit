@@ -2,8 +2,8 @@ const { spawn } = require('child_process');
 const { glob } = require('glob');
 const Table = require('cli-table3');
 
-// Find all test files
-const testFiles = glob.sync('scripts/snapshot/**/*.test.ts');
+// Find all script test files
+const testFiles = glob.sync('scripts/**/*.test.ts');
 
 const parallelism = 10;
 
@@ -37,7 +37,6 @@ async function runTestsInParallel() {
     return runTestAsync(testFile);
   });
 
-  // Run tests with controlled concurrency (limit to 3 parallel tests)
   console.log(`🚀 Running ${testFiles.length} tests with controlled concurrency (max ${parallelism} parallel)`);
   const results = await promiseRunner(testTasks, parallelism);
   return results;
@@ -50,7 +49,6 @@ function runTestAsync(testFile) {
 
     console.log(`\n🔄 Running tests in ${testFile}...`);
 
-    // Use spawn for async execution
     const child = spawn('npx', ['tsx', '--test', testFile], {
       stdio: 'inherit',
       shell: process.platform === 'win32'
@@ -82,7 +80,6 @@ runTestsInParallel().then(results => {
 function displayResults() {
   const totalTime = Date.now() - startTime;
 
-  // Create a beautiful table using cli-table3
   const table = new Table({
     head: ['📊 TEST SUMMARY (PARALLEL)', ''],
     chars: {
@@ -93,13 +90,11 @@ function displayResults() {
     }
   });
 
-  // Improve table layout - use auto-width and better column proportions
   table.push(
     ['File', 'Status', 'Duration', 'Order'],
     ['─'.repeat(40), '─'.repeat(10), '─'.repeat(10), '─'.repeat(6)]
   );
 
-  // Sort results by duration (fastest first) and add execution order
   const sortedResults = testResults
     .map((result, index) => ({ ...result, order: index + 1 }))
     .sort((a, b) => {
@@ -108,15 +103,13 @@ function displayResults() {
       return aTime - bTime;
     });
 
-  // Add test results
   sortedResults.forEach(result => {
-    const fileName = result.file.replace('scripts/snapshot/', '').replace('.test.ts', '');
+    const fileName = result.file.replace('scripts/', '').replace('.test.ts', '');
     const status = result.status === 'PASS' ? '✅ PASS' : '❌ FAIL';
     const order = `#${result.order}`;
     table.push([fileName, status, result.duration, order]);
   });
 
-  // Show totals as a single row that spans all columns
   const totalTests = testResults.length;
   const passedTests = testResults.filter(r => r.status === 'PASS').length;
   const failedTests = testResults.filter(r => r.status === 'FAIL').length;
