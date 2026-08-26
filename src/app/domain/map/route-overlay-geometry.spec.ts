@@ -1,5 +1,6 @@
 import {
   RouteOverlayGeometryRequest,
+  buildOfficialRouteSegmentCoordinates,
   buildRouteDirectionIndicators,
   buildRouteSegmentCoordinates,
   calculateRouteLengthInMeters
@@ -66,6 +67,59 @@ describe('buildRouteSegmentCoordinates', () => {
     const result = buildRouteSegmentCoordinates(request);
 
     expect(result).toEqual([]);
+  });
+});
+
+describe('buildOfficialRouteSegmentCoordinates', () => {
+  const selectedStops = [
+    { latitude: 37.1, longitude: -5.1 },
+    { latitude: 37.2, longitude: -5.2 },
+    { latitude: 37.3, longitude: -5.3 }
+  ] as const;
+
+  it('keeps the official intermediate road points between selected stops', () => {
+    const officialRoute = [
+      { latitude: 37.0, longitude: -5.0 },
+      { latitude: 37.0998, longitude: -5.1002 },
+      { latitude: 37.14, longitude: -5.13 },
+      { latitude: 37.18, longitude: -5.17 },
+      { latitude: 37.3001, longitude: -5.2999 },
+      { latitude: 37.4, longitude: -5.4 }
+    ] as const;
+
+    expect(buildOfficialRouteSegmentCoordinates(officialRoute, selectedStops)).toEqual([
+      { latitude: 37.0998, longitude: -5.1002 },
+      { latitude: 37.14, longitude: -5.13 },
+      { latitude: 37.18, longitude: -5.17 },
+      { latitude: 37.3001, longitude: -5.2999 }
+    ]);
+  });
+
+  it('reverses official geometry when its storage order opposes travel direction', () => {
+    const officialRoute = [
+      { latitude: 37.4, longitude: -5.4 },
+      { latitude: 37.3001, longitude: -5.2999 },
+      { latitude: 37.18, longitude: -5.17 },
+      { latitude: 37.0998, longitude: -5.1002 },
+      { latitude: 37.0, longitude: -5.0 }
+    ] as const;
+
+    expect(buildOfficialRouteSegmentCoordinates(officialRoute, selectedStops)).toEqual([
+      { latitude: 37.0998, longitude: -5.1002 },
+      { latitude: 37.18, longitude: -5.17 },
+      { latitude: 37.3001, longitude: -5.2999 }
+    ]);
+  });
+
+  it('rejects unusable official geometry instead of returning stop-to-stop lines', () => {
+    expect(buildOfficialRouteSegmentCoordinates([], selectedStops)).toEqual([]);
+    expect(
+      buildOfficialRouteSegmentCoordinates(
+        [{ latitude: 37.1, longitude: -5.1 }],
+        selectedStops
+      )
+    ).toEqual([]);
+    expect(buildOfficialRouteSegmentCoordinates(selectedStops, [selectedStops[0]])).toEqual([]);
   });
 });
 
