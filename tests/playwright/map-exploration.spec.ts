@@ -13,11 +13,6 @@ const DESKTOP_HEIGHT_TOLERANCE_PX = 3;
 const MINIMUM_SEARCH_CODE_LENGTH = 2;
 const SEVILLE_LOCATION = { latitude: 37.389092, longitude: -5.984459 } as const;
 
-interface CanvasActivationPoint {
-  readonly x: number;
-  readonly y: number;
-}
-
 interface StopDirectoryIndexFile {
   readonly chunks: readonly StopDirectoryChunkDescriptor[];
 }
@@ -94,81 +89,6 @@ async function loadCanonicalSearchStop(page: Page, baseUrl: string): Promise<Can
   };
 }
 
-async function findLargestPaintedComponentCenter(
-  canvas: Locator,
-): Promise<CanvasActivationPoint | null> {
-  return canvas.evaluate((element: HTMLCanvasElement): CanvasActivationPoint | null => {
-    const context = element.getContext('2d');
-    if (!context || element.width <= 0 || element.height <= 0) {
-      return null;
-    }
-
-    const image = context.getImageData(0, 0, element.width, element.height);
-    const visited = new Uint8Array(element.width * element.height);
-    const scaleX = element.clientWidth / element.width;
-    const scaleY = element.clientHeight / element.height;
-    let largestCount = 0;
-    let largestX = 0;
-    let largestY = 0;
-
-    const isPainted = (index: number): boolean => (image.data[index * 4 + 3] ?? 0) > 0;
-
-    for (let start = 0; start < visited.length; start += 1) {
-      if (visited[start] || !isPainted(start)) {
-        continue;
-      }
-
-      const queue = [start];
-      visited[start] = 1;
-      let cursor = 0;
-      let count = 0;
-      let sumX = 0;
-      let sumY = 0;
-
-      while (cursor < queue.length) {
-        const index = queue[cursor];
-        cursor += 1;
-        const x = index % element.width;
-        const y = Math.floor(index / element.width);
-        count += 1;
-        sumX += x;
-        sumY += y;
-
-        const neighbors = [
-          x > 0 ? index - 1 : -1,
-          x + 1 < element.width ? index + 1 : -1,
-          y > 0 ? index - element.width : -1,
-          y + 1 < element.height ? index + element.width : -1,
-        ];
-
-        for (const neighbor of neighbors) {
-          if (neighbor < 0 || visited[neighbor] || !isPainted(neighbor)) {
-            continue;
-          }
-
-          visited[neighbor] = 1;
-          queue.push(neighbor);
-        }
-      }
-
-      if (count > largestCount) {
-        largestCount = count;
-        largestX = sumX / count;
-        largestY = sumY / count;
-      }
-    }
-
-    if (largestCount === 0) {
-      return null;
-    }
-
-    return {
-      x: largestX * scaleX,
-      y: largestY * scaleY,
-    };
-  });
-}
-
 async function countPaintedPixels(canvas: Locator): Promise<number> {
   return canvas.evaluate((element: HTMLCanvasElement) => {
     const context = element.getContext('2d');
@@ -196,6 +116,7 @@ test.describe('network map exploration', () => {
   }) => {
     const resolvedBaseUrl = BASE_URL as string;
     const searchStop = await loadCanonicalSearchStop(page, resolvedBaseUrl);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize(MOBILE_VIEWPORT);
     await page.goto(new URL(MAP_PATH, resolvedBaseUrl).toString());
 
@@ -232,15 +153,15 @@ test.describe('network map exploration', () => {
       searchStop.municipality,
     );
 
-    const markerPoint = await findLargestPaintedComponentCenter(overlayCanvas);
-    expect(markerPoint).not.toBeNull();
-    if (!markerPoint) {
+    const mapBox = await mapRegion.boundingBox();
+    expect(mapBox).not.toBeNull();
+    if (!mapBox) {
       return;
     }
 
     await page.locator('.leaflet-popup-close-button').click();
     await expect(popup).toBeHidden();
-    await overlayCanvas.click({ position: markerPoint });
+    await page.mouse.click(mapBox.x + mapBox.width / 2, mapBox.y + mapBox.height / 2);
 
     await expect(popup).toBeVisible();
     const detailsAction = popup.locator('.app-map-stop-popup__action');
