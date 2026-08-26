@@ -201,7 +201,9 @@ test.describe('network map exploration', () => {
       .toBeGreaterThan(baselinePaintedPixels);
   });
 
-  test('keeps the map immersive while search, controls and results remain usable', async ({ page }) => {
+  test('keeps the map immersive while search, controls and results remain usable', async ({
+    page,
+  }) => {
     const resolvedBaseUrl = BASE_URL as string;
     const mapUrl = new URL(MAP_PATH, resolvedBaseUrl).toString();
 
