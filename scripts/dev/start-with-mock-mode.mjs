@@ -4,6 +4,8 @@ import { resolve } from 'node:path';
 
 const runtimeFlagsPath = resolve('src/assets/runtime-flags.js');
 const validModes = new Set(['data', 'empty']);
+const routeSearchPreferencesStorageKey = 'andalucia-transit.routeSearchPreferences';
+const routeSearchPreferencesValue = JSON.stringify({ previewEnabled: false });
 const [, , requestedMode, ...serveExtraArgs] = process.argv;
 
 if (!requestedMode || !validModes.has(requestedMode)) {
@@ -11,8 +13,11 @@ if (!requestedMode || !validModes.has(requestedMode)) {
   process.exit(1);
 }
 
-const mockFlags =
-  `window.__ANDALUCIA_TRANSIT_FLAGS__ = Object.freeze({ forceSnapshot: false, mockDataMode: '${requestedMode}' });\n`;
+const mockFlags = [
+  `window.__ANDALUCIA_TRANSIT_FLAGS__ = Object.freeze({ forceSnapshot: false, mockDataMode: '${requestedMode}' });`,
+  `window.localStorage.setItem(${JSON.stringify(routeSearchPreferencesStorageKey)}, ${JSON.stringify(routeSearchPreferencesValue)});`,
+  '',
+].join('\n');
 
 async function main() {
   const originalContent = await readFile(runtimeFlagsPath, 'utf-8');
