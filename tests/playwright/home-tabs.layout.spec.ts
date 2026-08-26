@@ -183,11 +183,15 @@ test.describe('home tabs responsive layout', () => {
 
     for (let index = 0; index < 3; index += 1) {
       const control = controls.nth(index);
-      const dimensionsBefore = await control.evaluate<ControlDimensions>((element: HTMLElement) => ({
-        width: element.offsetWidth,
-        height: element.offsetHeight,
-      }));
-      const transformBefore = await control.evaluate((element) => getComputedStyle(element).transform);
+      const dimensionsBefore = await control.evaluate<ControlDimensions>(
+        (element: HTMLElement) => ({
+          width: element.offsetWidth,
+          height: element.offsetHeight,
+        }),
+      );
+      const transformBefore = await control.evaluate(
+        (element) => getComputedStyle(element).transform,
+      );
 
       await control.hover();
       await expect
