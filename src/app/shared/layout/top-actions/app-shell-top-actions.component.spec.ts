@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Observable, firstValueFrom, of } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { AppLayoutContextStore } from '@shared/layout/app-layout-context.store';
 import { AppShellTopActionsComponent } from '@shared/layout/top-actions/app-shell-top-actions.component';
@@ -36,6 +36,7 @@ describe('AppShellTopActionsComponent', () => {
       providers: [AppLayoutContextStore]
     }).compileComponents();
 
+    await firstValueFrom(TestBed.inject(TranslateService).use('en'));
     layoutContextStore = TestBed.inject(AppLayoutContextStore);
     fixture = TestBed.createComponent(AppShellTopActionsComponent);
     fixture.detectChanges();
