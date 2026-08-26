@@ -34,16 +34,24 @@
         </div>
       </header>
       <div class="map__content">
-        <div class="map__canvas" [attr.aria-busy]="isLocating() ? 'true' : null">
+        <div
+          class="map__canvas"
+          [attr.aria-busy]="isLocating() || isLoadingNetworkStops() ? 'true' : null"
+        >
           <div
             #mapCanvas
             class="map__leaflet"
-            role="img"
-            [attr.aria-label]="translationKeys.accessibleMapLabel | translate"
+            role="region"
+            [attr.aria-label]="translationKeys.description | translate"
           ></div>
-          <div *ngIf="isLocating()" class="map__canvas-progress" role="status" aria-live="polite">
+          <div
+            *ngIf="isLocating() || isLoadingNetworkStops()"
+            class="map__canvas-progress"
+            role="status"
+            aria-live="polite"
+          >
             <span class="app-loading-indicator app-loading-indicator--lg" aria-hidden="true"></span>
-            <span>{{ translationKeys.locating | translate }}</span>
+            <span *ngIf="isLocating()">{{ translationKeys.locating | translate }}</span>
           </div>
         </div>
         <aside
