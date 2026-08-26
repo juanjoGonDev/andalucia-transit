@@ -18,16 +18,14 @@ const EMPTY_NEARBY_STOP_OPTIONS: readonly NearbyStopOption[] = Object.freeze(
 export class NearbyStopOptionsService {
   private readonly stopDirectory = inject(StopDirectoryService);
 
-  loadOptions(
-    stops: readonly NearbyStopResult[]
-  ): Observable<readonly NearbyStopOption[]> {
+  loadOptions(stops: readonly NearbyStopResult[]): Observable<readonly NearbyStopOption[]> {
     if (!stops.length) {
       return of(EMPTY_NEARBY_STOP_OPTIONS);
     }
 
     const loaders = stops.map((stop) =>
       this.stopDirectory
-        .getOptionByStopId(stop.id)
+        .getOptionByStopSignature(stop.consortiumId, stop.id)
         .pipe(map((option) => (option ? { option, distanceInMeters: stop.distanceInMeters } : null)))
     );
 
