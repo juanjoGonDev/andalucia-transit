@@ -31,12 +31,19 @@ class MapHandleStub implements MapHandle {
   readonly renderedStops: readonly MapStopMarker[][] = [];
   readonly focusedPoints: readonly GeoCoordinateStub[][] = [];
   stopSelectHandler: MapStopSelectHandler | undefined;
+  setViewCount = 0;
+  userLocationRenderCount = 0;
+  routeRenderCount = 0;
   invalidationCount = 0;
   destroyed = false;
 
-  setView(): void {}
+  setView(): void {
+    this.setViewCount += 1;
+  }
 
-  renderUserLocation(): void {}
+  renderUserLocation(): void {
+    this.userLocationRenderCount += 1;
+  }
 
   renderStops(stops: readonly MapStopMarker[], onSelect?: MapStopSelectHandler): void {
     (this.renderedStops as MapStopMarker[][]).push([...stops]);
@@ -47,7 +54,9 @@ class MapHandleStub implements MapHandle {
     (this.focusedPoints as GeoCoordinateStub[][]).push([...points]);
   }
 
-  renderRoutes(_routes: readonly MapRoutePolyline[], _activeRouteId: string | null): void {}
+  renderRoutes(_routes: readonly MapRoutePolyline[], _activeRouteId: string | null): void {
+    this.routeRenderCount += 1;
+  }
 
   invalidateSize(): void {
     this.invalidationCount += 1;
