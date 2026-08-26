@@ -144,7 +144,8 @@ test.describe('network map exploration', () => {
     await expect(nearbyStop.locator('.map-stop__icon')).toBeVisible();
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
 
-    const nearbyStopName = (await nearbyStop.locator('.map-stop__name').textContent())?.trim() ?? '';
+    const nearbyStopName =
+      (await nearbyStop.locator('.map-stop__name').textContent())?.trim() ?? '';
     const stopMunicipality =
       (await nearbyStop.locator('.map-stop__municipality').textContent())?.trim() ?? '';
     const stopCode = (await nearbyStop.locator('.map-stop__code').textContent())?.trim() ?? '';
