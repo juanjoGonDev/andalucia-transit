@@ -1,8 +1,4 @@
-<section
-  class="map"
-  appLayoutContent
-  [appLayoutContentNavigationKey]="layoutNavigationKey"
->
+<section class="map" appLayoutContent [appLayoutContentNavigationKey]="layoutNavigationKey">
   <div class="utility-container">
     <div class="app-layout__body">
       <header class="map__hero app-hero">
@@ -116,8 +112,8 @@
                 [bodyClasses]="stopCardBodyClasses"
                 [primaryRole]="stopCardRole"
                 [primaryAriaLabel]="
-                  translationKeys.stopAriaLabel |
-                    translate: { code: stop.code, municipality: stop.municipality }
+                  translationKeys.stopAriaLabel
+                    | translate: { code: stop.code, municipality: stop.municipality }
                 "
                 (primaryActivated)="openNearbyStop(stop)"
               >
@@ -167,10 +163,11 @@
             <p *ngIf="routeSelectionSummary()" class="map__routes-summary">
               {{
                 translationKeys.routes.summary
-                  | translate: {
-                      origin: routeSelectionSummary()?.originName,
-                      destination: routeSelectionSummary()?.destinationName
-                    }
+                  | translate
+                    : {
+                        origin: routeSelectionSummary()?.originName,
+                        destination: routeSelectionSummary()?.destinationName,
+                      }
               }}
             </p>
             <p *ngIf="!hasRouteSelection()" class="map__routes-message">
@@ -206,12 +203,7 @@
               </div>
             </div>
             <p
-              *ngIf="
-                hasRouteSelection() &&
-                !isRouteLoading() &&
-                !routeErrorKey() &&
-                !hasRouteResults()
-              "
+              *ngIf="hasRouteSelection() && !isRouteLoading() && !routeErrorKey() && !hasRouteResults()"
               class="map__routes-message"
             >
               {{ translationKeys.routes.empty | translate }}
@@ -239,10 +231,7 @@
                           }}
                         </span>
                         <span class="map-route__distance">
-                          {{
-                            route.distanceTranslationKey
-                              | translate: { value: route.distanceValue }
-                          }}
+                          {{ route.distanceTranslationKey | translate: { value: route.distanceValue } }}
                         </span>
                       </div>
                     </div>
