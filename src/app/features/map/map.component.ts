@@ -305,6 +305,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       }
 
       this.stops.set(stops);
+      this.renderNearbyFallbackIfNeeded(stops);
 
       const nearbyCoordinates = stops.map((stop) => stop.coordinate);
 
@@ -397,6 +398,17 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         }
       }))
     );
+  }
+
+  private renderNearbyFallbackIfNeeded(stops: readonly MapStopView[]): void {
+    if (this.networkStopMarkers.length || !stops.length || !this.mapHandle) {
+      return;
+    }
+
+    const fallbackMarkers = Object.freeze(
+      stops.map((stop) => ({ id: stop.id, coordinate: stop.coordinate }))
+    );
+    this.mapHandle.renderStops(fallbackMarkers, this.handleStopMarkerSelect);
   }
 
   private readonly handleStopMarkerSelect = (stopId: string): void => {
