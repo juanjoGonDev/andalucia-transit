@@ -72,6 +72,42 @@ export function buildRouteSegmentCoordinates(
   return Object.freeze(coordinates);
 }
 
+export function buildOfficialRouteSegmentCoordinates(
+  officialRoute: readonly GeoCoordinate[],
+  selectedStops: readonly GeoCoordinate[]
+): readonly GeoCoordinate[] {
+  if (
+    officialRoute.length < MINIMUM_COORDINATE_COUNT ||
+    selectedStops.length < MINIMUM_COORDINATE_COUNT
+  ) {
+    return Object.freeze([]);
+  }
+
+  const origin = selectedStops[0]!;
+  const destination = selectedStops[selectedStops.length - 1]!;
+  const originIndex = findNearestCoordinateIndex(officialRoute, origin);
+  const destinationIndex = findNearestCoordinateIndex(officialRoute, destination);
+
+  if (originIndex === null || destinationIndex === null || originIndex === destinationIndex) {
+    return Object.freeze([]);
+  }
+
+  const lowerBound = Math.min(originIndex, destinationIndex);
+  const upperBound = Math.max(originIndex, destinationIndex);
+  const segment = officialRoute.slice(lowerBound, upperBound + 1);
+
+  if (originIndex > destinationIndex) {
+    segment.reverse();
+  }
+
+  return Object.freeze(
+    segment.map((coordinate) => ({
+      latitude: coordinate.latitude,
+      longitude: coordinate.longitude
+    }))
+  );
+}
+
 export function calculateRouteLengthInMeters(
   coordinates: readonly GeoCoordinate[]
 ): number {
@@ -120,6 +156,37 @@ export function buildRouteDirectionIndicators(
   }
 
   return Object.freeze(indicators);
+}
+
+function findNearestCoordinateIndex(
+  coordinates: readonly GeoCoordinate[],
+  target: GeoCoordinate
+): number | null {
+  if (!isFiniteCoordinate(target)) {
+    return null;
+  }
+
+  let nearestIndex: number | null = null;
+  let nearestDistance = Number.POSITIVE_INFINITY;
+
+  coordinates.forEach((coordinate, index) => {
+    if (!isFiniteCoordinate(coordinate)) {
+      return;
+    }
+
+    const distance = calculateDistanceInMeters(target, coordinate);
+
+    if (distance < nearestDistance) {
+      nearestDistance = distance;
+      nearestIndex = index;
+    }
+  });
+
+  return nearestIndex;
+}
+
+function isFiniteCoordinate(coordinate: GeoCoordinate): boolean {
+  return Number.isFinite(coordinate.latitude) && Number.isFinite(coordinate.longitude);
 }
 
 function buildDirectionSegments(
