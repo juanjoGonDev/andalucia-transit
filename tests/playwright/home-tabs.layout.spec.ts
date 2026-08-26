@@ -8,6 +8,7 @@ const MOBILE_VIEWPORT_HEIGHT = 844;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 const GEOMETRY_TOLERANCE_PX = 1;
 const MINIMUM_TOUCH_TARGET_PX = 44;
+const SHELL_CLEARANCE_PATHS = ['/', '/routes', '/map', '/favorites', '/settings', '/news'] as const;
 
 interface ElementBounds {
   readonly left: number;
@@ -30,6 +31,13 @@ interface TabLayoutMetrics {
 interface ControlDimensions {
   readonly width: number;
   readonly height: number;
+}
+
+interface RectangleBounds {
+  readonly top: number;
+  readonly right: number;
+  readonly bottom: number;
+  readonly left: number;
 }
 
 async function readTabLayoutMetrics(page: Page): Promise<TabLayoutMetrics> {
@@ -75,6 +83,15 @@ async function readTabLayoutMetrics(page: Page): Promise<TabLayoutMetrics> {
 function expectContained(inner: ElementBounds, outer: Pick<ElementBounds, 'left' | 'right'>): void {
   expect(inner.left).toBeGreaterThanOrEqual(outer.left - GEOMETRY_TOLERANCE_PX);
   expect(inner.right).toBeLessThanOrEqual(outer.right + GEOMETRY_TOLERANCE_PX);
+}
+
+function rectanglesOverlap(first: RectangleBounds, second: RectangleBounds): boolean {
+  return !(
+    first.right <= second.left + GEOMETRY_TOLERANCE_PX ||
+    first.left >= second.right - GEOMETRY_TOLERANCE_PX ||
+    first.bottom <= second.top + GEOMETRY_TOLERANCE_PX ||
+    first.top >= second.bottom - GEOMETRY_TOLERANCE_PX
+  );
 }
 
 test.describe('home tabs responsive layout', () => {
@@ -135,6 +152,35 @@ test.describe('home tabs responsive layout', () => {
       expectContained(selectedAfterSwitch[0], switchedMetrics.tabList);
     });
   }
+
+  test('keeps persistent shell actions clear of mobile page titles', async ({ page }) => {
+    const resolvedBaseUrl = BASE_URL as string;
+    await page.setViewportSize({ width: 390, height: MOBILE_VIEWPORT_HEIGHT });
+
+    for (const path of SHELL_CLEARANCE_PATHS) {
+      await page.goto(new URL(path, resolvedBaseUrl).toString());
+
+      const shell = page.locator('.shell-actions__shell');
+      const title = page.locator('.app-hero__title').first();
+      await expect(shell).toBeVisible();
+      await expect(title).toBeVisible();
+
+      const shellBounds = await shell.boundingBox();
+      const titleBounds = await title.boundingBox();
+      expect(shellBounds).not.toBeNull();
+      expect(titleBounds).not.toBeNull();
+
+      if (!shellBounds || !titleBounds) {
+        continue;
+      }
+
+      expect(rectanglesOverlap(shellBounds, titleBounds), `${path} shell/title overlap`).toBe(false);
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
+        `${path} horizontal overflow`,
+      ).toBe(true);
+    }
+  });
 
   test('navigates between Home and Map through persistent shell shortcuts', async ({ page }) => {
     const resolvedBaseUrl = BASE_URL as string;
