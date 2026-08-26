@@ -1,18 +1,77 @@
-import { expect, test, type Locator } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const MAP_PATH = '/map';
+const STOP_DIRECTORY_INDEX_PATH = '/assets/data/stop-directory/index.json';
 const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 const MINIMUM_PAINTED_PIXELS = 100;
 const MINIMUM_MOBILE_MAP_HEIGHT = 360;
 const DESKTOP_COLUMN_DOMINANCE_RATIO = 1.3;
 const DESKTOP_HEIGHT_TOLERANCE_PX = 3;
+const MINIMUM_SEARCH_CODE_LENGTH = 2;
 const SEVILLE_LOCATION = { latitude: 37.389092, longitude: -5.984459 } as const;
 
 interface CanvasActivationPoint {
   readonly x: number;
   readonly y: number;
+}
+
+interface StopDirectoryIndexFile {
+  readonly searchIndex: readonly StopDirectorySearchEntry[];
+}
+
+interface StopDirectorySearchEntry {
+  readonly stopCode: string;
+  readonly name: string;
+  readonly municipality: string;
+}
+
+interface CanonicalSearchStop {
+  readonly code: string;
+  readonly name: string;
+  readonly municipality: string;
+}
+
+async function loadCanonicalSearchStop(
+  page: Page,
+  baseUrl: string,
+): Promise<CanonicalSearchStop> {
+  const response = await page.request.get(new URL(STOP_DIRECTORY_INDEX_PATH, baseUrl).toString());
+  expect(response.ok()).toBe(true);
+
+  const directory = (await response.json()) as StopDirectoryIndexFile;
+  const codeCounts = new Map<string, number>();
+
+  for (const entry of directory.searchIndex) {
+    const code = entry.stopCode.trim();
+    if (code.length < MINIMUM_SEARCH_CODE_LENGTH) {
+      continue;
+    }
+
+    codeCounts.set(code, (codeCounts.get(code) ?? 0) + 1);
+  }
+
+  const candidate = directory.searchIndex.find((entry) => {
+    const code = entry.stopCode.trim();
+    return (
+      code.length >= MINIMUM_SEARCH_CODE_LENGTH &&
+      codeCounts.get(code) === 1 &&
+      entry.name.trim().length > 0 &&
+      entry.municipality.trim().length > 0
+    );
+  });
+
+  expect(candidate).toBeDefined();
+  if (!candidate) {
+    throw new Error('Canonical stop directory does not contain a unique searchable stop code.');
+  }
+
+  return {
+    code: candidate.stopCode.trim(),
+    name: candidate.name.trim(),
+    municipality: candidate.municipality.trim(),
+  };
 }
 
 async function findLargestPaintedComponentCenter(
@@ -114,19 +173,15 @@ test.describe('network map exploration', () => {
 
   test('searches a real stop, reopens its marker and navigates through the popover action', async ({
     page,
-    context,
   }) => {
     const resolvedBaseUrl = BASE_URL as string;
-    const origin = new URL(resolvedBaseUrl).origin;
-    await context.grantPermissions(['geolocation'], { origin });
-    await context.setGeolocation(SEVILLE_LOCATION);
+    const searchStop = await loadCanonicalSearchStop(page, resolvedBaseUrl);
     await page.setViewportSize(MOBILE_VIEWPORT);
     await page.goto(new URL(MAP_PATH, resolvedBaseUrl).toString());
 
     const mapRegion = page.locator('.map__leaflet');
     const mapSurface = page.locator('.map__canvas');
     const overlayCanvas = page.locator('.leaflet-overlay-pane canvas').first();
-    const locateButton = page.locator('.map__locate-button');
 
     await expect(mapRegion).toBeVisible();
     await expect(mapRegion).toHaveAttribute('role', 'region');
@@ -137,38 +192,25 @@ test.describe('network map exploration', () => {
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
     expect(await countPaintedPixels(overlayCanvas)).toBeGreaterThan(MINIMUM_PAINTED_PIXELS);
 
-    await locateButton.click();
-
-    const nearbyStop = page.locator('.map__stop-item').first();
-    await expect(nearbyStop).toBeVisible({ timeout: 15_000 });
-    await expect(nearbyStop.locator('.map-stop__icon')).toBeVisible();
-    await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
-
-    const nearbyStopName =
-      (await nearbyStop.locator('.map-stop__name').textContent())?.trim() ?? '';
-    const stopMunicipality =
-      (await nearbyStop.locator('.map-stop__municipality').textContent())?.trim() ?? '';
-    const stopCode = (await nearbyStop.locator('.map-stop__code').textContent())?.trim() ?? '';
-    expect(nearbyStopName).not.toBe('');
-    expect(stopMunicipality).not.toBe('');
-    expect(stopCode).not.toBe('');
-
     const searchInput = page.locator('#map-network-search');
-    await searchInput.fill(stopCode);
+    await searchInput.fill(searchStop.code);
 
     const stopOption = page
       .locator('.app-autocomplete__option')
-      .filter({ hasText: stopCode })
-      .filter({ hasText: stopMunicipality })
+      .filter({ hasText: searchStop.name })
+      .filter({ hasText: searchStop.code })
+      .filter({ hasText: searchStop.municipality })
       .first();
     await expect(stopOption).toBeVisible();
     await stopOption.click();
 
     const popup = page.locator('.app-map-stop-popup');
     await expect(popup).toBeVisible();
-    await expect(popup.locator('.app-map-stop-popup__title')).not.toHaveText('');
-    await expect(popup.locator('.app-map-stop-popup__code')).toHaveText(stopCode);
-    await expect(popup.locator('.app-map-stop-popup__municipality')).toHaveText(stopMunicipality);
+    await expect(popup.locator('.app-map-stop-popup__title')).toHaveText(searchStop.name);
+    await expect(popup.locator('.app-map-stop-popup__code')).toHaveText(searchStop.code);
+    await expect(popup.locator('.app-map-stop-popup__municipality')).toHaveText(
+      searchStop.municipality,
+    );
 
     const markerPoint = await findLargestPaintedComponentCenter(overlayCanvas);
     expect(markerPoint).not.toBeNull();
