@@ -137,7 +137,10 @@ test.describe('rendered theme contrast', () => {
     await expectRenderedContrast(page.locator('.home__card-subtitle'), 'home muted subtitle');
 
     await open(page, ROUTE_SEARCH_PATH);
-    await expectRenderedContrast(page.locator('.route-search__empty p').first(), 'route-search empty copy');
+    await expectRenderedContrast(
+      page.locator('.route-search__empty p').first(),
+      'route-search empty copy',
+    );
 
     await open(page, MAP_PATH);
     await expectRenderedContrast(page.locator('.map__panel-message'), 'map panel prompt');
