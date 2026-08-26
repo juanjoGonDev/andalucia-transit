@@ -140,9 +140,10 @@ test.describe('network map exploration', () => {
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
 
     const stopName = (await nearbyStop.locator('.map-stop__name').textContent())?.trim() ?? '';
-    const stopCode = (await nearbyStop.locator('.map-stop__code').textContent())?.trim() ?? '';
+    const stopMunicipality =
+      (await nearbyStop.locator('.map-stop__municipality').textContent())?.trim() ?? '';
     expect(stopName).not.toBe('');
-    expect(stopCode).not.toBe('');
+    expect(stopMunicipality).not.toBe('');
 
     const searchInput = page.locator('#map-network-search');
     await searchInput.fill(stopName);
@@ -150,7 +151,7 @@ test.describe('network map exploration', () => {
     const stopOption = page
       .locator('.app-autocomplete__option')
       .filter({ hasText: stopName })
-      .filter({ hasText: stopCode })
+      .filter({ hasText: stopMunicipality })
       .first();
     await expect(stopOption).toBeVisible();
     await stopOption.click();
