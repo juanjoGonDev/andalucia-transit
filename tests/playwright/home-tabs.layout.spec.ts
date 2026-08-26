@@ -5,6 +5,7 @@ const HOME_PATH = '/';
 const MAP_PATH = '/map';
 const MOBILE_VIEWPORT_WIDTHS = [320, 360, 390, 430] as const;
 const MOBILE_VIEWPORT_HEIGHT = 844;
+const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 const GEOMETRY_TOLERANCE_PX = 1;
 const MINIMUM_TOUCH_TARGET_PX = 44;
 
@@ -24,6 +25,11 @@ interface TabLayoutMetrics {
   readonly tabs: readonly ElementBounds[];
   readonly documentClientWidth: number;
   readonly documentScrollWidth: number;
+}
+
+interface ControlDimensions {
+  readonly width: number;
+  readonly height: number;
 }
 
 async function readTabLayoutMetrics(page: Page): Promise<TabLayoutMetrics> {
@@ -164,6 +170,58 @@ test.describe('home tabs responsive layout', () => {
     await expect(page.locator('.shell-actions__button--quick[href="/"]')).toHaveAttribute(
       'aria-current',
       'page',
+    );
+  });
+
+  test('animates persistent shell controls on hover without layout shift', async ({ page }) => {
+    const resolvedBaseUrl = BASE_URL as string;
+    await page.setViewportSize(DESKTOP_VIEWPORT);
+    await page.goto(new URL(HOME_PATH, resolvedBaseUrl).toString());
+
+    const controls = page.locator('.shell-actions__button');
+    await expect(controls).toHaveCount(3);
+
+    for (let index = 0; index < 3; index += 1) {
+      const control = controls.nth(index);
+      const dimensionsBefore = await control.evaluate<ControlDimensions>((element: HTMLElement) => ({
+        width: element.offsetWidth,
+        height: element.offsetHeight,
+      }));
+      const transformBefore = await control.evaluate((element) => getComputedStyle(element).transform);
+
+      await control.hover();
+      await expect
+        .poll(() => control.evaluate((element) => getComputedStyle(element).transform))
+        .not.toBe(transformBefore);
+
+      const transformDuringHover = await control.evaluate(
+        (element) => getComputedStyle(element).transform,
+      );
+      const dimensionsDuringHover = await control.evaluate<ControlDimensions>(
+        (element: HTMLElement) => ({
+          width: element.offsetWidth,
+          height: element.offsetHeight,
+        }),
+      );
+
+      expect(transformDuringHover).not.toBe('none');
+      expect(dimensionsDuringHover).toEqual(dimensionsBefore);
+    }
+  });
+
+  test('removes shell hover movement when reduced motion is requested', async ({ page }) => {
+    const resolvedBaseUrl = BASE_URL as string;
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.setViewportSize(DESKTOP_VIEWPORT);
+    await page.goto(new URL(HOME_PATH, resolvedBaseUrl).toString());
+
+    const mapLink = page.locator('.shell-actions__button--quick[href="/map"]');
+    await expect(mapLink).toBeVisible();
+    await mapLink.hover();
+
+    expect(await mapLink.evaluate((element) => getComputedStyle(element).transform)).toBe('none');
+    expect(await mapLink.evaluate((element) => getComputedStyle(element).transitionDuration)).toBe(
+      '0s',
     );
   });
 });
