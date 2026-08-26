@@ -12,6 +12,7 @@ import {
   signal
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom, map, startWith } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
@@ -20,7 +21,11 @@ import { PluralizationService } from '@core/i18n/pluralization.service';
 import { classifyGeolocationError } from '@core/services/geolocation-error.util';
 import { GEOLOCATION_REQUEST_OPTIONS } from '@core/services/geolocation-request.options';
 import { GeolocationService } from '@core/services/geolocation.service';
-import { NearbyStopResult, NearbyStopsService } from '@core/services/nearby-stops.service';
+import {
+  NearbyStopRecord,
+  NearbyStopResult,
+  NearbyStopsService
+} from '@core/services/nearby-stops.service';
 import { StopDirectoryService } from '@data/stops/stop-directory.service';
 import {
   RouteOverlayFacade,
@@ -100,6 +105,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly geolocation = inject(GeolocationService);
   private readonly nearbyStops = inject(NearbyStopsService);
   private readonly stopDirectory = inject(StopDirectoryService);
+  private readonly router = inject(Router);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly overlayFacade = inject(RouteOverlayFacade);
   private readonly translate = inject(TranslateService);
@@ -111,6 +117,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   private mapHandle: MapHandle | null = null;
   private userCoordinate: GeoCoordinate | null = null;
+  private networkStopMarkers: readonly MapStopMarker[] = Object.freeze([]);
   private isDestroyed = false;
   private currentSelectionKey: string | null = null;
   private hasFittedRoutes = false;
@@ -159,6 +166,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected readonly routeCardRole = ROUTE_CARD_ROLE;
 
   protected readonly stops = signal<readonly MapStopView[]>([]);
+  protected readonly isLoadingNetworkStops = signal(false);
   protected readonly isLocating = signal(false);
   protected readonly hasAttemptedLocation = signal(false);
   protected readonly errorKey = signal<string | null>(null);
@@ -243,6 +251,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     await this.invalidateMapSize();
     this.updateMapRoutes();
+    await this.loadNetworkStops();
   }
 
   ngOnDestroy(): void {
@@ -278,12 +287,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       this.userCoordinate = coordinate;
 
       this.mapHandle?.renderUserLocation(coordinate);
-      this.mapHandle?.renderStops([]);
 
       const results = await this.nearbyStops.findClosestStops(coordinate);
 
       if (this.isDestroyed) {
         return;
+      }
+
+      if (!this.networkStopMarkers.length) {
+        await this.loadNetworkStops();
       }
 
       const stops = await this.loadStops(results);
@@ -294,18 +306,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
       this.stops.set(stops);
 
-      const markers = stops.map<MapStopMarker>((stop) => ({
-        id: stop.id,
-        coordinate: stop.coordinate
-      }));
+      const nearbyCoordinates = stops.map((stop) => stop.coordinate);
 
-      if (markers.length) {
-        this.mapHandle?.renderStops(markers);
-        const focusPoints = this.buildFocusPoints(
-          markers.map((marker) => marker.coordinate),
-          coordinate
-        );
-        this.mapHandle?.fitToCoordinates(focusPoints);
+      if (nearbyCoordinates.length) {
+        this.mapHandle?.fitToCoordinates(this.buildFocusPoints(nearbyCoordinates, coordinate));
       } else {
         this.mapHandle?.fitToCoordinates([coordinate]);
       }
@@ -352,6 +356,52 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected refreshRoutes(): void {
     this.overlayFacade.refresh();
   }
+
+  private async loadNetworkStops(): Promise<void> {
+    if (!this.mapHandle || this.isLoadingNetworkStops()) {
+      return;
+    }
+
+    this.isLoadingNetworkStops.set(true);
+
+    try {
+      const records = await this.nearbyStops.getAllStops();
+
+      if (this.isDestroyed || !this.mapHandle) {
+        return;
+      }
+
+      const markers = this.buildNetworkMarkers(records);
+      this.networkStopMarkers = markers;
+      this.mapHandle.renderStops(markers, this.handleStopMarkerSelect);
+
+      if (markers.length && !this.userCoordinate && !this.hasRouteSelection()) {
+        this.mapHandle.fitToCoordinates(markers.map((marker) => marker.coordinate));
+      }
+    } catch {
+      this.networkStopMarkers = Object.freeze([]);
+    } finally {
+      if (!this.isDestroyed) {
+        this.isLoadingNetworkStops.set(false);
+      }
+    }
+  }
+
+  private buildNetworkMarkers(records: readonly NearbyStopRecord[]): readonly MapStopMarker[] {
+    return Object.freeze(
+      records.map((record) => ({
+        id: record.stopId,
+        coordinate: {
+          latitude: record.latitude,
+          longitude: record.longitude
+        }
+      }))
+    );
+  }
+
+  private readonly handleStopMarkerSelect = (stopId: string): void => {
+    void this.router.navigate([ROOT_ROUTE_SEGMENT, this.stopDetailRouteKey, stopId]);
+  };
 
   private async loadStops(
     results: readonly NearbyStopResult[]
