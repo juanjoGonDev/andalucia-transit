@@ -80,7 +80,9 @@ async function countPaintedPixels(canvas: Locator): Promise<number> {
 test.describe('network map exploration', () => {
   test.skip(!BASE_URL, 'E2E_BASE_URL environment variable is required for map exploration tests.');
 
-  test('renders the stop network and navigates through a marker popover action', async ({ page }) => {
+  test('renders the stop network and navigates through a marker popover action', async ({
+    page,
+  }) => {
     const resolvedBaseUrl = BASE_URL as string;
     await page.setViewportSize(MOBILE_VIEWPORT);
     await page.goto(new URL(MAP_PATH, resolvedBaseUrl).toString());
