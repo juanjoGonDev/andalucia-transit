@@ -33,10 +33,7 @@ interface CanonicalSearchStop {
   readonly municipality: string;
 }
 
-async function loadCanonicalSearchStop(
-  page: Page,
-  baseUrl: string,
-): Promise<CanonicalSearchStop> {
+async function loadCanonicalSearchStop(page: Page, baseUrl: string): Promise<CanonicalSearchStop> {
   const response = await page.request.get(new URL(STOP_DIRECTORY_INDEX_PATH, baseUrl).toString());
   expect(response.ok()).toBe(true);
 
