@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { GeoCoordinate, calculateDistanceInMeters } from '@domain/utils/geo-distance.util';
 
 interface StopDirectoryIndexFile {
@@ -30,6 +30,10 @@ interface StopDirectoryChunkEntry {
   };
 }
 
+export interface NearbyStopsHttpClient {
+  get<T>(url: string): Observable<T>;
+}
+
 export interface NearbyStopRecord {
   readonly consortiumId: number;
   readonly stopId: string;
@@ -45,6 +49,7 @@ export interface NearbyStopRecord {
 }
 
 export interface NearbyStopResult {
+  readonly consortiumId: number;
   readonly id: string;
   readonly name: string;
   readonly distanceInMeters: number;
@@ -52,9 +57,10 @@ export interface NearbyStopResult {
 
 const EMPTY_RECORDS: readonly NearbyStopRecord[] = Object.freeze([]);
 const EMPTY_RESULTS: readonly NearbyStopResult[] = Object.freeze([]);
+const STOP_IDENTITY_SEPARATOR = ':' as const;
 
 export async function loadNearbyStopRecords(
-  http: HttpClient,
+  http: NearbyStopsHttpClient,
   indexPath: string
 ): Promise<readonly NearbyStopRecord[]> {
   const index = await firstValueFrom(http.get<StopDirectoryIndexFile>(indexPath));
@@ -73,11 +79,13 @@ export async function loadNearbyStopRecords(
     );
 
     for (const stop of chunk.stops) {
-      if (seen.has(stop.stopId)) {
+      const identity = buildNearbyStopIdentity(stop.consortiumId, stop.stopId);
+
+      if (seen.has(identity)) {
         continue;
       }
 
-      seen.add(stop.stopId);
+      seen.add(identity);
       records.push({
         consortiumId: stop.consortiumId,
         stopId: stop.stopId,
@@ -120,6 +128,7 @@ export function buildNearbyStopResults(
     }
 
     candidates.push({
+      consortiumId: record.consortiumId,
       id: record.stopId,
       name: record.name,
       distanceInMeters: distance
@@ -132,6 +141,10 @@ export function buildNearbyStopResults(
 
   candidates.sort((first, second) => first.distanceInMeters - second.distanceInMeters);
   return Object.freeze(candidates.slice(0, limit));
+}
+
+export function buildNearbyStopIdentity(consortiumId: number, stopId: string): string {
+  return `${consortiumId}${STOP_IDENTITY_SEPARATOR}${stopId}`;
 }
 
 function resolveChunkBasePath(indexPath: string): string {
