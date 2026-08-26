@@ -27,7 +27,7 @@ jobs:
         contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)
       )
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     permissions:
       contents: write
       issues: write
@@ -102,11 +102,14 @@ jobs:
           format_paths=(
             .agents/specs/2026-08-25-home-mobile-tabs.md
             .agents/specs/2026-08-26-map-all-stops-navigation.md
+            .agents/specs/2026-08-26-visual-state-audit.md
             .github/workflows/pr-visual-evidence.yml
             src/app/features/home/home.component.scss
             src/app/features/map/map.component.html
+            tests/playwright/deterministic-visual-states.spec.ts
             tests/playwright/home-tabs.layout.spec.ts
             tests/playwright/map-exploration.spec.ts
+            tests/playwright/theme.contrast.spec.ts
           )
           if ! pnpm exec prettier --check "${format_paths[@]}"; then
             pnpm exec prettier --write "${format_paths[@]}"
@@ -118,7 +121,7 @@ jobs:
           pnpm run test:angular
           pnpm run build
 
-      - name: Start deterministic mock application
+      - name: Start deterministic data application
         if: steps.pr.outputs.found == 'true'
         shell: bash
         run: |
@@ -139,18 +142,21 @@ jobs:
           cat "$RUNNER_TEMP/andalucia-transit.log" >&2
           exit 1
 
-      - name: Verify responsive layout and map exploration
+      - name: Verify populated responsive and accessibility states
         if: steps.pr.outputs.found == 'true'
         shell: bash
         env:
           E2E_BASE_URL: http://127.0.0.1:4200
+          E2E_MOCK_MODE: data
         run: |
           set -euo pipefail
           pnpm exec playwright test \
+            tests/playwright/deterministic-visual-states.spec.ts \
             tests/playwright/home-tabs.layout.spec.ts \
-            tests/playwright/map-exploration.spec.ts
+            tests/playwright/map-exploration.spec.ts \
+            tests/playwright/theme.contrast.spec.ts
 
-      - name: Capture canonical mobile and desktop screens
+      - name: Capture populated mobile and desktop screens
         if: steps.pr.outputs.found == 'true'
         shell: bash
         run: |
@@ -170,14 +176,84 @@ jobs:
               --fullPage=true
           }
 
-          capture / home
-          capture /routes route-search
-          capture /map map
-          capture /favorites favorites
-          capture /settings settings
-          capture /news news
+          capture / home-data
+          capture /routes route-search-initial
+          capture /map map-data
+          capture /recents recent-data
+          capture /favorites favorites-data
+          capture /settings settings-data
+          capture /news news-data
 
-          test "$(find evidence-assets -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 12
+      - name: Switch to deterministic empty application
+        if: steps.pr.outputs.found == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -f "$RUNNER_TEMP/andalucia-transit.pid" ]; then
+            previous_pid=$(cat "$RUNNER_TEMP/andalucia-transit.pid")
+            kill "$previous_pid" >/dev/null 2>&1 || true
+            for attempt in $(seq 1 30); do
+              if ! kill -0 "$previous_pid" >/dev/null 2>&1; then
+                break
+              fi
+              if [ "$attempt" -eq 30 ]; then
+                echo "Deterministic data application did not stop cleanly" >&2
+                exit 1
+              fi
+              sleep 1
+            done
+          fi
+
+          pnpm run dev:mock-empty --host 127.0.0.1 --port 4200 > "$RUNNER_TEMP/andalucia-transit-empty.log" 2>&1 &
+          app_pid=$!
+          echo "$app_pid" > "$RUNNER_TEMP/andalucia-transit.pid"
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent --show-error http://127.0.0.1:4200/ >/dev/null; then
+              exit 0
+            fi
+            if ! kill -0 "$app_pid" >/dev/null 2>&1; then
+              cat "$RUNNER_TEMP/andalucia-transit-empty.log" >&2
+              exit 1
+            fi
+            sleep 2
+          done
+          cat "$RUNNER_TEMP/andalucia-transit-empty.log" >&2
+          exit 1
+
+      - name: Verify deterministic empty states
+        if: steps.pr.outputs.found == 'true'
+        shell: bash
+        env:
+          E2E_BASE_URL: http://127.0.0.1:4200
+          E2E_MOCK_MODE: empty
+        run: |
+          set -euo pipefail
+          pnpm exec playwright test tests/playwright/deterministic-visual-states.spec.ts
+
+      - name: Capture empty mobile and desktop screens
+        if: steps.pr.outputs.found == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          capture() {
+            route=$1
+            slug=$2
+            pnpm run screenshot -- \
+              --url="http://127.0.0.1:4200${route}" \
+              --waitFor=app-root \
+              --outDir=evidence-assets \
+              --name="$slug" \
+              --locale=es \
+              --breakpoints=390x844,1440x900 \
+              --fullPage=true
+          }
+
+          capture /recents recent-empty
+          capture /favorites favorites-empty
+
+          test "$(find evidence-assets -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 18
           while IFS= read -r file; do
             test "$(stat -c %s "$file")" -le 25000000
           done < <(find evidence-assets -maxdepth 1 -type f -name '*.png' -print)
@@ -262,14 +338,17 @@ jobs:
 
           Mandatory screenshots generated from final head \`$HEAD_SHA\` by the [visual evidence workflow]($run_url). Media is temporary and is not committed to the repository.
 
-          | Screen | Mobile · 390×844 | Desktop · 1440×900 |
-          | --- | --- | --- |
-          | Home | <img src="$base/home_es_390_844_full.png" width="220" alt="Home screen at 390 by 844 pixels"> | <img src="$base/home_es_1440_900_full.png" width="420" alt="Home screen at 1440 by 900 pixels"> |
-          | Route search | <img src="$base/route-search_es_390_844_full.png" width="220" alt="Route search at 390 by 844 pixels"> | <img src="$base/route-search_es_1440_900_full.png" width="420" alt="Route search at 1440 by 900 pixels"> |
-          | Map | <img src="$base/map_es_390_844_full.png" width="220" alt="Network map at 390 by 844 pixels"> | <img src="$base/map_es_1440_900_full.png" width="420" alt="Network map at 1440 by 900 pixels"> |
-          | Favorites | <img src="$base/favorites_es_390_844_full.png" width="220" alt="Favorites at 390 by 844 pixels"> | <img src="$base/favorites_es_1440_900_full.png" width="420" alt="Favorites at 1440 by 900 pixels"> |
-          | Settings | <img src="$base/settings_es_390_844_full.png" width="220" alt="Settings at 390 by 844 pixels"> | <img src="$base/settings_es_1440_900_full.png" width="420" alt="Settings at 1440 by 900 pixels"> |
-          | News | <img src="$base/news_es_390_844_full.png" width="220" alt="News at 390 by 844 pixels"> | <img src="$base/news_es_1440_900_full.png" width="420" alt="News at 1440 by 900 pixels"> |
+          | Screen | State | Mobile · 390×844 | Desktop · 1440×900 |
+          | --- | --- | --- | --- |
+          | Home | Populated data | <img src="$base/home-data_es_390_844_full.png" width="220" alt="Home populated state at 390 by 844 pixels"> | <img src="$base/home-data_es_1440_900_full.png" width="420" alt="Home populated state at 1440 by 900 pixels"> |
+          | Route search | Initial | <img src="$base/route-search-initial_es_390_844_full.png" width="220" alt="Route search initial state at 390 by 844 pixels"> | <img src="$base/route-search-initial_es_1440_900_full.png" width="420" alt="Route search initial state at 1440 by 900 pixels"> |
+          | Map | Populated data | <img src="$base/map-data_es_390_844_full.png" width="220" alt="Network map populated state at 390 by 844 pixels"> | <img src="$base/map-data_es_1440_900_full.png" width="420" alt="Network map populated state at 1440 by 900 pixels"> |
+          | Recent searches | Populated data | <img src="$base/recent-data_es_390_844_full.png" width="220" alt="Recent searches populated state at 390 by 844 pixels"> | <img src="$base/recent-data_es_1440_900_full.png" width="420" alt="Recent searches populated state at 1440 by 900 pixels"> |
+          | Favorites | Populated data | <img src="$base/favorites-data_es_390_844_full.png" width="220" alt="Favorites populated state at 390 by 844 pixels"> | <img src="$base/favorites-data_es_1440_900_full.png" width="420" alt="Favorites populated state at 1440 by 900 pixels"> |
+          | Settings | Deterministic data | <img src="$base/settings-data_es_390_844_full.png" width="220" alt="Settings at 390 by 844 pixels"> | <img src="$base/settings-data_es_1440_900_full.png" width="420" alt="Settings at 1440 by 900 pixels"> |
+          | News | Populated data | <img src="$base/news-data_es_390_844_full.png" width="220" alt="News populated state at 390 by 844 pixels"> | <img src="$base/news-data_es_1440_900_full.png" width="420" alt="News populated state at 1440 by 900 pixels"> |
+          | Recent searches | Empty | <img src="$base/recent-empty_es_390_844_full.png" width="220" alt="Recent searches empty state at 390 by 844 pixels"> | <img src="$base/recent-empty_es_1440_900_full.png" width="420" alt="Recent searches empty state at 1440 by 900 pixels"> |
+          | Favorites | Empty | <img src="$base/favorites-empty_es_390_844_full.png" width="220" alt="Favorites empty state at 390 by 844 pixels"> | <img src="$base/favorites-empty_es_1440_900_full.png" width="420" alt="Favorites empty state at 1440 by 900 pixels"> |
           EOF
 
           current_head=$(gh api "repos/$REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
