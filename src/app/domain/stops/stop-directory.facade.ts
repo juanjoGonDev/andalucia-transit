@@ -27,6 +27,13 @@ export class StopDirectoryFacade {
     return this.directory.getOptionByStopSignature(consortiumId, stopId);
   }
 
+  getRecordByStopSignature(
+    consortiumId: number,
+    stopId: string
+  ): Observable<StopDirectoryRecord | null> {
+    return this.directory.getStopBySignature(consortiumId, stopId);
+  }
+
   searchStops(request: StopSearchRequest): Observable<readonly StopDirectoryOption[]> {
     return this.directory.searchStops(request);
   }
