@@ -1,6 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subscription, of, throwError } from 'rxjs';
-import { RouteLineStop, RouteLinesApiService } from '@data/route-search/route-lines-api.service';
+import {
+  RouteLineDetail,
+  RouteLineStop,
+  RouteLinesApiService
+} from '@data/route-search/route-lines-api.service';
 import { RouteOverlayFacade, RouteOverlayState } from '@domain/map/route-overlay.facade';
 import {
   RouteSearchLineMatch,
@@ -17,6 +21,8 @@ class RouteSearchStateServiceStub {
     this.subject.next(selection);
   }
 }
+
+type CoordinateTuple = readonly [number, number];
 
 const CONSORTIUM_ID = 1;
 const LINE_IDENTIFIER = 'line-1' as const;
@@ -50,26 +56,34 @@ const LINE_DIRECTION_ALTERNATE = 2;
 const LINE_DIRECTION_TIE = 3;
 const ROUTE_ERROR_KEY = 'map.routes.error' as const;
 const QUERY_DATE = new Date('2025-10-19T00:00:00Z');
-const ORIGIN_COORDINATE: [number, number] = [37.389092, -5.984459];
-const MID_COORDINATE: [number, number] = [37.4, -5.99];
-const DESTINATION_COORDINATE: [number, number] = [37.41, -5.995];
-const ALTERNATE_MID_COORDINATE_A: [number, number] = [37.36, -5.95];
-const ALTERNATE_MID_COORDINATE_B: [number, number] = [37.43, -5.965];
-const BASE_ROUTE_COORDINATES: readonly [number, number][] = [
+const ORIGIN_COORDINATE: CoordinateTuple = [37.389092, -5.984459];
+const MID_COORDINATE: CoordinateTuple = [37.4, -5.99];
+const DESTINATION_COORDINATE: CoordinateTuple = [37.41, -5.995];
+const ALTERNATE_MID_COORDINATE_A: CoordinateTuple = [37.36, -5.95];
+const ALTERNATE_MID_COORDINATE_B: CoordinateTuple = [37.43, -5.965];
+const CURVE_POINT_A: CoordinateTuple = [37.394, -5.987];
+const CURVE_POINT_B: CoordinateTuple = [37.404, -5.993];
+const BASE_ROUTE_COORDINATES: readonly CoordinateTuple[] = [
   ORIGIN_COORDINATE,
   MID_COORDINATE,
   DESTINATION_COORDINATE
 ] as const;
-const ALTERNATE_ROUTE_COORDINATES: readonly [number, number][] = [
+const ALTERNATE_ROUTE_COORDINATES: readonly CoordinateTuple[] = [
   ORIGIN_COORDINATE,
   ALTERNATE_MID_COORDINATE_A,
   ALTERNATE_MID_COORDINATE_B,
   DESTINATION_COORDINATE
 ] as const;
-const TIE_ROUTE_COORDINATES: readonly [number, number][] = [
+const TIE_ROUTE_COORDINATES: readonly CoordinateTuple[] = [
   ORIGIN_COORDINATE,
   MID_COORDINATE,
   MID_COORDINATE,
+  DESTINATION_COORDINATE
+] as const;
+const CURVED_OFFICIAL_COORDINATES: readonly CoordinateTuple[] = [
+  ORIGIN_COORDINATE,
+  CURVE_POINT_A,
+  CURVE_POINT_B,
   DESTINATION_COORDINATE
 ] as const;
 const EXPECTED_ROUTE_LENGTH_METERS = calculateExpectedLengthFromCoordinates(
@@ -81,10 +95,11 @@ const EXPECTED_ALTERNATE_ROUTE_LENGTH_METERS = calculateExpectedLengthFromCoordi
 const EXPECTED_TIE_ROUTE_LENGTH_METERS = calculateExpectedLengthFromCoordinates(
   TIE_ROUTE_COORDINATES
 );
+const EXPECTED_CURVED_ROUTE_LENGTH_METERS = calculateExpectedLengthFromCoordinates(
+  CURVED_OFFICIAL_COORDINATES
+);
 
-function calculateExpectedLengthFromCoordinates(
-  coordinates: readonly [number, number][]
-): number {
+function calculateExpectedLengthFromCoordinates(coordinates: readonly CoordinateTuple[]): number {
   if (coordinates.length < 2) {
     return 0;
   }
@@ -109,7 +124,13 @@ describe('RouteOverlayFacade', () => {
   let state: RouteSearchStateServiceStub;
 
   beforeEach(() => {
-    routeLines = jasmine.createSpyObj<RouteLinesApiService>('RouteLinesApiService', ['getLineStops']);
+    routeLines = jasmine.createSpyObj<RouteLinesApiService>('RouteLinesApiService', [
+      'getLineStops',
+      'getLineDetail'
+    ]);
+    routeLines.getLineDetail.and.callFake((_consortiumId: number, lineId: string) =>
+      of(createLineDetail(lineId))
+    );
     state = new RouteSearchStateServiceStub();
 
     TestBed.configureTestingModule({
@@ -136,10 +157,9 @@ describe('RouteOverlayFacade', () => {
     });
   });
 
-  it('loads route overlays for the active selection and caches the result', () => {
+  it('loads official route overlays for the active selection and caches the result', () => {
     routeLines.getLineStops.and.returnValue(of(createStops()));
     const selection = createSelection();
-
     const received: RouteOverlayState[] = [];
     const subscription = facade.watchOverlay().subscribe((overlayState) => {
       received.push(overlayState);
@@ -148,6 +168,7 @@ describe('RouteOverlayFacade', () => {
     state.emit(selection);
 
     expect(routeLines.getLineStops).toHaveBeenCalledTimes(1);
+    expect(routeLines.getLineDetail).toHaveBeenCalledTimes(1);
     expect(received.at(-1)?.status).toBe('ready');
     expect(received.at(-1)?.routes.length).toBe(1);
     expect(received.at(-1)?.routes.at(0)?.lengthInMeters).toBeCloseTo(
@@ -157,19 +178,59 @@ describe('RouteOverlayFacade', () => {
     expect(received.at(-1)?.routes.at(0)?.lineCode).toBe(LINE_CODE);
 
     routeLines.getLineStops.calls.reset();
-
+    routeLines.getLineDetail.calls.reset();
     state.emit(createSelection());
 
     expect(routeLines.getLineStops).not.toHaveBeenCalled();
+    expect(routeLines.getLineDetail).not.toHaveBeenCalled();
     expect(received.at(-1)?.status).toBe('ready');
     expect(received.at(-1)?.routes.length).toBe(1);
 
     subscription.unsubscribe();
   });
 
+  it('uses official intermediate geometry while keeping stop count as a stop metric', () => {
+    routeLines.getLineStops.and.returnValue(of(createStops()));
+    routeLines.getLineDetail.and.returnValue(
+      of(createLineDetail(LINE_IDENTIFIER, CURVED_OFFICIAL_COORDINATES))
+    );
+    const received: RouteOverlayState[] = [];
+    const subscription = facade.watchOverlay().subscribe((overlayState) => {
+      received.push(overlayState);
+    });
+
+    state.emit(createSelection());
+
+    const route = received.at(-1)?.routes.at(0);
+    expect(routeLines.getLineDetail).toHaveBeenCalledOnceWith(CONSORTIUM_ID, LINE_IDENTIFIER);
+    expect(route?.coordinates).toEqual(
+      CURVED_OFFICIAL_COORDINATES.map(([latitude, longitude]) => ({ latitude, longitude }))
+    );
+    expect(route?.coordinates.length).toBe(4);
+    expect(route?.stopCount).toBe(3);
+    expect(route?.lengthInMeters).toBeCloseTo(EXPECTED_CURVED_ROUTE_LENGTH_METERS, 6);
+
+    subscription.unsubscribe();
+  });
+
+  it('does not fall back to straight stop segments when official geometry is absent', () => {
+    routeLines.getLineStops.and.returnValue(of(createStops()));
+    routeLines.getLineDetail.and.returnValue(of(createLineDetail(LINE_IDENTIFIER, [])));
+    const received: RouteOverlayState[] = [];
+    const subscription = facade.watchOverlay().subscribe((overlayState) => {
+      received.push(overlayState);
+    });
+
+    state.emit(createSelection());
+
+    expect(received.at(-1)?.status).toBe('ready');
+    expect(received.at(-1)?.routes).toEqual([]);
+
+    subscription.unsubscribe();
+  });
+
   it('refreshes cached routes when requested', () => {
     routeLines.getLineStops.and.returnValue(of(createStops()));
-
     const received: RouteOverlayState[] = [];
     const subscription = facade.watchOverlay().subscribe((overlayState) => {
       received.push(overlayState);
@@ -177,12 +238,14 @@ describe('RouteOverlayFacade', () => {
 
     state.emit(createSelection());
     expect(routeLines.getLineStops).toHaveBeenCalledTimes(1);
+    expect(routeLines.getLineDetail).toHaveBeenCalledTimes(1);
 
     routeLines.getLineStops.calls.reset();
-
+    routeLines.getLineDetail.calls.reset();
     facade.refresh();
 
     expect(routeLines.getLineStops).toHaveBeenCalledTimes(1);
+    expect(routeLines.getLineDetail).toHaveBeenCalledTimes(1);
     expect(received.at(-1)?.status).toBe('ready');
 
     subscription.unsubscribe();
@@ -190,7 +253,6 @@ describe('RouteOverlayFacade', () => {
 
   it('returns an error state when the route stops request fails', () => {
     routeLines.getLineStops.and.returnValue(throwError(() => new Error('failure')));
-
     const received: RouteOverlayState[] = [];
     const subscription = facade.watchOverlay().subscribe((overlayState) => {
       received.push(overlayState);
@@ -206,12 +268,29 @@ describe('RouteOverlayFacade', () => {
     subscription.unsubscribe();
   });
 
+  it('returns an error state when the official line detail request fails', () => {
+    routeLines.getLineStops.and.returnValue(of(createStops()));
+    routeLines.getLineDetail.and.returnValue(throwError(() => new Error('failure')));
+    const received: RouteOverlayState[] = [];
+    const subscription = facade.watchOverlay().subscribe((overlayState) => {
+      received.push(overlayState);
+    });
+
+    state.emit(createSelection());
+
+    expect(routeLines.getLineDetail).toHaveBeenCalled();
+    expect(received.at(-1)?.status).toBe('error');
+    expect(received.at(-1)?.routes).toEqual([]);
+    expect(received.at(-1)?.errorKey).toBe(ROUTE_ERROR_KEY);
+
+    subscription.unsubscribe();
+  });
+
   it('does not attempt to load routes when the selection has no matches', () => {
     const selection: RouteSearchSelection = {
       ...createSelection(),
       lineMatches: []
     };
-
     const received: RouteOverlayState[] = [];
     const subscription = facade.watchOverlay().subscribe((overlayState) => {
       received.push(overlayState);
@@ -220,6 +299,7 @@ describe('RouteOverlayFacade', () => {
     state.emit(selection);
 
     expect(routeLines.getLineStops).not.toHaveBeenCalled();
+    expect(routeLines.getLineDetail).not.toHaveBeenCalled();
     expect(received.at(-1)?.status).toBe('ready');
     expect(received.at(-1)?.routes.length).toBe(0);
 
@@ -230,10 +310,11 @@ describe('RouteOverlayFacade', () => {
     facade.refresh();
 
     expect(routeLines.getLineStops).not.toHaveBeenCalled();
+    expect(routeLines.getLineDetail).not.toHaveBeenCalled();
   });
 
   it('orders routes by length, stop count, and stable identifiers', () => {
-    routeLines.getLineStops.and.callFake((consortiumId: number, lineId: string) => {
+    routeLines.getLineStops.and.callFake((_consortiumId: number, lineId: string) => {
       if (lineId === LINE_IDENTIFIER) {
         return of(createStops());
       }
@@ -254,26 +335,20 @@ describe('RouteOverlayFacade', () => {
       createLineMatch(),
       createTieLineMatch()
     ];
-    const selection = createSelection(matches);
-
     const received: RouteOverlayState[] = [];
     const subscription = facade.watchOverlay().subscribe((overlayState) => {
       received.push(overlayState);
     });
 
-    state.emit(selection);
+    state.emit(createSelection(matches));
 
     const readyState = received.find((overlayState) => overlayState.status === 'ready');
     expect(readyState).toBeDefined();
-
-    const routeIds = readyState!.routes.map((route) => route.id);
-
-    expect(routeIds).toEqual([
+    expect(readyState!.routes.map((route) => route.id)).toEqual([
       buildExpectedRouteId(matches[1]!),
       buildExpectedRouteId(matches[2]!),
       buildExpectedRouteId(matches[0]!)
     ]);
-
     expect(readyState!.routes[0]!.lengthInMeters).toBeCloseTo(
       EXPECTED_ROUTE_LENGTH_METERS,
       6
@@ -354,108 +429,45 @@ function createLineMatchWith(
 }
 
 function createStops(): readonly RouteLineStop[] {
-  const stops: RouteLineStop[] = [
-    createStop(
-      LINE_IDENTIFIER,
-      ORIGIN_STOP_ID,
-      LINE_DIRECTION,
-      1,
-      ORIGIN_COORDINATE[0],
-      ORIGIN_COORDINATE[1]
-    ),
-    createStop(
-      LINE_IDENTIFIER,
-      MID_STOP_ID,
-      LINE_DIRECTION,
-      2,
-      MID_COORDINATE[0],
-      MID_COORDINATE[1]
-    ),
-    createStop(
-      LINE_IDENTIFIER,
-      DESTINATION_STOP_ID,
-      LINE_DIRECTION,
-      3,
-      DESTINATION_COORDINATE[0],
-      DESTINATION_COORDINATE[1]
-    )
-  ];
-  return Object.freeze(stops.map((stop) => ({ ...stop })));
+  return createStopsForLine(LINE_IDENTIFIER, LINE_DIRECTION, BASE_ROUTE_COORDINATES, [
+    ORIGIN_STOP_ID,
+    MID_STOP_ID,
+    DESTINATION_STOP_ID
+  ]);
 }
 
 function createAlternateStops(): readonly RouteLineStop[] {
-  const stops: RouteLineStop[] = [
-    createStop(
-      LINE_IDENTIFIER_ALTERNATE,
+  return createStopsForLine(
+    LINE_IDENTIFIER_ALTERNATE,
+    LINE_DIRECTION_ALTERNATE,
+    ALTERNATE_ROUTE_COORDINATES,
+    [
       ORIGIN_STOP_ID,
-      LINE_DIRECTION_ALTERNATE,
-      1,
-      ORIGIN_COORDINATE[0],
-      ORIGIN_COORDINATE[1]
-    ),
-    createStop(
-      LINE_IDENTIFIER_ALTERNATE,
       ALTERNATE_MID_STOP_A_ID,
-      LINE_DIRECTION_ALTERNATE,
-      2,
-      ALTERNATE_MID_COORDINATE_A[0],
-      ALTERNATE_MID_COORDINATE_A[1]
-    ),
-    createStop(
-      LINE_IDENTIFIER_ALTERNATE,
       ALTERNATE_MID_STOP_B_ID,
-      LINE_DIRECTION_ALTERNATE,
-      3,
-      ALTERNATE_MID_COORDINATE_B[0],
-      ALTERNATE_MID_COORDINATE_B[1]
-    ),
-    createStop(
-      LINE_IDENTIFIER_ALTERNATE,
-      DESTINATION_STOP_ID,
-      LINE_DIRECTION_ALTERNATE,
-      4,
-      DESTINATION_COORDINATE[0],
-      DESTINATION_COORDINATE[1]
-    )
-  ];
-  return Object.freeze(stops.map((stop) => ({ ...stop })));
+      DESTINATION_STOP_ID
+    ]
+  );
 }
 
 function createTieStops(): readonly RouteLineStop[] {
-  const stops: RouteLineStop[] = [
-    createStop(
-      LINE_IDENTIFIER_TIE,
-      ORIGIN_STOP_ID,
-      LINE_DIRECTION_TIE,
-      1,
-      ORIGIN_COORDINATE[0],
-      ORIGIN_COORDINATE[1]
-    ),
-    createStop(
-      LINE_IDENTIFIER_TIE,
-      MID_STOP_ID,
-      LINE_DIRECTION_TIE,
-      2,
-      MID_COORDINATE[0],
-      MID_COORDINATE[1]
-    ),
-    createStop(
-      LINE_IDENTIFIER_TIE,
-      TIE_ADDITIONAL_STOP_ID,
-      LINE_DIRECTION_TIE,
-      3,
-      MID_COORDINATE[0],
-      MID_COORDINATE[1]
-    ),
-    createStop(
-      LINE_IDENTIFIER_TIE,
-      DESTINATION_STOP_ID,
-      LINE_DIRECTION_TIE,
-      4,
-      DESTINATION_COORDINATE[0],
-      DESTINATION_COORDINATE[1]
-    )
-  ];
+  return createStopsForLine(LINE_IDENTIFIER_TIE, LINE_DIRECTION_TIE, TIE_ROUTE_COORDINATES, [
+    ORIGIN_STOP_ID,
+    MID_STOP_ID,
+    TIE_ADDITIONAL_STOP_ID,
+    DESTINATION_STOP_ID
+  ]);
+}
+
+function createStopsForLine(
+  lineId: string,
+  direction: number,
+  coordinates: readonly CoordinateTuple[],
+  stopIds: readonly string[]
+): readonly RouteLineStop[] {
+  const stops = coordinates.map(([latitude, longitude], index) =>
+    createStop(lineId, stopIds[index]!, direction, index + 1, latitude, longitude)
+  );
   return Object.freeze(stops.map((stop) => ({ ...stop })));
 }
 
@@ -478,6 +490,47 @@ function createStop(
     longitude,
     name: `${stopId}-name`
   } satisfies RouteLineStop;
+}
+
+function createLineDetail(
+  lineId: string,
+  coordinates: readonly CoordinateTuple[] = getCoordinatesForLine(lineId)
+): RouteLineDetail {
+  return {
+    lineId,
+    code: getLineCode(lineId),
+    name: `${lineId}-name`,
+    mode: 'bus',
+    coordinates: Object.freeze(
+      coordinates.map(([latitude, longitude]) => ({ latitude, longitude }))
+    )
+  } satisfies RouteLineDetail;
+}
+
+function getCoordinatesForLine(lineId: string): readonly CoordinateTuple[] {
+  switch (lineId) {
+    case LINE_IDENTIFIER:
+      return BASE_ROUTE_COORDINATES;
+    case LINE_IDENTIFIER_ALTERNATE:
+      return ALTERNATE_ROUTE_COORDINATES;
+    case LINE_IDENTIFIER_TIE:
+      return TIE_ROUTE_COORDINATES;
+    default:
+      throw new Error(`Unexpected line identifier: ${lineId}`);
+  }
+}
+
+function getLineCode(lineId: string): string {
+  switch (lineId) {
+    case LINE_IDENTIFIER:
+      return LINE_CODE;
+    case LINE_IDENTIFIER_ALTERNATE:
+      return LINE_CODE_ALTERNATE;
+    case LINE_IDENTIFIER_TIE:
+      return LINE_CODE_TIE;
+    default:
+      throw new Error(`Unexpected line identifier: ${lineId}`);
+  }
 }
 
 function buildExpectedRouteId(match: RouteSearchLineMatch): string {

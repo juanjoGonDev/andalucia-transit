@@ -12,14 +12,22 @@ import {
   switchMap,
   tap
 } from 'rxjs';
-import { RouteLineStop, RouteLinesApiService } from '@data/route-search/route-lines-api.service';
+import {
+  RouteLineCoordinate,
+  RouteLineStop,
+  RouteLinesApiService
+} from '@data/route-search/route-lines-api.service';
 import {
   RouteOverlayGeometryRequest,
   RouteOverlayLineStop,
+  buildOfficialRouteSegmentCoordinates,
   buildRouteSegmentCoordinates,
   calculateRouteLengthInMeters
 } from '@domain/map/route-overlay-geometry';
-import { RouteSearchSelection, RouteSearchStateService } from '@domain/route-search/route-search-state.service';
+import {
+  RouteSearchSelection,
+  RouteSearchStateService
+} from '@domain/route-search/route-search-state.service';
 import { GeoCoordinate } from '@domain/utils/geo-distance.util';
 
 export type RouteOverlayStatus = 'idle' | 'loading' | 'ready' | 'error';
@@ -146,13 +154,17 @@ export class RouteOverlayFacade {
 
     const consortiumId = selection.origin.consortiumId;
     const requests = selection.lineMatches.map((match) =>
-      this.routeLines.getLineStops(consortiumId, match.lineId).pipe(
-        map((stops) =>
+      forkJoin({
+        stops: this.routeLines.getLineStops(consortiumId, match.lineId),
+        detail: this.routeLines.getLineDetail(consortiumId, match.lineId)
+      }).pipe(
+        map(({ stops, detail }) =>
           this.createRoute(
             match.lineId,
             match.lineCode,
             match.direction,
             stops,
+            detail.coordinates,
             match.originStopIds,
             match.destinationStopIds,
             selection.destination.name
@@ -173,6 +185,7 @@ export class RouteOverlayFacade {
     lineCode: string,
     direction: number,
     stops: readonly RouteLineStop[],
+    officialCoordinates: readonly RouteLineCoordinate[],
     originStopIds: readonly string[],
     destinationStopIds: readonly string[],
     destinationName: string
@@ -184,7 +197,16 @@ export class RouteOverlayFacade {
       direction
     };
 
-    const coordinates = buildRouteSegmentCoordinates(geometryRequest);
+    const selectedStopCoordinates = buildRouteSegmentCoordinates(geometryRequest);
+
+    if (selectedStopCoordinates.length === 0) {
+      return null;
+    }
+
+    const coordinates = buildOfficialRouteSegmentCoordinates(
+      officialCoordinates,
+      selectedStopCoordinates
+    );
 
     if (coordinates.length === 0) {
       return null;
@@ -199,7 +221,7 @@ export class RouteOverlayFacade {
       direction,
       destinationName,
       coordinates: immutableCoordinates,
-      stopCount: immutableCoordinates.length,
+      stopCount: selectedStopCoordinates.length,
       lengthInMeters: calculateRouteLengthInMeters(immutableCoordinates)
     } satisfies RouteOverlayRoute;
   }
@@ -219,7 +241,9 @@ function buildSelectionKey(selection: RouteSearchSelection): string {
   const originStops = [...selection.origin.stopIds].sort().join(',');
   const destinationStops = [...selection.destination.stopIds].sort().join(',');
   const lineKeys = selection.lineMatches
-    .map((match) => buildRouteId(match.lineId, match.direction, match.originStopIds, match.destinationStopIds))
+    .map((match) =>
+      buildRouteId(match.lineId, match.direction, match.originStopIds, match.destinationStopIds)
+    )
     .sort()
     .join(';');
   const queryDateKey = selection.queryDate.getTime();
