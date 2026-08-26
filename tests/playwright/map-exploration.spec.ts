@@ -3,7 +3,11 @@ import { expect, test, type Locator } from '@playwright/test';
 const BASE_URL = process.env.E2E_BASE_URL;
 const MAP_PATH = '/map';
 const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
+const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 const MINIMUM_PAINTED_PIXELS = 100;
+const MINIMUM_MOBILE_MAP_HEIGHT = 360;
+const DESKTOP_COLUMN_DOMINANCE_RATIO = 1.3;
+const DESKTOP_HEIGHT_TOLERANCE_PX = 3;
 const SEVILLE_LOCATION = { latitude: 37.389092, longitude: -5.984459 } as const;
 
 interface CanvasActivationPoint {
@@ -137,13 +141,16 @@ test.describe('network map exploration', () => {
 
     const nearbyStop = page.locator('.map__stop-item').first();
     await expect(nearbyStop).toBeVisible({ timeout: 15_000 });
+    await expect(nearbyStop.locator('.map-stop__icon')).toBeVisible();
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
 
     const stopName = (await nearbyStop.locator('.map-stop__name').textContent())?.trim() ?? '';
     const stopMunicipality =
       (await nearbyStop.locator('.map-stop__municipality').textContent())?.trim() ?? '';
+    const stopCode = (await nearbyStop.locator('.map-stop__code').textContent())?.trim() ?? '';
     expect(stopName).not.toBe('');
     expect(stopMunicipality).not.toBe('');
+    expect(stopCode).not.toBe('');
 
     const searchInput = page.locator('#map-network-search');
     await searchInput.fill(stopName);
@@ -159,6 +166,8 @@ test.describe('network map exploration', () => {
     const popup = page.locator('.app-map-stop-popup');
     await expect(popup).toBeVisible();
     await expect(popup.locator('.app-map-stop-popup__title')).toHaveText(stopName);
+    await expect(popup.locator('.app-map-stop-popup__code')).toHaveText(stopCode);
+    await expect(popup.locator('.app-map-stop-popup__municipality')).toHaveText(stopMunicipality);
 
     const markerPoint = await findLargestPaintedComponentCenter(overlayCanvas);
     expect(markerPoint).not.toBeNull();
@@ -206,5 +215,70 @@ test.describe('network map exploration', () => {
     await expect
       .poll(() => countPaintedPixels(overlayCanvas), { timeout: 5_000 })
       .toBeGreaterThan(baselinePaintedPixels);
+  });
+
+  test('keeps the map dominant and the results panel bounded at canonical breakpoints', async ({
+    page,
+  }) => {
+    const resolvedBaseUrl = BASE_URL as string;
+    const mapUrl = new URL(MAP_PATH, resolvedBaseUrl).toString();
+
+    await page.setViewportSize(DESKTOP_VIEWPORT);
+    await page.goto(mapUrl);
+
+    const workspace = page.locator('.map__workspace');
+    const primary = page.locator('.map__primary');
+    const panel = page.locator('.map__panel');
+    const mapSurface = page.locator('.map__canvas');
+    const searchInput = page.locator('#map-network-search');
+
+    await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
+    await expect(searchInput).toBeVisible();
+
+    const workspaceBox = await workspace.boundingBox();
+    const primaryBox = await primary.boundingBox();
+    const panelBox = await panel.boundingBox();
+    const mapBox = await mapSurface.boundingBox();
+    const searchBox = await searchInput.boundingBox();
+
+    expect(workspaceBox).not.toBeNull();
+    expect(primaryBox).not.toBeNull();
+    expect(panelBox).not.toBeNull();
+    expect(mapBox).not.toBeNull();
+    expect(searchBox).not.toBeNull();
+
+    if (!workspaceBox || !primaryBox || !panelBox || !mapBox || !searchBox) {
+      return;
+    }
+
+    expect(primaryBox.width).toBeGreaterThan(panelBox.width * DESKTOP_COLUMN_DOMINANCE_RATIO);
+    expect(Math.abs(primaryBox.height - panelBox.height)).toBeLessThanOrEqual(
+      DESKTOP_HEIGHT_TOLERANCE_PX,
+    );
+    expect(searchBox.x).toBeGreaterThanOrEqual(primaryBox.x);
+    expect(searchBox.x + searchBox.width).toBeLessThanOrEqual(primaryBox.x + primaryBox.width + 1);
+    expect(mapBox.height).toBeGreaterThan(workspaceBox.height / 2);
+    expect(await panel.evaluate((element) => getComputedStyle(element).overflowY)).toBe('auto');
+
+    await page.setViewportSize(MOBILE_VIEWPORT);
+    await page.goto(mapUrl);
+    await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
+
+    const mobileMapBox = await mapSurface.boundingBox();
+    const mobilePanelBox = await panel.boundingBox();
+    expect(mobileMapBox).not.toBeNull();
+    expect(mobilePanelBox).not.toBeNull();
+
+    if (!mobileMapBox || !mobilePanelBox) {
+      return;
+    }
+
+    expect(mobileMapBox.height).toBeGreaterThanOrEqual(MINIMUM_MOBILE_MAP_HEIGHT);
+    expect(mobilePanelBox.y).toBeGreaterThan(mobileMapBox.y + mobileMapBox.height);
+    expect(mobilePanelBox.height).toBeLessThan(MOBILE_VIEWPORT.height * 0.7);
+    expect(await panel.evaluate((element) => getComputedStyle(element).overflowY)).toBe('auto');
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
+    ).toBe(true);
   });
 });
