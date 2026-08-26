@@ -128,7 +128,9 @@
   font: inherit;
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .app-map-stop-popup__action:hover {
@@ -173,8 +175,52 @@
   background: var(--color-primary);
 }
 
+.map__leaflet .leaflet-top.leaflet-left {
+  top: 9rem;
+  left: var(--space-3xs);
+}
+
+.map__leaflet .leaflet-control-zoom {
+  overflow: hidden;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.map__leaflet .leaflet-control-zoom a {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  background: var(--color-surface);
+  color: var(--color-text-strong);
+  transition: background-color 160ms ease;
+}
+
+.map__leaflet .leaflet-control-zoom a:hover,
+.map__leaflet .leaflet-control-zoom a:focus-visible {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.map__leaflet .leaflet-control-zoom a:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: -3px;
+}
+
+@media (min-width: 40rem) {
+  .map__leaflet .leaflet-top.leaflet-left {
+    top: 10rem;
+    left: var(--space-sm);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .app-map-stop-popup__action {
+  .app-map-stop-popup__action,
+  .map__leaflet .leaflet-control-zoom a {
     transition: none;
   }
 }
