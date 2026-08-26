@@ -151,7 +151,9 @@ function midpoint(from: GeoCoordinate, to: GeoCoordinate): GeoCoordinate {
 function calculateDirectionRotation(from: GeoCoordinate, to: GeoCoordinate): number {
   const verticalDelta = -(to.latitude - from.latitude);
   const horizontalDelta = to.longitude - from.longitude;
-  return Math.atan2(verticalDelta, horizontalDelta) * RADIANS_TO_DEGREES;
+  const rotationDegrees = Math.atan2(verticalDelta, horizontalDelta) * RADIANS_TO_DEGREES;
+
+  return Object.is(rotationDegrees, -0) ? 0 : rotationDegrees;
 }
 
 function resolveOriginOrder(
