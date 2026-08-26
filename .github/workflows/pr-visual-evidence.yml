@@ -101,9 +101,12 @@ jobs:
           set -euo pipefail
           format_paths=(
             .agents/specs/2026-08-25-home-mobile-tabs.md
+            .agents/specs/2026-08-26-map-all-stops-navigation.md
             .github/workflows/pr-visual-evidence.yml
             src/app/features/home/home.component.scss
+            src/app/features/map/map.component.html
             tests/playwright/home-tabs.layout.spec.ts
+            tests/playwright/map-exploration.spec.ts
           )
           if ! pnpm exec prettier --check "${format_paths[@]}"; then
             pnpm exec prettier --write "${format_paths[@]}"
@@ -136,14 +139,16 @@ jobs:
           cat "$RUNNER_TEMP/andalucia-transit.log" >&2
           exit 1
 
-      - name: Verify Home mobile tab layout
+      - name: Verify responsive layout and map exploration
         if: steps.pr.outputs.found == 'true'
         shell: bash
         env:
           E2E_BASE_URL: http://127.0.0.1:4200
         run: |
           set -euo pipefail
-          pnpm exec playwright test tests/playwright/home-tabs.layout.spec.ts
+          pnpm exec playwright test \
+            tests/playwright/home-tabs.layout.spec.ts \
+            tests/playwright/map-exploration.spec.ts
 
       - name: Capture canonical mobile and desktop screens
         if: steps.pr.outputs.found == 'true'
@@ -167,11 +172,12 @@ jobs:
 
           capture / home
           capture /routes route-search
+          capture /map map
           capture /favorites favorites
           capture /settings settings
           capture /news news
 
-          test "$(find evidence-assets -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 10
+          test "$(find evidence-assets -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 12
           while IFS= read -r file; do
             test "$(stat -c %s "$file")" -le 25000000
           done < <(find evidence-assets -maxdepth 1 -type f -name '*.png' -print)
@@ -260,6 +266,7 @@ jobs:
           | --- | --- | --- |
           | Home | <img src="$base/home_es_390_844_full.png" width="220" alt="Home screen at 390 by 844 pixels"> | <img src="$base/home_es_1440_900_full.png" width="420" alt="Home screen at 1440 by 900 pixels"> |
           | Route search | <img src="$base/route-search_es_390_844_full.png" width="220" alt="Route search at 390 by 844 pixels"> | <img src="$base/route-search_es_1440_900_full.png" width="420" alt="Route search at 1440 by 900 pixels"> |
+          | Map | <img src="$base/map_es_390_844_full.png" width="220" alt="Network map at 390 by 844 pixels"> | <img src="$base/map_es_1440_900_full.png" width="420" alt="Network map at 1440 by 900 pixels"> |
           | Favorites | <img src="$base/favorites_es_390_844_full.png" width="220" alt="Favorites at 390 by 844 pixels"> | <img src="$base/favorites_es_1440_900_full.png" width="420" alt="Favorites at 1440 by 900 pixels"> |
           | Settings | <img src="$base/settings_es_390_844_full.png" width="220" alt="Settings at 390 by 844 pixels"> | <img src="$base/settings_es_1440_900_full.png" width="420" alt="Settings at 1440 by 900 pixels"> |
           | News | <img src="$base/news_es_390_844_full.png" width="220" alt="News at 390 by 844 pixels"> | <img src="$base/news_es_1440_900_full.png" width="420" alt="News at 1440 by 900 pixels"> |
