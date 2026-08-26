@@ -104,12 +104,15 @@ jobs:
             .agents/specs/2026-08-26-map-all-stops-navigation.md
             .agents/specs/2026-08-26-visual-state-audit.md
             .github/workflows/pr-visual-evidence.yml
+            src/app/data/route-search/route-search-preferences.storage.ts
             src/app/features/home/home.component.scss
             src/app/features/map/map.component.html
+            src/styles/_components.scss
             tests/playwright/deterministic-visual-states.spec.ts
             tests/playwright/home-tabs.layout.spec.ts
             tests/playwright/map-exploration.spec.ts
             tests/playwright/theme.contrast.spec.ts
+            tests/playwright/visual-interaction-states.spec.ts
           )
           if ! pnpm exec prettier --check "${format_paths[@]}"; then
             pnpm exec prettier --write "${format_paths[@]}"
@@ -148,13 +151,16 @@ jobs:
         env:
           E2E_BASE_URL: http://127.0.0.1:4200
           E2E_MOCK_MODE: data
+          E2E_EVIDENCE_DIR: evidence-assets
         run: |
           set -euo pipefail
+          mkdir -p evidence-assets
           pnpm exec playwright test \
             tests/playwright/deterministic-visual-states.spec.ts \
             tests/playwright/home-tabs.layout.spec.ts \
             tests/playwright/map-exploration.spec.ts \
-            tests/playwright/theme.contrast.spec.ts
+            tests/playwright/theme.contrast.spec.ts \
+            tests/playwright/visual-interaction-states.spec.ts
 
       - name: Capture populated mobile and desktop screens
         if: steps.pr.outputs.found == 'true'
@@ -253,7 +259,7 @@ jobs:
           capture /recents recent-empty
           capture /favorites favorites-empty
 
-          test "$(find evidence-assets -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 18
+          test "$(find evidence-assets -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 22
           while IFS= read -r file; do
             test "$(stat -c %s "$file")" -le 25000000
           done < <(find evidence-assets -maxdepth 1 -type f -name '*.png' -print)
@@ -342,6 +348,9 @@ jobs:
           | --- | --- | --- | --- |
           | Home | Populated data | <img src="$base/home-data_es_390_844_full.png" width="220" alt="Home populated state at 390 by 844 pixels"> | <img src="$base/home-data_es_1440_900_full.png" width="420" alt="Home populated state at 1440 by 900 pixels"> |
           | Route search | Initial | <img src="$base/route-search-initial_es_390_844_full.png" width="220" alt="Route search initial state at 390 by 844 pixels"> | <img src="$base/route-search-initial_es_1440_900_full.png" width="420" alt="Route search initial state at 1440 by 900 pixels"> |
+          | Route search | Loading | <img src="$base/route-search-loading_es_390_844_full.png" width="220" alt="Route search loading state at 390 by 844 pixels"> | Browser assertion only |
+          | Route search | Recoverable error | <img src="$base/route-search-error_es_390_844_full.png" width="220" alt="Route search recoverable error state at 390 by 844 pixels"> | Browser assertion only |
+          | Confirm dialog | Shared surface | <img src="$base/dialog-confirm_es_390_844_full.png" width="220" alt="Confirmation dialog shared surface at 390 by 844 pixels"> | <img src="$base/dialog-confirm_es_1440_900_full.png" width="420" alt="Confirmation dialog shared surface at 1440 by 900 pixels"> |
           | Map | Populated data | <img src="$base/map-data_es_390_844_full.png" width="220" alt="Network map populated state at 390 by 844 pixels"> | <img src="$base/map-data_es_1440_900_full.png" width="420" alt="Network map populated state at 1440 by 900 pixels"> |
           | Recent searches | Populated data | <img src="$base/recent-data_es_390_844_full.png" width="220" alt="Recent searches populated state at 390 by 844 pixels"> | <img src="$base/recent-data_es_1440_900_full.png" width="420" alt="Recent searches populated state at 1440 by 900 pixels"> |
           | Favorites | Populated data | <img src="$base/favorites-data_es_390_844_full.png" width="220" alt="Favorites populated state at 390 by 844 pixels"> | <img src="$base/favorites-data_es_1440_900_full.png" width="420" alt="Favorites populated state at 1440 by 900 pixels"> |
