@@ -20,6 +20,7 @@ import {
   catchError,
   debounceTime,
   firstValueFrom,
+  from,
   map,
   of,
   startWith,
@@ -92,8 +93,15 @@ interface StopNavigationTarget {
   readonly stopId: string;
 }
 
+type ViewportStopsStatus = 'idle' | 'loading' | 'ready' | 'error';
 type FocusedLinesStatus = 'idle' | 'loading' | 'ready' | 'error';
 type FocusedLinePreviewStatus = 'idle' | 'loading' | 'ready' | 'error';
+
+interface ViewportStopsLoadState {
+  readonly status: ViewportStopsStatus;
+  readonly stops: readonly MapStopView[];
+  readonly errorKey: string | null;
+}
 
 interface FocusedLinesLoadState {
   readonly status: FocusedLinesStatus;
@@ -125,7 +133,7 @@ const DEFAULT_ZOOM = 7;
 const MAP_MIN_ZOOM = 6;
 const MAP_MAX_ZOOM = 17;
 const MAP_SEARCH_STOP_ZOOM = 15;
-const FOCUSED_LINES_DEBOUNCE_MS = 250;
+const VIEWPORT_REFRESH_DEBOUNCE_MS = 250;
 const FOCUSED_LINE_ROUTE_PREFIX = 'focused-line:' as const;
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)' as const;
 const ROOT_ROUTE_SEGMENT = '/' as const;
@@ -232,6 +240,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   protected readonly translationKeys = this.translations;
   protected readonly focusedLineTranslationKeys = FOCUSED_LINE_TRANSLATION_KEYS;
+  protected readonly retryKey = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.retry;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.map;
   protected readonly stopCardBodyClasses = STOP_CARD_BODY_CLASSES;
   protected readonly stopCardRole = LINK_ROLE;
@@ -241,8 +250,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   protected readonly searchTargets = signal<readonly MapSearchTarget[]>(Object.freeze([]));
   protected readonly isLoadingNetworkStops = signal(false);
   protected readonly isLocating = signal(false);
-  protected readonly hasAttemptedLocation = signal(false);
   protected readonly errorKey = signal<string | null>(null);
+  protected readonly viewportStopsStatus = signal<ViewportStopsStatus>('idle');
+  protected readonly viewportStopsErrorKey = signal<string | null>(null);
   protected readonly routeStatus = signal<RouteOverlayStatus>('idle');
   protected readonly routeErrorKey = signal<string | null>(null);
   protected readonly routes = signal<readonly RouteOverlayRoute[]>([]);
@@ -286,11 +296,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private lastRouteSelectionKey: string | null = null;
 
   protected readonly hasStops = computed(() => this.stops().length > 0);
-  protected readonly showEmptyState = computed(
-    () => this.hasAttemptedLocation() && !this.isLocating() && !this.errorKey() && !this.hasStops()
+  protected readonly isViewportStopsLoading = computed(
+    () => this.viewportStopsStatus() === 'loading'
   );
-  protected readonly showPrompt = computed(
-    () => !this.hasAttemptedLocation() && !this.errorKey() && !this.isLocating()
+  protected readonly showEmptyState = computed(
+    () =>
+      this.viewportStopsStatus() === 'ready' &&
+      !this.viewportStopsErrorKey() &&
+      !this.hasStops()
   );
   protected readonly hasRouteSelection = computed(
     () => this.routeStatus() !== 'idle' && this.routeSelectionSummary() !== null
@@ -388,7 +401,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         return;
       }
 
-      this.stops.set(stops);
+      this.handleViewportStopsState({ status: 'ready', stops, errorKey: null });
       this.renderNearbyFallbackIfNeeded(stops);
 
       const nearbyCoordinates = stops.map((stop) => stop.coordinate);
@@ -405,11 +418,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       }
 
       this.errorKey.set(this.resolveErrorKey(error));
-      this.stops.set([]);
     } finally {
       if (!this.isDestroyed) {
         this.isLocating.set(false);
-        this.hasAttemptedLocation.set(true);
       }
     }
   }
@@ -491,6 +502,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   protected refreshRoutes(): void {
     this.overlayFacade.refresh();
+  }
+
+  protected retryViewportStops(): void {
+    if (this.latestViewportCenter && this.networkStopRecords.length) {
+      this.focusedViewportSubject.next(this.latestViewportCenter);
+    }
   }
 
   protected retryFocusedLines(): void {
@@ -669,10 +686,44 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private loadFocusedLines(center: GeoCoordinate): Observable<FocusedLinesLoadState> {
-    const consortiumId = this.resolveFocusedConsortium(center);
+  private loadViewportStops(center: GeoCoordinate): Observable<ViewportStopsLoadState> {
+    const previousStops = this.stops();
 
-    if (consortiumId === null) {
+    return from(this.nearbyStops.findClosestStops(center)).pipe(
+      switchMap((results) => from(this.loadStops(results))),
+      map((stops) => ({
+        status: 'ready' as const,
+        stops,
+        errorKey: null
+      })),
+      startWith<ViewportStopsLoadState>({
+        status: 'loading',
+        stops: previousStops,
+        errorKey: null
+      }),
+      catchError(() =>
+        of<ViewportStopsLoadState>({
+          status: 'error',
+          stops: previousStops,
+          errorKey: this.translations.errors.generic
+        })
+      )
+    );
+  }
+
+  private handleViewportStopsState(state: ViewportStopsLoadState): void {
+    this.viewportStopsStatus.set(state.status);
+    this.viewportStopsErrorKey.set(state.errorKey);
+
+    if (state.status === 'ready') {
+      this.stops.set(state.stops);
+    }
+  }
+
+  private loadFocusedLines(center: GeoCoordinate): Observable<FocusedLinesLoadState> {
+    const nearestStop = this.resolveNearestNetworkStop(center);
+
+    if (!nearestStop) {
       return of({
         status: 'idle',
         consortiumId: null,
@@ -681,19 +732,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       });
     }
 
-    return this.routeLines.getLinesNearLocation(consortiumId, center).pipe(
+    const consortiumId = nearestStop.consortiumId;
+    const request$ = this.routeLines.getLinesNearLocation(consortiumId, center).pipe(
+      catchError(() => this.routeLines.getLinesForStops(consortiumId, [nearestStop.stopId])),
       map((lines) => ({
         status: 'ready' as const,
         consortiumId,
         lines: Object.freeze([...lines]),
         errorKey: null
       })),
-      startWith<FocusedLinesLoadState>({
-        status: 'loading',
-        consortiumId,
-        lines: Object.freeze([]),
-        errorKey: null
-      }),
       catchError(() =>
         of<FocusedLinesLoadState>({
           status: 'error',
@@ -703,10 +750,19 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         })
       )
     );
+
+    return request$.pipe(
+      startWith<FocusedLinesLoadState>({
+        status: 'loading',
+        consortiumId,
+        lines: Object.freeze([]),
+        errorKey: null
+      })
+    );
   }
 
-  private resolveFocusedConsortium(center: GeoCoordinate): number | null {
-    let nearestConsortiumId: number | null = null;
+  private resolveNearestNetworkStop(center: GeoCoordinate): NearbyStopRecord | null {
+    let nearestStop: NearbyStopRecord | null = null;
     let nearestDistance = Number.POSITIVE_INFINITY;
 
     for (const stop of this.networkStopRecords) {
@@ -717,11 +773,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
       if (distance < nearestDistance) {
         nearestDistance = distance;
-        nearestConsortiumId = stop.consortiumId;
+        nearestStop = stop;
       }
     }
 
-    return nearestConsortiumId;
+    return nearestStop;
   }
 
   private handleFocusedLinesState(state: FocusedLinesLoadState): void {
@@ -1014,7 +1070,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     this.focusedViewportSubject
       .pipe(
-        debounceTime(FOCUSED_LINES_DEBOUNCE_MS),
+        debounceTime(VIEWPORT_REFRESH_DEBOUNCE_MS),
+        switchMap((center) => this.loadViewportStops(center)),
+        takeUntilDestroyed()
+      )
+      .subscribe((state) => this.handleViewportStopsState(state));
+
+    this.focusedViewportSubject
+      .pipe(
+        debounceTime(VIEWPORT_REFRESH_DEBOUNCE_MS),
         switchMap((center) => this.loadFocusedLines(center)),
         takeUntilDestroyed()
       )

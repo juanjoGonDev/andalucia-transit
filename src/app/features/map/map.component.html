@@ -33,7 +33,6 @@
           (click)="locate()"
           [attr.aria-busy]="isLocating() ? 'true' : null"
           [attr.aria-label]="translationKeys.locate | translate"
-          [attr.title]="translationKeys.locate | translate"
         >
           <span
             *ngIf="isLocating(); else locationIcon"
@@ -61,7 +60,6 @@
       <summary
         class="map__control map__inspector-trigger"
         [attr.aria-label]="focusedLineTranslationKeys.title | translate"
-        [attr.title]="focusedLineTranslationKeys.title | translate"
       >
         <span class="material-symbols-outlined" aria-hidden="true">route</span>
       </summary>
@@ -74,7 +72,9 @@
           [attr.aria-busy]="isFocusedLinesLoading() ? 'true' : null"
         >
           <div class="map__section-heading">
-            <span class="map__section-icon material-symbols-outlined" aria-hidden="true">route</span>
+            <span class="map__section-icon material-symbols-outlined" aria-hidden="true">
+              route
+            </span>
             <h2 class="map__panel-title">{{ focusedLineTranslationKeys.title | translate }}</h2>
           </div>
           <div
@@ -166,30 +166,29 @@
       <summary
         class="map__control map__inspector-trigger"
         [attr.aria-label]="translationKeys.panelTitle | translate"
-        [attr.title]="translationKeys.panelTitle | translate"
       >
         <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
       </summary>
-      <aside class="map__panel" [attr.aria-busy]="isLocating() ? 'true' : null">
+      <aside
+        class="map__panel"
+        [attr.aria-busy]="isLocating() || isViewportStopsLoading() ? 'true' : null"
+      >
         <section class="map__nearby">
           <div class="map__section-heading">
-            <span class="map__section-icon material-symbols-outlined" aria-hidden="true"
-              >location_on</span
-            >
+            <span class="map__section-icon material-symbols-outlined" aria-hidden="true">
+              location_on
+            </span>
             <h2 class="map__panel-title">{{ translationKeys.panelTitle | translate }}</h2>
           </div>
           <div
-            *ngIf="isLocating()"
+            *ngIf="isViewportStopsLoading()"
             class="app-async-status app-async-status--compact map__panel-loading"
             role="status"
             aria-live="polite"
           >
             <span class="app-loading-indicator" aria-hidden="true"></span>
-            <span>{{ translationKeys.locating | translate }}</span>
+            <span>{{ translationKeys.panelTitle | translate }}</span>
           </div>
-          <p *ngIf="showPrompt()" class="map__panel-message">
-            {{ translationKeys.permissionPrompt | translate }}
-          </p>
           <div
             *ngIf="errorKey()"
             class="app-async-status app-async-status--error map__panel-error"
@@ -206,6 +205,26 @@
                   (click)="locate()"
                 >
                   {{ translationKeys.locate | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            *ngIf="viewportStopsErrorKey()"
+            class="app-async-status app-async-status--error map__panel-error"
+            role="alert"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">sync_problem</span>
+            <div class="app-async-status__body">
+              <p class="app-async-status__description">{{ viewportStopsErrorKey() | translate }}</p>
+              <div class="app-async-status__actions">
+                <button
+                  type="button"
+                  class="app-outline-button app-outline-button--compact"
+                  appAccessibleButton
+                  (click)="retryViewportStops()"
+                >
+                  {{ retryKey | translate }}
                 </button>
               </div>
             </div>
@@ -234,9 +253,9 @@
                 <div class="map-stop">
                   <div class="map-stop__header">
                     <div class="map-stop__identity">
-                      <span class="map-stop__icon material-symbols-outlined" aria-hidden="true"
-                        >location_on</span
-                      >
+                      <span class="map-stop__icon material-symbols-outlined" aria-hidden="true">
+                        location_on
+                      </span>
                       <span class="map-stop__code">{{ stop.code }}</span>
                     </div>
                     <span class="map-stop__distance">
@@ -260,7 +279,6 @@
       <summary
         class="map__control map__inspector-trigger"
         [attr.aria-label]="translationKeys.routes.title | translate"
-        [attr.title]="translationKeys.routes.title | translate"
       >
         <span class="material-symbols-outlined" aria-hidden="true">directions_bus</span>
       </summary>
@@ -268,9 +286,9 @@
         <section class="map__routes">
           <header class="map__routes-header">
             <div class="map__section-heading">
-              <span class="map__section-icon material-symbols-outlined" aria-hidden="true"
-                >route</span
-              >
+              <span class="map__section-icon material-symbols-outlined" aria-hidden="true">
+                route
+              </span>
               <h2 class="map__routes-title">{{ translationKeys.routes.title | translate }}</h2>
             </div>
             <button
@@ -362,11 +380,14 @@
                     <div class="map-route__metrics">
                       <span class="map-route__stops">
                         {{
-                          route.stopCountTranslationKey | translate: { value: route.stopCountValue }
+                          route.stopCountTranslationKey
+                            | translate: { value: route.stopCountValue }
                         }}
                       </span>
                       <span class="map-route__distance">
-                        {{ route.distanceTranslationKey | translate: { value: route.distanceValue } }}
+                        {{
+                          route.distanceTranslationKey | translate: { value: route.distanceValue }
+                        }}
                       </span>
                     </div>
                   </div>
