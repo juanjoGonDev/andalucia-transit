@@ -42,7 +42,6 @@ export class RouteLinesApiService {
   private readonly linesCache = new Map<string, Observable<readonly RouteLineSummary[]>>();
   private readonly lineStopsCache = new Map<string, Observable<readonly RouteLineStop[]>>();
   private readonly lineDetailsCache = new Map<string, Observable<RouteLineDetail>>();
-  private readonly nearbyLinesCache = new Map<string, Observable<readonly RouteLineSummary[]>>();
 
   getLinesForStops(
     consortiumId: number,
@@ -73,25 +72,13 @@ export class RouteLinesApiService {
     consortiumId: number,
     coordinate: RouteLineCoordinate
   ): Observable<readonly RouteLineSummary[]> {
-    const cacheKey = buildNearbyLinesCacheKey(consortiumId, coordinate);
-    const cached = this.nearbyLinesCache.get(cacheKey);
-
-    if (cached) {
-      return cached;
-    }
-
     const url = this.buildLinesUrl(consortiumId);
-    const request$ = this.http
-      .get<readonly ApiLineSummary[]>(url, {
-        params: {
-          latitud: String(coordinate.latitude),
-          longitud: String(coordinate.longitude)
-        }
-      })
-      .pipe(map(mapLineSummaries), shareReplay({ bufferSize: 1, refCount: true }));
 
-    this.nearbyLinesCache.set(cacheKey, request$);
-    return request$;
+    return from(import('./route-lines-nearby.loader')).pipe(
+      switchMap(({ loadLinesNearLocation }) =>
+        loadLinesNearLocation(this.http, url, coordinate, mapLineSummaries)
+      )
+    );
   }
 
   getLineStops(
@@ -195,7 +182,6 @@ const STOPS_SEGMENT = 'paradas' as const;
 const LINES_SEGMENT = 'lineas' as const;
 const LINES_BY_STOPS_SEGMENT = 'lineasPorParadas' as const;
 const PATH_SEPARATOR = '/' as const;
-const CACHE_COORDINATE_PRECISION = 4;
 
 const EMPTY_LINE_LIST: readonly RouteLineSummary[] = Object.freeze([]);
 const EMPTY_LINE_STOPS: readonly RouteLineStop[] = Object.freeze([]);
@@ -214,17 +200,6 @@ function buildLinesCacheKey(consortiumId: number, stopIds: readonly string[]): s
 
 function buildLineStopsCacheKey(consortiumId: number, lineId: string): string {
   return `${consortiumId}|${lineId}`;
-}
-
-function buildNearbyLinesCacheKey(
-  consortiumId: number,
-  coordinate: RouteLineCoordinate
-): string {
-  return [
-    consortiumId,
-    coordinate.latitude.toFixed(CACHE_COORDINATE_PRECISION),
-    coordinate.longitude.toFixed(CACHE_COORDINATE_PRECISION)
-  ].join('|');
 }
 
 function mapLineSummaries(entries: readonly ApiLineSummary[]): readonly RouteLineSummary[] {
