@@ -35,18 +35,48 @@ class FakeTranslateLoader implements TranslateLoader {
 class MapHandleStub implements MapHandle {
   private viewportHandler: MapViewportSettledHandler | null = null;
 
-  setView(): void {}
-  renderUserLocation(): void {}
-  renderStops(_stops: readonly MapStopMarker[], _interactions?: MapStopInteractionOptions): void {}
-  fitToCoordinates(): void {}
-  restrictToCoordinates(): void {}
-  highlightStop(): void {}
+  setView(): void {
+    return;
+  }
+
+  renderUserLocation(): void {
+    return;
+  }
+
+  renderStops(
+    _stops: readonly MapStopMarker[],
+    _interactions?: MapStopInteractionOptions
+  ): void {
+    return;
+  }
+
+  fitToCoordinates(): void {
+    return;
+  }
+
+  restrictToCoordinates(): void {
+    return;
+  }
+
+  highlightStop(): void {
+    return;
+  }
+
   focusStop(): boolean {
     return true;
   }
-  renderRoutes(_routes: readonly MapRoutePolyline[], _activeRouteId: string | null): void {}
-  invalidateSize(): void {}
-  destroy(): void {}
+
+  renderRoutes(_routes: readonly MapRoutePolyline[], _activeRouteId: string | null): void {
+    return;
+  }
+
+  invalidateSize(): void {
+    return;
+  }
+
+  destroy(): void {
+    return;
+  }
 
   onViewportSettled(handler: MapViewportSettledHandler): () => void {
     this.viewportHandler = handler;
