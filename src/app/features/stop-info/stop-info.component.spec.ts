@@ -35,6 +35,8 @@ class GeolocationServiceStub {
   callCount = 0;
   private position = buildPosition(37.786, -3.775);
   private error: unknown = null;
+  private deferredPosition: Promise<GeolocationPosition> | null = null;
+  private resolveDeferredPosition: ((position: GeolocationPosition) => void) | null = null;
 
   setPosition(latitude: number, longitude: number): void {
     this.position = buildPosition(latitude, longitude);
@@ -45,11 +47,33 @@ class GeolocationServiceStub {
     this.error = error;
   }
 
+  deferNextPosition(): void {
+    this.deferredPosition = new Promise<GeolocationPosition>((resolve) => {
+      this.resolveDeferredPosition = resolve;
+    });
+  }
+
+  resolveDeferred(latitude = this.position.coords.latitude, longitude = this.position.coords.longitude): void {
+    const resolve = this.resolveDeferredPosition;
+
+    if (!resolve) {
+      throw new Error('No deferred geolocation request is pending.');
+    }
+
+    this.resolveDeferredPosition = null;
+    this.deferredPosition = null;
+    resolve(buildPosition(latitude, longitude));
+  }
+
   async getCurrentPosition(): Promise<GeolocationPosition> {
     this.callCount += 1;
 
     if (this.error) {
       throw this.error;
+    }
+
+    if (this.deferredPosition) {
+      return this.deferredPosition;
     }
 
     return this.position;
@@ -182,6 +206,83 @@ describe('StopInfoComponent', () => {
     expect(fixture.nativeElement.querySelector('.stop-info__directions-distance')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('.stop-info__directions-disclaimer')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('.leaflet-routing-container')).toBeNull();
+  }));
+
+  it('keeps the location request single-flight while distance calculation is pending', fakeAsync(() => {
+    geolocation.deferNextPosition();
+    fixture = TestBed.createComponent(StopInfoComponent);
+    fixture.detectChanges();
+    tick();
+
+    facade.emit({ status: 'ready', detail, source: 'live' });
+    fixture.detectChanges();
+
+    const action = fixture.nativeElement.querySelector(
+      '.stop-info__directions-action',
+    ) as HTMLButtonElement | null;
+
+    if (!action) {
+      throw new Error('Directions action not found');
+    }
+
+    action.click();
+    action.click();
+    fixture.detectChanges();
+
+    expect(geolocation.callCount).toBe(1);
+    expect(fixture.nativeElement.querySelector('.stop-info__directions-status')).not.toBeNull();
+
+    geolocation.resolveDeferred();
+    flushMicrotasks();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.stop-info__directions-distance')).not.toBeNull();
+  }));
+
+  it('ignores stale geolocation completion after the routed stop identity changes', fakeAsync(() => {
+    geolocation.deferNextPosition();
+    fixture = TestBed.createComponent(StopInfoComponent);
+    fixture.detectChanges();
+    tick();
+
+    facade.emit({ status: 'ready', detail, source: 'live' });
+    fixture.detectChanges();
+
+    const action = fixture.nativeElement.querySelector(
+      '.stop-info__directions-action',
+    ) as HTMLButtonElement | null;
+
+    if (!action) {
+      throw new Error('Directions action not found');
+    }
+
+    action.click();
+    fixture.detectChanges();
+    expect(geolocation.callCount).toBe(1);
+
+    const nextDetail: StopInformationDetail = {
+      ...detail,
+      consortiumId: 4,
+      stopNumber: '99',
+      stopCode: '099',
+      name: 'Nueva parada',
+      location: { latitude: 36.7213, longitude: -4.4214 },
+    };
+
+    paramMapSubject.next(convertToParamMap({ consortiumId: '4', stopNumber: '99' }));
+    facade.emit({ status: 'ready', detail: nextDetail, source: 'live' });
+    fixture.detectChanges();
+
+    expect(facade.selectStop).toHaveBeenCalledWith(4, '99');
+    expect(fixture.nativeElement.querySelector('.stop-info__directions-status')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.stop-info__directions-action')).not.toBeNull();
+
+    geolocation.resolveDeferred(37.786, -3.775);
+    flushMicrotasks();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.stop-info__directions-distance')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.stop-info__directions-action')).not.toBeNull();
   }));
 
   it('surfaces a recoverable geolocation error in the directions section', fakeAsync(() => {
