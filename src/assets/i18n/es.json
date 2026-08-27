@@ -231,7 +231,7 @@
   },
   "stopInfo": {
     "title": "Información de la parada",
-    "description": "Consulta los datos principales de la parada, su zona y las líneas que conectan.",
+    "description": "Consulta la ubicación, las líneas conectadas y una referencia de distancia hasta la parada.",
     "actions": {
       "refresh": "Actualizar parada"
     },
@@ -256,6 +256,15 @@
     "tags": {
       "main": "Parada principal",
       "inactive": "Inactiva"
+    },
+    "directions": {
+      "title": "Cómo llegar",
+      "description": "Usa tu ubicación para calcular una referencia directa hasta la parada.",
+      "locate": "Calcular distancia aproximada",
+      "loading": "Calculando la distancia aproximada…",
+      "distanceLabel": "Distancia aproximada",
+      "disclaimer": "La distancia se calcula en línea recta. No representa una ruta peatonal por calles ni instrucciones de navegación.",
+      "unavailable": "No tenemos coordenadas suficientes para calcular la distancia hasta esta parada."
     }
   },
   "routeSearch": {

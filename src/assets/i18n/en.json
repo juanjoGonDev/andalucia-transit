@@ -231,7 +231,7 @@
   },
   "stopInfo": {
     "title": "Stop information",
-    "description": "Key details for the selected stop, including codes, zone, and available connections.",
+    "description": "Check the stop location, connecting lines, and an approximate distance from your position.",
     "actions": {
       "refresh": "Refresh stop"
     },
@@ -256,6 +256,15 @@
     "tags": {
       "main": "Main stop",
       "inactive": "Inactive"
+    },
+    "directions": {
+      "title": "How to get there",
+      "description": "Use your location to calculate a direct-distance reference to the stop.",
+      "locate": "Calculate approximate distance",
+      "loading": "Calculating approximate distance…",
+      "distanceLabel": "Approximate distance",
+      "disclaimer": "This is a straight-line distance. It is not a walking route, street path, or navigation instruction.",
+      "unavailable": "We do not have enough coordinates to calculate the distance to this stop."
     }
   },
   "routeSearch": {

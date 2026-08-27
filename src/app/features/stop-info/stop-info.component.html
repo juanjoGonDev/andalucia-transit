@@ -160,6 +160,92 @@
       </ul>
     </section>
 
+    <section class="stop-info__directions" aria-labelledby="stop-info-directions-title">
+      <div class="stop-info__directions-heading">
+        <span class="material-symbols-outlined stop-info__directions-icon" aria-hidden="true">
+          directions_walk
+        </span>
+        <div>
+          <h3 id="stop-info-directions-title" class="stop-info__directions-title">
+            {{ directionsKeys.title | translate }}
+          </h3>
+          <p class="stop-info__directions-description">
+            {{ directionsKeys.description | translate }}
+          </p>
+        </div>
+      </div>
+
+      <ng-container *ngIf="detail.location as stopLocation; else directionsUnavailable">
+        <ng-container [ngSwitch]="directionsState().status">
+          <button
+            *ngSwitchCase="'idle'"
+            type="button"
+            class="app-solid-button app-solid-button--compact stop-info__directions-action"
+            (click)="calculateApproximateDistance(stopLocation)"
+          >
+            {{ directionsKeys.locate | translate }}
+          </button>
+
+          <div
+            *ngSwitchCase="'loading'"
+            class="app-async-status app-async-status--compact stop-info__directions-status"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="app-loading-indicator app-loading-indicator--sm" aria-hidden="true"></span>
+            <span>{{ directionsKeys.loading | translate }}</span>
+          </div>
+
+          <ng-container *ngSwitchCase="'ready'">
+            <div *ngIf="directionsState().distance as distance" class="stop-info__directions-result">
+              <span class="stop-info__directions-distance-label">
+                {{ directionsKeys.distanceLabel | translate }}
+              </span>
+              <strong class="stop-info__directions-distance">
+                {{ distance.translationKey | translate: { value: distance.value } }}
+              </strong>
+            </div>
+            <p class="stop-info__directions-disclaimer">
+              {{ directionsKeys.disclaimer | translate }}
+            </p>
+            <button
+              type="button"
+              class="app-outline-button app-outline-button--compact stop-info__directions-action"
+              (click)="calculateApproximateDistance(stopLocation)"
+            >
+              {{ directionsKeys.locate | translate }}
+            </button>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="'error'">
+            <div class="app-async-status app-async-status--error stop-info__directions-error" role="alert">
+              <span class="material-symbols-outlined" aria-hidden="true">location_off</span>
+              <div class="app-async-status__body">
+                <p class="app-async-status__description">
+                  {{ directionsState().errorKey | translate }}
+                </p>
+                <div class="app-async-status__actions">
+                  <button
+                    type="button"
+                    class="app-outline-button app-outline-button--compact stop-info__directions-action"
+                    (click)="calculateApproximateDistance(stopLocation)"
+                  >
+                    {{ directionsKeys.locate | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <ng-template #directionsUnavailable>
+        <p class="stop-info__directions-unavailable">
+          {{ directionsKeys.unavailable | translate }}
+        </p>
+      </ng-template>
+    </section>
+
     <div *ngIf="source === 'offline'" class="stop-info__notice">
       <span class="material-symbols-outlined stop-info__notice-icon" aria-hidden="true">wifi_off</span>
       <p class="stop-info__notice-text">{{ statusKeys.offline | translate }}</p>

@@ -197,6 +197,82 @@
   font-weight: var(--font-weight-semibold);
 }
 
+.stop-info__directions {
+  display: grid;
+  gap: var(--space-md);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.stop-info__directions-heading {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-sm);
+  align-items: start;
+}
+
+.stop-info__directions-icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+.stop-info__directions-title {
+  margin: 0;
+  color: var(--color-text-strong);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.stop-info__directions-description,
+.stop-info__directions-disclaimer,
+.stop-info__directions-unavailable {
+  margin: var(--space-3xs) 0 0;
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.stop-info__directions-action {
+  justify-self: start;
+  min-height: 2.75rem;
+}
+
+.stop-info__directions-status {
+  justify-self: start;
+}
+
+.stop-info__directions-result {
+  display: grid;
+  gap: var(--space-3xs);
+  justify-self: start;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.stop-info__directions-distance-label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.stop-info__directions-distance {
+  color: var(--color-text-strong);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.stop-info__directions-error {
+  max-width: 42rem;
+}
+
 .stop-info__notice {
   display: flex;
   align-items: center;
@@ -216,7 +292,8 @@
 }
 
 @media (max-width: 30rem) {
-  .stop-info__refresh {
+  .stop-info__refresh,
+  .stop-info__directions-action {
     width: 100%;
   }
 }

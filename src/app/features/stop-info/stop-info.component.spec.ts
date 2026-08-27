@@ -1,8 +1,13 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { StopInfoFacade, StopInformationDetail, StopInformationState } from '@domain/stops/stop-info.facade';
+import { GeolocationService } from '@core/services/geolocation.service';
+import {
+  StopInfoFacade,
+  StopInformationDetail,
+  StopInformationState,
+} from '@domain/stops/stop-info.facade';
 import { StopInfoComponent } from '@features/stop-info/stop-info.component';
 
 class FakeTranslateLoader implements TranslateLoader {
@@ -26,9 +31,35 @@ class StopInfoFacadeStub {
   }
 }
 
+class GeolocationServiceStub {
+  callCount = 0;
+  private position = buildPosition(37.786, -3.775);
+  private error: unknown = null;
+
+  setPosition(latitude: number, longitude: number): void {
+    this.position = buildPosition(latitude, longitude);
+    this.error = null;
+  }
+
+  failWith(error: unknown): void {
+    this.error = error;
+  }
+
+  async getCurrentPosition(): Promise<GeolocationPosition> {
+    this.callCount += 1;
+
+    if (this.error) {
+      throw this.error;
+    }
+
+    return this.position;
+  }
+}
+
 describe('StopInfoComponent', () => {
   let fixture: ComponentFixture<StopInfoComponent>;
   let facade: StopInfoFacadeStub;
+  let geolocation: GeolocationServiceStub;
   let router: Router;
   let paramMapSubject: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
 
@@ -45,25 +76,31 @@ describe('StopInfoComponent', () => {
     zone: 'A',
     location: { latitude: 37.78574, longitude: -3.77469 },
     isMain: true,
-    isInactive: false
+    isInactive: false,
   };
 
   beforeEach(async () => {
     facade = new StopInfoFacadeStub();
-    paramMapSubject = new BehaviorSubject(convertToParamMap({ consortiumId: '7', stopNumber: '56' }));
+    geolocation = new GeolocationServiceStub();
+    paramMapSubject = new BehaviorSubject(
+      convertToParamMap({ consortiumId: '7', stopNumber: '56' }),
+    );
     const routerStub = jasmine.createSpyObj<Router>('Router', ['navigate']);
     routerStub.navigate.and.resolveTo(true);
 
     await TestBed.configureTestingModule({
       imports: [
         StopInfoComponent,
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: FakeTranslateLoader } })
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
+        }),
       ],
       providers: [
         { provide: StopInfoFacade, useValue: facade },
+        { provide: GeolocationService, useValue: geolocation },
         { provide: ActivatedRoute, useValue: { paramMap: paramMapSubject.asObservable() } },
-        { provide: Router, useValue: routerStub }
-      ]
+        { provide: Router, useValue: routerStub },
+      ],
     }).compileComponents();
 
     router = TestBed.inject(Router);
@@ -85,7 +122,9 @@ describe('StopInfoComponent', () => {
     facade.emit({ status: 'ready', detail, source: 'live' });
     fixture.detectChanges();
 
-    const titleElement = fixture.nativeElement.querySelector('.stop-info__card-title') as HTMLElement | null;
+    const titleElement = fixture.nativeElement.querySelector(
+      '.stop-info__card-title',
+    ) as HTMLElement | null;
     const tagElements = fixture.nativeElement.querySelectorAll('.stop-info__tag');
 
     expect(titleElement?.textContent?.trim()).toBe('Campus Universitario-I');
@@ -116,6 +155,76 @@ describe('StopInfoComponent', () => {
     expect(card?.querySelector('.stop-info__location')).not.toBeNull();
     expect(card?.querySelector('.stop-info__zone')).not.toBeNull();
     expect(card?.querySelector('.stop-info__correspondence-list')).not.toBeNull();
+  }));
+
+  it('calculates an explicit approximate distance without presenting it as a walking route', fakeAsync(() => {
+    geolocation.setPosition(37.786, -3.775);
+    fixture = TestBed.createComponent(StopInfoComponent);
+    fixture.detectChanges();
+    tick();
+
+    facade.emit({ status: 'ready', detail, source: 'live' });
+    fixture.detectChanges();
+
+    const action = fixture.nativeElement.querySelector(
+      '.stop-info__directions-action',
+    ) as HTMLButtonElement | null;
+
+    if (!action) {
+      throw new Error('Directions action not found');
+    }
+
+    action.click();
+    flushMicrotasks();
+    fixture.detectChanges();
+
+    expect(geolocation.callCount).toBe(1);
+    expect(fixture.nativeElement.querySelector('.stop-info__directions-distance')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.stop-info__directions-disclaimer')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.leaflet-routing-container')).toBeNull();
+  }));
+
+  it('surfaces a recoverable geolocation error in the directions section', fakeAsync(() => {
+    geolocation.failWith(permissionDeniedError());
+    fixture = TestBed.createComponent(StopInfoComponent);
+    fixture.detectChanges();
+    tick();
+
+    facade.emit({ status: 'ready', detail, source: 'live' });
+    fixture.detectChanges();
+
+    const action = fixture.nativeElement.querySelector(
+      '.stop-info__directions-action',
+    ) as HTMLButtonElement | null;
+
+    if (!action) {
+      throw new Error('Directions action not found');
+    }
+
+    action.click();
+    flushMicrotasks();
+    fixture.detectChanges();
+
+    expect(geolocation.callCount).toBe(1);
+    expect(fixture.nativeElement.querySelector('.stop-info__directions-error')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.stop-info__directions-action')).not.toBeNull();
+  }));
+
+  it('does not request geolocation when stop coordinates are unavailable', fakeAsync(() => {
+    fixture = TestBed.createComponent(StopInfoComponent);
+    fixture.detectChanges();
+    tick();
+
+    facade.emit({
+      status: 'ready',
+      detail: { ...detail, location: null },
+      source: 'live',
+    });
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.stop-info__directions-unavailable')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.stop-info__directions-action')).toBeNull();
+    expect(geolocation.callCount).toBe(0);
   }));
 
   it('shows the offline notice when using cached data', fakeAsync(() => {
@@ -149,7 +258,9 @@ describe('StopInfoComponent', () => {
     fixture.detectChanges();
     tick();
 
-    const refreshButton = fixture.nativeElement.querySelector('.stop-info__refresh') as HTMLElement | null;
+    const refreshButton = fixture.nativeElement.querySelector(
+      '.stop-info__refresh',
+    ) as HTMLElement | null;
 
     if (!refreshButton) {
       throw new Error('Refresh button not found');
@@ -168,7 +279,9 @@ describe('StopInfoComponent', () => {
     facade.emit({ status: 'loading', fallback: null });
     fixture.detectChanges();
 
-    const statusElement = fixture.nativeElement.querySelector('.stop-info__status--loading') as HTMLElement | null;
+    const statusElement = fixture.nativeElement.querySelector(
+      '.stop-info__status--loading',
+    ) as HTMLElement | null;
 
     expect(statusElement).not.toBeNull();
     expect(statusElement?.getAttribute('role')).toBe(STATUS_ROLE);
@@ -183,7 +296,9 @@ describe('StopInfoComponent', () => {
     facade.emit({ status: 'notFound', fallback: null });
     fixture.detectChanges();
 
-    const statusElement = fixture.nativeElement.querySelector('.stop-info__status--error') as HTMLElement | null;
+    const statusElement = fixture.nativeElement.querySelector(
+      '.stop-info__status--error',
+    ) as HTMLElement | null;
 
     expect(statusElement).not.toBeNull();
     expect(statusElement?.getAttribute('role')).toBe(STATUS_ROLE);
@@ -198,10 +313,41 @@ describe('StopInfoComponent', () => {
     facade.emit({ status: 'error', fallback: null });
     fixture.detectChanges();
 
-    const statusElement = fixture.nativeElement.querySelector('.stop-info__status--error') as HTMLElement | null;
+    const statusElement = fixture.nativeElement.querySelector(
+      '.stop-info__status--error',
+    ) as HTMLElement | null;
 
     expect(statusElement).not.toBeNull();
     expect(statusElement?.getAttribute('role')).toBe(STATUS_ROLE);
     expect(statusElement?.getAttribute('aria-live')).toBe(ASSERTIVE_LIVE_REGION);
   }));
 });
+
+function buildPosition(latitude: number, longitude: number): GeolocationPosition {
+  const coords = {
+    latitude,
+    longitude,
+    accuracy: 0,
+    altitude: null,
+    altitudeAccuracy: null,
+    heading: null,
+    speed: null,
+    toJSON: () => ({}),
+  } satisfies GeolocationCoordinates;
+
+  return {
+    coords,
+    timestamp: Date.now(),
+    toJSON: () => ({ coords, timestamp: Date.now() }),
+  } satisfies GeolocationPosition;
+}
+
+function permissionDeniedError(): GeolocationPositionError {
+  return {
+    code: 1,
+    message: 'denied',
+    PERMISSION_DENIED: 1,
+    POSITION_UNAVAILABLE: 2,
+    TIMEOUT: 3,
+  } satisfies GeolocationPositionError;
+}
