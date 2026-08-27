@@ -180,7 +180,7 @@ test.describe('home tabs responsive layout', () => {
       await page.goto(new URL(path, resolvedBaseUrl).toString());
 
       const shell = page.locator('.shell-actions__shell');
-      const title = page.locator('.app-hero__title').first();
+      const title = page.getByRole('heading', { level: 1 }).first();
       await expect(shell).toBeVisible();
       await expect(title).toBeVisible();
 
