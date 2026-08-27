@@ -113,7 +113,7 @@
 
 .route-search__item-arrival-time {
   color: var(--route-search-state-strong);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-snug);
   font-variant-numeric: tabular-nums;
@@ -240,7 +240,7 @@
   }
 
   .route-search__item-arrival-time {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-lg);
   }
 }
 
