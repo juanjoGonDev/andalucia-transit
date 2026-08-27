@@ -577,7 +577,7 @@ describe('MapComponent', () => {
       jasmine.objectContaining({ id: `focused-line:${FOCUSED_LINE.lineId}`, coordinates })
     );
     expect(lastRender?.activeRouteId).toBe(`focused-line:${FOCUSED_LINE.lineId}`);
-    expect(mapService.handle.focusedPoints.at(-1)).toEqual(coordinates);
+    expect(mapService.handle.focusedPoints.at(-1)).toEqual([...coordinates]);
   }));
 
   it('does not render a focused-line preview when official geometry is absent', fakeAsync(() => {

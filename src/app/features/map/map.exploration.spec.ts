@@ -20,7 +20,8 @@ import {
   MapHandle,
   MapRoutePolyline,
   MapStopInteractionOptions,
-  MapStopMarker
+  MapStopMarker,
+  MapViewportSettledHandler
 } from '@shared/map/leaflet-map.service';
 
 class FakeTranslateLoader implements TranslateLoader {
@@ -83,6 +84,10 @@ class MapHandleStub implements MapHandle {
 
   renderRoutes(_routes: readonly MapRoutePolyline[], _activeRouteId: string | null): void {
     this.routeRenderCount += 1;
+  }
+
+  onViewportSettled(_handler: MapViewportSettledHandler): () => void {
+    return () => undefined;
   }
 
   invalidateSize(): void {
