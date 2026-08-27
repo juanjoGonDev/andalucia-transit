@@ -11,6 +11,8 @@ const MINIMUM_MOBILE_MAP_HEIGHT = 360;
 const MAXIMUM_MOBILE_PANEL_RATIO = 0.45;
 const MINIMUM_DESKTOP_PANEL_START_RATIO = 0.55;
 const MINIMUM_SEARCH_CODE_LENGTH = 2;
+const MINIMUM_TOUCH_TARGET_PX = 44;
+const TARGET_STOP_NAME = 'La Gangosa';
 const SEVILLE_LOCATION = { latitude: 37.389092, longitude: -5.984459 } as const;
 
 interface StopDirectoryIndexFile {
@@ -37,7 +39,7 @@ interface CanonicalSearchStop {
   readonly municipality: string;
 }
 
-async function loadCanonicalSearchStop(page: Page, baseUrl: string): Promise<CanonicalSearchStop> {
+async function loadStopDirectory(page: Page, baseUrl: string): Promise<StopDirectorySearchEntry[]> {
   const indexResponse = await page.request.get(
     new URL(STOP_DIRECTORY_INDEX_PATH, baseUrl).toString(),
   );
@@ -56,6 +58,11 @@ async function loadCanonicalSearchStop(page: Page, baseUrl: string): Promise<Can
     stops.push(...chunk.stops);
   }
 
+  return stops;
+}
+
+async function loadCanonicalSearchStop(page: Page, baseUrl: string): Promise<CanonicalSearchStop> {
+  const stops = await loadStopDirectory(page, baseUrl);
   const codeCounts = new Map<string, number>();
 
   for (const entry of stops) {
@@ -82,11 +89,51 @@ async function loadCanonicalSearchStop(page: Page, baseUrl: string): Promise<Can
     throw new Error('Canonical stop chunks do not contain a unique searchable stop code.');
   }
 
+  return toSearchStop(candidate);
+}
+
+async function loadSearchStopByName(
+  page: Page,
+  baseUrl: string,
+  name: string,
+): Promise<CanonicalSearchStop> {
+  const stops = await loadStopDirectory(page, baseUrl);
+  const normalizedName = name.toLocaleLowerCase('es');
+  const candidate = stops.find(
+    (entry) =>
+      entry.stopCode.trim().length > 0 &&
+      entry.name.toLocaleLowerCase('es').includes(normalizedName) &&
+      entry.municipality.trim().length > 0,
+  );
+
+  expect(candidate).toBeDefined();
+  if (!candidate) {
+    throw new Error(`Canonical stop chunks do not contain a searchable stop matching ${name}.`);
+  }
+
+  return toSearchStop(candidate);
+}
+
+function toSearchStop(entry: StopDirectorySearchEntry): CanonicalSearchStop {
   return {
-    code: candidate.stopCode.trim(),
-    name: candidate.name.trim(),
-    municipality: candidate.municipality.trim(),
+    code: entry.stopCode.trim(),
+    name: entry.name.trim(),
+    municipality: entry.municipality.trim(),
   };
+}
+
+async function selectSearchStop(page: Page, stop: CanonicalSearchStop, query: string): Promise<void> {
+  const searchInput = page.locator('#map-network-search');
+  await searchInput.fill(query);
+
+  const stopOption = page
+    .locator('.app-autocomplete__option')
+    .filter({ hasText: stop.name })
+    .filter({ hasText: stop.code })
+    .filter({ hasText: stop.municipality })
+    .first();
+  await expect(stopOption).toBeVisible();
+  await stopOption.click();
 }
 
 async function countPaintedPixels(canvas: Locator): Promise<number> {
@@ -133,17 +180,7 @@ test.describe('network map exploration', () => {
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
     expect(await countPaintedPixels(overlayCanvas)).toBeGreaterThan(MINIMUM_PAINTED_PIXELS);
 
-    const searchInput = page.locator('#map-network-search');
-    await searchInput.fill(searchStop.code);
-
-    const stopOption = page
-      .locator('.app-autocomplete__option')
-      .filter({ hasText: searchStop.name })
-      .filter({ hasText: searchStop.code })
-      .filter({ hasText: searchStop.municipality })
-      .first();
-    await expect(stopOption).toBeVisible();
-    await stopOption.click();
+    await selectSearchStop(page, searchStop, searchStop.code);
 
     const popup = page.locator('.app-map-stop-popup');
     await expect(popup).toBeVisible();
@@ -153,13 +190,21 @@ test.describe('network map exploration', () => {
       searchStop.municipality,
     );
 
+    const closeButton = popup.locator('.leaflet-popup-close-button');
+    await expect(closeButton).toBeVisible();
+    const closeBounds = await closeButton.boundingBox();
+    expect(closeBounds?.width ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
+    expect(closeBounds?.height ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
+    await closeButton.focus();
+    await expect(closeButton).toBeFocused();
+
     const mapBox = await mapRegion.boundingBox();
     expect(mapBox).not.toBeNull();
     if (!mapBox) {
       return;
     }
 
-    await page.locator('.leaflet-popup-close-button').click();
+    await closeButton.click();
     await expect(popup).toBeHidden();
     await page.mouse.click(mapBox.x + mapBox.width / 2, mapBox.y + mapBox.height / 2);
 
@@ -169,6 +214,35 @@ test.describe('network map exploration', () => {
     await detailsAction.click();
 
     await expect(page).toHaveURL(/\/stop-detail\/.+\?consortiumId=\d+/, { timeout: 10_000 });
+  });
+
+  test('refreshes nearby cards from the settled viewport selected through map search', async ({
+    page,
+  }) => {
+    const resolvedBaseUrl = BASE_URL as string;
+    const targetStop = await loadSearchStopByName(page, resolvedBaseUrl, TARGET_STOP_NAME);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.setViewportSize(MOBILE_VIEWPORT);
+    await page.goto(new URL(MAP_PATH, resolvedBaseUrl).toString());
+
+    const mapSurface = page.locator('.map__canvas');
+    await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
+
+    await selectSearchStop(page, targetStop, targetStop.name);
+    const popup = page.locator('.app-map-stop-popup');
+    await expect(popup).toBeVisible();
+    await expect(popup.locator('.app-map-stop-popup__title')).toHaveText(targetStop.name);
+
+    const nearbyInspector = page.locator('.map__inspector--nearby');
+    await nearbyInspector.locator(':scope > summary').click();
+    const nearbyPanel = nearbyInspector.locator('.map__panel');
+    await expect(nearbyPanel).toBeVisible();
+
+    const nearbyNames = nearbyPanel.locator('.map-stop__name');
+    await expect
+      .poll(() => nearbyNames.allTextContents(), { timeout: 15_000 })
+      .toContain(targetStop.name);
+    await expect(nearbyPanel).not.toHaveAttribute('aria-busy', 'true');
   });
 
   test('highlights the matching map marker when a nearby stop card is hovered', async ({
