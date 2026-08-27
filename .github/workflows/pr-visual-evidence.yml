@@ -274,7 +274,35 @@ jobs:
           capture /recents recent-empty
           capture /favorites favorites-empty
 
-          test "$(find evidence-assets -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 22
+          required_assets=(
+            home-data_es_390_844_full.png
+            home-data_es_1440_900_full.png
+            route-search-initial_es_390_844_full.png
+            route-search-initial_es_1440_900_full.png
+            route-search-loading_es_390_844_full.png
+            route-search-error_es_390_844_full.png
+            dialog-confirm_es_390_844_full.png
+            dialog-confirm_es_1440_900_full.png
+            shell-drawer-390x844.png
+            shell-drawer-1440x900.png
+            map-data_es_390_844_full.png
+            map-data_es_1440_900_full.png
+            recent-data_es_390_844_full.png
+            recent-data_es_1440_900_full.png
+            favorites-data_es_390_844_full.png
+            favorites-data_es_1440_900_full.png
+            settings-data_es_390_844_full.png
+            settings-data_es_1440_900_full.png
+            news-data_es_390_844_full.png
+            news-data_es_1440_900_full.png
+            recent-empty_es_390_844_full.png
+            recent-empty_es_1440_900_full.png
+            favorites-empty_es_390_844_full.png
+            favorites-empty_es_1440_900_full.png
+          )
+          for asset in "${required_assets[@]}"; do
+            test -s "evidence-assets/$asset"
+          done
           while IFS= read -r file; do
             test "$(stat -c %s "$file")" -le 25000000
           done < <(find evidence-assets -maxdepth 1 -type f -name '*.png' -print)
@@ -362,6 +390,7 @@ jobs:
           | Screen | State | Mobile · 390×844 | Desktop · 1440×900 |
           | --- | --- | --- | --- |
           | Home | Populated data | <img src="$base/home-data_es_390_844_full.png" width="220" alt="Home populated state at 390 by 844 pixels"> | <img src="$base/home-data_es_1440_900_full.png" width="420" alt="Home populated state at 1440 by 900 pixels"> |
+          | Secondary navigation | Drawer open | <img src="$base/shell-drawer-390x844.png" width="220" alt="Secondary navigation drawer open at 390 by 844 pixels"> | <img src="$base/shell-drawer-1440x900.png" width="420" alt="Secondary navigation drawer open at 1440 by 900 pixels"> |
           | Route search | Initial | <img src="$base/route-search-initial_es_390_844_full.png" width="220" alt="Route search initial state at 390 by 844 pixels"> | <img src="$base/route-search-initial_es_1440_900_full.png" width="420" alt="Route search initial state at 1440 by 900 pixels"> |
           | Route search | Loading | <img src="$base/route-search-loading_es_390_844_full.png" width="220" alt="Route search loading state at 390 by 844 pixels"> | Browser assertion only |
           | Route search | Recoverable error | <img src="$base/route-search-error_es_390_844_full.png" width="220" alt="Route search recoverable error state at 390 by 844 pixels"> | Browser assertion only |
