@@ -45,7 +45,10 @@ const FOCUS_DELAY_MS = 0;
   ],
   templateUrl: './map-search.component.html',
   styleUrl: './map-search.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(keydown)': 'handleSearchKeydown($event)'
+  }
 })
 export class MapSearchComponent {
   @ViewChild('searchToggle')
@@ -120,7 +123,7 @@ export class MapSearchComponent {
   }
 
   protected handleSearchKeydown(event: KeyboardEvent): void {
-    if (event.key !== ESCAPE_KEY) {
+    if (event.key !== ESCAPE_KEY || !this.isExpanded()) {
       return;
     }
 
