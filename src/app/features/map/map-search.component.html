@@ -11,12 +11,7 @@
     <span class="material-symbols-outlined" aria-hidden="true">search</span>
   </button>
 
-  <div
-    *ngIf="isExpanded()"
-    #searchField
-    class="map-search__expanded"
-    (keydown)="handleSearchKeydown($event)"
-  >
+  <div *ngIf="isExpanded()" #searchField class="map-search__expanded">
     <app-autocomplete
       class="map-search__field"
       [label]="labelKey | translate"
