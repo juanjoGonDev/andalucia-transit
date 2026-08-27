@@ -3,14 +3,15 @@
 }
 
 .map {
-  --map-mobile-nav-clearance: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+  --map-nav-clearance: calc(5.75rem + env(safe-area-inset-bottom, 0px));
   --map-panel-width: min(23rem, 31vw);
+  --map-control-size: 3rem;
 }
 
 .map__workspace {
   position: relative;
   width: 100%;
-  height: calc(100dvh - var(--map-mobile-nav-clearance));
+  height: calc(100dvh - var(--map-nav-clearance));
   min-height: 34rem;
   overflow: hidden;
   background: var(--color-surface-muted);
@@ -31,19 +32,18 @@
 .map__search-shell {
   position: absolute;
   z-index: var(--z-index-sticky);
-  inset: max(var(--space-sm), env(safe-area-inset-top, 0px)) var(--space-sm) auto;
-  display: grid;
-  gap: var(--space-sm);
-  max-width: 36rem;
-  padding: var(--space-md);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-xl);
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-  box-shadow: var(--shadow-lg);
+  top: max(var(--space-sm), env(safe-area-inset-top, 0px));
+  left: var(--space-sm);
+  width: min(32rem, calc(100% - 5rem));
+  pointer-events: none;
 }
 
-.map__heading,
+.map__search-shell app-map-search {
+  display: inline-block;
+  max-width: 100%;
+  pointer-events: auto;
+}
+
 .map__section-heading {
   display: flex;
   align-items: center;
@@ -51,7 +51,6 @@
   min-width: 0;
 }
 
-.map__heading-icon,
 .map__section-icon {
   display: grid;
   place-items: center;
@@ -65,8 +64,6 @@
   font-variation-settings: 'FILL' 1, 'wght' 650, 'GRAD' 0, 'opsz' 24;
 }
 
-.map__title,
-.map__description,
 .map__panel-title,
 .map__routes-title,
 .map__panel-message,
@@ -75,33 +72,18 @@
   margin: 0;
 }
 
-.map__title {
-  color: var(--color-text-strong);
-  font-size: clamp(var(--font-size-lg), 4vw, var(--font-size-title-sm));
-  font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-snug);
-}
-
-.map__description {
-  display: none;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
-}
-
 .map__controls {
   position: absolute;
   z-index: var(--z-index-sticky);
-  top: 9.25rem;
+  top: max(var(--space-sm), env(safe-area-inset-top, 0px));
   right: var(--space-sm);
-  display: grid;
-  gap: var(--space-xs);
 }
 
 .map__control {
   display: grid;
   place-items: center;
-  width: 3rem;
-  height: 3rem;
+  width: var(--map-control-size);
+  height: var(--map-control-size);
   padding: 0;
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-full);
@@ -110,7 +92,7 @@
   box-shadow: var(--shadow-md);
   cursor: pointer;
   text-decoration: none;
-  transition: transform 160ms ease, background-color 160ms ease;
+  transition: transform 160ms ease, background-color 160ms ease, color 160ms ease;
 }
 
 .map__control:hover {
@@ -129,6 +111,39 @@
 .map__control:disabled {
   cursor: not-allowed;
   opacity: var(--opacity-disabled);
+}
+
+.map__inspector {
+  position: static;
+}
+
+.map__inspector-trigger {
+  position: absolute;
+  z-index: var(--z-index-sticky);
+  right: var(--space-sm);
+  list-style: none;
+}
+
+.map__inspector-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.map__inspector--lines > .map__inspector-trigger {
+  top: calc(max(var(--space-sm), env(safe-area-inset-top, 0px)) + 3.5rem);
+}
+
+.map__inspector--nearby > .map__inspector-trigger {
+  top: calc(max(var(--space-sm), env(safe-area-inset-top, 0px)) + 7rem);
+}
+
+.map__inspector--routes > .map__inspector-trigger {
+  top: calc(max(var(--space-sm), env(safe-area-inset-top, 0px)) + 10.5rem);
+}
+
+.map__inspector[open] > .map__inspector-trigger {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
 }
 
 .map__canvas-progress {
@@ -155,8 +170,7 @@
   left: var(--space-sm);
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
-  max-height: min(37dvh, 22rem);
+  max-height: min(50dvh, 26rem);
   padding: var(--space-md-plus);
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -173,7 +187,8 @@
 }
 
 .map__nearby,
-.map__routes {
+.map__routes,
+.map__focused-lines {
   display: grid;
   gap: var(--space-md-plus);
 }
@@ -212,11 +227,6 @@
 .map-route {
   display: grid;
   gap: var(--space-sm);
-}
-
-.map__routes {
-  padding-top: var(--space-xl);
-  border-top: 1px solid var(--color-border-subtle);
 }
 
 .map__routes-header,
@@ -306,32 +316,41 @@
 
 @media (min-width: 40rem) {
   .map__workspace {
-    height: calc(100dvh - var(--space-xl));
     min-height: 40rem;
   }
 
   .map__search-shell {
     top: var(--space-lg);
-    right: auto;
     left: var(--space-lg);
-    width: min(34rem, calc(100% - var(--space-3xl)));
   }
 
-  .map__description {
-    display: block;
+  .map__controls,
+  .map__inspector-trigger {
+    right: var(--space-lg);
   }
 
   .map__controls {
     top: var(--space-lg);
-    right: var(--space-lg);
+  }
+
+  .map__inspector--lines > .map__inspector-trigger {
+    top: calc(var(--space-lg) + 3.5rem);
+  }
+
+  .map__inspector--nearby > .map__inspector-trigger {
+    top: calc(var(--space-lg) + 7rem);
+  }
+
+  .map__inspector--routes > .map__inspector-trigger {
+    top: calc(var(--space-lg) + 10.5rem);
   }
 
   .map__panel {
-    top: 6rem;
-    right: var(--space-lg);
+    top: var(--space-lg);
+    right: calc(var(--space-lg) + 4rem);
     bottom: var(--space-lg);
     left: auto;
-    width: min(22rem, 38vw);
+    width: min(22rem, calc(100vw - 8rem));
     max-height: none;
     padding: var(--space-lg);
   }
@@ -339,20 +358,10 @@
 
 @media (min-width: 64rem) {
   .map__workspace {
-    height: 100dvh;
     min-height: 42rem;
   }
 
-  .map__search-shell {
-    width: min(36rem, calc(100% - var(--map-panel-width) - 7rem));
-  }
-
-  .map__controls {
-    right: calc(var(--map-panel-width) + var(--space-2xl));
-  }
-
   .map__panel {
-    top: var(--space-lg);
     width: var(--map-panel-width);
   }
 }
