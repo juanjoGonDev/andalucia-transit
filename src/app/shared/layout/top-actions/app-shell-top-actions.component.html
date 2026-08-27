@@ -42,42 +42,67 @@
           <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">star</span>
           <span class="shell-actions__button-label">{{ favoritesLabelKey | translate }}</span>
         </a>
-        <div class="shell-actions__menu">
-          <button
-            type="button"
-            class="shell-actions__button shell-actions__button--menu"
-            [class.shell-actions__button--active]="menuOpen() || moreActive()"
-            [attr.aria-expanded]="menuOpen()"
-            aria-haspopup="menu"
-            [attr.aria-label]="menuLabelKey | translate"
-            (click)="toggleMenu()"
-            (keydown.escape)="closeMenu()"
-          >
-            <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">menu</span>
-          </button>
-          <div class="shell-actions__panel" *ngIf="menuOpen()">
-            <ul class="shell-actions__list" role="menu">
-              <li class="shell-actions__item" *ngFor="let entry of menuEntries()">
-                <a
-                  class="shell-actions__menu-button"
-                  role="menuitem"
-                  [routerLink]="entry.commands"
-                  [attr.aria-current]="entry.isActive ? 'page' : null"
-                  (click)="closeMenu()"
-                >
-                  <span class="shell-actions__menu-label">{{ entry.labelKey | translate }}</span>
-                  <span
-                    *ngIf="entry.isActive"
-                    class="material-symbols-outlined shell-actions__menu-current"
-                    aria-hidden="true"
-                    >check</span
-                  >
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <button
+          #menuTrigger
+          type="button"
+          class="shell-actions__button shell-actions__button--menu"
+          [class.shell-actions__button--active]="menuOpen() || moreActive()"
+          [attr.aria-expanded]="menuOpen()"
+          aria-haspopup="dialog"
+          aria-controls="shell-actions-drawer"
+          [attr.aria-label]="menuLabelKey | translate"
+          (click)="toggleMenu()"
+        >
+          <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">menu</span>
+        </button>
       </div>
     </div>
   </div>
 </nav>
+
+<dialog
+  #drawer
+  id="shell-actions-drawer"
+  class="shell-actions__drawer"
+  aria-labelledby="shell-actions-drawer-title"
+  (click)="handleDrawerClick($event)"
+  (close)="handleDrawerClose()"
+>
+  <div class="shell-actions__drawer-surface">
+    <header class="shell-actions__drawer-header">
+      <h2 id="shell-actions-drawer-title" class="shell-actions__drawer-title">
+        {{ menuLabelKey | translate }}
+      </h2>
+      <button
+        #drawerClose
+        type="button"
+        class="shell-actions__drawer-close"
+        [attr.aria-label]="closeLabelKey | translate"
+        (click)="closeMenu()"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">close</span>
+      </button>
+    </header>
+
+    <nav aria-labelledby="shell-actions-drawer-title">
+      <ul class="shell-actions__list">
+        <li class="shell-actions__item" *ngFor="let entry of menuEntries()">
+          <a
+            class="shell-actions__menu-button"
+            [routerLink]="entry.commands"
+            [attr.aria-current]="entry.isActive ? 'page' : null"
+            (click)="closeMenu()"
+          >
+            <span class="shell-actions__menu-label">{{ entry.labelKey | translate }}</span>
+            <span
+              *ngIf="entry.isActive"
+              class="material-symbols-outlined shell-actions__menu-current"
+              aria-hidden="true"
+              >check</span
+            >
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</dialog>

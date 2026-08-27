@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '@core/config';
@@ -27,8 +27,11 @@ interface ShellMenuViewEntry extends ShellMenuEntry {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppShellTopActionsComponent {
-  private readonly host = inject(ElementRef<HTMLElement>);
   private readonly layoutContextStore = inject(AppLayoutContextStore);
+
+  @ViewChild('drawer') private drawer?: ElementRef<HTMLDialogElement>;
+  @ViewChild('drawerClose') private drawerClose?: ElementRef<HTMLButtonElement>;
+  @ViewChild('menuTrigger') private menuTrigger?: ElementRef<HTMLButtonElement>;
 
   private readonly translation = APP_CONFIG.translationKeys.home;
   private readonly homeCommands = buildNavigationCommands(APP_CONFIG.routes.home);
@@ -54,6 +57,7 @@ export class AppShellTopActionsComponent {
   protected readonly mapLabelKey = APP_CONFIG.translationKeys.navigation.map;
   protected readonly favoritesLabelKey = APP_CONFIG.translationKeys.navigation.favorites;
   protected readonly menuLabelKey = this.translation.topBar.menuLabel;
+  protected readonly closeLabelKey = this.translation.dialogs.nearbyStops.close;
   protected readonly homeLinkCommands = [...this.homeCommands];
   protected readonly routeSearchLinkCommands = [...this.routeSearchCommands];
   protected readonly mapLinkCommands = [...this.mapCommands];
@@ -108,23 +112,44 @@ export class AppShellTopActionsComponent {
   protected readonly menuOpen = signal(false);
 
   protected toggleMenu(): void {
-    this.menuOpen.update((open) => !open);
-  }
+    const dialog = this.drawer?.nativeElement;
 
-  protected closeMenu(): void {
-    this.menuOpen.set(false);
-  }
-
-  @HostListener('document:click', ['$event'])
-  protected handleDocumentClick(event: MouseEvent): void {
-    if (!this.menuOpen()) {
+    if (!dialog) {
       return;
     }
 
-    const target = event.target;
+    if (dialog.open) {
+      this.closeMenu();
+      return;
+    }
 
-    if (target instanceof Node && !this.host.nativeElement.contains(target)) {
+    dialog.showModal();
+    this.menuOpen.set(true);
+    this.drawerClose?.nativeElement.focus();
+  }
+
+  protected closeMenu(): void {
+    const dialog = this.drawer?.nativeElement;
+
+    if (dialog?.open) {
+      dialog.close();
+    }
+
+    this.finishMenuClose();
+  }
+
+  protected handleDrawerClose(): void {
+    this.finishMenuClose();
+  }
+
+  protected handleDrawerClick(event: MouseEvent): void {
+    if (event.target === this.drawer?.nativeElement) {
       this.closeMenu();
     }
+  }
+
+  private finishMenuClose(): void {
+    this.menuOpen.set(false);
+    this.menuTrigger?.nativeElement.focus();
   }
 }

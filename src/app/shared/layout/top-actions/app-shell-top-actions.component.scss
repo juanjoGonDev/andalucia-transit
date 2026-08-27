@@ -65,8 +65,9 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
 }
 
 .shell-actions__button:focus-visible,
+.shell-actions__drawer-close:focus-visible,
 .shell-actions__menu-button:focus-visible {
-  outline: 2px solid var(--color-text-inverse);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
@@ -87,31 +88,70 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
   font-weight: var(--font-weight-semibold);
 }
 
-.shell-actions__menu {
-  position: relative;
-  min-width: 0;
-}
-
-.shell-actions__menu > .shell-actions__button {
+.shell-actions__button--menu {
   width: 100%;
 }
 
-.shell-actions__panel {
-  position: absolute;
-  right: 0;
-  bottom: calc(100% + var(--space-sm));
-  min-width: min(18rem, calc(100vw - (var(--space-lg) * 2)));
-  padding: var(--space-sm);
-  border: 1px solid $shell-actions-border;
-  border-radius: var(--radius-lg);
-  background: $shell-actions-surface;
-  color: $shell-actions-foreground;
-  box-shadow: var(--shadow-lg);
+.shell-actions__drawer {
+  inset: 0 0 0 auto;
+  width: min(22rem, calc(100vw - var(--space-xl)));
+  height: 100dvh;
+  max-width: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-dialog-surface);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-dialog);
+  pointer-events: auto;
+  animation: shell-actions-drawer-in 180ms ease-out;
+}
+
+.shell-actions__drawer::backdrop {
+  background: color-mix(in srgb, var(--color-secondary) 58%, transparent);
+}
+
+.shell-actions__drawer-surface {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  min-height: 100%;
+  padding: max(var(--space-lg), env(safe-area-inset-top, 0px))
+    max(var(--space-lg), env(safe-area-inset-right, 0px))
+    max(var(--space-lg), env(safe-area-inset-bottom, 0px)) var(--space-lg);
+}
+
+.shell-actions__drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.shell-actions__drawer-title {
+  margin: 0;
+  font-size: var(--font-size-title-md);
+  line-height: var(--line-height-heading);
+}
+
+.shell-actions__drawer-close {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-muted);
+  color: var(--color-text-primary);
+  cursor: pointer;
 }
 
 .shell-actions__list {
   display: grid;
-  gap: var(--space-3xs);
+  gap: var(--space-xs);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -122,7 +162,7 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
   align-items: center;
   justify-content: space-between;
   gap: var(--space-sm);
-  min-height: 2.75rem;
+  min-height: 3rem;
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-md);
   color: inherit;
@@ -131,14 +171,28 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
 }
 
 .shell-actions__menu-button:hover,
-.shell-actions__menu-button:focus-visible,
+.shell-actions__menu-button:focus-visible {
+  background: var(--color-surface-muted);
+}
+
 .shell-actions__menu-button[aria-current='page'] {
-  background: $shell-actions-hover;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
 }
 
 .shell-actions__menu-current {
-  color: var(--color-text-inverse);
+  color: var(--color-primary);
   font-size: 1.15rem;
+}
+
+@keyframes shell-actions-drawer-in {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -187,15 +241,14 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
     width: 3rem;
     padding-inline: var(--space-xs);
   }
-
-  .shell-actions__panel {
-    top: calc(100% + var(--space-sm));
-    bottom: auto;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .shell-actions__button {
     transition: none;
+  }
+
+  .shell-actions__drawer {
+    animation: none;
   }
 }

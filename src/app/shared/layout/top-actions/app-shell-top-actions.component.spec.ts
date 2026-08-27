@@ -17,6 +17,7 @@ class FakeTranslateLoader implements TranslateLoader {
       'home.menu.recent': 'Recent searches',
       'home.menu.settings': 'Settings',
       'home.menu.news': 'News',
+      'home.dialogs.nearbyStops.close': 'Close',
       'map.routes.title': 'Routes'
     });
   }
@@ -62,7 +63,9 @@ describe('AppShellTopActionsComponent', () => {
     expect(links.every((link) => Boolean(link.getAttribute('aria-label')))).toBeTrue();
     expect(links.every((link) => Boolean(link.textContent?.trim()))).toBeTrue();
     expect(menu?.tagName).toBe('BUTTON');
-    expect(menu?.getAttribute('aria-haspopup')).toBe('menu');
+    expect(menu?.getAttribute('aria-haspopup')).toBe('dialog');
+    expect(menu?.getAttribute('aria-expanded')).toBe('false');
+    expect(menu?.getAttribute('aria-controls')).toBe('shell-actions-drawer');
   });
 
   it('marks route search as the current primary destination', () => {
@@ -102,10 +105,14 @@ describe('AppShellTopActionsComponent', () => {
     expect(home?.getAttribute('aria-current')).toBeNull();
   });
 
-  it('keeps only secondary destinations inside More', () => {
+  it('opens a modal navigation drawer with only secondary destinations', () => {
     const menu = fixture.nativeElement.querySelector(
       '.shell-actions__button--menu'
     ) as HTMLButtonElement;
+    const dialog = fixture.nativeElement.querySelector(
+      '.shell-actions__drawer'
+    ) as HTMLDialogElement;
+
     menu.click();
     fixture.detectChanges();
 
@@ -115,6 +122,11 @@ describe('AppShellTopActionsComponent', () => {
       ) as NodeListOf<HTMLAnchorElement>
     );
 
+    expect(dialog.open).toBeTrue();
+    expect(menu.getAttribute('aria-expanded')).toBe('true');
+    expect(dialog.getAttribute('aria-labelledby')).toBe('shell-actions-drawer-title');
+    expect(dialog.querySelector('[role="menu"]')).toBeNull();
+    expect(dialog.querySelector('[role="menuitem"]')).toBeNull();
     expect(entries.map((entry) => entry.getAttribute('href'))).toEqual([
       '/recents',
       '/news',
@@ -125,5 +137,74 @@ describe('AppShellTopActionsComponent', () => {
       'News',
       'Settings'
     ]);
+    expect(document.activeElement?.classList.contains('shell-actions__drawer-close')).toBeTrue();
+  });
+
+  it('restores focus to More when the drawer closes', () => {
+    const menu = fixture.nativeElement.querySelector(
+      '.shell-actions__button--menu'
+    ) as HTMLButtonElement;
+    const dialog = fixture.nativeElement.querySelector(
+      '.shell-actions__drawer'
+    ) as HTMLDialogElement;
+
+    menu.click();
+    fixture.detectChanges();
+
+    const close = fixture.nativeElement.querySelector(
+      '.shell-actions__drawer-close'
+    ) as HTMLButtonElement;
+    close.click();
+    fixture.detectChanges();
+
+    expect(dialog.open).toBeFalse();
+    expect(menu.getAttribute('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(menu);
+  });
+
+  it('dismisses the drawer from the backdrop surface', () => {
+    const menu = fixture.nativeElement.querySelector(
+      '.shell-actions__button--menu'
+    ) as HTMLButtonElement;
+    const dialog = fixture.nativeElement.querySelector(
+      '.shell-actions__drawer'
+    ) as HTMLDialogElement;
+
+    menu.click();
+    fixture.detectChanges();
+    dialog.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(dialog.open).toBeFalse();
+    expect(document.activeElement).toBe(menu);
+  });
+
+  it('syncs native dialog dismissal and the active secondary destination', () => {
+    layoutContextStore.registerContent({
+      identifier: Symbol('settings'),
+      navigationKey: APP_CONFIG.routes.settings
+    });
+    fixture.detectChanges();
+
+    const menu = fixture.nativeElement.querySelector(
+      '.shell-actions__button--menu'
+    ) as HTMLButtonElement;
+    const dialog = fixture.nativeElement.querySelector(
+      '.shell-actions__drawer'
+    ) as HTMLDialogElement;
+
+    menu.click();
+    fixture.detectChanges();
+
+    const settings = fixture.nativeElement.querySelector(
+      '.shell-actions__menu-button[href="/settings"]'
+    ) as HTMLAnchorElement | null;
+    expect(settings?.getAttribute('aria-current')).toBe('page');
+
+    dialog.close();
+    fixture.detectChanges();
+
+    expect(menu.getAttribute('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(menu);
   });
 });
