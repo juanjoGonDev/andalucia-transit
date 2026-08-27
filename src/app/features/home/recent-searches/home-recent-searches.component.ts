@@ -4,6 +4,7 @@ import {
   Component,
   DestroyRef,
   EventEmitter,
+  OnInit,
   Output,
   computed,
   inject,
@@ -54,7 +55,7 @@ import { OverlayDialogService } from '@shared/ui/dialog/overlay-dialog.service';
   styleUrl: './home-recent-searches.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HomeRecentSearchesComponent {
+export class HomeRecentSearchesComponent implements OnInit {
   private readonly facade = inject(RecentSearchesFacade);
   private readonly router = inject(Router);
   private readonly dialog = inject(OverlayDialogService);
@@ -81,11 +82,13 @@ export class HomeRecentSearchesComponent {
   @Output() readonly itemsStateChange = new EventEmitter<boolean>();
 
   constructor() {
+    this.destroyRef.onDestroy(() => this.teardownPreviewSubscriptions());
+  }
+
+  ngOnInit(): void {
     this.facade.entries$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((entries) => this.syncEntries(entries));
-
-    this.destroyRef.onDestroy(() => this.teardownPreviewSubscriptions());
   }
 
   protected trackById(_: number, item: RecentSearchItem): string {
