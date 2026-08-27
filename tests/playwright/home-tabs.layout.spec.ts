@@ -48,10 +48,10 @@ interface ControlDimensions {
 }
 
 interface RectangleBounds {
-  readonly top: number;
-  readonly right: number;
-  readonly bottom: number;
-  readonly left: number;
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
 }
 
 async function readTabLayoutMetrics(page: Page): Promise<TabLayoutMetrics> {
@@ -100,11 +100,16 @@ function expectContained(inner: ElementBounds, outer: Pick<ElementBounds, 'left'
 }
 
 function rectanglesOverlap(first: RectangleBounds, second: RectangleBounds): boolean {
+  const firstRight = first.x + first.width;
+  const firstBottom = first.y + first.height;
+  const secondRight = second.x + second.width;
+  const secondBottom = second.y + second.height;
+
   return !(
-    first.right <= second.left + GEOMETRY_TOLERANCE_PX ||
-    first.left >= second.right - GEOMETRY_TOLERANCE_PX ||
-    first.bottom <= second.top + GEOMETRY_TOLERANCE_PX ||
-    first.top >= second.bottom - GEOMETRY_TOLERANCE_PX
+    firstRight <= second.x + GEOMETRY_TOLERANCE_PX ||
+    first.x >= secondRight - GEOMETRY_TOLERANCE_PX ||
+    firstBottom <= second.y + GEOMETRY_TOLERANCE_PX ||
+    first.y >= secondBottom - GEOMETRY_TOLERANCE_PX
   );
 }
 
