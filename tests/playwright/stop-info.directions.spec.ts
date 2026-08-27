@@ -1,6 +1,7 @@
 import { expect, test, type BrowserContext, type Page } from '@playwright/test';
 
 const BASE_URL = process.env.E2E_BASE_URL;
+const EVIDENCE_DIR = process.env.E2E_EVIDENCE_DIR;
 const STOP_DIRECTORY_INDEX_PATH = '/assets/data/stop-directory/index.json';
 const STOP_DIRECTORY_BASE_PATH = '/assets/data/stop-directory/';
 const MINIMUM_TOUCH_TARGET_PX = 44;
@@ -55,7 +56,10 @@ test.describe('stop information directions guidance', () => {
       await configureGeolocation(context, resolvedBaseUrl, stop);
       await page.setViewportSize(viewport.size);
       await page.goto(
-        new URL(`/stop-info/${stop.consortiumId}/${encodeURIComponent(stop.stopId)}`, resolvedBaseUrl).toString(),
+        new URL(
+          `/stop-info/${stop.consortiumId}/${encodeURIComponent(stop.stopId)}`,
+          resolvedBaseUrl,
+        ).toString(),
       );
 
       const card = page.locator('.stop-info__card');
@@ -83,6 +87,13 @@ test.describe('stop information directions guidance', () => {
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
       ).toBe(true);
+
+      if (EVIDENCE_DIR) {
+        await page.screenshot({
+          path: `${EVIDENCE_DIR}/stop-info-directions-${viewport.size.width}x${viewport.size.height}.png`,
+          fullPage: true,
+        });
+      }
     });
   }
 });
