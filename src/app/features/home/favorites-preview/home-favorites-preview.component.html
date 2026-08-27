@@ -6,7 +6,8 @@
     <app-interactive-card
       class="home-favorites-preview__card"
       [bodyClasses]="cardBodyClasses"
-      (primaryActivated)="handleFavoriteSelected(favorite)"
+      [primaryCommands]="stopDetailCommands(favorite)"
+      [primaryQueryParams]="stopDetailQueryParams(favorite)"
     >
       <div class="home-favorites-preview__content">
         <div class="home-favorites-preview__header">

@@ -1,12 +1,7 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { StopFavorite } from '@domain/stops/favorites.facade';
+import { buildStopDetailNavigation } from '@shared/navigation/navigation.util';
 import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/interactive-card.component';
 
 @Component({
@@ -21,7 +16,6 @@ export class HomeFavoritesPreviewComponent {
   @Input() favorites: readonly StopFavorite[] = [];
   @Input() codeLabel = '';
   @Input() nucleusLabel = '';
-  @Output() readonly favoriteSelected = new EventEmitter<StopFavorite>();
 
   protected readonly cardBodyClasses = ['home-favorites-preview__card-body'] as const;
 
@@ -29,7 +23,16 @@ export class HomeFavoritesPreviewComponent {
     return favorite.id;
   }
 
-  protected handleFavoriteSelected(favorite: StopFavorite): void {
-    this.favoriteSelected.emit(favorite);
+  protected stopDetailCommands(favorite: StopFavorite): readonly string[] {
+    return this.buildStopDetailNavigation(favorite).commands;
+  }
+
+  protected stopDetailQueryParams(favorite: StopFavorite): Readonly<Record<string, string>> {
+    return this.buildStopDetailNavigation(favorite).queryParams;
+  }
+
+  private buildStopDetailNavigation(favorite: StopFavorite) {
+    const stopId = favorite.stopIds[0] ?? favorite.id;
+    return buildStopDetailNavigation(favorite.consortiumId, stopId);
   }
 }
