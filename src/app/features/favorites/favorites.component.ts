@@ -15,6 +15,7 @@ import { APP_CONFIG } from '@core/config';
 import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
+import { buildStopDetailNavigation } from '@shared/navigation/navigation.util';
 import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/interactive-card.component';
 import {
   ConfirmDialogComponent,
@@ -34,6 +35,7 @@ interface FavoriteListItem {
   readonly code: string;
   readonly municipality: string;
   readonly nucleus: string;
+  readonly consortiumId: number;
   readonly stopIds: readonly string[];
 }
 
@@ -52,7 +54,7 @@ const FAVORITES_CARD_REMOVE_CLASSES: readonly string[] = ['favorites-card__remov
 const SEARCH_TEXT_FIELD_TYPE: TextFieldType = 'search';
 const SEARCH_AUTOCOMPLETE_ATTRIBUTE = 'off';
 const SEARCH_ICON_NAME = 'search' as const;
-const ROOT_ROUTE_SEGMENT = '/' as const;
+
 @Component({
   selector: 'app-favorites',
   standalone: true,
@@ -102,7 +104,6 @@ export class FavoritesComponent {
 
   private readonly favorites = signal<readonly StopFavorite[]>([]);
   private readonly searchTerm = signal('');
-  private readonly stopDetailRouteKey = APP_CONFIG.routes.stopDetailBase;
 
   protected readonly hasFavorites = computed(() => this.favorites().length > 0);
   protected readonly groups = computed(() => this.buildGroups(this.favorites(), this.searchTerm()));
@@ -182,7 +183,11 @@ export class FavoritesComponent {
   }
 
   protected stopDetailCommands(item: FavoriteListItem): readonly string[] {
-    return this.buildStopDetailCommands(item);
+    return this.buildStopDetailNavigation(item).commands;
+  }
+
+  protected stopDetailQueryParams(item: FavoriteListItem): Readonly<Record<string, string>> {
+    return this.buildStopDetailNavigation(item).queryParams;
   }
 
   private observeFavorites(): void {
@@ -191,9 +196,9 @@ export class FavoritesComponent {
       .subscribe((favorites) => this.favorites.set(favorites));
   }
 
-  private buildStopDetailCommands(item: FavoriteListItem): readonly string[] {
+  private buildStopDetailNavigation(item: FavoriteListItem) {
     const stopId = item.stopIds[0] ?? item.id;
-    return [ROOT_ROUTE_SEGMENT, this.stopDetailRouteKey, stopId] as const;
+    return buildStopDetailNavigation(item.consortiumId, stopId);
   }
 
   private observeSearch(): void {
@@ -262,6 +267,7 @@ export class FavoritesComponent {
       code: favorite.code,
       municipality: favorite.municipality,
       nucleus: favorite.nucleus,
+      consortiumId: favorite.consortiumId,
       stopIds: favorite.stopIds
     } satisfies FavoriteListItem;
   }

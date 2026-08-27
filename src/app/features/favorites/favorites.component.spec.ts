@@ -7,8 +7,15 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
 import { FavoritesComponent } from '@features/favorites/favorites.component';
-import { ConfirmDialogComponent, ConfirmDialogData } from '@shared/ui/confirm-dialog/confirm-dialog.component';
-import { OverlayDialogConfig, OverlayDialogRef, OverlayDialogService } from '@shared/ui/dialog/overlay-dialog.service';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData
+} from '@shared/ui/confirm-dialog/confirm-dialog.component';
+import {
+  OverlayDialogConfig,
+  OverlayDialogRef,
+  OverlayDialogService
+} from '@shared/ui/dialog/overlay-dialog.service';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {
@@ -59,6 +66,7 @@ interface FavoritesComponentAccess {
   remove: FavoritesComponent['remove'];
   clearAll: FavoritesComponent['clearAll'];
   stopDetailCommands: FavoritesComponent['stopDetailCommands'];
+  stopDetailQueryParams: FavoritesComponent['stopDetailQueryParams'];
 }
 
 const accessProtected = (instance: FavoritesComponent): FavoritesComponentAccess =>
@@ -72,6 +80,7 @@ const toListItem = (favorite: StopFavorite): FavoriteListItemInput => ({
   code: favorite.code,
   municipality: favorite.municipality,
   nucleus: favorite.nucleus,
+  consortiumId: favorite.consortiumId,
   stopIds: favorite.stopIds
 });
 
@@ -145,7 +154,9 @@ describe('FavoritesComponent', () => {
     favoritesFacade.emit(FAVORITES);
     fixture.detectChanges();
 
-    const titleElements = fixture.nativeElement.querySelectorAll('.favorites__group-title') as NodeListOf<HTMLElement>;
+    const titleElements = fixture.nativeElement.querySelectorAll(
+      '.favorites__group-title'
+    ) as NodeListOf<HTMLElement>;
     const titles = Array.from(titleElements).map((title) => title.textContent?.trim());
 
     expect(titles).toEqual(['Granada', 'Sevilla']);
@@ -169,17 +180,26 @@ describe('FavoritesComponent', () => {
     access.searchControl.setValue('triana');
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll('.favorites__item') as NodeListOf<HTMLLIElement>;
+    const items = fixture.nativeElement.querySelectorAll(
+      '.favorites__item'
+    ) as NodeListOf<HTMLLIElement>;
     expect(items.length).toBe(1);
     expect(items[0]?.textContent).toContain('Triana');
   });
 
-  it('provides router commands to open stop detail', () => {
+  it('provides consortium-aware navigation to open stop detail', () => {
     const favorite = FAVORITES[0];
     const access = accessProtected(component);
-    const commands = access.stopDetailCommands.call(component, toListItem(favorite));
+    const item = toListItem(favorite);
 
-    expect(commands).toEqual(['/', APP_CONFIG.routes.stopDetailBase, 'sevilla:001']);
+    expect(access.stopDetailCommands.call(component, item)).toEqual([
+      '/',
+      APP_CONFIG.routes.stopDetailBase,
+      'sevilla:001'
+    ]);
+    expect(access.stopDetailQueryParams.call(component, item)).toEqual({
+      [APP_CONFIG.routeParams.stopInfo.consortiumId]: '7'
+    });
   });
 
   it('removes a favorite after confirmation', async () => {
