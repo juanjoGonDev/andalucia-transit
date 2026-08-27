@@ -293,10 +293,7 @@ test.describe('deterministic interaction visual states', () => {
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
       ).toBe(true);
 
-      await capture(
-        page,
-        `stop-info-directions_es_${viewport.width}_${viewport.height}_full.png`,
-      );
+      await capture(page, `stop-info-directions_es_${viewport.width}_${viewport.height}_full.png`);
     }
   });
 });
