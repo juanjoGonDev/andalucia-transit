@@ -111,6 +111,7 @@ jobs:
             tests/playwright/deterministic-visual-states.spec.ts
             tests/playwright/home-tabs.layout.spec.ts
             tests/playwright/map-exploration.spec.ts
+            tests/playwright/map-focused-lines.spec.ts
             tests/playwright/theme.contrast.spec.ts
             tests/playwright/visual-interaction-states.spec.ts
           )
@@ -161,6 +162,7 @@ jobs:
             tests/playwright/deterministic-visual-states.spec.ts \
             tests/playwright/home-tabs.layout.spec.ts \
             tests/playwright/map-exploration.spec.ts \
+            tests/playwright/map-focused-lines.spec.ts \
             tests/playwright/theme.contrast.spec.ts \
             tests/playwright/visual-interaction-states.spec.ts
 
