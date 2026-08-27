@@ -162,6 +162,21 @@
   transform: translate(-50%, -50%);
 }
 
+.map__toast {
+  position: absolute;
+  z-index: var(--z-index-dropdown);
+  top: calc(max(var(--space-sm), env(safe-area-inset-top, 0px)) + 3.5rem);
+  left: var(--space-sm);
+  align-items: center;
+  width: min(32rem, calc(100% - 5rem));
+  min-height: 3.5rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.map__toast .app-outline-button {
+  min-height: 2.75rem;
+}
+
 .map__panel {
   position: absolute;
   z-index: var(--z-index-sticky);
@@ -222,7 +237,8 @@
   min-width: 0;
 }
 
-.map__stop-item app-interactive-card {
+.map__stop-item app-interactive-card,
+.map__route-item app-interactive-card {
   --interactive-card-background: var(--color-surface);
   --interactive-card-foreground: var(--color-text-primary);
   --interactive-card-shadow: var(--shadow-sm);
@@ -332,6 +348,11 @@
 
   .map__search-shell {
     top: var(--space-lg);
+    left: var(--space-lg);
+  }
+
+  .map__toast {
+    top: calc(var(--space-lg) + 3.5rem);
     left: var(--space-lg);
   }
 
