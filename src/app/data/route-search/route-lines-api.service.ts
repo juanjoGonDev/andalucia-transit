@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, from, map, of, shareReplay, switchMap } from 'rxjs';
+import { Observable, catchError, from, map, of, shareReplay, switchMap } from 'rxjs';
 import { AppConfig } from '@core/config';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 import type {
@@ -57,10 +57,18 @@ export class RouteLinesApiService {
       return cached;
     }
 
-    const url = this.buildLinesByStopsUrl(consortiumId, uniqueIds);
-    const request$ = this.http
-      .get<readonly ApiLineSummary[]>(url, { params: { lang: this.language } })
-      .pipe(map(mapLineSummaries), shareReplay({ bufferSize: 1, refCount: true }));
+    const params = { lang: this.language };
+    const canonicalUrl = this.buildLinesByStopsUrl(consortiumId, uniqueIds);
+    const compatibilityUrl = this.buildLegacyLinesByStopsUrl(consortiumId, uniqueIds);
+    const request$ = this.http.get<readonly ApiLineSummary[]>(canonicalUrl, { params }).pipe(
+      map(mapLineSummaries),
+      catchError(() =>
+        this.http
+          .get<readonly ApiLineSummary[]>(compatibilityUrl, { params })
+          .pipe(map(mapLineSummaries))
+      ),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
 
     this.linesCache.set(cacheKey, request$);
     return request$;
@@ -112,6 +120,11 @@ export class RouteLinesApiService {
   }
 
   private buildLinesByStopsUrl(consortiumId: number, stopIds: readonly string[]): string {
+    const stopsPath = stopIds.join(PATH_SEPARATOR);
+    return `${this.apiBaseUrl}/${CONSORTIA_SEGMENT}/${consortiumId}/${LINES_BY_STOPS_SEGMENT}/${stopsPath}`;
+  }
+
+  private buildLegacyLinesByStopsUrl(consortiumId: number, stopIds: readonly string[]): string {
     const stopsPath = stopIds.join(PATH_SEPARATOR);
     return `${this.apiBaseUrl}/${CONSORTIA_SEGMENT}/${consortiumId}/${STOPS_SEGMENT}/${LINES_BY_STOPS_SEGMENT}/${stopsPath}`;
   }
