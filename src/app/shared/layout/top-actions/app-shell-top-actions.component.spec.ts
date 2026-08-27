@@ -17,7 +17,6 @@ class FakeTranslateLoader implements TranslateLoader {
       'home.menu.recent': 'Recent searches',
       'home.menu.settings': 'Settings',
       'home.menu.news': 'News',
-      'home.dialogs.nearbyStops.close': 'Close',
       'map.routes.title': 'Routes'
     });
   }
@@ -61,11 +60,9 @@ describe('AppShellTopActionsComponent', () => {
       '/favorites'
     ]);
     expect(links.every((link) => Boolean(link.getAttribute('aria-label')))).toBeTrue();
-    expect(links.every((link) => Boolean(link.textContent?.trim()))).toBeTrue();
     expect(menu?.tagName).toBe('BUTTON');
-    expect(menu?.getAttribute('aria-haspopup')).toBe('dialog');
     expect(menu?.getAttribute('aria-expanded')).toBe('false');
-    expect(menu?.getAttribute('aria-controls')).toBe('shell-actions-drawer');
+    expect(menu?.getAttribute('aria-controls')).toBe('shell-actions-overflow');
   });
 
   it('marks route search as the current primary destination', () => {
@@ -97,89 +94,70 @@ describe('AppShellTopActionsComponent', () => {
     const favorites = fixture.nativeElement.querySelector(
       '.shell-actions__button--quick[href="/favorites"]'
     ) as HTMLAnchorElement | null;
-    const home = fixture.nativeElement.querySelector(
-      '.shell-actions__button--quick[href="/"]'
-    ) as HTMLAnchorElement | null;
 
     expect(favorites?.getAttribute('aria-current')).toBe('page');
-    expect(home?.getAttribute('aria-current')).toBeNull();
   });
 
-  it('opens a modal navigation drawer with only secondary destinations', () => {
+  it('keeps secondary navigation hidden until More is activated', () => {
     const menu = fixture.nativeElement.querySelector(
       '.shell-actions__button--menu'
     ) as HTMLButtonElement;
-    const dialog = fixture.nativeElement.querySelector(
-      '.shell-actions__drawer'
-    ) as HTMLDialogElement;
+
+    expect(fixture.nativeElement.querySelector('#shell-actions-overflow')).toBeNull();
 
     menu.click();
     fixture.detectChanges();
 
+    const overflow = fixture.nativeElement.querySelector('#shell-actions-overflow') as HTMLElement | null;
     const entries = Array.from(
       fixture.nativeElement.querySelectorAll(
         '.shell-actions__menu-button'
       ) as NodeListOf<HTMLAnchorElement>
     );
 
-    expect(dialog.open).toBeTrue();
+    expect(overflow).not.toBeNull();
     expect(menu.getAttribute('aria-expanded')).toBe('true');
-    expect(dialog.getAttribute('aria-labelledby')).toBe('shell-actions-drawer-title');
-    expect(dialog.querySelector('[role="menu"]')).toBeNull();
-    expect(dialog.querySelector('[role="menuitem"]')).toBeNull();
     expect(entries.map((entry) => entry.getAttribute('href'))).toEqual([
       '/recents',
       '/news',
       '/settings'
     ]);
-    expect(entries.map((entry) => entry.textContent?.trim())).toEqual([
-      'Recent searches',
-      'News',
-      'Settings'
-    ]);
-    expect(document.activeElement?.classList.contains('shell-actions__drawer-close')).toBeTrue();
   });
 
-  it('restores focus to More when the drawer closes', () => {
+  it('closes the upward overflow with Escape and restores focus to More', () => {
     const menu = fixture.nativeElement.querySelector(
       '.shell-actions__button--menu'
     ) as HTMLButtonElement;
-    const dialog = fixture.nativeElement.querySelector(
-      '.shell-actions__drawer'
-    ) as HTMLDialogElement;
 
     menu.click();
     fixture.detectChanges();
-
-    const close = fixture.nativeElement.querySelector(
-      '.shell-actions__drawer-close'
-    ) as HTMLButtonElement;
-    close.click();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     fixture.detectChanges();
 
-    expect(dialog.open).toBeFalse();
+    expect(fixture.nativeElement.querySelector('#shell-actions-overflow')).toBeNull();
     expect(menu.getAttribute('aria-expanded')).toBe('false');
     expect(document.activeElement).toBe(menu);
   });
 
-  it('dismisses the drawer from the backdrop surface', () => {
+  it('closes the overflow when a secondary destination is selected', () => {
     const menu = fixture.nativeElement.querySelector(
       '.shell-actions__button--menu'
     ) as HTMLButtonElement;
-    const dialog = fixture.nativeElement.querySelector(
-      '.shell-actions__drawer'
-    ) as HTMLDialogElement;
 
     menu.click();
     fixture.detectChanges();
-    dialog.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+
+    const settings = fixture.nativeElement.querySelector(
+      '.shell-actions__menu-button[href="/settings"]'
+    ) as HTMLAnchorElement;
+    settings.click();
     fixture.detectChanges();
 
-    expect(dialog.open).toBeFalse();
-    expect(document.activeElement).toBe(menu);
+    expect(fixture.nativeElement.querySelector('#shell-actions-overflow')).toBeNull();
+    expect(menu.getAttribute('aria-expanded')).toBe('false');
   });
 
-  it('syncs native dialog dismissal and the active secondary destination', async () => {
+  it('marks the active secondary destination inside the overflow', () => {
     layoutContextStore.registerContent({
       identifier: Symbol('settings'),
       navigationKey: APP_CONFIG.routes.settings
@@ -189,26 +167,14 @@ describe('AppShellTopActionsComponent', () => {
     const menu = fixture.nativeElement.querySelector(
       '.shell-actions__button--menu'
     ) as HTMLButtonElement;
-    const dialog = fixture.nativeElement.querySelector(
-      '.shell-actions__drawer'
-    ) as HTMLDialogElement;
-
     menu.click();
     fixture.detectChanges();
 
     const settings = fixture.nativeElement.querySelector(
       '.shell-actions__menu-button[href="/settings"]'
     ) as HTMLAnchorElement | null;
+
     expect(settings?.getAttribute('aria-current')).toBe('page');
-
-    const closed = new Promise<void>((resolve) => {
-      dialog.addEventListener('close', () => resolve(), { once: true });
-    });
-    dialog.close();
-    await closed;
-    fixture.detectChanges();
-
-    expect(menu.getAttribute('aria-expanded')).toBe('false');
-    expect(document.activeElement).toBe(menu);
+    expect(menu.classList.contains('shell-actions__button--active')).toBeTrue();
   });
 });
