@@ -377,7 +377,9 @@ test.describe('network map exploration', () => {
     expect(mobileSearchBox.x + mobileSearchBox.width).toBeLessThanOrEqual(
       mobileMapBox.x + mobileMapBox.width + 1,
     );
-    expect(await mobilePanel.evaluate((element) => getComputedStyle(element).overflowY)).toBe('auto');
+    expect(await mobilePanel.evaluate((element) => getComputedStyle(element).overflowY)).toBe(
+      'auto',
+    );
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
     ).toBe(true);
