@@ -122,12 +122,25 @@ function toSearchStop(entry: StopDirectorySearchEntry): CanonicalSearchStop {
   };
 }
 
+async function openMapSearch(page: Page): Promise<Locator> {
+  const searchTrigger = page.locator('.map-search__trigger');
+  await expect(searchTrigger).toBeVisible();
+  await expect(searchTrigger).toHaveAttribute('aria-expanded', 'false');
+  await searchTrigger.click();
+
+  const searchInput = page.locator('#map-network-search');
+  await expect(searchInput).toBeVisible();
+  await expect(searchInput).toBeFocused();
+  await expect(searchTrigger).toHaveAttribute('aria-expanded', 'true');
+  return searchInput;
+}
+
 async function selectSearchStop(
   page: Page,
   stop: CanonicalSearchStop,
   query: string,
 ): Promise<void> {
-  const searchInput = page.locator('#map-network-search');
+  const searchInput = await openMapSearch(page);
   await searchInput.fill(query);
 
   const stopOption = page
@@ -138,6 +151,18 @@ async function selectSearchStop(
     .first();
   await expect(stopOption).toBeVisible();
   await stopOption.click();
+  await expect(searchInput).not.toBeVisible();
+}
+
+async function openNearbyInspector(page: Page): Promise<Locator> {
+  const nearbyInspector = page.locator('.map__inspector--nearby');
+  const trigger = nearbyInspector.locator(':scope > summary');
+  await expect(trigger).toBeVisible();
+  await trigger.click();
+
+  const panel = nearbyInspector.locator('.map__panel');
+  await expect(panel).toBeVisible();
+  return panel;
 }
 
 async function countPaintedPixels(canvas: Locator): Promise<number> {
@@ -237,11 +262,7 @@ test.describe('network map exploration', () => {
     await expect(popup).toBeVisible();
     await expect(popup.locator('.app-map-stop-popup__title')).toHaveText(targetStop.name);
 
-    const nearbyInspector = page.locator('.map__inspector--nearby');
-    await nearbyInspector.locator(':scope > summary').click();
-    const nearbyPanel = nearbyInspector.locator('.map__panel');
-    await expect(nearbyPanel).toBeVisible();
-
+    const nearbyPanel = await openNearbyInspector(page);
     const nearbyNames = nearbyPanel.locator('.map-stop__name');
     await expect
       .poll(() => nearbyNames.allTextContents(), { timeout: 15_000 })
@@ -266,10 +287,11 @@ test.describe('network map exploration', () => {
 
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
     await locateButton.click();
-
-    const nearbyStop = page.locator('.map__stop-item').first();
-    await expect(nearbyStop).toBeVisible({ timeout: 15_000 });
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
+
+    const nearbyPanel = await openNearbyInspector(page);
+    const nearbyStop = nearbyPanel.locator('.map__stop-item').first();
+    await expect(nearbyStop).toBeVisible({ timeout: 15_000 });
 
     const baselinePaintedPixels = await countPaintedPixels(overlayCanvas);
     await nearbyStop.hover();
@@ -289,15 +311,14 @@ test.describe('network map exploration', () => {
     await page.goto(mapUrl);
 
     const workspace = page.locator('.map__workspace');
-    const panel = page.locator('.map__panel');
     const mapSurface = page.locator('.map__canvas');
     const searchShell = page.locator('.map__search-shell');
-    const searchInput = page.locator('#map-network-search');
     const controls = page.locator('.map__controls');
 
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
-    await expect(searchInput).toBeVisible();
+    await openMapSearch(page);
     await expect(controls).toBeVisible();
+    const panel = await openNearbyInspector(page);
 
     const workspaceBox = await workspace.boundingBox();
     const panelBox = await panel.boundingBox();
@@ -323,16 +344,18 @@ test.describe('network map exploration', () => {
     expect(panelBox.x).toBeGreaterThan(mapBox.x + mapBox.width * MINIMUM_DESKTOP_PANEL_START_RATIO);
     expect(panelBox.y).toBeGreaterThanOrEqual(mapBox.y);
     expect(panelBox.y + panelBox.height).toBeLessThanOrEqual(mapBox.y + mapBox.height + 1);
-    expect(controlsBox.x + controlsBox.width).toBeLessThanOrEqual(panelBox.x + 1);
+    expect(controlsBox.x).toBeGreaterThanOrEqual(panelBox.x + panelBox.width - 1);
     expect(await panel.evaluate((element) => getComputedStyle(element).overflowY)).toBe('auto');
 
     await page.setViewportSize(MOBILE_VIEWPORT);
     await page.goto(mapUrl);
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
+    await openMapSearch(page);
+    const mobilePanel = await openNearbyInspector(page);
 
     const mobileWorkspaceBox = await workspace.boundingBox();
     const mobileMapBox = await mapSurface.boundingBox();
-    const mobilePanelBox = await panel.boundingBox();
+    const mobilePanelBox = await mobilePanel.boundingBox();
     const mobileSearchBox = await searchShell.boundingBox();
     expect(mobileWorkspaceBox).not.toBeNull();
     expect(mobileMapBox).not.toBeNull();
@@ -354,7 +377,7 @@ test.describe('network map exploration', () => {
     expect(mobileSearchBox.x + mobileSearchBox.width).toBeLessThanOrEqual(
       mobileMapBox.x + mobileMapBox.width + 1,
     );
-    expect(await panel.evaluate((element) => getComputedStyle(element).overflowY)).toBe('auto');
+    expect(await mobilePanel.evaluate((element) => getComputedStyle(element).overflowY)).toBe('auto');
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
     ).toBe(true);
