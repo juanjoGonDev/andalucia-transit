@@ -15,7 +15,9 @@
             <span class="app-loading-indicator app-loading-indicator--lg" aria-hidden="true"></span>
             <p class="stop-detail__loading-text">{{ translationKeys.loading | translate }}</p>
             <div class="stop-detail__loading-preview" aria-hidden="true">
-              <span class="app-loading-skeleton stop-detail__loading-line stop-detail__loading-line--wide"></span>
+              <span
+                class="app-loading-skeleton stop-detail__loading-line stop-detail__loading-line--wide"
+              ></span>
               <span class="app-loading-skeleton stop-detail__loading-line"></span>
             </div>
           </div>
@@ -74,12 +76,6 @@
                 </div>
               </div>
               <div class="stop-detail__meta">
-                <div class="stop-detail__meta-item">
-                  <span class="stop-detail__meta-label">{{
-                    translationKeys.header.stopCodeLabel | translate
-                  }}</span>
-                  <span class="stop-detail__meta-value">{{ viewModel.stopCode }}</span>
-                </div>
                 <div class="stop-detail__meta-item">
                   <span class="stop-detail__meta-label">{{
                     translationKeys.header.scheduleDateLabel | translate
