@@ -179,7 +179,7 @@ describe('AppShellTopActionsComponent', () => {
     expect(document.activeElement).toBe(menu);
   });
 
-  it('syncs native dialog dismissal and the active secondary destination', () => {
+  it('syncs native dialog dismissal and the active secondary destination', async () => {
     layoutContextStore.registerContent({
       identifier: Symbol('settings'),
       navigationKey: APP_CONFIG.routes.settings
@@ -201,7 +201,11 @@ describe('AppShellTopActionsComponent', () => {
     ) as HTMLAnchorElement | null;
     expect(settings?.getAttribute('aria-current')).toBe('page');
 
+    const closed = new Promise<void>((resolve) => {
+      dialog.addEventListener('close', () => resolve(), { once: true });
+    });
     dialog.close();
+    await closed;
     fixture.detectChanges();
 
     expect(menu.getAttribute('aria-expanded')).toBe('false');

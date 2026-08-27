@@ -105,14 +105,37 @@ export class AppShellTopActionsComponent {
     }));
   });
 
-  protected openMenu(dialog: HTMLDialogElement): void {
+  protected openMenu(dialog: HTMLDialogElement, closeButton: HTMLButtonElement): void {
     dialog.showModal();
     this.menuOpen = true;
+    closeButton.focus();
   }
 
-  protected handleDrawerPointerDown(event: PointerEvent, dialog: HTMLDialogElement): void {
-    if (event.target === dialog) {
+  protected closeMenu(dialog: HTMLDialogElement, trigger: HTMLButtonElement): void {
+    if (dialog.open) {
       dialog.close();
+    }
+
+    this.menuOpen = false;
+    trigger.focus();
+  }
+
+  protected handleNativeClose(trigger: HTMLButtonElement): void {
+    if (!this.menuOpen) {
+      return;
+    }
+
+    this.menuOpen = false;
+    trigger.focus();
+  }
+
+  protected handleDrawerPointerDown(
+    event: PointerEvent,
+    dialog: HTMLDialogElement,
+    trigger: HTMLButtonElement
+  ): void {
+    if (event.target === dialog) {
+      this.closeMenu(dialog, trigger);
     }
   }
 }

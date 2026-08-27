@@ -93,34 +93,31 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
 }
 
 .shell-actions__drawer {
-  position: fixed;
   inset: 0 0 0 auto;
   box-sizing: border-box;
-  width: min(22rem, calc(100vw - var(--space-xl)));
+  width: min(22rem, 90vw);
   height: 100dvh;
   max-height: none;
   margin: 0;
-  padding: max(var(--space-lg), env(safe-area-inset-top, 0px))
-    max(var(--space-lg), env(safe-area-inset-right, 0px))
-    max(var(--space-lg), env(safe-area-inset-bottom, 0px)) var(--space-lg);
+  padding: max(var(--space-lg), env(safe-area-inset-top))
+    max(var(--space-lg), env(safe-area-inset-right))
+    max(var(--space-lg), env(safe-area-inset-bottom)) var(--space-lg);
   border: 0;
   background: var(--color-dialog-surface);
   color: var(--color-text-primary);
   box-shadow: var(--shadow-dialog);
   pointer-events: auto;
-  animation: shell-drawer-in 180ms ease-out;
 }
 
 .shell-actions__drawer::backdrop {
-  background: color-mix(in srgb, var(--color-secondary) 58%, transparent);
+  background: rgb(0 0 0 / 50%);
 }
 
 .shell-actions__drawer-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-md);
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
 }
 
 .shell-actions__drawer-title {
@@ -128,17 +125,14 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
 }
 
 .shell-actions__drawer-close {
-  display: inline-grid;
+  display: grid;
   place-items: center;
-  flex: 0 0 auto;
   width: 2.75rem;
   height: 2.75rem;
   padding: 0;
   border: 0;
-  border-radius: var(--radius-full);
-  background: var(--color-surface-muted);
+  background: transparent;
   color: inherit;
-  cursor: pointer;
 }
 
 .shell-actions__list {
@@ -170,17 +164,6 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
 .shell-actions__menu-button[aria-current='page'] {
   background: var(--color-primary-soft);
   color: var(--color-primary-strong);
-}
-
-.shell-actions__menu-current {
-  color: var(--color-primary);
-  font-size: 1.15rem;
-}
-
-@keyframes shell-drawer-in {
-  from {
-    transform: translateX(100%);
-  }
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -234,9 +217,5 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
 @media (prefers-reduced-motion: reduce) {
   .shell-actions__button {
     transition: none;
-  }
-
-  .shell-actions__drawer {
-    animation: none;
   }
 }
