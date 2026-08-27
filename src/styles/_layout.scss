@@ -40,12 +40,14 @@
 .app-layout__body {
   --app-layout-body-gap: var(--space-xl);
   --app-layout-body-padding-block: var(--space-2xl);
+  --app-layout-navigation-clearance: calc(5.5rem + env(safe-area-inset-bottom, 0px));
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   gap: var(--app-layout-body-gap);
-  padding-block: var(--app-layout-body-padding-block);
   width: 100%;
+  padding-top: var(--app-layout-body-padding-block);
+  padding-bottom: calc(var(--app-layout-body-padding-block) + var(--app-layout-navigation-clearance));
   position: relative;
   z-index: 1;
 }
