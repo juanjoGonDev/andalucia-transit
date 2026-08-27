@@ -4,7 +4,6 @@ import { Observable, from, map, of, shareReplay, switchMap } from 'rxjs';
 import { AppConfig } from '@core/config';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 import type {
-  ApiRouteLineDetail,
   RouteLineCoordinate,
   RouteLineDetail
 } from '@data/route-search/route-line-detail.mapper';
@@ -41,7 +40,6 @@ export class RouteLinesApiService {
 
   private readonly linesCache = new Map<string, Observable<readonly RouteLineSummary[]>>();
   private readonly lineStopsCache = new Map<string, Observable<readonly RouteLineStop[]>>();
-  private readonly lineDetailsCache = new Map<string, Observable<RouteLineDetail>>();
 
   getLinesForStops(
     consortiumId: number,
@@ -106,29 +104,11 @@ export class RouteLinesApiService {
   }
 
   getLineDetail(consortiumId: number, lineId: string): Observable<RouteLineDetail> {
-    const cacheKey = buildLineStopsCacheKey(consortiumId, lineId);
-    const cached = this.lineDetailsCache.get(cacheKey);
-
-    if (cached) {
-      return cached;
-    }
-
     const url = this.buildLineDetailUrl(consortiumId, lineId);
-    const request$ = this.http
-      .get<ApiRouteLineDetail | readonly ApiRouteLineDetail[]>(url, {
-        params: { lang: this.language }
-      })
-      .pipe(
-        switchMap((response) =>
-          from(import('./route-line-detail.mapper')).pipe(
-            map(({ mapLineDetail }) => mapLineDetail(response))
-          )
-        ),
-        shareReplay({ bufferSize: 1, refCount: true })
-      );
 
-    this.lineDetailsCache.set(cacheKey, request$);
-    return request$;
+    return from(import('./route-line-detail.mapper')).pipe(
+      switchMap(({ loadLineDetail }) => loadLineDetail(this.http, url, this.language))
+    );
   }
 
   private buildLinesByStopsUrl(consortiumId: number, stopIds: readonly string[]): string {
