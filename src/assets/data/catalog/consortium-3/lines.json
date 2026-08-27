@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-26T05:35:13.099Z",
+    "generatedAt": "2026-08-27T16:11:12.342Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "itemCount": 70
+    "itemCount": 71
   },
   "lines": [
     {
@@ -118,7 +118,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -143,7 +143,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -193,7 +193,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -243,7 +243,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -393,7 +393,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -418,7 +418,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -468,7 +468,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -792,7 +792,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -892,7 +892,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -917,7 +917,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -942,7 +942,32 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "995",
+      "code": "0174A",
+      "name": "Granada - Ogíjares - Zubia (Circular)",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "Bus Metropolitano de Granada",
+        "S.L."
+      ],
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1067,7 +1092,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1117,7 +1142,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1142,7 +1167,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1167,7 +1192,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1267,7 +1292,7 @@
         "Carlos Fernández de la Torre",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1442,7 +1467,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1467,7 +1492,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1492,7 +1517,7 @@
         "Bus Metropolitano de Granada",
         "S.L."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1517,7 +1542,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
@@ -1592,7 +1617,7 @@
         "NEX Continental Holdings",
         "S.L.U."
       ],
-      "hasNews": false,
+      "hasNews": true,
       "concession": null,
       "notes": null,
       "modeNotes": null,
