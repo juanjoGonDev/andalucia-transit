@@ -92,13 +92,20 @@
                   aria-live="polite"
                 >
                   <div class="app-async-status">
-                    <span class="app-loading-indicator app-loading-indicator--lg" aria-hidden="true"></span>
+                    <span
+                      class="app-loading-indicator app-loading-indicator--lg"
+                      aria-hidden="true"
+                    ></span>
                     <div class="app-async-status__body">
                       <p class="app-async-status__title">{{ loadingKey | translate }}</p>
                       <div class="route-search__loading-lines" aria-hidden="true">
-                        <span class="app-loading-skeleton route-search__loading-line route-search__loading-line--wide"></span>
+                        <span
+                          class="app-loading-skeleton route-search__loading-line route-search__loading-line--wide"
+                        ></span>
                         <span class="app-loading-skeleton route-search__loading-line"></span>
-                        <span class="app-loading-skeleton route-search__loading-line route-search__loading-line--medium"></span>
+                        <span
+                          class="app-loading-skeleton route-search__loading-line route-search__loading-line--medium"
+                        ></span>
                       </div>
                     </div>
                   </div>
@@ -127,7 +134,10 @@
                 </section>
 
                 <ng-container *ngSwitchCase="'ready'">
-                  <section class="route-search__timeline app-async-reveal" *ngIf="hasResults(); else noLines">
+                  <section
+                    class="route-search__timeline app-async-reveal"
+                    *ngIf="hasResults(); else noLines"
+                  >
                     <p class="route-search__estimate-notice">
                       {{ translationKeys.estimateNotice | translate }}
                     </p>
@@ -146,8 +156,8 @@
                         #itemElement
                         [attr.data-next]="item.isNext ? 'true' : null"
                       >
-                        <div class="route-search__item-time">
-                          <div class="route-search__item-time-primary">
+                        <div class="route-search__item-overview">
+                          <div class="route-search__item-departure">
                             <span class="route-search__item-clock">{{
                               item.arrivalTime | date: 'HH:mm'
                             }}</span>
@@ -164,6 +174,33 @@
                               </ng-template>
                             </span>
                           </div>
+                          <div
+                            class="route-search__item-arrival"
+                            *ngIf="item.destinationArrivalTime as arrival"
+                          >
+                            <span class="route-search__item-arrival-time">
+                              {{
+                                translationKeys.arrivalAt | translate: { time: (arrival | date: 'HH:mm') }
+                              }}
+                            </span>
+                            <span *ngIf="item.travelDurationLabel" class="route-search__item-travel">
+                              {{
+                                translationKeys.travelDuration
+                                  | translate: { duration: item.travelDurationLabel }
+                              }}
+                            </span>
+                          </div>
+                        </div>
+                        <div class="route-search__item-meta">
+                          <div class="route-search__item-line-info">
+                            <span class="route-search__item-line">{{ item.lineCode }}</span>
+                            <span
+                              *ngIf="item.isHolidayService"
+                              class="route-search__item-frequency route-search__item-frequency--holiday"
+                            >
+                              {{ translationKeys.holidayBadge | translate }}
+                            </span>
+                          </div>
                           <div class="route-search__item-time-badges">
                             <span
                               *ngIf="item.isMostRecentPast"
@@ -176,35 +213,6 @@
                               class="route-search__item-badge route-search__item-badge--next"
                             >
                               {{ translationKeys.nextBadge | translate }}
-                            </span>
-                          </div>
-                        </div>
-                        <div class="route-search__item-details">
-                          <div class="route-search__item-line-info">
-                            <span class="route-search__item-line">{{ item.lineCode }}</span>
-                            <span
-                              *ngIf="item.isHolidayService"
-                              class="route-search__item-frequency route-search__item-frequency--holiday"
-                            >
-                              {{ translationKeys.holidayBadge | translate }}
-                            </span>
-                          </div>
-                          <span class="route-search__item-destination">{{ item.destination }}</span>
-                          <div
-                            class="route-search__item-arrival"
-                            *ngIf="item.destinationArrivalTime as arrival"
-                          >
-                            <span class="route-search__item-arrival-time">
-                              {{
-                                translationKeys.arrivalAt | translate: { time: (arrival | date: 'HH:mm') }
-                              }}
-                            </span>
-                            <span *ngIf="item.travelDurationLabel" class="route-search__item-travel">
-                              •
-                              {{
-                                translationKeys.travelDuration
-                                  | translate: { duration: item.travelDurationLabel }
-                              }}
                             </span>
                           </div>
                         </div>

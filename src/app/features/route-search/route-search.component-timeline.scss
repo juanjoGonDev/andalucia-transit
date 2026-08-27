@@ -34,7 +34,7 @@
   --route-search-state-badge-text: var(--color-text-secondary);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-sm);
+  gap: var(--space-md);
   padding: var(--space-md-plus);
   border: 1px solid var(--route-search-state-border);
   border-radius: var(--radius-lg);
@@ -72,68 +72,72 @@
   --route-search-state-badge-text: var(--color-text-strong);
 }
 
-.route-search__item-time {
+.route-search__item-overview {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: var(--space-sm);
-  row-gap: var(--space-xs);
-  align-items: flex-start;
+  align-items: end;
+  gap: var(--space-lg);
 }
 
-.route-search__item-time-primary {
-  display: inline-flex;
+.route-search__item-departure {
+  display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--space-sm);
-  min-inline-size: 0;
+  min-width: 0;
 }
 
 .route-search__item-clock {
   color: var(--route-search-state-strong);
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-snug);
+  font-variant-numeric: tabular-nums;
 }
 
 .route-search__item-relative {
-  min-inline-size: 0;
-  flex: 1 1 auto;
+  min-width: 0;
   color: var(--route-search-state-muted);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
 }
 
-.route-search__item-badge {
-  display: inline-flex;
-  align-items: center;
-  min-height: 1.75rem;
-  padding: var(--space-3xs) var(--space-sm);
-  border: 1px solid var(--route-search-state-badge-border);
-  border-radius: var(--radius-full);
-  background: var(--route-search-state-badge-background);
-  color: var(--route-search-state-badge-text);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-}
-
-.route-search__item-time-badges {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-xs);
-  justify-self: end;
-}
-
-.route-search__item-details {
+.route-search__item-arrival {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  font-size: var(--font-size-sm);
+  align-items: flex-end;
+  gap: var(--space-3xs);
+  min-width: 0;
+  text-align: end;
+}
+
+.route-search__item-arrival-time {
+  color: var(--route-search-state-strong);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-snug);
+  font-variant-numeric: tabular-nums;
+}
+
+.route-search__item-travel {
+  color: var(--route-search-state-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.route-search__item-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  min-width: 0;
 }
 
 .route-search__item-line-info {
   display: inline-flex;
   align-items: center;
   gap: var(--space-xs);
+  min-width: 0;
   font-weight: var(--font-weight-semibold);
 }
 
@@ -163,32 +167,33 @@
   color: var(--color-holiday-strong);
 }
 
-.route-search__item-destination {
-  color: var(--route-search-state-strong);
+.route-search__item-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  padding: var(--space-3xs) var(--space-sm);
+  border: 1px solid var(--route-search-state-badge-border);
+  border-radius: var(--radius-full);
+  background: var(--route-search-state-badge-background);
+  color: var(--route-search-state-badge-text);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
 }
 
-.route-search__item-arrival {
-  display: flex;
+.route-search__item-time-badges {
+  display: inline-flex;
   align-items: center;
   gap: var(--space-xs);
-  flex-wrap: wrap;
-  color: var(--route-search-state-muted);
-  font-size: var(--font-size-sm);
-}
-
-.route-search__item-arrival-time {
-  color: var(--route-search-state-strong);
-  font-weight: var(--font-weight-semibold);
-}
-
-.route-search__item-travel {
-  color: var(--route-search-state-muted);
+  flex: 0 0 auto;
 }
 
 .route-search__item-flags {
   display: flex;
   gap: var(--space-sm);
+}
+
+.route-search__item-flags:empty {
+  display: none;
 }
 
 .route-search__item-flag {
@@ -223,6 +228,20 @@
   height: 100%;
   background: var(--route-search-state-progress-fill);
   transition: width 0.3s linear;
+}
+
+@media (max-width: 30rem) {
+  .route-search__item-overview {
+    gap: var(--space-md);
+  }
+
+  .route-search__item-clock {
+    font-size: var(--font-size-xl);
+  }
+
+  .route-search__item-arrival-time {
+    font-size: var(--font-size-base);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
