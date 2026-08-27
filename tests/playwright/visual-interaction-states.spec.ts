@@ -147,6 +147,8 @@ async function configureDirectionsGeolocation(
 }
 
 test.describe('deterministic interaction visual states', () => {
+  test.use({ locale: 'es-ES' });
+
   test.skip(
     !BASE_URL,
     'E2E_BASE_URL environment variable is required for interaction-state tests.',
