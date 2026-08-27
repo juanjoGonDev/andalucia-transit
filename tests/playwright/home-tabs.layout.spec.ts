@@ -7,7 +7,7 @@ const MAP_PATH = '/map';
 const MOBILE_VIEWPORT_WIDTHS = [320, 360, 390, 430] as const;
 const MOBILE_VIEWPORT_HEIGHT = 844;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
-const DRAWER_VIEWPORTS = [
+const OVERFLOW_VIEWPORTS = [
   { width: 390, height: MOBILE_VIEWPORT_HEIGHT },
   DESKTOP_VIEWPORT,
 ] as const;
@@ -240,8 +240,8 @@ test.describe('home tabs responsive layout', () => {
     );
   });
 
-  for (const viewport of DRAWER_VIEWPORTS) {
-    test(`keeps the secondary navigation drawer usable at ${viewport.width}x${viewport.height}`, async ({
+  for (const viewport of OVERFLOW_VIEWPORTS) {
+    test(`keeps the secondary navigation overflow usable at ${viewport.width}x${viewport.height}`, async ({
       page,
     }) => {
       const resolvedBaseUrl = BASE_URL as string;
@@ -249,32 +249,32 @@ test.describe('home tabs responsive layout', () => {
       await page.goto(new URL(HOME_PATH, resolvedBaseUrl).toString());
 
       const trigger = page.locator('.shell-actions__button--menu');
-      const drawer = page.locator('#shell-actions-drawer');
-      const close = drawer.locator('.shell-actions__drawer-close');
-      const entries = drawer.locator('.shell-actions__menu-button');
+      const shell = page.locator('.shell-actions__shell');
+      const overflow = page.locator('#shell-actions-overflow');
 
-      await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog');
+      await expect(trigger).toHaveAttribute('aria-controls', 'shell-actions-overflow');
       await expect(trigger).toHaveAttribute('aria-expanded', 'false');
       await trigger.click();
 
-      await expect(drawer).toBeVisible();
+      await expect(overflow).toBeVisible();
       await expect(trigger).toHaveAttribute('aria-expanded', 'true');
-      await expect(close).toBeFocused();
+      const entries = overflow.locator('.shell-actions__menu-button');
       await expect(entries).toHaveCount(3);
 
-      const drawerBounds = await drawer.boundingBox();
-      expect(drawerBounds).not.toBeNull();
-      if (drawerBounds) {
-        expect(drawerBounds.x).toBeGreaterThanOrEqual(-GEOMETRY_TOLERANCE_PX);
-        expect(drawerBounds.x + drawerBounds.width).toBeLessThanOrEqual(
+      const overflowBounds = await overflow.boundingBox();
+      const shellBounds = await shell.boundingBox();
+      expect(overflowBounds).not.toBeNull();
+      expect(shellBounds).not.toBeNull();
+      if (overflowBounds && shellBounds) {
+        expect(overflowBounds.x).toBeGreaterThanOrEqual(-GEOMETRY_TOLERANCE_PX);
+        expect(overflowBounds.x + overflowBounds.width).toBeLessThanOrEqual(
           viewport.width + GEOMETRY_TOLERANCE_PX,
         );
-        expect(drawerBounds.height).toBeGreaterThanOrEqual(viewport.height - GEOMETRY_TOLERANCE_PX);
+        expect(overflowBounds.y).toBeGreaterThanOrEqual(-GEOMETRY_TOLERANCE_PX);
+        expect(overflowBounds.y + overflowBounds.height).toBeLessThanOrEqual(
+          shellBounds.y + GEOMETRY_TOLERANCE_PX,
+        );
       }
-
-      const closeBounds = await close.boundingBox();
-      expect(closeBounds?.width ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
-      expect(closeBounds?.height ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
 
       for (let index = 0; index < 3; index += 1) {
         const entryBounds = await entries.nth(index).boundingBox();
@@ -289,19 +289,19 @@ test.describe('home tabs responsive layout', () => {
       }
 
       await page.keyboard.press('Escape');
-      await expect(drawer).not.toBeVisible();
+      await expect(overflow).not.toBeVisible();
       await expect(trigger).toHaveAttribute('aria-expanded', 'false');
       await expect(trigger).toBeFocused();
 
       await trigger.click();
-      await expect(drawer).toBeVisible();
+      await expect(overflow).toBeVisible();
       await page.mouse.click(5, Math.floor(viewport.height / 2));
-      await expect(drawer).not.toBeVisible();
-      await expect(trigger).toBeFocused();
+      await expect(overflow).not.toBeVisible();
+      await expect(trigger).toHaveAttribute('aria-expanded', 'false');
     });
   }
 
-  test('navigates through the drawer and exposes the active secondary destination', async ({
+  test('navigates through the overflow and exposes the active secondary destination', async ({
     page,
   }) => {
     const resolvedBaseUrl = BASE_URL as string;
@@ -309,16 +309,16 @@ test.describe('home tabs responsive layout', () => {
     await page.goto(new URL(HOME_PATH, resolvedBaseUrl).toString());
 
     const trigger = page.locator('.shell-actions__button--menu');
-    const drawer = page.locator('#shell-actions-drawer');
+    const overflow = page.locator('#shell-actions-overflow');
     await trigger.click();
-    await drawer.locator('.shell-actions__menu-button[href="/settings"]').click();
+    await overflow.locator('.shell-actions__menu-button[href="/settings"]').click();
 
     await expect(page).toHaveURL(new URL('/settings', resolvedBaseUrl).toString());
-    await expect(drawer).not.toBeVisible();
+    await expect(overflow).not.toBeVisible();
     await expect(trigger).toHaveClass(/shell-actions__button--active/);
 
     await trigger.click();
-    await expect(drawer.locator('.shell-actions__menu-button[href="/settings"]')).toHaveAttribute(
+    await expect(overflow.locator('.shell-actions__menu-button[href="/settings"]')).toHaveAttribute(
       'aria-current',
       'page',
     );
