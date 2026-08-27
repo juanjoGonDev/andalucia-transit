@@ -15,14 +15,14 @@ const FALLBACK_LINE = {
   idLinea: 380,
   codigo: 'M-380',
   nombre: 'Almería - Aguadulce - El Ejido',
-  modo: 'Autobús'
+  modo: 'Autobús',
 } as const;
 
 test.describe('map focused lines recovery', () => {
   test.skip(!BASE_URL, 'E2E_BASE_URL environment variable is required for map focused-line tests.');
 
   test('loads focused lines through the canonical nearest-stop fallback and keeps cards readable', async ({
-    page
+    page,
   }) => {
     let canonicalFallbackRequests = 0;
     await failGeographicLineLookup(page);
@@ -31,7 +31,7 @@ test.describe('map focused lines recovery', () => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify([FALLBACK_LINE])
+        body: JSON.stringify([FALLBACK_LINE]),
       });
     });
     await page.route(LEGACY_STOP_LINES_URL, async (route) => {
@@ -56,7 +56,7 @@ test.describe('map focused lines recovery', () => {
   });
 
   test('shows a retryable toast instead of consuming the focused-lines inspector on terminal failure', async ({
-    page
+    page,
   }) => {
     await failGeographicLineLookup(page);
     await page.route(CANONICAL_STOP_LINES_URL, failRoute);
@@ -85,10 +85,10 @@ test.describe('map focused lines recovery', () => {
       expect(toastBox.x).toBeGreaterThanOrEqual(workspaceBox.x);
       expect(toastBox.y).toBeGreaterThanOrEqual(workspaceBox.y);
       expect(toastBox.x + toastBox.width).toBeLessThanOrEqual(
-        workspaceBox.x + workspaceBox.width + 1
+        workspaceBox.x + workspaceBox.width + 1,
       );
       expect(toastBox.y + toastBox.height).toBeLessThanOrEqual(
-        workspaceBox.y + workspaceBox.height + 1
+        workspaceBox.y + workspaceBox.height + 1,
       );
     }
   });
@@ -98,7 +98,9 @@ async function failGeographicLineLookup(page: Page): Promise<void> {
   await page.route(GEOGRAPHIC_LINES_URL, failRoute);
 }
 
-async function failRoute(route: Parameters<Page['route']>[1] extends (route: infer R) => unknown ? R : never) {
+async function failRoute(
+  route: Parameters<Page['route']>[1] extends (route: infer R) => unknown ? R : never,
+) {
   await route.fulfill({ status: 503, contentType: 'application/json', body: '{}' });
 }
 
@@ -122,7 +124,7 @@ async function measureContrast(card: Locator): Promise<number> {
 
     return {
       background: getComputedStyle(element).backgroundColor,
-      foreground: getComputedStyle(textElement).color
+      foreground: getComputedStyle(textElement).color,
     };
   }, '.map-route__destination');
 
@@ -130,7 +132,10 @@ async function measureContrast(card: Locator): Promise<number> {
 }
 
 function parseRgb(value: string): readonly [number, number, number] {
-  const channels = value.match(/[\d.]+/g)?.slice(0, 3).map(Number);
+  const channels = value
+    .match(/[\d.]+/g)
+    ?.slice(0, 3)
+    .map(Number);
   if (!channels || channels.length !== 3 || channels.some((channel) => !Number.isFinite(channel))) {
     throw new Error(`Unsupported computed color: ${value}`);
   }
@@ -140,7 +145,7 @@ function parseRgb(value: string): readonly [number, number, number] {
 
 function contrastRatio(
   background: readonly [number, number, number],
-  foreground: readonly [number, number, number]
+  foreground: readonly [number, number, number],
 ): number {
   const backgroundLuminance = relativeLuminance(background);
   const foregroundLuminance = relativeLuminance(foreground);
@@ -152,9 +157,7 @@ function contrastRatio(
 function relativeLuminance(rgb: readonly [number, number, number]): number {
   const [red, green, blue] = rgb.map((channel) => {
     const normalized = channel / 255;
-    return normalized <= 0.03928
-      ? normalized / 12.92
-      : Math.pow((normalized + 0.055) / 1.055, 2.4);
+    return normalized <= 0.03928 ? normalized / 12.92 : Math.pow((normalized + 0.055) / 1.055, 2.4);
   });
 
   return 0.2126 * (red ?? 0) + 0.7152 * (green ?? 0) + 0.0722 * (blue ?? 0);
