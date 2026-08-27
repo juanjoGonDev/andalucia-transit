@@ -222,7 +222,9 @@ test.describe('network map exploration', () => {
     const closeButton = popup.locator('.leaflet-popup-close-button');
     await expect(closeButton).toBeVisible();
     await expect(closeButton).toContainText('×');
-    expect(await closeButton.evaluate((element) => getComputedStyle(element).cursor)).toBe('pointer');
+    expect(await closeButton.evaluate((element) => getComputedStyle(element).cursor)).toBe(
+      'pointer',
+    );
     const closeBounds = await closeButton.boundingBox();
     expect(closeBounds?.width ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
     expect(closeBounds?.height ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
