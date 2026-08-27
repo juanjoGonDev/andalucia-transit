@@ -1,9 +1,12 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   Output,
+  ViewChild,
   computed,
   inject,
   signal
@@ -27,16 +30,30 @@ const EMPTY_TARGETS: readonly MapSearchTarget[] = Object.freeze([]);
 const EMPTY_OPTIONS: readonly AppAutocompleteOption<MapSearchTarget>[] = Object.freeze([]);
 const MIN_QUERY_LENGTH = 2;
 const MAX_RESULTS = 12;
+const SEARCH_FIELD_ID = 'map-network-search' as const;
+const ESCAPE_KEY = 'Escape' as const;
+const FOCUS_DELAY_MS = 0;
 
 @Component({
   selector: 'app-map-search',
   standalone: true,
-  imports: [TranslateModule, AppAutocompleteComponent, AppTextFieldPrefixDirective],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    AppAutocompleteComponent,
+    AppTextFieldPrefixDirective
+  ],
   templateUrl: './map-search.component.html',
   styleUrl: './map-search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapSearchComponent {
+  @ViewChild('searchToggle')
+  private searchToggle?: ElementRef<HTMLButtonElement>;
+
+  @ViewChild('searchField')
+  private searchField?: ElementRef<HTMLElement>;
+
   private readonly translate = inject(TranslateService);
   private readonly targetState = signal<readonly MapSearchTarget[]>(EMPTY_TARGETS);
   private readonly query = signal('');
@@ -57,6 +74,9 @@ export class MapSearchComponent {
 
   protected readonly labelKey = this.searchTranslations.searchLabel;
   protected readonly placeholderKey = this.searchTranslations.searchPlaceholder;
+  protected readonly closeLabelKey = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.close;
+  protected readonly searchFieldId = SEARCH_FIELD_ID;
+  protected readonly isExpanded = signal(false);
   protected readonly options = computed<readonly AppAutocompleteOption<MapSearchTarget>[]>(() => {
     this.languageRevision();
     const query = this.query().trim();
@@ -71,12 +91,51 @@ export class MapSearchComponent {
     }));
   });
 
+  constructor() {
+    this.translate.onLangChange.pipe(takeUntilDestroyed()).subscribe(() => {
+      this.languageRevision.update((revision) => revision + 1);
+    });
+  }
+
+  protected openSearch(): void {
+    if (this.isExpanded()) {
+      return;
+    }
+
+    this.isExpanded.set(true);
+    this.scheduleFocus(() => this.searchField?.nativeElement.querySelector('input')?.focus());
+  }
+
+  protected closeSearch(restoreFocus = true): void {
+    if (!this.isExpanded()) {
+      return;
+    }
+
+    this.query.set('');
+    this.isExpanded.set(false);
+
+    if (restoreFocus) {
+      this.scheduleFocus(() => this.searchToggle?.nativeElement.focus());
+    }
+  }
+
+  protected handleSearchKeydown(event: KeyboardEvent): void {
+    if (event.key !== ESCAPE_KEY) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    this.closeSearch();
+  }
+
   protected handleValueChange(value: string): void {
     this.query.set(value);
   }
 
   protected handleSelection(selection: AppAutocompleteSelection<MapSearchTarget>): void {
     this.targetSelected.emit(selection.option.value);
+    this.closeSearch();
   }
 
   private buildLabel(target: MapSearchTarget): string {
@@ -89,9 +148,7 @@ export class MapSearchComponent {
     return `${kindLabel} · ${target.name}${context}`;
   }
 
-  constructor() {
-    this.translate.onLangChange.pipe(takeUntilDestroyed()).subscribe(() => {
-      this.languageRevision.update((revision) => revision + 1);
-    });
+  private scheduleFocus(callback: () => void): void {
+    window.setTimeout(callback, FOCUS_DELAY_MS);
   }
 }

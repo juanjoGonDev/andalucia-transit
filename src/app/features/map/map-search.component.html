@@ -1,15 +1,44 @@
-<div class="map-search">
-  <app-autocomplete
-    [label]="labelKey | translate"
-    [placeholder]="placeholderKey | translate"
-    [options]="options()"
-    fieldId="map-network-search"
-    autocomplete="off"
-    (valueChange)="handleValueChange($event)"
-    (selectionChange)="handleSelection($event)"
+<div class="map-search" [class.map-search--expanded]="isExpanded()">
+  <button
+    #searchToggle
+    type="button"
+    class="map-search__trigger"
+    [attr.aria-label]="labelKey | translate"
+    [attr.aria-expanded]="isExpanded()"
+    [attr.aria-controls]="isExpanded() ? searchFieldId : null"
+    (click)="openSearch()"
   >
-    <span appTextFieldPrefix class="material-symbols-outlined map-search__icon" aria-hidden="true">
-      search
-    </span>
-  </app-autocomplete>
+    <span class="material-symbols-outlined" aria-hidden="true">search</span>
+  </button>
+
+  <div
+    *ngIf="isExpanded()"
+    #searchField
+    class="map-search__expanded"
+    (keydown)="handleSearchKeydown($event)"
+  >
+    <app-autocomplete
+      class="map-search__field"
+      [label]="labelKey | translate"
+      [placeholder]="placeholderKey | translate"
+      [options]="options()"
+      [fieldId]="searchFieldId"
+      autocomplete="off"
+      (valueChange)="handleValueChange($event)"
+      (selectionChange)="handleSelection($event)"
+    >
+      <span appTextFieldPrefix class="material-symbols-outlined map-search__icon" aria-hidden="true">
+        search
+      </span>
+    </app-autocomplete>
+
+    <button
+      type="button"
+      class="map-search__close"
+      [attr.aria-label]="closeLabelKey | translate"
+      (click)="closeSearch()"
+    >
+      <span class="material-symbols-outlined" aria-hidden="true">close</span>
+    </button>
+  </div>
 </div>

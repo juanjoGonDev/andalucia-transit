@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { MapSearchComponent } from '@features/map/map-search.component';
@@ -36,7 +36,7 @@ describe('MapSearchComponent', () => {
 
     trigger.click();
     fixture.detectChanges();
-    flushMicrotasks();
+    tick();
 
     const input = fixture.nativeElement.querySelector('input') as HTMLInputElement | null;
 
@@ -50,14 +50,14 @@ describe('MapSearchComponent', () => {
 
     trigger.click();
     fixture.detectChanges();
-    flushMicrotasks();
+    tick();
 
     const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
     input.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })
     );
     fixture.detectChanges();
-    flushMicrotasks();
+    tick();
 
     expect(fixture.nativeElement.querySelector('app-autocomplete')).toBeNull();
     expect(document.activeElement).toBe(trigger);
