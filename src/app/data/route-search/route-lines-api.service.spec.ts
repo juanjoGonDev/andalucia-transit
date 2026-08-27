@@ -26,9 +26,11 @@ describe('RouteLinesApiService', () => {
   afterEach(() => http.verify());
 
   it('loads lines for the focused map location with CTAN geographic parameters', async () => {
+    await import('./route-lines-nearby.loader');
     const resultPromise = firstValueFrom(
       service.getLinesNearLocation(4, { latitude: 36.7213, longitude: -4.4214 })
     );
+    await Promise.resolve();
 
     const request = http.expectOne(
       (candidate) =>
@@ -61,7 +63,9 @@ describe('RouteLinesApiService', () => {
   });
 
   it('maps the official CTAN polyline into validated road coordinates', async () => {
+    await import('./route-line-detail.mapper');
     const resultPromise = firstValueFrom(service.getLineDetail(4, '177'));
+    await Promise.resolve();
 
     const request = http.expectOne('https://api.ctan.es/v1/Consorcios/4/lineas/177?lang=ES');
     expect(request.request.method).toBe('GET');
@@ -87,7 +91,9 @@ describe('RouteLinesApiService', () => {
   });
 
   it('accepts longitude-latitude JSON pairs and rejects malformed geometry points', async () => {
+    await import('./route-line-detail.mapper');
     const resultPromise = firstValueFrom(service.getLineDetail(1, '55'));
+    await Promise.resolve();
 
     const request = http.expectOne('https://api.ctan.es/v1/Consorcios/1/lineas/55?lang=ES');
     request.flush({
