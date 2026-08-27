@@ -8,13 +8,13 @@ import { APP_CONFIG } from '@core/config';
 import { classifyGeolocationError } from '@core/services/geolocation-error.util';
 import { GEOLOCATION_REQUEST_OPTIONS } from '@core/services/geolocation-request.options';
 import { GeolocationService } from '@core/services/geolocation.service';
-import { buildDistanceDisplay, DistanceDisplay } from '@domain/utils/distance-display.util';
-import { calculateDistanceInMeters, GeoCoordinate } from '@domain/utils/geo-distance.util';
 import {
   StopInfoFacade,
   StopInformationDetail,
   StopInformationState,
 } from '@domain/stops/stop-info.facade';
+import { DistanceDisplay, buildDistanceDisplay } from '@domain/utils/distance-display.util';
+import { GeoCoordinate, calculateDistanceInMeters } from '@domain/utils/geo-distance.util';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 
