@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '@core/config';
@@ -21,18 +20,13 @@ interface ShellMenuViewEntry extends ShellMenuEntry {
 @Component({
   selector: 'app-app-shell-top-actions',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslateModule],
+  imports: [RouterLink, TranslateModule],
   templateUrl: './app-shell-top-actions.component.html',
   styleUrl: './app-shell-top-actions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppShellTopActionsComponent {
   private readonly layoutContextStore = inject(AppLayoutContextStore);
-
-  @ViewChild('drawer') private drawer?: ElementRef<HTMLDialogElement>;
-  @ViewChild('drawerClose') private drawerClose?: ElementRef<HTMLButtonElement>;
-  @ViewChild('menuTrigger') private menuTrigger?: ElementRef<HTMLButtonElement>;
-
   private readonly translation = APP_CONFIG.translationKeys.home;
   private readonly homeCommands = buildNavigationCommands(APP_CONFIG.routes.home);
   private readonly routeSearchCommands = buildNavigationCommands(APP_CONFIG.routes.routeSearch);
@@ -62,6 +56,7 @@ export class AppShellTopActionsComponent {
   protected readonly routeSearchLinkCommands = [...this.routeSearchCommands];
   protected readonly mapLinkCommands = [...this.mapCommands];
   protected readonly favoritesLinkCommands = [...this.favoritesCommands];
+  protected menuOpen = false;
 
   private readonly entries: readonly ShellMenuEntry[] = Object.freeze([
     {
@@ -109,47 +104,15 @@ export class AppShellTopActionsComponent {
       isActive: entry.navigationKey === activeNavigationKey
     }));
   });
-  protected readonly menuOpen = signal(false);
 
-  protected toggleMenu(): void {
-    const dialog = this.drawer?.nativeElement;
-
-    if (!dialog) {
-      return;
-    }
-
-    if (dialog.open) {
-      this.closeMenu();
-      return;
-    }
-
+  protected openMenu(dialog: HTMLDialogElement): void {
     dialog.showModal();
-    this.menuOpen.set(true);
-    this.drawerClose?.nativeElement.focus();
+    this.menuOpen = true;
   }
 
-  protected closeMenu(): void {
-    const dialog = this.drawer?.nativeElement;
-
-    if (dialog?.open) {
+  protected handleDrawerPointerDown(event: PointerEvent, dialog: HTMLDialogElement): void {
+    if (event.target === dialog) {
       dialog.close();
     }
-
-    this.finishMenuClose();
-  }
-
-  protected handleDrawerClose(): void {
-    this.finishMenuClose();
-  }
-
-  protected handleDrawerClick(event: MouseEvent): void {
-    if (event.target === this.drawer?.nativeElement) {
-      this.closeMenu();
-    }
-  }
-
-  private finishMenuClose(): void {
-    this.menuOpen.set(false);
-    this.menuTrigger?.nativeElement.focus();
   }
 }

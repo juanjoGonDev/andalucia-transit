@@ -1,3 +1,47 @@
+<dialog
+  #drawer
+  id="shell-actions-drawer"
+  class="shell-actions__drawer"
+  aria-labelledby="shell-actions-drawer-title"
+  (pointerdown)="handleDrawerPointerDown($event, drawer)"
+  (close)="menuOpen = false"
+>
+  <header class="shell-actions__drawer-header">
+    <h2 id="shell-actions-drawer-title" class="shell-actions__drawer-title">
+      {{ menuLabelKey | translate }}
+    </h2>
+    <button
+      type="button"
+      class="shell-actions__drawer-close"
+      [attr.aria-label]="closeLabelKey | translate"
+      (click)="drawer.close()"
+      autofocus
+    >
+      <span class="material-symbols-outlined" aria-hidden="true">close</span>
+    </button>
+  </header>
+
+  <nav aria-labelledby="shell-actions-drawer-title">
+    <ul class="shell-actions__list">
+      @for (entry of menuEntries(); track entry.id) {
+        <li class="shell-actions__item">
+          <a
+            class="shell-actions__menu-button"
+            [routerLink]="entry.commands"
+            [attr.aria-current]="entry.isActive ? 'page' : null"
+            (click)="drawer.close()"
+          >
+            <span class="shell-actions__menu-label">{{ entry.labelKey | translate }}</span>
+            @if (entry.isActive) {
+              <span class="material-symbols-outlined shell-actions__menu-current" aria-hidden="true">check</span>
+            }
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+</dialog>
+
 <nav class="shell-actions">
   <div class="shell-actions__container">
     <div class="shell-actions__shell">
@@ -43,15 +87,14 @@
           <span class="shell-actions__button-label">{{ favoritesLabelKey | translate }}</span>
         </a>
         <button
-          #menuTrigger
           type="button"
           class="shell-actions__button shell-actions__button--menu"
-          [class.shell-actions__button--active]="menuOpen() || moreActive()"
-          [attr.aria-expanded]="menuOpen()"
+          [class.shell-actions__button--active]="menuOpen || moreActive()"
+          [attr.aria-expanded]="menuOpen"
           aria-haspopup="dialog"
           aria-controls="shell-actions-drawer"
           [attr.aria-label]="menuLabelKey | translate"
-          (click)="toggleMenu()"
+          (click)="openMenu(drawer)"
         >
           <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">menu</span>
         </button>
@@ -59,50 +102,3 @@
     </div>
   </div>
 </nav>
-
-<dialog
-  #drawer
-  id="shell-actions-drawer"
-  class="shell-actions__drawer"
-  aria-labelledby="shell-actions-drawer-title"
-  (pointerdown)="handleDrawerClick($event)"
-  (close)="handleDrawerClose()"
->
-  <div class="shell-actions__drawer-surface">
-    <header class="shell-actions__drawer-header">
-      <h2 id="shell-actions-drawer-title" class="shell-actions__drawer-title">
-        {{ menuLabelKey | translate }}
-      </h2>
-      <button
-        #drawerClose
-        type="button"
-        class="shell-actions__drawer-close"
-        [attr.aria-label]="closeLabelKey | translate"
-        (click)="closeMenu()"
-      >
-        <span class="material-symbols-outlined" aria-hidden="true">close</span>
-      </button>
-    </header>
-
-    <nav aria-labelledby="shell-actions-drawer-title">
-      <ul class="shell-actions__list">
-        <li class="shell-actions__item" *ngFor="let entry of menuEntries()">
-          <a
-            class="shell-actions__menu-button"
-            [routerLink]="entry.commands"
-            [attr.aria-current]="entry.isActive ? 'page' : null"
-            (click)="closeMenu()"
-          >
-            <span class="shell-actions__menu-label">{{ entry.labelKey | translate }}</span>
-            <span
-              *ngIf="entry.isActive"
-              class="material-symbols-outlined shell-actions__menu-current"
-              aria-hidden="true"
-              >check</span
-            >
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-</dialog>

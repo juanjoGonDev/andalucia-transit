@@ -93,33 +93,26 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
 }
 
 .shell-actions__drawer {
+  position: fixed;
   inset: 0 0 0 auto;
+  box-sizing: border-box;
   width: min(22rem, calc(100vw - var(--space-xl)));
   height: 100dvh;
-  max-width: 100%;
   max-height: none;
   margin: 0;
-  padding: 0;
+  padding: max(var(--space-lg), env(safe-area-inset-top, 0px))
+    max(var(--space-lg), env(safe-area-inset-right, 0px))
+    max(var(--space-lg), env(safe-area-inset-bottom, 0px)) var(--space-lg);
   border: 0;
   background: var(--color-dialog-surface);
   color: var(--color-text-primary);
   box-shadow: var(--shadow-dialog);
   pointer-events: auto;
-  animation: shell-actions-drawer-in 180ms ease-out;
+  animation: shell-drawer-in 180ms ease-out;
 }
 
 .shell-actions__drawer::backdrop {
   background: color-mix(in srgb, var(--color-secondary) 58%, transparent);
-}
-
-.shell-actions__drawer-surface {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xl);
-  min-height: 100%;
-  padding: max(var(--space-lg), env(safe-area-inset-top, 0px))
-    max(var(--space-lg), env(safe-area-inset-right, 0px))
-    max(var(--space-lg), env(safe-area-inset-bottom, 0px)) var(--space-lg);
 }
 
 .shell-actions__drawer-header {
@@ -127,12 +120,11 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
+  margin-bottom: var(--space-xl);
 }
 
 .shell-actions__drawer-title {
   margin: 0;
-  font-size: var(--font-size-title-md);
-  line-height: var(--line-height-heading);
 }
 
 .shell-actions__drawer-close {
@@ -145,7 +137,7 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
   border: 0;
   border-radius: var(--radius-full);
   background: var(--color-surface-muted);
-  color: var(--color-text-primary);
+  color: inherit;
   cursor: pointer;
 }
 
@@ -185,13 +177,9 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
   font-size: 1.15rem;
 }
 
-@keyframes shell-actions-drawer-in {
+@keyframes shell-drawer-in {
   from {
     transform: translateX(100%);
-  }
-
-  to {
-    transform: translateX(0);
   }
 }
 
