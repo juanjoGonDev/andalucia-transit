@@ -172,7 +172,7 @@ describe('AppShellTopActionsComponent', () => {
 
     menu.click();
     fixture.detectChanges();
-    dialog.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    dialog.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
     fixture.detectChanges();
 
     expect(dialog.open).toBeFalse();
