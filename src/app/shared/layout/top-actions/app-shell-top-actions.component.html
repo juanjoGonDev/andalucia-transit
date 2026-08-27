@@ -23,16 +23,16 @@
 
   <nav aria-labelledby="shell-actions-drawer-title">
     <ul class="shell-actions__list">
-      @for (entry of menuEntries(); track entry.id) {
+      @for (entry of entries; track entry.navigationKey) {
         <li class="shell-actions__item">
           <a
             class="shell-actions__menu-button"
             [routerLink]="entry.commands"
-            [attr.aria-current]="entry.isActive ? 'page' : null"
+            [attr.aria-current]="isActive(entry.navigationKey) ? 'page' : null"
             (click)="closeMenu(drawer, menuTrigger)"
           >
             <span>{{ entry.labelKey | translate }}</span>
-            @if (entry.isActive) {
+            @if (isActive(entry.navigationKey)) {
               <span class="material-symbols-outlined" aria-hidden="true">check</span>
             }
           </a>
@@ -48,9 +48,9 @@
       <div class="shell-actions__buttons">
         <a
           class="shell-actions__button shell-actions__button--quick"
-          [class.shell-actions__button--active]="homeActive()"
+          [class.shell-actions__button--active]="isActive(routes.home)"
           [routerLink]="homeLinkCommands"
-          [attr.aria-current]="homeActive() ? 'page' : null"
+          [attr.aria-current]="isActive(routes.home) ? 'page' : null"
           [attr.aria-label]="homeLabelKey | translate"
         >
           <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">home</span>
@@ -58,9 +58,9 @@
         </a>
         <a
           class="shell-actions__button shell-actions__button--quick"
-          [class.shell-actions__button--active]="routeSearchActive()"
+          [class.shell-actions__button--active]="isActive(routes.routeSearch)"
           [routerLink]="routeSearchLinkCommands"
-          [attr.aria-current]="routeSearchActive() ? 'page' : null"
+          [attr.aria-current]="isActive(routes.routeSearch) ? 'page' : null"
           [attr.aria-label]="routeSearchLabelKey | translate"
         >
           <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">route</span>
@@ -68,9 +68,9 @@
         </a>
         <a
           class="shell-actions__button shell-actions__button--quick"
-          [class.shell-actions__button--active]="mapActive()"
+          [class.shell-actions__button--active]="isActive(routes.map)"
           [routerLink]="mapLinkCommands"
-          [attr.aria-current]="mapActive() ? 'page' : null"
+          [attr.aria-current]="isActive(routes.map) ? 'page' : null"
           [attr.aria-label]="mapLabelKey | translate"
         >
           <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">map</span>
