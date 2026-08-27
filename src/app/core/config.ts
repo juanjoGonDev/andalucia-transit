@@ -50,7 +50,6 @@ const MAP_ROUTE_ANNOUNCEMENT_LOADED_TRANSLATIONS: PluralizedTranslationKeys = {
   other: 'map.routes.announcements.loaded.other'
 } as const;
 
-
 export const APP_CONFIG = {
   appName: 'Andalucia Transit',
   apiBaseUrl: 'https://api.ctan.es',
@@ -430,6 +429,22 @@ export const APP_CONFIG = {
       tags: {
         main: 'stopInfo.tags.main',
         inactive: 'stopInfo.tags.inactive'
+      },
+      directions: {
+        title: 'stopInfo.directions.title',
+        description: 'stopInfo.directions.description',
+        locate: 'stopInfo.directions.locate',
+        loading: 'stopInfo.directions.loading',
+        distanceLabel: 'stopInfo.directions.distanceLabel',
+        disclaimer: 'stopInfo.directions.disclaimer',
+        unavailable: 'stopInfo.directions.unavailable',
+        errors: {
+          notSupported: 'errors.geolocation.notSupported',
+          permissionDenied: 'map.errors.permissionDenied',
+          positionUnavailable: 'map.errors.positionUnavailable',
+          timeout: 'map.errors.timeout',
+          generic: 'home.dialogs.nearbyStops.unknownError'
+        }
       }
     },
     favorites: {
