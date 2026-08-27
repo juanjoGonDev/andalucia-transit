@@ -381,7 +381,9 @@
                     <span class="map-route__code">{{ route.lineCode }}</span>
                     <div class="map-route__metrics">
                       <span class="map-route__stops">
-                        {{ route.stopCountTranslationKey | translate: { value: route.stopCountValue } }}
+                        {{
+                          route.stopCountTranslationKey | translate: { value: route.stopCountValue }
+                        }}
                       </span>
                       <span class="map-route__distance">
                         {{
