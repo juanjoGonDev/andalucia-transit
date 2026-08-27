@@ -267,13 +267,20 @@ function resolveChunkBasePath(indexPath: string): string {
 
 function buildDirectoryIndex(file: StopDirectoryIndexFile): StopDirectoryIndex {
   const entries = new Map<string, StopDirectorySearchEntry>();
+  const ambiguousStopIds = new Set<string>();
   const compositeEntries = new Map<string, StopDirectorySearchEntry>();
   const groups = new Map<string, StopDirectorySearchEntry[]>();
 
   for (const entry of file.searchIndex) {
-    if (!entries.has(entry.stopId)) {
-      entries.set(entry.stopId, entry);
+    if (!ambiguousStopIds.has(entry.stopId)) {
+      if (entries.has(entry.stopId)) {
+        entries.delete(entry.stopId);
+        ambiguousStopIds.add(entry.stopId);
+      } else {
+        entries.set(entry.stopId, entry);
+      }
     }
+
     compositeEntries.set(buildEntryKey(entry.consortiumId, entry.stopId), entry);
     const key = buildGroupKey(entry);
     const bucket = groups.get(key);
