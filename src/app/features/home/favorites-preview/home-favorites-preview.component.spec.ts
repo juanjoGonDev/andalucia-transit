@@ -34,8 +34,10 @@ describe('HomeFavoritesPreviewComponent', () => {
     fixture.detectChanges();
 
     const routerLink = fixture.debugElement.query(By.directive(RouterLink)).injector.get(RouterLink);
+    const urlTree = routerLink.urlTree;
 
-    expect(routerLink.urlTree.toString()).toBe(`/${APP_CONFIG.routes.stopDetailBase}/119?consortiumId=7`);
+    expect(urlTree).not.toBeNull();
+    expect(urlTree?.toString()).toBe(`/${APP_CONFIG.routes.stopDetailBase}/119?consortiumId=7`);
     expect(routerLink.queryParams).toEqual({
       [APP_CONFIG.routeParams.stopInfo.consortiumId]: '7'
     });
