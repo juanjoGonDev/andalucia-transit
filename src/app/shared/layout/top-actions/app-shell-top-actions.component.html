@@ -1,50 +1,29 @@
-<dialog
-  #drawer
-  id="shell-actions-drawer"
-  class="shell-actions__drawer"
-  aria-labelledby="shell-actions-drawer-title"
-  (pointerdown)="handleDrawerPointerDown($event, drawer, menuTrigger)"
-  (close)="menuTrigger.focus()"
->
-  <header class="shell-actions__drawer-header">
-    <h2 id="shell-actions-drawer-title" class="shell-actions__drawer-title">
-      {{ menuLabelKey | translate }}
-    </h2>
-    <button
-      #drawerClose
-      type="button"
-      class="shell-actions__drawer-close"
-      [attr.aria-label]="closeLabelKey | translate"
-      (click)="closeMenu(drawer, menuTrigger)"
-    >
-      <span class="material-symbols-outlined" aria-hidden="true">close</span>
-    </button>
-  </header>
-
-  <nav aria-labelledby="shell-actions-drawer-title">
-    <ul class="shell-actions__list">
-      @for (entry of entries; track entry.navigationKey) {
-        <li class="shell-actions__item">
-          <a
-            class="shell-actions__menu-button"
-            [routerLink]="entry.commands"
-            [attr.aria-current]="isActive(entry.navigationKey) ? 'page' : null"
-            (click)="closeMenu(drawer, menuTrigger)"
-          >
-            <span>{{ entry.labelKey | translate }}</span>
-            @if (isActive(entry.navigationKey)) {
-              <span class="material-symbols-outlined" aria-hidden="true">check</span>
-            }
-          </a>
-        </li>
-      }
-    </ul>
-  </nav>
-</dialog>
-
-<nav class="shell-actions">
+<nav class="shell-actions" [attr.aria-label]="menuLabelKey | translate">
   <div class="shell-actions__container">
     <div class="shell-actions__shell">
+      @if (menuOpen()) {
+        <div id="shell-actions-overflow" class="shell-actions__overflow">
+          <ul class="shell-actions__list">
+            @for (entry of entries; track entry.navigationKey) {
+              <li>
+                <a
+                  class="shell-actions__menu-button"
+                  [routerLink]="entry.commands"
+                  [attr.aria-current]="isActive(entry.navigationKey) ? 'page' : null"
+                  (click)="closeMenu()"
+                >
+                  <span class="material-symbols-outlined" aria-hidden="true">{{ entry.icon }}</span>
+                  <span>{{ entry.labelKey | translate }}</span>
+                  @if (isActive(entry.navigationKey)) {
+                    <span class="material-symbols-outlined shell-actions__current" aria-hidden="true">check</span>
+                  }
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
       <div class="shell-actions__buttons">
         <a
           class="shell-actions__button shell-actions__button--quick"
@@ -90,12 +69,11 @@
           #menuTrigger
           type="button"
           class="shell-actions__button shell-actions__button--menu"
-          [class.shell-actions__button--active]="drawer.open || moreActive()"
-          [attr.aria-expanded]="drawer.open"
-          aria-haspopup="dialog"
-          aria-controls="shell-actions-drawer"
+          [class.shell-actions__button--active]="moreActive()"
+          [attr.aria-expanded]="menuOpen()"
+          aria-controls="shell-actions-overflow"
           [attr.aria-label]="menuLabelKey | translate"
-          (click)="openMenu(drawer, drawerClose)"
+          (click)="toggleMenu()"
         >
           <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">menu</span>
         </button>

@@ -1,8 +1,7 @@
-$shell-actions-offset: clamp(var(--space-md-plus), 4vw, calc(var(--space-2xl) - var(--space-sm)));
-$shell-actions-surface: var(--color-navigation-surface);
-$shell-actions-foreground: var(--color-navigation-item);
-$shell-actions-hover: color-mix(in srgb, var(--color-text-inverse) 14%, transparent);
-$shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transparent);
+$surface: var(--color-navigation-surface);
+$foreground: var(--color-navigation-item);
+$hover: color-mix(in srgb, var(--color-text-inverse) 14%, transparent);
+$border: color-mix(in srgb, var(--color-text-inverse) 20%, transparent);
 
 :host {
   position: fixed;
@@ -19,16 +18,16 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
 }
 
 .shell-actions__container {
-  width: min(100%, 36rem);
+  width: min(100%, 40rem);
 }
 
 .shell-actions__shell {
-  width: 100%;
+  position: relative;
   padding: var(--space-xs);
-  border: 1px solid $shell-actions-border;
+  border: 1px solid $border;
   border-radius: var(--radius-xl);
-  background: $shell-actions-surface;
-  color: $shell-actions-foreground;
+  background: $surface;
+  color: $foreground;
   box-shadow: var(--shadow-lg);
   pointer-events: auto;
 }
@@ -41,17 +40,17 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
 
 .shell-actions__button {
   display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-4xs);
   min-width: 0;
   min-height: 3.5rem;
   padding: var(--space-xs) var(--space-3xs);
   border: 0;
   border-radius: var(--radius-lg);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4xs);
   background: transparent;
-  color: color-mix(in srgb, $shell-actions-foreground 78%, transparent);
+  color: color-mix(in srgb, $foreground 78%, transparent);
   text-decoration: none;
   font: inherit;
   transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
@@ -60,15 +59,8 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
 .shell-actions__button:hover,
 .shell-actions__button:focus-visible,
 .shell-actions__button--active {
-  background: $shell-actions-hover;
-  color: $shell-actions-foreground;
-}
-
-.shell-actions__button:focus-visible,
-.shell-actions__drawer-close:focus-visible,
-.shell-actions__menu-button:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  background: $hover;
+  color: $foreground;
 }
 
 .shell-actions__button--active {
@@ -77,6 +69,12 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
 
 .shell-actions__button--active .shell-actions__button-icon {
   font-variation-settings: 'FILL' 1, 'wght' 650, 'GRAD' 0, 'opsz' 24;
+}
+
+.shell-actions__button:focus-visible,
+.shell-actions__menu-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .shell-actions__button-label {
@@ -88,59 +86,35 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
   font-weight: var(--font-weight-semibold);
 }
 
-.shell-actions__drawer {
-  inset: 0 0 0 auto;
-  box-sizing: border-box;
-  width: min(22rem, 90vw);
-  height: 100dvh;
-  max-height: none;
-  margin: 0;
-  padding: max(var(--space-lg), env(safe-area-inset-top))
-    max(var(--space-lg), env(safe-area-inset-right))
-    max(var(--space-lg), env(safe-area-inset-bottom)) var(--space-lg);
-  border: 0;
+.shell-actions__overflow {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: calc(100% + var(--space-sm));
+  width: min(18rem, calc(100vw - (2 * var(--space-md))));
+  max-height: min(24rem, calc(100dvh - 7rem - env(safe-area-inset-top, 0px)));
+  overflow: auto;
+  padding: var(--space-xs);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   background: var(--color-dialog-surface);
-  pointer-events: auto;
-}
-
-.shell-actions__drawer::backdrop {
-  background: rgb(0 0 0 / 50%);
-}
-
-.shell-actions__drawer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-lg);
-}
-
-.shell-actions__drawer-title {
-  margin: 0;
-}
-
-.shell-actions__drawer-close {
-  display: grid;
-  place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-lg);
 }
 
 .shell-actions__list {
   display: grid;
+  gap: var(--space-3xs);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .shell-actions__menu-button {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr) 1.5rem;
   align-items: center;
-  justify-content: space-between;
-  min-height: 3rem;
+  gap: var(--space-sm);
+  min-height: 2.75rem;
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-md);
   color: inherit;
@@ -158,51 +132,29 @@ $shell-actions-border: color-mix(in srgb, var(--color-text-inverse) 20%, transpa
   color: var(--color-primary-strong);
 }
 
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .shell-actions__button:hover {
-    transform: translateY(-2px);
-  }
+.shell-actions__current {
+  justify-self: end;
 }
 
 @media (min-width: 48rem) {
-  :host {
-    position: sticky;
-    top: calc(env(safe-area-inset-top, 0px) + #{$shell-actions-offset});
-    bottom: auto;
-    height: 0;
-  }
-
   .shell-actions {
-    justify-content: flex-end;
-    margin-top: calc(#{$shell-actions-offset} * -1);
-    padding: 0 clamp(var(--space-lg), 5vw, var(--space-4xl));
-  }
-
-  .shell-actions__container,
-  .shell-actions__shell {
-    width: auto;
-  }
-
-  .shell-actions__shell {
-    border-radius: var(--radius-full);
-  }
-
-  .shell-actions__buttons {
-    display: flex;
-    gap: var(--space-xs);
+    padding-inline: var(--space-lg);
   }
 
   .shell-actions__button {
-    min-width: 4.75rem;
     min-height: 3rem;
-    padding: var(--space-xs) var(--space-sm);
+    padding-inline: var(--space-sm);
     flex-direction: row;
   }
 
   .shell-actions__button--menu {
     min-width: 3rem;
-    width: 3rem;
-    padding-inline: var(--space-xs);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .shell-actions__button:hover {
+    transform: translateY(-2px);
   }
 }
 
