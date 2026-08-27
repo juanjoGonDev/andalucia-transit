@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Observable, firstValueFrom, of } from 'rxjs';
@@ -124,7 +124,7 @@ describe('AppShellTopActionsComponent', () => {
     ]);
   });
 
-  it('closes the upward overflow with Escape and restores focus to More', () => {
+  it('closes the upward overflow with Escape and restores focus to More', fakeAsync(() => {
     const menu = fixture.nativeElement.querySelector(
       '.shell-actions__button--menu'
     ) as HTMLButtonElement;
@@ -133,11 +133,12 @@ describe('AppShellTopActionsComponent', () => {
     fixture.detectChanges();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     fixture.detectChanges();
+    flushMicrotasks();
 
     expect(fixture.nativeElement.querySelector('#shell-actions-overflow')).toBeNull();
     expect(menu.getAttribute('aria-expanded')).toBe('false');
     expect(document.activeElement).toBe(menu);
-  });
+  }));
 
   it('closes the overflow when a secondary destination is selected', () => {
     const menu = fixture.nativeElement.querySelector(
