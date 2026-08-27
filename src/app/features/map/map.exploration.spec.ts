@@ -10,6 +10,11 @@ import {
   NearbyStopsService
 } from '@core/services/nearby-stops.service';
 import { buildStopIdentity } from '@core/services/stop-identity.util';
+import {
+  RouteLineDetail,
+  RouteLineSummary,
+  RouteLinesApiService
+} from '@data/route-search/route-lines-api.service';
 import { StopDirectoryRecord, StopDirectoryService } from '@data/stops/stop-directory.service';
 import { RouteOverlayFacade, RouteOverlayState } from '@domain/map/route-overlay.facade';
 import { MapSearchTarget } from '@features/map/map-search.util';
@@ -140,6 +145,22 @@ class StopDirectoryServiceStub {
     stopId: string
   ): Observable<StopDirectoryRecord | null> {
     return of(this.records.get(buildStopIdentity(consortiumId, stopId)) ?? null);
+  }
+}
+
+class RouteLinesApiServiceStub {
+  getLinesNearLocation(): Observable<readonly RouteLineSummary[]> {
+    return of([]);
+  }
+
+  getLineDetail(): Observable<RouteLineDetail> {
+    return of({
+      lineId: '',
+      code: '',
+      name: '',
+      mode: '',
+      coordinates: Object.freeze([])
+    });
   }
 }
 
@@ -283,6 +304,7 @@ describe('MapComponent network exploration', () => {
         { provide: NearbyStopsService, useValue: nearbyStops },
         { provide: GeolocationService, useClass: GeolocationServiceStub },
         { provide: StopDirectoryService, useValue: stopDirectory },
+        { provide: RouteLinesApiService, useClass: RouteLinesApiServiceStub },
         { provide: Router, useValue: router },
         { provide: RouteOverlayFacade, useClass: RouteOverlayFacadeStub },
         { provide: PLATFORM_ID, useValue: 'browser' }
