@@ -222,6 +222,17 @@
   min-width: 0;
 }
 
+.map__stop-item app-interactive-card {
+  --interactive-card-background: var(--color-surface);
+  --interactive-card-foreground: var(--color-text-primary);
+  --interactive-card-shadow: var(--shadow-sm);
+  --interactive-card-hover-shadow: var(--shadow-md);
+  --interactive-card-focus-outline: var(--color-primary);
+  --interactive-card-radius: var(--radius-lg);
+
+  border: 1px solid var(--color-border-subtle);
+}
+
 .map__stop-card-body,
 .map__route-card-body,
 .map-route {
