@@ -129,7 +129,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm run dev:mock-data --host 127.0.0.1 --port 4200 > "$RUNNER_TEMP/andalucia-transit.log" 2>&1 &
+          PATH="$PWD/node_modules/.bin:$PATH" \
+            node scripts/dev/start-with-mock-mode.mjs data --host 127.0.0.1 --port 4200 \
+            > "$RUNNER_TEMP/andalucia-transit.log" 2>&1 &
           app_pid=$!
           echo "$app_pid" > "$RUNNER_TEMP/andalucia-transit.pid"
           for attempt in $(seq 1 60); do
@@ -209,9 +211,22 @@ jobs:
               fi
               sleep 1
             done
+
+            for attempt in $(seq 1 30); do
+              if ! curl --fail --silent http://127.0.0.1:4200/ >/dev/null 2>&1; then
+                break
+              fi
+              if [ "$attempt" -eq 30 ]; then
+                echo "Deterministic data application still owns port 4200 after shutdown" >&2
+                exit 1
+              fi
+              sleep 1
+            done
           fi
 
-          pnpm run dev:mock-empty --host 127.0.0.1 --port 4200 > "$RUNNER_TEMP/andalucia-transit-empty.log" 2>&1 &
+          PATH="$PWD/node_modules/.bin:$PATH" \
+            node scripts/dev/start-with-mock-mode.mjs empty --host 127.0.0.1 --port 4200 \
+            > "$RUNNER_TEMP/andalucia-transit-empty.log" 2>&1 &
           app_pid=$!
           echo "$app_pid" > "$RUNNER_TEMP/andalucia-transit.pid"
           for attempt in $(seq 1 60); do
@@ -380,5 +395,14 @@ jobs:
         shell: bash
         run: |
           if [ -f "$RUNNER_TEMP/andalucia-transit.pid" ]; then
-            kill "$(cat "$RUNNER_TEMP/andalucia-transit.pid")" >/dev/null 2>&1 || true
+            app_pid=$(cat "$RUNNER_TEMP/andalucia-transit.pid")
+            kill "$app_pid" >/dev/null 2>&1 || true
+            for attempt in $(seq 1 30); do
+              if ! kill -0 "$app_pid" >/dev/null 2>&1; then
+                exit 0
+              fi
+              sleep 1
+            done
+            echo "Deterministic application did not stop cleanly" >&2
+            exit 1
           fi
