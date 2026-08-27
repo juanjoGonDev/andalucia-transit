@@ -102,12 +102,17 @@ describe('StopInfoComponent', () => {
 
     const card = fixture.nativeElement.querySelector('.stop-info__card') as HTMLElement | null;
     const text = card?.textContent ?? '';
+    const location = detail.location;
+
+    if (!location) {
+      throw new Error('Test stop detail must include a location.');
+    }
 
     expect(card).not.toBeNull();
     expect(text).not.toContain(detail.stopNumber);
     expect(text).not.toContain(detail.stopCode);
-    expect(text).not.toContain(String(detail.location.latitude));
-    expect(text).not.toContain(String(detail.location.longitude));
+    expect(text).not.toContain(String(location.latitude));
+    expect(text).not.toContain(String(location.longitude));
     expect(card?.querySelector('.stop-info__location')).not.toBeNull();
     expect(card?.querySelector('.stop-info__zone')).not.toBeNull();
     expect(card?.querySelector('.stop-info__correspondence-list')).not.toBeNull();
