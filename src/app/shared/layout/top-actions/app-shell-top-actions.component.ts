@@ -56,7 +56,6 @@ export class AppShellTopActionsComponent {
   protected readonly routeSearchLinkCommands = [...this.routeSearchCommands];
   protected readonly mapLinkCommands = [...this.mapCommands];
   protected readonly favoritesLinkCommands = [...this.favoritesCommands];
-  protected menuOpen = false;
 
   private readonly entries: readonly ShellMenuEntry[] = Object.freeze([
     {
@@ -107,7 +106,6 @@ export class AppShellTopActionsComponent {
 
   protected openMenu(dialog: HTMLDialogElement, closeButton: HTMLButtonElement): void {
     dialog.showModal();
-    this.menuOpen = true;
     closeButton.focus();
   }
 
@@ -116,16 +114,6 @@ export class AppShellTopActionsComponent {
       dialog.close();
     }
 
-    this.menuOpen = false;
-    trigger.focus();
-  }
-
-  protected handleNativeClose(trigger: HTMLButtonElement): void {
-    if (!this.menuOpen) {
-      return;
-    }
-
-    this.menuOpen = false;
     trigger.focus();
   }
 

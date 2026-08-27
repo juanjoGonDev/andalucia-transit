@@ -4,7 +4,7 @@
   class="shell-actions__drawer"
   aria-labelledby="shell-actions-drawer-title"
   (pointerdown)="handleDrawerPointerDown($event, drawer, menuTrigger)"
-  (close)="handleNativeClose(menuTrigger)"
+  (close)="menuTrigger.focus()"
 >
   <header class="shell-actions__drawer-header">
     <h2 id="shell-actions-drawer-title" class="shell-actions__drawer-title">
@@ -31,7 +31,7 @@
             [attr.aria-current]="entry.isActive ? 'page' : null"
             (click)="closeMenu(drawer, menuTrigger)"
           >
-            <span class="shell-actions__menu-label">{{ entry.labelKey | translate }}</span>
+            <span>{{ entry.labelKey | translate }}</span>
             @if (entry.isActive) {
               <span class="material-symbols-outlined" aria-hidden="true">check</span>
             }
@@ -90,8 +90,8 @@
           #menuTrigger
           type="button"
           class="shell-actions__button shell-actions__button--menu"
-          [class.shell-actions__button--active]="menuOpen || moreActive()"
-          [attr.aria-expanded]="menuOpen"
+          [class.shell-actions__button--active]="drawer.open || moreActive()"
+          [attr.aria-expanded]="drawer.open"
           aria-haspopup="dialog"
           aria-controls="shell-actions-drawer"
           [attr.aria-label]="menuLabelKey | translate"
