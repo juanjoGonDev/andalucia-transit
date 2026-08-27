@@ -62,6 +62,7 @@ import {
   MapStopInteractionOptions,
   MapStopMarker
 } from '@shared/map/leaflet-map.service';
+import { buildStopDetailNavigation } from '@shared/navigation/navigation.util';
 import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/interactive-card.component';
 
 interface MapStopView {
@@ -136,7 +137,6 @@ const MAP_SEARCH_STOP_ZOOM = 15;
 const VIEWPORT_REFRESH_DEBOUNCE_MS = 250;
 const FOCUSED_LINE_ROUTE_PREFIX = 'focused-line:' as const;
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)' as const;
-const ROOT_ROUTE_SEGMENT = '/' as const;
 const STOP_CARD_BODY_CLASSES: readonly string[] = ['map__stop-card-body'];
 const ROUTE_CARD_BODY_CLASSES: readonly string[] = ['map__route-card-body'];
 const ROUTE_CARD_ACTIVE_BODY_CLASSES: readonly string[] = [
@@ -211,7 +211,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   private readonly routeAnnouncementLoadedTranslations = APP_CONFIG.translationKeys.map.routes.announcements.loaded;
   private readonly routeAnnouncementEmptyKey = APP_CONFIG.translationKeys.map.routes.announcements.empty;
   private readonly routeAnnouncementErrorKey = APP_CONFIG.translationKeys.map.routes.announcements.error;
-  private readonly stopDetailRouteKey = APP_CONFIG.routes.stopDetailBase;
 
   private readonly stopMarkerInteractions: MapStopInteractionOptions = {
     getDetailsLabel: () => this.translate.instant(APP_CONFIG.translationKeys.navigation.stopDetail),
@@ -620,9 +619,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   private navigateToStop(consortiumId: number, stopId: string): Promise<boolean> {
-    return this.router.navigate([ROOT_ROUTE_SEGMENT, this.stopDetailRouteKey, stopId], {
-      queryParams: { consortiumId: String(consortiumId) }
-    });
+    const navigation = buildStopDetailNavigation(consortiumId, stopId);
+
+    return this.router.navigate(navigation.commands, { queryParams: navigation.queryParams });
   }
 
   private async loadStops(results: readonly NearbyStopResult[]): Promise<readonly MapStopView[]> {
