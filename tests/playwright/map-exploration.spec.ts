@@ -122,7 +122,11 @@ function toSearchStop(entry: StopDirectorySearchEntry): CanonicalSearchStop {
   };
 }
 
-async function selectSearchStop(page: Page, stop: CanonicalSearchStop, query: string): Promise<void> {
+async function selectSearchStop(
+  page: Page,
+  stop: CanonicalSearchStop,
+  query: string,
+): Promise<void> {
   const searchInput = page.locator('#map-network-search');
   await searchInput.fill(query);
 
