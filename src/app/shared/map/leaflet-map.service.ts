@@ -9,10 +9,10 @@ import {
   Polyline,
   PolylineOptions,
   circleMarker,
+  map as createMap,
   divIcon,
   latLngBounds,
   layerGroup,
-  map as createMap,
   marker,
   polyline,
   tileLayer
