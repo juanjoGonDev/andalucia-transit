@@ -51,7 +51,7 @@ test.describe('map focused lines recovery', () => {
     await expect(page.locator('.map__toast--error')).toHaveCount(0);
     expect(canonicalFallbackRequests).toBeGreaterThan(0);
 
-    const contrast = await measureContrast(card, destination);
+    const contrast = await measureContrast(card);
     expect(contrast).toBeGreaterThanOrEqual(MINIMUM_TEXT_CONTRAST);
   });
 
@@ -113,7 +113,7 @@ async function openLinesInspector(page: Page): Promise<Locator> {
   return panel;
 }
 
-async function measureContrast(card: Locator, text: Locator): Promise<number> {
+async function measureContrast(card: Locator): Promise<number> {
   const colors = await card.evaluate((element, textSelector) => {
     const textElement = element.querySelector(textSelector);
     if (!textElement) {
