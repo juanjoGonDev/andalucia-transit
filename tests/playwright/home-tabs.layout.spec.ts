@@ -264,9 +264,7 @@ test.describe('home tabs responsive layout', () => {
         expect(drawerBounds.x + drawerBounds.width).toBeLessThanOrEqual(
           viewport.width + GEOMETRY_TOLERANCE_PX,
         );
-        expect(drawerBounds.height).toBeGreaterThanOrEqual(
-          viewport.height - GEOMETRY_TOLERANCE_PX,
-        );
+        expect(drawerBounds.height).toBeGreaterThanOrEqual(viewport.height - GEOMETRY_TOLERANCE_PX);
       }
 
       const closeBounds = await close.boundingBox();
