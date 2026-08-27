@@ -1,14 +1,28 @@
 import { expect, test, type Page } from '@playwright/test';
 
 const BASE_URL = process.env.E2E_BASE_URL;
+const EVIDENCE_DIR = process.env.E2E_EVIDENCE_DIR;
 const HOME_PATH = '/';
 const MAP_PATH = '/map';
 const MOBILE_VIEWPORT_WIDTHS = [320, 360, 390, 430] as const;
 const MOBILE_VIEWPORT_HEIGHT = 844;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
+const DRAWER_VIEWPORTS = [
+  { width: 390, height: MOBILE_VIEWPORT_HEIGHT },
+  DESKTOP_VIEWPORT,
+] as const;
 const GEOMETRY_TOLERANCE_PX = 1;
 const MINIMUM_TOUCH_TARGET_PX = 44;
-const SHELL_CLEARANCE_PATHS = ['/', '/routes', '/map', '/favorites', '/settings', '/news'] as const;
+const SHELL_CONTROL_COUNT = 5;
+const SHELL_CLEARANCE_PATHS = [
+  '/',
+  '/routes',
+  '/map',
+  '/recents',
+  '/favorites',
+  '/settings',
+  '/news',
+] as const;
 
 interface ElementBounds {
   readonly left: number;
@@ -221,15 +235,101 @@ test.describe('home tabs responsive layout', () => {
     );
   });
 
+  for (const viewport of DRAWER_VIEWPORTS) {
+    test(`keeps the secondary navigation drawer usable at ${viewport.width}x${viewport.height}`, async ({
+      page,
+    }) => {
+      const resolvedBaseUrl = BASE_URL as string;
+      await page.setViewportSize(viewport);
+      await page.goto(new URL(HOME_PATH, resolvedBaseUrl).toString());
+
+      const trigger = page.locator('.shell-actions__button--menu');
+      const drawer = page.locator('#shell-actions-drawer');
+      const close = drawer.locator('.shell-actions__drawer-close');
+      const entries = drawer.locator('.shell-actions__menu-button');
+
+      await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog');
+      await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+      await trigger.click();
+
+      await expect(drawer).toBeVisible();
+      await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+      await expect(close).toBeFocused();
+      await expect(entries).toHaveCount(3);
+
+      const drawerBounds = await drawer.boundingBox();
+      expect(drawerBounds).not.toBeNull();
+      if (drawerBounds) {
+        expect(drawerBounds.x).toBeGreaterThanOrEqual(-GEOMETRY_TOLERANCE_PX);
+        expect(drawerBounds.x + drawerBounds.width).toBeLessThanOrEqual(
+          viewport.width + GEOMETRY_TOLERANCE_PX,
+        );
+        expect(drawerBounds.height).toBeGreaterThanOrEqual(
+          viewport.height - GEOMETRY_TOLERANCE_PX,
+        );
+      }
+
+      const closeBounds = await close.boundingBox();
+      expect(closeBounds?.width ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
+      expect(closeBounds?.height ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
+
+      for (let index = 0; index < 3; index += 1) {
+        const entryBounds = await entries.nth(index).boundingBox();
+        expect(entryBounds?.height ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
+      }
+
+      if (EVIDENCE_DIR) {
+        await page.screenshot({
+          path: `${EVIDENCE_DIR}/shell-drawer-${viewport.width}x${viewport.height}.png`,
+          fullPage: true,
+        });
+      }
+
+      await page.keyboard.press('Escape');
+      await expect(drawer).not.toBeVisible();
+      await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+      await expect(trigger).toBeFocused();
+
+      await trigger.click();
+      await expect(drawer).toBeVisible();
+      await page.mouse.click(5, Math.floor(viewport.height / 2));
+      await expect(drawer).not.toBeVisible();
+      await expect(trigger).toBeFocused();
+    });
+  }
+
+  test('navigates through the drawer and exposes the active secondary destination', async ({
+    page,
+  }) => {
+    const resolvedBaseUrl = BASE_URL as string;
+    await page.setViewportSize({ width: 390, height: MOBILE_VIEWPORT_HEIGHT });
+    await page.goto(new URL(HOME_PATH, resolvedBaseUrl).toString());
+
+    const trigger = page.locator('.shell-actions__button--menu');
+    const drawer = page.locator('#shell-actions-drawer');
+    await trigger.click();
+    await drawer.locator('.shell-actions__menu-button[href="/settings"]').click();
+
+    await expect(page).toHaveURL(new URL('/settings', resolvedBaseUrl).toString());
+    await expect(drawer).not.toBeVisible();
+    await expect(trigger).toHaveClass(/shell-actions__button--active/);
+
+    await trigger.click();
+    await expect(drawer.locator('.shell-actions__menu-button[href="/settings"]')).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+  });
+
   test('animates persistent shell controls on hover without layout shift', async ({ page }) => {
     const resolvedBaseUrl = BASE_URL as string;
     await page.setViewportSize(DESKTOP_VIEWPORT);
     await page.goto(new URL(HOME_PATH, resolvedBaseUrl).toString());
 
     const controls = page.locator('.shell-actions__button');
-    await expect(controls).toHaveCount(3);
+    await expect(controls).toHaveCount(SHELL_CONTROL_COUNT);
 
-    for (let index = 0; index < 3; index += 1) {
+    for (let index = 0; index < SHELL_CONTROL_COUNT; index += 1) {
       const control = controls.nth(index);
       const dimensionsBefore = await control.evaluate<ControlDimensions>(
         (element: HTMLElement) => ({
