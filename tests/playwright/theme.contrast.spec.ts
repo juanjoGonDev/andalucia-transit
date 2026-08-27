@@ -143,7 +143,12 @@ test.describe('rendered theme contrast', () => {
     );
 
     await open(page, MAP_PATH);
-    await expectRenderedContrast(page.locator('.map__panel-message'), 'map panel prompt');
+    const routesInspector = page.locator('.map__inspector--routes');
+    await routesInspector.locator(':scope > summary').click();
+    await expectRenderedContrast(
+      routesInspector.locator('.map__routes-message'),
+      'map routes prompt',
+    );
   });
 
   test('keeps populated news card metadata and summary WCAG AA compliant', async ({ page }) => {
