@@ -35,15 +35,6 @@ const STOP_INFO_HOME_REDIRECT = ['/', APP_CONFIG.routes.home] as const;
 const STATUS_ROLE = 'status';
 const POLITE_LIVE = 'polite';
 const ASSERTIVE_LIVE = 'assertive';
-const DIRECTIONS_TRANSLATION_KEYS = {
-  title: 'stopInfo.directions.title',
-  description: 'stopInfo.directions.description',
-  locate: 'stopInfo.directions.locate',
-  loading: 'stopInfo.directions.loading',
-  distanceLabel: 'stopInfo.directions.distanceLabel',
-  disclaimer: 'stopInfo.directions.disclaimer',
-  unavailable: 'stopInfo.directions.unavailable',
-} as const;
 const DISTANCE_TRANSLATION_KEYS = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
 const IDLE_DIRECTIONS_STATE: DirectionsState = {
   status: 'idle',
@@ -141,7 +132,7 @@ export class StopInfoComponent {
   protected readonly statusKeys = this.translation.status;
   protected readonly actionKeys = this.translation.actions;
   protected readonly tagKeys = this.translation.tags;
-  protected readonly directionsKeys = DIRECTIONS_TRANSLATION_KEYS;
+  protected readonly directionsKeys = this.translation.directions;
   protected readonly statusRole = STATUS_ROLE;
   protected readonly politeLiveRegion = POLITE_LIVE;
   protected readonly assertiveLiveRegion = ASSERTIVE_LIVE;
@@ -263,17 +254,19 @@ export class StopInfoComponent {
   }
 
   private resolveDirectionsErrorKey(error: unknown): string {
+    const errorKeys = this.directionsKeys.errors;
+
     switch (classifyGeolocationError(error)) {
       case 'notSupported':
-        return APP_CONFIG.errors.geolocationNotSupported;
+        return errorKeys.notSupported;
       case 'permissionDenied':
-        return APP_CONFIG.translationKeys.map.errors.permissionDenied;
+        return errorKeys.permissionDenied;
       case 'positionUnavailable':
-        return APP_CONFIG.translationKeys.map.errors.positionUnavailable;
+        return errorKeys.positionUnavailable;
       case 'timeout':
-        return APP_CONFIG.translationKeys.map.errors.timeout;
+        return errorKeys.timeout;
       case 'unknown':
-        return APP_CONFIG.translationKeys.map.errors.generic;
+        return errorKeys.generic;
     }
   }
 }
