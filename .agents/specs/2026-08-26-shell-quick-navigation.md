@@ -2,54 +2,60 @@
 
 ## Request
 
-Add fast, persistent ways to reach primary destinations such as Home and Map while preserving the current floating shell design and accessibility behavior.
+Add fast, persistent ways to reach primary destinations such as Home and Map while preserving the current floating shell design and accessibility behavior. The overflow action must open secondary destinations in a lateral off-canvas drawer instead of a small absolute-positioned menu.
 
 ## Evidence
 
 - `AppShellTopActionsComponent` is the shared owner for shell-level navigation across routed pages.
-- The component already owned Home, Map, Settings and News navigation commands, but the previous template rendered only the menu trigger.
-- The shell styles already define a compact floating pill with 48px-class icon buttons, focus treatment and responsive positioning; adding a second navigation surface elsewhere would duplicate ownership.
-- Recent searches and favorites are Home subviews and Settings/News remain available in the secondary menu, so exposing every destination as a persistent icon would add unnecessary visual density.
+- The component already owns Home, Route Search, Map and Favorites as persistent quick actions and Recent, News and Settings as secondary destinations.
+- The current overflow surface is an absolutely positioned `role="menu"` panel. These links are normal application navigation, not application-menu commands, so menu semantics add unnecessary keyboard expectations.
+- The current component uses a document-wide click listener only to dismiss that floating panel. A modal native `dialog` can own dismissal, focus containment and Escape behavior without a global listener or a new dependency.
+- The shell styles already define a compact floating navigation surface, focus treatment and responsive positioning; adding another navigation owner would duplicate responsibility.
 - Browser acceptance confirmed that Home canonicalizes its default route to `/?tab=search`; quick-navigation tests therefore validate that canonical URL rather than incorrectly requiring a query-less `/`.
 
 ## Decision
 
 1. Keep `AppShellTopActionsComponent` as the single owner of global quick navigation.
-2. Add persistent Home and Map actions before the menu trigger.
-3. Keep Recent, Favorites, Settings and News in the existing menu to preserve primary/secondary hierarchy.
-4. Reuse existing route commands, Material Symbols, navigation translation keys, spacing, surface and focus tokens.
-5. Mark the current primary destination with `aria-current="page"` and the existing active visual treatment.
-6. Treat Home recent/favorites routes as part of the Home hub for the Home quick-action active state.
-7. Use native internal links so browser navigation semantics remain available.
-8. Do not add a dependency, new navigation store, or duplicate route mapping.
+2. Keep Home, Route Search, Map and Favorites as persistent quick actions before More.
+3. Move Recent, News and Settings into a right-side modal navigation drawer opened by More.
+4. Use native `<dialog>.showModal()` instead of adding a focus-trap dependency or maintaining custom document-level dismissal logic.
+5. Give the drawer an accessible title, explicit close action, backdrop dismissal, Escape dismissal, initial focus and focus restoration to the More trigger.
+6. Preserve `aria-expanded` on More and use `aria-haspopup="dialog"`; keep `aria-current="page"` on the active destination.
+7. Apply safe-area padding and lateral opening animation, with animation disabled under `prefers-reduced-motion: reduce`.
+8. Use native internal links so browser navigation semantics remain available.
+9. Do not add a dependency, new navigation store, or duplicate route mapping.
 
 ## Acceptance
 
-- Home and Map are reachable in one interaction from every page rendered inside `AppLayoutComponent`.
-- The controls remain keyboard accessible, have accessible names and meet the existing touch-target sizing.
-- Home is visually/current-state active for the Home search, recent and favorites hub routes; Map is active only on Map.
-- The menu remains available and its icon does not rotate when Home or Map is active.
-- Mobile 390x844 does not overflow or cover primary page actions.
-- Desktop 1440x900 preserves the existing compact floating-shell hierarchy.
-- Existing menu navigation continues to work.
+- Home, Route Search, Map and Favorites are reachable in one interaction from every page rendered inside `AppLayoutComponent`.
+- More opens a right-side off-canvas drawer containing only Recent, News and Settings.
+- The drawer is hidden by default and modal while open; page content behind it is not an alternate keyboard navigation surface.
+- The drawer closes from its close button, Escape, backdrop interaction and navigation selection.
+- Opening the drawer moves focus into it; closing restores focus to More.
+- More reports `aria-haspopup="dialog"` and its current open state through `aria-expanded`.
+- The drawer has an accessible name and does not use `role="menu"` or `role="menuitem"` for ordinary navigation links.
+- Safe-area insets are respected on mobile and drawer motion is removed for reduced-motion users.
+- Mobile 390x844 does not overflow or cover the quick-navigation controls.
+- Desktop 1440x900 preserves the compact floating-shell hierarchy while the drawer uses only the required side width.
+- Existing navigation and active-state behavior continues to work.
 - CI and final visual-evidence workflow are green for the exact delivered head.
 
 ## Checks
 
-- Focused `AppShellTopActionsComponent` tests cover rendered quick links, targets and active-state semantics.
-- Playwright covers the real Home → Map → Home flow at 390x844, including 44px minimum targets and `aria-current` transitions.
+- Focused `AppShellTopActionsComponent` tests cover quick links, drawer semantics, open/close behavior, active-state semantics and focus restoration.
+- Playwright covers the real shell navigation and drawer at 390x844, including keyboard/Escape behavior and minimum target sizing.
 - Existing Angular tests, lint, scripts and deploy validation pass.
-- Implementation validation head `b2803113d9af68d7d87d3530be9fe6db21004e9f` passed CI run `32907128653` and visual/browser run `32907128629`.
-- Deterministic mobile 390x844 and desktop 1440x900 evidence was generated from the validated implementation and manually reviewed for overflow, overlap and hierarchy regressions.
+- The pre-drawer map implementation head `876a5883f72d60d35ed95820d0336e6071d14c6a` passed CI run `33034261560`, including deploy budget, lint, Angular tests, scripts and aggregate gate.
+- Final deterministic mobile 390x844 and desktop 1440x900 evidence must be generated from the delivered drawer head and manually reviewed for overflow, overlap and hierarchy regressions.
 
 ## Rollback
 
-Revert the focused shell navigation and acceptance-test commits. No route, persistence or API contract changes are involved.
+Revert the focused shell drawer implementation and acceptance-test commits. No route, persistence, API or data contract changes are involved.
 
 ## Delivery
 
-Implemented as focused navigation, browser-acceptance and documentation commits. The final documentation head must pass the same CI and deterministic visual-evidence gates before delivery is reported complete.
+The original quick-navigation implementation remains delivered. This extension replaces only the secondary overflow presentation and dismissal behavior; the exact final drawer commit and validation runs will be recorded after implementation passes all gates.
 
 ## Status
 
-Complete.
+In progress: quick navigation is validated; secondary overflow drawer implementation and final browser/visual validation remain pending.
