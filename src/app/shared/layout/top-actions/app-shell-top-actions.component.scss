@@ -53,6 +53,7 @@ $border: color-mix(in srgb, var(--color-text-inverse) 20%, transparent);
   color: color-mix(in srgb, $foreground 78%, transparent);
   text-decoration: none;
   font: inherit;
+  cursor: pointer;
   transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
 }
 
@@ -120,6 +121,7 @@ $border: color-mix(in srgb, var(--color-text-inverse) 20%, transparent);
   color: inherit;
   text-decoration: none;
   font-weight: var(--font-weight-semibold);
+  cursor: pointer;
 }
 
 .shell-actions__menu-button:hover,
