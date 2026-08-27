@@ -55,8 +55,8 @@ This file is the single completion index for the user-requested work accumulated
 - [x] Discover focused-area lines from the visible map area and preview official route geometry only when real geometry exists.
 - [x] Keep map errors/retry states local without replacing the usable map.
 - [x] Make the popup close target at least 44x44 CSS px.
-- [ ] Strengthen browser evidence for the popup close affordance itself, including visible glyph/cursor/interaction rather than size alone.
-- [ ] Consolidate Map stop-detail navigation through the shared `buildStopDetailNavigation` owner instead of constructing equivalent commands/query params locally.
+- [x] Verify the popup close affordance in-browser for visible glyph, pointer cursor, focus, minimum target and actual dismissal.
+- [x] Consolidate Map stop-detail navigation through the shared `buildStopDetailNavigation` owner instead of constructing equivalent commands/query params locally.
 - [ ] Re-run final mobile/desktop map exploration, focused-line and responsive acceptance on the exact final head.
 
 ### Stop identity and navigation
@@ -65,7 +65,7 @@ This file is the single completion index for the user-requested work accumulated
 - [x] Carry consortium context from Map into Stop Detail.
 - [x] Resolve Stop Detail schedule/metadata by composite signature when consortium context exists, with legacy lookup only where unambiguous/compatible.
 - [x] Preserve consortium identity from Favorites/Home Favorites into Stop Detail.
-- [ ] Finish the Map navigation SSOT consolidation noted above and retain regression coverage.
+- [x] Route Map stop-detail entry points through the shared navigation builder and retain consortium-aware regression coverage.
 
 ### Stop Detail
 
@@ -85,9 +85,9 @@ This file is the single completion index for the user-requested work accumulated
 - [x] Calculate only an approximate straight-line distance using the existing canonical geo-distance logic.
 - [x] State explicitly that the result is not a pedestrian street route or navigation instruction.
 - [x] Reset/ignore stale location requests when the selected stop identity changes.
-- [ ] Centralize the new Stop Info direction translation/error keys under the existing `APP_CONFIG.translationKeys.stopInfo` owner; do not leave a parallel hard-coded key map.
-- [ ] Add explicit regression tests for single-flight location requests and stale async completion after route identity changes.
-- [ ] Add Playwright acceptance for the Stop Information/approximate-distance flow at 390x844 and 1440x900.
+- [x] Centralize Stop Info direction and geolocation error keys under `APP_CONFIG.translationKeys.stopInfo.directions`.
+- [x] Cover single-flight location requests and stale async completion after route identity changes.
+- [x] Exercise Stop Information approximate-distance acceptance at 390x844 and 1440x900 through the canonical interaction visual suite, including generated evidence captures when the evidence workflow runs.
 
 ### Responsive, accessibility and visual evidence
 
@@ -95,18 +95,18 @@ This file is the single completion index for the user-requested work accumulated
 - [x] Preserve keyboard access, visible focus, ARIA/live-region semantics and reduced-motion behavior.
 - [x] Keep progressive disclosure usable instead of restoring stale permanently-expanded test assumptions.
 - [x] Keep generated screenshot evidence outside git and tied to an immutable PR head SHA.
-- [ ] Publish and inspect exact-final-head visual evidence for all affected surfaces after the remaining commits and main synchronization.
+- [ ] Publish and inspect exact-final-head visual evidence for all affected surfaces after the remaining documentation commit settles.
 
 ## Delivery gates
 
 - [x] Continue on existing PR #36 and branch `codex/refactorizar-vista-segun-diseno-proporcionado`.
 - [x] Use atomic Conventional Commits for remaining changes.
-- [ ] Incorporate current `main@6393d30f18e382d6de2d234bb1205e9b97e33a13` (transport snapshot refresh) without dropping branch work.
-- [ ] Run required CI on the exact resulting head and fix branch-caused failures until green.
+- [x] Incorporate `main@6393d30f18e382d6de2d234bb1205e9b97e33a13` transport snapshots without dropping PR-owned data or implementation work.
+- [ ] Run required CI on the exact resulting final head and fix branch-caused failures until green.
 - [ ] Run exact-head PR visual evidence and inspect the affected mobile/desktop captures.
 - [ ] Update the PR body so its implementation/validation SHA and workflow evidence match the real final head.
-- [ ] Confirm no unresolved actionable review threads remain.
-- [ ] Leave the PR open and unmerged; do not release or deploy without explicit approval.
+- [x] Confirm no unresolved actionable review threads or submitted reviews remain at the latest review audit.
+- [x] Leave the PR open and unmerged; do not release or deploy without explicit approval.
 
 ## Explicitly deferred / not part of this completion pass
 
@@ -115,4 +115,4 @@ This file is the single completion index for the user-requested work accumulated
 
 ## Current state
 
-Stop Information approximate-distance implementation is now on the PR branch. The remaining implementation work is the translation-key SSOT cleanup, missing Stop Info concurrency regressions, Stop Info Playwright acceptance, Map navigation SSOT consolidation, popup close-affordance browser evidence, latest-main synchronization, exact-head CI/visual evidence, and PR metadata refresh.
+Implementation work requested in the accumulated PR #36 scope is now represented in the branch and current tracker: focused-area map recovery, toast/error presentation, popup close affordance, canonical stop navigation, Stop Information approximate-distance guidance, concurrency regressions and mobile/desktop interaction evidence are all covered. `main@6393d30f` is incorporated through merge commit `b2a16d677c23045a274cf1e82dbf422770382bd8`, and the branch comparison is `behind_by = 0`. Remaining gates are exact-head CI, exact-head visual/browser evidence after this tracker update, inspection of the resulting evidence, and refresh of the pull request description with the final SHA and run identifiers.
