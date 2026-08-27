@@ -92,6 +92,27 @@ describe('StopInfoComponent', () => {
     expect(tagElements.length).toBe(1);
   }));
 
+  it('keeps technical identifiers and raw coordinates out of the primary details', fakeAsync(() => {
+    fixture = TestBed.createComponent(StopInfoComponent);
+    fixture.detectChanges();
+    tick();
+
+    facade.emit({ status: 'ready', detail, source: 'live' });
+    fixture.detectChanges();
+
+    const card = fixture.nativeElement.querySelector('.stop-info__card') as HTMLElement | null;
+    const text = card?.textContent ?? '';
+
+    expect(card).not.toBeNull();
+    expect(text).not.toContain(detail.stopNumber);
+    expect(text).not.toContain(detail.stopCode);
+    expect(text).not.toContain(String(detail.location.latitude));
+    expect(text).not.toContain(String(detail.location.longitude));
+    expect(card?.querySelector('.stop-info__location')).not.toBeNull();
+    expect(card?.querySelector('.stop-info__zone')).not.toBeNull();
+    expect(card?.querySelector('.stop-info__correspondence-list')).not.toBeNull();
+  }));
+
   it('shows the offline notice when using cached data', fakeAsync(() => {
     fixture = TestBed.createComponent(StopInfoComponent);
     fixture.detectChanges();
