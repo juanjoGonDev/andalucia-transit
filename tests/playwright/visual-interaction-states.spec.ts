@@ -367,4 +367,53 @@ test.describe('deterministic interaction visual states', () => {
       await expect.poll(() => new URL(page.url()).searchParams.get('area')).toBe('1');
     }
   });
+
+  test('uses lang=EN and never renders Spanish-only news aliases in English mode', async ({ page }) => {
+    const requestedLanguages: string[] = [];
+    await page.addInitScript(() => {
+      window.localStorage.setItem('andalucia-transit.language', 'en');
+    });
+    await page.route(NEWS_LIST_URL_PATTERN, async (route) => {
+      const requestUrl = new URL(route.request().url());
+      const match = NEWS_LIST_URL_PATTERN.exec(route.request().url());
+      const consortiumId = Number(match?.[1]);
+      requestedLanguages.push(requestUrl.searchParams.get('lang') ?? '');
+
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(
+          consortiumId === 6
+            ? [
+                {
+                  idNoticia: 610,
+                  tituloEn: 'English service update',
+                  resumen: 'English service information',
+                  categoria: 'Service alerts',
+                  fechaInicio: '2026-08-28T09:00:00+02:00',
+                },
+                {
+                  idNoticia: 611,
+                  tituloEs: 'Aviso solo en español',
+                  resumen: 'Contenido solo en español',
+                  categoria: 'Avisos',
+                  fechaInicio: '2026-08-27T09:00:00+02:00',
+                },
+              ]
+            : [],
+        ),
+      });
+    });
+
+    await page.setViewportSize(MOBILE_VIEWPORT);
+    await open(page, '/news');
+
+    await expect(page.locator('.news__toolbar-title')).toHaveText('Filter news');
+    await expect(page.locator('.news__card')).toHaveCount(1, { timeout: 15_000 });
+    await expect(page.locator('.news__card-title')).toHaveText('English service update');
+    await expect(page.getByText('Aviso solo en español')).toHaveCount(0);
+    await expect(page.getByText('Contenido solo en español')).toHaveCount(0);
+    await expect.poll(() => requestedLanguages.length).toBe(9);
+    expect(new Set(requestedLanguages)).toEqual(new Set(['EN']));
+  });
 });
