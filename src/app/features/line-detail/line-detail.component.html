@@ -28,15 +28,64 @@
             </div>
           </section>
 
-          <ol *ngIf="state.viewModel.stops.length" class="line-detail__stops">
-            <li *ngFor="let stop of state.viewModel.stops; trackBy: trackStop">
-              <button type="button" class="line-detail__stop" (click)="openStop(stop)">
-                <span class="line-detail__marker" aria-hidden="true"></span>
-                <span class="line-detail__stop-name">{{ stop.name }}</span>
-                <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
-              </button>
-            </li>
-          </ol>
+          <details class="line-detail__route-panel" open>
+            <summary class="line-detail__route-summary">
+              <span class="material-symbols-outlined" aria-hidden="true">route</span>
+              <span>{{ uiCopy().routeTitle }}</span>
+            </summary>
+
+            <div class="line-detail__workspace">
+              <div class="line-detail__map-column">
+                <app-route-map
+                  *ngIf="state.viewModel.detail.coordinates.length >= 2; else mapUnavailable"
+                  [routeId]="state.viewModel.detail.lineId"
+                  [coordinates]="state.viewModel.detail.coordinates"
+                  [stops]="state.viewModel.stops"
+                  [selectedStopId]="selectedStopId()"
+                  [accessibleLabel]="uiCopy().routeMapLabel(state.viewModel.detail.code)"
+                  [stopDetailsLabel]="uiCopy().moreInformation"
+                  (stopDetails)="openStopById($event)"
+                ></app-route-map>
+                <ng-template #mapUnavailable>
+                  <div class="line-detail__map-unavailable" role="status">
+                    <span class="material-symbols-outlined" aria-hidden="true">map</span>
+                    <p>{{ uiCopy().mapUnavailable }}</p>
+                  </div>
+                </ng-template>
+              </div>
+
+              <section class="line-detail__stops-panel" aria-labelledby="line-detail-stops-title">
+                <h2 id="line-detail-stops-title" class="line-detail__stops-title">
+                  {{ uiCopy().stopsTitle }}
+                </h2>
+                <ol *ngIf="state.viewModel.stops.length" class="line-detail__stops">
+                  <li
+                    *ngFor="let stop of state.viewModel.stops; trackBy: trackStop"
+                    class="line-detail__stop-row"
+                    [class.line-detail__stop-row--selected]="selectedStopId() === stop.stopId"
+                  >
+                    <button
+                      type="button"
+                      class="line-detail__stop-select"
+                      [attr.aria-pressed]="selectedStopId() === stop.stopId"
+                      (click)="selectStop(stop)"
+                    >
+                      <span class="line-detail__marker" aria-hidden="true"></span>
+                      <span class="line-detail__stop-name">{{ stop.name }}</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="line-detail__stop-details"
+                      (click)="openStop(stop)"
+                    >
+                      <span>{{ uiCopy().moreInformation }}</span>
+                      <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                    </button>
+                  </li>
+                </ol>
+              </section>
+            </div>
+          </details>
         </ng-container>
       </ng-container>
     </div>
