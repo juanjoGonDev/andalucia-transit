@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Observable, catchError, of, shareReplay } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
@@ -23,7 +24,15 @@ const NEWS_STATUS_TRANSLATIONS = {
   retry: 'news.status.retry'
 } as const;
 
+const NEWS_QUERY_PARAMS = {
+  area: 'area',
+  category: 'category',
+  order: 'order',
+  page: 'page'
+} as const;
+
 const PAGE_SIZE = 8;
+const DEFAULT_SORT_ORDER: NewsSortOrder = 'newest';
 const EMPTY_AREAS: readonly ConsortiumCatalogEntry[] = Object.freeze([]);
 
 @Component({
@@ -43,6 +52,8 @@ const EMPTY_AREAS: readonly ConsortiumCatalogEntry[] = Object.freeze([]);
 export class NewsComponent {
   private readonly facade = inject(NewsFacade);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
   private readonly consortiumCatalog = inject(ConsortiumCatalogService);
 
@@ -58,8 +69,15 @@ export class NewsComponent {
   protected readonly layoutNavigationKey = APP_CONFIG.routes.news;
   protected readonly selectedCategory = signal<string | null>(null);
   protected readonly selectedArea = signal<number | null>(null);
-  protected readonly sortOrder = signal<NewsSortOrder>('newest');
+  protected readonly sortOrder = signal<NewsSortOrder>(DEFAULT_SORT_ORDER);
   protected readonly currentPage = signal(1);
+
+  constructor() {
+    this.applyQueryParams(this.route.snapshot.queryParamMap);
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => this.applyQueryParams(params));
+  }
 
   protected uiCopy() {
     return getNewsUiCopy(this.translate.currentLang);
@@ -85,12 +103,8 @@ export class NewsComponent {
     );
   }
 
-  protected availableAreas(
-    state: NewsState,
-    catalog: readonly ConsortiumCatalogEntry[]
-  ): readonly ConsortiumCatalogEntry[] {
-    const availableIds = new Set(state.articles.map((article) => article.consortiumId));
-    return catalog.filter((entry) => availableIds.has(entry.id));
+  protected availableAreas(catalog: readonly ConsortiumCatalogEntry[]): readonly ConsortiumCatalogEntry[] {
+    return catalog;
   }
 
   protected filteredArticles(state: NewsState): readonly NewsArticle[] {
@@ -124,25 +138,30 @@ export class NewsComponent {
   protected selectCategory(category: string | null): void {
     this.selectedCategory.set(category);
     this.resetPage();
+    this.persistQueryState();
   }
 
   protected selectArea(consortiumId: number | null): void {
     this.selectedArea.set(consortiumId);
     this.resetPage();
+    this.persistQueryState();
   }
 
   protected selectSortOrder(order: NewsSortOrder): void {
     this.sortOrder.set(order);
     this.resetPage();
+    this.persistQueryState();
   }
 
   protected previousPage(): void {
     this.currentPage.update((page) => Math.max(1, page - 1));
+    this.persistQueryState();
   }
 
   protected nextPage(state: NewsState): void {
     const lastPage = this.pageCount(state);
     this.currentPage.update((page) => Math.min(lastPage, page + 1));
+    this.persistQueryState();
   }
 
   protected canGoPrevious(state: NewsState): boolean {
@@ -176,6 +195,28 @@ export class NewsComponent {
   private resetPage(): void {
     this.currentPage.set(1);
   }
+
+  private applyQueryParams(params: ParamMap): void {
+    this.selectedArea.set(parsePositiveInteger(params.get(NEWS_QUERY_PARAMS.area)));
+    this.selectedCategory.set(parseOptionalText(params.get(NEWS_QUERY_PARAMS.category)));
+    this.sortOrder.set(parseSortOrder(params.get(NEWS_QUERY_PARAMS.order)));
+    this.currentPage.set(parsePositiveInteger(params.get(NEWS_QUERY_PARAMS.page)) ?? 1);
+  }
+
+  private persistQueryState(): void {
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        [NEWS_QUERY_PARAMS.area]: this.selectedArea(),
+        [NEWS_QUERY_PARAMS.category]: this.selectedCategory(),
+        [NEWS_QUERY_PARAMS.order]:
+          this.sortOrder() === DEFAULT_SORT_ORDER ? null : this.sortOrder(),
+        [NEWS_QUERY_PARAMS.page]: this.currentPage() === 1 ? null : this.currentPage()
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+  }
 }
 
 function compareArticles(left: NewsArticle, right: NewsArticle, order: NewsSortOrder): number {
@@ -195,4 +236,22 @@ function compareArticles(left: NewsArticle, right: NewsArticle, order: NewsSortO
 function parseTimestamp(value: string): number {
   const timestamp = Date.parse(value);
   return Number.isFinite(timestamp) ? timestamp : 0;
+}
+
+function parsePositiveInteger(value: string | null): number | null {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = Number(value);
+  return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : null;
+}
+
+function parseOptionalText(value: string | null): string | null {
+  const normalized = value?.trim() ?? '';
+  return normalized.length > 0 ? normalized : null;
+}
+
+function parseSortOrder(value: string | null): NewsSortOrder {
+  return value === 'oldest' ? 'oldest' : DEFAULT_SORT_ORDER;
 }

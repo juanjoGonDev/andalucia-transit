@@ -77,6 +77,33 @@ describe('NewsComponent', () => {
     expect(fixture.nativeElement.querySelector('.news__toolbar')).not.toBeNull();
   });
 
+  it('keeps every catalog area selectable even when an area has no current news', () => {
+    facade.emit({ status: 'ready', articles: createArticles() });
+    fixture.detectChanges();
+
+    const areaSelect = fixture.nativeElement.querySelector('.news__select--area') as HTMLSelectElement;
+    const options = Array.from(areaSelect.options).map((option) => option.textContent?.trim());
+
+    expect(options).toContain('Área de Almería');
+    expect(options).toContain('Área de Jaén');
+    expect(options).toContain('Costa de Huelva');
+  });
+
+  it('shows an explicit empty state for an area without current news', () => {
+    facade.emit({ status: 'ready', articles: createArticles() });
+    fixture.detectChanges();
+
+    const areaSelect = fixture.nativeElement.querySelector('.news__select--area') as HTMLSelectElement;
+    areaSelect.selectedIndex = 3;
+    areaSelect.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelectorAll('.news__card-title').length).toBe(0);
+    expect(fixture.nativeElement.textContent).toContain(
+      'No hay noticias para los filtros seleccionados.'
+    );
+  });
+
   it('filters news by traveler-readable transport area', () => {
     facade.emit({ status: 'ready', articles: createArticles() });
     fixture.detectChanges();
@@ -104,19 +131,81 @@ describe('NewsComponent', () => {
     expect(firstTitle.textContent?.trim()).toBe('Nueva tarifa');
   });
 
-  it('paginates the feed and exposes bounded next/previous controls', () => {
+  it('paginates the feed with controls before and after the desktop list', () => {
     facade.emit({ status: 'ready', articles: createManyArticles(10) });
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelectorAll('.news__card').length).toBe(8);
+    expect(fixture.nativeElement.querySelectorAll('.news__pagination').length).toBe(2);
 
-    const nextButton = fixture.nativeElement.querySelectorAll('.news__page-action')[1] as HTMLButtonElement;
+    const nextButton = fixture.nativeElement.querySelector(
+      '.news__pagination-slot--bottom .news__page-action:last-child'
+    ) as HTMLButtonElement;
     nextButton.click();
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelectorAll('.news__card').length).toBe(2);
-    const previousButton = fixture.nativeElement.querySelectorAll('.news__page-action')[0] as HTMLButtonElement;
+    const previousButton = fixture.nativeElement.querySelector(
+      '.news__pagination-slot--bottom .news__page-action:first-child'
+    ) as HTMLButtonElement;
     expect(previousButton.disabled).toBeFalse();
+  });
+
+  it('writes filters, ordering and pagination to query parameters', () => {
+    const navigate = spyOn(router, 'navigate').and.resolveTo(true);
+    facade.emit({ status: 'ready', articles: createManyArticles(10) });
+    fixture.detectChanges();
+
+    const areaSelect = fixture.nativeElement.querySelector('.news__select--area') as HTMLSelectElement;
+    areaSelect.selectedIndex = 1;
+    areaSelect.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(navigate).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: jasmine.objectContaining({ area: 6, page: null }),
+        queryParamsHandling: 'merge',
+        replaceUrl: true
+      })
+    );
+
+    navigate.calls.reset();
+    const nextButton = fixture.nativeElement.querySelector(
+      '.news__pagination-slot--bottom .news__page-action:last-child'
+    ) as HTMLButtonElement;
+    nextButton.click();
+
+    expect(navigate).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: jasmine.objectContaining({ area: 6, page: 2 }),
+        queryParamsHandling: 'merge',
+        replaceUrl: true
+      })
+    );
+  });
+
+  it('restores filters, ordering and page from the URL', async () => {
+    facade.emit({ status: 'ready', articles: createAreaArticles(18) });
+    fixture.detectChanges();
+
+    await router.navigateByUrl('/?area=6&category=Tarifas&order=oldest&page=2');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const areaSelect = fixture.nativeElement.querySelector('.news__select--area') as HTMLSelectElement;
+    const categorySelect = fixture.nativeElement.querySelector(
+      '.news__select--category'
+    ) as HTMLSelectElement;
+    const orderSelect = fixture.nativeElement.querySelector('.news__select--order') as HTMLSelectElement;
+
+    expect(areaSelect.selectedOptions[0]?.textContent?.trim()).toBe('Área de Almería');
+    expect(categorySelect.selectedOptions[0]?.textContent?.trim()).toBe('Tarifas');
+    expect(orderSelect.value).toContain('oldest');
+    expect(fixture.nativeElement.querySelector('.news__page-status')?.textContent).toContain(
+      'Página 2 de 3'
+    );
   });
 
   it('navigates to the internal CTAN news detail instead of opening an external link', () => {
@@ -180,6 +269,19 @@ function createManyArticles(count: number): readonly NewsArticle[] {
       title: `Noticia ${index + 1}`,
       summary: `Resumen ${index + 1}`,
       category: index % 2 === 0 ? 'Avisos' : 'Tarifas',
+      publishedAt: new Date(Date.UTC(2026, 7, 28 - index, 9)).toISOString()
+    })
+  );
+}
+
+function createAreaArticles(count: number): readonly NewsArticle[] {
+  return Array.from({ length: count }, (_, index) =>
+    createArticle({
+      consortiumId: 6,
+      id: String(index + 1),
+      title: `Noticia Almería ${index + 1}`,
+      summary: `Resumen Almería ${index + 1}`,
+      category: 'Tarifas',
       publishedAt: new Date(Date.UTC(2026, 7, 28 - index, 9)).toISOString()
     })
   );

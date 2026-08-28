@@ -15,6 +15,7 @@ export interface NewsUiCopy {
   readonly previousPage: string;
   readonly nextPage: string;
   readonly paginationLabel: string;
+  readonly emptyFiltered: string;
   readonly resultCount: (count: number) => string;
   readonly pageStatus: (current: number, total: number) => string;
 }
@@ -33,6 +34,7 @@ const NEWS_UI_COPY: Readonly<Record<SupportedLanguage, NewsUiCopy>> = {
     previousPage: 'Anterior',
     nextPage: 'Siguiente',
     paginationLabel: 'Paginación de noticias',
+    emptyFiltered: 'No hay noticias para los filtros seleccionados.',
     resultCount: (count) => `${count} ${count === 1 ? 'noticia' : 'noticias'}`,
     pageStatus: (current, total) => `Página ${current} de ${total}`
   },
@@ -49,6 +51,7 @@ const NEWS_UI_COPY: Readonly<Record<SupportedLanguage, NewsUiCopy>> = {
     previousPage: 'Previous',
     nextPage: 'Next',
     paginationLabel: 'News pagination',
+    emptyFiltered: 'There are no news items for the selected filters.',
     resultCount: (count) => `${count} ${count === 1 ? 'article' : 'articles'}`,
     pageStatus: (current, total) => `Page ${current} of ${total}`
   }

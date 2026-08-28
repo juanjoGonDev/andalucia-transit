@@ -118,7 +118,7 @@
                     >
                       <option [ngValue]="null">{{ uiCopy().allAreas }}</option>
                       <option
-                        *ngFor="let area of availableAreas(state, catalog); trackBy: trackArea"
+                        *ngFor="let area of availableAreas(catalog); trackBy: trackArea"
                         [ngValue]="area.id"
                       >
                         {{ area.name }}
@@ -154,7 +154,41 @@
                 </div>
               </section>
 
+              <ng-template #paginationTemplate>
+                <nav
+                  *ngIf="pageCount(state) > 1"
+                  class="news__pagination app-async-reveal"
+                  [attr.aria-label]="uiCopy().paginationLabel"
+                >
+                  <button
+                    type="button"
+                    class="app-outline-button app-outline-button--compact news__page-action"
+                    [disabled]="!canGoPrevious(state)"
+                    (click)="previousPage()"
+                  >
+                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                    {{ uiCopy().previousPage }}
+                  </button>
+                  <span class="news__page-status" aria-live="polite">
+                    {{ uiCopy().pageStatus(displayPage(state), pageCount(state)) }}
+                  </span>
+                  <button
+                    type="button"
+                    class="app-outline-button app-outline-button--compact news__page-action"
+                    [disabled]="!canGoNext(state)"
+                    (click)="nextPage(state)"
+                  >
+                    {{ uiCopy().nextPage }}
+                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                  </button>
+                </nav>
+              </ng-template>
+
               <ng-container *ngIf="pagedArticles(state).length > 0; else emptyState">
+                <div class="news__pagination-slot news__pagination-slot--top">
+                  <ng-container *ngTemplateOutlet="paginationTemplate"></ng-container>
+                </div>
+
                 <ul class="news__list app-async-reveal">
                   <li
                     *ngFor="let article of pagedArticles(state); trackBy: trackArticle"
@@ -185,33 +219,9 @@
                   </li>
                 </ul>
 
-                <nav
-                  *ngIf="pageCount(state) > 1"
-                  class="news__pagination app-async-reveal"
-                  [attr.aria-label]="uiCopy().paginationLabel"
-                >
-                  <button
-                    type="button"
-                    class="app-outline-button app-outline-button--compact news__page-action"
-                    [disabled]="!canGoPrevious(state)"
-                    (click)="previousPage()"
-                  >
-                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
-                    {{ uiCopy().previousPage }}
-                  </button>
-                  <span class="news__page-status" aria-live="polite">
-                    {{ uiCopy().pageStatus(displayPage(state), pageCount(state)) }}
-                  </span>
-                  <button
-                    type="button"
-                    class="app-outline-button app-outline-button--compact news__page-action"
-                    [disabled]="!canGoNext(state)"
-                    (click)="nextPage(state)"
-                  >
-                    {{ uiCopy().nextPage }}
-                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
-                  </button>
-                </nav>
+                <div class="news__pagination-slot news__pagination-slot--bottom">
+                  <ng-container *ngTemplateOutlet="paginationTemplate"></ng-container>
+                </div>
               </ng-container>
             </ng-container>
           </ng-container>
@@ -219,7 +229,7 @@
 
         <ng-template #emptyState>
           <div class="news__empty app-async-reveal" role="status" aria-live="polite">
-            <p class="news__empty-message">{{ translation.empty | translate }}</p>
+            <p class="news__empty-message">{{ uiCopy().emptyFiltered }}</p>
           </div>
         </ng-template>
       </ng-container>
