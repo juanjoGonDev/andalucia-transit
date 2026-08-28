@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-27T16:11:12.342Z",
+    "generatedAt": "2026-08-28T17:11:43.604Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 2,
     "consortiumName": "Bahía de Cádiz",
-    "itemCount": 62
+    "itemCount": 64
   },
   "lines": [
     {
@@ -1461,6 +1461,54 @@
       "modeId": "1",
       "operators": [
         "Transportes Generales Comes S.A."
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "170",
+      "code": "M-972",
+      "name": "Sanlúcar De Barrameda-Campus De Jerez",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "Empresa Monforte S.A.U."
+      ],
+      "hasNews": true,
+      "concession": null,
+      "notes": null,
+      "modeNotes": null,
+      "accessibility": null,
+      "thickness": null,
+      "color": null,
+      "outboundThermometerUrl": null,
+      "inboundThermometerUrl": null,
+      "hasOutbound": false,
+      "hasInbound": false,
+      "path": [],
+      "outboundPath": [],
+      "inboundPath": []
+    },
+    {
+      "id": "168",
+      "code": "M-970",
+      "name": "Sanlúcar De Barrameda-Jerez De La Frontera",
+      "mode": "AUTOBUS",
+      "modeId": "1",
+      "operators": [
+        "Empresa Monforte S.A.U."
       ],
       "hasNews": true,
       "concession": null,
