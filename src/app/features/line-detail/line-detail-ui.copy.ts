@@ -1,30 +1,8 @@
-import { SupportedLanguage } from '@core/config';
+import {
+  TransitRouteWorkspaceCopy,
+  getTransitRouteWorkspaceCopy
+} from '@shared/map/route-workspace/transit-route-workspace.copy';
 
-export interface LineDetailUiCopy {
-  readonly routeTitle: string;
-  readonly stopsTitle: string;
-  readonly routeMapLabel: (code: string) => string;
-  readonly moreInformation: string;
-  readonly mapUnavailable: string;
-}
+export type LineDetailUiCopy = TransitRouteWorkspaceCopy;
 
-const COPY: Readonly<Record<SupportedLanguage, LineDetailUiCopy>> = {
-  es: {
-    routeTitle: 'Recorrido de la línea',
-    stopsTitle: 'Paradas',
-    routeMapLabel: (code) => `Mapa interactivo del recorrido de la línea ${code}`,
-    moreInformation: 'Más información',
-    mapUnavailable: 'No hay geometría suficiente para dibujar el recorrido. La lista de paradas sigue disponible.'
-  },
-  en: {
-    routeTitle: 'Line route',
-    stopsTitle: 'Stops',
-    routeMapLabel: (code) => `Interactive route map for line ${code}`,
-    moreInformation: 'More information',
-    mapUnavailable: 'There is not enough geometry to draw the route. The stop list is still available.'
-  }
-};
-
-export function getLineDetailUiCopy(language: string | null | undefined): LineDetailUiCopy {
-  return language === 'en' ? COPY.en : COPY.es;
-}
+export const getLineDetailUiCopy = getTransitRouteWorkspaceCopy;
