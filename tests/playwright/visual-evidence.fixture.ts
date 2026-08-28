@@ -16,6 +16,7 @@ const LEAFLET_SETTLE_TIMEOUT_MS = 5_000;
 const MAP_TILE_SCRIPT = resolve(process.cwd(), 'scripts/visual/determinize-map-tiles.js');
 const LINES_DIRECTORY_PATH = '/lines';
 const STOP_DETAIL_PATH_PREFIX = '/stop-detail/';
+const APP_LAYOUT_SURFACE_SELECTOR = '.app-layout__surface';
 const EXACT_LINE_CATALOG_GLOB = '**/assets/data/catalog/consortium-*/lines.json';
 const EXACT_STOP_SERVICES_SNAPSHOT_GLOB = '**/assets/data/snapshots/stop-services/latest.json';
 const CONSORTIUM_LINE_PATH_PATTERN = /\/consortium-(\d+)\/lines\.json$/u;
@@ -247,14 +248,28 @@ async function stabilizeExactCaptureState(page: Page): Promise<void> {
 }
 
 async function resetScrollPosition(page: Page): Promise<void> {
-  await page.evaluate(() => {
+  await page.evaluate((surfaceSelector) => {
     const root = document.documentElement;
     const previousScrollBehavior = root.style.scrollBehavior;
     root.style.scrollBehavior = 'auto';
+
+    for (const surface of document.querySelectorAll<HTMLElement>(surfaceSelector)) {
+      surface.scrollLeft = 0;
+      surface.scrollTop = 0;
+    }
     window.scrollTo(0, 0);
+
     root.style.scrollBehavior = previousScrollBehavior;
-  });
-  await page.waitForFunction(() => window.scrollX === 0 && window.scrollY === 0);
+  }, APP_LAYOUT_SURFACE_SELECTOR);
+  await page.waitForFunction(
+    (surfaceSelector) =>
+      window.scrollX === 0 &&
+      window.scrollY === 0 &&
+      Array.from(document.querySelectorAll<HTMLElement>(surfaceSelector)).every(
+        (surface) => surface.scrollLeft === 0 && surface.scrollTop === 0,
+      ),
+    APP_LAYOUT_SURFACE_SELECTOR,
+  );
 }
 
 async function waitForStableLeafletFrames(page: Page): Promise<void> {
