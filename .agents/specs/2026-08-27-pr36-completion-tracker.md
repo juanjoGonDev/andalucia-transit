@@ -18,6 +18,7 @@ This file is the single completion index for the user-requested work accumulated
 - `.agents/specs/2026-08-26-visual-state-audit.md`
 - `.agents/specs/2026-08-27-minimal-ui-cleanup.md`
 - `.agents/specs/2026-08-27-stop-information-redesign.md`
+- `.agents/specs/2026-08-28-exact-visual-regression-harness.md`
 
 ## Requested product work
 
@@ -125,28 +126,33 @@ This file is the single completion index for the user-requested work accumulated
 - [x] Keep progressive disclosure usable instead of restoring stale permanently-expanded test assumptions.
 - [x] Keep generated screenshot evidence outside git and tied to an immutable PR head SHA.
 - [x] Generate Stop Information approximate-distance screenshots at 390x844 and 1440x900 from the canonical interaction visual suite.
-- [x] Publish and inspect exact-final-head visual evidence for all affected surfaces after the remaining documentation commit settles.
+- [x] Exercise baseline and PR application workspaces with the same current Playwright/screenshot harness.
+- [x] Keep browser time, CSS capture state, Leaflet rendering, exact-only CTAN fixture inputs and nested application scroll deterministic for pixel regression.
+- [x] Preserve immutable baseline `4f8ec97f59dab58a04c07a6aa6995f4fc4e6d9f1` and exact RGBA comparison with zero tolerance.
+- [x] Prove 36/36 mandatory screenshots match with zero differing pixels on validated implementation head `3119761f270abea62055652f13ad36cd970ecbba`.
 
 ## Delivery gates
 
 - [x] Continue on existing PR #36 and branch `codex/refactorizar-vista-segun-diseno-proporcionado`.
 - [x] Use atomic Conventional Commits for remaining changes.
-- [x] Incorporate `main@6393d30f18e382d6de2d234bb1205e9b97e33a13` transport snapshots without dropping PR-owned data or implementation work.
-- [x] Run required CI on the exact resulting final head and fix branch-caused failures until green.
-- [x] Run exact-head PR visual evidence and inspect the affected mobile/desktop captures.
-- [x] Update the PR body so its implementation/validation SHA and workflow evidence match the real final head.
+- [x] Incorporate current `main@38204abb0356d75faea0e77cb6a6e46884d0c260` transport snapshots without dropping PR-owned data or implementation work; merge commit `8095fbca2b18f99b412efff1bd3afd085e1262d2` owns that synchronization.
+- [x] Run required CI on the exact resulting implementation head and fix branch-caused failures until green.
+- [x] Run exact-head normal PR visual evidence and inspect affected mobile/desktop captures.
+- [x] Run the exact reviewed-baseline comparator on the same implementation head: baseline 36/36, head 36/36, `0/36` changed files and `0` differing pixels.
+- [x] Update the PR body so its implementation/validation SHA and workflow evidence match the real final head during closure.
 - [x] Confirm no unresolved actionable review threads or submitted reviews remain at the latest review audit.
 - [x] Leave the PR open and unmerged; do not release or deploy without explicit approval.
 
 ### Closure semantics
 
-The final implementation head is the commit that contains this tracker closure. Exact-head CI, browser/visual evidence, review state and PR-description synchronization are external GitHub state tied to that immutable head and can settle after the commit without moving it. The checked delivery gates are valid only while those exact-head checks remain green, the PR head has not moved, the branch remains current with `main`, and the PR body references the same head. If any of those conditions stops holding, the corresponding gate is incomplete again even though this historical tracker file is unchanged.
+The validated implementation head is `3119761f270abea62055652f13ad36cd970ecbba`. The commit containing this tracker closure is documentation-only and must itself pass exact-head CI and visual workflows before final delivery is reported. PR-description synchronization and review-state verification are external GitHub state tied to the resulting immutable documentation head and do not require another content commit. If the PR head moves, `main` advances, a required check becomes non-green or the PR body stops referencing the current head, the corresponding gate is incomplete again even though this historical tracker file is unchanged.
 
 ## Explicitly deferred / not part of this completion pass
 
+- Province filtering remains deferred because the inspected CTAN datasets do not provide an authoritative province relationship suitable for canonical filtering; implementing it by municipality/name inference would create a second, unreliable geography source of truth.
 - Exact pedestrian street routing remains deferred until a real routing provider is separately reviewed for architecture, dependency identity, security, licensing, availability and failure/offline behavior.
 - The existing Node version mismatch (`volta.node` versus the repository's Node 20 workflow/engine policy) is a separate toolchain task unless it becomes a direct blocker for this PR.
 
 ## Current state
 
-The accumulated PR #36 requirements are explicitly represented above so later sessions do not need to reconstruct them from conversation history. Implementation work covers the bottom floating navigation, upward progressive secondary navigation, icon-first map search, hidden map inspectors, viewport-driven nearby stops and focused lines, CTAN recovery and official geometry, toast/error treatment, popup close affordance, canonical stop navigation, route-result information cleanup, Stop Information redesign, approximate-distance guidance, concurrency regressions and mobile/desktop interaction evidence. `main@6393d30f` was incorporated through merge commit `b2a16d677c23045a274cf1e82dbf422770382bd8`. Stop Detail now has deterministic populated-data coverage at 390x844 and 1440x900, including rendered-content and horizontal-overflow assertions, and its two captures are mandatory published visual-evidence assets. Final completion is established by the exact-head GitHub Actions, artifact inspection, branch comparison, review audit and PR metadata recorded outside this file; no additional content commit is required merely to record those external run identifiers.
+The accumulated PR #36 requirements are explicitly represented above so later sessions do not need to reconstruct them from conversation history. Implementation work covers the bottom floating navigation, upward progressive secondary navigation, icon-first map search, hidden map inspectors, viewport-driven nearby stops and focused lines, CTAN recovery and official geometry, toast/error treatment, popup close affordance, canonical stop navigation, route-result information cleanup, Stop Information redesign, approximate-distance guidance, concurrency regressions and mobile/desktop interaction evidence. Current `main@38204abb0356d75faea0e77cb6a6e46884d0c260` was incorporated through merge commit `8095fbca2b18f99b412efff1bd3afd085e1262d2`. The exact visual harness now isolates rendering nondeterminism without weakening comparison: implementation head `3119761f270abea62055652f13ad36cd970ecbba` passed CI #1130 (`33216946711`), normal visual evidence #774 (`33216946737`) and exact visual regression #22 (`33216946689`) with 36/36 baseline tests, 36/36 head tests, `0/36` changed screenshots and `0` differing pixels. Exact artifact `9703843229` has SHA256 `4f1f6925626c00c8bbc10ed83247e297f19a7268645a73f69df0e80808beb602`. Final completion is established after this documentation-only closure head receives the same green external checks and the PR metadata/review audit are synchronized to that immutable head.
