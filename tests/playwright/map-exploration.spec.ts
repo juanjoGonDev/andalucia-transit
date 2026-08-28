@@ -12,6 +12,8 @@ const MAXIMUM_MOBILE_PANEL_RATIO = 0.45;
 const MINIMUM_DESKTOP_PANEL_START_RATIO = 0.55;
 const MINIMUM_SEARCH_CODE_LENGTH = 2;
 const MINIMUM_TOUCH_TARGET_PX = 44;
+const CANVAS_HASH_OFFSET_BASIS = 2166136261;
+const CANVAS_HASH_PRIME = 16777619;
 const TARGET_STOP_NAME = 'La Gangosa';
 
 interface StopDirectoryIndexFile {
@@ -183,6 +185,27 @@ async function countPaintedPixels(canvas: Locator): Promise<number> {
   });
 }
 
+async function fingerprintCanvas(canvas: Locator): Promise<number> {
+  return canvas.evaluate(
+    (element: HTMLCanvasElement, hashConstants) => {
+      const context = element.getContext('2d');
+      if (!context) {
+        return 0;
+      }
+
+      const pixels = context.getImageData(0, 0, element.width, element.height).data;
+      let hash = hashConstants.offsetBasis;
+      for (const value of pixels) {
+        hash ^= value;
+        hash = Math.imul(hash, hashConstants.prime);
+      }
+
+      return hash >>> 0;
+    },
+    { offsetBasis: CANVAS_HASH_OFFSET_BASIS, prime: CANVAS_HASH_PRIME },
+  );
+}
+
 test.describe('network map exploration', () => {
   test.skip(!BASE_URL, 'E2E_BASE_URL environment variable is required for map exploration tests.');
 
@@ -289,6 +312,17 @@ test.describe('network map exploration', () => {
     await selectSearchStop(page, targetStop, targetStop.name);
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
 
+    const popup = page.locator('.app-map-stop-popup');
+    await expect(popup).toBeVisible();
+    await expect(popup.locator('.app-map-stop-popup__title')).toHaveText(targetStop.name);
+    const selectedMarkerFingerprint = await fingerprintCanvas(overlayCanvas);
+
+    await popup.locator('.leaflet-popup-close-button').click();
+    await expect(popup).toBeHidden();
+    await expect
+      .poll(() => fingerprintCanvas(overlayCanvas), { timeout: 5_000 })
+      .not.toBe(selectedMarkerFingerprint);
+
     const nearbyPanel = await openNearbyInspector(page);
     const nearbyStop = nearbyPanel
       .locator('.map__stop-item')
@@ -297,12 +331,10 @@ test.describe('network map exploration', () => {
     await expect(nearbyStop).toBeVisible({ timeout: 15_000 });
     await expect(nearbyPanel).not.toHaveAttribute('aria-busy', 'true');
 
-    const baselinePaintedPixels = await countPaintedPixels(overlayCanvas);
     await nearbyStop.hover();
-
     await expect
-      .poll(() => countPaintedPixels(overlayCanvas), { timeout: 5_000 })
-      .toBeGreaterThan(baselinePaintedPixels);
+      .poll(() => fingerprintCanvas(overlayCanvas), { timeout: 5_000 })
+      .toBe(selectedMarkerFingerprint);
   });
 
   test('keeps the map immersive while search, controls and results remain usable', async ({
