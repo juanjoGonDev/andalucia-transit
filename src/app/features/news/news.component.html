@@ -98,54 +98,121 @@
           </div>
 
           <ng-container *ngIf="state.status !== 'loading' && state.status !== 'error'">
-            <nav *ngIf="categories(state).length" class="news__filters" [attr.aria-label]="translation.title | translate">
-              <button
-                type="button"
-                class="news__filter"
-                [class.news__filter--active]="selectedCategory() === null"
-                [attr.aria-pressed]="selectedCategory() === null"
-                (click)="selectCategory(null)"
-              >
-                {{ translation.title | translate }}
-              </button>
-              <button
-                *ngFor="let category of categories(state)"
-                type="button"
-                class="news__filter"
-                [class.news__filter--active]="selectedCategory() === category"
-                [attr.aria-pressed]="selectedCategory() === category"
-                (click)="selectCategory(category)"
-              >
-                {{ category }}
-              </button>
-            </nav>
+            <ng-container *ngIf="areas$ | async as catalog">
+              <section class="news__toolbar app-async-reveal" aria-labelledby="news-filter-title">
+                <div class="news__toolbar-heading">
+                  <div>
+                    <h2 id="news-filter-title" class="news__toolbar-title">{{ uiCopy().filtersTitle }}</h2>
+                    <p class="news__toolbar-description">{{ uiCopy().filtersDescription }}</p>
+                  </div>
+                  <span class="news__result-count">{{ uiCopy().resultCount(filteredArticles(state).length) }}</span>
+                </div>
 
-            <ng-container *ngIf="visibleArticles(state).length > 0; else emptyState">
-              <ul class="news__list app-async-reveal">
-                <li *ngFor="let article of visibleArticles(state); trackBy: trackArticle" class="news__item">
-                  <article class="news__card">
-                    <header class="news__card-header">
-                      <div class="news__card-meta">
-                        <span *ngIf="article.category" class="news__category">{{ article.category }}</span>
-                        <time class="news__card-date" [attr.datetime]="article.publishedAt">
-                          {{ article.publishedAt | date: 'longDate' }}
-                        </time>
-                      </div>
-                      <h2 class="news__card-title">{{ article.title }}</h2>
-                    </header>
-                    <p *ngIf="article.summary" class="news__card-summary">{{ article.summary }}</p>
-                    <div class="news__card-actions">
-                      <button
-                        type="button"
-                        class="app-outline-button app-outline-button--compact news__card-link"
-                        (click)="openArticle(article)"
+                <div class="news__filter-grid">
+                  <label class="news__control">
+                    <span class="news__control-label">{{ uiCopy().areaLabel }}</span>
+                    <select
+                      class="news__select news__select--area"
+                      [ngModel]="selectedArea()"
+                      (ngModelChange)="selectArea($event)"
+                    >
+                      <option [ngValue]="null">{{ uiCopy().allAreas }}</option>
+                      <option
+                        *ngFor="let area of availableAreas(state, catalog); trackBy: trackArea"
+                        [ngValue]="area.id"
                       >
-                        {{ translation.readMore | translate }}
-                      </button>
-                    </div>
-                  </article>
-                </li>
-              </ul>
+                        {{ area.name }}
+                      </option>
+                    </select>
+                  </label>
+
+                  <label class="news__control">
+                    <span class="news__control-label">{{ uiCopy().categoryLabel }}</span>
+                    <select
+                      class="news__select news__select--category"
+                      [ngModel]="selectedCategory()"
+                      (ngModelChange)="selectCategory($event)"
+                    >
+                      <option [ngValue]="null">{{ uiCopy().allCategories }}</option>
+                      <option *ngFor="let category of categories(state)" [ngValue]="category">
+                        {{ category }}
+                      </option>
+                    </select>
+                  </label>
+
+                  <label class="news__control">
+                    <span class="news__control-label">{{ uiCopy().orderLabel }}</span>
+                    <select
+                      class="news__select news__select--order"
+                      [ngModel]="sortOrder()"
+                      (ngModelChange)="selectSortOrder($event)"
+                    >
+                      <option ngValue="newest">{{ uiCopy().newestFirst }}</option>
+                      <option ngValue="oldest">{{ uiCopy().oldestFirst }}</option>
+                    </select>
+                  </label>
+                </div>
+              </section>
+
+              <ng-container *ngIf="pagedArticles(state).length > 0; else emptyState">
+                <ul class="news__list app-async-reveal">
+                  <li
+                    *ngFor="let article of pagedArticles(state); trackBy: trackArticle"
+                    class="news__item"
+                  >
+                    <article class="news__card">
+                      <header class="news__card-header">
+                        <div class="news__card-meta">
+                          <span *ngIf="areaName(article, catalog) as area" class="news__area">{{ area }}</span>
+                          <span *ngIf="article.category" class="news__category">{{ article.category }}</span>
+                          <time class="news__card-date" [attr.datetime]="article.publishedAt">
+                            {{ article.publishedAt | date: 'longDate' }}
+                          </time>
+                        </div>
+                        <h2 class="news__card-title">{{ article.title }}</h2>
+                      </header>
+                      <p *ngIf="article.summary" class="news__card-summary">{{ article.summary }}</p>
+                      <div class="news__card-actions">
+                        <button
+                          type="button"
+                          class="app-outline-button app-outline-button--compact news__card-link"
+                          (click)="openArticle(article)"
+                        >
+                          {{ translation.readMore | translate }}
+                        </button>
+                      </div>
+                    </article>
+                  </li>
+                </ul>
+
+                <nav
+                  *ngIf="pageCount(state) > 1"
+                  class="news__pagination app-async-reveal"
+                  [attr.aria-label]="uiCopy().paginationLabel"
+                >
+                  <button
+                    type="button"
+                    class="app-outline-button app-outline-button--compact news__page-action"
+                    [disabled]="!canGoPrevious(state)"
+                    (click)="previousPage()"
+                  >
+                    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                    {{ uiCopy().previousPage }}
+                  </button>
+                  <span class="news__page-status" aria-live="polite">
+                    {{ uiCopy().pageStatus(displayPage(state), pageCount(state)) }}
+                  </span>
+                  <button
+                    type="button"
+                    class="app-outline-button app-outline-button--compact news__page-action"
+                    [disabled]="!canGoNext(state)"
+                    (click)="nextPage(state)"
+                  >
+                    {{ uiCopy().nextPage }}
+                    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                  </button>
+                </nav>
+              </ng-container>
             </ng-container>
           </ng-container>
         </main>
