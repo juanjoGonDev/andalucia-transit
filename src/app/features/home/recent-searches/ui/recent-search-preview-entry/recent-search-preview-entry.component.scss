@@ -54,6 +54,7 @@
   justify-self: end;
   white-space: nowrap;
   text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .recent-preview-entry__time--previous {
@@ -67,12 +68,5 @@
 @media (min-width: 48rem) {
   .recent-preview-entry {
     padding: 0.45rem 0;
-  }
-}
-
-@media (max-width: 40rem) {
-  .recent-preview-entry__time {
-    justify-self: start;
-    min-inline-size: auto;
   }
 }
