@@ -129,7 +129,9 @@ async function open(page: Page, path: string): Promise<void> {
 test.describe('rendered theme contrast', () => {
   test.skip(!BASE_URL, 'E2E_BASE_URL environment variable is required for contrast checks.');
 
-  test('keeps representative card, muted and map-panel copy WCAG AA compliant', async ({ page }) => {
+  test('keeps representative card, muted and map-panel copy WCAG AA compliant', async ({
+    page,
+  }) => {
     await open(page, HOME_PATH);
     await expectRenderedContrast(page.locator('.home__card-title'), 'home card title');
     await expectRenderedContrast(page.locator('.home__card-subtitle'), 'home muted subtitle');
