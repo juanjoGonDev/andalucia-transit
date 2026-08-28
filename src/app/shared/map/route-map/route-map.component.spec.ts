@@ -105,25 +105,25 @@ describe('RouteMapComponent', () => {
   });
 
   it('emits marker selection without forcing stop-detail navigation', () => {
-    let selectedStopId: string | null = null;
+    const selectedStopIds: string[] = [];
     fixture.componentInstance.stopSelected.subscribe((stopId) => {
-      selectedStopId = stopId;
+      selectedStopIds.push(stopId);
     });
 
     maps.handle.interactions?.onSelect?.('stop-b');
 
-    expect(selectedStopId).toBe('stop-b');
+    expect(selectedStopIds).toEqual(['stop-b']);
   });
 
   it('emits the marker details action separately from selection', () => {
-    let detailsStopId: string | null = null;
+    const detailsStopIds: string[] = [];
     fixture.componentInstance.stopDetails.subscribe((stopId) => {
-      detailsStopId = stopId;
+      detailsStopIds.push(stopId);
     });
 
     maps.handle.interactions?.onDetails('stop-a');
 
-    expect(detailsStopId).toBe('stop-a');
+    expect(detailsStopIds).toEqual(['stop-a']);
   });
 
   it('highlights a list-selected stop without refitting the route', () => {
