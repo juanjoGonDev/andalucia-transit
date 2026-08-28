@@ -6,11 +6,20 @@ const BASE_URL = process.env.E2E_BASE_URL;
 const EVIDENCE_DIR = process.env.E2E_EVIDENCE_DIR;
 const LINES_PATH = '/lines';
 const LINE_DETAIL_PATH = '/lines/1/259';
+const ROUTE_SEARCH_PREVIEW_PATH =
+  '/routes/alpha-station--c7salpha/to/beta-terminal--c7sbeta/on/2026-08-29';
 const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const NARROW_VIEWPORT = { width: 320, height: 568 } as const;
 const TABLET_VIEWPORT = { width: 768, height: 1024 } as const;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 const LINE_API_GLOB = '**/v1/Consorcios/1/lineas/259**';
+const ROUTE_SEARCH_LINE_API_GLOB = '**/v1/Consorcios/7/lineas/259**';
+const ROUTE_SEARCH_LINES_BY_STOP_GLOB =
+  '**/v1/Consorcios/7/paradas/lineasPorParadas/alpha**';
+const ROUTE_SEARCH_TIMETABLE_GLOB = '**/v1/Consorcios/7/horarios_origen_destino**';
+const STOP_DIRECTORY_INDEX_GLOB = '**/assets/data/stop-directory/index.json';
+const STOP_DIRECTORY_CHUNK_GLOB = '**/assets/data/stop-directory/route-preview-test.json';
+const HOLIDAY_API_GLOB = 'https://date.nager.at/**';
 const OSM_TILE_GLOB = 'https://*.tile.openstreetmap.org/**';
 
 const lineDetailResponse = {
@@ -77,6 +86,45 @@ const lineStopsResponse = [
   },
 ] as const;
 
+const routeSearchLineStopsResponse = [
+  {
+    idParada: 'alpha',
+    idLinea: '259',
+    idNucleo: 'nuc-alpha',
+    idZona: 'A',
+    latitud: 37.373,
+    longitud: -6.072,
+    nombre: 'Alpha Station',
+    sentido: 1,
+    orden: 1,
+    modos: 1,
+  },
+  {
+    idParada: 'middle',
+    idLinea: '259',
+    idNucleo: 'nuc-middle',
+    idZona: 'A',
+    latitud: 37.379,
+    longitud: -6.052,
+    nombre: 'Middle Stop',
+    sentido: 1,
+    orden: 2,
+    modos: 1,
+  },
+  {
+    idParada: 'beta',
+    idLinea: '259',
+    idNucleo: 'nuc-beta',
+    idZona: 'A',
+    latitud: 37.386,
+    longitud: -6.012,
+    nombre: 'Beta Terminal',
+    sentido: 1,
+    orden: 3,
+    modos: 1,
+  },
+] as const;
+
 async function open(page: Page, path: string): Promise<void> {
   await page.goto(new URL(path, BASE_URL as string).toString());
 }
@@ -92,6 +140,186 @@ async function stubLineDetail(page: Page): Promise<void> {
     });
   });
 
+  await stubOpenStreetMapTiles(page);
+}
+
+async function stubRouteSearchPreview(page: Page): Promise<{
+  readonly lineDetailRequestCount: () => number;
+}> {
+  let lineDetailRequests = 0;
+
+  await page.route(STOP_DIRECTORY_INDEX_GLOB, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        metadata: {
+          generatedAt: '2026-08-28T00:00:00.000Z',
+          timezone: 'Europe/Madrid',
+          providerName: 'CTAN deterministic route preview',
+          consortiums: [{ id: 7, name: 'Test Consortium', shortName: 'Test' }],
+          totalStops: 2,
+        },
+        chunks: [
+          {
+            id: 'route-preview-test',
+            consortiumId: 7,
+            path: 'route-preview-test.json',
+            stopCount: 2,
+          },
+        ],
+        searchIndex: [
+          {
+            stopId: 'alpha',
+            stopCode: 'A001',
+            name: 'Alpha Station',
+            municipality: 'Alpha City',
+            municipalityId: 'mun-alpha',
+            nucleus: 'Alpha',
+            nucleusId: 'nuc-alpha',
+            consortiumId: 7,
+            chunkId: 'route-preview-test',
+          },
+          {
+            stopId: 'beta',
+            stopCode: 'B001',
+            name: 'Beta Terminal',
+            municipality: 'Beta City',
+            municipalityId: 'mun-beta',
+            nucleus: 'Beta',
+            nucleusId: 'nuc-beta',
+            consortiumId: 7,
+            chunkId: 'route-preview-test',
+          },
+        ],
+      }),
+    });
+  });
+
+  await page.route(STOP_DIRECTORY_CHUNK_GLOB, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        metadata: {
+          generatedAt: '2026-08-28T00:00:00.000Z',
+          timezone: 'Europe/Madrid',
+          providerName: 'CTAN deterministic route preview',
+          consortiumId: 7,
+          consortiumName: 'Test Consortium',
+          stopCount: 2,
+        },
+        stops: [
+          {
+            consortiumId: 7,
+            stopId: 'alpha',
+            stopCode: 'A001',
+            name: 'Alpha Station',
+            municipality: 'Alpha City',
+            municipalityId: 'mun-alpha',
+            nucleus: 'Alpha',
+            nucleusId: 'nuc-alpha',
+            zone: 'A',
+            location: { latitude: 37.373, longitude: -6.072 },
+          },
+          {
+            consortiumId: 7,
+            stopId: 'beta',
+            stopCode: 'B001',
+            name: 'Beta Terminal',
+            municipality: 'Beta City',
+            municipalityId: 'mun-beta',
+            nucleus: 'Beta',
+            nucleusId: 'nuc-beta',
+            zone: 'A',
+            location: { latitude: 37.386, longitude: -6.012 },
+          },
+        ],
+      }),
+    });
+  });
+
+  await page.route(ROUTE_SEARCH_LINES_BY_STOP_GLOB, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          idLinea: '259',
+          codigo: 'M-301',
+          nombre: 'Alpha - Beta',
+          descripcion: 'Autobús',
+          prioridad: 1,
+        },
+      ]),
+    });
+  });
+
+  await page.route(ROUTE_SEARCH_LINE_API_GLOB, async (route) => {
+    const path = new URL(route.request().url()).pathname;
+    const isStopsRequest = path.endsWith('/paradas');
+
+    if (!isStopsRequest) {
+      lineDetailRequests += 1;
+    }
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(
+        isStopsRequest
+          ? routeSearchLineStopsResponse
+          : {
+              idLinea: '259',
+              codigo: 'M-301',
+              nombre: 'Alpha - Beta',
+              modo: 'Bus',
+              polilinea: [
+                [37.373, -6.072],
+                [37.379, -6.052],
+                [37.386, -6.012],
+              ],
+            },
+      ),
+    });
+  });
+
+  await page.route(ROUTE_SEARCH_TIMETABLE_GLOB, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        bloques: [],
+        horario: [
+          {
+            idlinea: '259',
+            codigo: 'M-301',
+            horas: ['19:50', '20:27'],
+            dias: 'LD',
+            observaciones: '',
+          },
+          {
+            idlinea: '259',
+            codigo: 'M-301',
+            horas: ['20:45', '21:25'],
+            dias: 'LD',
+            observaciones: '',
+          },
+        ],
+        frecuencias: [{ idfrecuencia: 'daily', acronimo: 'LD', nombre: 'Diario' }],
+      }),
+    });
+  });
+
+  await page.route(HOLIDAY_API_GLOB, async (route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+  });
+  await stubOpenStreetMapTiles(page);
+
+  return { lineDetailRequestCount: () => lineDetailRequests };
+}
+
+async function stubOpenStreetMapTiles(page: Page): Promise<void> {
   await page.route(OSM_TILE_GLOB, async (route) => {
     await route.fulfill({
       status: 200,
@@ -265,5 +493,69 @@ test.describe('Lines directory and line detail layout', () => {
     await expect
       .poll(() => countPaintedPixels(overlayCanvas), { timeout: 5_000 })
       .toBeGreaterThan(baselinePaintedPixels);
+  });
+});
+
+test.describe('Route search reusable route workspace', () => {
+  test.use({ locale: 'es-ES' });
+  test.skip(!BASE_URL, 'E2E_BASE_URL is required.');
+
+  test('loads the schedule line and direction lazily and keeps equal desktop heights', async ({
+    page,
+  }) => {
+    const requests = await stubRouteSearchPreview(page);
+    await page.setViewportSize(DESKTOP_VIEWPORT);
+    await open(page, ROUTE_SEARCH_PREVIEW_PATH);
+
+    const departures = page.locator('.route-search__item');
+    await expect(departures).toHaveCount(2, { timeout: 15_000 });
+    const preview = departures.first().locator('.route-search-route-preview');
+    const summary = preview.locator('summary');
+    await expect(summary).toContainText('M-301');
+    await expect(summary).toContainText('Beta Terminal');
+    expect(requests.lineDetailRequestCount()).toBe(0);
+
+    await summary.click();
+    await expect(preview).toHaveJSProperty('open', true);
+    const mapColumn = preview.locator('.transit-route-workspace__map-column');
+    const stopsPanel = preview.locator('.transit-route-workspace__stops-panel');
+    await expect(mapColumn).toBeVisible({ timeout: 15_000 });
+    await expect(preview.locator('.transit-route-workspace__stop-row')).toHaveCount(3);
+    await expect.poll(() => requests.lineDetailRequestCount()).toBe(1);
+
+    const [mapBox, stopsBox] = await Promise.all([
+      mapColumn.boundingBox(),
+      stopsPanel.boundingBox(),
+    ]);
+    expect(mapBox).not.toBeNull();
+    expect(stopsBox).not.toBeNull();
+    expect(Math.abs((mapBox?.height ?? 0) - (stopsBox?.height ?? 0))).toBeLessThanOrEqual(1);
+    await assertNoHorizontalOverflow(page);
+    await capture(page, 'route-search-preview-data_es_1440_900_full.png');
+  });
+
+  test('stacks the same expanded route workspace on mobile without overflow', async ({ page }) => {
+    await stubRouteSearchPreview(page);
+    await page.setViewportSize(MOBILE_VIEWPORT);
+    await open(page, ROUTE_SEARCH_PREVIEW_PATH);
+
+    const preview = page.locator('.route-search__item').first().locator('.route-search-route-preview');
+    await expect(preview.locator('summary')).toContainText('M-301', { timeout: 15_000 });
+    await preview.locator('summary').click();
+
+    const mapColumn = preview.locator('.transit-route-workspace__map-column');
+    const stopsPanel = preview.locator('.transit-route-workspace__stops-panel');
+    await expect(mapColumn).toBeVisible({ timeout: 15_000 });
+    await expect(preview.locator('.transit-route-workspace__stop-row')).toHaveCount(3);
+
+    const [mapBox, stopsBox] = await Promise.all([
+      mapColumn.boundingBox(),
+      stopsPanel.boundingBox(),
+    ]);
+    expect(mapBox).not.toBeNull();
+    expect(stopsBox).not.toBeNull();
+    expect((stopsBox?.y ?? 0) >= (mapBox?.y ?? 0) + (mapBox?.height ?? 0) - 1).toBe(true);
+    await assertNoHorizontalOverflow(page);
+    await capture(page, 'route-search-preview-data_es_390_844_full.png');
   });
 });
