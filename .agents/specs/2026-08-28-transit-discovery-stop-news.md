@@ -19,6 +19,7 @@ Address the browser issues reported against PR #36 on 2026-08-28:
 - persist News area/category/order/page state in the URL so refresh, detail navigation and browser history do not lose the user's context;
 - expose News pagination both before and after the result list on desktop while avoiding duplicated pagination logic;
 - keep CTAN news language-faithful: request the active configured language, never retain articles from the previous language during a language switch, and never substitute Spanish-specific fields when English content is requested;
+- omit CTAN news rows that contain a title but no meaningful summary or body content, including blank HTML and punctuation-only placeholders such as `__`;
 - keep the persistent navigation clearance inside each routed page surface so the page background continues behind the fixed shell instead of exposing an outer-layout strip.
 
 ## Evidence
@@ -36,6 +37,7 @@ Address the browser issues reported against PR #36 on 2026-08-28:
 - News filter and pagination signals were initially component-local only, so a reload discarded the selected area/category/order/page despite these values being meaningful navigation state.
 - `NewsFacade` refreshes when `LanguageService.currentLanguage` changes, but its generic request transition preserves the previous article list. That can expose Spanish articles while an English request is in flight.
 - `NewsFeedService` sends CTAN's `lang=ES|EN` parameter, but its mapper also accepts Spanish-specific title aliases unconditionally. Mapping must be scoped to the requested language rather than inventing a cross-language fallback.
+- CTAN can return structurally valid news rows whose user-facing preview/body fields are empty or placeholder-only; rendering those rows creates large empty cards and dead-end detail views.
 - `app-layout.component.scss` reserves navigation space on `.app-shell__section` while `.app-layout__body` already owns a bottom navigation clearance inside the routed surface. The outer reserve exposes the host background as a visible strip beneath hero pages.
 
 ## Decision
@@ -56,7 +58,8 @@ Address the browser issues reported against PR #36 on 2026-08-28:
 14. Reuse one pagination template above and below the list. The upper instance is progressive desktop affordance; the lower instance remains available across viewport sizes.
 15. Keep Route Search lazy-loaded. The route was still eagerly imported and the accumulated feature work pushed the production initial bundle over its hard budget; moving the existing route behind `loadComponent` restores the budget without weakening thresholds or changing route semantics.
 16. Treat language as part of News data identity. CTAN requests use the active `SupportedLanguage`; a language change clears the previous-language articles before the new request settles. The mapper may use generic CTAN localized fields plus aliases for the requested language only; Spanish-specific aliases are never accepted for an English request. If CTAN returns no usable English title, omit the article instead of displaying Spanish fallback content.
-17. Keep shell navigation positioning fixed, but remove navigation clearance from the outer `.app-shell__section`. `app-layout__body` remains the single owner of bottom clearance so every page paints its own background beneath the persistent shell.
+17. Treat a News row as user-visible only when it has a meaningful localized title and meaningful preview/body text. Normalize HTML whitespace/entities and reject blank or punctuation-only placeholders. When list summary is absent but list body content is meaningful, derive the card preview from that content instead of emitting an empty card.
+18. Keep shell navigation positioning fixed, but remove navigation clearance from the outer `.app-shell__section`. `app-layout__body` remains the single owner of bottom clearance so every page paints its own background beneath the persistent shell.
 
 ## Acceptance
 
@@ -77,17 +80,19 @@ Address the browser issues reported against PR #36 on 2026-08-28:
 - On desktop, pagination is available before and after the result list from one shared template; mobile keeps the lower pagination without adding unnecessary duplicate controls above the list.
 - Area/category/order/page survive reload because they are represented in the URL; invalid/default values degrade to safe defaults rather than breaking rendering.
 - Switching to English immediately stops rendering Spanish News content; English requests use `lang=EN`, and an article with no usable English title is omitted instead of falling back to Spanish-specific fields.
+- A CTAN row with a title but only empty/blank/placeholder preview and body content is omitted from the feed; punctuation-only strings such as `__` never render as article summaries.
+- A row with meaningful body content but no separate summary remains usable and gets a derived plain-text preview.
 - At 390x844 and 1440x900, the fixed shell does not expose an outer white/background seam at the bottom of routed surfaces; navigation clearance remains inside the page surface.
 - Existing deep links, loading/error/retry states, keyboard navigation, reduced motion and 390x844 / 1440x900 layout constraints remain supported.
 - Production build stays within the existing hard initial-bundle budget; no budget increase is used to mask regressions.
 
 ## Checks
 
-- Focused unit tests for route line API URL ownership, area selection, line geometry fallback, stop/line navigation, Stop Detail tab visibility/filter locality, news mapping/filtering/sorting/pagination/query-state persistence, language switching/fidelity and route configuration.
+- Focused unit tests for route line API URL ownership, area selection, line geometry fallback, stop/line navigation, Stop Detail tab visibility/filter locality, news mapping/filtering/sorting/pagination/query-state persistence, language switching/fidelity, empty-placeholder filtering and route configuration.
 - `pnpm lint`
 - `pnpm test -- --watch=false`
 - production build / canonical CI scripts
-- Playwright browser acceptance at 390x844 and 1440x900 for route timing, Map line discovery/toast, Stop Detail tabs/actions, line detail, news list/detail/filter/pagination/query persistence/empty-area/language behavior and shell background ownership.
+- Playwright browser acceptance at 390x844 and 1440x900 for route timing, Map line discovery/toast, Stop Detail tabs/actions, line detail, news list/detail/filter/pagination/query persistence/empty-area/language/empty-row behavior and shell background ownership.
 - Inspect exact-head visual evidence before completion.
 
 ## Delivery
