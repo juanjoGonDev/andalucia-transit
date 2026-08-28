@@ -1,10 +1,7 @@
-import { mkdir } from 'node:fs/promises';
-import { join } from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import { captureVisualEvidence, expect, test, type Page } from './visual-evidence.fixture';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const MOCK_MODE = process.env.E2E_MOCK_MODE;
-const EVIDENCE_DIR = process.env.E2E_EVIDENCE_DIR;
 const RECENT_PATH = '/recents';
 const STOP_SERVICES_SNAPSHOT_PATH = '/assets/data/snapshots/stop-services/latest.json';
 const STOP_SCHEDULE_API_GLOB = '**/v1/Consorcios/*/paradas/**';
@@ -38,18 +35,6 @@ async function openRecentData(page: Page): Promise<void> {
   await open(page, RECENT_PATH);
   await expect(page.locator('.home-recent__item')).toHaveCount(DATA_ITEM_COUNT);
   await expect(page.locator('.recent-search-card__status--disabled')).toHaveCount(DATA_ITEM_COUNT);
-}
-
-async function capture(page: Page, name: string): Promise<void> {
-  if (!EVIDENCE_DIR) {
-    return;
-  }
-
-  await mkdir(EVIDENCE_DIR, { recursive: true });
-  await page.screenshot({
-    path: join(EVIDENCE_DIR, name),
-    fullPage: true,
-  });
 }
 
 async function dismissDialog(page: Page): Promise<void> {
@@ -196,7 +181,10 @@ test.describe('deterministic interaction visual states', () => {
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
       ).toBe(true);
 
-      await capture(page, `dialog-confirm_es_${viewport.width}_${viewport.height}_full.png`);
+      await captureVisualEvidence(
+        page,
+        `dialog-confirm_es_${viewport.width}_${viewport.height}_full.png`,
+      );
       await dismissDialog(page);
     }
   });
@@ -235,7 +223,7 @@ test.describe('deterministic interaction visual states', () => {
     await expect(results).toHaveAttribute('aria-busy', 'true');
     await expect(loading).toBeVisible();
     await expect(page.locator('.route-search__empty--results')).toHaveCount(0);
-    await capture(page, 'route-search-loading_es_390_844_full.png');
+    await captureVisualEvidence(page, 'route-search-loading_es_390_844_full.png');
 
     releaseFirstTimetableRequest();
 
@@ -245,7 +233,7 @@ test.describe('deterministic interaction visual states', () => {
     await expect(results).not.toHaveAttribute('aria-busy', 'true');
     await expect(retry).toBeVisible();
     await expect(page.locator('.route-search__empty--results')).toHaveCount(0);
-    await capture(page, 'route-search-error_es_390_844_full.png');
+    await captureVisualEvidence(page, 'route-search-error_es_390_844_full.png');
 
     await retry.click();
     await expect.poll(() => timetableRequestCount).toBe(2);
@@ -296,7 +284,7 @@ test.describe('deterministic interaction visual states', () => {
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
       ).toBe(true);
 
-      await capture(
+      await captureVisualEvidence(
         page,
         `stop-detail-directions_es_${viewport.width}_${viewport.height}_full.png`,
       );
@@ -369,7 +357,10 @@ test.describe('deterministic interaction visual states', () => {
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
       ).toBe(true);
 
-      await capture(page, `news-filtered_es_${viewport.width}_${viewport.height}_full.png`);
+      await captureVisualEvidence(
+        page,
+        `news-filtered_es_${viewport.width}_${viewport.height}_full.png`,
+      );
 
       await areaSelect.selectOption({ label: 'Área de Sevilla' });
       await expect(page.locator('.news__card')).toHaveCount(0);
