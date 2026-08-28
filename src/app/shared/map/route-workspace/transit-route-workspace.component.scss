@@ -22,6 +22,10 @@
   display: flex;
 }
 
+.transit-route-workspace__map-column > app-route-map {
+  --route-map-min-height: 0px;
+}
+
 .transit-route-workspace__map-column > app-route-map,
 .transit-route-workspace__map-unavailable {
   flex: 1 1 auto;

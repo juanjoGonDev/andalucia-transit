@@ -184,9 +184,9 @@ test.describe('Lines directory and line detail layout', () => {
     await open(page, LINE_DETAIL_PATH);
 
     const routeMap = page.locator('.route-map');
-    const stopsPanel = page.locator('.line-detail__stops-panel');
+    const stopsPanel = page.locator('.transit-route-workspace__stops-panel');
     await expect(routeMap).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('.line-detail__stop-row')).toHaveCount(3);
+    await expect(page.locator('.transit-route-workspace__stop-row')).toHaveCount(3);
     await expect(stopsPanel).toBeVisible();
 
     const [mapBox, stopsBox] = await Promise.all([
@@ -207,8 +207,8 @@ test.describe('Lines directory and line detail layout', () => {
       await page.setViewportSize(viewport);
       await open(page, LINE_DETAIL_PATH);
 
-      const mapColumn = page.locator('.line-detail__map-column');
-      const stopsPanel = page.locator('.line-detail__stops-panel');
+      const mapColumn = page.locator('.transit-route-workspace__map-column');
+      const stopsPanel = page.locator('.transit-route-workspace__stops-panel');
       await expect(mapColumn).toBeVisible({ timeout: 15_000 });
       await expect(stopsPanel).toBeVisible();
       await assertNoHorizontalOverflow(page);
@@ -221,14 +221,15 @@ test.describe('Lines directory and line detail layout', () => {
       expect(stopsBox).not.toBeNull();
 
       if (viewport.width === DESKTOP_VIEWPORT.width) {
-        const firstStopRow = page.locator('.line-detail__stop-row').first();
-        const stopSelect = firstStopRow.locator('.line-detail__stop-select');
-        const stopDetails = firstStopRow.locator('.line-detail__stop-details');
+        const firstStopRow = page.locator('.transit-route-workspace__stop-row').first();
+        const stopSelect = firstStopRow.locator('.transit-route-workspace__stop-select');
+        const stopDetails = firstStopRow.locator('.transit-route-workspace__stop-details');
         const [rowBox, selectBox, detailsBox] = await Promise.all([
           firstStopRow.boundingBox(),
           stopSelect.boundingBox(),
           stopDetails.boundingBox(),
         ]);
+        expect(Math.abs((mapBox?.height ?? 0) - (stopsBox?.height ?? 0))).toBeLessThanOrEqual(1);
         expect((mapBox?.width ?? 0) > (stopsBox?.width ?? 0) * 1.4).toBe(true);
         expect(rowBox).not.toBeNull();
         expect(selectBox).not.toBeNull();
@@ -248,15 +249,17 @@ test.describe('Lines directory and line detail layout', () => {
     await stubLineDetail(page);
     await page.setViewportSize(MOBILE_VIEWPORT);
     await open(page, LINE_DETAIL_PATH);
-    await expect(page.locator('.line-detail__stop-row')).toHaveCount(3, { timeout: 15_000 });
+    await expect(page.locator('.transit-route-workspace__stop-row')).toHaveCount(3, {
+      timeout: 15_000,
+    });
 
     const overlayCanvas = page.locator('.leaflet-overlay-pane canvas').first();
     await expect(overlayCanvas).toBeVisible({ timeout: 15_000 });
     const baselinePaintedPixels = await countPaintedPixels(overlayCanvas);
 
-    await page.locator('.line-detail__stop-select').first().click();
+    await page.locator('.transit-route-workspace__stop-select').first().click();
 
-    const selectedRow = page.locator('.line-detail__stop-row--selected');
+    const selectedRow = page.locator('.transit-route-workspace__stop-row--selected');
     await expect(selectedRow).toHaveCount(1);
     await expect(selectedRow).toContainText('Bormujos Centro');
     await expect
