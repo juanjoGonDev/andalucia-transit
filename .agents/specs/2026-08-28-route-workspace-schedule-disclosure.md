@@ -9,11 +9,11 @@ Extend the PR #36 Lines/Route Search follow-up from the 2026-08-28 screenshot re
 
 ## Evidence
 
-- `LineDetailComponent` currently owns the map/stops workspace markup directly, so the complete experience is not reusable even though `RouteMapComponent` itself is shared.
-- `line-detail.component.scss` gives the stops panel `max-height: 34rem` while `RouteMapComponent` owns an independent responsive `min-height`; the two columns therefore do not have a single height owner and can visibly end at different vertical positions.
-- Route Search departures already expose `lineId`, `lineCode`, `direction` and destination semantics through `RouteSearchDepartureView`; those are the canonical inputs needed to resolve the route for an individual timetable result.
-- `RouteLinesApiService` already owns CTAN line detail and ordered line-stop requests. New UI must consume that owner rather than create a parallel transport client.
-- `line-route-geometry.ts` already owns primary-direction selection and stop-coordinate fallback. Direction-specific selection belongs there rather than inside Route Search or a shared UI component.
+- `LineDetailComponent` originally owned the map/stops workspace markup directly, so the complete experience was not reusable even though `RouteMapComponent` itself was shared.
+- `line-detail.component.scss` originally gave the stops panel an independent maximum height while `RouteMapComponent` owned its own responsive height, so the paired columns had no single height owner.
+- Route Search departures expose `lineId`, `lineCode`, `direction` and destination semantics through `RouteSearchDepartureView`; those are the canonical inputs for an individual timetable result.
+- `RouteLinesApiService` owns CTAN line detail and ordered line-stop requests. The new UI consumes that owner rather than creating a parallel transport client.
+- `line-route-geometry.ts` owns primary/direction-specific geometry composition and fallback behavior rather than Route Search or the presentation component.
 
 ## Decision
 
@@ -30,15 +30,15 @@ It owns the responsive layout contract:
 - the stops list scrolls inside its column when its content exceeds that shared height;
 - mobile/constrained layout: one logical column; the map has a bounded mobile height and the stops list becomes naturally sized rather than forcing the desktop shared height.
 
-Map-unavailable state remains inside the map column and must occupy the same wide-column height as a normal map so the paired columns still align.
+Map-unavailable state remains inside the map column and occupies the same wide-column height as a normal map so the paired columns stay aligned.
 
 ### Canonical direction-specific route composition
 
-Extend the line-route geometry/composition owner so callers can request a specific CTAN direction. Exact matching is preferred; if a requested direction is missing, use the documented primary-direction fallback rather than rendering an empty route silently.
+The line-route geometry/composition owner supports a requested CTAN direction. Exact matching is preferred; if a requested direction is missing, the documented primary-direction fallback is used rather than silently rendering an empty route.
 
-For a direction-specific schedule disclosure, ordered stop coordinates are the preferred geometry because they are direction-specific. Official generic line geometry may be used only as a fallback when the selected direction does not provide enough valid coordinates.
+For a direction-specific schedule disclosure, ordered stop coordinates are the preferred geometry because they are direction-specific. Official generic line geometry is only a fallback when the selected direction does not provide enough valid coordinates.
 
-Line Detail without an explicit direction keeps its existing primary-direction behavior and may prefer official CTAN geometry.
+Line Detail without an explicit direction keeps primary-direction behavior and may prefer official CTAN geometry.
 
 ### Route Search departure disclosure
 
@@ -49,15 +49,15 @@ Each timetable result exposes a native expandable disclosure. Opening it lazily 
 - direction: `RouteSearchDepartureView.direction`;
 - user-facing direction context: the departure destination.
 
-The disclosure summary must make the relationship explicit, e.g. line code + direction/destination, and remain keyboard/screen-reader operable through native `details`/`summary` semantics.
+The disclosure summary makes the relationship explicit and remains keyboard/screen-reader operable through native `details`/`summary` semantics.
 
-Opening one disclosure must not eagerly fetch previews for every timetable row. Repeated departures with the same consortium + line + direction may share one loaded route state. Results from a previous route-search selection must never overwrite the new selection state.
+Opening one disclosure does not eagerly fetch previews for every timetable row. Repeated departures with the same consortium + line + direction may share one loaded route state. Results from a previous route-search selection must never overwrite the new selection state.
 
-Inside the disclosure, reuse the shared route workspace. Stop selection highlights the same map marker/list row and `More information` navigates through the existing consortium-aware Stop Detail navigation owner.
+Inside the disclosure, the shared route workspace owns presentation. Stop selection highlights the same map marker/list row and `More information` navigates through the existing consortium-aware Stop Detail navigation owner.
 
 ### Schedule timing boundary
 
-This change does not fabricate per-stop passing times. The workspace may show ordered stops without a time value until the existing CTAN line-timetable mapper can prove a reliable stop-index/time association for the exact service. Per-stop times are a separate canonical-data enhancement, not a component-local estimate.
+This change does not fabricate per-stop passing times. The workspace may show ordered stops without a time value until the existing CTAN line-timetable mapper can prove a reliable stop-index/time association for the exact service. Per-stop times remain a separate canonical-data enhancement, not a component-local estimate.
 
 ## Acceptance
 
@@ -96,24 +96,36 @@ This change does not fabricate per-stop passing times. The workspace may show or
 - desktop Route Search expanded preview map/stops height equality;
 - mobile Line Detail and Route Search preview use one logical column;
 - long stop list remains internally scrollable on wide layout;
-- expanding a schedule for direction 0 vs direction 1 renders the matching ordered stops;
-- no horizontal document overflow at 320, 390, 768 and 1440 widths where applicable.
+- deterministic Route Search preview resolves the timetable line/direction lazily and renders the matching ordered stops;
+- no horizontal document overflow on the covered constrained/wide viewports.
+
+## Validation evidence
+
+Validated product head: `b5b01261c383a4ac29f109065d836618b733bde1`.
+
+- CI #1106 / run `33203063151`: success.
+- Publish PR visual evidence #726 / run `33203063149`: success.
+- UI quality gates, deterministic populated responsive/accessibility checks, screenshot capture, deterministic empty-state checks and immutable-head verification all succeeded.
+- Route Search deterministic browser coverage verifies that line detail is not requested before disclosure expansion, exactly one route detail request is observed after opening, three direction-specific ordered stops render, desktop map/stops heights differ by at most 1 CSS px, mobile uses map-before-stops ordering, and neither layout creates horizontal document overflow.
+- Visual artifact `pr-36-visual-evidence-b5b01261c383a4ac29f109065d836618b733bde1`, id `9698624271`, digest `sha256:10ddef983b9b24837634d8eea4a5702dbde4e13fc75d915f315d002947c4201c` was published from the exact product head.
 
 ## Risks
 
-- CTAN direction values must be consumed as returned by the existing normalized stop/timetable contracts; do not translate numeric direction semantics with guessed labels.
-- Generic official line polylines may represent both directions or a complete loop. They must not override valid direction-specific stop geometry in a timetable disclosure.
-- Native `details` is preferred over custom accordion state because it preserves keyboard semantics and reduces interaction complexity; application state is needed only for lazy data loading and selected-stop synchronization.
-- Leaflet must be invalidated/resized when a previously hidden disclosure becomes visible if required by rendering measurements; cover this with browser evidence instead of timer-based workarounds.
+- CTAN direction values are consumed as returned by the normalized stop/timetable contracts; numeric meanings are not replaced with guessed labels.
+- Generic official line polylines may represent both directions or a complete loop. They do not override valid direction-specific stop geometry in a timetable disclosure.
+- Native `details` is preferred over custom accordion state because it preserves keyboard semantics and reduces interaction complexity.
+- Leaflet visibility/resize behavior is protected by browser evidence rather than timer-based rendering workarounds.
 
 ## Rollback
 
-The shared workspace extraction is independently revertible because it does not change CTAN contracts. Route Search disclosure can be removed without affecting timetable calculation. Direction-selection helpers are additive and preserve current primary-direction behavior.
+The shared workspace extraction is independently revertible because it does not change CTAN contracts. Route Search disclosure can be removed without affecting timetable calculation. Direction-selection helpers are additive and preserve primary-direction behavior.
 
 ## Delivery
 
 Continue on PR #36 and branch `codex/refactorizar-vista-segun-diseno-proporcionado`. Use atomic Conventional Commits. Do not merge, release or deploy without explicit approval.
 
+The PR body is the final owner for the current documentation-head workflow IDs, avoiding a self-referential documentation commit whose only purpose would be to record its own validation.
+
 ## Status
 
-Specification recorded. Implementation and exact-head validation pending.
+Implemented and product-head validated. Documentation-head CI/evidence status is tracked in PR #36 after this evidence update. Merge, release and deploy remain unauthorized.
