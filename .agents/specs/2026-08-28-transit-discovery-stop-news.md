@@ -17,7 +17,8 @@ Address the browser issues reported against PR #36 on 2026-08-28:
 - redesign News filters so categories are not a horizontally scrolling chip rail; support useful area/category filtering, explicit ordering and pagination;
 - keep every canonical transport area selectable even when it currently has no news, and show an explicit empty result instead of removing the area from the filter;
 - persist News area/category/order/page state in the URL so refresh, detail navigation and browser history do not lose the user's context;
-- expose News pagination both before and after the result list on desktop while avoiding duplicated pagination logic.
+- expose News pagination both before and after the result list on desktop while avoiding duplicated pagination logic;
+- keep CTAN news language-faithful: request the active configured language, never retain articles from the previous language during a language switch, and never substitute Spanish-specific fields when English content is requested.
 
 ## Evidence
 
@@ -32,6 +33,8 @@ Address the browser issues reported against PR #36 on 2026-08-28:
 - the canonical catalog already maps CTAN consortium ids to traveler-readable operating areas such as Área de Almería and Costa de Huelva. CTAN news payloads carry consortium identity but do not establish a direct news-to-nucleus relation.
 - the first area-filter implementation derived its selectable areas from `state.articles`, so a valid catalog area disappeared whenever CTAN returned zero current articles for it. The catalog itself contains all nine consortium areas and must own the selectable area set.
 - News filter and pagination signals were initially component-local only, so a reload discarded the selected area/category/order/page despite these values being meaningful navigation state.
+- `NewsFacade` refreshes when `LanguageService.currentLanguage` changes, but its generic request transition preserves the previous article list. That can expose Spanish articles while an English request is in flight.
+- `NewsFeedService` sends CTAN's `lang=ES|EN` parameter, but its mapper also accepts Spanish-specific title aliases unconditionally. Mapping must be scoped to the requested language rather than inventing a cross-language fallback.
 
 ## Decision
 
@@ -50,6 +53,7 @@ Address the browser issues reported against PR #36 on 2026-08-28:
 13. News navigation state is canonicalized into query parameters: `area`, `category`, non-default `order`, and non-default `page`. Component state follows query-param changes so reload/back/forward preserve the same view. Filter changes replace the current history entry to avoid creating noisy browser history for every select interaction.
 14. Reuse one pagination template above and below the list. The upper instance is progressive desktop affordance; the lower instance remains available across viewport sizes.
 15. Keep Route Search lazy-loaded. The route was still eagerly imported and the accumulated feature work pushed the production initial bundle over its hard budget; moving the existing route behind `loadComponent` restores the budget without weakening thresholds or changing route semantics.
+16. Treat language as part of News data identity. CTAN requests use the active `SupportedLanguage`; a language change clears the previous-language articles before the new request settles. The mapper may use generic CTAN localized fields plus aliases for the requested language only; Spanish-specific aliases are never accepted for an English request. If CTAN returns no usable English title, omit the article instead of displaying Spanish fallback content.
 
 ## Acceptance
 
@@ -69,16 +73,17 @@ Address the browser issues reported against PR #36 on 2026-08-28:
 - News pagination exposes a bounded page size, current-page context, Previous/Next actions and resets correctly when filters/order change.
 - On desktop, pagination is available before and after the result list from one shared template; mobile keeps the lower pagination without adding unnecessary duplicate controls above the list.
 - Area/category/order/page survive reload because they are represented in the URL; invalid/default values degrade to safe defaults rather than breaking rendering.
+- Switching to English immediately stops rendering Spanish News content; English requests use `lang=EN`, and an article with no usable English title is omitted instead of falling back to Spanish-specific fields.
 - Existing deep links, loading/error/retry states, keyboard navigation, reduced motion and 390x844 / 1440x900 layout constraints remain supported.
 - Production build stays within the existing hard initial-bundle budget; no budget increase is used to mask regressions.
 
 ## Checks
 
-- Focused unit tests for route line API URL ownership, area selection, line geometry fallback, stop/line navigation, Stop Detail tab visibility/filter locality, news mapping/filtering/sorting/pagination/query-state persistence and route configuration.
+- Focused unit tests for route line API URL ownership, area selection, line geometry fallback, stop/line navigation, Stop Detail tab visibility/filter locality, news mapping/filtering/sorting/pagination/query-state persistence, language switching/fidelity and route configuration.
 - `pnpm lint`
 - `pnpm test -- --watch=false`
 - production build / canonical CI scripts
-- Playwright browser acceptance at 390x844 and 1440x900 for route timing, Map line discovery/toast, Stop Detail tabs/actions, line detail and news list/detail/filter/pagination/query persistence/empty-area behavior.
+- Playwright browser acceptance at 390x844 and 1440x900 for route timing, Map line discovery/toast, Stop Detail tabs/actions, line detail and news list/detail/filter/pagination/query persistence/empty-area/language behavior.
 - Inspect exact-head visual evidence before completion.
 
 ## Delivery
@@ -87,4 +92,4 @@ Continue on PR #36 and `codex/refactorizar-vista-segun-diseno-proporcionado`. Us
 
 ## Status
 
-Implementation complete. Exact-head CI, browser evidence, artifact inspection and review-state checks remain external delivery gates; their run identifiers are intentionally not recorded here because changing this file would create a new unvalidated head.
+Implementation in progress. Exact-head CI, browser evidence, artifact inspection and review-state checks remain external delivery gates; their run identifiers are intentionally not recorded here because changing this file would create a new unvalidated head.
