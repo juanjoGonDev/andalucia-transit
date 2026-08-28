@@ -7,47 +7,56 @@
       {
         "id": 1,
         "name": "Área de Sevilla",
-        "shortName": "CTAS"
+        "shortName": "CTAS",
+        "province": "Sevilla"
       },
       {
         "id": 2,
         "name": "Bahía de Cádiz",
-        "shortName": "CMTBC"
+        "shortName": "CMTBC",
+        "province": "Cádiz"
       },
       {
         "id": 3,
         "name": "Área de Granada",
-        "shortName": "CTMGR"
+        "shortName": "CTMGR",
+        "province": "Granada"
       },
       {
         "id": 4,
         "name": "Área de Málaga",
-        "shortName": "CTMAM"
+        "shortName": "CTMAM",
+        "province": "Málaga"
       },
       {
         "id": 5,
         "name": "Campo de Gibraltar",
-        "shortName": "CTMCG"
+        "shortName": "CTMCG",
+        "province": "Cádiz"
       },
       {
         "id": 6,
         "name": "Área de Almería",
-        "shortName": "CTAL"
+        "shortName": "CTAL",
+        "province": "Almería"
       },
       {
         "id": 7,
         "name": "Área de Jaén",
-        "shortName": "CTJA"
+        "shortName": "CTJA",
+        "province": "Jaén"
       },
       {
         "id": 8,
         "name": "Área de Córdoba",
-        "shortName": "CTCO"
+        "shortName": "CTCO",
+        "province": "Córdoba"
       },
       {
         "id": 9,
         "name": "Costa de Huelva",
-        "shortName": "CTHU"
+        "shortName": "CTHU",
+        "province": "Huelva"
       }
     ]
   },
@@ -56,6 +65,7 @@
       "id": 1,
       "name": "Área de Sevilla",
       "shortName": "CTAS",
+      "province": "Sevilla",
       "datasets": {
         "municipalities": "consortium-1/municipalities.json",
         "nuclei": "consortium-1/nuclei.json",
@@ -66,6 +76,7 @@
       "id": 2,
       "name": "Bahía de Cádiz",
       "shortName": "CMTBC",
+      "province": "Cádiz",
       "datasets": {
         "municipalities": "consortium-2/municipalities.json",
         "nuclei": "consortium-2/nuclei.json",
@@ -76,6 +87,7 @@
       "id": 3,
       "name": "Área de Granada",
       "shortName": "CTMGR",
+      "province": "Granada",
       "datasets": {
         "municipalities": "consortium-3/municipalities.json",
         "nuclei": "consortium-3/nuclei.json",
@@ -86,6 +98,7 @@
       "id": 4,
       "name": "Área de Málaga",
       "shortName": "CTMAM",
+      "province": "Málaga",
       "datasets": {
         "municipalities": "consortium-4/municipalities.json",
         "nuclei": "consortium-4/nuclei.json",
@@ -96,6 +109,7 @@
       "id": 5,
       "name": "Campo de Gibraltar",
       "shortName": "CTMCG",
+      "province": "Cádiz",
       "datasets": {
         "municipalities": "consortium-5/municipalities.json",
         "nuclei": "consortium-5/nuclei.json",
@@ -106,6 +120,7 @@
       "id": 6,
       "name": "Área de Almería",
       "shortName": "CTAL",
+      "province": "Almería",
       "datasets": {
         "municipalities": "consortium-6/municipalities.json",
         "nuclei": "consortium-6/nuclei.json",
@@ -116,6 +131,7 @@
       "id": 7,
       "name": "Área de Jaén",
       "shortName": "CTJA",
+      "province": "Jaén",
       "datasets": {
         "municipalities": "consortium-7/municipalities.json",
         "nuclei": "consortium-7/nuclei.json",
@@ -126,6 +142,7 @@
       "id": 8,
       "name": "Área de Córdoba",
       "shortName": "CTCO",
+      "province": "Córdoba",
       "datasets": {
         "municipalities": "consortium-8/municipalities.json",
         "nuclei": "consortium-8/nuclei.json",
@@ -136,6 +153,7 @@
       "id": 9,
       "name": "Costa de Huelva",
       "shortName": "CTHU",
+      "province": "Huelva",
       "datasets": {
         "municipalities": "consortium-9/municipalities.json",
         "nuclei": "consortium-9/nuclei.json",
