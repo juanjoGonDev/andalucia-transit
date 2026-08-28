@@ -4,20 +4,20 @@ import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-transla
 import { Observable, firstValueFrom, of } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { AppLayoutContextStore } from '@shared/layout/app-layout-context.store';
+import { LINE_DETAIL_BASE_SEGMENT } from '@shared/navigation/navigation.util';
 import { AppShellTopActionsComponent } from '@shared/layout/top-actions/app-shell-top-actions.component';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {
     return of({
       'navigation.home': 'Home',
-      'navigation.routeSearch': 'Route search',
+      'navigation.lines': 'Lines',
       'navigation.map': 'Map',
       'navigation.favorites': 'Favorites',
       'home.topBar.menuLabel': 'Open feature menu',
       'home.menu.recent': 'Recent searches',
       'home.menu.settings': 'Settings',
-      'home.menu.news': 'News',
-      'map.routes.title': 'Routes'
+      'home.menu.news': 'News'
     });
   }
 }
@@ -55,7 +55,7 @@ describe('AppShellTopActionsComponent', () => {
     expect(links.length).toBe(4);
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
       '/',
-      '/routes',
+      '/lines',
       '/map',
       '/favorites'
     ]);
@@ -65,22 +65,22 @@ describe('AppShellTopActionsComponent', () => {
     expect(menu?.getAttribute('aria-controls')).toBe('shell-actions-overflow');
   });
 
-  it('marks route search as the current primary destination', () => {
+  it('marks the Lines directory as the current primary destination', () => {
     layoutContextStore.registerContent({
-      identifier: Symbol('routes'),
-      navigationKey: APP_CONFIG.routes.routeSearch
+      identifier: Symbol('lines'),
+      navigationKey: LINE_DETAIL_BASE_SEGMENT
     });
     fixture.detectChanges();
 
-    const routeSearch = fixture.nativeElement.querySelector(
-      '.shell-actions__button--quick[href="/routes"]'
+    const lines = fixture.nativeElement.querySelector(
+      '.shell-actions__button--quick[href="/lines"]'
     ) as HTMLAnchorElement | null;
     const home = fixture.nativeElement.querySelector(
       '.shell-actions__button--quick[href="/"]'
     ) as HTMLAnchorElement | null;
 
-    expect(routeSearch?.getAttribute('aria-current')).toBe('page');
-    expect(routeSearch?.classList.contains('shell-actions__button--active')).toBeTrue();
+    expect(lines?.getAttribute('aria-current')).toBe('page');
+    expect(lines?.classList.contains('shell-actions__button--active')).toBeTrue();
     expect(home?.getAttribute('aria-current')).toBeNull();
   });
 
