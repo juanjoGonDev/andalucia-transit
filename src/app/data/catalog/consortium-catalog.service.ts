@@ -12,6 +12,7 @@ export interface ConsortiumCatalogEntry {
   readonly id: number;
   readonly name: string;
   readonly shortName: string;
+  readonly province: string | null;
   readonly datasets?: ConsortiumCatalogDatasets;
 }
 
@@ -161,11 +162,13 @@ function readConsortium(value: unknown): ConsortiumCatalogEntry | null {
     return null;
   }
 
+  const province = readText(entry['province']);
   const datasets = readDatasets(entry['datasets']);
   return {
     id,
     name,
     shortName: shortName ?? '',
+    province,
     ...(datasets ? { datasets } : {})
   };
 }
