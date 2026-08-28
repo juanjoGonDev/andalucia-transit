@@ -12,7 +12,7 @@ export interface ConsortiumCatalogEntry {
   readonly id: number;
   readonly name: string;
   readonly shortName: string;
-  readonly province: string | null;
+  readonly province?: string | null;
   readonly datasets?: ConsortiumCatalogDatasets;
 }
 
