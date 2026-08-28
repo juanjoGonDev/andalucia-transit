@@ -34,19 +34,25 @@ function readConsortiumCatalog(payload: unknown): readonly ConsortiumCatalogEntr
     return EMPTY_CONSORTIA;
   }
 
-  const metadata = readObject(root['metadata']);
-  const candidates = Array.isArray(metadata?.['consortiums'])
-    ? metadata?.['consortiums']
-    : Array.isArray(root['consortia'])
-      ? root['consortia']
-      : [];
-
+  const candidates = readConsortiumCandidates(root);
   const entries = candidates
     .map(readConsortium)
     .filter((entry): entry is ConsortiumCatalogEntry => entry !== null)
     .sort((left, right) => left.name.localeCompare(right.name, 'es-ES'));
 
   return entries.length > 0 ? Object.freeze(entries) : EMPTY_CONSORTIA;
+}
+
+function readConsortiumCandidates(root: Readonly<Record<string, unknown>>): readonly unknown[] {
+  const metadata = readObject(root['metadata']);
+  const metadataConsortiums = metadata?.['consortiums'];
+
+  if (Array.isArray(metadataConsortiums)) {
+    return metadataConsortiums;
+  }
+
+  const rootConsortia = root['consortia'];
+  return Array.isArray(rootConsortia) ? rootConsortia : EMPTY_CONSORTIA;
 }
 
 function readConsortium(value: unknown): ConsortiumCatalogEntry | null {

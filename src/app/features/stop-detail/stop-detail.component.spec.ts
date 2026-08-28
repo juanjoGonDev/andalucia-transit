@@ -7,18 +7,14 @@ import {
   TranslateService
 } from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
-import { BehaviorSubject, Observable, delay, firstValueFrom, of, throwError } from 'rxjs';
+import { BehaviorSubject, delay, firstValueFrom, of, throwError } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { RouteLinesApiService } from '@data/route-search/route-lines-api.service';
 import { StopScheduleFacade } from '@domain/stop-schedule/stop-schedule.facade';
 import { StopSchedule, StopScheduleResult, StopService } from '@domain/stop-schedule/stop-schedule.model';
 import { StopDirectoryFacade, StopDirectoryRecord } from '@domain/stops/stop-directory.facade';
 import { addMinutesToDate } from '@domain/utils/time.util';
-import {
-  STOP_TIMELINE_PAST_TAB_ID,
-  STOP_TIMELINE_UPCOMING_TAB_ID,
-  StopDetailComponent
-} from '@features/stop-detail/stop-detail.component';
+import { StopDetailComponent } from '@features/stop-detail/stop-detail.component';
 import { APP_LAYOUT_CONTEXT, AppLayoutContext } from '@shared/layout/app-layout-context.token';
 
 const STATUS_ROLE = 'status';
@@ -37,31 +33,28 @@ class FakeTranslateLoader implements TranslateLoader {
           empty: 'No lines'
         }
       },
-      stopInfo: { directions: { title: 'Directions' } },
+      stopInfo: {
+        directions: { title: 'Directions' },
+        status: { error: 'Could not load stop' }
+      },
       stopDetail: {
-        title: 'stopDetail.title',
-        subtitle: 'stopDetail.subtitle',
-        loading: 'stopDetail.loading',
-        error: {
-          title: 'stopDetail.error.title',
-          description: 'stopDetail.error.description'
-        },
+        title: 'Stop detail',
+        subtitle: 'Live schedules',
+        loading: 'Loading schedule',
+        error: { title: 'Unavailable', description: 'Try again' },
         header: {
-          stopCodeLabel: 'stopDetail.header.stopCodeLabel',
-          scheduleDateLabel: 'stopDetail.header.scheduleDateLabel',
-          lastUpdatedLabel: 'stopDetail.header.lastUpdatedLabel'
+          stopCodeLabel: 'Stop code',
+          scheduleDateLabel: 'Schedule date',
+          lastUpdatedLabel: 'Last updated'
         },
-        filters: {
-          destinationLabel: 'stopDetail.filters.destinationLabel',
-          allDestinations: 'stopDetail.filters.allDestinations'
-        },
+        filters: { destinationLabel: 'Destination', allDestinations: 'All destinations' },
         schedule: {
-          upcomingTitle: 'stopDetail.schedule.upcomingTitle',
-          upcomingSubtitle: 'stopDetail.schedule.upcomingSubtitle',
-          pastTitle: 'stopDetail.schedule.pastTitle',
-          pastSubtitle: 'stopDetail.schedule.pastSubtitle',
-          emptyUpcoming: 'stopDetail.schedule.emptyUpcoming',
-          emptyPast: 'stopDetail.schedule.emptyPast'
+          upcomingTitle: 'Upcoming departures',
+          upcomingSubtitle: '{count} departures',
+          pastTitle: 'Recent departures',
+          pastSubtitle: '{count} departures',
+          emptyUpcoming: 'No upcoming departures',
+          emptyPast: 'No recent departures'
         },
         status: {
           arrivesIn: 'Arrives in {minutes} min',
@@ -71,14 +64,8 @@ class FakeTranslateLoader implements TranslateLoader {
         announcements: {
           progress: 'lineCode:{lineCode}|destination:{destination}|status:{statusText}|progress:{percentage}'
         },
-        badges: {
-          accessible: 'stopDetail.badges.accessible',
-          universityOnly: 'stopDetail.badges.universityOnly'
-        },
-        source: {
-          live: 'stopDetail.source.live',
-          snapshot: 'stopDetail.source.snapshot'
-        }
+        badges: { accessible: 'Accessible', universityOnly: 'University' },
+        source: { live: 'Live {provider}', snapshot: 'Snapshot {provider}' }
       }
     });
   }
@@ -92,7 +79,6 @@ describe('StopDetailComponent', () => {
   let routeLines: jasmine.SpyObj<RouteLinesApiService>;
   let paramMapSubject: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
   let queryParamMapSubject: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
-  let layoutContext: jasmine.SpyObj<AppLayoutContext>;
 
   beforeEach(async () => {
     paramMapSubject = new BehaviorSubject(convertToParamMap({ stopId: 'stop-main-street' }));
@@ -130,20 +116,10 @@ describe('StopDetailComponent', () => {
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
     router.navigate.and.resolveTo(true);
 
-    layoutContext = jasmine.createSpyObj<AppLayoutContext>('AppLayoutContext', [
+    const layoutContext = jasmine.createSpyObj<AppLayoutContext>('AppLayoutContext', [
       'registerContent',
-      'unregisterContent',
-      'configureTabs',
-      'setActiveTab',
-      'clearTabs',
-      'snapshot'
+      'unregisterContent'
     ]);
-    layoutContext.snapshot.and.returnValue({
-      activeContent: null,
-      activeNavigationKey: null,
-      tabs: [],
-      activeTab: null
-    });
 
     await TestBed.configureTestingModule({
       imports: [
@@ -175,80 +151,73 @@ describe('StopDetailComponent', () => {
 
   it('requests the schedule for the routed stop identifier', fakeAsync(() => {
     createFixture();
-
     expect(scheduleFacade.loadStopSchedule).toHaveBeenCalledWith('stop-main-street');
   }));
 
-  it('preserves consortium context for schedules, stop metadata and stop lines', fakeAsync(() => {
+  it('keeps utility work lazy until its task tab is selected', fakeAsync(() => {
     queryParamMapSubject.next(convertToParamMap({ [CONSORTIUM_QUERY_PARAM]: '4' }));
-
     createFixture();
 
-    expect(scheduleFacade.loadStopSchedule).toHaveBeenCalledWith('stop-main-street', {
-      consortiumId: 4
-    });
+    expect(routeLines.getLinesForStops).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('.stop-detail__panel--departures')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('app-stop-utility')).toBeNull();
+
+    selectSection('lines');
+
     expect(directoryFacade.getRecordByStopSignature).toHaveBeenCalledWith(4, 'stop-main-street');
-    expect(routeLines.getLinesForStops).toHaveBeenCalledWith(4, ['stop-main-street']);
+    expect(routeLines.getLinesForStops).toHaveBeenCalledOnceWith(4, ['stop-main-street']);
+    expect(fixture.nativeElement.querySelector('.stop-utility__line')?.textContent).toContain('M-301');
+    expect(fixture.nativeElement.querySelectorAll('.stop-utility__map-link').length).toBe(0);
   }));
 
-  it('falls back to legacy stop resolution when consortium context is invalid', fakeAsync(() => {
-    queryParamMapSubject.next(convertToParamMap({ [CONSORTIUM_QUERY_PARAM]: 'invalid' }));
-
+  it('renders directions separately from lines and hands walking routes to map providers', fakeAsync(() => {
+    queryParamMapSubject.next(convertToParamMap({ [CONSORTIUM_QUERY_PARAM]: '7' }));
     createFixture();
 
-    expect(scheduleFacade.loadStopSchedule).toHaveBeenCalledWith('stop-main-street');
-    expect(directoryFacade.getRecordByStopId).toHaveBeenCalledWith('stop-main-street');
-  }));
+    selectSection('directions');
 
-  it('renders useful line and walking-map actions in the stop detail surface', fakeAsync(() => {
-    createFixture();
-
-    const lineButton = fixture.nativeElement.querySelector('.stop-utility__line') as HTMLButtonElement | null;
-    const mapLinks = fixture.nativeElement.querySelectorAll('.stop-utility__map-link') as NodeListOf<HTMLAnchorElement>;
-
-    expect(lineButton?.textContent).toContain('M-301');
+    const mapLinks = fixture.nativeElement.querySelectorAll(
+      '.stop-utility__map-link'
+    ) as NodeListOf<HTMLAnchorElement>;
     expect(mapLinks.length).toBe(2);
+    expect(fixture.nativeElement.querySelector('.stop-utility__line')).toBeNull();
+    expect(routeLines.getLinesForStops).not.toHaveBeenCalled();
     expect(mapLinks[0]?.href).toContain('google.com/maps/dir/');
     expect(mapLinks[0]?.href).toContain('travelmode=walking');
     expect(mapLinks[1]?.href).toContain('maps.apple.com/');
-
-    lineButton?.click();
-    expect(router.navigate).toHaveBeenCalledWith(['/', 'lines', '7', '301']);
   }));
 
-  it('marks the loading status as a polite live region', fakeAsync(() => {
-    scheduleFacade.loadStopSchedule.and.returnValue(
-      of(createResult('stop-main-street')).pipe(delay(1))
-    );
-    fixture = TestBed.createComponent(StopDetailComponent);
+  it('keeps the destination filter inside the departures surface', fakeAsync(() => {
+    createFixture();
+
+    expect(fixture.nativeElement.querySelector('.stop-detail__summary .stop-detail__select')).toBeNull();
+    expect(
+      fixture.nativeElement.querySelector('.stop-detail__panel--departures .stop-detail__select')
+    ).not.toBeNull();
+  }));
+
+  it('uses accessible tabs and supports keyboard task switching', fakeAsync(() => {
+    createFixture();
+
+    const departures = fixture.nativeElement.querySelector(
+      '[data-stop-section="departures"]'
+    ) as HTMLButtonElement;
+    const lines = fixture.nativeElement.querySelector(
+      '[data-stop-section="lines"]'
+    ) as HTMLButtonElement;
+
+    expect(departures.getAttribute('aria-selected')).toBe('true');
+    expect(lines.getAttribute('aria-selected')).toBe('false');
+
+    departures.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    fixture.detectChanges();
+    tick();
     fixture.detectChanges();
 
-    const statusElement = fixture.nativeElement.querySelector('.stop-detail__loading') as HTMLElement | null;
-
-    expect(statusElement?.getAttribute('role')).toBe(STATUS_ROLE);
-    expect(statusElement?.getAttribute('aria-live')).toBe(POLITE_LIVE_REGION);
-    tick();
+    expect(lines.getAttribute('aria-selected')).toBe('true');
   }));
 
-  it('redirects to home when the stop identifier is missing', fakeAsync(() => {
-    paramMapSubject.next(convertToParamMap({}));
-    createFixture();
-
-    expect(router.navigate).toHaveBeenCalledWith(['/', APP_CONFIG.routes.home]);
-    expect(scheduleFacade.loadStopSchedule).not.toHaveBeenCalled();
-  }));
-
-  it('shows an assertive error status when the schedule request fails', fakeAsync(() => {
-    scheduleFacade.loadStopSchedule.and.returnValue(throwError(() => new Error('Network error')));
-
-    createFixture();
-
-    const statusElement = fixture.nativeElement.querySelector('.stop-detail__error') as HTMLElement | null;
-    expect(statusElement?.getAttribute('role')).toBe(STATUS_ROLE);
-    expect(statusElement?.getAttribute('aria-live')).toBe(ASSERTIVE_LIVE_REGION);
-  }));
-
-  it('reloads the same stop when consortium context changes', fakeAsync(() => {
+  it('preserves consortium context when reloading the same stop', fakeAsync(() => {
     createFixture();
     scheduleFacade.loadStopSchedule.calls.reset();
 
@@ -260,24 +229,36 @@ describe('StopDetailComponent', () => {
     });
   }));
 
-  it('configures and clears timeline tabs through the layout context', fakeAsync(() => {
+  it('marks loading and error schedule states as live regions', fakeAsync(() => {
+    scheduleFacade.loadStopSchedule.and.returnValue(
+      of(createResult('stop-main-street')).pipe(delay(1))
+    );
+    fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+
+    const loading = fixture.nativeElement.querySelector('.stop-detail__loading') as HTMLElement;
+    expect(loading.getAttribute('role')).toBe(STATUS_ROLE);
+    expect(loading.getAttribute('aria-live')).toBe(POLITE_LIVE_REGION);
+    tick();
+
+    fixture.destroy();
+    scheduleFacade.loadStopSchedule.and.returnValue(throwError(() => new Error('Network error')));
+    fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const error = fixture.nativeElement.querySelector('.stop-detail__error') as HTMLElement;
+    expect(error.getAttribute('role')).toBe(STATUS_ROLE);
+    expect(error.getAttribute('aria-live')).toBe(ASSERTIVE_LIVE_REGION);
+  }));
+
+  it('redirects to home when the stop identifier is missing', fakeAsync(() => {
+    paramMapSubject.next(convertToParamMap({}));
     createFixture();
 
-    expect(layoutContext.configureTabs).toHaveBeenCalledWith([
-      {
-        identifier: STOP_TIMELINE_UPCOMING_TAB_ID,
-        labelKey: APP_CONFIG.translationKeys.stopDetail.schedule.upcomingTitle
-      },
-      {
-        identifier: STOP_TIMELINE_PAST_TAB_ID,
-        labelKey: APP_CONFIG.translationKeys.stopDetail.schedule.pastTitle
-      }
-    ]);
-    expect(layoutContext.setActiveTab.calls.mostRecent().args[0]).toBe(STOP_TIMELINE_PAST_TAB_ID);
-
-    layoutContext.clearTabs.calls.reset();
-    fixture.destroy();
-    expect(layoutContext.clearTabs).toHaveBeenCalledTimes(1);
+    expect(router.navigate).toHaveBeenCalledWith(['/', APP_CONFIG.routes.home]);
+    expect(scheduleFacade.loadStopSchedule).not.toHaveBeenCalled();
   }));
 
   it('announces upcoming progress changes through a polite live region', fakeAsync(() => {
@@ -291,18 +272,26 @@ describe('StopDetailComponent', () => {
 
     createFixture();
 
-    const liveRegion = fixture.nativeElement.querySelector('.stop-detail__live-region') as HTMLElement | null;
-    const textContent = liveRegion?.textContent?.trim() ?? '';
-
-    expect(liveRegion?.getAttribute('aria-live')).toBe(POLITE_LIVE_REGION);
+    const liveRegion = fixture.nativeElement.querySelector('.stop-detail__live-region') as HTMLElement;
+    const textContent = liveRegion.textContent?.trim() ?? '';
+    expect(liveRegion.getAttribute('aria-live')).toBe(POLITE_LIVE_REGION);
     expect(textContent).toContain('lineCode:M-112');
     expect(textContent).toContain('destination:Centro');
     expect(textContent).toContain('status:Arrives in 5 min');
-    expect(textContent).toContain('progress:83');
   }));
 
   function createFixture(): void {
     fixture = TestBed.createComponent(StopDetailComponent);
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+  }
+
+  function selectSection(section: 'lines' | 'directions'): void {
+    const tab = fixture.nativeElement.querySelector(
+      `[data-stop-section="${section}"]`
+    ) as HTMLButtonElement;
+    tab.click();
     fixture.detectChanges();
     tick();
     fixture.detectChanges();

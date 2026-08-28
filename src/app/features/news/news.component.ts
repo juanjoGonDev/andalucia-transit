@@ -10,7 +10,7 @@ import {
   ConsortiumCatalogService
 } from '@data/catalog/consortium-catalog.service';
 import { NewsArticle, NewsFacade, NewsState } from '@domain/news/news.facade';
-import { getNewsUiCopy, NewsSortOrder } from '@features/news/news-ui.copy';
+import { NewsSortOrder, getNewsUiCopy } from '@features/news/news-ui.copy';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import { buildNewsDetailNavigation } from '@shared/navigation/navigation.util';
