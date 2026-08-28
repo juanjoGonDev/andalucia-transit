@@ -18,6 +18,12 @@ interface RenderedContrastSample {
   readonly fontWeight: number;
 }
 
+interface RenderedTextStyle {
+  readonly foreground: string;
+  readonly fontSizePx: number;
+  readonly fontWeight: number;
+}
+
 const parseChannel = (component: number): number =>
   component <= 0.03928 ? component / 12.92 : Math.pow((component + 0.055) / 1.055, 2.4);
 
@@ -43,7 +49,7 @@ const getContrastRatio = (foreground: string, background: string): number => {
   return (lighter + 0.05) / (darker + 0.05);
 };
 
-const resolveContrastThreshold = (sample: RenderedContrastSample): number => {
+const resolveContrastThreshold = (sample: RenderedTextStyle): number => {
   const isLarge =
     sample.fontSizePx >= LARGE_TEXT_SIZE_PX ||
     (sample.fontSizePx >= LARGE_BOLD_TEXT_SIZE_PX && sample.fontWeight >= LARGE_TEXT_WEIGHT);
@@ -109,6 +115,31 @@ async function readRenderedContrast(target: Locator): Promise<RenderedContrastSa
   });
 }
 
+async function readRenderedTextStyle(target: Locator): Promise<RenderedTextStyle> {
+  return target.evaluate((element: HTMLElement) => {
+    const styles = getComputedStyle(element);
+    const numericWeight = Number.parseInt(styles.fontWeight, 10);
+    return {
+      foreground: styles.color,
+      fontSizePx: Number.parseFloat(styles.fontSize),
+      fontWeight: Number.isFinite(numericWeight) ? numericWeight : 400,
+    } satisfies RenderedTextStyle;
+  });
+}
+
+async function readGradientStopColors(surface: Locator): Promise<readonly string[]> {
+  const backgroundImage = await surface.evaluate(
+    (element: HTMLElement) => getComputedStyle(element).backgroundImage,
+  );
+  const colors = backgroundImage.match(/rgba?\([^)]*\)/g) ?? [];
+
+  if (colors.length < 2) {
+    throw new Error(`Expected a gradient with at least two color stops, received: ${backgroundImage}`);
+  }
+
+  return colors;
+}
+
 async function expectRenderedContrast(target: Locator, label: string): Promise<void> {
   await expect(target, `${label} must be rendered`).toBeVisible();
   const sample = await readRenderedContrast(target);
@@ -121,6 +152,25 @@ async function expectRenderedContrast(target: Locator, label: string): Promise<v
   ).toBeGreaterThanOrEqual(threshold);
 }
 
+async function expectRenderedGradientContrast(
+  target: Locator,
+  surface: Locator,
+  label: string,
+): Promise<void> {
+  await expect(target, `${label} must be rendered`).toBeVisible();
+  const sample = await readRenderedTextStyle(target);
+  const backgroundStops = await readGradientStopColors(surface);
+  const threshold = resolveContrastThreshold(sample);
+
+  for (const background of backgroundStops) {
+    const ratio = getContrastRatio(sample.foreground, background);
+    expect(
+      ratio,
+      `${label} contrast ${ratio.toFixed(2)}:1 must meet ${threshold}:1 (${sample.foreground} on ${background})`,
+    ).toBeGreaterThanOrEqual(threshold);
+  }
+}
+
 async function open(page: Page, path: string): Promise<void> {
   const baseUrl = BASE_URL as string;
   await page.goto(new URL(path, baseUrl).toString());
@@ -129,17 +179,16 @@ async function open(page: Page, path: string): Promise<void> {
 test.describe('rendered theme contrast', () => {
   test.skip(!BASE_URL, 'E2E_BASE_URL environment variable is required for contrast checks.');
 
-  test('keeps representative card, muted and map-panel copy WCAG AA compliant', async ({
-    page,
-  }) => {
+  test('keeps representative card, hero and map-panel copy WCAG AA compliant', async ({ page }) => {
     await open(page, HOME_PATH);
     await expectRenderedContrast(page.locator('.home__card-title'), 'home card title');
     await expectRenderedContrast(page.locator('.home__card-subtitle'), 'home muted subtitle');
 
     await open(page, ROUTE_SEARCH_PATH);
-    await expectRenderedContrast(
+    await expectRenderedGradientContrast(
       page.locator('.route-search__description'),
-      'route-search muted description',
+      page.locator('.route-search'),
+      'route-search hero description',
     );
 
     await open(page, MAP_PATH);
