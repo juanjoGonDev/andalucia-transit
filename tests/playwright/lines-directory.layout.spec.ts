@@ -1,9 +1,12 @@
-import { mkdir } from 'node:fs/promises';
-import { join } from 'node:path';
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import {
+  captureVisualEvidence,
+  expect,
+  test,
+  type Locator,
+  type Page,
+} from './visual-evidence.fixture';
 
 const BASE_URL = process.env.E2E_BASE_URL;
-const EVIDENCE_DIR = process.env.E2E_EVIDENCE_DIR;
 const LINES_PATH = '/lines';
 const LINE_DETAIL_PATH = '/lines/1/259';
 const ROUTE_SEARCH_PREVIEW_PATH =
@@ -353,15 +356,6 @@ async function countPaintedPixels(canvas: Locator): Promise<number> {
   });
 }
 
-async function capture(page: Page, name: string): Promise<void> {
-  if (!EVIDENCE_DIR) {
-    return;
-  }
-
-  await mkdir(EVIDENCE_DIR, { recursive: true });
-  await page.screenshot({ path: join(EVIDENCE_DIR, name), fullPage: true });
-}
-
 test.describe('Lines directory and line detail layout', () => {
   test.use({ locale: 'es-ES' });
   test.skip(!BASE_URL, 'E2E_BASE_URL is required.');
@@ -379,7 +373,7 @@ test.describe('Lines directory and line detail layout', () => {
       await assertNoHorizontalOverflow(page);
 
       if (viewport.width === MOBILE_VIEWPORT.width) {
-        await capture(page, 'lines-data_es_390_844_full.png');
+        await captureVisualEvidence(page, 'lines-data_es_390_844_full.png');
       }
       if (viewport.width === DESKTOP_VIEWPORT.width) {
         const [lineBox, nameBox] = await Promise.all([
@@ -389,7 +383,7 @@ test.describe('Lines directory and line detail layout', () => {
         expect(lineBox).not.toBeNull();
         expect(nameBox).not.toBeNull();
         expect((nameBox?.width ?? 0) >= (lineBox?.width ?? 0) * 0.35).toBe(true);
-        await capture(page, 'lines-data_es_1440_900_full.png');
+        await captureVisualEvidence(page, 'lines-data_es_1440_900_full.png');
       }
     }
   });
@@ -424,7 +418,7 @@ test.describe('Lines directory and line detail layout', () => {
     expect(stopsBox).not.toBeNull();
     expect((stopsBox?.y ?? 0) >= (mapBox?.y ?? 0) + (mapBox?.height ?? 0) - 1).toBe(true);
     await assertNoHorizontalOverflow(page);
-    await capture(page, 'line-detail-data_es_390_844_full.png');
+    await captureVisualEvidence(page, 'line-detail-data_es_390_844_full.png');
   });
 
   test('uses the intended map-first two-column workspace on desktop', async ({ page }) => {
@@ -465,7 +459,7 @@ test.describe('Lines directory and line detail layout', () => {
         expect((detailsBox?.y ?? 0) >= (selectBox?.y ?? 0) + (selectBox?.height ?? 0) - 1).toBe(
           true,
         );
-        await capture(page, 'line-detail-data_es_1440_900_full.png');
+        await captureVisualEvidence(page, 'line-detail-data_es_1440_900_full.png');
       } else {
         expect((stopsBox?.y ?? 0) >= (mapBox?.y ?? 0) + (mapBox?.height ?? 0) - 1).toBe(true);
       }
@@ -530,7 +524,7 @@ test.describe('Route search reusable route workspace', () => {
     expect(stopsBox).not.toBeNull();
     expect(Math.abs((mapBox?.height ?? 0) - (stopsBox?.height ?? 0))).toBeLessThanOrEqual(1);
     await assertNoHorizontalOverflow(page);
-    await capture(page, 'route-search-preview-data_es_1440_900_full.png');
+    await captureVisualEvidence(page, 'route-search-preview-data_es_1440_900_full.png');
   });
 
   test('stacks the same expanded route workspace on mobile without overflow', async ({ page }) => {
@@ -558,6 +552,6 @@ test.describe('Route search reusable route workspace', () => {
     expect(stopsBox).not.toBeNull();
     expect((stopsBox?.y ?? 0) >= (mapBox?.y ?? 0) + (mapBox?.height ?? 0) - 1).toBe(true);
     await assertNoHorizontalOverflow(page);
-    await capture(page, 'route-search-preview-data_es_390_844_full.png');
+    await captureVisualEvidence(page, 'route-search-preview-data_es_390_844_full.png');
   });
 });
