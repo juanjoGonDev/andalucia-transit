@@ -9,7 +9,7 @@ describe('catalog generator', () => {
       timezone: 'Europe/Madrid',
       providerName: 'CTAN',
       consortiums: [
-        { id: 7, name: 'Jaén', shortName: 'CTJA' }
+        { id: 7, name: 'Jaén', shortName: 'CTJA', province: 'Jaén' }
       ]
     } satisfies CatalogConfig;
 
@@ -52,12 +52,13 @@ describe('catalog generator', () => {
       generatedAt: '2025-02-01T05:00:00.000Z',
       timezone: 'Europe/Madrid',
       providerName: 'CTAN',
-      consortiums: [{ id: 7, name: 'Jaén', shortName: 'CTJA' }]
+      consortiums: [{ id: 7, name: 'Jaén', shortName: 'CTJA', province: 'Jaén' }]
     });
 
     assert.equal(result.consortia.length, 1);
     const consortium = result.consortia[0];
     assert.equal(consortium.summary.id, 7);
+    assert.equal(consortium.summary.province, 'Jaén');
     assert.deepEqual(consortium.municipalities, [
       { id: '01', name: 'Alcalá' },
       { id: '02', name: 'Baños' }
