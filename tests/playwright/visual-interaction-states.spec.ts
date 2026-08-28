@@ -10,7 +10,8 @@ const STOP_SERVICES_SNAPSHOT_PATH = '/assets/data/snapshots/stop-services/latest
 const STOP_SCHEDULE_API_GLOB = '**/v1/Consorcios/*/paradas/**';
 const TIMETABLE_API_GLOB = '**/v1/Consorcios/*/horarios_origen_destino*';
 const HOLIDAY_API_GLOB = '**/PublicHolidays/**';
-const NEWS_LIST_URL_PATTERN = /^https:\/\/api\.ctan\.es\/v1\/Consorcios\/(\d+)\/noticias(?:\?.*)?$/u;
+const NEWS_LIST_URL_PATTERN =
+  /^https:\/\/api\.ctan\.es\/v1\/Consorcios\/(\d+)\/noticias(?:\?.*)?$/u;
 const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 const DATA_ITEM_COUNT = 2;
@@ -60,9 +61,7 @@ async function dismissDialog(page: Page): Promise<void> {
 
 async function loadPopulatedStop(page: Page): Promise<StopServicesSnapshotEntry> {
   const baseUrl = BASE_URL as string;
-  const response = await page.request.get(
-    new URL(STOP_SERVICES_SNAPSHOT_PATH, baseUrl).toString(),
-  );
+  const response = await page.request.get(new URL(STOP_SERVICES_SNAPSHOT_PATH, baseUrl).toString());
   expect(response.ok()).toBe(true);
 
   const snapshot = (await response.json()) as StopServicesSnapshotFile;
@@ -262,7 +261,9 @@ test.describe('deterministic interaction visual states', () => {
         'aria-selected',
         'true',
       );
-      await expect(page.locator('.stop-detail__panel--departures .stop-detail__select')).toBeVisible();
+      await expect(
+        page.locator('.stop-detail__panel--departures .stop-detail__select'),
+      ).toBeVisible();
       await expect(page.locator('app-stop-utility')).toHaveCount(0);
 
       await page.locator('[data-stop-section="directions"]').click();
