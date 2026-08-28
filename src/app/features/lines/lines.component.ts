@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
   Observable,
@@ -32,13 +32,13 @@ import {
   LineDirectoryService,
   buildLineKey
 } from '@domain/lines/line-directory.service';
+import { LinesUiCopy, getLinesUiCopy } from '@features/lines/lines-ui.copy';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import {
   LINE_DETAIL_BASE_SEGMENT,
   NavigationCommands,
   buildLineDetailNavigation
 } from '@shared/navigation/navigation.util';
-import { LinesUiCopy, getLinesUiCopy } from '@features/lines/lines-ui.copy';
 
 interface LineDirectoryFilters {
   readonly query: string;
@@ -172,16 +172,16 @@ export class LinesComponent {
     this.geographyState$,
     this.nearbyKeys
   ]).pipe(
-    map(([state, filters, geography, nearby]) =>
-      buildView(state, filters, geography, nearby, this.nearMeActive())
-    ),
+    map(([state, filters, geography, nearby]) => buildView(state, filters, geography, nearby)),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
   constructor() {
     this.queryChanges
       .pipe(debounceTime(250), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((query) => this.updateQueryParams({ [QUERY_PARAM_QUERY]: normalizeQuery(query), page: null }));
+      .subscribe((query) =>
+        this.updateQueryParams({ [QUERY_PARAM_QUERY]: normalizeQuery(query), page: null })
+      );
   }
 
   protected onQueryInput(value: string): void {
@@ -247,12 +247,12 @@ export class LinesComponent {
           longitude: position.coords.longitude
         })
       );
-      this.nearbyKeys.next(keys);
       this.nearMeActive.set(true);
+      this.nearbyKeys.next(keys);
       this.updateQueryParams({ [QUERY_PARAM_PAGE]: null });
     } catch {
-      this.nearbyKeys.next(null);
       this.nearMeActive.set(false);
+      this.nearbyKeys.next(null);
       this.locationError.set(true);
     } finally {
       this.locationLoading.set(false);
@@ -320,8 +320,7 @@ function buildView(
   state: LinesState,
   filters: LineDirectoryFilters,
   geography: GeographyState,
-  nearby: ReadonlySet<string> | null,
-  nearMeActive: boolean
+  nearby: ReadonlySet<string> | null
 ): LineDirectoryView {
   if (state.status !== 'ready') {
     return {
@@ -345,11 +344,15 @@ function buildView(
       return false;
     }
 
-    if (geography.status === 'ready' && geography.keys && !geography.keys.has(buildLineKey(line.consortiumId, line.lineId))) {
+    if (
+      geography.status === 'ready' &&
+      geography.keys &&
+      !geography.keys.has(buildLineKey(line.consortiumId, line.lineId))
+    ) {
       return false;
     }
 
-    if (nearMeActive && nearby && !nearby.has(buildLineKey(line.consortiumId, line.lineId))) {
+    if (nearby && !nearby.has(buildLineKey(line.consortiumId, line.lineId))) {
       return false;
     }
 
