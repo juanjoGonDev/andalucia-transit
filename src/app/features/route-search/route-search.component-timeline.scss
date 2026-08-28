@@ -82,7 +82,7 @@
 .route-search__item-departure {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: var(--space-sm);
   min-width: 0;
 }
@@ -96,10 +96,13 @@
 }
 
 .route-search__item-relative {
+  display: inline-flex;
+  align-items: center;
   min-width: 0;
   color: var(--route-search-state-muted);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-snug);
 }
 
 .route-search__item-arrival {
