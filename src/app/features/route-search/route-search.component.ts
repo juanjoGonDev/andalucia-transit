@@ -32,6 +32,7 @@ import {
   parseStopSlug
 } from '@domain/route-search/route-search-url.util';
 import { StopDirectoryFacade, StopDirectoryOption } from '@domain/stops/stop-directory.facade';
+import { RouteSearchDepartureRoutePreviewComponent } from '@features/route-search/departure-route-preview/route-search-departure-route-preview.component';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
@@ -59,6 +60,7 @@ type RouteSearchResultsState =
     TranslateModule,
     SectionComponent,
     RouteSearchFormComponent,
+    RouteSearchDepartureRoutePreviewComponent,
     AccessibleButtonDirective,
     AppLayoutContentDirective
   ],

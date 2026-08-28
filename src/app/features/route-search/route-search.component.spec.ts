@@ -6,6 +6,7 @@ import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService }
 import { DateTime } from 'luxon';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, of } from 'rxjs';
+import { LineRouteWorkspaceService } from '@domain/lines/line-route-workspace.service';
 import {
   RouteSearchDepartureView,
   RouteSearchResultsService,
@@ -15,6 +16,7 @@ import { RouteSearchSelectionResolverService } from '@domain/route-search/route-
 import { RouteSearchSelection, RouteSearchStateService } from '@domain/route-search/route-search-state.service';
 import { buildDateSlug, buildStopSlug } from '@domain/route-search/route-search-url.util';
 import { StopDirectoryFacade, StopDirectoryOption } from '@domain/stops/stop-directory.facade';
+import { RouteSearchDepartureRoutePreviewComponent } from '@features/route-search/departure-route-preview/route-search-departure-route-preview.component';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 import { RouteSearchComponent } from '@features/route-search/route-search.component';
 
@@ -39,6 +41,23 @@ class RouteSearchResultsServiceStub {
 
   loadResults(): ReturnType<RouteSearchResultsService['loadResults']> {
     return of(this.viewModel);
+  }
+}
+
+class LineRouteWorkspaceServiceStub {
+  load(): ReturnType<LineRouteWorkspaceService['load']> {
+    return of({
+      detail: {
+        lineId: 'line-1',
+        code: '001',
+        name: 'Line One',
+        mode: 'Bus',
+        coordinates: []
+      },
+      stops: [],
+      coordinates: [],
+      resolvedDirection: 0
+    });
   }
 }
 
@@ -167,6 +186,7 @@ describe('RouteSearchComponent', () => {
       providers: [
         provideRouter([]),
         { provide: RouteSearchResultsService, useClass: RouteSearchResultsServiceStub },
+        { provide: LineRouteWorkspaceService, useClass: LineRouteWorkspaceServiceStub },
         {
           provide: RouteSearchSelectionResolverService,
           useClass: RouteSearchSelectionResolverServiceStub
@@ -248,6 +268,11 @@ describe('RouteSearchComponent', () => {
     const arrival = item?.query(By.css('.route-search__item-arrival-time'))?.nativeElement as HTMLElement;
     expect(arrival.textContent?.trim()).toBe('08:20');
     expect(arrival.getAttribute('aria-label')).toContain('08:20');
+
+    const routePreview = item?.query(By.directive(RouteSearchDepartureRoutePreviewComponent))
+      ?.componentInstance as RouteSearchDepartureRoutePreviewComponent;
+    expect(routePreview.consortiumId).toBe(origin.consortiumId);
+    expect(routePreview.departure).toEqual(departure);
   });
 
   it('prefills the origin field from the query parameter', () => {
