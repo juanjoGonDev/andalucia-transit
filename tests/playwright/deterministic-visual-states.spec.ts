@@ -67,7 +67,7 @@ async function openStopDetail(page: Page, stop: StopServicesSnapshotEntry): Prom
 
 async function captureStopDetail(
   page: Page,
-  viewport: (typeof MOBILE_VIEWPORT) | (typeof DESKTOP_VIEWPORT),
+  viewport: typeof MOBILE_VIEWPORT | typeof DESKTOP_VIEWPORT,
 ): Promise<void> {
   if (!EVIDENCE_DIR) {
     return;
