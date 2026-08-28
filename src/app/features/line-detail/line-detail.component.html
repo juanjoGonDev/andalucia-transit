@@ -44,6 +44,7 @@
                   [selectedStopId]="selectedStopId()"
                   [accessibleLabel]="uiCopy().routeMapLabel(state.viewModel.detail.code)"
                   [stopDetailsLabel]="uiCopy().moreInformation"
+                  (stopSelected)="selectStopById($event)"
                   (stopDetails)="openStopById($event)"
                 ></app-route-map>
                 <ng-template #mapUnavailable>

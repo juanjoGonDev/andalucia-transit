@@ -80,7 +80,11 @@ export class LineDetailComponent {
   protected readonly trackStop = (_: number, stop: RouteLineStop): string => stop.stopId;
 
   protected selectStop(stop: RouteLineStop): void {
-    this.selectedStopId.set(stop.stopId);
+    this.selectStopById(stop.stopId);
+  }
+
+  protected selectStopById(stopId: string): void {
+    this.selectedStopId.set(stopId);
   }
 
   protected openStop(stop: RouteLineStop): void {
@@ -88,7 +92,7 @@ export class LineDetailComponent {
   }
 
   protected openStopById(stopId: string): void {
-    this.selectedStopId.set(stopId);
+    this.selectStopById(stopId);
     this.navigateToStop(stopId);
   }
 
