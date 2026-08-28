@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { APP_CONFIG } from '@core/config';
 import { FavoritesComponent } from '@features/favorites/favorites.component';
 import { HomeComponent } from '@features/home/home.component';
-import { RouteSearchComponent } from '@features/route-search/route-search.component';
 import { AppLayoutComponent } from '@shared/layout/app-layout/app-layout.component';
 import {
   LINE_DETAIL_ROUTE_PATTERN,
@@ -68,12 +67,18 @@ export const routes: Routes = [
       },
       {
         path: APP_CONFIG.routes.routeSearchResultPattern,
-        component: RouteSearchComponent,
+        loadComponent: () =>
+          import('@features/route-search/route-search.component').then(
+            (module) => module.RouteSearchComponent
+          ),
         title: APP_CONFIG.translationKeys.navigation.routeSearch
       },
       {
         path: APP_CONFIG.routes.routeSearch,
-        component: RouteSearchComponent,
+        loadComponent: () =>
+          import('@features/route-search/route-search.component').then(
+            (module) => module.RouteSearchComponent
+          ),
         title: APP_CONFIG.translationKeys.navigation.routeSearch
       },
       {
