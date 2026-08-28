@@ -42,6 +42,10 @@ export async function captureVisualEvidence(page: Page, name: string): Promise<v
 }
 
 async function stabilizeVisualEvidence(page: Page): Promise<void> {
+  if (EXACT_VISUAL_REGRESSION) {
+    await resetScrollPosition(page);
+  }
+
   await page.evaluate(async () => {
     await document.fonts.ready;
   });
@@ -59,7 +63,21 @@ async function stabilizeVisualEvidence(page: Page): Promise<void> {
     await waitForStableLeafletFrames(page);
   }
 
+  if (EXACT_VISUAL_REGRESSION) {
+    await resetScrollPosition(page);
+  }
   await waitForTwoAnimationFrames(page);
+}
+
+async function resetScrollPosition(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const root = document.documentElement;
+    const previousScrollBehavior = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    window.scrollTo(0, 0);
+    root.style.scrollBehavior = previousScrollBehavior;
+  });
+  await page.waitForFunction(() => window.scrollX === 0 && window.scrollY === 0);
 }
 
 async function waitForStableLeafletFrames(page: Page): Promise<void> {
