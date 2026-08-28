@@ -1,7 +1,6 @@
-import { expect, test, type Page } from '@playwright/test';
+import { captureVisualEvidence, expect, test, type Page } from './visual-evidence.fixture';
 
 const BASE_URL = process.env.E2E_BASE_URL;
-const EVIDENCE_DIR = process.env.E2E_EVIDENCE_DIR;
 const HOME_PATH = '/';
 const MAP_PATH = '/map';
 const MOBILE_VIEWPORT_WIDTHS = [320, 360, 390, 430] as const;
@@ -309,12 +308,10 @@ test.describe('home tabs responsive layout', () => {
         expect(entryBounds?.height ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
       }
 
-      if (EVIDENCE_DIR) {
-        await page.screenshot({
-          path: `${EVIDENCE_DIR}/shell-drawer-${viewport.width}x${viewport.height}.png`,
-          fullPage: true,
-        });
-      }
+      await captureVisualEvidence(
+        page,
+        `shell-drawer-${viewport.width}x${viewport.height}.png`,
+      );
 
       await page.keyboard.press('Escape');
       await expect(overflow).not.toBeVisible();
