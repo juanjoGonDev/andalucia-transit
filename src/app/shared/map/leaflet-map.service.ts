@@ -340,7 +340,7 @@ export class LeafletMapService {
       destroy: () => {
         map.remove();
       }
-    };
+    } satisfies MapHandle;
   }
 
   private buildMap(container: HTMLElement, options: MapCreateOptions): Map {
@@ -350,7 +350,8 @@ export class LeafletMapService {
       minZoom: options.minZoom ?? DEFAULT_MIN_ZOOM,
       maxZoom: options.maxZoom ?? DEFAULT_MAX_ZOOM,
       zoomControl: true,
-      attributionControl: true
+      attributionControl: true,
+      preferCanvas: true
     });
 
     tileLayer(TILE_LAYER_URL, {
