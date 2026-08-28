@@ -4,7 +4,10 @@ import { FavoritesComponent } from '@features/favorites/favorites.component';
 import { HomeComponent } from '@features/home/home.component';
 import { RouteSearchComponent } from '@features/route-search/route-search.component';
 import { AppLayoutComponent } from '@shared/layout/app-layout/app-layout.component';
-import { LINE_DETAIL_ROUTE_PATTERN } from '@shared/navigation/navigation.util';
+import {
+  LINE_DETAIL_ROUTE_PATTERN,
+  NEWS_DETAIL_ROUTE_PATTERN
+} from '@shared/navigation/navigation.util';
 
 export const routes: Routes = [
   {
@@ -30,6 +33,12 @@ export const routes: Routes = [
         path: APP_CONFIG.routes.favorites,
         component: FavoritesComponent,
         title: APP_CONFIG.translationKeys.navigation.favorites
+      },
+      {
+        path: NEWS_DETAIL_ROUTE_PATTERN,
+        loadComponent: () =>
+          import('@features/news/news-detail.component').then((module) => module.NewsDetailComponent),
+        title: APP_CONFIG.translationKeys.navigation.news
       },
       {
         path: APP_CONFIG.routes.news,

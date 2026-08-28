@@ -1,0 +1,97 @@
+:host {
+  display: block;
+}
+
+.news-detail .app-layout__body {
+  --app-layout-body-padding-block: var(--space-xl);
+}
+
+.news-detail__article,
+.news-detail__status {
+  width: min(100%, 52rem);
+  margin-inline: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.news-detail__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  min-height: 12rem;
+  padding: var(--space-xl);
+  text-align: center;
+}
+
+.news-detail__article {
+  overflow: hidden;
+}
+
+.news-detail__header {
+  display: grid;
+  gap: var(--space-md);
+  padding: clamp(var(--space-lg), 4vw, var(--space-2xl));
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.news-detail__eyebrow,
+.news-detail__summary,
+.news-detail__header h1,
+.news-detail__meta {
+  margin: 0;
+}
+
+.news-detail__eyebrow {
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.news-detail__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.news-detail__category {
+  padding: var(--space-3xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.news-detail__header h1 {
+  color: var(--color-text-strong);
+  font-size: clamp(var(--font-size-title-lg), 4vw, var(--font-size-3xl));
+  line-height: var(--line-height-heading);
+}
+
+.news-detail__summary {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+}
+
+.news-detail__body {
+  padding: clamp(var(--space-lg), 4vw, var(--space-2xl));
+  color: var(--color-text-primary);
+  line-height: var(--line-height-relaxed);
+  overflow-wrap: anywhere;
+}
+
+.news-detail__body :where(img, video, iframe, table) {
+  max-width: 100%;
+}
+
+.news-detail__body :where(img, video) {
+  height: auto;
+}

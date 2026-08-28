@@ -1,8 +1,10 @@
 import { Injectable, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import {
   Observable,
   Subject,
   catchError,
+  combineLatest,
   concat,
   distinctUntilChanged,
   map,
@@ -12,15 +14,10 @@ import {
   startWith,
   switchMap
 } from 'rxjs';
+import { LanguageService } from '@core/services/language.service';
 import { NewsFeedArticle, NewsFeedService } from '@data/news/news-feed.service';
 
-export interface NewsArticle {
-  readonly id: string;
-  readonly titleKey: string;
-  readonly summaryKey: string;
-  readonly link: string;
-  readonly publishedAt: string;
-}
+export type NewsArticle = NewsFeedArticle;
 
 export type NewsState =
   | { readonly status: 'loading'; readonly articles: readonly NewsArticle[] }
@@ -36,14 +33,6 @@ type NewsEvent =
 
 const EMPTY_ARTICLES: readonly NewsArticle[] = Object.freeze([]);
 const INITIAL_STATE: NewsState = { status: 'loading', articles: EMPTY_ARTICLES };
-
-const mapArticle = (article: NewsFeedArticle): NewsArticle => ({
-  id: article.id,
-  titleKey: article.titleKey,
-  summaryKey: article.summaryKey,
-  link: article.link,
-  publishedAt: article.publishedAt
-});
 
 const reduceNewsState = (state: NewsState, event: NewsEvent): NewsState => {
   switch (event.type) {
@@ -72,24 +61,28 @@ const areArticleListsEqual = (
     return false;
   }
 
-  return left.every((article, index) => article.id === right[index]?.id);
+  return left.every(
+    (article, index) =>
+      article.id === right[index]?.id && article.consortiumId === right[index]?.consortiumId
+  );
 };
 
 @Injectable({ providedIn: 'root' })
 export class NewsFacade {
   private readonly newsFeed = inject(NewsFeedService);
+  private readonly language = inject(LanguageService);
   private readonly refreshTrigger = new Subject<void>();
+  private readonly language$ = toObservable(this.language.currentLanguage);
 
-  readonly state$: Observable<NewsState> = this.refreshTrigger.pipe(
-    startWith(undefined),
-    switchMap(() =>
+  readonly state$: Observable<NewsState> = combineLatest([
+    this.refreshTrigger.pipe(startWith(undefined)),
+    this.language$
+  ]).pipe(
+    switchMap(([, language]) =>
       concat(
         of<NewsEvent>({ type: 'request' }),
-        this.newsFeed.loadFeed().pipe(
-          map((articles) => ({
-            type: 'success',
-            articles: articles.map(mapArticle)
-          }) as const),
+        this.newsFeed.loadFeed(language).pipe(
+          map((articles) => ({ type: 'success', articles }) as const),
           catchError(() => of<NewsEvent>({ type: 'error' }))
         )
       )

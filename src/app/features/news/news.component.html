@@ -98,26 +98,50 @@
           </div>
 
           <ng-container *ngIf="state.status !== 'loading' && state.status !== 'error'">
-            <ng-container *ngIf="state.articles.length > 0; else emptyState">
+            <nav *ngIf="categories(state).length" class="news__filters" [attr.aria-label]="translation.title | translate">
+              <button
+                type="button"
+                class="news__filter"
+                [class.news__filter--active]="selectedCategory() === null"
+                [attr.aria-pressed]="selectedCategory() === null"
+                (click)="selectCategory(null)"
+              >
+                {{ translation.title | translate }}
+              </button>
+              <button
+                *ngFor="let category of categories(state)"
+                type="button"
+                class="news__filter"
+                [class.news__filter--active]="selectedCategory() === category"
+                [attr.aria-pressed]="selectedCategory() === category"
+                (click)="selectCategory(category)"
+              >
+                {{ category }}
+              </button>
+            </nav>
+
+            <ng-container *ngIf="visibleArticles(state).length > 0; else emptyState">
               <ul class="news__list app-async-reveal">
-                <li *ngFor="let article of state.articles; trackBy: trackArticle" class="news__item">
+                <li *ngFor="let article of visibleArticles(state); trackBy: trackArticle" class="news__item">
                   <article class="news__card">
                     <header class="news__card-header">
-                      <h2 class="news__card-title">{{ article.titleKey | translate }}</h2>
-                      <time class="news__card-date" [attr.datetime]="article.publishedAt">
-                        {{ article.publishedAt | date: 'longDate' }}
-                      </time>
+                      <div class="news__card-meta">
+                        <span *ngIf="article.category" class="news__category">{{ article.category }}</span>
+                        <time class="news__card-date" [attr.datetime]="article.publishedAt">
+                          {{ article.publishedAt | date: 'longDate' }}
+                        </time>
+                      </div>
+                      <h2 class="news__card-title">{{ article.title }}</h2>
                     </header>
-                    <p class="news__card-summary">{{ article.summaryKey | translate }}</p>
+                    <p *ngIf="article.summary" class="news__card-summary">{{ article.summary }}</p>
                     <div class="news__card-actions">
-                      <a
+                      <button
+                        type="button"
                         class="app-outline-button app-outline-button--compact news__card-link"
-                        [href]="article.link"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        (click)="openArticle(article)"
                       >
                         {{ translation.readMore | translate }}
-                      </a>
+                      </button>
                     </div>
                   </article>
                 </li>

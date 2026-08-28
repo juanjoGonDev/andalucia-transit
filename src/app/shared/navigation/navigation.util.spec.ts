@@ -2,6 +2,7 @@ import { APP_CONFIG } from '@core/config';
 import {
   LINE_DETAIL_BASE_SEGMENT,
   buildLineDetailNavigation,
+  buildNewsDetailNavigation,
   buildStopDetailNavigation
 } from '@shared/navigation/navigation.util';
 
@@ -30,8 +31,15 @@ describe('navigation util', () => {
     });
   });
 
-  it('rejects invalid line navigation identities', () => {
+  it('builds internal CTAN news detail navigation', () => {
+    expect(buildNewsDetailNavigation(7, ' 134 ')).toEqual({
+      commands: ['/', APP_CONFIG.routes.news, '7', '134']
+    });
+  });
+
+  it('rejects invalid navigation identities', () => {
     expect(() => buildLineDetailNavigation(0, '380')).toThrowError(RangeError);
     expect(() => buildLineDetailNavigation(7, '   ')).toThrowError('lineId must not be empty');
+    expect(() => buildNewsDetailNavigation(7, '   ')).toThrowError('articleId must not be empty');
   });
 });

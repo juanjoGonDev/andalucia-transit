@@ -1,16 +1,27 @@
+import { Signal, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
+import { SupportedLanguage } from '@core/config';
+import { LanguageService } from '@core/services/language.service';
 import { NewsFeedArticle, NewsFeedService } from '@data/news/news-feed.service';
 import { NewsFacade, NewsState } from '@domain/news/news.facade';
 
 class NewsFeedServiceStub {
   readonly responses: Subject<readonly NewsFeedArticle[]>[] = [];
 
-  readonly loadFeed = jasmine.createSpy('loadFeed').and.callFake(() => {
+  readonly loadFeed = jasmine.createSpy('loadFeed').and.callFake((_language: SupportedLanguage) => {
     const subject = new Subject<readonly NewsFeedArticle[]>();
     this.responses.push(subject);
     return subject.asObservable();
   });
+}
+
+class LanguageServiceStub {
+  private readonly current = signal<SupportedLanguage>('es');
+
+  get currentLanguage(): Signal<SupportedLanguage> {
+    return this.current.asReadonly();
+  }
 }
 
 describe('NewsFacade', () => {
@@ -21,7 +32,10 @@ describe('NewsFacade', () => {
     feedService = new NewsFeedServiceStub();
 
     TestBed.configureTestingModule({
-      providers: [{ provide: NewsFeedService, useValue: feedService }]
+      providers: [
+        { provide: NewsFeedService, useValue: feedService },
+        { provide: LanguageService, useClass: LanguageServiceStub }
+      ]
     });
 
     facade = TestBed.inject(NewsFacade);
@@ -32,26 +46,19 @@ describe('NewsFacade', () => {
     const subscription = facade.state$.subscribe((state) => states.push(state));
 
     expect(states.at(-1)).toEqual({ status: 'loading', articles: [] });
-    expect(feedService.loadFeed).toHaveBeenCalledTimes(1);
+    expect(feedService.loadFeed).toHaveBeenCalledOnceWith('es');
 
     subscription.unsubscribe();
   });
 
   it('emits articles from the news feed service', () => {
     const emissions: NewsFeedArticle[][] = [];
-    const subscription = facade.articles$.subscribe((articles) => {
-      emissions.push([...articles]);
-    });
-
-    expect(feedService.loadFeed).toHaveBeenCalledTimes(1);
-
-    const initialResponse = feedService.responses[0];
+    const subscription = facade.articles$.subscribe((articles) => emissions.push([...articles]));
     const initialArticles: readonly NewsFeedArticle[] = [createArticle('initial')];
 
-    initialResponse.next(initialArticles);
+    feedService.responses[0].next(initialArticles);
 
     expect(emissions.at(-1)).toEqual([...initialArticles]);
-
     subscription.unsubscribe();
   });
 
@@ -65,7 +72,6 @@ describe('NewsFacade', () => {
 
     expect(feedService.loadFeed).toHaveBeenCalledTimes(2);
     expect(states.at(-1)).toEqual({ status: 'refreshing', articles: initialArticles });
-
     subscription.unsubscribe();
   });
 
@@ -79,7 +85,6 @@ describe('NewsFacade', () => {
     feedService.responses[1].error(new Error('offline'));
 
     expect(states.at(-1)).toEqual({ status: 'stale', articles: initialArticles });
-
     subscription.unsubscribe();
   });
 
@@ -90,42 +95,21 @@ describe('NewsFacade', () => {
     feedService.responses[0].error(new Error('offline'));
 
     expect(states.at(-1)).toEqual({ status: 'error', articles: [] });
-
-    subscription.unsubscribe();
-  });
-
-  it('refreshes the feed on demand', () => {
-    const emissions: NewsFeedArticle[][] = [];
-    const subscription = facade.articles$.subscribe((articles) => {
-      emissions.push([...articles]);
-    });
-
-    expect(feedService.loadFeed).toHaveBeenCalledTimes(1);
-
-    const firstResponse = feedService.responses[0];
-    const initialArticles: readonly NewsFeedArticle[] = [createArticle('first')];
-    firstResponse.next(initialArticles);
-
-    facade.refresh();
-
-    expect(feedService.loadFeed).toHaveBeenCalledTimes(2);
-
-    const secondResponse = feedService.responses[1];
-    const refreshedArticles: readonly NewsFeedArticle[] = [createArticle('refreshed')];
-    secondResponse.next(refreshedArticles);
-
-    expect(emissions.at(-1)).toEqual([...refreshedArticles]);
-
     subscription.unsubscribe();
   });
 });
 
 function createArticle(id: string): NewsFeedArticle {
   return {
+    consortiumId: 7,
     id,
-    titleKey: `news.feed.${id}.title`,
-    summaryKey: `news.feed.${id}.summary`,
-    link: `https://www.ctan.es/noticias/${id}`,
-    publishedAt: '2024-05-01T09:00:00+02:00'
+    title: `Title ${id}`,
+    summary: `Summary ${id}`,
+    category: 'Avisos',
+    categoryId: '3',
+    publishedAt: '2026-08-28T09:00:00+02:00',
+    endsAt: null,
+    isNew: false,
+    order: 0
   };
 }

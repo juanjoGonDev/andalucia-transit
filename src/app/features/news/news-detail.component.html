@@ -1,0 +1,35 @@
+<section class="news-detail" appLayoutContent [appLayoutContentNavigationKey]="layoutNavigationKey">
+  <div class="utility-container">
+    <div class="app-layout__body">
+      <ng-container *ngIf="state$ | async as state">
+        <section *ngIf="state.status === 'loading'" class="news-detail__status" role="status">
+          <span class="app-loading-indicator app-loading-indicator--lg" aria-hidden="true"></span>
+          <span>{{ 'news.status.loading' | translate }}</span>
+        </section>
+
+        <section *ngIf="state.status === 'error'" class="news-detail__status" role="alert">
+          <span class="material-symbols-outlined" aria-hidden="true">error</span>
+          <span>{{ 'news.status.error' | translate }}</span>
+        </section>
+
+        <article *ngIf="state.status === 'ready'" class="news-detail__article">
+          <header class="news-detail__header">
+            <p class="news-detail__eyebrow">{{ translation.title | translate }}</p>
+            <div class="news-detail__meta">
+              <span *ngIf="state.article.category" class="news-detail__category">
+                {{ state.article.category }}
+              </span>
+              <time [attr.datetime]="state.article.publishedAt">
+                {{ state.article.publishedAt | date: 'longDate' }}
+              </time>
+            </div>
+            <h1>{{ state.article.title }}</h1>
+            <p *ngIf="state.article.summary" class="news-detail__summary">{{ state.article.summary }}</p>
+          </header>
+
+          <div class="news-detail__body" [innerHTML]="state.article.contentHtml"></div>
+        </article>
+      </ng-container>
+    </div>
+  </div>
+</section>

@@ -6,6 +6,10 @@ export const LINE_DETAIL_CONSORTIUM_PARAM = 'consortiumId' as const;
 export const LINE_DETAIL_LINE_PARAM = 'lineId' as const;
 export const LINE_DETAIL_ROUTE_PATTERN =
   `${LINE_DETAIL_BASE_SEGMENT}/:${LINE_DETAIL_CONSORTIUM_PARAM}/:${LINE_DETAIL_LINE_PARAM}` as const;
+export const NEWS_DETAIL_CONSORTIUM_PARAM = 'consortiumId' as const;
+export const NEWS_DETAIL_ARTICLE_PARAM = 'articleId' as const;
+export const NEWS_DETAIL_ROUTE_PATTERN =
+  `${APP_CONFIG.routes.news}/:${NEWS_DETAIL_CONSORTIUM_PARAM}/:${NEWS_DETAIL_ARTICLE_PARAM}` as const;
 
 export type NavigationCommands = readonly string[];
 
@@ -15,6 +19,10 @@ export interface StopDetailNavigation {
 }
 
 export interface LineDetailNavigation {
+  readonly commands: NavigationCommands;
+}
+
+export interface NewsDetailNavigation {
   readonly commands: NavigationCommands;
 }
 
@@ -60,6 +68,23 @@ export const buildLineDetailNavigation = (
 
   return {
     commands: [ROOT_SEGMENT, LINE_DETAIL_BASE_SEGMENT, String(consortiumId), normalizedLineId]
+  };
+};
+
+export const buildNewsDetailNavigation = (
+  consortiumId: number,
+  articleId: string
+): NewsDetailNavigation => {
+  const normalizedArticleId = articleId.trim();
+
+  validateConsortiumId(consortiumId);
+
+  if (!normalizedArticleId) {
+    throw new Error('articleId must not be empty');
+  }
+
+  return {
+    commands: [ROOT_SEGMENT, APP_CONFIG.routes.news, String(consortiumId), normalizedArticleId]
   };
 };
 

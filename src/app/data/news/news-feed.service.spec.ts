@@ -1,55 +1,8 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { APP_CONFIG } from '@core/config';
 import { NewsFeedArticle, NewsFeedService } from '@data/news/news-feed.service';
 
-interface TestFeedResponseArticle {
-  readonly id: string;
-  readonly titleKey: string;
-  readonly summaryKey: string;
-  readonly link: string;
-  readonly publishedAt: string;
-}
-
-interface TestFeedResponse {
-  readonly metadata: {
-    readonly generatedAt: string;
-    readonly timezone: string;
-    readonly providerName: string;
-  };
-  readonly articles: readonly TestFeedResponseArticle[];
-}
-
-const buildResponse = (articles: readonly TestFeedResponseArticle[]): TestFeedResponse => ({
-  metadata: {
-    generatedAt: '2025-10-22T08:00:00+02:00',
-    timezone: 'Europe/Madrid',
-    providerName: 'Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía'
-  },
-  articles
-});
-
-const TRAILING_SLASHES_PATTERN = /\/+$/u;
-const LEADING_SLASHES_PATTERN = /^\/+/u;
-
-const trimTrailingSlashes = (value: string): string => value.replace(TRAILING_SLASHES_PATTERN, '');
-
-const trimLeadingSlashes = (value: string): string => value.replace(LEADING_SLASHES_PATTERN, '');
-
-const buildRemoteFeedUrl = (): string => {
-  const normalizedBase = trimTrailingSlashes(APP_CONFIG.apiBaseUrl);
-  const normalizedPath = trimLeadingSlashes(APP_CONFIG.data.news.feedApiPath);
-
-  if (normalizedPath.length === 0) {
-    return normalizedBase;
-  }
-
-  if (normalizedBase.length === 0) {
-    return normalizedPath;
-  }
-
-  return `${normalizedBase}/${normalizedPath}`;
-};
+const CONSORTIUM_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 
 describe('NewsFeedService', () => {
   let service: NewsFeedService;
@@ -68,113 +21,119 @@ describe('NewsFeedService', () => {
     httpTestingController.verify();
   });
 
-  it('requests the news feed snapshot and sorts articles by published date', () => {
+  it('aggregates CTAN consortium news and maps useful category metadata', () => {
     const emissions: NewsFeedArticle[][] = [];
 
-    service.loadFeed().subscribe((articles) => {
-      emissions.push([...articles]);
-    });
+    service.loadFeed('es').subscribe((articles) => emissions.push([...articles]));
 
-    const request = httpTestingController.expectOne(buildRemoteFeedUrl());
+    for (const consortiumId of CONSORTIUM_IDS) {
+      const request = httpTestingController.expectOne(
+        `https://api.ctan.es/v1/Consorcios/${consortiumId}/noticias?lang=ES`
+      );
 
-    expect(request.request.method).toBe('GET');
+      expect(request.request.method).toBe('GET');
 
-    request.flush(
-      buildResponse([
-        {
-          id: 'older-update',
-          titleKey: 'news.feed.olderUpdate.title',
-          summaryKey: 'news.feed.olderUpdate.summary',
-          link: 'https://www.ctan.es/noticias/older',
-          publishedAt: '2024-05-01T09:00:00+02:00'
-        },
-        {
-          id: 'latest-update',
-          titleKey: 'news.feed.latestUpdate.title',
-          summaryKey: 'news.feed.latestUpdate.summary',
-          link: 'https://www.ctan.es/noticias/latest',
-          publishedAt: '2024-06-15T10:00:00+02:00'
-        }
-      ])
-    );
-
-    const firstEmission = emissions.at(0);
-
-    if (!firstEmission) {
-      throw new Error('Feed not loaded');
+      request.flush(
+        consortiumId === 7
+          ? [
+              {
+                idNoticia: 134,
+                titulo: 'Cambio de servicio',
+                resumen: '<p>Aviso para varias líneas.</p>',
+                idCategoria: 3,
+                categoria: 'Avisos de servicio',
+                fechaInicio: '2026-08-28T08:00:00+02:00',
+                fechaFin: '2026-09-01T23:59:00+02:00',
+                novedad: 1,
+                orden: 2
+              }
+            ]
+          : []
+      );
     }
 
-    expect(firstEmission.map((article: NewsFeedArticle) => article.id)).toEqual([
-      'latest-update',
-      'older-update'
+    expect(emissions.at(-1)).toEqual([
+      jasmine.objectContaining({
+        consortiumId: 7,
+        id: '134',
+        title: 'Cambio de servicio',
+        summary: 'Aviso para varias líneas.',
+        category: 'Avisos de servicio',
+        categoryId: '3',
+        isNew: true
+      })
     ]);
   });
 
-  it('shares the same feed request across multiple subscribers', () => {
-    const firstSubscription = service.loadFeed().subscribe();
-    const secondSubscription = service.loadFeed().subscribe();
-
-    const request = httpTestingController.expectOne(buildRemoteFeedUrl());
-
-    expect(request.request.method).toBe('GET');
-
-    request.flush(
-      buildResponse([
-        {
-          id: 'single-update',
-          titleKey: 'news.feed.singleUpdate.title',
-          summaryKey: 'news.feed.singleUpdate.summary',
-          link: 'https://www.ctan.es/noticias/single',
-          publishedAt: '2024-05-01T09:00:00+02:00'
-        }
-      ])
-    );
-
-    firstSubscription.unsubscribe();
-    secondSubscription.unsubscribe();
-  });
-
-  it('falls back to the snapshot feed when the remote endpoint fails', () => {
+  it('keeps partial news results when one consortium endpoint fails', () => {
     const emissions: NewsFeedArticle[][] = [];
 
-    service.loadFeed().subscribe((articles) => {
-      emissions.push([...articles]);
-    });
+    service.loadFeed('es').subscribe((articles) => emissions.push([...articles]));
 
-    const remoteRequest = httpTestingController.expectOne(buildRemoteFeedUrl());
+    for (const consortiumId of CONSORTIUM_IDS) {
+      const request = httpTestingController.expectOne(
+        `https://api.ctan.es/v1/Consorcios/${consortiumId}/noticias?lang=ES`
+      );
 
-    expect(remoteRequest.request.method).toBe('GET');
-
-    remoteRequest.flush(
-      { message: 'unavailable' },
-      {
-        status: 503,
-        statusText: 'Service Unavailable'
+      if (consortiumId === 1) {
+        request.flush({ message: 'offline' }, { status: 503, statusText: 'Service Unavailable' });
+        continue;
       }
-    );
 
-    const fallbackRequest = httpTestingController.expectOne(APP_CONFIG.data.news.feedSnapshotPath);
-
-    expect(fallbackRequest.request.method).toBe('GET');
-
-    fallbackRequest.flush(
-      buildResponse([
-        {
-          id: 'fallback-entry',
-          titleKey: 'news.feed.fallbackEntry.title',
-          summaryKey: 'news.feed.fallbackEntry.summary',
-          link: 'https://www.ctan.es/noticias/fallback',
-          publishedAt: '2024-04-20T09:00:00+02:00'
-        }
-      ])
-    );
-
-    const firstEmission = emissions.at(0);
-
-    if (!firstEmission) {
-      throw new Error('Fallback feed not loaded');
+      request.flush(
+        consortiumId === 6
+          ? [
+              {
+                idNoticia: 99,
+                titulo: 'Servicio en Almería',
+                resumen: 'Información actualizada.',
+                fechaInicio: '2026-08-27T10:00:00+02:00'
+              }
+            ]
+          : []
+      );
     }
 
-    expect(firstEmission.map((article: NewsFeedArticle) => article.id)).toEqual(['fallback-entry']);
+    expect(emissions.at(-1)?.map((article) => article.id)).toEqual(['99']);
+  });
+
+  it('fails the feed when every CTAN consortium endpoint is unavailable', () => {
+    let error: unknown = null;
+
+    service.loadFeed('es').subscribe({ error: (caught) => (error = caught) });
+
+    for (const consortiumId of CONSORTIUM_IDS) {
+      httpTestingController
+        .expectOne(`https://api.ctan.es/v1/Consorcios/${consortiumId}/noticias?lang=ES`)
+        .flush({ message: 'offline' }, { status: 503, statusText: 'Service Unavailable' });
+    }
+
+    expect(error).toEqual(jasmine.any(Error));
+  });
+
+  it('loads a first-party CTAN news detail instead of an external web link', () => {
+    let detailTitle = '';
+    let detailHtml = '';
+
+    service.loadArticle(7, '134', 'es').subscribe((detail) => {
+      detailTitle = detail.title;
+      detailHtml = detail.contentHtml;
+    });
+
+    const request = httpTestingController.expectOne(
+      'https://api.ctan.es/v1/Consorcios/7/noticias/134?lang=ES'
+    );
+    expect(request.request.method).toBe('GET');
+    request.flush({
+      idNoticia: 134,
+      titulo: 'Cambio de servicio',
+      resumen: 'Resumen',
+      texto: '<p>Contenido completo de la noticia.</p>',
+      categoria: 'Avisos',
+      fechaInicio: '2026-08-28T08:00:00+02:00'
+    });
+
+    expect(detailTitle).toBe('Cambio de servicio');
+    expect(detailHtml).toBe('<p>Contenido completo de la noticia.</p>');
   });
 });
