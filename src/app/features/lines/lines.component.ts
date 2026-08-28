@@ -429,8 +429,8 @@ function buildProvinceConsortiumIds(
   );
 }
 
-function isNonNullText(value: string | null): value is string {
-  return value !== null;
+function isNonNullText(value: string | null | undefined): value is string {
+  return value !== null && value !== undefined;
 }
 
 function normalizeQuery(value: string): string {
