@@ -222,14 +222,21 @@ test.describe('Lines directory and line detail layout', () => {
 
       if (viewport.width === DESKTOP_VIEWPORT.width) {
         const firstStopRow = page.locator('.line-detail__stop-row').first();
-        const [rowBox, stopNameBox] = await Promise.all([
+        const stopSelect = firstStopRow.locator('.line-detail__stop-select');
+        const stopDetails = firstStopRow.locator('.line-detail__stop-details');
+        const [rowBox, selectBox, detailsBox] = await Promise.all([
           firstStopRow.boundingBox(),
-          firstStopRow.locator('.line-detail__stop-name').boundingBox(),
+          stopSelect.boundingBox(),
+          stopDetails.boundingBox(),
         ]);
         expect((mapBox?.width ?? 0) > (stopsBox?.width ?? 0) * 1.4).toBe(true);
         expect(rowBox).not.toBeNull();
-        expect(stopNameBox).not.toBeNull();
-        expect((stopNameBox?.width ?? 0) >= (rowBox?.width ?? 0) * 0.35).toBe(true);
+        expect(selectBox).not.toBeNull();
+        expect(detailsBox).not.toBeNull();
+        expect((selectBox?.width ?? 0) >= (rowBox?.width ?? 0) * 0.9).toBe(true);
+        expect((detailsBox?.y ?? 0) >= (selectBox?.y ?? 0) + (selectBox?.height ?? 0) - 1).toBe(
+          true,
+        );
         await capture(page, 'line-detail-data_es_1440_900_full.png');
       } else {
         expect((stopsBox?.y ?? 0) >= (mapBox?.y ?? 0) + (mapBox?.height ?? 0) - 1).toBe(true);
