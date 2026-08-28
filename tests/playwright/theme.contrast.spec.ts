@@ -134,7 +134,9 @@ async function readGradientStopColors(surface: Locator): Promise<readonly string
   const colors = backgroundImage.match(/rgba?\([^)]*\)/g) ?? [];
 
   if (colors.length < 2) {
-    throw new Error(`Expected a gradient with at least two color stops, received: ${backgroundImage}`);
+    throw new Error(
+      `Expected a gradient with at least two color stops, received: ${backgroundImage}`,
+    );
   }
 
   return colors;
