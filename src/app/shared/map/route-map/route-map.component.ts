@@ -40,6 +40,7 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() accessibleLabel = 'Route map';
   @Input() stopDetailsLabel = 'More information';
 
+  @Output() readonly stopSelected = new EventEmitter<string>();
   @Output() readonly stopDetails = new EventEmitter<string>();
 
   private readonly maps = inject(LeafletMapService);
@@ -97,6 +98,7 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     const markers = this.stops.map(toMapStopMarker);
     this.handle.renderStops(markers, {
       getDetailsLabel: () => this.stopDetailsLabel,
+      onSelect: (stopId) => this.stopSelected.emit(stopId),
       onDetails: (stopId) => this.stopDetails.emit(stopId)
     });
 
@@ -109,19 +111,20 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       this.handle.renderRoutes([], null);
     }
 
-    const fitPoints = this.coordinates.length >= 2
-      ? this.coordinates
-      : markers.map((marker) => marker.coordinate);
+    const fitPoints =
+      this.coordinates.length >= 2 ? this.coordinates : markers.map((marker) => marker.coordinate);
     this.handle.fitToCoordinates(fitPoints);
     this.handle.highlightStop(this.selectedStopId);
     queueMicrotask(() => this.handle?.invalidateSize());
   }
 
   private resolveCenter(): RouteLineCoordinate {
-    return this.coordinates[0] ??
+    return (
+      this.coordinates[0] ??
       (this.stops[0]
         ? { latitude: this.stops[0].latitude, longitude: this.stops[0].longitude }
-        : DEFAULT_CENTER);
+        : DEFAULT_CENTER)
+    );
   }
 }
 
