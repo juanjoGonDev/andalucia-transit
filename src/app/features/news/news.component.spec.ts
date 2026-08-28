@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import {
@@ -37,13 +37,27 @@ class ConsortiumCatalogStub {
   }
 }
 
+class ActivatedRouteStub {
+  private readonly queryParams = new BehaviorSubject(convertToParamMap({}));
+  readonly queryParamMap = this.queryParams.asObservable();
+  readonly snapshot = { queryParamMap: this.queryParams.value };
+
+  setQueryParams(params: Record<string, string>): void {
+    const paramMap = convertToParamMap(params);
+    this.snapshot.queryParamMap = paramMap;
+    this.queryParams.next(paramMap);
+  }
+}
+
 describe('NewsComponent', () => {
   let fixture: ComponentFixture<NewsComponent>;
   let facade: NewsFacadeStub;
   let router: Router;
+  let route: ActivatedRouteStub;
 
   beforeEach(async () => {
     facade = new NewsFacadeStub();
+    route = new ActivatedRouteStub();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -53,6 +67,7 @@ describe('NewsComponent', () => {
       providers: [
         { provide: NewsFacade, useValue: facade },
         { provide: ConsortiumCatalogService, useClass: ConsortiumCatalogStub },
+        { provide: ActivatedRoute, useValue: route },
         provideRouter([])
       ]
     }).compileComponents();
@@ -153,7 +168,7 @@ describe('NewsComponent', () => {
 
   it('writes filters, ordering and pagination to query parameters', () => {
     const navigate = spyOn(router, 'navigate').and.resolveTo(true);
-    facade.emit({ status: 'ready', articles: createManyArticles(10) });
+    facade.emit({ status: 'ready', articles: createAreaArticles(10) });
     fixture.detectChanges();
 
     const areaSelect = fixture.nativeElement.querySelector('.news__select--area') as HTMLSelectElement;
@@ -186,12 +201,11 @@ describe('NewsComponent', () => {
     );
   });
 
-  it('restores filters, ordering and page from the URL', async () => {
+  it('restores filters, ordering and page from the URL', () => {
     facade.emit({ status: 'ready', articles: createAreaArticles(18) });
     fixture.detectChanges();
 
-    await router.navigateByUrl('/?area=6&category=Tarifas&order=oldest&page=2');
-    await fixture.whenStable();
+    route.setQueryParams({ area: '6', category: 'Tarifas', order: 'oldest', page: '2' });
     fixture.detectChanges();
 
     const areaSelect = fixture.nativeElement.querySelector('.news__select--area') as HTMLSelectElement;
