@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Observable, catchError, forkJoin, map, of, startWith, switchMap } from 'rxjs';
-import { APP_CONFIG } from '@core/config';
 import {
   RouteLineDetail,
   RouteLineStop,
@@ -11,6 +10,7 @@ import {
 } from '@data/route-search/route-lines-api.service';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import {
+  LINE_DETAIL_BASE_SEGMENT,
   LINE_DETAIL_CONSORTIUM_PARAM,
   LINE_DETAIL_LINE_PARAM,
   buildStopDetailNavigation
@@ -44,7 +44,7 @@ export class LineDetailComponent {
   private readonly router = inject(Router);
   private readonly routeLines = inject(RouteLinesApiService);
 
-  protected readonly layoutNavigationKey = APP_CONFIG.routes.map;
+  protected readonly layoutNavigationKey = LINE_DETAIL_BASE_SEGMENT;
   protected readonly state$: Observable<LineDetailState> = this.route.paramMap.pipe(
     map((params) => parseContext(params.get(LINE_DETAIL_CONSORTIUM_PARAM), params.get(LINE_DETAIL_LINE_PARAM))),
     switchMap((context) => {
