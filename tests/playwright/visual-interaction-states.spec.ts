@@ -96,14 +96,25 @@ async function mockNewsFeed(page: Page): Promise<void> {
 
 function buildNewsList(consortiumId: number): readonly Record<string, unknown>[] {
   if (consortiumId === 6) {
-    return Array.from({ length: 10 }, (_, index) => ({
-      idNoticia: 600 + index,
-      titulo: `Aviso Almería ${index + 1}`,
-      resumen: `Información de servicio de Almería ${index + 1}`,
-      categoria: index % 2 === 0 ? 'Avisos' : 'Tarifas',
-      fechaInicio: `2026-08-${String(28 - index).padStart(2, '0')}T09:00:00+02:00`,
-      orden: index,
-    }));
+    return [
+      ...Array.from({ length: 10 }, (_, index) => ({
+        idNoticia: 600 + index,
+        titulo: `Aviso Almería ${index + 1}`,
+        resumen: `Información de servicio de Almería ${index + 1}`,
+        categoria: index % 2 === 0 ? 'Avisos' : 'Tarifas',
+        fechaInicio: `2026-08-${String(28 - index).padStart(2, '0')}T09:00:00+02:00`,
+        orden: index,
+      })),
+      {
+        idNoticia: 699,
+        titulo: 'Noticia CTAN sin contenido',
+        resumen: '__',
+        texto: '<p>&nbsp;</p>',
+        categoria: 'Avisos',
+        fechaInicio: '2026-08-29T09:00:00+02:00',
+        orden: 99,
+      },
+    ];
   }
 
   if (consortiumId === 9) {
@@ -308,6 +319,7 @@ test.describe('deterministic interaction visual states', () => {
       await expect(page.locator('.news__card')).toHaveCount(NEWS_PAGE_SIZE, { timeout: 15_000 });
       await expect(page.locator('.news__filter')).toHaveCount(0);
       await expect(page.locator('.news__select')).toHaveCount(3);
+      await expect(page.getByText('Noticia CTAN sin contenido')).toHaveCount(0);
       await expect(areaSelect.locator('option')).toHaveCount(10);
       await expect(areaSelect.getByRole('option', { name: 'Área de Almería' })).toHaveCount(1);
       await expect(areaSelect.getByRole('option', { name: 'Área de Sevilla' })).toHaveCount(1);
@@ -368,7 +380,9 @@ test.describe('deterministic interaction visual states', () => {
     }
   });
 
-  test('uses lang=EN and never renders Spanish-only news aliases in English mode', async ({ page }) => {
+  test('uses lang=EN and never renders Spanish-only news aliases in English mode', async ({
+    page,
+  }) => {
     const requestedLanguages: string[] = [];
     await page.addInitScript(() => {
       window.localStorage.setItem('andalucia-transit.language', 'en');
