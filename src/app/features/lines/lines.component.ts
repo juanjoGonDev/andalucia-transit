@@ -42,6 +42,7 @@ import {
 
 interface LineDirectoryFilters {
   readonly query: string;
+  readonly province: string | null;
   readonly areaId: number | null;
   readonly municipalityId: string | null;
   readonly nucleusId: string | null;
@@ -72,6 +73,7 @@ interface LineDirectoryView {
 const PAGE_SIZE = 12;
 const FIRST_PAGE = 1;
 const QUERY_PARAM_QUERY = 'q';
+const QUERY_PARAM_PROVINCE = 'province';
 const QUERY_PARAM_AREA = 'area';
 const QUERY_PARAM_MUNICIPALITY = 'municipality';
 const QUERY_PARAM_NUCLEUS = 'nucleus';
@@ -79,6 +81,7 @@ const QUERY_PARAM_PAGE = 'page';
 const EMPTY_LINES: readonly LineDirectoryEntry[] = Object.freeze([]);
 const EMPTY_MUNICIPALITIES: readonly CatalogMunicipalityEntry[] = Object.freeze([]);
 const EMPTY_NUCLEI: readonly CatalogNucleusEntry[] = Object.freeze([]);
+const EMPTY_PROVINCES: readonly string[] = Object.freeze([]);
 
 @Component({
   selector: 'app-lines',
@@ -110,6 +113,11 @@ export class LinesComponent {
   protected readonly areas$: Observable<readonly ConsortiumCatalogEntry[]> = this.catalog
     .loadConsortiums()
     .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+  protected readonly provinces$: Observable<readonly string[]> = this.areas$.pipe(
+    map(buildProvinceOptions),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
 
   private readonly filters$: Observable<LineDirectoryFilters> = this.route.queryParamMap.pipe(
     map(readFilters),
@@ -170,9 +178,12 @@ export class LinesComponent {
     this.linesState$,
     this.filters$,
     this.geographyState$,
-    this.nearbyKeys
+    this.nearbyKeys,
+    this.areas$
   ]).pipe(
-    map(([state, filters, geography, nearby]) => buildView(state, filters, geography, nearby)),
+    map(([state, filters, geography, nearby, areas]) =>
+      buildView(state, filters, geography, nearby, areas)
+    ),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
@@ -189,10 +200,23 @@ export class LinesComponent {
     this.queryChanges.next(value);
   }
 
+  protected selectProvince(value: string | null): void {
+    this.nearMeActive.set(false);
+    this.nearbyKeys.next(null);
+    this.updateQueryParams({
+      [QUERY_PARAM_PROVINCE]: normalizeNullable(value),
+      [QUERY_PARAM_AREA]: null,
+      [QUERY_PARAM_MUNICIPALITY]: null,
+      [QUERY_PARAM_NUCLEUS]: null,
+      [QUERY_PARAM_PAGE]: null
+    });
+  }
+
   protected selectArea(value: number | null): void {
     this.nearMeActive.set(false);
     this.nearbyKeys.next(null);
     this.updateQueryParams({
+      [QUERY_PARAM_PROVINCE]: null,
       [QUERY_PARAM_AREA]: value,
       [QUERY_PARAM_MUNICIPALITY]: null,
       [QUERY_PARAM_NUCLEUS]: null,
@@ -281,6 +305,10 @@ export class LinesComponent {
     return buildLineKey(line.consortiumId, line.lineId);
   }
 
+  protected trackProvince(_: number, province: string): string {
+    return province;
+  }
+
   protected trackArea(_: number, area: ConsortiumCatalogEntry): number {
     return area.id;
   }
@@ -306,10 +334,12 @@ export class LinesComponent {
 function readFilters(params: ParamMap): LineDirectoryFilters {
   const areaValue = Number(params.get(QUERY_PARAM_AREA));
   const pageValue = Number(params.get(QUERY_PARAM_PAGE));
+  const areaId = Number.isSafeInteger(areaValue) && areaValue > 0 ? areaValue : null;
 
   return {
     query: normalizeQuery(params.get(QUERY_PARAM_QUERY) ?? ''),
-    areaId: Number.isSafeInteger(areaValue) && areaValue > 0 ? areaValue : null,
+    province: areaId ? null : normalizeNullable(params.get(QUERY_PARAM_PROVINCE)),
+    areaId,
     municipalityId: normalizeNullable(params.get(QUERY_PARAM_MUNICIPALITY)),
     nucleusId: normalizeNullable(params.get(QUERY_PARAM_NUCLEUS)),
     page: Number.isSafeInteger(pageValue) && pageValue > 0 ? pageValue : FIRST_PAGE
@@ -320,7 +350,8 @@ function buildView(
   state: LinesState,
   filters: LineDirectoryFilters,
   geography: GeographyState,
-  nearby: ReadonlySet<string> | null
+  nearby: ReadonlySet<string> | null,
+  areas: readonly ConsortiumCatalogEntry[]
 ): LineDirectoryView {
   if (state.status !== 'ready') {
     return {
@@ -335,8 +366,13 @@ function buildView(
   }
 
   const query = filters.query.toLocaleLowerCase('es-ES');
+  const provinceConsortiumIds = buildProvinceConsortiumIds(areas, filters.province);
   const filtered = state.lines.filter((line) => {
     if (filters.areaId && line.consortiumId !== filters.areaId) {
+      return false;
+    }
+
+    if (provinceConsortiumIds && !provinceConsortiumIds.has(line.consortiumId)) {
       return false;
     }
 
@@ -372,6 +408,29 @@ function buildView(
     pageCount,
     geographyStatus: geography.status
   };
+}
+
+function buildProvinceOptions(areas: readonly ConsortiumCatalogEntry[]): readonly string[] {
+  const provinces = [...new Set(areas.map((area) => area.province).filter(isNonNullText))];
+  provinces.sort((left, right) => left.localeCompare(right, 'es-ES'));
+  return provinces.length > 0 ? Object.freeze(provinces) : EMPTY_PROVINCES;
+}
+
+function buildProvinceConsortiumIds(
+  areas: readonly ConsortiumCatalogEntry[],
+  province: string | null
+): ReadonlySet<number> | null {
+  if (!province) {
+    return null;
+  }
+
+  return new Set(
+    areas.filter((area) => area.province === province).map((area) => area.id)
+  );
+}
+
+function isNonNullText(value: string | null): value is string {
+  return value !== null;
 }
 
 function normalizeQuery(value: string): string {
