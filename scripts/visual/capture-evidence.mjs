@@ -11,7 +11,9 @@ const READY_ATTEMPTS = 60;
 const READY_DELAY_MS = 2_000;
 const STOP_TIMEOUT_MS = 30_000;
 const HOST = '127.0.0.1';
-const MAP_TILE_SCRIPT = resolve(dirname(fileURLToPath(import.meta.url)), 'determinize-map-tiles.js');
+const SCRIPT_DIRECTORY = dirname(fileURLToPath(import.meta.url));
+const HARNESS_ROOT = resolve(SCRIPT_DIRECTORY, '..', '..');
+const MAP_TILE_SCRIPT = resolve(SCRIPT_DIRECTORY, 'determinize-map-tiles.js');
 
 const POPULATED_SPECS = Object.freeze([
   'tests/playwright/deterministic-visual-states.spec.ts',
@@ -129,7 +131,14 @@ async function stopApplication(child, url) {
   await waitForUnavailable(url);
 }
 
-async function captureRoute({ workspace, outDir, baseUrl, route, slug, deterministicMapTiles }) {
+async function captureRoute({
+  harnessRoot,
+  outDir,
+  baseUrl,
+  route,
+  slug,
+  deterministicMapTiles,
+}) {
   const args = [
     'run',
     'screenshot',
@@ -145,7 +154,7 @@ async function captureRoute({ workspace, outDir, baseUrl, route, slug, determini
   if (deterministicMapTiles) {
     args.push(`--evalFile=${MAP_TILE_SCRIPT}`);
   }
-  await runCommand('pnpm', args, { cwd: workspace });
+  await runCommand('pnpm', args, { cwd: harnessRoot });
 }
 
 async function captureRoutes(options, captures) {
@@ -169,19 +178,26 @@ async function verifyEvidenceDirectory(outDir) {
   }
 }
 
-export async function captureEvidence({ workspace, outDir, port }) {
-  const workspaceRoot = resolve(workspace);
+export async function captureEvidence({
+  workspace,
+  outDir,
+  port,
+  harnessWorkspace = HARNESS_ROOT,
+}) {
+  const applicationRoot = resolve(workspace);
+  const harnessRoot = resolve(harnessWorkspace);
   const evidenceRoot = resolve(outDir);
   const baseUrl = `http://${HOST}:${port}`;
+  console.log(`Using visual harness ${harnessRoot} against application ${applicationRoot}`);
   await rm(evidenceRoot, { recursive: true, force: true });
   await mkdir(evidenceRoot, { recursive: true });
 
   let app = null;
   try {
-    app = startApplication(workspaceRoot, 'data', port);
+    app = startApplication(applicationRoot, 'data', port);
     await waitForReady(app, `${baseUrl}/`);
     await runCommand('pnpm', ['exec', 'playwright', 'test', ...POPULATED_SPECS], {
-      cwd: workspaceRoot,
+      cwd: harnessRoot,
       env: {
         E2E_BASE_URL: baseUrl,
         E2E_MOCK_MODE: 'data',
@@ -189,23 +205,23 @@ export async function captureEvidence({ workspace, outDir, port }) {
       },
     });
     await captureRoutes(
-      { workspace: workspaceRoot, outDir: evidenceRoot, baseUrl },
+      { harnessRoot, outDir: evidenceRoot, baseUrl },
       POPULATED_CAPTURES,
     );
 
     await stopApplication(app, `${baseUrl}/`);
-    app = startApplication(workspaceRoot, 'empty', port);
+    app = startApplication(applicationRoot, 'empty', port);
     await waitForReady(app, `${baseUrl}/`);
     await runCommand(
       'pnpm',
       ['exec', 'playwright', 'test', 'tests/playwright/deterministic-visual-states.spec.ts'],
       {
-        cwd: workspaceRoot,
+        cwd: harnessRoot,
         env: { E2E_BASE_URL: baseUrl, E2E_MOCK_MODE: 'empty' },
       },
     );
     await captureRoutes(
-      { workspace: workspaceRoot, outDir: evidenceRoot, baseUrl },
+      { harnessRoot, outDir: evidenceRoot, baseUrl },
       EMPTY_CAPTURES,
     );
     await verifyEvidenceDirectory(evidenceRoot);
