@@ -13,7 +13,6 @@ const MINIMUM_DESKTOP_PANEL_START_RATIO = 0.55;
 const MINIMUM_SEARCH_CODE_LENGTH = 2;
 const MINIMUM_TOUCH_TARGET_PX = 44;
 const TARGET_STOP_NAME = 'La Gangosa';
-const SEVILLE_LOCATION = { latitude: 37.389092, longitude: -5.984459 } as const;
 
 interface StopDirectoryIndexFile {
   readonly chunks: readonly StopDirectoryChunkDescriptor[];
@@ -274,29 +273,24 @@ test.describe('network map exploration', () => {
     await expect(nearbyPanel).not.toHaveAttribute('aria-busy', 'true');
   });
 
-  test('highlights the matching map marker when a nearby stop card is hovered', async ({
-    page,
-    context,
-  }) => {
+  test('highlights the matching map marker when a nearby stop card is hovered', async ({ page }) => {
     const resolvedBaseUrl = BASE_URL as string;
-    const origin = new URL(resolvedBaseUrl).origin;
-    await context.grantPermissions(['geolocation'], { origin });
-    await context.setGeolocation(SEVILLE_LOCATION);
+    const targetStop = await loadSearchStopByName(page, resolvedBaseUrl, TARGET_STOP_NAME);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize(MOBILE_VIEWPORT);
     await page.goto(new URL(MAP_PATH, resolvedBaseUrl).toString());
 
     const mapSurface = page.locator('.map__canvas');
     const overlayCanvas = page.locator('.leaflet-overlay-pane canvas').first();
-    const locateButton = page.locator('.map__controls button').first();
 
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
-    await locateButton.click();
+    await selectSearchStop(page, targetStop, targetStop.name);
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
 
     const nearbyPanel = await openNearbyInspector(page);
-    const nearbyStop = nearbyPanel.locator('.map__stop-item').first();
+    const nearbyStop = nearbyPanel.locator('.map__stop-item').filter({ hasText: targetStop.name }).first();
     await expect(nearbyStop).toBeVisible({ timeout: 15_000 });
+    await expect(nearbyPanel).not.toHaveAttribute('aria-busy', 'true');
 
     const baselinePaintedPixels = await countPaintedPixels(overlayCanvas);
     await nearbyStop.hover();
