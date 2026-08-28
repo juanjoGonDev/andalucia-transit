@@ -4,13 +4,14 @@ import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
+import { APP_CONFIG } from '@core/config';
 import { LanguageService } from '@core/services/language.service';
-import type {
+import {
   RouteLineCoordinate,
   RouteLineDetail,
-  RouteLineStop
+  RouteLineStop,
+  RouteLinesApiService
 } from '@data/route-search/route-lines-api.service';
-import { RouteLinesApiService } from '@data/route-search/route-lines-api.service';
 import { LineDetailComponent } from '@features/line-detail/line-detail.component';
 import { RouteMapComponent } from '@shared/map/route-map/route-map.component';
 
@@ -134,9 +135,10 @@ describe('LineDetailComponent', () => {
 
     routeMap.stopDetails.emit('stop-b');
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'stop', 'stop-b'], {
-      queryParams: { consortiumId: '7' }
-    });
+    expect(navigateSpy).toHaveBeenCalledWith(
+      ['/', APP_CONFIG.routes.stopDetailBase, 'stop-b'],
+      { queryParams: { consortiumId: '7' } }
+    );
   });
 
   it('keeps ordered stops available when line geometry cannot be drawn', () => {
