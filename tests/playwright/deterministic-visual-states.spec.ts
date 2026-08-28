@@ -1,10 +1,7 @@
-import { mkdir } from 'node:fs/promises';
-import { join } from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import { captureVisualEvidence, expect, test, type Page } from './visual-evidence.fixture';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const MOCK_MODE = process.env.E2E_MOCK_MODE;
-const EVIDENCE_DIR = process.env.E2E_EVIDENCE_DIR;
 const RECENT_PATH = '/recents';
 const FAVORITES_PATH = '/favorites';
 const STOP_SERVICES_SNAPSHOT_PATH = '/assets/data/snapshots/stop-services/latest.json';
@@ -77,15 +74,10 @@ async function captureStopDetail(
   page: Page,
   viewport: typeof MOBILE_VIEWPORT | typeof DESKTOP_VIEWPORT,
 ): Promise<void> {
-  if (!EVIDENCE_DIR) {
-    return;
-  }
-
-  await mkdir(EVIDENCE_DIR, { recursive: true });
-  await page.screenshot({
-    path: join(EVIDENCE_DIR, `stop-detail-data_es_${viewport.width}_${viewport.height}_full.png`),
-    fullPage: true,
-  });
+  await captureVisualEvidence(
+    page,
+    `stop-detail-data_es_${viewport.width}_${viewport.height}_full.png`,
+  );
 }
 
 test.describe('deterministic visual data states', () => {
