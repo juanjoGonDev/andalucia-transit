@@ -1,51 +1,31 @@
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { expect, test, type BrowserContext, type Page } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const MOCK_MODE = process.env.E2E_MOCK_MODE;
 const EVIDENCE_DIR = process.env.E2E_EVIDENCE_DIR;
 const RECENT_PATH = '/recents';
-const STOP_DIRECTORY_INDEX_PATH = '/assets/data/stop-directory/index.json';
-const STOP_DIRECTORY_BASE_PATH = '/assets/data/stop-directory/';
+const STOP_SERVICES_SNAPSHOT_PATH = '/assets/data/snapshots/stop-services/latest.json';
+const STOP_SCHEDULE_API_GLOB = '**/v1/Consorcios/*/paradas/**';
 const TIMETABLE_API_GLOB = '**/v1/Consorcios/*/horarios_origen_destino*';
 const HOLIDAY_API_GLOB = '**/PublicHolidays/**';
+const NEWS_LIST_URL_PATTERN = /^https:\/\/api\.ctan\.es\/v1\/Consorcios\/(\d+)\/noticias(?:\?.*)?$/u;
 const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 const DATA_ITEM_COUNT = 2;
-const MINIMUM_TOUCH_TARGET_PX = 44;
+const NEWS_PAGE_SIZE = 8;
 const TRANSPARENT_BACKGROUND = 'rgba(0, 0, 0, 0)';
 
-interface StopDirectoryIndexFile {
-  readonly chunks: readonly StopDirectoryChunkDescriptor[];
+interface StopServicesSnapshotFile {
+  readonly stops: readonly StopServicesSnapshotEntry[];
 }
 
-interface StopDirectoryChunkDescriptor {
-  readonly path: string;
-}
-
-interface StopDirectoryChunkFile {
-  readonly stops: readonly StopDirectoryEntry[];
-}
-
-interface StopDirectoryEntry {
+interface StopServicesSnapshotEntry {
   readonly consortiumId: number;
   readonly stopId: string;
-  readonly name: string;
-  readonly municipality: string;
-  readonly location: {
-    readonly latitude: number;
-    readonly longitude: number;
-  };
-}
-
-interface DirectionsTestStop {
-  readonly consortiumId: number;
-  readonly stopId: string;
-  readonly name: string;
-  readonly municipality: string;
-  readonly latitude: number;
-  readonly longitude: number;
+  readonly stopName: string;
+  readonly services: readonly unknown[];
 }
 
 async function open(page: Page, path: string): Promise<void> {
@@ -78,72 +58,77 @@ async function dismissDialog(page: Page): Promise<void> {
   await expect(page.locator('app-overlay-dialog-container[role="dialog"]')).toHaveCount(0);
 }
 
-async function loadDirectionsTestStop(page: Page): Promise<DirectionsTestStop> {
+async function loadPopulatedStop(page: Page): Promise<StopServicesSnapshotEntry> {
   const baseUrl = BASE_URL as string;
-  const indexResponse = await page.request.get(
-    new URL(STOP_DIRECTORY_INDEX_PATH, baseUrl).toString(),
+  const response = await page.request.get(
+    new URL(STOP_SERVICES_SNAPSHOT_PATH, baseUrl).toString(),
   );
-  expect(indexResponse.ok()).toBe(true);
+  expect(response.ok()).toBe(true);
 
-  const directory = (await indexResponse.json()) as StopDirectoryIndexFile;
+  const snapshot = (await response.json()) as StopServicesSnapshotFile;
+  const stop = snapshot.stops.find(
+    (candidate) =>
+      Number.isSafeInteger(candidate.consortiumId) &&
+      candidate.consortiumId > 0 &&
+      candidate.stopId.trim().length > 0 &&
+      candidate.stopName.trim().length > 0 &&
+      candidate.services.length > 0,
+  );
 
-  for (const descriptor of directory.chunks) {
-    const chunkResponse = await page.request.get(
-      new URL(`${STOP_DIRECTORY_BASE_PATH}${descriptor.path}`, baseUrl).toString(),
-    );
-    expect(chunkResponse.ok()).toBe(true);
-
-    const chunk = (await chunkResponse.json()) as StopDirectoryChunkFile;
-    const candidate = chunk.stops.find(
-      (stop) =>
-        Number.isSafeInteger(stop.consortiumId) &&
-        stop.consortiumId > 0 &&
-        stop.stopId.trim().length > 0 &&
-        stop.name.trim().length > 0 &&
-        stop.municipality.trim().length > 0 &&
-        Number.isFinite(stop.location.latitude) &&
-        Number.isFinite(stop.location.longitude),
-    );
-
-    if (candidate) {
-      return {
-        consortiumId: candidate.consortiumId,
-        stopId: candidate.stopId,
-        name: candidate.name,
-        municipality: candidate.municipality,
-        latitude: candidate.location.latitude,
-        longitude: candidate.location.longitude,
-      };
-    }
+  if (!stop) {
+    throw new Error('Stop-services snapshot does not contain a populated stop fixture.');
   }
 
-  throw new Error('Canonical stop directory does not contain a stop with usable coordinates.');
+  return stop;
 }
 
-async function forceStopInformationFallback(page: Page): Promise<void> {
-  await page.route(
-    /https:\/\/api\.ctan\.es\/v1\/Consorcios\/\d+\/paradas\/[^?]+/u,
-    async (route) => {
-      await route.fulfill({
-        status: 503,
-        contentType: 'application/json',
-        body: '{}',
-      });
-    },
-  );
-}
+async function mockNewsFeed(page: Page): Promise<void> {
+  await page.route(NEWS_LIST_URL_PATTERN, async (route) => {
+    const match = NEWS_LIST_URL_PATTERN.exec(route.request().url());
+    const consortiumId = Number(match?.[1]);
 
-async function configureDirectionsGeolocation(
-  context: BrowserContext,
-  stop: DirectionsTestStop,
-): Promise<void> {
-  const baseUrl = BASE_URL as string;
-  const origin = new URL(baseUrl).origin;
-  await context.grantPermissions(['geolocation'], { origin });
-  await context.setGeolocation({
-    latitude: stop.latitude + 0.001,
-    longitude: stop.longitude + 0.001,
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(buildNewsList(consortiumId)),
+    });
   });
+}
+
+function buildNewsList(consortiumId: number): readonly Record<string, unknown>[] {
+  if (consortiumId === 6) {
+    return Array.from({ length: 10 }, (_, index) => ({
+      idNoticia: 600 + index,
+      titulo: `Aviso Almería ${index + 1}`,
+      resumen: `Información de servicio de Almería ${index + 1}`,
+      categoria: index % 2 === 0 ? 'Avisos' : 'Tarifas',
+      fechaInicio: `2026-08-${String(28 - index).padStart(2, '0')}T09:00:00+02:00`,
+      orden: index,
+    }));
+  }
+
+  if (consortiumId === 9) {
+    return [
+      {
+        idNoticia: 901,
+        titulo: 'Aviso Costa de Huelva',
+        resumen: 'Información de servicio de Huelva',
+        categoria: 'Avisos',
+        fechaInicio: '2026-08-18T09:00:00+02:00',
+        orden: 0,
+      },
+      {
+        idNoticia: 902,
+        titulo: 'Tarifa Costa de Huelva',
+        resumen: 'Información tarifaria de Huelva',
+        categoria: 'Tarifas',
+        fechaInicio: '2026-08-17T09:00:00+02:00',
+        orden: 1,
+      },
+    ];
+  }
+
+  return [];
 }
 
 test.describe('deterministic interaction visual states', () => {
@@ -257,45 +242,90 @@ test.describe('deterministic interaction visual states', () => {
     await expect(error).toBeVisible();
   });
 
-  test('keeps stop information distance guidance explicit on mobile and desktop', async ({
-    context,
-    page,
-  }) => {
-    const stop = await loadDirectionsTestStop(page);
-    await forceStopInformationFallback(page);
-    await configureDirectionsGeolocation(context, stop);
+  test('keeps stop tasks progressive and exposes real walking-map handoff', async ({ page }) => {
+    const stop = await loadPopulatedStop(page);
+    await page.route(STOP_SCHEDULE_API_GLOB, async (route) => {
+      await route.fulfill({ status: 503, contentType: 'application/json', body: '{}' });
+    });
 
     for (const viewport of [MOBILE_VIEWPORT, DESKTOP_VIEWPORT]) {
       await page.setViewportSize(viewport);
-      await open(page, `/stop-info/${stop.consortiumId}/${encodeURIComponent(stop.stopId)}`);
-
-      const card = page.locator('.stop-info__card');
-      await expect(card).toBeVisible({ timeout: 15_000 });
-      await expect(card.locator('.stop-info__card-title')).toHaveText(stop.name);
-      await expect(card.locator('.stop-info__location')).toContainText(stop.municipality);
-      await expect(card).not.toContainText(String(stop.latitude));
-      await expect(card).not.toContainText(String(stop.longitude));
-
-      const directions = card.locator('.stop-info__directions');
-      const action = directions.locator('.stop-info__directions-action');
-      await expect(directions).toBeVisible();
-      await expect(action).toBeVisible();
-
-      const actionBounds = await action.boundingBox();
-      expect(actionBounds?.height ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
-
-      await action.click();
-
-      await expect(directions.locator('.stop-info__directions-distance')).toBeVisible();
-      await expect(directions.locator('.stop-info__directions-disclaimer')).toContainText(
-        'línea recta',
+      await open(
+        page,
+        `/stop-detail/${encodeURIComponent(stop.stopId)}?consortiumId=${stop.consortiumId}`,
       );
-      await expect(page.locator('.leaflet-routing-container')).toHaveCount(0);
+
+      await expect(page.locator('.stop-detail__title')).toHaveText(stop.stopName, {
+        timeout: 15_000,
+      });
+      await expect(page.locator('[data-stop-section="departures"]')).toHaveAttribute(
+        'aria-selected',
+        'true',
+      );
+      await expect(page.locator('.stop-detail__panel--departures .stop-detail__select')).toBeVisible();
+      await expect(page.locator('app-stop-utility')).toHaveCount(0);
+
+      await page.locator('[data-stop-section="directions"]').click();
+      await expect(page.locator('[data-stop-section="directions"]')).toHaveAttribute(
+        'aria-selected',
+        'true',
+      );
+      await expect(page.locator('.stop-detail__panel--departures')).toHaveCount(0);
+      await expect(page.locator('.stop-utility__line')).toHaveCount(0);
+
+      const mapLinks = page.locator('.stop-utility__map-link');
+      await expect(mapLinks).toHaveCount(2);
+      await expect(mapLinks.first()).toHaveAttribute('href', /google\.com\/maps\/dir\/.*travelmode=walking/u);
+      await expect(mapLinks.last()).toHaveAttribute('href', /maps\.apple\.com/u);
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
       ).toBe(true);
 
-      await capture(page, `stop-info-directions_es_${viewport.width}_${viewport.height}_full.png`);
+      await capture(
+        page,
+        `stop-detail-directions_es_${viewport.width}_${viewport.height}_full.png`,
+      );
+    }
+  });
+
+  test('filters, orders and paginates CTAN news without horizontal filter scrolling', async ({
+    page,
+  }) => {
+    await mockNewsFeed(page);
+
+    for (const viewport of [MOBILE_VIEWPORT, DESKTOP_VIEWPORT]) {
+      await page.setViewportSize(viewport);
+      await open(page, '/news');
+
+      await expect(page.locator('.news__card')).toHaveCount(NEWS_PAGE_SIZE, { timeout: 15_000 });
+      await expect(page.locator('.news__filter')).toHaveCount(0);
+      await expect(page.locator('.news__select')).toHaveCount(3);
+      await expect(page.locator('.news__page-status')).toContainText('Página 1 de 2');
+
+      await page.locator('.news__page-action').last().click();
+      await expect(page.locator('.news__card')).toHaveCount(4);
+      await expect(page.locator('.news__page-status')).toContainText('Página 2 de 2');
+
+      await page.locator('.news__select--area').selectOption({ label: 'Área de Almería' });
+      await expect(page.locator('.news__page-status')).toContainText('Página 1 de 2');
+      await expect(page.locator('.news__result-count')).toContainText('10 noticias');
+
+      await page.locator('.news__select--category').selectOption({ label: 'Avisos' });
+      await expect(page.locator('.news__card')).toHaveCount(5);
+      await page.locator('.news__select--order').selectOption('oldest');
+      await expect(page.locator('.news__card-title').first()).toHaveText('Aviso Almería 9');
+      await expect(page.locator('.news__area')).toHaveText([
+        'Área de Almería',
+        'Área de Almería',
+        'Área de Almería',
+        'Área de Almería',
+        'Área de Almería',
+      ]);
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
+      ).toBe(true);
+
+      await capture(page, `news-filtered_es_${viewport.width}_${viewport.height}_full.png`);
     }
   });
 });
