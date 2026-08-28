@@ -33,7 +33,9 @@ const PATH_SEPARATOR = '/' as const;
 const SUPPORTED_CONSORTIUM_IDS = Object.freeze([1, 2, 3, 4, 5, 6, 7, 8, 9] as const);
 const EMPTY_ARTICLES: readonly NewsFeedArticle[] = Object.freeze([]);
 const HTML_TAG_PATTERN = /<[^>]*>/gu;
+const HTML_WHITESPACE_ENTITY_PATTERN = /&(?:nbsp|ensp|emsp|thinsp|#160|#xa0);/giu;
 const WHITESPACE_PATTERN = /\s+/gu;
+const MEANINGFUL_TEXT_PATTERN = /[\p{L}\p{N}]/u;
 const NEWS_TITLE_KEYS: Readonly<Record<SupportedLanguage, readonly string[]>> = Object.freeze({
   es: Object.freeze(['titulo', 'tituloEs', 'tituloES', 'titulo_es', 'tituloESP']),
   en: Object.freeze(['titulo', 'tituloEn', 'tituloEN', 'titulo_en', 'tituloENG'])
@@ -164,11 +166,12 @@ function mapNewsDetail(
     return null;
   }
 
-  const rawContent = readString(entry, NEWS_CONTENT_KEYS) ?? summary.summary;
+  const rawContent = readString(entry, NEWS_CONTENT_KEYS);
+  const contentHtml = rawContent && toMeaningfulPlainText(rawContent) ? rawContent : summary.summary;
 
   return {
     ...summary,
-    contentHtml: rawContent
+    contentHtml
   };
 }
 
@@ -184,12 +187,12 @@ function mapNewsSummary(
     return null;
   }
 
-  const rawTitle = readString(entry, NEWS_TITLE_KEYS[language]);
-  const rawSummary = readString(entry, NEWS_SUMMARY_KEYS);
-  const title = normalizePlainText(rawTitle ?? '');
-  const summary = normalizePlainText(rawSummary ?? '');
+  const title = toMeaningfulPlainText(readString(entry, NEWS_TITLE_KEYS[language]));
+  const summary =
+    toMeaningfulPlainText(readString(entry, NEWS_SUMMARY_KEYS)) ||
+    toMeaningfulPlainText(readString(entry, NEWS_CONTENT_KEYS));
 
-  if (!title) {
+  if (!title || !summary) {
     return null;
   }
 
@@ -321,8 +324,17 @@ function readCategoryName(value: unknown): string | null {
   return object ? readString(object, ['nombre', 'descripcion', 'categoria']) : null;
 }
 
+function toMeaningfulPlainText(value: string | null | undefined): string {
+  const normalized = normalizePlainText(value ?? '');
+  return MEANINGFUL_TEXT_PATTERN.test(normalized) ? normalized : '';
+}
+
 function normalizePlainText(value: string): string {
-  return value.replace(HTML_TAG_PATTERN, ' ').replace(WHITESPACE_PATTERN, ' ').trim();
+  return value
+    .replace(HTML_TAG_PATTERN, ' ')
+    .replace(HTML_WHITESPACE_ENTITY_PATTERN, ' ')
+    .replace(WHITESPACE_PATTERN, ' ')
+    .trim();
 }
 
 function compareByPublishedAtDescending(left: NewsFeedArticle, right: NewsFeedArticle): number {
