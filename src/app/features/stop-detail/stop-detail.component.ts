@@ -24,7 +24,7 @@ import {
   StopScheduleUiModel,
   buildStopScheduleUiModel
 } from '@domain/stop-schedule/stop-schedule.transform';
-import { StopDirectoryFacade, StopDirectoryRecord } from '@domain/stops/stop-directory.facade';
+import { StopUtilityComponent } from '@features/stop-detail/stop-utility/stop-utility.component';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import {
@@ -42,34 +42,10 @@ const UNSIGNED_INTEGER_PATTERN = /^\d+$/;
 export const STOP_TIMELINE_UPCOMING_TAB_ID = 'stop-detail-timeline-upcoming' as const;
 export const STOP_TIMELINE_PAST_TAB_ID = 'stop-detail-timeline-past' as const;
 
-type StopInfoCommands = readonly string[] | null;
-
-interface StopRouteContext {
+export interface StopRouteContext {
   readonly stopId: string;
   readonly consortiumId: number | null;
 }
-
-const areStopInfoCommandsEqual = (left: StopInfoCommands, right: StopInfoCommands): boolean => {
-  if (left === right) {
-    return true;
-  }
-
-  if (!left || !right) {
-    return false;
-  }
-
-  if (left.length !== right.length) {
-    return false;
-  }
-
-  for (let index = 0; index < left.length; index += 1) {
-    if (left[index] !== right[index]) {
-      return false;
-    }
-  }
-
-  return true;
-};
 
 const areStopRouteContextsEqual = (left: StopRouteContext, right: StopRouteContext): boolean =>
   left.stopId === right.stopId && left.consortiumId === right.consortiumId;
@@ -89,7 +65,8 @@ type ScheduleState =
     ReactiveFormsModule,
     TranslateModule,
     AppLayoutContentDirective,
-    AccessibleButtonDirective
+    AccessibleButtonDirective,
+    StopUtilityComponent
   ],
   templateUrl: './stop-detail.component.html',
   styleUrls: ['./stop-detail.component.scss', './stop-detail.component-list.scss'],
@@ -103,14 +80,12 @@ export class StopDetailComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly stopScheduleFacade = inject(StopScheduleFacade);
   private readonly layoutContext: AppLayoutContext = inject(APP_LAYOUT_CONTEXT);
-  private readonly stopDirectoryFacade = inject(StopDirectoryFacade);
   private readonly translate = inject(TranslateService);
   private readonly scheduleRefresh = new Subject<void>();
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.stopDetail;
   protected readonly retryKey = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.retry;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.stopDetailBase;
-  protected readonly actionKeys = this.translationKeys.actions;
   protected readonly destinationControl = new FormControl<string>(ALL_DESTINATIONS_OPTION, {
     nonNullable: true
   });
@@ -145,7 +120,7 @@ export class StopDetailComponent {
     distinctUntilChanged()
   );
 
-  private readonly stopRouteContext$: Observable<StopRouteContext> = combineLatest([
+  protected readonly stopRouteContext$: Observable<StopRouteContext> = combineLatest([
     this.stopId$,
     this.consortiumId$
   ]).pipe(
@@ -188,28 +163,6 @@ export class StopDetailComponent {
     distinctUntilChanged()
   );
 
-  protected readonly stopInfoCommands$ = this.stopRouteContext$.pipe(
-    switchMap(({ stopId, consortiumId }) =>
-      this.loadStopRecord(stopId, consortiumId).pipe(
-        map((record): StopInfoCommands => {
-          if (!record) {
-            return null;
-          }
-
-          return [
-            StopDetailComponent.ROOT_COMMAND,
-            APP_CONFIG.routes.stopInfoBase,
-            record.consortiumId.toString(),
-            record.stopId
-          ];
-        })
-      )
-    ),
-    startWith<StopInfoCommands>(null),
-    distinctUntilChanged(areStopInfoCommandsEqual),
-    shareReplay({ bufferSize: 1, refCount: true })
-  );
-
   protected readonly viewModel$: Observable<StopScheduleUiModel> = combineLatest([
     this.scheduleResult$,
     this.destinationControl.valueChanges.pipe(startWith(this.destinationControl.value))
@@ -225,7 +178,6 @@ export class StopDetailComponent {
   );
 
   protected readonly allDestinationsOption = ALL_DESTINATIONS_OPTION;
-
   protected readonly trackByServiceId = (_: number, item: ScheduleItem): string => item.serviceId;
 
   protected readonly timelineAnnouncement$ = combineLatest([
@@ -260,10 +212,6 @@ export class StopDetailComponent {
       .subscribe((viewModel) => this.syncTimelineTab(viewModel));
   }
 
-  protected async openStopInfo(commands: readonly string[]): Promise<void> {
-    await this.router.navigate(commands);
-  }
-
   protected retrySchedule(): void {
     this.scheduleRefresh.next();
   }
@@ -277,17 +225,6 @@ export class StopDetailComponent {
     }
 
     return this.stopScheduleFacade.loadStopSchedule(stopId, { consortiumId });
-  }
-
-  private loadStopRecord(
-    stopId: string,
-    consortiumId: number | null
-  ): Observable<StopDirectoryRecord | null> {
-    if (consortiumId === null) {
-      return this.stopDirectoryFacade.getRecordByStopId(stopId);
-    }
-
-    return this.stopDirectoryFacade.getRecordByStopSignature(consortiumId, stopId);
   }
 
   private redirectToHome(): void {
@@ -323,16 +260,13 @@ export class StopDetailComponent {
         : { minutes: nextService.minutesUntilArrival };
 
     const statusText = this.translate.instant(statusKey, statusParams ?? {});
-
     const boundedProgress = Math.max(0, Math.min(100, Math.round(nextService.progressPercentage)));
-
     const message = this.translate.instant(this.translationKeys.announcements.progress, {
       lineCode: nextService.lineCode,
       destination: nextService.destination,
       statusText,
       percentage: boundedProgress
     });
-
     const normalized = message.trim();
 
     return normalized.length > 0 ? normalized : null;

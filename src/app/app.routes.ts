@@ -4,6 +4,7 @@ import { FavoritesComponent } from '@features/favorites/favorites.component';
 import { HomeComponent } from '@features/home/home.component';
 import { RouteSearchComponent } from '@features/route-search/route-search.component';
 import { AppLayoutComponent } from '@shared/layout/app-layout/app-layout.component';
+import { LINE_DETAIL_ROUTE_PATTERN } from '@shared/navigation/navigation.util';
 
 export const routes: Routes = [
   {
@@ -39,14 +40,22 @@ export const routes: Routes = [
       {
         path: APP_CONFIG.routes.stopInfoPattern,
         loadComponent: () =>
-          import('@features/stop-info/stop-info.component').then((module) => module.StopInfoComponent),
-        title: APP_CONFIG.translationKeys.navigation.stopInfo
+          import('@features/stop-info/stop-info-redirect.component').then(
+            (module) => module.StopInfoRedirectComponent
+          ),
+        title: APP_CONFIG.translationKeys.navigation.stopDetail
       },
       {
         path: APP_CONFIG.routes.stopDetailPattern,
         loadComponent: () =>
           import('@features/stop-detail/stop-detail.component').then((module) => module.StopDetailComponent),
         title: APP_CONFIG.translationKeys.navigation.stopDetail
+      },
+      {
+        path: LINE_DETAIL_ROUTE_PATTERN,
+        loadComponent: () =>
+          import('@features/line-detail/line-detail.component').then((module) => module.LineDetailComponent),
+        title: APP_CONFIG.translationKeys.navigation.lines
       },
       {
         path: APP_CONFIG.routes.routeSearchResultPattern,

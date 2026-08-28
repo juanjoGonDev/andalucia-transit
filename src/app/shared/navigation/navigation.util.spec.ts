@@ -1,5 +1,9 @@
 import { APP_CONFIG } from '@core/config';
-import { buildStopDetailNavigation } from '@shared/navigation/navigation.util';
+import {
+  LINE_DETAIL_BASE_SEGMENT,
+  buildLineDetailNavigation,
+  buildStopDetailNavigation
+} from '@shared/navigation/navigation.util';
 
 describe('navigation util', () => {
   it('builds consortium-aware stop detail navigation from canonical identity', () => {
@@ -18,5 +22,16 @@ describe('navigation util', () => {
         [APP_CONFIG.routeParams.stopInfo.consortiumId]: '4'
       }
     });
+  });
+
+  it('builds an internal line detail route without duplicating line path ownership', () => {
+    expect(buildLineDetailNavigation(7, ' 380 ')).toEqual({
+      commands: ['/', LINE_DETAIL_BASE_SEGMENT, '7', '380']
+    });
+  });
+
+  it('rejects invalid line navigation identities', () => {
+    expect(() => buildLineDetailNavigation(0, '380')).toThrowError(RangeError);
+    expect(() => buildLineDetailNavigation(7, '   ')).toThrowError('lineId must not be empty');
   });
 });

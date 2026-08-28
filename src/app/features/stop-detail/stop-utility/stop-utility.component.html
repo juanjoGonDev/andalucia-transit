@@ -1,0 +1,66 @@
+<section class="stop-utility" *ngIf="state$ | async as state">
+  <section class="stop-utility__panel" aria-labelledby="stop-lines-title">
+    <div class="stop-utility__heading">
+      <span class="material-symbols-outlined stop-utility__icon" aria-hidden="true">route</span>
+      <h2 id="stop-lines-title" class="stop-utility__title">{{ 'navigation.lines' | translate }}</h2>
+    </div>
+
+    <div *ngIf="state.status === 'loading'" class="stop-utility__status" role="status">
+      <span class="app-loading-indicator app-loading-indicator--sm" aria-hidden="true"></span>
+      <span>{{ 'map.focusedLines.loading' | translate }}</span>
+    </div>
+
+    <div *ngIf="state.status === 'error'" class="stop-utility__status" role="status">
+      <span>{{ 'map.focusedLines.error' | translate }}</span>
+    </div>
+
+    <p *ngIf="state.status === 'ready' && !state.lines.length" class="stop-utility__status">
+      {{ 'map.focusedLines.empty' | translate }}
+    </p>
+
+    <ul *ngIf="state.lines.length && state.record as record" class="stop-utility__lines">
+      <li *ngFor="let line of state.lines; trackBy: trackLine">
+        <button type="button" class="stop-utility__line" (click)="openLine(record, line)">
+          <span class="stop-utility__line-code">{{ line.code }}</span>
+          <span class="stop-utility__line-name">{{ line.name }}</span>
+          <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+        </button>
+      </li>
+    </ul>
+  </section>
+
+  <section *ngIf="state.record as record" class="stop-utility__panel" aria-labelledby="stop-directions-title">
+    <div class="stop-utility__heading">
+      <span class="material-symbols-outlined stop-utility__icon" aria-hidden="true">directions_walk</span>
+      <div>
+        <h2 id="stop-directions-title" class="stop-utility__title">
+          {{ 'stopInfo.directions.title' | translate }}
+        </h2>
+        <p class="stop-utility__place">
+          {{ record.municipality }}<ng-container *ngIf="record.nucleus"> · {{ record.nucleus }}</ng-container>
+        </p>
+      </div>
+    </div>
+
+    <div class="stop-utility__map-actions">
+      <a
+        class="app-primary-button stop-utility__map-link"
+        [href]="directions(record).googleMaps"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">directions_walk</span>
+        Google Maps
+      </a>
+      <a
+        class="app-outline-button stop-utility__map-link"
+        [href]="directions(record).appleMaps"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">map</span>
+        Apple Maps
+      </a>
+    </div>
+  </section>
+</section>

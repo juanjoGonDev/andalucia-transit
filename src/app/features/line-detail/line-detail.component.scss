@@ -1,0 +1,119 @@
+:host {
+  display: block;
+}
+
+.line-detail .app-layout__body {
+  --app-layout-body-gap: var(--space-lg);
+  --app-layout-body-padding-block: var(--space-xl);
+}
+
+.line-detail__hero,
+.line-detail__status,
+.line-detail__stops {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.line-detail__hero {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+}
+
+.line-detail__code {
+  flex: 0 0 auto;
+  padding: var(--space-3xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.line-detail__heading {
+  display: grid;
+  gap: var(--space-xs);
+  min-width: 0;
+}
+
+.line-detail__heading h1,
+.line-detail__eyebrow,
+.line-detail__mode {
+  margin: 0;
+}
+
+.line-detail__heading h1 {
+  color: var(--color-text-strong);
+  font-size: var(--font-size-title-lg);
+  line-height: var(--line-height-heading);
+}
+
+.line-detail__eyebrow,
+.line-detail__mode {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.line-detail__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  min-height: 12rem;
+  padding: var(--space-xl);
+  text-align: center;
+}
+
+.line-detail__stops {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: var(--space-sm) 0;
+  list-style: none;
+  overflow: hidden;
+}
+
+.line-detail__stop {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  min-height: 3.25rem;
+  padding: var(--space-sm) var(--space-lg);
+  border: 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.line-detail__stops li:last-child .line-detail__stop {
+  border-bottom: 0;
+}
+
+.line-detail__stop:hover {
+  background: var(--color-primary-soft);
+}
+
+.line-detail__stop:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: -3px;
+}
+
+.line-detail__marker {
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 0.2rem solid var(--color-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+}
+
+.line-detail__stop-name {
+  color: var(--color-text-strong);
+  font-weight: var(--font-weight-semibold);
+}

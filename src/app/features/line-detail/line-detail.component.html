@@ -1,0 +1,44 @@
+<section class="line-detail" appLayoutContent [appLayoutContentNavigationKey]="layoutNavigationKey">
+  <div class="utility-container">
+    <div class="app-layout__body">
+      <ng-container *ngIf="state$ | async as state">
+        <section *ngIf="state.status === 'loading'" class="line-detail__status" role="status">
+          <span class="app-loading-indicator app-loading-indicator--lg" aria-hidden="true"></span>
+          <span>{{ 'map.focusedLines.previewLoading' | translate }}</span>
+        </section>
+
+        <section *ngIf="state.status === 'error'" class="line-detail__status" role="alert">
+          <span class="material-symbols-outlined" aria-hidden="true">route</span>
+          <span>{{ 'map.focusedLines.previewError' | translate }}</span>
+        </section>
+
+        <ng-container *ngIf="state.status === 'ready'">
+          <section class="line-detail__hero">
+            <span class="line-detail__code">{{ state.viewModel.detail.code }}</span>
+            <div class="line-detail__heading">
+              <p class="line-detail__eyebrow">{{ 'navigation.lines' | translate }}</p>
+              <h1>{{ state.viewModel.detail.name }}</h1>
+              <p *ngIf="state.viewModel.detail.mode" class="line-detail__mode">
+                {{ state.viewModel.detail.mode }} ·
+                {{
+                  'map.routes.stopCount.other'
+                    | translate: { value: state.viewModel.stops.length }
+                }}
+              </p>
+            </div>
+          </section>
+
+          <ol *ngIf="state.viewModel.stops.length" class="line-detail__stops">
+            <li *ngFor="let stop of state.viewModel.stops; trackBy: trackStop">
+              <button type="button" class="line-detail__stop" (click)="openStop(stop)">
+                <span class="line-detail__marker" aria-hidden="true"></span>
+                <span class="line-detail__stop-name">{{ stop.name }}</span>
+                <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+              </button>
+            </li>
+          </ol>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</section>
