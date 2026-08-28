@@ -221,7 +221,15 @@ test.describe('Lines directory and line detail layout', () => {
       expect(stopsBox).not.toBeNull();
 
       if (viewport.width === DESKTOP_VIEWPORT.width) {
+        const firstStopRow = page.locator('.line-detail__stop-row').first();
+        const [rowBox, stopNameBox] = await Promise.all([
+          firstStopRow.boundingBox(),
+          firstStopRow.locator('.line-detail__stop-name').boundingBox(),
+        ]);
         expect((mapBox?.width ?? 0) > (stopsBox?.width ?? 0) * 1.4).toBe(true);
+        expect(rowBox).not.toBeNull();
+        expect(stopNameBox).not.toBeNull();
+        expect((stopNameBox?.width ?? 0) >= (rowBox?.width ?? 0) * 0.35).toBe(true);
         await capture(page, 'line-detail-data_es_1440_900_full.png');
       } else {
         expect((stopsBox?.y ?? 0) >= (mapBox?.y ?? 0) + (mapBox?.height ?? 0) - 1).toBe(true);

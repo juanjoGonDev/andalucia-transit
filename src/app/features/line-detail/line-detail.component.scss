@@ -2,6 +2,10 @@
   display: block;
 }
 
+.line-detail > .utility-container {
+  max-width: 76rem;
+}
+
 .line-detail .app-layout__body {
   --app-layout-body-gap: var(--space-lg);
   --app-layout-body-padding-block: var(--space-xl);
@@ -234,10 +238,10 @@
 .line-detail__stop-name {
   color: var(--color-text-strong);
   font-weight: var(--font-weight-semibold);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
-@media (min-width: 64rem) {
+@media (min-width: 75rem) {
   .line-detail__stop-details {
     min-width: 9rem;
   }
