@@ -19,6 +19,7 @@ const catalogIndex = {
       id: 6,
       name: 'Área de Almería',
       shortName: 'CTAL',
+      province: 'Almería',
       datasets: {
         municipalities: 'consortium-6/municipalities.json',
         nuclei: 'consortium-6/nuclei.json',
@@ -40,7 +41,7 @@ describe('ConsortiumCatalogService', () => {
 
   afterEach(() => http.verify());
 
-  it('loads and sorts traveler-readable consortium areas from the canonical catalog', () => {
+  it('loads and sorts traveler-readable consortium areas with canonical provinces', () => {
     let result: readonly ConsortiumCatalogEntry[] = [];
     service.loadConsortiums().subscribe((entries) => {
       result = entries;
@@ -50,17 +51,18 @@ describe('ConsortiumCatalogService', () => {
     request.flush({
       metadata: {
         consortiums: [
-          { id: 9, name: 'Costa de Huelva', shortName: 'CTHU' },
-          { id: 6, name: 'Área de Almería', shortName: 'CTAL' }
+          { id: 9, name: 'Costa de Huelva', shortName: 'CTHU', province: 'Huelva' },
+          { id: 6, name: 'Área de Almería', shortName: 'CTAL', province: 'Almería' }
         ]
       }
     });
 
     expect(result.map((entry) => entry.id)).toEqual([6, 9]);
     expect(result.map((entry) => entry.name)).toEqual(['Área de Almería', 'Costa de Huelva']);
+    expect(result.map((entry) => entry.province)).toEqual(['Almería', 'Huelva']);
   });
 
-  it('ignores malformed catalog entries', () => {
+  it('ignores malformed catalog entries and preserves missing legacy province as null', () => {
     let result: readonly ConsortiumCatalogEntry[] = [];
     service.loadConsortiums().subscribe((entries) => {
       result = entries;
@@ -74,7 +76,9 @@ describe('ConsortiumCatalogService', () => {
       ]
     });
 
-    expect(result).toEqual([{ id: 6, name: 'Área de Almería', shortName: 'CTAL' }]);
+    expect(result).toEqual([
+      { id: 6, name: 'Área de Almería', shortName: 'CTAL', province: null }
+    ]);
   });
 
   it('loads municipalities and nuclei through the dataset paths owned by the catalog index', () => {
