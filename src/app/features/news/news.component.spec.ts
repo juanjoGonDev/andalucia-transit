@@ -207,11 +207,14 @@ describe('NewsComponent', () => {
     );
   });
 
-  it('restores filters, ordering and page from routed query changes', () => {
+  it('restores filters, ordering and page from routed query changes', async () => {
     facade.emit({ status: 'ready', articles: createAreaArticles(18) });
     fixture.detectChanges();
+    await fixture.whenStable();
 
     route.setQueryParams({ area: '6', category: 'Tarifas', order: 'oldest', page: '2' });
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     const areaSelect = fixture.nativeElement.querySelector('.news__select--area') as HTMLSelectElement;
