@@ -12,12 +12,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject, catchError, map, of, startWith, switchMap } from 'rxjs';
-import { RouteSearchDepartureView } from '@domain/route-search/route-search-results.service';
 import {
   LineRouteWorkspaceRequest,
   LineRouteWorkspaceService,
   LineRouteWorkspaceViewModel
 } from '@domain/lines/line-route-workspace.service';
+import { RouteSearchDepartureView } from '@domain/route-search/route-search-results.service';
 import { TransitRouteWorkspaceComponent } from '@shared/map/route-workspace/transit-route-workspace.component';
 import {
   TransitRouteWorkspaceCopy,
