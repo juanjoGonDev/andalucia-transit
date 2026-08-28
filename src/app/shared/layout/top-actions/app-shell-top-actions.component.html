@@ -37,13 +37,13 @@
         </a>
         <a
           class="shell-actions__button shell-actions__button--quick"
-          [class.shell-actions__button--active]="isActive(routes.routeSearch)"
-          [routerLink]="routeSearchLinkCommands"
-          [attr.aria-current]="isActive(routes.routeSearch) ? 'page' : null"
-          [attr.aria-label]="routeSearchLabelKey | translate"
+          [class.shell-actions__button--active]="isActive(linesNavigationKey)"
+          [routerLink]="linesLinkCommands"
+          [attr.aria-current]="isActive(linesNavigationKey) ? 'page' : null"
+          [attr.aria-label]="linesLabelKey | translate"
         >
           <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">route</span>
-          <span class="shell-actions__button-label">{{ routeSearchShortLabelKey | translate }}</span>
+          <span class="shell-actions__button-label">{{ linesLabelKey | translate }}</span>
         </a>
         <a
           class="shell-actions__button shell-actions__button--quick"
