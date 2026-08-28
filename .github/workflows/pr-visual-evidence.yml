@@ -291,6 +291,8 @@ jobs:
             map-data_es_1440_900_full.png
             stop-detail-data_es_390_844_full.png
             stop-detail-data_es_1440_900_full.png
+            stop-detail-directions_es_390_844_full.png
+            stop-detail-directions_es_1440_900_full.png
             recent-data_es_390_844_full.png
             recent-data_es_1440_900_full.png
             favorites-data_es_390_844_full.png
@@ -299,6 +301,8 @@ jobs:
             settings-data_es_1440_900_full.png
             news-data_es_390_844_full.png
             news-data_es_1440_900_full.png
+            news-filtered_es_390_844_full.png
+            news-filtered_es_1440_900_full.png
             recent-empty_es_390_844_full.png
             recent-empty_es_1440_900_full.png
             favorites-empty_es_390_844_full.png
@@ -401,10 +405,12 @@ jobs:
           | Confirm dialog | Shared surface | <img src="$base/dialog-confirm_es_390_844_full.png" width="220" alt="Confirmation dialog shared surface at 390 by 844 pixels"> | <img src="$base/dialog-confirm_es_1440_900_full.png" width="420" alt="Confirmation dialog shared surface at 1440 by 900 pixels"> |
           | Map | Populated data | <img src="$base/map-data_es_390_844_full.png" width="220" alt="Network map populated state at 390 by 844 pixels"> | <img src="$base/map-data_es_1440_900_full.png" width="420" alt="Network map populated state at 1440 by 900 pixels"> |
           | Stop Detail | Populated data | <img src="$base/stop-detail-data_es_390_844_full.png" width="220" alt="Stop Detail populated state at 390 by 844 pixels"> | <img src="$base/stop-detail-data_es_1440_900_full.png" width="420" alt="Stop Detail populated state at 1440 by 900 pixels"> |
+          | Stop Detail | Walking directions tab | <img src="$base/stop-detail-directions_es_390_844_full.png" width="220" alt="Stop Detail walking directions tab at 390 by 844 pixels"> | <img src="$base/stop-detail-directions_es_1440_900_full.png" width="420" alt="Stop Detail walking directions tab at 1440 by 900 pixels"> |
           | Recent searches | Populated data | <img src="$base/recent-data_es_390_844_full.png" width="220" alt="Recent searches populated state at 390 by 844 pixels"> | <img src="$base/recent-data_es_1440_900_full.png" width="420" alt="Recent searches populated state at 1440 by 900 pixels"> |
           | Favorites | Populated data | <img src="$base/favorites-data_es_390_844_full.png" width="220" alt="Favorites populated state at 390 by 844 pixels"> | <img src="$base/favorites-data_es_1440_900_full.png" width="420" alt="Favorites populated state at 1440 by 900 pixels"> |
           | Settings | Deterministic data | <img src="$base/settings-data_es_390_844_full.png" width="220" alt="Settings at 390 by 844 pixels"> | <img src="$base/settings-data_es_1440_900_full.png" width="420" alt="Settings at 1440 by 900 pixels"> |
           | News | Populated data | <img src="$base/news-data_es_390_844_full.png" width="220" alt="News populated state at 390 by 844 pixels"> | <img src="$base/news-data_es_1440_900_full.png" width="420" alt="News populated state at 1440 by 900 pixels"> |
+          | News | Filtered, ordered and URL-restored | <img src="$base/news-filtered_es_390_844_full.png" width="220" alt="Filtered news state at 390 by 844 pixels"> | <img src="$base/news-filtered_es_1440_900_full.png" width="420" alt="Filtered news state at 1440 by 900 pixels"> |
           | Recent searches | Empty | <img src="$base/recent-empty_es_390_844_full.png" width="220" alt="Recent searches empty state at 390 by 844 pixels"> | <img src="$base/recent-empty_es_1440_900_full.png" width="420" alt="Recent searches empty state at 1440 by 900 pixels"> |
           | Favorites | Empty | <img src="$base/favorites-empty_es_390_844_full.png" width="220" alt="Favorites empty state at 390 by 844 pixels"> | <img src="$base/favorites-empty_es_1440_900_full.png" width="420" alt="Favorites empty state at 1440 by 900 pixels"> |
           EOF
