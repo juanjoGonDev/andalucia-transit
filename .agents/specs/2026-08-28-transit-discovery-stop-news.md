@@ -87,4 +87,4 @@ Continue on PR #36 and `codex/refactorizar-vista-segun-diseno-proporcionado`. Us
 
 ## Status
 
-In progress. Exact-head CI and visual evidence must be green before closure.
+Implementation complete. Exact-head CI, browser evidence, artifact inspection and review-state checks remain external delivery gates; their run identifiers are intentionally not recorded here because changing this file would create a new unvalidated head.
