@@ -4,8 +4,8 @@ import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-transla
 import { Observable, firstValueFrom, of } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { AppLayoutContextStore } from '@shared/layout/app-layout-context.store';
-import { LINE_DETAIL_BASE_SEGMENT } from '@shared/navigation/navigation.util';
 import { AppShellTopActionsComponent } from '@shared/layout/top-actions/app-shell-top-actions.component';
+import { LINE_DETAIL_BASE_SEGMENT } from '@shared/navigation/navigation.util';
 
 class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): Observable<Record<string, string>> {
