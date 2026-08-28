@@ -1,6 +1,7 @@
 import { routes } from '@app/app.routes';
 import { APP_CONFIG } from '@core/config';
 import {
+  LINE_DETAIL_BASE_SEGMENT,
   LINE_DETAIL_ROUTE_PATTERN,
   NEWS_DETAIL_ROUTE_PATTERN
 } from '@shared/navigation/navigation.util';
@@ -25,6 +26,7 @@ describe('App Routes', () => {
     expect(routePaths).toContain(APP_CONFIG.routes.routeSearch);
     expect(routePaths).toContain(APP_CONFIG.routes.settings);
     expect(routePaths).toContain(APP_CONFIG.routes.map);
+    expect(routePaths).toContain(LINE_DETAIL_BASE_SEGMENT);
     expect(routePaths).toContain(LINE_DETAIL_ROUTE_PATTERN);
     expect(routePaths).toContain(NEWS_DETAIL_ROUTE_PATTERN);
   });
