@@ -6,10 +6,11 @@ const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const MINIMUM_TOUCH_TARGET_PX = 44;
 const MINIMUM_TEXT_CONTRAST = 4.5;
 const GEOGRAPHIC_LINES_URL = /https:\/\/api\.ctan\.es\/v1\/Consorcios\/\d+\/lineas(?:\?.*)?$/;
+const NEARBY_STOPS_URL = /https:\/\/api\.ctan\.es\/v1\/Consorcios\/\d+\/paradas(?:\?.*)?$/;
 const CANONICAL_STOP_LINES_URL =
-  /https:\/\/api\.ctan\.es\/v1\/Consorcios\/\d+\/lineasPorParadas\/.+/;
-const LEGACY_STOP_LINES_URL =
   /https:\/\/api\.ctan\.es\/v1\/Consorcios\/\d+\/paradas\/lineasPorParadas\/.+/;
+const REMOVED_COMPAT_STOP_LINES_URL =
+  /https:\/\/api\.ctan\.es\/v1\/Consorcios\/\d+\/lineasPorParadas\/.+/;
 
 const FALLBACK_LINE = {
   idLinea: 380,
@@ -21,21 +22,28 @@ const FALLBACK_LINE = {
 test.describe('map focused lines recovery', () => {
   test.skip(!BASE_URL, 'E2E_BASE_URL environment variable is required for map focused-line tests.');
 
-  test('loads focused lines through the canonical nearest-stop fallback and keeps cards readable', async ({
+  test('loads focused lines from nearby same-zone stops without compatibility lookups', async ({
     page,
   }) => {
-    let canonicalFallbackRequests = 0;
-    await failGeographicLineLookup(page);
+    let canonicalRequests = 0;
+    let geographicRequests = 0;
+    let removedCompatRequests = 0;
+    await mockNearbyStops(page);
+    await page.route(GEOGRAPHIC_LINES_URL, async (route) => {
+      geographicRequests += 1;
+      await failRoute(route);
+    });
     await page.route(CANONICAL_STOP_LINES_URL, async (route) => {
-      canonicalFallbackRequests += 1;
+      canonicalRequests += 1;
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify([FALLBACK_LINE]),
       });
     });
-    await page.route(LEGACY_STOP_LINES_URL, async (route) => {
-      await route.fulfill({ status: 500, contentType: 'application/json', body: '{}' });
+    await page.route(REMOVED_COMPAT_STOP_LINES_URL, async (route) => {
+      removedCompatRequests += 1;
+      await failRoute(route);
     });
 
     await page.setViewportSize(MOBILE_VIEWPORT);
@@ -49,7 +57,9 @@ test.describe('map focused lines recovery', () => {
     await expect(card.locator('.map-route__code')).toHaveText(FALLBACK_LINE.codigo);
     await expect(destination).toHaveText(FALLBACK_LINE.nombre);
     await expect(page.locator('.map__toast--error')).toHaveCount(0);
-    expect(canonicalFallbackRequests).toBeGreaterThan(0);
+    expect(canonicalRequests).toBeGreaterThan(0);
+    expect(geographicRequests).toBe(0);
+    expect(removedCompatRequests).toBe(0);
 
     const contrast = await measureContrast(card);
     expect(contrast).toBeGreaterThanOrEqual(MINIMUM_TEXT_CONTRAST);
@@ -58,9 +68,9 @@ test.describe('map focused lines recovery', () => {
   test('shows a retryable toast instead of consuming the focused-lines inspector on terminal failure', async ({
     page,
   }) => {
-    await failGeographicLineLookup(page);
+    await mockNearbyStops(page);
     await page.route(CANONICAL_STOP_LINES_URL, failRoute);
-    await page.route(LEGACY_STOP_LINES_URL, failRoute);
+    await page.route(REMOVED_COMPAT_STOP_LINES_URL, failRoute);
 
     await page.setViewportSize(MOBILE_VIEWPORT);
     await page.goto(new URL(MAP_PATH, BASE_URL as string).toString());
@@ -94,8 +104,39 @@ test.describe('map focused lines recovery', () => {
   });
 });
 
-async function failGeographicLineLookup(page: Page): Promise<void> {
-  await page.route(GEOGRAPHIC_LINES_URL, failRoute);
+async function mockNearbyStops(page: Page): Promise<void> {
+  await page.route(NEARBY_STOPS_URL, async (route) => {
+    const requestUrl = new URL(route.request().url());
+    const latitude = Number(requestUrl.searchParams.get('latitud'));
+    const longitude = Number(requestUrl.searchParams.get('longitud'));
+    const resolvedLatitude = Number.isFinite(latitude) ? latitude : 36.84;
+    const resolvedLongitude = Number.isFinite(longitude) ? longitude : -2.46;
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          idParada: 15,
+          idZona: 'A',
+          latitud: resolvedLatitude,
+          longitud: resolvedLongitude,
+        },
+        {
+          idParada: 16,
+          idZona: 'A',
+          latitud: resolvedLatitude + 0.001,
+          longitud: resolvedLongitude + 0.001,
+        },
+        {
+          idParada: 17,
+          idZona: 'B',
+          latitud: resolvedLatitude + 0.002,
+          longitud: resolvedLongitude + 0.002,
+        },
+      ]),
+    });
+  });
 }
 
 async function failRoute(
