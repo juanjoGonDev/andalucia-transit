@@ -33,9 +33,7 @@ class TransitRouteWorkspaceStubComponent {
 }
 
 class LineRouteWorkspaceServiceStub {
-  readonly load = jasmine
-    .createSpy('load')
-    .and.callFake(() => of(createViewModel(0)));
+  readonly load = jasmine.createSpy('load').and.callFake(() => of(createViewModel(0)));
 }
 
 describe('RouteSearchDepartureRoutePreviewComponent', () => {
@@ -68,8 +66,8 @@ describe('RouteSearchDepartureRoutePreviewComponent', () => {
     translate.use('en');
 
     fixture = TestBed.createComponent(RouteSearchDepartureRoutePreviewComponent);
-    fixture.componentInstance.consortiumId = 7;
-    fixture.componentInstance.departure = createDeparture(0);
+    fixture.componentRef.setInput('consortiumId', 7);
+    fixture.componentRef.setInput('departure', createDeparture(0));
     fixture.detectChanges();
   });
 
@@ -83,19 +81,19 @@ describe('RouteSearchDepartureRoutePreviewComponent', () => {
       lineId: 'line-1',
       direction: 0
     });
-    expect(fixture.debugElement.query(By.directive(TransitRouteWorkspaceStubComponent))).not.toBeNull();
+    expect(fixture.debugElement.query(By.css('app-transit-route-workspace'))).not.toBeNull();
   });
 
   it('keeps the loaded route cached across close and reopen', () => {
     toggleDisclosure(true);
     toggleDisclosure(false);
 
-    expect(fixture.debugElement.query(By.directive(TransitRouteWorkspaceStubComponent))).toBeNull();
+    expect(fixture.debugElement.query(By.css('app-transit-route-workspace'))).toBeNull();
 
     toggleDisclosure(true);
 
     expect(workspaceService.load).toHaveBeenCalledTimes(1);
-    expect(fixture.debugElement.query(By.directive(TransitRouteWorkspaceStubComponent))).not.toBeNull();
+    expect(fixture.debugElement.query(By.css('app-transit-route-workspace'))).not.toBeNull();
   });
 
   it('cancels the previous context and loads a changed direction while open', () => {
@@ -103,7 +101,7 @@ describe('RouteSearchDepartureRoutePreviewComponent', () => {
     workspaceService.load.calls.reset();
     workspaceService.load.and.callFake((request) => of(createViewModel(request.direction ?? 0)));
 
-    fixture.componentInstance.departure = createDeparture(1);
+    fixture.componentRef.setInput('departure', createDeparture(1));
     fixture.detectChanges();
 
     expect(workspaceService.load).toHaveBeenCalledOnceWith({
@@ -118,7 +116,7 @@ describe('RouteSearchDepartureRoutePreviewComponent', () => {
     const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
     toggleDisclosure(true);
 
-    const workspace = fixture.debugElement.query(By.directive(TransitRouteWorkspaceStubComponent))
+    const workspace = fixture.debugElement.query(By.css('app-transit-route-workspace'))
       .componentInstance as TransitRouteWorkspaceStubComponent;
     workspace.stopDetails.emit('stop-b');
 
@@ -127,7 +125,9 @@ describe('RouteSearchDepartureRoutePreviewComponent', () => {
 
   function toggleDisclosure(open: boolean): void {
     const details = fixture.debugElement.query(By.css('.route-search-route-preview'));
-    details.triggerEventHandler('toggle', { currentTarget: { open } });
+    const nativeDetails = details.nativeElement as HTMLDetailsElement;
+    nativeDetails.open = open;
+    nativeDetails.dispatchEvent(new Event('toggle'));
     fixture.detectChanges();
   }
 });
