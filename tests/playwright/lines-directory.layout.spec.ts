@@ -22,8 +22,8 @@ const lineDetailResponse = {
     [37.373, -6.072],
     [37.379, -6.052],
     [37.383, -6.032],
-    [37.386, -6.012]
-  ]
+    [37.386, -6.012],
+  ],
 } as const;
 
 const lineStopsResponse = [
@@ -37,7 +37,7 @@ const lineStopsResponse = [
     nombre: 'Bormujos Centro',
     sentido: 0,
     orden: 1,
-    modos: 1
+    modos: 1,
   },
   {
     idParada: '4102',
@@ -49,7 +49,7 @@ const lineStopsResponse = [
     nombre: 'Castilleja Plaza',
     sentido: 0,
     orden: 2,
-    modos: 1
+    modos: 1,
   },
   {
     idParada: '4103',
@@ -61,7 +61,7 @@ const lineStopsResponse = [
     nombre: 'Tomares Centro',
     sentido: 0,
     orden: 3,
-    modos: 1
+    modos: 1,
   },
   {
     idParada: '4199',
@@ -73,8 +73,8 @@ const lineStopsResponse = [
     nombre: 'Tomares Vuelta',
     sentido: 1,
     orden: 1,
-    modos: 1
-  }
+    modos: 1,
+  },
 ] as const;
 
 async function open(page: Page, path: string): Promise<void> {
@@ -85,21 +85,25 @@ async function stubLineDetail(page: Page): Promise<void> {
   await page.route(LINE_API_GLOB, async (route) => {
     const path = new URL(route.request().url()).pathname;
     const body = path.endsWith('/paradas') ? lineStopsResponse : lineDetailResponse;
-    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) });
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(body),
+    });
   });
 
   await page.route(OSM_TILE_GLOB, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'image/svg+xml',
-      body: '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><rect width="256" height="256" fill="#eef2f6"/></svg>'
+      body: '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><rect width="256" height="256" fill="#eef2f6"/></svg>',
     });
   });
 }
 
 async function assertNoHorizontalOverflow(page: Page): Promise<void> {
   expect(
-    await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)
+    await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
   ).toBe(true);
 }
 
@@ -116,8 +120,8 @@ test.describe('Lines directory and line detail layout', () => {
   test.use({ locale: 'es-ES' });
   test.skip(!BASE_URL, 'E2E_BASE_URL is required.');
 
-  test('keeps line discovery usable at narrow and mobile widths', async ({ page }) => {
-    for (const viewport of [NARROW_VIEWPORT, MOBILE_VIEWPORT]) {
+  test('keeps line discovery usable across required widths', async ({ page }) => {
+    for (const viewport of [NARROW_VIEWPORT, MOBILE_VIEWPORT, DESKTOP_VIEWPORT]) {
       await page.setViewportSize(viewport);
       await open(page, LINES_PATH);
 
@@ -130,6 +134,9 @@ test.describe('Lines directory and line detail layout', () => {
 
       if (viewport.width === MOBILE_VIEWPORT.width) {
         await capture(page, 'lines-data_es_390_844_full.png');
+      }
+      if (viewport.width === DESKTOP_VIEWPORT.width) {
+        await capture(page, 'lines-data_es_1440_900_full.png');
       }
     }
   });
@@ -177,7 +184,10 @@ test.describe('Lines directory and line detail layout', () => {
       await expect(stopsPanel).toBeVisible();
       await assertNoHorizontalOverflow(page);
 
-      const [mapBox, stopsBox] = await Promise.all([mapColumn.boundingBox(), stopsPanel.boundingBox()]);
+      const [mapBox, stopsBox] = await Promise.all([
+        mapColumn.boundingBox(),
+        stopsPanel.boundingBox(),
+      ]);
       expect(mapBox).not.toBeNull();
       expect(stopsBox).not.toBeNull();
 
