@@ -155,6 +155,13 @@ test.describe('Lines directory and line detail layout', () => {
         await capture(page, 'lines-data_es_390_844_full.png');
       }
       if (viewport.width === DESKTOP_VIEWPORT.width) {
+        const [lineBox, nameBox] = await Promise.all([
+          firstLine.boundingBox(),
+          firstLine.locator('.lines__line-name').boundingBox(),
+        ]);
+        expect(lineBox).not.toBeNull();
+        expect(nameBox).not.toBeNull();
+        expect((nameBox?.width ?? 0) >= (lineBox?.width ?? 0) * 0.35).toBe(true);
         await capture(page, 'lines-data_es_1440_900_full.png');
       }
     }
