@@ -137,7 +137,7 @@ async function stubProvinceCatalog(page: Page): Promise<void> {
 
   await page.route(CATALOG_LINES_GLOB, async (route) => {
     const consortiumId = readConsortiumId(route.request().url());
-    const lines = consortiumId === null ? [] : LINES_BY_CONSORTIUM[consortiumId] ?? [];
+    const lines = consortiumId === null ? [] : (LINES_BY_CONSORTIUM[consortiumId] ?? []);
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
