@@ -4,7 +4,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '@core/config';
 import { AppLayoutContextStore } from '@shared/layout/app-layout-context.store';
 import { AppLayoutNavigationKey } from '@shared/layout/app-layout-context.token';
-import { NavigationCommands, buildNavigationCommands } from '@shared/navigation/navigation.util';
+import {
+  LINE_DETAIL_BASE_SEGMENT,
+  NavigationCommands,
+  buildNavigationCommands
+} from '@shared/navigation/navigation.util';
 
 interface ShellMenuEntry {
   readonly labelKey: string;
@@ -32,17 +36,15 @@ export class AppShellTopActionsComponent {
   private readonly translation = APP_CONFIG.translationKeys.home;
 
   protected readonly routes = APP_CONFIG.routes;
+  protected readonly linesNavigationKey = LINE_DETAIL_BASE_SEGMENT;
   protected readonly homeLabelKey = APP_CONFIG.translationKeys.navigation.home;
-  protected readonly routeSearchLabelKey = APP_CONFIG.translationKeys.navigation.routeSearch;
-  protected readonly routeSearchShortLabelKey = APP_CONFIG.translationKeys.map.routes.title;
+  protected readonly linesLabelKey = APP_CONFIG.translationKeys.navigation.lines;
   protected readonly mapLabelKey = APP_CONFIG.translationKeys.navigation.map;
   protected readonly favoritesLabelKey = APP_CONFIG.translationKeys.navigation.favorites;
   protected readonly menuLabelKey = this.translation.topBar.menuLabel;
   protected readonly menuOpen = signal(false);
   protected readonly homeLinkCommands = [...buildNavigationCommands(APP_CONFIG.routes.home)];
-  protected readonly routeSearchLinkCommands = [
-    ...buildNavigationCommands(APP_CONFIG.routes.routeSearch)
-  ];
+  protected readonly linesLinkCommands = [...buildNavigationCommands(LINE_DETAIL_BASE_SEGMENT)];
   protected readonly mapLinkCommands = [...buildNavigationCommands(APP_CONFIG.routes.map)];
   protected readonly favoritesLinkCommands = [
     ...buildNavigationCommands(APP_CONFIG.routes.favorites)
