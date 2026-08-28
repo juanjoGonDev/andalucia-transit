@@ -207,6 +207,10 @@ interface ApiLineStop {
   readonly modos: string | number;
 }
 
+interface ApiLineStopsEnvelope {
+  readonly paradas: readonly ApiLineStop[];
+}
+
 interface FocusedStopCandidate {
   readonly stopId: string;
   readonly zoneId: string | null;
@@ -333,14 +337,16 @@ function mergeLineSummaries(groups: readonly (readonly RouteLineSummary[])[]): r
 }
 
 function mapLineStops(response: ApiLineStopsResponse): readonly RouteLineStop[] {
-  const entries = Array.isArray(response) ? response : response.paradas;
+  const entries: readonly ApiLineStop[] = isLineStopsEnvelope(response)
+    ? response.paradas
+    : response;
 
-  if (!entries?.length) {
+  if (!entries.length) {
     return EMPTY_LINE_STOPS;
   }
 
   const stops = entries
-    .map((stop) => ({
+    .map((stop: ApiLineStop) => ({
       stopId: String(stop.idParada),
       lineId: String(stop.idLinea),
       direction: Number(stop.sentido),
@@ -352,7 +358,7 @@ function mapLineStops(response: ApiLineStopsResponse): readonly RouteLineStop[] 
       name: stop.nombre
     } satisfies RouteLineStop))
     .filter(
-      (stop) =>
+      (stop: RouteLineStop) =>
         Number.isFinite(stop.latitude) &&
         Number.isFinite(stop.longitude) &&
         Number.isFinite(stop.direction) &&
@@ -360,6 +366,10 @@ function mapLineStops(response: ApiLineStopsResponse): readonly RouteLineStop[] 
     );
 
   return Object.freeze(stops);
+}
+
+function isLineStopsEnvelope(response: ApiLineStopsResponse): response is ApiLineStopsEnvelope {
+  return !Array.isArray(response);
 }
 
 function buildLineStopPreview(stops: readonly RouteLineStop[]): readonly RouteLineCoordinate[] {
