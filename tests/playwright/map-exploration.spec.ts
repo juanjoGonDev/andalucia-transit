@@ -282,6 +282,7 @@ test.describe('network map exploration', () => {
     const origin = new URL(resolvedBaseUrl).origin;
     await context.grantPermissions(['geolocation'], { origin });
     await context.setGeolocation(SEVILLE_LOCATION);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize(MOBILE_VIEWPORT);
     await page.goto(new URL(MAP_PATH, resolvedBaseUrl).toString());
 
