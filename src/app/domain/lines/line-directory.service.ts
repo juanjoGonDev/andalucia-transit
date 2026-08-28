@@ -1,11 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin, from, map, of, shareReplay, switchMap } from 'rxjs';
+import { NearbyStopsService } from '@core/services/nearby-stops.service';
 import {
   CatalogLineEntry,
   ConsortiumCatalogService
 } from '@data/catalog/consortium-catalog.service';
 import { RouteLinesApiService } from '@data/route-search/route-lines-api.service';
-import { NearbyStopsService } from '@core/services/nearby-stops.service';
 import type { GeoCoordinate } from '@domain/utils/geo-distance.util';
 
 export interface LineDirectoryEntry {
