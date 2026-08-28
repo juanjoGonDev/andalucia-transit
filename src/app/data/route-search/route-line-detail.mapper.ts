@@ -1,5 +1,5 @@
 import type { HttpClient } from '@angular/common/http';
-import { Observable, map, shareReplay } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 export interface RouteLineCoordinate {
   readonly latitude: number;
@@ -28,27 +28,17 @@ const ANDALUSIA_MAX_LATITUDE = 39.5;
 const ANDALUSIA_MIN_LONGITUDE = -8;
 const ANDALUSIA_MAX_LONGITUDE = 0.5;
 const EMPTY_COORDINATES: readonly RouteLineCoordinate[] = Object.freeze([]);
-const lineDetailsCache = new Map<string, Observable<RouteLineDetail>>();
 
 export function loadLineDetail(
   http: HttpClient,
   url: string,
   language: string
 ): Observable<RouteLineDetail> {
-  const cached = lineDetailsCache.get(url);
-
-  if (cached) {
-    return cached;
-  }
-
-  const request$ = http
+  return http
     .get<ApiRouteLineDetail | readonly ApiRouteLineDetail[]>(url, {
       params: { lang: language }
     })
-    .pipe(map(mapLineDetail), shareReplay({ bufferSize: 1, refCount: true }));
-
-  lineDetailsCache.set(url, request$);
-  return request$;
+    .pipe(map(mapLineDetail));
 }
 
 function mapLineDetail(

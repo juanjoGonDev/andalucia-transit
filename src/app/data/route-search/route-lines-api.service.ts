@@ -40,6 +40,7 @@ export class RouteLinesApiService {
 
   private readonly linesCache = new Map<string, Observable<readonly RouteLineSummary[]>>();
   private readonly lineStopsCache = new Map<string, Observable<readonly RouteLineStop[]>>();
+  private readonly lineDetailsCache = new Map<string, Observable<RouteLineDetail>>();
 
   getLinesForStops(
     consortiumId: number,
@@ -109,9 +110,15 @@ export class RouteLinesApiService {
   }
 
   getLineDetail(consortiumId: number, lineId: string): Observable<RouteLineDetail> {
-    const detailUrl = this.buildLineDetailUrl(consortiumId, lineId);
+    const cacheKey = buildLineDetailCacheKey(consortiumId, lineId);
+    const cached = this.lineDetailsCache.get(cacheKey);
 
-    return from(import('./route-line-detail-with-stops.loader')).pipe(
+    if (cached) {
+      return cached;
+    }
+
+    const detailUrl = this.buildLineDetailUrl(consortiumId, lineId);
+    const request$ = from(import('./route-line-detail-with-stops.loader')).pipe(
       switchMap(({ loadLineDetailWithStopFallback }) =>
         loadLineDetailWithStopFallback(
           this.http,
@@ -119,8 +126,12 @@ export class RouteLinesApiService {
           this.language,
           () => this.getLineStops(consortiumId, lineId)
         )
-      )
+      ),
+      shareReplay({ bufferSize: 1, refCount: true })
     );
+
+    this.lineDetailsCache.set(cacheKey, request$);
+    return request$;
   }
 
   private buildLinesByStopsUrl(consortiumId: number, stopIds: readonly string[]): string {
@@ -197,6 +208,10 @@ function buildLinesCacheKey(consortiumId: number, stopIds: readonly string[]): s
 }
 
 function buildLineStopsCacheKey(consortiumId: number, lineId: string): string {
+  return `${consortiumId}|${lineId}`;
+}
+
+function buildLineDetailCacheKey(consortiumId: number, lineId: string): string {
   return `${consortiumId}|${lineId}`;
 }
 
