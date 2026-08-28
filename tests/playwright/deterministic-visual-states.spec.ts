@@ -56,7 +56,18 @@ async function openStopDetail(page: Page, stop: StopServicesSnapshotEntry): Prom
   await open(page, path);
 
   await expect(page.locator('.stop-detail__title')).toHaveText(stop.stopName, { timeout: 15_000 });
-  await expect(page.locator('.stop-detail__list-item').first()).toBeVisible();
+  const departures = page.locator('.stop-detail__panel--departures');
+  await expect(departures).toBeVisible();
+  await expect(departures.locator('.stop-detail__select')).toBeVisible();
+
+  const visibleService = departures.locator('.stop-detail__list-item:visible').first();
+  if (!(await visibleService.isVisible())) {
+    const history = departures.locator('.stop-detail__history');
+    await expect(history).toBeVisible();
+    await history.locator('summary').click();
+  }
+  await expect(departures.locator('.stop-detail__list-item:visible').first()).toBeVisible();
+
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
   ).toBe(true);
