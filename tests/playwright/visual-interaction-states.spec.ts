@@ -275,7 +275,10 @@ test.describe('deterministic interaction visual states', () => {
 
       const mapLinks = page.locator('.stop-utility__map-link');
       await expect(mapLinks).toHaveCount(2);
-      await expect(mapLinks.first()).toHaveAttribute('href', /google\.com\/maps\/dir\/.*travelmode=walking/u);
+      await expect(mapLinks.first()).toHaveAttribute(
+        'href',
+        /google\.com\/maps\/dir\/.*travelmode=walking/u,
+      );
       await expect(mapLinks.last()).toHaveAttribute('href', /maps\.apple\.com/u);
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
@@ -288,32 +291,52 @@ test.describe('deterministic interaction visual states', () => {
     }
   });
 
-  test('filters, orders and paginates CTAN news without horizontal filter scrolling', async ({
-    page,
-  }) => {
+  test('filters, orders and paginates CTAN news with durable URL state', async ({ page }) => {
     await mockNewsFeed(page);
 
     for (const viewport of [MOBILE_VIEWPORT, DESKTOP_VIEWPORT]) {
       await page.setViewportSize(viewport);
       await open(page, '/news');
 
+      const areaSelect = page.locator('.news__select--area');
+      const categorySelect = page.locator('.news__select--category');
+      const orderSelect = page.locator('.news__select--order');
+      const topPagination = page.locator('.news__pagination-slot--top .news__pagination');
+      const bottomPagination = page.locator('.news__pagination-slot--bottom .news__pagination');
+
       await expect(page.locator('.news__card')).toHaveCount(NEWS_PAGE_SIZE, { timeout: 15_000 });
       await expect(page.locator('.news__filter')).toHaveCount(0);
       await expect(page.locator('.news__select')).toHaveCount(3);
-      await expect(page.locator('.news__page-status')).toContainText('Página 1 de 2');
+      await expect(areaSelect.locator('option')).toHaveCount(10);
+      await expect(areaSelect.getByRole('option', { name: 'Área de Almería' })).toHaveCount(1);
+      await expect(areaSelect.getByRole('option', { name: 'Área de Sevilla' })).toHaveCount(1);
+      await expect(bottomPagination).toBeVisible();
+      await expect(bottomPagination.locator('.news__page-status')).toContainText('Página 1 de 2');
 
-      await page.locator('.news__page-action').last().click();
+      if (viewport === DESKTOP_VIEWPORT) {
+        await expect(topPagination).toBeVisible();
+      } else {
+        await expect(topPagination).toBeHidden();
+      }
+
+      await bottomPagination.locator('.news__page-action').last().click();
       await expect(page.locator('.news__card')).toHaveCount(4);
-      await expect(page.locator('.news__page-status')).toContainText('Página 2 de 2');
+      await expect(bottomPagination.locator('.news__page-status')).toContainText('Página 2 de 2');
+      await expect.poll(() => new URL(page.url()).searchParams.get('page')).toBe('2');
 
-      await page.locator('.news__select--area').selectOption({ label: 'Área de Almería' });
-      await expect(page.locator('.news__page-status')).toContainText('Página 1 de 2');
+      await areaSelect.selectOption({ label: 'Área de Almería' });
+      await expect(bottomPagination.locator('.news__page-status')).toContainText('Página 1 de 2');
       await expect(page.locator('.news__result-count')).toContainText('10 noticias');
+      await expect.poll(() => new URL(page.url()).searchParams.get('area')).toBe('6');
+      await expect.poll(() => new URL(page.url()).searchParams.get('page')).toBeNull();
 
-      await page.locator('.news__select--category').selectOption({ label: 'Avisos' });
+      await categorySelect.selectOption({ label: 'Avisos' });
       await expect(page.locator('.news__card')).toHaveCount(5);
-      await page.locator('.news__select--order').selectOption('oldest');
+      await expect.poll(() => new URL(page.url()).searchParams.get('category')).toBe('Avisos');
+
+      await orderSelect.selectOption('oldest');
       await expect(page.locator('.news__card-title').first()).toHaveText('Aviso Almería 9');
+      await expect.poll(() => new URL(page.url()).searchParams.get('order')).toBe('oldest');
       await expect(page.locator('.news__area')).toHaveText([
         'Área de Almería',
         'Área de Almería',
@@ -321,11 +344,26 @@ test.describe('deterministic interaction visual states', () => {
         'Área de Almería',
         'Área de Almería',
       ]);
+
+      await page.reload();
+      await expect(areaSelect).toHaveValue(/6/u);
+      await expect(categorySelect).toHaveValue(/Avisos/u);
+      await expect(orderSelect).toHaveValue(/oldest/u);
+      await expect(page.locator('.news__card')).toHaveCount(5);
+      await expect(page.locator('.news__card-title').first()).toHaveText('Aviso Almería 9');
+
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
       ).toBe(true);
 
       await capture(page, `news-filtered_es_${viewport.width}_${viewport.height}_full.png`);
+
+      await areaSelect.selectOption({ label: 'Área de Sevilla' });
+      await expect(page.locator('.news__card')).toHaveCount(0);
+      await expect(page.locator('.news__empty-message')).toHaveText(
+        'No hay noticias para los filtros seleccionados.',
+      );
+      await expect.poll(() => new URL(page.url()).searchParams.get('area')).toBe('1');
     }
   });
 });
