@@ -14,8 +14,7 @@ const TABLET_VIEWPORT = { width: 768, height: 1024 } as const;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 const LINE_API_GLOB = '**/v1/Consorcios/1/lineas/259**';
 const ROUTE_SEARCH_LINE_API_GLOB = '**/v1/Consorcios/7/lineas/259**';
-const ROUTE_SEARCH_LINES_BY_STOP_GLOB =
-  '**/v1/Consorcios/7/paradas/lineasPorParadas/alpha**';
+const ROUTE_SEARCH_LINES_BY_STOP_GLOB = '**/v1/Consorcios/7/paradas/lineasPorParadas/alpha**';
 const ROUTE_SEARCH_TIMETABLE_GLOB = '**/v1/Consorcios/7/horarios_origen_destino**';
 const STOP_DIRECTORY_INDEX_GLOB = '**/assets/data/stop-directory/index.json';
 const STOP_DIRECTORY_CHUNK_GLOB = '**/assets/data/stop-directory/route-preview-test.json';
@@ -539,7 +538,10 @@ test.describe('Route search reusable route workspace', () => {
     await page.setViewportSize(MOBILE_VIEWPORT);
     await open(page, ROUTE_SEARCH_PREVIEW_PATH);
 
-    const preview = page.locator('.route-search__item').first().locator('.route-search-route-preview');
+    const preview = page
+      .locator('.route-search__item')
+      .first()
+      .locator('.route-search-route-preview');
     await expect(preview.locator('summary')).toContainText('M-301', { timeout: 15_000 });
     await preview.locator('summary').click();
 
