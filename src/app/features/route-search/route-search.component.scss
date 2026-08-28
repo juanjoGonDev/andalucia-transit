@@ -70,7 +70,12 @@
 }
 
 .route-search__form {
+  position: sticky;
+  top: max(var(--space-sm), env(safe-area-inset-top));
+  z-index: var(--z-index-dropdown);
   margin: 0;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
 }
 
 .route-search__results {
@@ -80,6 +85,10 @@
 }
 
 @media (max-width: 768px) {
+  .route-search__content {
+    gap: var(--space-xl);
+  }
+
   .route-search__hero-bar {
     flex-direction: column;
     align-items: stretch;
@@ -92,5 +101,9 @@
 
   .route-search__main {
     padding-inline: var(--space-md);
+  }
+
+  .route-search__form {
+    top: max(var(--space-xs), env(safe-area-inset-top));
   }
 }
