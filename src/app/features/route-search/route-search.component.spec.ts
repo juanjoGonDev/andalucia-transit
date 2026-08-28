@@ -24,7 +24,8 @@ class TranslateTestingLoader implements TranslateLoader {
       'routeSearch.scheduleAccuracyWarning': 'Schedules may change',
       'routeSearch.emptyResults': 'No routes found',
       'routeSearch.emptyResultsDescription': 'Try another combination',
-      'routeSearch.emptyResultsAction': 'Adjust search'
+      'routeSearch.emptyResultsAction': 'Adjust search',
+      'routeSearch.arrivalAt': 'Arrives at {time}'
     });
   }
 }
