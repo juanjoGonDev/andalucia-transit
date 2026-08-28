@@ -38,6 +38,20 @@
                 </span>
               </label>
 
+              <label class="lines__control" *ngIf="provinces$ | async as provinces">
+                <span class="lines__control-label">{{ copy().provinceLabel }}</span>
+                <select
+                  class="lines__select"
+                  [ngModel]="view.filters.province"
+                  (ngModelChange)="selectProvince($event)"
+                >
+                  <option [ngValue]="null">{{ copy().allProvinces }}</option>
+                  <option *ngFor="let province of provinces; trackBy: trackProvince" [ngValue]="province">
+                    {{ province }}
+                  </option>
+                </select>
+              </label>
+
               <label class="lines__control" *ngIf="areas$ | async as areas">
                 <span class="lines__control-label">{{ copy().areaLabel }}</span>
                 <select
