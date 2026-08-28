@@ -9,10 +9,10 @@ import {
   Polyline,
   PolylineOptions,
   circleMarker,
-  map as createMap,
   divIcon,
   latLngBounds,
   layerGroup,
+  map as createMap,
   marker,
   polyline,
   tileLayer
@@ -41,6 +41,7 @@ export type MapViewportSettledHandler = (center: GeoCoordinate) => void;
 export interface MapStopInteractionOptions {
   readonly getDetailsLabel: () => string;
   readonly onDetails: MapStopSelectHandler;
+  readonly onSelect?: MapStopSelectHandler;
 }
 
 export interface MapHandle {
@@ -230,6 +231,7 @@ export class LeafletMapService {
               selectedStopId = stop.id;
               updateStopStyle(previousSelected);
               updateStopStyle(selectedStopId);
+              interactions.onSelect?.(stop.id);
             });
             stopMarker.on('popupclose', () => {
               if (selectedStopId !== stop.id) {
@@ -338,32 +340,24 @@ export class LeafletMapService {
       destroy: () => {
         map.remove();
       }
-    } satisfies MapHandle;
+    };
   }
 
   private buildMap(container: HTMLElement, options: MapCreateOptions): Map {
     const map = createMap(container, {
-      zoomControl: true,
-      attributionControl: false,
-      preferCanvas: true,
-      dragging: true,
-      scrollWheelZoom: true,
-      touchZoom: true,
-      doubleClickZoom: true,
-      boxZoom: true,
-      keyboard: true,
-      maxBoundsViscosity: 1
-    });
-
-    const tile = tileLayer(TILE_LAYER_URL, {
-      attribution: TILE_LAYER_ATTRIBUTION,
+      center: this.toLatLng(options.center),
+      zoom: options.zoom,
       minZoom: options.minZoom ?? DEFAULT_MIN_ZOOM,
       maxZoom: options.maxZoom ?? DEFAULT_MAX_ZOOM,
-      noWrap: true
+      zoomControl: true,
+      attributionControl: true
     });
 
-    tile.addTo(map);
-    map.setView(this.toLatLng(options.center), options.zoom);
+    tileLayer(TILE_LAYER_URL, {
+      attribution: TILE_LAYER_ATTRIBUTION,
+      minZoom: options.minZoom ?? DEFAULT_MIN_ZOOM,
+      maxZoom: options.maxZoom ?? DEFAULT_MAX_ZOOM
+    }).addTo(map);
 
     return map;
   }
@@ -372,8 +366,8 @@ export class LeafletMapService {
     stop: MapStopMarker,
     interactions: MapStopInteractionOptions
   ): StopPopupContent {
-    const element = document.createElement('div');
-    element.className = STOP_POPUP_CONTENT_CLASS;
+    const content = document.createElement('div');
+    content.className = STOP_POPUP_CONTENT_CLASS;
 
     const header = document.createElement('div');
     header.className = STOP_POPUP_HEADER_CLASS;
@@ -381,8 +375,7 @@ export class LeafletMapService {
     const icon = document.createElement('span');
     icon.className = STOP_POPUP_ICON_CLASS;
     icon.setAttribute('aria-hidden', 'true');
-    icon.textContent = 'location_on';
-    header.appendChild(icon);
+    icon.textContent = 'directions_bus';
 
     const identity = document.createElement('div');
     identity.className = STOP_POPUP_IDENTITY_CLASS;
@@ -390,120 +383,93 @@ export class LeafletMapService {
     const title = document.createElement('strong');
     title.className = STOP_POPUP_TITLE_CLASS;
     title.textContent = stop.name;
-    identity.appendChild(title);
 
-    const metadata = document.createElement('div');
-    metadata.className = STOP_POPUP_META_CLASS;
+    const meta = document.createElement('span');
+    meta.className = STOP_POPUP_META_CLASS;
 
     const code = document.createElement('span');
     code.className = STOP_POPUP_CODE_CLASS;
     code.textContent = stop.code;
-    metadata.appendChild(code);
 
     const municipality = document.createElement('span');
     municipality.className = STOP_POPUP_MUNICIPALITY_CLASS;
     municipality.textContent = stop.municipality;
-    metadata.appendChild(municipality);
 
-    identity.appendChild(metadata);
-    header.appendChild(identity);
-    element.appendChild(header);
+    meta.append(code, municipality);
+    identity.append(title, meta);
+    header.append(icon, identity);
 
     const action = document.createElement('button');
     action.type = 'button';
     action.className = STOP_POPUP_ACTION_CLASS;
     action.textContent = interactions.getDetailsLabel();
     action.addEventListener('click', () => interactions.onDetails(stop.id));
-    element.appendChild(action);
 
-    return { element, action };
+    content.append(header, action);
+    return { element: content, action };
   }
 
-  private renderRouteDirections(
-    directionLayer: ReturnType<typeof layerGroup>,
-    route: MapRoutePolyline,
-    isActive: boolean
-  ): void {
-    const maxIndicators = isActive
-      ? ROUTE_DIRECTION_INDICATORS_ACTIVE
-      : ROUTE_DIRECTION_INDICATORS;
-    const indicators = buildRouteDirectionIndicators(route.coordinates, maxIndicators);
-
-    for (const indicator of indicators) {
-      const glyph = document.createElement('span');
-      glyph.className = ROUTE_DIRECTION_GLYPH_CLASS;
-      glyph.setAttribute('aria-hidden', 'true');
-      glyph.textContent = 'arrow_forward';
-      glyph.style.transform = `rotate(${indicator.rotationDegrees}deg)`;
-
-      const directionIcon = divIcon({
-        className: isActive
-          ? `${ROUTE_DIRECTION_CLASS} ${ROUTE_DIRECTION_ACTIVE_CLASS}`
-          : ROUTE_DIRECTION_CLASS,
-        html: glyph,
-        iconSize: [ROUTE_DIRECTION_ICON_SIZE, ROUTE_DIRECTION_ICON_SIZE],
-        iconAnchor: [ROUTE_DIRECTION_ICON_ANCHOR, ROUTE_DIRECTION_ICON_ANCHOR]
-      });
-
-      marker(this.toLatLng(indicator.coordinate), {
-        icon: directionIcon,
-        interactive: false,
-        keyboard: false
-      }).addTo(directionLayer);
-    }
+  private resolvePalette(container: HTMLElement): MapPalette {
+    const style = getComputedStyle(container);
+    return {
+      stop: this.resolveCssColor(style, CSS_STOP_COLOR, FALLBACK_STOP_COLOR),
+      stopStroke: this.resolveCssColor(style, CSS_STOP_STROKE_COLOR, FALLBACK_STOP_STROKE_COLOR),
+      user: this.resolveCssColor(style, CSS_USER_COLOR, FALLBACK_USER_COLOR),
+      userStroke: this.resolveCssColor(style, CSS_USER_STROKE_COLOR, FALLBACK_USER_STROKE_COLOR),
+      route: this.resolveCssColor(style, CSS_ROUTE_COLOR, FALLBACK_ROUTE_COLOR),
+      routeActive: this.resolveCssColor(style, CSS_ROUTE_ACTIVE_COLOR, FALLBACK_ROUTE_ACTIVE_COLOR)
+    };
   }
 
-  private buildBounds(points: readonly GeoCoordinate[]): LatLngBounds {
-    const first = points[0]!;
-    let bounds = latLngBounds(this.toLatLng(first), this.toLatLng(first));
-
-    for (let index = 1; index < points.length; index += 1) {
-      const point = points[index]!;
-      bounds = bounds.extend(this.toLatLng(point));
-    }
-
-    return bounds;
+  private resolveCssColor(style: CSSStyleDeclaration, property: string, fallback: string): string {
+    const value = style.getPropertyValue(property).trim();
+    return value || fallback;
   }
 
   private toLatLng(coordinate: GeoCoordinate): LatLngExpression {
     return [coordinate.latitude, coordinate.longitude];
   }
 
-  private resolveRouteStyle(isActive: boolean, palette: MapPalette): PolylineOptions {
-    return {
-      color: isActive ? palette.routeActive : palette.route,
-      weight: isActive ? ROUTE_POLYLINE_HIGHLIGHT_WEIGHT : ROUTE_POLYLINE_WEIGHT,
-      opacity: isActive ? ROUTE_POLYLINE_HIGHLIGHT_OPACITY : ROUTE_POLYLINE_OPACITY,
-      lineJoin: ROUTE_POLYLINE_LINE_JOIN,
-      lineCap: ROUTE_POLYLINE_LINE_CAP
-    } satisfies PolylineOptions;
+  private buildBounds(points: readonly GeoCoordinate[]): LatLngBounds {
+    return latLngBounds(points.map((point) => this.toLatLng(point)));
   }
 
-  private resolvePalette(container: HTMLElement): MapPalette {
+  private resolveRouteStyle(active: boolean, palette: MapPalette): PolylineOptions {
     return {
-      stop: this.resolveCssColor(container, CSS_STOP_COLOR, FALLBACK_STOP_COLOR),
-      stopStroke: this.resolveCssColor(
-        container,
-        CSS_STOP_STROKE_COLOR,
-        FALLBACK_STOP_STROKE_COLOR
-      ),
-      user: this.resolveCssColor(container, CSS_USER_COLOR, FALLBACK_USER_COLOR),
-      userStroke: this.resolveCssColor(
-        container,
-        CSS_USER_STROKE_COLOR,
-        FALLBACK_USER_STROKE_COLOR
-      ),
-      route: this.resolveCssColor(container, CSS_ROUTE_COLOR, FALLBACK_ROUTE_COLOR),
-      routeActive: this.resolveCssColor(
-        container,
-        CSS_ROUTE_ACTIVE_COLOR,
-        FALLBACK_ROUTE_ACTIVE_COLOR
-      )
+      color: active ? palette.routeActive : palette.route,
+      weight: active ? ROUTE_POLYLINE_HIGHLIGHT_WEIGHT : ROUTE_POLYLINE_WEIGHT,
+      opacity: active ? ROUTE_POLYLINE_HIGHLIGHT_OPACITY : ROUTE_POLYLINE_OPACITY,
+      lineJoin: ROUTE_POLYLINE_LINE_JOIN,
+      lineCap: ROUTE_POLYLINE_LINE_CAP
     };
   }
 
-  private resolveCssColor(container: HTMLElement, property: string, fallback: string): string {
-    const value = globalThis.getComputedStyle(container).getPropertyValue(property).trim();
-    return value || fallback;
+  private renderRouteDirections(
+    routeDirectionLayer: ReturnType<typeof layerGroup>,
+    route: MapRoutePolyline,
+    active: boolean
+  ): void {
+    const indicators = buildRouteDirectionIndicators(
+      route.coordinates,
+      active ? ROUTE_DIRECTION_INDICATORS_ACTIVE : ROUTE_DIRECTION_INDICATORS
+    );
+
+    for (const indicator of indicators) {
+      const classes = active
+        ? `${ROUTE_DIRECTION_CLASS} ${ROUTE_DIRECTION_ACTIVE_CLASS}`
+        : ROUTE_DIRECTION_CLASS;
+      const icon = divIcon({
+        className: classes,
+        html: `<span class="${ROUTE_DIRECTION_GLYPH_CLASS}" aria-hidden="true">arrow_upward</span>`,
+        iconSize: [ROUTE_DIRECTION_ICON_SIZE, ROUTE_DIRECTION_ICON_SIZE],
+        iconAnchor: [ROUTE_DIRECTION_ICON_ANCHOR, ROUTE_DIRECTION_ICON_ANCHOR]
+      });
+      marker(this.toLatLng(indicator.coordinate), {
+        icon,
+        interactive: false,
+        keyboard: false,
+        rotationAngle: indicator.bearing
+      } as never).addTo(routeDirectionLayer);
+    }
   }
 }
