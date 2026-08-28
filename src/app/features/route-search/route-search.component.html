@@ -35,39 +35,11 @@
             ></app-route-search-form>
           </app-section>
 
-          <ng-container *ngIf="selection() as current; else emptyState">
+          <ng-container *ngIf="selection() as current">
             <section
               class="route-search__results"
               [attr.aria-busy]="isResultsLoading() ? 'true' : null"
             >
-              <header class="route-search__summary">
-                <div class="route-search__summary-stops">
-                  <div class="route-search__summary-stop">
-                    <span class="route-search__summary-label">{{
-                      translationKeys.originLabel | translate
-                    }}</span>
-                    <span class="route-search__summary-value">{{ current.origin.name }}</span>
-                  </div>
-                  <span class="material-symbols-outlined route-search__summary-icon"
-                    >arrow_forward</span
-                  >
-                  <div class="route-search__summary-stop">
-                    <span class="route-search__summary-label">{{
-                      translationKeys.destinationLabel | translate
-                    }}</span>
-                    <span class="route-search__summary-value">{{ current.destination.name }}</span>
-                  </div>
-                </div>
-                <div class="route-search__summary-date">
-                  <span class="route-search__summary-label">{{
-                    translationKeys.dateLabel | translate
-                  }}</span>
-                  <span class="route-search__summary-value">{{
-                    current.queryDate | date: 'longDate'
-                  }}</span>
-                </div>
-              </header>
-
               <div class="route-search__notice" *ngIf="showPastSearchNotice()">
                 <div class="route-search__notice-content">
                   <span class="material-symbols-outlined route-search__notice-icon">history</span>
@@ -178,10 +150,14 @@
                             class="route-search__item-arrival"
                             *ngIf="item.destinationArrivalTime as arrival"
                           >
-                            <span class="route-search__item-arrival-time">
-                              {{
-                                translationKeys.arrivalAt | translate: { time: (arrival | date: 'HH:mm') }
-                              }}
+                            <span
+                              class="route-search__item-arrival-time"
+                              [attr.aria-label]="
+                                translationKeys.arrivalAt
+                                  | translate: { time: (arrival | date: 'HH:mm') }
+                              "
+                            >
+                              {{ arrival | date: 'HH:mm' }}
                             </span>
                             <span *ngIf="item.travelDurationLabel" class="route-search__item-travel">
                               {{
@@ -280,19 +256,6 @@
     </div>
   </div>
 </section>
-
-<ng-template #emptyState>
-  <section class="route-search__empty">
-    <p>{{ translationKeys.sampleResult | translate }}</p>
-    <div
-      appAccessibleButton
-      class="app-solid-button route-search__empty-button"
-      (appAccessibleButtonActivated)="navigateBack()"
-    >
-      {{ translationKeys.backLabel | translate }}
-    </div>
-  </section>
-</ng-template>
 
 <ng-template #noLines>
   <section
