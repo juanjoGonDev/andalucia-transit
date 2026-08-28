@@ -308,10 +308,7 @@ test.describe('home tabs responsive layout', () => {
         expect(entryBounds?.height ?? 0).toBeGreaterThanOrEqual(MINIMUM_TOUCH_TARGET_PX);
       }
 
-      await captureVisualEvidence(
-        page,
-        `shell-drawer-${viewport.width}x${viewport.height}.png`,
-      );
+      await captureVisualEvidence(page, `shell-drawer-${viewport.width}x${viewport.height}.png`);
 
       await page.keyboard.press('Escape');
       await expect(overflow).not.toBeVisible();
