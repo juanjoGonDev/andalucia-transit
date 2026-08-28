@@ -9,7 +9,6 @@
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
 }
 
 .app-shell__skip {
@@ -42,10 +41,4 @@
   transform: translateY(0);
   opacity: 1;
   box-shadow: var(--shadow-focus-ring);
-}
-
-@media (min-width: 48rem) {
-  .app-shell__section {
-    padding-bottom: 0;
-  }
 }

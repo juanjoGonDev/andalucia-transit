@@ -203,6 +203,34 @@ test.describe('home tabs responsive layout', () => {
     }
   });
 
+  for (const viewport of OVERFLOW_VIEWPORTS) {
+    test(`keeps shell clearance inside routed surfaces at ${viewport.width}x${viewport.height}`, async ({
+      page,
+    }) => {
+      const resolvedBaseUrl = BASE_URL as string;
+      await page.setViewportSize(viewport);
+
+      for (const path of SHELL_CLEARANCE_PATHS) {
+        await page.goto(new URL(path, resolvedBaseUrl).toString());
+        await expect(page.locator('.app-layout__surface').first()).toBeVisible();
+
+        const shellSectionPaddingBottom = await page
+          .locator('.app-shell__section')
+          .evaluate((element) => Number.parseFloat(getComputedStyle(element).paddingBottom));
+        expect(shellSectionPaddingBottom, `${path} outer shell bottom padding`).toBe(0);
+
+        await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+        const surfaceOwnsBottomEdge = await page.evaluate(() => {
+          const element = document.elementFromPoint(1, window.innerHeight - 1);
+          return element?.closest('.app-layout__surface') !== null;
+        });
+        expect(surfaceOwnsBottomEdge, `${path} bottom edge must remain inside page surface`).toBe(
+          true,
+        );
+      }
+    });
+  }
+
   test('navigates between Home and Map through persistent shell shortcuts', async ({ page }) => {
     const resolvedBaseUrl = BASE_URL as string;
     await page.setViewportSize({ width: 390, height: MOBILE_VIEWPORT_HEIGHT });
