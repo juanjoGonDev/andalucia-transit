@@ -138,8 +138,8 @@ test.describe('rendered theme contrast', () => {
 
     await open(page, ROUTE_SEARCH_PATH);
     await expectRenderedContrast(
-      page.locator('.route-search__empty p').first(),
-      'route-search empty copy',
+      page.locator('.route-search__description'),
+      'route-search muted description',
     );
 
     await open(page, MAP_PATH);
