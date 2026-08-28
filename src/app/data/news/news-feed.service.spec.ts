@@ -107,6 +107,48 @@ describe('NewsFeedService', () => {
     ]);
   });
 
+  it('omits CTAN rows without meaningful preview or body content', () => {
+    const emissions: NewsFeedArticle[][] = [];
+
+    service.loadFeed('es').subscribe((articles) => emissions.push([...articles]));
+
+    for (const consortiumId of CONSORTIUM_IDS) {
+      const request = httpTestingController.expectOne(
+        `https://api.ctan.es/v1/Consorcios/${consortiumId}/noticias?lang=ES`
+      );
+
+      request.flush(
+        consortiumId === 7
+          ? [
+              {
+                idNoticia: 200,
+                titulo: 'Noticia CTAN sin contenido',
+                resumen: '__',
+                texto: '<p>&nbsp;</p>',
+                fechaInicio: '2026-08-28T08:00:00+02:00'
+              },
+              {
+                idNoticia: 201,
+                titulo: 'Noticia con cuerpo útil',
+                resumen: '   ',
+                texto: '<p>Información útil para viajeros.</p>',
+                fechaInicio: '2026-08-27T08:00:00+02:00'
+              }
+            ]
+          : []
+      );
+    }
+
+    expect(emissions.at(-1)).toEqual([
+      jasmine.objectContaining({
+        consortiumId: 7,
+        id: '201',
+        title: 'Noticia con cuerpo útil',
+        summary: 'Información útil para viajeros.'
+      })
+    ]);
+  });
+
   it('keeps partial news results when one consortium endpoint fails', () => {
     const emissions: NewsFeedArticle[][] = [];
 
