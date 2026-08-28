@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import {
@@ -49,6 +49,12 @@ class ActivatedRouteStub {
   }
 }
 
+class RouterStub {
+  navigate(): Promise<boolean> {
+    return Promise.resolve(true);
+  }
+}
+
 describe('NewsComponent', () => {
   let fixture: ComponentFixture<NewsComponent>;
   let facade: NewsFacadeStub;
@@ -67,7 +73,7 @@ describe('NewsComponent', () => {
       providers: [
         { provide: NewsFacade, useValue: facade },
         { provide: ConsortiumCatalogService, useClass: ConsortiumCatalogStub },
-        provideRouter([]),
+        { provide: Router, useClass: RouterStub },
         { provide: ActivatedRoute, useValue: route }
       ]
     }).compileComponents();
@@ -259,18 +265,20 @@ function createArticles(): readonly NewsArticle[] {
     createArticle({
       consortiumId: 7,
       id: '134',
-      title: 'Cambio de servicio',
-      summary: 'Aviso para varias líneas.',
+      title: 'Servicio especial',
+      summary: 'Información sobre refuerzos',
       category: 'Avisos',
-      publishedAt: '2026-08-28T09:00:00+02:00'
+      publishedAt: '2026-08-26T09:00:00+02:00',
+      order: 0
     }),
     createArticle({
       consortiumId: 6,
-      id: '99',
+      id: '220',
       title: 'Nueva tarifa',
-      summary: 'Información tarifaria.',
+      summary: 'Actualización tarifaria',
       category: 'Tarifas',
-      publishedAt: '2026-08-27T09:00:00+02:00'
+      publishedAt: '2026-08-20T09:00:00+02:00',
+      order: 1
     })
   ];
 }
@@ -278,12 +286,11 @@ function createArticles(): readonly NewsArticle[] {
 function createManyArticles(count: number): readonly NewsArticle[] {
   return Array.from({ length: count }, (_, index) =>
     createArticle({
-      consortiumId: index % 2 === 0 ? 6 : 9,
+      consortiumId: index % 2 === 0 ? 6 : 7,
       id: String(index + 1),
       title: `Noticia ${index + 1}`,
-      summary: `Resumen ${index + 1}`,
-      category: index % 2 === 0 ? 'Avisos' : 'Tarifas',
-      publishedAt: new Date(Date.UTC(2026, 7, 28 - index, 9)).toISOString()
+      publishedAt: `2026-08-${String(28 - index).padStart(2, '0')}T09:00:00+02:00`,
+      order: index
     })
   );
 }
@@ -293,25 +300,26 @@ function createAreaArticles(count: number): readonly NewsArticle[] {
     createArticle({
       consortiumId: 6,
       id: String(index + 1),
-      title: `Noticia Almería ${index + 1}`,
-      summary: `Resumen Almería ${index + 1}`,
+      title: `Tarifa ${index + 1}`,
       category: 'Tarifas',
-      publishedAt: new Date(Date.UTC(2026, 7, 28 - index, 9)).toISOString()
+      publishedAt: `2026-08-${String(28 - (index % 20)).padStart(2, '0')}T09:00:00+02:00`,
+      order: index
     })
   );
 }
 
-function createArticle(
-  overrides: Pick<
-    NewsArticle,
-    'consortiumId' | 'id' | 'title' | 'summary' | 'category' | 'publishedAt'
-  >
-): NewsArticle {
+function createArticle(overrides: Partial<NewsArticle>): NewsArticle {
   return {
-    ...overrides,
+    consortiumId: 7,
+    id: '1',
+    title: 'Noticia',
+    summary: 'Resumen',
+    category: null,
     categoryId: null,
+    publishedAt: '2026-08-28T09:00:00+02:00',
     endsAt: null,
     isNew: false,
-    order: 0
+    order: 0,
+    ...overrides
   };
 }
