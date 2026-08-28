@@ -101,4 +101,4 @@ Continue on PR #36 and `codex/refactorizar-vista-segun-diseno-proporcionado`. Us
 
 ## Status
 
-Implementation in progress. Exact-head CI, browser evidence, artifact inspection and review-state checks remain external delivery gates; their run identifiers are intentionally not recorded here because changing this file would create a new unvalidated head.
+Implementation complete. The implementation head is the commit containing this status closure. Exact-head CI, browser/visual evidence, artifact inspection, synchronization with `main` and review state remain external GitHub delivery gates and may settle after this commit without moving its SHA. If any of those conditions stop holding, this status becomes incomplete again.
