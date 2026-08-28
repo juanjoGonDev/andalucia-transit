@@ -129,9 +129,7 @@ async function open(page: Page, path: string): Promise<void> {
 test.describe('rendered theme contrast', () => {
   test.skip(!BASE_URL, 'E2E_BASE_URL environment variable is required for contrast checks.');
 
-  test('keeps representative card, muted and empty-state copy WCAG AA compliant', async ({
-    page,
-  }) => {
+  test('keeps representative card, muted and map-panel copy WCAG AA compliant', async ({ page }) => {
     await open(page, HOME_PATH);
     await expectRenderedContrast(page.locator('.home__card-title'), 'home card title');
     await expectRenderedContrast(page.locator('.home__card-subtitle'), 'home muted subtitle');
@@ -143,12 +141,9 @@ test.describe('rendered theme contrast', () => {
     );
 
     await open(page, MAP_PATH);
-    const routesInspector = page.locator('.map__inspector--routes');
-    await routesInspector.locator(':scope > summary').click();
-    await expectRenderedContrast(
-      routesInspector.locator('.map__routes-message'),
-      'map routes prompt',
-    );
+    const linesInspector = page.locator('.map__inspector--lines');
+    await linesInspector.locator(':scope > summary').click();
+    await expectRenderedContrast(linesInspector.locator('.map__panel-title'), 'map lines heading');
   });
 
   test('keeps populated news card metadata and summary WCAG AA compliant', async ({ page }) => {
