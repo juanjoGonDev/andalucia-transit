@@ -76,9 +76,15 @@ async function execute(): Promise<void> {
     });
     console.info(`Loaded ${consortiums.length} consortium summaries.`);
 
+    const stopDirectoryConsortiums = consortiums.map(({ id, name, shortName }) => ({
+      id,
+      name,
+      shortName
+    }));
+
     reportProgress('buildStopDirectory');
     const directoryResult = await buildStopDirectory(
-      { ...SNAPSHOT_JOB_CONFIG.directoryConfig, consortiums },
+      { ...SNAPSHOT_JOB_CONFIG.directoryConfig, consortiums: stopDirectoryConsortiums },
       {
         fetchJson,
         now
@@ -210,6 +216,7 @@ async function persistCatalog(catalog: Awaited<ReturnType<typeof buildCatalog>>)
     id: entry.summary.id,
     name: entry.summary.name,
     shortName: entry.summary.shortName,
+    province: entry.summary.province,
     datasets: {
       municipalities: catalogPath(entry.summary.id, MUNICIPALITIES_FILENAME),
       nuclei: catalogPath(entry.summary.id, NUCLEI_FILENAME),
