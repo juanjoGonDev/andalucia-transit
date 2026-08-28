@@ -2,6 +2,7 @@
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+  min-height: 100dvh;
   background-color: var(--color-surface-muted);
 }
 
@@ -12,7 +13,6 @@
 
 .app-layout__surface--hero {
   position: relative;
-  min-height: 100dvh;
   padding-bottom: clamp(var(--space-2xl), 6vw, var(--space-4xl));
   background: linear-gradient(160deg, var(--color-primary) 0%, var(--color-secondary) 70%);
   color: var(--color-text-inverse);
