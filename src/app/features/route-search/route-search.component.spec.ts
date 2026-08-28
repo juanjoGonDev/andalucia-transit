@@ -193,7 +193,7 @@ describe('RouteSearchComponent', () => {
     fixture = TestBed.createComponent(RouteSearchComponent);
   });
 
-  it('renders the selected route summary and departures', () => {
+  it('renders departures for the selected route without a duplicated route summary', () => {
     const departure: RouteSearchDepartureView = {
       id: 'service-1',
       lineId: 'L1',
@@ -223,21 +223,20 @@ describe('RouteSearchComponent', () => {
       nextDepartureId: 'service-1'
     } satisfies RouteSearchResultsViewModel;
 
-    state.setSelection({
+    const selection = {
       origin,
       destination,
       queryDate: new Date('2025-02-02T00:00:00Z'),
       lineMatches: []
-    });
+    } satisfies RouteSearchSelection;
+    state.setSelection(selection);
 
     fixture.detectChanges();
 
-    const summaryValues = fixture.debugElement
-      .queryAll(By.css('.route-search__summary-value'))
-      .map((debugElement) => (debugElement.nativeElement as HTMLElement).textContent?.trim() ?? '');
-
-    expect(summaryValues.some((value) => value.includes('Alpha Station'))).toBeTrue();
-    expect(summaryValues.some((value) => value.includes('Beta Terminal'))).toBeTrue();
+    expect(fixture.debugElement.query(By.css('.route-search__summary'))).toBeNull();
+    const form = fixture.debugElement.query(By.directive(RouteSearchFormStubComponent))
+      .componentInstance as RouteSearchFormStubComponent;
+    expect(form.initialSelection).toEqual(selection);
 
     const item = fixture.debugElement.query(By.css('.route-search__item'));
     expect(item).not.toBeNull();
@@ -245,8 +244,9 @@ describe('RouteSearchComponent', () => {
     expect(lineLabel.textContent).toContain('001');
     const holidayBadge = item?.query(By.css('.route-search__item-frequency'));
     expect(holidayBadge).not.toBeNull();
-    const arrival = item?.query(By.css('.route-search__item-arrival'));
-    expect(arrival).not.toBeNull();
+    const arrival = item?.query(By.css('.route-search__item-arrival-time'))?.nativeElement as HTMLElement;
+    expect(arrival.textContent?.trim()).toBe('08:20');
+    expect(arrival.getAttribute('aria-label')).toContain('08:20');
   });
 
   it('prefills the origin field from the query parameter', () => {
@@ -343,11 +343,12 @@ describe('RouteSearchComponent', () => {
     expect(navigateSpy).toHaveBeenCalled();
   });
 
-  it('shows the empty state when no selection is available', () => {
+  it('shows only the search workspace when no selection is available', () => {
     fixture.detectChanges();
 
-    const empty = fixture.debugElement.query(By.css('.route-search__empty'));
-    expect(empty).not.toBeNull();
+    expect(fixture.debugElement.query(By.css('.route-search__results'))).toBeNull();
+    expect(fixture.debugElement.query(By.css('.route-search__summary'))).toBeNull();
+    expect(fixture.debugElement.query(By.directive(RouteSearchFormStubComponent))).not.toBeNull();
   });
 
   it('renders actionable guidance when a selection has no results', () => {
@@ -514,11 +515,10 @@ describe('RouteSearchComponent', () => {
 
     fixture.detectChanges();
 
-    const summaryValues = fixture.debugElement
-      .queryAll(By.css('.route-search__summary-value'))
-      .map((debugElement) => (debugElement.nativeElement as HTMLElement).textContent?.trim() ?? '');
-
-    expect(summaryValues.some((value) => value.includes('Alpha Station'))).toBeTrue();
-    expect(summaryValues.some((value) => value.includes('Beta Terminal'))).toBeTrue();
+    const form = fixture.debugElement.query(By.directive(RouteSearchFormStubComponent))
+      .componentInstance as RouteSearchFormStubComponent;
+    expect(form.initialSelection?.origin.name).toBe('Alpha Station');
+    expect(form.initialSelection?.destination.name).toBe('Beta Terminal');
+    expect(fixture.debugElement.query(By.css('.route-search__summary'))).toBeNull();
   });
 });
