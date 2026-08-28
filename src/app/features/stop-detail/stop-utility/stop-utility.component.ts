@@ -24,15 +24,32 @@ import {
   buildStopTravelLinks
 } from '@shared/navigation/stop-travel-links.util';
 
+export type StopUtilityMode = 'lines' | 'directions';
+
 interface StopUtilityContext {
   readonly stopId: string;
   readonly consortiumId: number | null;
+  readonly mode: StopUtilityMode;
 }
 
 type StopUtilityState =
-  | { readonly status: 'loading'; readonly record: StopDirectoryRecord | null; readonly lines: readonly RouteLineSummary[] }
-  | { readonly status: 'ready'; readonly record: StopDirectoryRecord; readonly lines: readonly RouteLineSummary[] }
-  | { readonly status: 'error'; readonly record: StopDirectoryRecord | null; readonly lines: readonly RouteLineSummary[] };
+  | {
+      readonly status: 'loading';
+      readonly record: StopDirectoryRecord | null;
+      readonly lines: readonly RouteLineSummary[];
+    }
+  | {
+      readonly status: 'ready';
+      readonly record: StopDirectoryRecord;
+      readonly lines: readonly RouteLineSummary[];
+    }
+  | {
+      readonly status: 'error';
+      readonly record: StopDirectoryRecord | null;
+      readonly lines: readonly RouteLineSummary[];
+    };
+
+const EMPTY_LINES: readonly RouteLineSummary[] = Object.freeze([]);
 
 @Component({
   selector: 'app-stop-utility',
@@ -45,6 +62,7 @@ type StopUtilityState =
 export class StopUtilityComponent implements OnChanges {
   @Input({ required: true }) stopId = '';
   @Input() consortiumId: number | null = null;
+  @Input() mode: StopUtilityMode = 'lines';
 
   private readonly stopDirectory = inject(StopDirectoryFacade);
   private readonly routeLines = inject(RouteLinesApiService);
@@ -55,27 +73,27 @@ export class StopUtilityComponent implements OnChanges {
     distinctUntilChanged(areContextsEqual),
     switchMap((context) => {
       if (!context) {
-        return of<StopUtilityState>({ status: 'error', record: null, lines: Object.freeze([]) });
+        return of<StopUtilityState>({ status: 'error', record: null, lines: EMPTY_LINES });
       }
 
       return this.loadStopRecord(context).pipe(
         switchMap((record) => {
           if (!record) {
-            return of<StopUtilityState>({ status: 'error', record: null, lines: Object.freeze([]) });
+            return of<StopUtilityState>({ status: 'error', record: null, lines: EMPTY_LINES });
+          }
+
+          if (context.mode === 'directions') {
+            return of<StopUtilityState>({ status: 'ready', record, lines: EMPTY_LINES });
           }
 
           return this.routeLines.getLinesForStops(record.consortiumId, [record.stopId]).pipe(
             map((lines) => ({ status: 'ready', record, lines } as const)),
-            startWith<StopUtilityState>({ status: 'loading', record, lines: Object.freeze([]) }),
-            catchError(() =>
-              of<StopUtilityState>({ status: 'error', record, lines: Object.freeze([]) })
-            )
+            startWith<StopUtilityState>({ status: 'loading', record, lines: EMPTY_LINES }),
+            catchError(() => of<StopUtilityState>({ status: 'error', record, lines: EMPTY_LINES }))
           );
         }),
-        startWith<StopUtilityState>({ status: 'loading', record: null, lines: Object.freeze([]) }),
-        catchError(() =>
-          of<StopUtilityState>({ status: 'error', record: null, lines: Object.freeze([]) })
-        )
+        startWith<StopUtilityState>({ status: 'loading', record: null, lines: EMPTY_LINES }),
+        catchError(() => of<StopUtilityState>({ status: 'error', record: null, lines: EMPTY_LINES }))
       );
     }),
     shareReplay({ bufferSize: 1, refCount: true })
@@ -86,7 +104,9 @@ export class StopUtilityComponent implements OnChanges {
   ngOnChanges(): void {
     const normalizedStopId = this.stopId.trim();
     this.context.next(
-      normalizedStopId ? { stopId: normalizedStopId, consortiumId: this.consortiumId } : null
+      normalizedStopId
+        ? { stopId: normalizedStopId, consortiumId: this.consortiumId, mode: this.mode }
+        : null
     );
   }
 
@@ -120,6 +140,7 @@ function areContextsEqual(
     left &&
       right &&
       left.stopId === right.stopId &&
-      left.consortiumId === right.consortiumId
+      left.consortiumId === right.consortiumId &&
+      left.mode === right.mode
   );
 }

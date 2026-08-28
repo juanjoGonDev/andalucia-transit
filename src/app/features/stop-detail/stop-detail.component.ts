@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,11 +27,6 @@ import {
 import { StopUtilityComponent } from '@features/stop-detail/stop-utility/stop-utility.component';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
-import {
-  APP_LAYOUT_CONTEXT,
-  AppLayoutContext,
-  AppLayoutTabRegistration
-} from '@shared/layout/app-layout-context.token';
 
 const ALL_DESTINATIONS_OPTION = 'all';
 const STATUS_ROLE = 'status';
@@ -39,8 +34,20 @@ const POLITE_LIVE = 'polite';
 const ASSERTIVE_LIVE = 'assertive';
 const CONSORTIUM_QUERY_PARAM = APP_CONFIG.routeParams.stopInfo.consortiumId;
 const UNSIGNED_INTEGER_PATTERN = /^\d+$/;
-export const STOP_TIMELINE_UPCOMING_TAB_ID = 'stop-detail-timeline-upcoming' as const;
-export const STOP_TIMELINE_PAST_TAB_ID = 'stop-detail-timeline-past' as const;
+const ARROW_LEFT_KEY = 'ArrowLeft';
+const ARROW_RIGHT_KEY = 'ArrowRight';
+const HOME_KEY = 'Home';
+const END_KEY = 'End';
+const STEP_PREVIOUS = -1;
+const STEP_NEXT = 1;
+
+export type StopDetailSection = 'departures' | 'lines' | 'directions';
+
+const STOP_DETAIL_SECTIONS: readonly StopDetailSection[] = Object.freeze([
+  'departures',
+  'lines',
+  'directions'
+]);
 
 export interface StopRouteContext {
   readonly stopId: string;
@@ -79,29 +86,21 @@ export class StopDetailComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly stopScheduleFacade = inject(StopScheduleFacade);
-  private readonly layoutContext: AppLayoutContext = inject(APP_LAYOUT_CONTEXT);
   private readonly translate = inject(TranslateService);
   private readonly scheduleRefresh = new Subject<void>();
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.stopDetail;
   protected readonly retryKey = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.retry;
+  protected readonly linesLabelKey = APP_CONFIG.translationKeys.navigation.lines;
+  protected readonly directionsLabelKey = APP_CONFIG.translationKeys.stopInfo.directions.title;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.stopDetailBase;
   protected readonly destinationControl = new FormControl<string>(ALL_DESTINATIONS_OPTION, {
     nonNullable: true
   });
+  protected readonly activeSection = signal<StopDetailSection>('departures');
   protected readonly statusRole = STATUS_ROLE;
   protected readonly politeLiveRegion = POLITE_LIVE;
   protected readonly assertiveLiveRegion = ASSERTIVE_LIVE;
-  private readonly timelineTabs: readonly AppLayoutTabRegistration[] = [
-    {
-      identifier: STOP_TIMELINE_UPCOMING_TAB_ID,
-      labelKey: this.translationKeys.schedule.upcomingTitle
-    },
-    {
-      identifier: STOP_TIMELINE_PAST_TAB_ID,
-      labelKey: this.translationKeys.schedule.pastTitle
-    }
-  ];
 
   private readonly stopIdParam$: Observable<string | null> = this.route.paramMap.pipe(
     map((params) => params.get(APP_CONFIG.routeParams.stopId)),
@@ -190,30 +189,59 @@ export class StopDetailComponent {
   );
 
   constructor() {
-    this.layoutContext.configureTabs(this.timelineTabs);
-    this.layoutContext.setActiveTab(STOP_TIMELINE_UPCOMING_TAB_ID);
-    this.destroyRef.onDestroy(() => this.layoutContext.clearTabs());
-
     this.stopIdParam$
       .pipe(
         filter((stopId): stopId is null => stopId === null),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => this.redirectToHome());
-
-    this.scheduleState$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((state) => {
-      if (state.status !== 'success') {
-        this.layoutContext.setActiveTab(STOP_TIMELINE_UPCOMING_TAB_ID);
-      }
-    });
-
-    this.viewModel$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((viewModel) => this.syncTimelineTab(viewModel));
   }
 
   protected retrySchedule(): void {
     this.scheduleRefresh.next();
+  }
+
+  protected selectSection(section: StopDetailSection): void {
+    this.activeSection.set(section);
+  }
+
+  protected isSectionActive(section: StopDetailSection): boolean {
+    return this.activeSection() === section;
+  }
+
+  protected sectionTabIndex(section: StopDetailSection): number {
+    return this.isSectionActive(section) ? 0 : -1;
+  }
+
+  protected onSectionTabKeydown(event: KeyboardEvent, section: StopDetailSection): void {
+    const currentIndex = STOP_DETAIL_SECTIONS.indexOf(section);
+    let nextIndex = currentIndex;
+
+    if (event.key === ARROW_LEFT_KEY) {
+      nextIndex = (currentIndex + STEP_PREVIOUS + STOP_DETAIL_SECTIONS.length) % STOP_DETAIL_SECTIONS.length;
+    } else if (event.key === ARROW_RIGHT_KEY) {
+      nextIndex = (currentIndex + STEP_NEXT) % STOP_DETAIL_SECTIONS.length;
+    } else if (event.key === HOME_KEY) {
+      nextIndex = 0;
+    } else if (event.key === END_KEY) {
+      nextIndex = STOP_DETAIL_SECTIONS.length - 1;
+    } else {
+      return;
+    }
+
+    event.preventDefault();
+    const nextSection = STOP_DETAIL_SECTIONS[nextIndex];
+
+    if (!nextSection) {
+      return;
+    }
+
+    this.selectSection(nextSection);
+    const tabList = (event.currentTarget as HTMLElement | null)?.parentElement;
+    const nextTab = tabList?.querySelector<HTMLButtonElement>(
+      `[data-stop-section="${nextSection}"]`
+    );
+    nextTab?.focus();
   }
 
   private loadStopSchedule(
@@ -229,13 +257,6 @@ export class StopDetailComponent {
 
   private redirectToHome(): void {
     void this.router.navigate([StopDetailComponent.ROOT_COMMAND, APP_CONFIG.routes.home]);
-  }
-
-  private syncTimelineTab(viewModel: StopScheduleUiModel): void {
-    const nextActive =
-      viewModel.upcoming.length > 0 ? STOP_TIMELINE_UPCOMING_TAB_ID : STOP_TIMELINE_PAST_TAB_ID;
-
-    this.layoutContext.setActiveTab(nextActive);
   }
 
   private buildTimelineAnnouncement(viewModel: StopScheduleUiModel): string | null {
@@ -281,6 +302,5 @@ function parseConsortiumId(value: string | null): number | null {
   }
 
   const consortiumId = Number(normalized);
-
   return Number.isSafeInteger(consortiumId) ? consortiumId : null;
 }

@@ -1,5 +1,9 @@
 <section class="stop-utility" *ngIf="state$ | async as state">
-  <section class="stop-utility__panel" aria-labelledby="stop-lines-title">
+  <section
+    *ngIf="mode === 'lines'"
+    class="stop-utility__panel"
+    aria-labelledby="stop-lines-title"
+  >
     <div class="stop-utility__heading">
       <span class="material-symbols-outlined stop-utility__icon" aria-hidden="true">route</span>
       <h2 id="stop-lines-title" class="stop-utility__title">{{ 'navigation.lines' | translate }}</h2>
@@ -29,7 +33,11 @@
     </ul>
   </section>
 
-  <section *ngIf="state.record as record" class="stop-utility__panel" aria-labelledby="stop-directions-title">
+  <section
+    *ngIf="mode === 'directions' && state.record as record"
+    class="stop-utility__panel"
+    aria-labelledby="stop-directions-title"
+  >
     <div class="stop-utility__heading">
       <span class="material-symbols-outlined stop-utility__icon" aria-hidden="true">directions_walk</span>
       <div>
@@ -63,4 +71,20 @@
       </a>
     </div>
   </section>
+
+  <div
+    *ngIf="mode === 'directions' && state.status === 'loading'"
+    class="stop-utility__panel stop-utility__status"
+    role="status"
+  >
+    <span class="app-loading-indicator app-loading-indicator--sm" aria-hidden="true"></span>
+  </div>
+
+  <div
+    *ngIf="mode === 'directions' && state.status === 'error'"
+    class="stop-utility__panel stop-utility__status"
+    role="status"
+  >
+    <span>{{ 'stopInfo.status.error' | translate }}</span>
+  </div>
 </section>

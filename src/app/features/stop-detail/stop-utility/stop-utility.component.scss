@@ -3,8 +3,7 @@
 }
 
 .stop-utility {
-  display: grid;
-  gap: var(--space-lg);
+  display: block;
 }
 
 .stop-utility__panel {
@@ -115,11 +114,4 @@
   gap: var(--space-xs);
   min-height: 2.75rem;
   text-decoration: none;
-}
-
-@media (min-width: 56rem) {
-  .stop-utility {
-    grid-template-columns: minmax(0, 1.35fr) minmax(17rem, 0.65fr);
-    align-items: start;
-  }
 }

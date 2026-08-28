@@ -97,34 +97,68 @@
                 </ng-container>
               </p>
             </div>
-            <div class="stop-detail__controls">
-              <label class="stop-detail__control">
-                <span class="stop-detail__control-label">{{
-                  translationKeys.filters.destinationLabel | translate
-                }}</span>
-                <select class="stop-detail__select" [formControl]="destinationControl">
-                  <option [value]="allDestinationsOption">
-                    {{ translationKeys.filters.allDestinations | translate }}
-                  </option>
-                  <option
-                    *ngFor="let destination of viewModel.availableDestinations"
-                    [value]="destination"
-                  >
-                    {{ destination }}
-                  </option>
-                </select>
-              </label>
-            </div>
           </section>
 
-          <app-stop-utility
-            *ngIf="stopRouteContext$ | async as context"
-            [stopId]="context.stopId"
-            [consortiumId]="context.consortiumId"
-          ></app-stop-utility>
+          <nav
+            class="stop-detail__tabs app-async-reveal"
+            role="tablist"
+            [attr.aria-label]="translationKeys.title | translate"
+          >
+            <button
+              type="button"
+              id="stop-detail-tab-departures"
+              class="stop-detail__tab"
+              data-stop-section="departures"
+              role="tab"
+              aria-controls="stop-detail-panel-departures"
+              [attr.aria-selected]="isSectionActive('departures')"
+              [attr.tabindex]="sectionTabIndex('departures')"
+              (click)="selectSection('departures')"
+              (keydown)="onSectionTabKeydown($event, 'departures')"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+              <span>{{ translationKeys.schedule.upcomingTitle | translate }}</span>
+            </button>
+            <button
+              type="button"
+              id="stop-detail-tab-lines"
+              class="stop-detail__tab"
+              data-stop-section="lines"
+              role="tab"
+              aria-controls="stop-detail-panel-lines"
+              [attr.aria-selected]="isSectionActive('lines')"
+              [attr.tabindex]="sectionTabIndex('lines')"
+              (click)="selectSection('lines')"
+              (keydown)="onSectionTabKeydown($event, 'lines')"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">route</span>
+              <span>{{ linesLabelKey | translate }}</span>
+            </button>
+            <button
+              type="button"
+              id="stop-detail-tab-directions"
+              class="stop-detail__tab"
+              data-stop-section="directions"
+              role="tab"
+              aria-controls="stop-detail-panel-directions"
+              [attr.aria-selected]="isSectionActive('directions')"
+              [attr.tabindex]="sectionTabIndex('directions')"
+              (click)="selectSection('directions')"
+              (keydown)="onSectionTabKeydown($event, 'directions')"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">directions_walk</span>
+              <span>{{ directionsLabelKey | translate }}</span>
+            </button>
+          </nav>
 
-          <section class="stop-detail__panels app-async-reveal">
-            <section class="stop-detail__panel">
+          <ng-container [ngSwitch]="activeSection()">
+            <section
+              *ngSwitchCase="'departures'"
+              id="stop-detail-panel-departures"
+              class="stop-detail__panel stop-detail__panel--departures app-async-reveal"
+              role="tabpanel"
+              aria-labelledby="stop-detail-tab-departures"
+            >
               <header class="stop-detail__panel-header">
                 <div>
                   <h2 class="stop-detail__panel-title">
@@ -137,7 +171,24 @@
                     }}
                   </p>
                 </div>
+                <label class="stop-detail__control">
+                  <span class="stop-detail__control-label">{{
+                    translationKeys.filters.destinationLabel | translate
+                  }}</span>
+                  <select class="stop-detail__select" [formControl]="destinationControl">
+                    <option [value]="allDestinationsOption">
+                      {{ translationKeys.filters.allDestinations | translate }}
+                    </option>
+                    <option
+                      *ngFor="let destination of viewModel.availableDestinations"
+                      [value]="destination"
+                    >
+                      {{ destination }}
+                    </option>
+                  </select>
+                </label>
               </header>
+
               <div
                 *ngIf="timelineAnnouncement$ | async as announcement"
                 class="app-visually-hidden stop-detail__live-region"
@@ -145,6 +196,7 @@
               >
                 {{ announcement }}
               </div>
+
               <ng-container *ngIf="viewModel.upcoming.length; else emptyUpcoming">
                 <ul class="stop-detail__list">
                   <li
@@ -202,24 +254,16 @@
                   {{ translationKeys.schedule.emptyUpcoming | translate }}
                 </p>
               </ng-template>
-            </section>
 
-            <section class="stop-detail__panel">
-              <header class="stop-detail__panel-header">
-                <div>
-                  <h2 class="stop-detail__panel-title">
-                    {{ translationKeys.schedule.pastTitle | translate }}
-                  </h2>
-                  <p class="stop-detail__panel-subtitle">
-                    {{
-                      translationKeys.schedule.pastSubtitle
-                        | translate: { count: viewModel.past.length }
-                    }}
-                  </p>
-                </div>
-              </header>
-              <ng-container *ngIf="viewModel.past.length; else emptyPast">
-                <ul class="stop-detail__list">
+              <details *ngIf="viewModel.past.length" class="stop-detail__history">
+                <summary class="stop-detail__history-summary">
+                  <span>{{ translationKeys.schedule.pastTitle | translate }}</span>
+                  <span class="stop-detail__history-count">{{
+                    translationKeys.schedule.pastSubtitle
+                      | translate: { count: viewModel.past.length }
+                  }}</span>
+                </summary>
+                <ul class="stop-detail__list stop-detail__history-list">
                   <li
                     *ngFor="let item of viewModel.past; trackBy: trackByServiceId"
                     class="stop-detail__list-item stop-detail__list-item--muted"
@@ -239,32 +283,33 @@
                         <span class="stop-detail__destination">{{ item.destination }}</span>
                       </div>
                     </div>
-                    <div class="stop-detail__badges">
-                      <span
-                        *ngIf="item.isAccessible"
-                        class="stop-detail__badge-icon"
-                        role="img"
-                        [attr.aria-label]="translationKeys.badges.accessible | translate"
-                      >
-                        <span class="material-symbols-outlined">accessible_forward</span>
-                      </span>
-                      <span
-                        *ngIf="item.isUniversityOnly"
-                        class="stop-detail__badge-icon"
-                        role="img"
-                        [attr.aria-label]="translationKeys.badges.universityOnly | translate"
-                      >
-                        <span class="material-symbols-outlined">school</span>
-                      </span>
-                    </div>
                   </li>
                 </ul>
-              </ng-container>
-              <ng-template #emptyPast>
-                <p class="stop-detail__empty">{{ translationKeys.schedule.emptyPast | translate }}</p>
-              </ng-template>
+              </details>
             </section>
-          </section>
+
+            <ng-container *ngIf="stopRouteContext$ | async as context">
+              <app-stop-utility
+                *ngSwitchCase="'lines'"
+                id="stop-detail-panel-lines"
+                role="tabpanel"
+                aria-labelledby="stop-detail-tab-lines"
+                mode="lines"
+                [stopId]="context.stopId"
+                [consortiumId]="context.consortiumId"
+              ></app-stop-utility>
+
+              <app-stop-utility
+                *ngSwitchCase="'directions'"
+                id="stop-detail-panel-directions"
+                role="tabpanel"
+                aria-labelledby="stop-detail-tab-directions"
+                mode="directions"
+                [stopId]="context.stopId"
+                [consortiumId]="context.consortiumId"
+              ></app-stop-utility>
+            </ng-container>
+          </ng-container>
         </ng-container>
       </ng-template>
     </div>
