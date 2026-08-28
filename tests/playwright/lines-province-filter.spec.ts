@@ -87,7 +87,7 @@ test.describe('Lines province filter', () => {
     const provinceSelect = page.getByLabel('Provincia');
     const lines = page.locator('.lines__line');
 
-    await expect(provinceSelect).toHaveValue('Cádiz');
+    await expect(provinceSelect.locator('option:checked')).toHaveText('Cádiz');
     await expect(lines).toHaveCount(2);
     await expect(lines.nth(0)).toContainText('Bahía de Cádiz');
     await expect(lines.nth(1)).toContainText('Campo de Gibraltar');
@@ -95,7 +95,7 @@ test.describe('Lines province filter', () => {
     await assertNoHorizontalOverflow(page);
 
     await page.reload();
-    await expect(page.getByLabel('Provincia')).toHaveValue('Cádiz');
+    await expect(page.getByLabel('Provincia').locator('option:checked')).toHaveText('Cádiz');
     await expect(page.locator('.lines__line')).toHaveCount(2);
   });
 
@@ -106,7 +106,9 @@ test.describe('Lines province filter', () => {
 
     await page.getByLabel('Área de transporte').selectOption({ label: 'Costa de Huelva' });
 
-    await expect(page.getByLabel('Provincia')).toHaveValue('');
+    await expect(page.getByLabel('Provincia').locator('option:checked')).toHaveText(
+      'Todas las provincias',
+    );
     await expect(page.locator('.lines__line')).toHaveCount(1);
     await expect(page.locator('.lines__line').first()).toContainText('Costa de Huelva');
     await expect.poll(() => new URL(page.url()).searchParams.get('area')).toBe('9');
