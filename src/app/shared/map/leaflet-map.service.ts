@@ -455,21 +455,26 @@ export class LeafletMapService {
     );
 
     for (const indicator of indicators) {
-      const classes = active
-        ? `${ROUTE_DIRECTION_CLASS} ${ROUTE_DIRECTION_ACTIVE_CLASS}`
-        : ROUTE_DIRECTION_CLASS;
-      const icon = divIcon({
-        className: classes,
-        html: `<span class="${ROUTE_DIRECTION_GLYPH_CLASS}" aria-hidden="true">arrow_upward</span>`,
+      const glyph = document.createElement('span');
+      glyph.className = ROUTE_DIRECTION_GLYPH_CLASS;
+      glyph.setAttribute('aria-hidden', 'true');
+      glyph.textContent = 'arrow_forward';
+      glyph.style.transform = `rotate(${indicator.rotationDegrees}deg)`;
+
+      const directionIcon = divIcon({
+        className: active
+          ? `${ROUTE_DIRECTION_CLASS} ${ROUTE_DIRECTION_ACTIVE_CLASS}`
+          : ROUTE_DIRECTION_CLASS,
+        html: glyph,
         iconSize: [ROUTE_DIRECTION_ICON_SIZE, ROUTE_DIRECTION_ICON_SIZE],
         iconAnchor: [ROUTE_DIRECTION_ICON_ANCHOR, ROUTE_DIRECTION_ICON_ANCHOR]
       });
+
       marker(this.toLatLng(indicator.coordinate), {
-        icon,
+        icon: directionIcon,
         interactive: false,
-        keyboard: false,
-        rotationAngle: indicator.rotationDegrees
-      } as never).addTo(routeDirectionLayer);
+        keyboard: false
+      }).addTo(routeDirectionLayer);
     }
   }
 }
