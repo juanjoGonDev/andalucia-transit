@@ -67,8 +67,8 @@ describe('NewsComponent', () => {
       providers: [
         { provide: NewsFacade, useValue: facade },
         { provide: ConsortiumCatalogService, useClass: ConsortiumCatalogStub },
-        { provide: ActivatedRoute, useValue: route },
-        provideRouter([])
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: route }
       ]
     }).compileComponents();
 
