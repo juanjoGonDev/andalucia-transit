@@ -4,6 +4,7 @@ import { FavoritesComponent } from '@features/favorites/favorites.component';
 import { HomeComponent } from '@features/home/home.component';
 import { AppLayoutComponent } from '@shared/layout/app-layout/app-layout.component';
 import {
+  LINE_DETAIL_BASE_SEGMENT,
   LINE_DETAIL_ROUTE_PATTERN,
   NEWS_DETAIL_ROUTE_PATTERN
 } from '@shared/navigation/navigation.util';
@@ -58,6 +59,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('@features/stop-detail/stop-detail.component').then((module) => module.StopDetailComponent),
         title: APP_CONFIG.translationKeys.navigation.stopDetail
+      },
+      {
+        path: LINE_DETAIL_BASE_SEGMENT,
+        loadComponent: () =>
+          import('@features/lines/lines.component').then((module) => module.LinesComponent),
+        title: APP_CONFIG.translationKeys.navigation.lines
       },
       {
         path: LINE_DETAIL_ROUTE_PATTERN,
