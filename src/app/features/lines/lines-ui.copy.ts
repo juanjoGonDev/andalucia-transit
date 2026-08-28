@@ -6,6 +6,8 @@ export interface LinesUiCopy {
   readonly filtersTitle: string;
   readonly searchLabel: string;
   readonly searchPlaceholder: string;
+  readonly provinceLabel: string;
+  readonly allProvinces: string;
   readonly areaLabel: string;
   readonly allAreas: string;
   readonly municipalityLabel: string;
@@ -35,6 +37,8 @@ const COPY: Readonly<Record<SupportedLanguage, LinesUiCopy>> = {
     filtersTitle: 'Buscar y filtrar líneas',
     searchLabel: 'Buscar línea',
     searchPlaceholder: 'Código o nombre de línea',
+    provinceLabel: 'Provincia',
+    allProvinces: 'Todas las provincias',
     areaLabel: 'Área de transporte',
     allAreas: 'Todas las áreas',
     municipalityLabel: 'Municipio',
@@ -62,6 +66,8 @@ const COPY: Readonly<Record<SupportedLanguage, LinesUiCopy>> = {
     filtersTitle: 'Search and filter lines',
     searchLabel: 'Search line',
     searchPlaceholder: 'Line code or name',
+    provinceLabel: 'Province',
+    allProvinces: 'All provinces',
     areaLabel: 'Transport area',
     allAreas: 'All areas',
     municipalityLabel: 'Municipality',
