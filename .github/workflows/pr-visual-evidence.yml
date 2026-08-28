@@ -289,6 +289,8 @@ jobs:
             shell-drawer-1440x900.png
             map-data_es_390_844_full.png
             map-data_es_1440_900_full.png
+            stop-detail-data_es_390_844_full.png
+            stop-detail-data_es_1440_900_full.png
             recent-data_es_390_844_full.png
             recent-data_es_1440_900_full.png
             favorites-data_es_390_844_full.png
@@ -398,6 +400,7 @@ jobs:
           | Route search | Recoverable error | <img src="$base/route-search-error_es_390_844_full.png" width="220" alt="Route search recoverable error state at 390 by 844 pixels"> | Browser assertion only |
           | Confirm dialog | Shared surface | <img src="$base/dialog-confirm_es_390_844_full.png" width="220" alt="Confirmation dialog shared surface at 390 by 844 pixels"> | <img src="$base/dialog-confirm_es_1440_900_full.png" width="420" alt="Confirmation dialog shared surface at 1440 by 900 pixels"> |
           | Map | Populated data | <img src="$base/map-data_es_390_844_full.png" width="220" alt="Network map populated state at 390 by 844 pixels"> | <img src="$base/map-data_es_1440_900_full.png" width="420" alt="Network map populated state at 1440 by 900 pixels"> |
+          | Stop Detail | Populated data | <img src="$base/stop-detail-data_es_390_844_full.png" width="220" alt="Stop Detail populated state at 390 by 844 pixels"> | <img src="$base/stop-detail-data_es_1440_900_full.png" width="420" alt="Stop Detail populated state at 1440 by 900 pixels"> |
           | Recent searches | Populated data | <img src="$base/recent-data_es_390_844_full.png" width="220" alt="Recent searches populated state at 390 by 844 pixels"> | <img src="$base/recent-data_es_1440_900_full.png" width="420" alt="Recent searches populated state at 1440 by 900 pixels"> |
           | Favorites | Populated data | <img src="$base/favorites-data_es_390_844_full.png" width="220" alt="Favorites populated state at 390 by 844 pixels"> | <img src="$base/favorites-data_es_1440_900_full.png" width="420" alt="Favorites populated state at 1440 by 900 pixels"> |
           | Settings | Deterministic data | <img src="$base/settings-data_es_390_844_full.png" width="220" alt="Settings at 390 by 844 pixels"> | <img src="$base/settings-data_es_1440_900_full.png" width="420" alt="Settings at 1440 by 900 pixels"> |
