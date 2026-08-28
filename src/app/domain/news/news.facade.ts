@@ -4,16 +4,17 @@ import {
   Observable,
   Subject,
   catchError,
-  combineLatest,
   concat,
   distinctUntilChanged,
   map,
+  merge,
   of,
   scan,
   shareReplay,
-  startWith,
-  switchMap
+  switchMap,
+  withLatestFrom
 } from 'rxjs';
+import { SupportedLanguage } from '@core/config';
 import { LanguageService } from '@core/services/language.service';
 import { NewsFeedArticle, NewsFeedService } from '@data/news/news-feed.service';
 
@@ -27,9 +28,14 @@ export type NewsState =
   | { readonly status: 'error'; readonly articles: readonly NewsArticle[] };
 
 type NewsEvent =
-  | { readonly type: 'request' }
+  | { readonly type: 'request'; readonly preserveArticles: boolean }
   | { readonly type: 'success'; readonly articles: readonly NewsArticle[] }
   | { readonly type: 'error' };
+
+interface NewsRequest {
+  readonly language: SupportedLanguage;
+  readonly preserveArticles: boolean;
+}
 
 const EMPTY_ARTICLES: readonly NewsArticle[] = Object.freeze([]);
 const INITIAL_STATE: NewsState = { status: 'loading', articles: EMPTY_ARTICLES };
@@ -37,7 +43,7 @@ const INITIAL_STATE: NewsState = { status: 'loading', articles: EMPTY_ARTICLES }
 const reduceNewsState = (state: NewsState, event: NewsEvent): NewsState => {
   switch (event.type) {
     case 'request':
-      return state.articles.length > 0
+      return event.preserveArticles && state.articles.length > 0
         ? { status: 'refreshing', articles: state.articles }
         : INITIAL_STATE;
     case 'success':
@@ -72,15 +78,24 @@ export class NewsFacade {
   private readonly newsFeed = inject(NewsFeedService);
   private readonly language = inject(LanguageService);
   private readonly refreshTrigger = new Subject<void>();
-  private readonly language$ = toObservable(this.language.currentLanguage);
+  private readonly language$ = toObservable(this.language.currentLanguage).pipe(
+    distinctUntilChanged(),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+  private readonly request$: Observable<NewsRequest> = merge(
+    this.language$.pipe(
+      map((language) => ({ language, preserveArticles: false }) satisfies NewsRequest)
+    ),
+    this.refreshTrigger.pipe(
+      withLatestFrom(this.language$),
+      map(([, language]) => ({ language, preserveArticles: true }) satisfies NewsRequest)
+    )
+  );
 
-  readonly state$: Observable<NewsState> = combineLatest([
-    this.refreshTrigger.pipe(startWith(undefined)),
-    this.language$
-  ]).pipe(
-    switchMap(([, language]) =>
+  readonly state$: Observable<NewsState> = this.request$.pipe(
+    switchMap(({ language, preserveArticles }) =>
       concat(
-        of<NewsEvent>({ type: 'request' }),
+        of<NewsEvent>({ type: 'request', preserveArticles }),
         this.newsFeed.loadFeed(language).pipe(
           map((articles) => ({ type: 'success', articles }) as const),
           catchError(() => of<NewsEvent>({ type: 'error' }))

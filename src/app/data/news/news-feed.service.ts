@@ -34,6 +34,18 @@ const SUPPORTED_CONSORTIUM_IDS = Object.freeze([1, 2, 3, 4, 5, 6, 7, 8, 9] as co
 const EMPTY_ARTICLES: readonly NewsFeedArticle[] = Object.freeze([]);
 const HTML_TAG_PATTERN = /<[^>]*>/gu;
 const WHITESPACE_PATTERN = /\s+/gu;
+const NEWS_TITLE_KEYS: Readonly<Record<SupportedLanguage, readonly string[]>> = Object.freeze({
+  es: Object.freeze(['titulo', 'tituloEs', 'tituloES', 'titulo_es', 'tituloESP']),
+  en: Object.freeze(['titulo', 'tituloEn', 'tituloEN', 'titulo_en', 'tituloENG'])
+});
+const NEWS_SUMMARY_KEYS = Object.freeze([
+  'resumen',
+  'entradilla',
+  'subTitulo',
+  'subtitulo',
+  'descripcion'
+] as const);
+const NEWS_CONTENT_KEYS = Object.freeze(['texto', 'contenido', 'cuerpo', 'descripcion'] as const);
 
 @Injectable({ providedIn: 'root' })
 export class NewsFeedService {
@@ -49,7 +61,7 @@ export class NewsFeedService {
       }).pipe(
         map((payload) => ({
           success: true,
-          articles: mapNewsList(payload, consortiumId)
+          articles: mapNewsList(payload, consortiumId, language)
         }) satisfies ConsortiumFeedResult),
         catchError(() =>
           of<ConsortiumFeedResult>({ success: false, articles: EMPTY_ARTICLES })
@@ -87,7 +99,7 @@ export class NewsFeedService {
         params: { lang: toApiLanguage(language) }
       })
       .pipe(
-        map((payload) => mapNewsDetail(payload, consortiumId, normalizedArticleId)),
+        map((payload) => mapNewsDetail(payload, consortiumId, normalizedArticleId, language)),
         switchMap((detail) =>
           detail
             ? of(detail)
@@ -122,10 +134,14 @@ function validateConsortiumId(consortiumId: number): void {
   }
 }
 
-function mapNewsList(payload: unknown, consortiumId: number): readonly NewsFeedArticle[] {
+function mapNewsList(
+  payload: unknown,
+  consortiumId: number,
+  language: SupportedLanguage
+): readonly NewsFeedArticle[] {
   const entries = readCollection(payload);
   const articles = entries
-    .map((entry) => mapNewsSummary(entry, consortiumId))
+    .map((entry) => mapNewsSummary(entry, consortiumId, language))
     .filter((article): article is NewsFeedArticle => article !== null);
   return Object.freeze(articles);
 }
@@ -133,7 +149,8 @@ function mapNewsList(payload: unknown, consortiumId: number): readonly NewsFeedA
 function mapNewsDetail(
   payload: unknown,
   consortiumId: number,
-  fallbackArticleId: string
+  fallbackArticleId: string,
+  language: SupportedLanguage
 ): NewsArticleDetail | null {
   const entry = readObject(payload);
 
@@ -141,13 +158,13 @@ function mapNewsDetail(
     return null;
   }
 
-  const summary = mapNewsSummary(entry, consortiumId, fallbackArticleId);
+  const summary = mapNewsSummary(entry, consortiumId, language, fallbackArticleId);
 
   if (!summary) {
     return null;
   }
 
-  const rawContent = readString(entry, ['texto', 'contenido', 'cuerpo', 'descripcion']) ?? summary.summary;
+  const rawContent = readString(entry, NEWS_CONTENT_KEYS) ?? summary.summary;
 
   return {
     ...summary,
@@ -158,6 +175,7 @@ function mapNewsDetail(
 function mapNewsSummary(
   entry: Readonly<Record<string, unknown>>,
   consortiumId: number,
+  language: SupportedLanguage,
   fallbackArticleId?: string
 ): NewsFeedArticle | null {
   const id = readIdentifier(entry, ['idNoticia', 'id', 'noticiaId']) ?? fallbackArticleId ?? null;
@@ -166,17 +184,9 @@ function mapNewsSummary(
     return null;
   }
 
-  const rawTitle = readString(entry, [
-    'titulo',
-    'tituloEs',
-    'tituloES',
-    'titulo_es',
-    'tituloESP',
-    'subTitulo',
-    'subtitulo'
-  ]);
-  const rawSummary = readString(entry, ['resumen', 'entradilla', 'subTitulo', 'subtitulo', 'descripcion']);
-  const title = normalizePlainText(rawTitle ?? rawSummary ?? '');
+  const rawTitle = readString(entry, NEWS_TITLE_KEYS[language]);
+  const rawSummary = readString(entry, NEWS_SUMMARY_KEYS);
+  const title = normalizePlainText(rawTitle ?? '');
   const summary = normalizePlainText(rawSummary ?? '');
 
   if (!title) {

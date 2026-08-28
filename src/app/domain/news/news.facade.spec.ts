@@ -22,19 +22,25 @@ class LanguageServiceStub {
   get currentLanguage(): Signal<SupportedLanguage> {
     return this.current.asReadonly();
   }
+
+  setLanguage(language: SupportedLanguage): void {
+    this.current.set(language);
+  }
 }
 
 describe('NewsFacade', () => {
   let facade: NewsFacade;
   let feedService: NewsFeedServiceStub;
+  let languageService: LanguageServiceStub;
 
   beforeEach(() => {
     feedService = new NewsFeedServiceStub();
+    languageService = new LanguageServiceStub();
 
     TestBed.configureTestingModule({
       providers: [
         { provide: NewsFeedService, useValue: feedService },
-        { provide: LanguageService, useClass: LanguageServiceStub }
+        { provide: LanguageService, useValue: languageService }
       ]
     });
 
@@ -64,7 +70,7 @@ describe('NewsFacade', () => {
     subscription.unsubscribe();
   });
 
-  it('preserves rendered articles while a refresh is pending', () => {
+  it('preserves rendered articles while a manual refresh is pending', () => {
     const states: NewsState[] = [];
     const subscription = facade.state$.subscribe((state) => states.push(state));
     TestBed.tick();
@@ -79,7 +85,26 @@ describe('NewsFacade', () => {
     subscription.unsubscribe();
   });
 
-  it('marks preserved articles as stale when a refresh fails', () => {
+  it('clears previous-language articles before requesting a different language', () => {
+    const states: NewsState[] = [];
+    const subscription = facade.state$.subscribe((state) => states.push(state));
+    TestBed.tick();
+    const spanishArticles: readonly NewsFeedArticle[] = [createArticle('spanish')];
+
+    feedService.responses[0].next(spanishArticles);
+    languageService.setLanguage('en');
+    TestBed.tick();
+
+    expect(feedService.loadFeed).toHaveBeenCalledTimes(2);
+    expect(feedService.loadFeed.calls.mostRecent().args).toEqual(['en']);
+    expect(states.at(-1)).toEqual({ status: 'loading', articles: [] });
+
+    feedService.responses[1].next([]);
+    expect(states.at(-1)).toEqual({ status: 'ready', articles: [] });
+    subscription.unsubscribe();
+  });
+
+  it('marks preserved articles as stale when a manual refresh fails', () => {
     const states: NewsState[] = [];
     const subscription = facade.state$.subscribe((state) => states.push(state));
     TestBed.tick();

@@ -65,6 +65,48 @@ describe('NewsFeedService', () => {
     ]);
   });
 
+  it('uses lang=EN and never falls back to Spanish-only title aliases', () => {
+    const emissions: NewsFeedArticle[][] = [];
+
+    service.loadFeed('en').subscribe((articles) => emissions.push([...articles]));
+
+    for (const consortiumId of CONSORTIUM_IDS) {
+      const request = httpTestingController.expectOne(
+        `https://api.ctan.es/v1/Consorcios/${consortiumId}/noticias?lang=EN`
+      );
+
+      expect(request.request.method).toBe('GET');
+      request.flush(
+        consortiumId === 7
+          ? [
+              {
+                idNoticia: 134,
+                titulo: 'Service change',
+                tituloEs: 'Cambio de servicio',
+                resumen: 'Updated service information.',
+                fechaInicio: '2026-08-28T08:00:00+02:00'
+              },
+              {
+                idNoticia: 135,
+                titulo: '',
+                tituloEs: 'Solo disponible en español',
+                resumen: 'Resumen español',
+                fechaInicio: '2026-08-27T08:00:00+02:00'
+              }
+            ]
+          : []
+      );
+    }
+
+    expect(emissions.at(-1)).toEqual([
+      jasmine.objectContaining({
+        consortiumId: 7,
+        id: '134',
+        title: 'Service change'
+      })
+    ]);
+  });
+
   it('keeps partial news results when one consortium endpoint fails', () => {
     const emissions: NewsFeedArticle[][] = [];
 
@@ -135,5 +177,24 @@ describe('NewsFeedService', () => {
 
     expect(detailTitle).toBe('Cambio de servicio');
     expect(detailHtml).toBe('<p>Contenido completo de la noticia.</p>');
+  });
+
+  it('rejects an English detail that only exposes a Spanish title alias', () => {
+    let error: unknown = null;
+
+    service.loadArticle(7, '134', 'en').subscribe({ error: (caught) => (error = caught) });
+
+    const request = httpTestingController.expectOne(
+      'https://api.ctan.es/v1/Consorcios/7/noticias/134?lang=EN'
+    );
+    request.flush({
+      idNoticia: 134,
+      titulo: '',
+      tituloEs: 'Cambio de servicio',
+      resumen: 'Resumen español',
+      texto: '<p>Contenido español.</p>'
+    });
+
+    expect(error).toEqual(jasmine.any(Error));
   });
 });
