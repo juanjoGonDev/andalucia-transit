@@ -1,6 +1,6 @@
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const EVIDENCE_DIR = process.env.E2E_EVIDENCE_DIR;
@@ -107,6 +107,25 @@ async function assertNoHorizontalOverflow(page: Page): Promise<void> {
   ).toBe(true);
 }
 
+async function countPaintedPixels(canvas: Locator): Promise<number> {
+  return canvas.evaluate((element: HTMLCanvasElement) => {
+    const context = element.getContext('2d');
+    if (!context) {
+      return 0;
+    }
+
+    const pixels = context.getImageData(0, 0, element.width, element.height).data;
+    let painted = 0;
+    for (let index = 3; index < pixels.length; index += 4) {
+      if ((pixels[index] ?? 0) > 0) {
+        painted += 1;
+      }
+    }
+
+    return painted;
+  });
+}
+
 async function capture(page: Page, name: string): Promise<void> {
   if (!EVIDENCE_DIR) {
     return;
@@ -203,17 +222,23 @@ test.describe('Lines directory and line detail layout', () => {
     }
   });
 
-  test('synchronizes a map marker selection with the stop list', async ({ page }) => {
+  test('synchronizes stop-list selection with the canvas marker highlight', async ({ page }) => {
     await stubLineDetail(page);
     await page.setViewportSize(MOBILE_VIEWPORT);
     await open(page, LINE_DETAIL_PATH);
     await expect(page.locator('.line-detail__stop-row')).toHaveCount(3, { timeout: 15_000 });
 
-    const marker = page.locator('.leaflet-interactive[fill-opacity]').first();
-    await expect(marker).toBeVisible();
-    await marker.click({ force: true });
+    const overlayCanvas = page.locator('.leaflet-overlay-pane canvas').first();
+    await expect(overlayCanvas).toBeVisible({ timeout: 15_000 });
+    const baselinePaintedPixels = await countPaintedPixels(overlayCanvas);
 
-    await expect(page.locator('.line-detail__stop-row--selected')).toHaveCount(1);
-    await expect(page.locator('.line-detail__stop-row--selected')).toContainText('Bormujos Centro');
+    await page.locator('.line-detail__stop-select').first().click();
+
+    const selectedRow = page.locator('.line-detail__stop-row--selected');
+    await expect(selectedRow).toHaveCount(1);
+    await expect(selectedRow).toContainText('Bormujos Centro');
+    await expect
+      .poll(() => countPaintedPixels(overlayCanvas), { timeout: 5_000 })
+      .toBeGreaterThan(baselinePaintedPixels);
   });
 });
