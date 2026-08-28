@@ -44,6 +44,7 @@ describe('NewsFacade', () => {
   it('emits loading before the initial feed arrives', () => {
     const states: NewsState[] = [];
     const subscription = facade.state$.subscribe((state) => states.push(state));
+    TestBed.tick();
 
     expect(states.at(-1)).toEqual({ status: 'loading', articles: [] });
     expect(feedService.loadFeed).toHaveBeenCalledOnceWith('es');
@@ -54,6 +55,7 @@ describe('NewsFacade', () => {
   it('emits articles from the news feed service', () => {
     const emissions: NewsFeedArticle[][] = [];
     const subscription = facade.articles$.subscribe((articles) => emissions.push([...articles]));
+    TestBed.tick();
     const initialArticles: readonly NewsFeedArticle[] = [createArticle('initial')];
 
     feedService.responses[0].next(initialArticles);
@@ -65,10 +67,12 @@ describe('NewsFacade', () => {
   it('preserves rendered articles while a refresh is pending', () => {
     const states: NewsState[] = [];
     const subscription = facade.state$.subscribe((state) => states.push(state));
+    TestBed.tick();
     const initialArticles: readonly NewsFeedArticle[] = [createArticle('first')];
 
     feedService.responses[0].next(initialArticles);
     facade.refresh();
+    TestBed.tick();
 
     expect(feedService.loadFeed).toHaveBeenCalledTimes(2);
     expect(states.at(-1)).toEqual({ status: 'refreshing', articles: initialArticles });
@@ -78,10 +82,12 @@ describe('NewsFacade', () => {
   it('marks preserved articles as stale when a refresh fails', () => {
     const states: NewsState[] = [];
     const subscription = facade.state$.subscribe((state) => states.push(state));
+    TestBed.tick();
     const initialArticles: readonly NewsFeedArticle[] = [createArticle('first')];
 
     feedService.responses[0].next(initialArticles);
     facade.refresh();
+    TestBed.tick();
     feedService.responses[1].error(new Error('offline'));
 
     expect(states.at(-1)).toEqual({ status: 'stale', articles: initialArticles });
@@ -91,6 +97,7 @@ describe('NewsFacade', () => {
   it('emits an error when the initial feed cannot be loaded', () => {
     const states: NewsState[] = [];
     const subscription = facade.state$.subscribe((state) => states.push(state));
+    TestBed.tick();
 
     feedService.responses[0].error(new Error('offline'));
 
