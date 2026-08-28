@@ -2,17 +2,15 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { Observable, catchError, forkJoin, map, of, startWith, switchMap } from 'rxjs';
+import { Observable, catchError, map, of, startWith, switchMap } from 'rxjs';
 import { LanguageService } from '@core/services/language.service';
 import {
-  RouteLineDetail,
-  RouteLineStop,
-  RouteLinesApiService
-} from '@data/route-search/route-lines-api.service';
-import { selectPrimaryLineDirectionStops } from '@domain/lines/line-route-geometry';
+  LineRouteWorkspaceService,
+  LineRouteWorkspaceViewModel
+} from '@domain/lines/line-route-workspace.service';
 import { getLineDetailUiCopy } from '@features/line-detail/line-detail-ui.copy';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
-import { RouteMapComponent } from '@shared/map/route-map/route-map.component';
+import { TransitRouteWorkspaceComponent } from '@shared/map/route-workspace/transit-route-workspace.component';
 import {
   LINE_DETAIL_BASE_SEGMENT,
   LINE_DETAIL_CONSORTIUM_PARAM,
@@ -25,20 +23,15 @@ interface LineDetailContext {
   readonly lineId: string;
 }
 
-interface LineDetailViewModel {
-  readonly detail: RouteLineDetail;
-  readonly stops: readonly RouteLineStop[];
-}
-
 type LineDetailState =
   | { readonly status: 'loading' }
   | { readonly status: 'error' }
-  | { readonly status: 'ready'; readonly viewModel: LineDetailViewModel };
+  | { readonly status: 'ready'; readonly viewModel: LineRouteWorkspaceViewModel };
 
 @Component({
   selector: 'app-line-detail',
   standalone: true,
-  imports: [CommonModule, TranslateModule, AppLayoutContentDirective, RouteMapComponent],
+  imports: [CommonModule, TranslateModule, AppLayoutContentDirective, TransitRouteWorkspaceComponent],
   templateUrl: './line-detail.component.html',
   styleUrl: './line-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -46,49 +39,35 @@ type LineDetailState =
 export class LineDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly routeLines = inject(RouteLinesApiService);
+  private readonly routeWorkspace = inject(LineRouteWorkspaceService);
   private readonly language = inject(LanguageService);
 
   protected readonly layoutNavigationKey = LINE_DETAIL_BASE_SEGMENT;
   protected readonly selectedStopId = signal<string | null>(null);
   protected readonly uiCopy = computed(() => getLineDetailUiCopy(this.language.currentLanguage()));
   protected readonly state$: Observable<LineDetailState> = this.route.paramMap.pipe(
-    map((params) => parseContext(params.get(LINE_DETAIL_CONSORTIUM_PARAM), params.get(LINE_DETAIL_LINE_PARAM))),
+    map((params) =>
+      parseContext(
+        params.get(LINE_DETAIL_CONSORTIUM_PARAM),
+        params.get(LINE_DETAIL_LINE_PARAM)
+      )
+    ),
     switchMap((context) => {
       this.selectedStopId.set(null);
       if (!context) {
         return of<LineDetailState>({ status: 'error' });
       }
 
-      return forkJoin({
-        detail: this.routeLines.getLineDetail(context.consortiumId, context.lineId),
-        stops: this.routeLines.getLineStops(context.consortiumId, context.lineId)
-      }).pipe(
-        map(({ detail, stops }) => ({
-          status: 'ready',
-          viewModel: {
-            detail,
-            stops: selectPrimaryLineDirectionStops(stops)
-          }
-        }) as const),
+      return this.routeWorkspace.load(context).pipe(
+        map((viewModel) => ({ status: 'ready', viewModel }) as const),
         startWith<LineDetailState>({ status: 'loading' }),
         catchError(() => of<LineDetailState>({ status: 'error' }))
       );
     })
   );
 
-  protected readonly trackStop = (_: number, stop: RouteLineStop): string => stop.stopId;
-
-  protected selectStop(stop: RouteLineStop): void {
-    this.selectStopById(stop.stopId);
-  }
-
   protected selectStopById(stopId: string): void {
     this.selectedStopId.set(stopId);
-  }
-
-  protected openStop(stop: RouteLineStop): void {
-    this.navigateToStop(stop.stopId);
   }
 
   protected openStopById(stopId: string): void {

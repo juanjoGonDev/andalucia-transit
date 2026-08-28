@@ -1,0 +1,201 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.transit-route-workspace {
+  --transit-route-workspace-height: clamp(24rem, 38vw, 30rem);
+
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+  align-items: stretch;
+  gap: var(--space-lg);
+}
+
+.transit-route-workspace__map-column,
+.transit-route-workspace__stops-panel {
+  min-width: 0;
+  height: var(--transit-route-workspace-height);
+}
+
+.transit-route-workspace__map-column {
+  display: flex;
+}
+
+.transit-route-workspace__map-column > app-route-map,
+.transit-route-workspace__map-unavailable {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.transit-route-workspace__map-unavailable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  height: 100%;
+  padding: var(--space-xl);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+  text-align: center;
+}
+
+.transit-route-workspace__map-unavailable p {
+  margin: 0;
+  max-width: 30rem;
+}
+
+.transit-route-workspace__stops-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.transit-route-workspace__stops-title {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: var(--font-size-lg);
+}
+
+.transit-route-workspace__stops {
+  display: grid;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: auto;
+}
+
+.transit-route-workspace__stop-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.transit-route-workspace__stop-row:last-child {
+  border-bottom: 0;
+}
+
+.transit-route-workspace__stop-row--selected {
+  background: var(--color-primary-soft);
+}
+
+.transit-route-workspace__stop-select,
+.transit-route-workspace__stop-details {
+  border: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.transit-route-workspace__stop-select {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-md);
+  min-height: 3.5rem;
+  padding: var(--space-sm) var(--space-md);
+  text-align: left;
+}
+
+.transit-route-workspace__stop-details {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3xs);
+  min-width: 3rem;
+  padding: var(--space-sm);
+  color: var(--color-primary-strong);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.transit-route-workspace__stop-details span:first-child {
+  display: none;
+}
+
+.transit-route-workspace__stop-select:hover,
+.transit-route-workspace__stop-details:hover {
+  background: var(--color-surface-hover);
+}
+
+.transit-route-workspace__stop-select:focus-visible,
+.transit-route-workspace__stop-details:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: -3px;
+}
+
+.transit-route-workspace__marker {
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 0.2rem solid var(--color-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+}
+
+.transit-route-workspace__stop-name {
+  color: var(--color-text-strong);
+  font-weight: var(--font-weight-semibold);
+  overflow-wrap: break-word;
+}
+
+@media (min-width: 75rem) {
+  .transit-route-workspace__stop-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .transit-route-workspace__stop-details {
+    justify-self: end;
+    min-width: 9rem;
+    min-height: 2.75rem;
+    padding-inline: var(--space-md);
+  }
+
+  .transit-route-workspace__stop-details span:first-child {
+    display: inline;
+  }
+}
+
+@media (max-width: 52rem) {
+  .transit-route-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .transit-route-workspace__map-column,
+  .transit-route-workspace__stops-panel {
+    height: auto;
+  }
+
+  .transit-route-workspace__map-column {
+    min-height: clamp(16rem, 72vw, 24rem);
+  }
+
+  .transit-route-workspace__stops {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 40rem) {
+  .transit-route-workspace {
+    gap: var(--space-md);
+  }
+
+  .transit-route-workspace__stops-title {
+    padding-inline: var(--space-md);
+  }
+
+  .transit-route-workspace__stop-select {
+    gap: var(--space-sm);
+  }
+}

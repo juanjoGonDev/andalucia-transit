@@ -110,166 +110,8 @@
   outline-offset: -3px;
 }
 
-.line-detail__workspace {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
-  gap: var(--space-lg);
+.line-detail__route-panel > app-transit-route-workspace {
   padding: 0 var(--space-lg) var(--space-lg);
-}
-
-.line-detail__map-column,
-.line-detail__stops-panel {
-  min-width: 0;
-}
-
-.line-detail__map-unavailable {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  min-height: 18rem;
-  padding: var(--space-xl);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-muted);
-  text-align: center;
-}
-
-.line-detail__map-unavailable p {
-  margin: 0;
-  max-width: 30rem;
-}
-
-.line-detail__stops-panel {
-  display: flex;
-  flex-direction: column;
-  max-height: 34rem;
-  overflow: hidden;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
-}
-
-.line-detail__stops-title {
-  margin: 0;
-  padding: var(--space-md) var(--space-lg);
-  border-bottom: 1px solid var(--color-border-subtle);
-  font-size: var(--font-size-lg);
-}
-
-.line-detail__stops {
-  display: grid;
-  gap: 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  overflow: auto;
-}
-
-.line-detail__stop-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: stretch;
-  border-bottom: 1px solid var(--color-border-subtle);
-}
-
-.line-detail__stop-row:last-child {
-  border-bottom: 0;
-}
-
-.line-detail__stop-row--selected {
-  background: var(--color-primary-soft);
-}
-
-.line-detail__stop-select,
-.line-detail__stop-details {
-  border: 0;
-  background: transparent;
-  color: var(--color-text-primary);
-  font: inherit;
-  cursor: pointer;
-}
-
-.line-detail__stop-select {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: var(--space-md);
-  min-height: 3.5rem;
-  padding: var(--space-sm) var(--space-md);
-  text-align: left;
-}
-
-.line-detail__stop-details {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3xs);
-  min-width: 3rem;
-  padding: var(--space-sm);
-  color: var(--color-primary-strong);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-}
-
-.line-detail__stop-details span:first-child {
-  display: none;
-}
-
-.line-detail__stop-select:hover,
-.line-detail__stop-details:hover {
-  background: var(--color-surface-hover);
-}
-
-.line-detail__stop-select:focus-visible,
-.line-detail__stop-details:focus-visible {
-  outline: 3px solid var(--color-focus-ring);
-  outline-offset: -3px;
-}
-
-.line-detail__marker {
-  width: 0.75rem;
-  height: 0.75rem;
-  border: 0.2rem solid var(--color-primary);
-  border-radius: var(--radius-full);
-  background: var(--color-surface);
-}
-
-.line-detail__stop-name {
-  color: var(--color-text-strong);
-  font-weight: var(--font-weight-semibold);
-  overflow-wrap: break-word;
-}
-
-@media (min-width: 75rem) {
-  .line-detail__stop-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .line-detail__stop-details {
-    justify-self: end;
-    min-width: 9rem;
-    min-height: 2.75rem;
-    padding-inline: var(--space-md);
-  }
-
-  .line-detail__stop-details span:first-child {
-    display: inline;
-  }
-}
-
-@media (max-width: 52rem) {
-  .line-detail__workspace {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .line-detail__stops-panel {
-    max-height: none;
-  }
-
-  .line-detail__stops {
-    overflow: visible;
-  }
 }
 
 @media (max-width: 40rem) {
@@ -277,18 +119,12 @@
     padding: var(--space-md);
   }
 
-  .line-detail__workspace {
-    gap: var(--space-md);
-    padding: 0 var(--space-md) var(--space-md);
-  }
-
-  .line-detail__route-summary,
-  .line-detail__stops-title {
+  .line-detail__route-summary {
     padding-inline: var(--space-md);
   }
 
-  .line-detail__stop-select {
-    gap: var(--space-sm);
+  .line-detail__route-panel > app-transit-route-workspace {
+    padding: 0 var(--space-md) var(--space-md);
   }
 }
 

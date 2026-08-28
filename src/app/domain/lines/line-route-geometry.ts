@@ -14,25 +14,29 @@ export function selectPrimaryLineDirectionStops(
     return EMPTY_STOPS;
   }
 
-  const groups = new Map<number, RouteLineStop[]>();
-  for (const stop of stops) {
-    const group = groups.get(stop.direction) ?? [];
-    group.push(stop);
-    groups.set(stop.direction, group);
-  }
-
+  const groups = groupStopsByDirection(stops);
   const selected = [...groups.values()].sort(compareDirectionGroups)[0];
-  if (!selected) {
-    return EMPTY_STOPS;
+
+  return selected ? sortStops(selected) : EMPTY_STOPS;
+}
+
+export function selectLineDirectionStops(
+  stops: readonly RouteLineStop[],
+  direction: number | null | undefined
+): readonly RouteLineStop[] {
+  if (direction === null || direction === undefined) {
+    return selectPrimaryLineDirectionStops(stops);
   }
 
-  return Object.freeze([...selected].sort((left, right) => left.order - right.order));
+  const matching = stops.filter((stop) => stop.direction === direction);
+  return matching.length ? sortStops(matching) : selectPrimaryLineDirectionStops(stops);
 }
 
 export function buildLineStopCoordinates(
-  stops: readonly RouteLineStop[]
+  stops: readonly RouteLineStop[],
+  direction?: number | null
 ): readonly RouteLineCoordinate[] {
-  const selected = selectPrimaryLineDirectionStops(stops);
+  const selected = selectLineDirectionStops(stops, direction);
   if (selected.length < MIN_ROUTE_COORDINATES) {
     return EMPTY_COORDINATES;
   }
@@ -57,6 +61,24 @@ export function buildLineStopCoordinates(
   return coordinates.length >= MIN_ROUTE_COORDINATES
     ? Object.freeze(coordinates)
     : EMPTY_COORDINATES;
+}
+
+function groupStopsByDirection(
+  stops: readonly RouteLineStop[]
+): ReadonlyMap<number, readonly RouteLineStop[]> {
+  const groups = new Map<number, RouteLineStop[]>();
+
+  for (const stop of stops) {
+    const group = groups.get(stop.direction) ?? [];
+    group.push(stop);
+    groups.set(stop.direction, group);
+  }
+
+  return groups;
+}
+
+function sortStops(stops: readonly RouteLineStop[]): readonly RouteLineStop[] {
+  return Object.freeze([...stops].sort((left, right) => left.order - right.order));
 }
 
 function compareDirectionGroups(left: readonly RouteLineStop[], right: readonly RouteLineStop[]): number {

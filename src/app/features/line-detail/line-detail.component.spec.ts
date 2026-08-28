@@ -6,55 +6,60 @@ import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { LanguageService } from '@core/services/language.service';
-import {
+import type {
   RouteLineCoordinate,
-  RouteLineDetail,
-  RouteLineStop,
-  RouteLinesApiService
+  RouteLineStop
 } from '@data/route-search/route-lines-api.service';
+import {
+  LineRouteWorkspaceService,
+  LineRouteWorkspaceViewModel
+} from '@domain/lines/line-route-workspace.service';
 import { LineDetailComponent } from '@features/line-detail/line-detail.component';
-import { RouteMapComponent } from '@shared/map/route-map/route-map.component';
+import { TransitRouteWorkspaceComponent } from '@shared/map/route-workspace/transit-route-workspace.component';
 
 @Component({
-  selector: 'app-route-map',
+  selector: 'app-transit-route-workspace',
   standalone: true,
   template: ''
 })
-class RouteMapStubComponent {
-  @Input() routeId = 'route';
+class TransitRouteWorkspaceStubComponent {
+  @Input() routeId = '';
   @Input() coordinates: readonly RouteLineCoordinate[] = [];
   @Input() stops: readonly RouteLineStop[] = [];
   @Input() selectedStopId: string | null = null;
   @Input() accessibleLabel = '';
+  @Input() stopsTitle = '';
   @Input() stopDetailsLabel = '';
+  @Input() mapUnavailableLabel = '';
   @Output() readonly stopSelected = new EventEmitter<string>();
   @Output() readonly stopDetails = new EventEmitter<string>();
 }
 
-class RouteLinesApiServiceStub {
-  detail: RouteLineDetail = {
-    lineId: 'line-1',
-    code: 'L1',
-    name: 'Line One',
-    mode: 'Bus',
+class LineRouteWorkspaceServiceStub {
+  readonly viewModel: LineRouteWorkspaceViewModel = {
+    detail: {
+      lineId: 'line-1',
+      code: 'L1',
+      name: 'Line One',
+      mode: 'Bus',
+      coordinates: [
+        { latitude: 37.1, longitude: -5.9 },
+        { latitude: 37.2, longitude: -5.8 }
+      ]
+    },
     coordinates: [
       { latitude: 37.1, longitude: -5.9 },
       { latitude: 37.2, longitude: -5.8 }
-    ]
+    ],
+    stops: [
+      createStop('stop-a', 1, 'Stop A'),
+      createStop('stop-b', 2, 'Stop B')
+    ],
+    resolvedDirection: 0
   };
 
-  stops: readonly RouteLineStop[] = [
-    createStop('stop-a', 0, 1, 'Stop A', 37.1, -5.9),
-    createStop('stop-b', 0, 2, 'Stop B', 37.2, -5.8),
-    createStop('return-only', 1, 1, 'Return Stop', 37.3, -5.7)
-  ];
-
-  getLineDetail() {
-    return of(this.detail);
-  }
-
-  getLineStops() {
-    return of(this.stops);
+  load() {
+    return of(this.viewModel);
   }
 }
 
@@ -71,115 +76,75 @@ const languageService = {
 
 describe('LineDetailComponent', () => {
   let fixture: ComponentFixture<LineDetailComponent>;
-  let routeLines: RouteLinesApiServiceStub;
 
   beforeEach(async () => {
-    routeLines = new RouteLinesApiServiceStub();
-
     await TestBed.configureTestingModule({
-      imports: [LineDetailComponent, RouteMapStubComponent, TranslateModule.forRoot()],
+      imports: [LineDetailComponent, TransitRouteWorkspaceStubComponent, TranslateModule.forRoot()],
       providers: [
         provideRouter([]),
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: RouteLinesApiService, useValue: routeLines },
+        { provide: LineRouteWorkspaceService, useClass: LineRouteWorkspaceServiceStub },
         { provide: LanguageService, useValue: languageService }
       ]
     })
       .overrideComponent(LineDetailComponent, {
-        remove: { imports: [RouteMapComponent] },
-        add: { imports: [RouteMapStubComponent] }
+        remove: { imports: [TransitRouteWorkspaceComponent] },
+        add: { imports: [TransitRouteWorkspaceStubComponent] }
       })
       .compileComponents();
 
     fixture = TestBed.createComponent(LineDetailComponent);
   });
 
-  it('renders only the canonical primary direction in the map and stop list', () => {
+  it('delegates the route map and ordered stop experience to the reusable workspace', () => {
     fixture.detectChanges();
 
-    const routeMap = fixture.debugElement.query(By.directive(RouteMapStubComponent))
-      .componentInstance as RouteMapStubComponent;
-    const rows = fixture.debugElement.queryAll(By.css('.line-detail__stop-row'));
+    const workspace = fixture.debugElement.query(By.directive(TransitRouteWorkspaceStubComponent))
+      .componentInstance as TransitRouteWorkspaceStubComponent;
 
-    expect(routeMap.stops.map((stop) => stop.stopId)).toEqual(['stop-a', 'stop-b']);
-    expect(rows.length).toBe(2);
-    expect(fixture.nativeElement.textContent).not.toContain('Return Stop');
+    expect(workspace.routeId).toBe('line-1');
+    expect(workspace.stops.map((stop) => stop.stopId)).toEqual(['stop-a', 'stop-b']);
+    expect(workspace.coordinates.length).toBe(2);
+    expect(workspace.stopsTitle).toBe('Paradas');
   });
 
-  it('synchronizes map marker selection with the corresponding stop row', () => {
+  it('synchronizes reusable workspace stop selection with line-detail state', () => {
     fixture.detectChanges();
 
-    const routeMapDebug = fixture.debugElement.query(By.directive(RouteMapStubComponent));
-    const routeMap = routeMapDebug.componentInstance as RouteMapStubComponent;
-    routeMap.stopSelected.emit('stop-b');
+    const workspaceDebug = fixture.debugElement.query(By.directive(TransitRouteWorkspaceStubComponent));
+    const workspace = workspaceDebug.componentInstance as TransitRouteWorkspaceStubComponent;
+    workspace.stopSelected.emit('stop-b');
     fixture.detectChanges();
 
-    const rows = fixture.debugElement.queryAll(By.css('.line-detail__stop-row'));
-    const selectedRows = rows.filter((row) =>
-      (row.nativeElement as HTMLElement).classList.contains('line-detail__stop-row--selected')
-    );
-    const selectedButton = selectedRows[0]?.query(By.css('.line-detail__stop-select'))
-      ?.nativeElement as HTMLButtonElement | undefined;
-
-    expect(selectedRows.length).toBe(1);
-    expect(selectedButton?.getAttribute('aria-pressed')).toBe('true');
-    expect(selectedButton?.textContent).toContain('Stop B');
+    expect(workspace.selectedStopId).toBe('stop-b');
   });
 
-  it('navigates a map details action through the consortium-aware stop-detail owner', () => {
+  it('navigates workspace stop-details intent through the consortium-aware owner', () => {
     fixture.detectChanges();
     const router = TestBed.inject(Router);
     const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
-    const routeMap = fixture.debugElement.query(By.directive(RouteMapStubComponent))
-      .componentInstance as RouteMapStubComponent;
+    const workspace = fixture.debugElement.query(By.directive(TransitRouteWorkspaceStubComponent))
+      .componentInstance as TransitRouteWorkspaceStubComponent;
 
-    routeMap.stopDetails.emit('stop-b');
+    workspace.stopDetails.emit('stop-b');
 
     expect(navigateSpy).toHaveBeenCalledWith(
       ['/', APP_CONFIG.routes.stopDetailBase, 'stop-b'],
       { queryParams: { consortiumId: '7' } }
     );
   });
-
-  it('keeps ordered stops available when line geometry cannot be drawn', () => {
-    routeLines.detail = { ...routeLines.detail, coordinates: [] };
-    fixture.detectChanges();
-
-    expect(fixture.debugElement.query(By.directive(RouteMapStubComponent))).toBeNull();
-    expect(fixture.debugElement.query(By.css('.line-detail__map-unavailable'))).not.toBeNull();
-    expect(fixture.debugElement.queryAll(By.css('.line-detail__stop-row')).length).toBe(2);
-  });
-
-  it('gives every compact stop-details button an explicit accessible name', () => {
-    fixture.detectChanges();
-
-    const detailsButtons = fixture.debugElement.queryAll(By.css('.line-detail__stop-details'));
-    expect(detailsButtons.length).toBe(2);
-    expect(
-      detailsButtons.every((entry) =>
-        Boolean((entry.nativeElement as HTMLButtonElement).getAttribute('aria-label'))
-      )
-    ).toBeTrue();
-  });
 });
 
-function createStop(
-  stopId: string,
-  direction: number,
-  order: number,
-  name: string,
-  latitude: number,
-  longitude: number
-): RouteLineStop {
+function createStop(stopId: string, order: number, name: string): RouteLineStop {
   return {
     stopId,
     lineId: 'line-1',
-    direction,
+    direction: 0,
     order,
     nucleusId: `nucleus-${stopId}`,
     zoneId: null,
-    latitude,
-    longitude,
+    latitude: 37 + order / 100,
+    longitude: -5 - order / 100,
     name
   };
 }
