@@ -8,13 +8,14 @@ import {
 } from '@playwright/test';
 
 const EVIDENCE_DIR = process.env.E2E_EVIDENCE_DIR;
+const EXACT_VISUAL_REGRESSION = process.env.E2E_EXACT_VISUAL_REGRESSION === 'true';
 const FIXED_VISUAL_TIME = new Date('2026-08-28T21:50:00+02:00');
 const LEAFLET_SETTLE_TIMEOUT_MS = 5_000;
 const MAP_TILE_SCRIPT = resolve(process.cwd(), 'scripts/visual/determinize-map-tiles.js');
 
 export const test = base.extend({
   page: async ({ page }, use) => {
-    if (EVIDENCE_DIR) {
+    if (EVIDENCE_DIR && EXACT_VISUAL_REGRESSION) {
       await page.clock.setFixedTime(FIXED_VISUAL_TIME);
     }
 
@@ -45,7 +46,7 @@ async function stabilizeVisualEvidence(page: Page): Promise<void> {
     await document.fonts.ready;
   });
 
-  if ((await page.locator('.leaflet-container').count()) > 0) {
+  if (EXACT_VISUAL_REGRESSION && (await page.locator('.leaflet-container').count()) > 0) {
     await page.addScriptTag({ path: MAP_TILE_SCRIPT });
     await page.waitForFunction(
       () =>
