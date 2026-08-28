@@ -14,7 +14,10 @@ Address the browser issues reported against PR #36 on 2026-08-28:
 - replace broken external news links with an internal CTAN-backed news list/detail experience;
 - keep Stop Detail progressive: do not render departures, lines and directions as three simultaneous long sections;
 - keep controls next to the content they affect, especially the destination selector beside Upcoming Departures;
-- redesign News filters so categories are not a horizontally scrolling chip rail; support useful area/category filtering, explicit ordering and pagination.
+- redesign News filters so categories are not a horizontally scrolling chip rail; support useful area/category filtering, explicit ordering and pagination;
+- keep every canonical transport area selectable even when it currently has no news, and show an explicit empty result instead of removing the area from the filter;
+- persist News area/category/order/page state in the URL so refresh, detail navigation and browser history do not lose the user's context;
+- expose News pagination both before and after the result list on desktop while avoiding duplicated pagination logic.
 
 ## Evidence
 
@@ -27,6 +30,8 @@ Address the browser issues reported against PR #36 on 2026-08-28:
 - `news.component.html` currently opens snapshot-provided external links; CTAN exposes first-party list and detail APIs instead.
 - the first CTAN news UI revision renders category choices as a horizontal scrolling rail; this does not scale to the real category set and hides filtering affordances.
 - the canonical catalog already maps CTAN consortium ids to traveler-readable operating areas such as Área de Almería and Costa de Huelva. CTAN news payloads carry consortium identity but do not establish a direct news-to-nucleus relation.
+- the first area-filter implementation derived its selectable areas from `state.articles`, so a valid catalog area disappeared whenever CTAN returned zero current articles for it. The catalog itself contains all nine consortium areas and must own the selectable area set.
+- News filter and pagination signals were initially component-local only, so a reload discarded the selected area/category/order/page despite these values being meaningful navigation state.
 
 ## Decision
 
@@ -40,7 +45,11 @@ Address the browser issues reported against PR #36 on 2026-08-28:
 8. Add a first-party line detail surface backed by CTAN line detail + ordered stops, reachable from stop lines.
 9. Replace the synthetic news feed link model with CTAN consortium news data and internal detail routing.
 10. News filtering uses compact form controls rather than an overflow chip rail: operating area (derived from consortium identity), category and sort order. Almería/Huelva/etc. are presented as traveler-readable areas, not falsely described as CTAN nuclei. A true nucleus filter is deferred unless the API establishes an article-to-nucleus relationship.
-11. News sorting is deterministic and user-selectable (newest first / oldest first). Filtering or sorting resets pagination to page 1. Pagination is bounded, keyboard-accessible and does not render the whole feed at once.
+11. The canonical consortium catalog owns News area choices. Do not filter that catalog by the currently returned article set; areas with zero matches remain selectable and render a local empty result.
+12. News sorting is deterministic and user-selectable (newest first / oldest first). Filtering or sorting resets pagination to page 1. Pagination is bounded, keyboard-accessible and does not render the whole feed at once.
+13. News navigation state is canonicalized into query parameters: `area`, `category`, non-default `order`, and non-default `page`. Component state follows query-param changes so reload/back/forward preserve the same view. Filter changes replace the current history entry to avoid creating noisy browser history for every select interaction.
+14. Reuse one pagination template above and below the list. The upper instance is progressive desktop affordance; the lower instance remains available across viewport sizes.
+15. Keep Route Search lazy-loaded. The route was still eagerly imported and the accumulated feature work pushed the production initial bundle over its hard budget; moving the existing route behind `loadComponent` restores the budget without weakening thresholds or changing route semantics.
 
 ## Acceptance
 
@@ -55,17 +64,21 @@ Address the browser issues reported against PR #36 on 2026-08-28:
 - A stop line can be opened to an internal line detail view containing useful CTAN-backed information and ordered stops.
 - News cards open an internal detail view. List/detail data come from CTAN endpoints, without broken external URLs.
 - News offers compact Area, Category and Order controls without horizontal filter scrolling.
-- Area choices use canonical consortium names such as Área de Almería and Costa de Huelva; the UI does not claim unsupported article-to-nucleus semantics.
+- Area choices use all canonical consortium names, including Área de Almería, even when an area has no current articles; selecting such an area shows an explicit no-results message.
+- The UI does not claim unsupported article-to-nucleus semantics.
 - News pagination exposes a bounded page size, current-page context, Previous/Next actions and resets correctly when filters/order change.
+- On desktop, pagination is available before and after the result list from one shared template; mobile keeps the lower pagination without adding unnecessary duplicate controls above the list.
+- Area/category/order/page survive reload because they are represented in the URL; invalid/default values degrade to safe defaults rather than breaking rendering.
 - Existing deep links, loading/error/retry states, keyboard navigation, reduced motion and 390x844 / 1440x900 layout constraints remain supported.
+- Production build stays within the existing hard initial-bundle budget; no budget increase is used to mask regressions.
 
 ## Checks
 
-- Focused unit tests for route line API URL ownership, area selection, line geometry fallback, stop/line navigation, Stop Detail tab visibility/filter locality, news mapping/filtering/sorting/pagination and route configuration.
+- Focused unit tests for route line API URL ownership, area selection, line geometry fallback, stop/line navigation, Stop Detail tab visibility/filter locality, news mapping/filtering/sorting/pagination/query-state persistence and route configuration.
 - `pnpm lint`
 - `pnpm test -- --watch=false`
 - production build / canonical CI scripts
-- Playwright browser acceptance at 390x844 and 1440x900 for route timing, Map line discovery/toast, Stop Detail tabs/actions, line detail and news list/detail/filter/pagination.
+- Playwright browser acceptance at 390x844 and 1440x900 for route timing, Map line discovery/toast, Stop Detail tabs/actions, line detail and news list/detail/filter/pagination/query persistence/empty-area behavior.
 - Inspect exact-head visual evidence before completion.
 
 ## Delivery
@@ -74,4 +87,4 @@ Continue on PR #36 and `codex/refactorizar-vista-segun-diseno-proporcionado`. Us
 
 ## Status
 
-In progress.
+In progress. Exact-head CI and visual evidence must be green before closure.
