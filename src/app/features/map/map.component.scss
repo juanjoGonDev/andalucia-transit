@@ -117,6 +117,10 @@
   position: static;
 }
 
+.map__inspector--routes {
+  display: none;
+}
+
 .map__inspector-trigger {
   position: absolute;
   z-index: var(--z-index-sticky);
@@ -175,6 +179,16 @@
 
 .map__toast .app-outline-button {
   min-height: 2.75rem;
+}
+
+.map__focused-lines > .map__routes-error {
+  position: fixed;
+  z-index: var(--z-index-dropdown);
+  top: calc(max(var(--space-sm), env(safe-area-inset-top, 0px)) + 3.5rem);
+  left: var(--space-sm);
+  width: min(32rem, calc(100% - 5rem));
+  min-height: 3.5rem;
+  box-shadow: var(--shadow-lg);
 }
 
 .map__panel {
@@ -351,7 +365,8 @@
     left: var(--space-lg);
   }
 
-  .map__toast {
+  .map__toast,
+  .map__focused-lines > .map__routes-error {
     top: calc(var(--space-lg) + 3.5rem);
     left: var(--space-lg);
   }
