@@ -163,7 +163,10 @@ test.describe('Lines directory and line detail layout', () => {
     await expect(page.locator('.line-detail__stop-row')).toHaveCount(3);
     await expect(stopsPanel).toBeVisible();
 
-    const [mapBox, stopsBox] = await Promise.all([routeMap.boundingBox(), stopsPanel.boundingBox()]);
+    const [mapBox, stopsBox] = await Promise.all([
+      routeMap.boundingBox(),
+      stopsPanel.boundingBox(),
+    ]);
     expect(mapBox).not.toBeNull();
     expect(stopsBox).not.toBeNull();
     expect((stopsBox?.y ?? 0) >= (mapBox?.y ?? 0) + (mapBox?.height ?? 0) - 1).toBe(true);
