@@ -32,7 +32,7 @@ This file is the single completion index for the user-requested work accumulated
 - [x] Open the bottom-shell secondary surface upward, constrain its height/width to the viewport and respect safe areas instead of expanding below the screen.
 - [x] Provide persistent primary navigation and progressive access to secondary destinations with keyboard/focus support and minimum touch targets.
 - [x] Prevent shell navigation and its overflow surface from covering routed content on supported mobile and desktop viewports.
-- [ ] Re-run exact-head browser regression for Home/shell after the final PR head is known.
+- [x] Re-run exact-head browser regression for Home/shell after the final PR head is known.
 
 ### Async UX and recovery
 
@@ -41,7 +41,7 @@ This file is the single completion index for the user-requested work accumulated
 - [x] Prevent duplicate async actions and provide retry/recovery paths.
 - [x] Keep geolocation error classification shared rather than reimplemented per feature.
 - [x] Keep recoverable focused-line discovery failure as a themed map toast with retry instead of replacing the focused-line inspector content with an inline terminal error.
-- [ ] Re-run exact-head regression for async/error/retry surfaces after the final PR head is known.
+- [x] Re-run exact-head regression for async/error/retry surfaces after the final PR head is known.
 
 ### Route search / schedules
 
@@ -50,7 +50,7 @@ This file is the single completion index for the user-requested work accumulated
 - [x] Use the same structural card pattern for previous and next departures, with explicit Previous/Next indicators rather than separate layouts.
 - [x] Keep previous/next state treatment tied to existing design tokens instead of unrelated saturated palettes or color-only meaning.
 - [x] Keep customer-useful route metadata while removing redundant row-level context.
-- [ ] Re-run final route-search browser/visual checks at 390x844 and 1440x900.
+- [x] Re-run final route-search browser/visual checks at 390x844 and 1440x900.
 
 ### Map
 
@@ -70,7 +70,7 @@ This file is the single completion index for the user-requested work accumulated
 - [x] Make the popup close target at least 44x44 CSS px and fix its alignment/contrast/focus/hover affordance.
 - [x] Verify the popup close affordance in-browser for visible glyph, pointer cursor, focus, minimum target and actual dismissal.
 - [x] Consolidate Map stop-detail navigation through the shared `buildStopDetailNavigation` owner instead of constructing equivalent commands/query params locally.
-- [ ] Re-run final mobile/desktop map exploration, focused-line and responsive acceptance on the exact final head.
+- [x] Re-run final mobile/desktop map exploration, focused-line and responsive acceptance on the exact final head.
 
 ### Stop identity and navigation
 
@@ -87,7 +87,7 @@ This file is the single completion index for the user-requested work accumulated
 - [x] Remove redundant stop metadata from the visible hierarchy and keep technical stop identifiers from dominating the customer-facing design.
 - [x] Preserve loading/error/retry and live-region behavior.
 - [x] Preserve freshness/provider context when it helps the traveler understand schedule validity rather than removing operationally useful information for minimalism.
-- [ ] Re-run final Stop Detail visual/browser checks at 390x844 and 1440x900.
+- [x] Re-run final Stop Detail visual/browser checks at 390x844 and 1440x900.
 
 ### Stop Information
 
@@ -125,18 +125,22 @@ This file is the single completion index for the user-requested work accumulated
 - [x] Keep progressive disclosure usable instead of restoring stale permanently-expanded test assumptions.
 - [x] Keep generated screenshot evidence outside git and tied to an immutable PR head SHA.
 - [x] Generate Stop Information approximate-distance screenshots at 390x844 and 1440x900 from the canonical interaction visual suite.
-- [ ] Publish and inspect exact-final-head visual evidence for all affected surfaces after the remaining documentation commit settles.
+- [x] Publish and inspect exact-final-head visual evidence for all affected surfaces after the remaining documentation commit settles.
 
 ## Delivery gates
 
 - [x] Continue on existing PR #36 and branch `codex/refactorizar-vista-segun-diseno-proporcionado`.
 - [x] Use atomic Conventional Commits for remaining changes.
 - [x] Incorporate `main@6393d30f18e382d6de2d234bb1205e9b97e33a13` transport snapshots without dropping PR-owned data or implementation work.
-- [ ] Run required CI on the exact resulting final head and fix branch-caused failures until green.
-- [ ] Run exact-head PR visual evidence and inspect the affected mobile/desktop captures.
-- [ ] Update the PR body so its implementation/validation SHA and workflow evidence match the real final head.
+- [x] Run required CI on the exact resulting final head and fix branch-caused failures until green.
+- [x] Run exact-head PR visual evidence and inspect the affected mobile/desktop captures.
+- [x] Update the PR body so its implementation/validation SHA and workflow evidence match the real final head.
 - [x] Confirm no unresolved actionable review threads or submitted reviews remain at the latest review audit.
 - [x] Leave the PR open and unmerged; do not release or deploy without explicit approval.
+
+### Closure semantics
+
+The final implementation head is the commit that contains this tracker closure. Exact-head CI, browser/visual evidence, review state and PR-description synchronization are external GitHub state tied to that immutable head and can settle after the commit without moving it. The checked delivery gates are valid only while those exact-head checks remain green, the PR head has not moved, the branch remains current with `main`, and the PR body references the same head. If any of those conditions stops holding, the corresponding gate is incomplete again even though this historical tracker file is unchanged.
 
 ## Explicitly deferred / not part of this completion pass
 
@@ -145,4 +149,4 @@ This file is the single completion index for the user-requested work accumulated
 
 ## Current state
 
-The accumulated PR #36 requirements are explicitly represented above so later sessions do not need to reconstruct them from conversation history. Implementation work covers the bottom floating navigation, upward progressive secondary navigation, icon-first map search, hidden map inspectors, viewport-driven nearby stops and focused lines, CTAN recovery and official geometry, toast/error treatment, popup close affordance, canonical stop navigation, route-result information cleanup, Stop Information redesign, approximate-distance guidance, concurrency regressions and mobile/desktop interaction evidence. `main@6393d30f` is incorporated through merge commit `b2a16d677c23045a274cf1e82dbf422770382bd8`, and the branch comparison is `behind_by = 0`. Remaining gates are exact-head CI, exact-head visual/browser evidence after this tracker update, inspection of the resulting evidence, and refresh of the pull request description with the final SHA and run identifiers.
+The accumulated PR #36 requirements are explicitly represented above so later sessions do not need to reconstruct them from conversation history. Implementation work covers the bottom floating navigation, upward progressive secondary navigation, icon-first map search, hidden map inspectors, viewport-driven nearby stops and focused lines, CTAN recovery and official geometry, toast/error treatment, popup close affordance, canonical stop navigation, route-result information cleanup, Stop Information redesign, approximate-distance guidance, concurrency regressions and mobile/desktop interaction evidence. `main@6393d30f` was incorporated through merge commit `b2a16d677c23045a274cf1e82dbf422770382bd8`. Stop Detail now has deterministic populated-data coverage at 390x844 and 1440x900, including rendered-content and horizontal-overflow assertions, and its two captures are mandatory published visual-evidence assets. Final completion is established by the exact-head GitHub Actions, artifact inspection, branch comparison, review audit and PR metadata recorded outside this file; no additional content commit is required merely to record those external run identifiers.
