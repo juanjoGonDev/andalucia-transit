@@ -16,6 +16,9 @@ const MAP_TILE_SCRIPT = resolve(process.cwd(), 'scripts/visual/determinize-map-t
 export const test = base.extend({
   page: async ({ page }, use) => {
     if (EVIDENCE_DIR && EXACT_VISUAL_REGRESSION) {
+      await page.addInitScript(() => {
+        history.scrollRestoration = 'manual';
+      });
       await page.clock.setFixedTime(FIXED_VISUAL_TIME);
     }
 
@@ -43,7 +46,7 @@ export async function captureVisualEvidence(page: Page, name: string): Promise<v
 
 async function stabilizeVisualEvidence(page: Page): Promise<void> {
   if (EXACT_VISUAL_REGRESSION) {
-    await resetScrollPosition(page);
+    await stabilizeExactCaptureState(page);
   }
 
   await page.evaluate(async () => {
@@ -64,8 +67,19 @@ async function stabilizeVisualEvidence(page: Page): Promise<void> {
   }
 
   if (EXACT_VISUAL_REGRESSION) {
-    await resetScrollPosition(page);
+    await stabilizeExactCaptureState(page);
   }
+  await waitForTwoAnimationFrames(page);
+}
+
+async function stabilizeExactCaptureState(page: Page): Promise<void> {
+  await page.mouse.move(0, 0);
+  await page.evaluate(() => {
+    history.scrollRestoration = 'manual';
+    document.documentElement.style.setProperty('overflow-anchor', 'none', 'important');
+    document.body?.style.setProperty('overflow-anchor', 'none', 'important');
+  });
+  await resetScrollPosition(page);
   await waitForTwoAnimationFrames(page);
 }
 
