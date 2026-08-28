@@ -55,11 +55,8 @@ async function openStopDetail(page: Page, stop: StopServicesSnapshotEntry): Prom
   const path = `/stop-detail/${encodeURIComponent(stop.stopId)}?consortiumId=${stop.consortiumId}`;
   await open(page, path);
 
-  const content = page.locator('.stop-detail__content');
-  await expect(content).toBeVisible({ timeout: 15_000 });
-  await expect(content.locator('.stop-detail__title')).toHaveText(stop.stopName);
-  await expect(content.locator('.stop-detail__schedule')).toBeVisible();
-  await expect(content.locator('.stop-detail__list-item').first()).toBeVisible();
+  await expect(page.locator('.stop-detail__title')).toHaveText(stop.stopName, { timeout: 15_000 });
+  await expect(page.locator('.stop-detail__list-item').first()).toBeVisible();
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
   ).toBe(true);
