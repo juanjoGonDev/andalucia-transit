@@ -335,7 +335,7 @@ test.describe('deterministic interaction visual states', () => {
       await expect(page.locator('.news__card')).toHaveCount(5);
       await expect.poll(() => new URL(page.url()).searchParams.get('category')).toBe('Avisos');
 
-      await orderSelect.selectOption('oldest');
+      await orderSelect.selectOption({ label: 'Más antiguas primero' });
       await expect(page.locator('.news__card-title').first()).toHaveText('Aviso Almería 9');
       await expect.poll(() => new URL(page.url()).searchParams.get('order')).toBe('oldest');
       await expect(page.locator('.news__area')).toHaveText([
