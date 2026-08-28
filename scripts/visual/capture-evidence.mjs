@@ -202,6 +202,7 @@ export async function captureEvidence({
         E2E_BASE_URL: baseUrl,
         E2E_MOCK_MODE: 'data',
         E2E_EVIDENCE_DIR: evidenceRoot,
+        E2E_EXACT_VISUAL_REGRESSION: 'true',
       },
     });
     await captureRoutes(
