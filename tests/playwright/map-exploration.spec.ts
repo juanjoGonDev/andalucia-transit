@@ -273,7 +273,9 @@ test.describe('network map exploration', () => {
     await expect(nearbyPanel).not.toHaveAttribute('aria-busy', 'true');
   });
 
-  test('highlights the matching map marker when a nearby stop card is hovered', async ({ page }) => {
+  test('highlights the matching map marker when a nearby stop card is hovered', async ({
+    page,
+  }) => {
     const resolvedBaseUrl = BASE_URL as string;
     const targetStop = await loadSearchStopByName(page, resolvedBaseUrl, TARGET_STOP_NAME);
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -288,7 +290,10 @@ test.describe('network map exploration', () => {
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
 
     const nearbyPanel = await openNearbyInspector(page);
-    const nearbyStop = nearbyPanel.locator('.map__stop-item').filter({ hasText: targetStop.name }).first();
+    const nearbyStop = nearbyPanel
+      .locator('.map__stop-item')
+      .filter({ hasText: targetStop.name })
+      .first();
     await expect(nearbyStop).toBeVisible({ timeout: 15_000 });
     await expect(nearbyPanel).not.toHaveAttribute('aria-busy', 'true');
 
