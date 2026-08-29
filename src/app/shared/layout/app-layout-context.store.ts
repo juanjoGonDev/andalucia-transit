@@ -5,6 +5,7 @@ import {
   AppLayoutContext,
   AppLayoutContextSnapshot,
   AppLayoutNavigationKey,
+  AppLayoutSurface,
   AppLayoutTabIdentifier,
   AppLayoutTabRegistration
 } from '@shared/layout/app-layout-context.token';
@@ -17,10 +18,14 @@ export class AppLayoutContextStore implements AppLayoutContext {
   private readonly navigationKeys = signal<
     ReadonlyMap<AppLayoutContentIdentifier, AppLayoutNavigationKey | null>
   >(new Map());
+  private readonly surfaces = signal<ReadonlyMap<AppLayoutContentIdentifier, AppLayoutSurface>>(
+    new Map()
+  );
 
   private readonly currentSnapshot: Signal<AppLayoutContextSnapshot> = computed(() => ({
     activeContent: this.activeContent(),
     activeNavigationKey: this.resolveActiveNavigationKey(),
+    activeSurface: this.resolveActiveSurface(),
     tabs: this.tabs(),
     activeTab: this.activeTab()
   }));
@@ -30,6 +35,11 @@ export class AppLayoutContextStore implements AppLayoutContext {
     const navigationKey = registration.navigationKey ?? null;
     nextNavigation.set(registration.identifier, navigationKey);
     this.navigationKeys.set(nextNavigation);
+
+    const nextSurfaces = new Map(this.surfaces());
+    nextSurfaces.set(registration.identifier, registration.surface);
+    this.surfaces.set(nextSurfaces);
+
     this.activeContent.set(registration.identifier);
   }
 
@@ -37,6 +47,10 @@ export class AppLayoutContextStore implements AppLayoutContext {
     const nextNavigation = new Map(this.navigationKeys());
     nextNavigation.delete(identifier);
     this.navigationKeys.set(nextNavigation);
+
+    const nextSurfaces = new Map(this.surfaces());
+    nextSurfaces.delete(identifier);
+    this.surfaces.set(nextSurfaces);
 
     if (this.activeContent() !== identifier) {
       return;
@@ -88,5 +102,15 @@ export class AppLayoutContextStore implements AppLayoutContext {
     }
 
     return this.navigationKeys().get(activeIdentifier) ?? null;
+  }
+
+  private resolveActiveSurface(): AppLayoutSurface | null {
+    const activeIdentifier = this.activeContent();
+
+    if (!activeIdentifier) {
+      return null;
+    }
+
+    return this.surfaces().get(activeIdentifier) ?? null;
   }
 }

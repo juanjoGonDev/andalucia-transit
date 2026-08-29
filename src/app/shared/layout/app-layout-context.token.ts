@@ -6,9 +6,12 @@ export type AppLayoutContentIdentifier = symbol;
 
 export type AppLayoutNavigationKey = string;
 
+export type AppLayoutSurface = 'hero' | 'plain';
+
 export interface AppLayoutContentRegistration {
   readonly identifier: AppLayoutContentIdentifier;
   readonly navigationKey?: AppLayoutNavigationKey | null;
+  readonly surface: AppLayoutSurface;
 }
 
 export type AppLayoutTabIdentifier = string;
@@ -21,6 +24,7 @@ export interface AppLayoutTabRegistration {
 export interface AppLayoutContextSnapshot {
   readonly activeContent: AppLayoutContentIdentifier | null;
   readonly activeNavigationKey: AppLayoutNavigationKey | null;
+  readonly activeSurface: AppLayoutSurface | null;
   readonly tabs: readonly AppLayoutTabRegistration[];
   readonly activeTab: AppLayoutTabIdentifier | null;
 }
@@ -38,6 +42,7 @@ const createNoopAppLayoutContext = (): AppLayoutContext => {
   const emptySnapshot: AppLayoutContextSnapshot = {
     activeContent: null,
     activeNavigationKey: null,
+    activeSurface: null,
     tabs: [],
     activeTab: null
   };

@@ -40,6 +40,7 @@ class AppLayoutContextStub implements AppLayoutContext {
     return {
       activeContent: null,
       activeNavigationKey: null,
+      activeSurface: null,
       tabs: [],
       activeTab: null
     };
@@ -96,11 +97,13 @@ describe('AppLayoutContentDirective', () => {
     expect(element.classList.contains('app-layout__surface')).toBeTrue();
     expect(element.classList.contains('app-layout__surface--plain')).toBeTrue();
     expect(element.classList.contains('app-layout__surface--hero')).toBeFalse();
+    expect(context.registrations.at(-1)?.surface).toBe('plain');
   });
 
   it('registers and unregisters content using the layout context', () => {
     expect(context.registrations.length).toBe(1);
     expect(context.registrations[0].navigationKey).toBe('navigation.home');
+    expect(context.registrations[0].surface).toBe('hero');
 
     fixture.destroy();
 

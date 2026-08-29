@@ -14,14 +14,14 @@ import {
   AppLayoutContentIdentifier,
   AppLayoutContentRegistration,
   AppLayoutContext,
-  AppLayoutNavigationKey
+  AppLayoutNavigationKey,
+  AppLayoutSurface
 } from '@shared/layout/app-layout-context.token';
 
 const APP_LAYOUT_CONTENT_IDENTIFIER_DESCRIPTION = 'app-layout-content';
 const APP_LAYOUT_SURFACE_CLASS = 'app-layout__surface';
 const APP_LAYOUT_SURFACE_HERO_CLASS = 'app-layout__surface--hero';
 const APP_LAYOUT_SURFACE_PLAIN_CLASS = 'app-layout__surface--plain';
-type AppLayoutContentSurface = 'hero' | 'plain';
 
 @Directive({
   selector: '[appLayoutContent]',
@@ -37,7 +37,7 @@ export class AppLayoutContentDirective implements OnInit, OnDestroy, OnChanges {
   @Input({ alias: 'appLayoutContentNavigationKey' })
   navigationKey: AppLayoutNavigationKey | null = null;
   @Input({ alias: 'appLayoutContentSurface' })
-  surface: AppLayoutContentSurface = 'hero';
+  surface: AppLayoutSurface = 'hero';
 
   ngOnInit(): void {
     this.applySurfaceClasses();
@@ -45,20 +45,20 @@ export class AppLayoutContentDirective implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    let shouldRegisterContent = false;
+
     if ('surface' in changes) {
       this.applySurfaceClasses();
+      shouldRegisterContent = !changes['surface'].isFirstChange();
     }
 
-    if (!('navigationKey' in changes)) {
-      return;
+    if ('navigationKey' in changes && !changes['navigationKey'].isFirstChange()) {
+      shouldRegisterContent = true;
     }
 
-    const change = changes['navigationKey'];
-    if (change.isFirstChange()) {
-      return;
+    if (shouldRegisterContent) {
+      this.registerContent();
     }
-
-    this.registerContent();
   }
 
   ngOnDestroy(): void {
@@ -68,7 +68,8 @@ export class AppLayoutContentDirective implements OnInit, OnDestroy, OnChanges {
   private registerContent(): void {
     const registration: AppLayoutContentRegistration = {
       identifier: this.identifier,
-      navigationKey: this.navigationKey ?? null
+      navigationKey: this.navigationKey ?? null,
+      surface: this.surface
     };
 
     this.context.registerContent(registration);

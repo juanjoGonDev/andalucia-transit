@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LanguageService } from '@core/services/language.service';
-import {
-  LEGAL_ROUTE_SEGMENTS,
-  getLegalUiCopy
-} from '@features/legal/legal-shell-content';
+import { LEGAL_ROUTE_SEGMENTS, getLegalUiCopy } from '@features/legal/legal-shell-content';
+import { APP_LAYOUT_CONTEXT, AppLayoutSurface } from '@shared/layout/app-layout-context.token';
 
 @Component({
   selector: 'app-legal-footer',
@@ -16,9 +14,13 @@ import {
 })
 export class LegalFooterComponent {
   private readonly languageService = inject(LanguageService);
+  private readonly layoutContext = inject(APP_LAYOUT_CONTEXT);
 
   protected readonly copy = computed(() =>
     getLegalUiCopy(this.languageService.currentLanguage())
+  );
+  protected readonly activeSurface = computed<AppLayoutSurface>(
+    () => this.layoutContext.snapshot().activeSurface ?? 'plain'
   );
   protected readonly privacyRoute = [
     '/',
