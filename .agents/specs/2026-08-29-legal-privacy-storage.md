@@ -4,6 +4,8 @@
 
 Complete PR #36 with the legal and privacy surfaces reasonably required for a Spain/EU-facing public transport web application: privacy information, storage/cookie information, terms of use and an accessible first-visit notice. Do not publish, infer or fabricate the repository owner's personal identity, postal address, tax identifier, email address or other personal contact details.
 
+Follow-up 2026-08-29: the global legal footer must not create a white visual break or blank band between the active application surface and fixed bottom navigation. The fix must apply at the shared layout boundary so every current and future view inherits consistent footer treatment rather than patching individual feature pages.
+
 ## Evidence
 
 ### Repository behavior
@@ -14,6 +16,14 @@ Complete PR #36 with the legal and privacy surfaces reasonably required for a Sp
 - Leaflet loads map tiles directly from `https://{s}.tile.openstreetmap.org/...`.
 - The application consumes the CTAN API at `https://api.ctan.es` and the Nager.Date holiday API at `https://date.nager.at/api/v3`.
 - Geolocation is requested through the browser only when the user invokes location-dependent functionality.
+
+### Footer continuity regression
+
+- User-provided desktop evidence at `localhost:4200/?tab=search` shows the Home hero surface ending in the dark secondary tone while the newly added global legal footer forces a white `var(--color-surface)` band before the fixed bottom navigation.
+- `AppLayoutContentDirective` already owns the closed surface choice `hero | plain` for every routed view.
+- `AppLayoutContextStore` currently propagates active navigation state but does not expose the routed surface choice to shell siblings.
+- `LegalFooterComponent` is rendered by `AppLayoutComponent` outside the routed surface and therefore cannot currently match the active surface; its stylesheet always sets `background: var(--color-surface)`.
+- The canonical fix is to propagate the active surface through the existing layout context and derive footer appearance from it. Feature-specific footer overrides would duplicate surface knowledge and leave future routes vulnerable to the same defect.
 
 ### Official legal guidance reviewed 2026-08-29
 
@@ -35,7 +45,9 @@ Official sources: AEPD `Guía sobre el uso de las cookies`; BOE Ley 34/2002 arts
 6. Clearly label Andalucia Transit as an unofficial informational application and make transport information non-contractual; direct users to official transport sources for critical decisions.
 7. Do not fabricate owner identity/contact data. The Legal Notice must explicitly avoid representing itself as a complete substitute for LSSI article 10 provider identification when that duty applies. This is a deliberate legal limitation imposed by the request, not hidden compliance debt.
 8. Keep a permanent legal navigation surface in the application layout so the information remains easy to access after dismissing the first-visit notice.
-9. Do not change `.github/visual-baseline.json` without the already-required explicit visual approval.
+9. Treat routed surface appearance as one layout-owned concept. `AppLayoutContentDirective` registers `hero | plain`; the layout context exposes the active surface; the legal footer consumes that state and must not infer route names or duplicate feature styling rules.
+10. Hero footers continue the terminal secondary hero tone with inverse legal-link colors. Plain footers use the same muted surface family as plain routed content. Footer spacing must reserve fixed-navigation clearance without inserting a contrasting blank band.
+11. Do not change `.github/visual-baseline.json` without the already-required explicit visual approval.
 
 ## Scope
 
@@ -43,8 +55,9 @@ Official sources: AEPD `Guía sobre el uso de las cookies`; BOE Ley 34/2002 arts
 - Reusable legal page component.
 - First-visit storage/privacy notice with accessible semantics and local dismissal.
 - Permanent legal links in the global layout.
-- Focused Angular tests for legal routing/content and notice persistence/visibility.
-- Browser evidence should cover mobile/desktop legal access and verify that the notice does not cover critical fixed navigation/actions.
+- Active layout-surface propagation for shell-level footer styling.
+- Focused Angular tests for legal routing/content, notice persistence/visibility and layout surface state.
+- Browser evidence covering legal access plus representative hero/plain footer continuity on mobile and desktop, including overflow and fixed-navigation clearance.
 
 Out of scope: introducing analytics/advertising, a full consent-management platform for technologies that do not exist, collecting contact details, adding forms, changing hosting/provider contracts, or advancing visual baselines.
 
@@ -54,6 +67,7 @@ Out of scope: introducing analytics/advertising, a full consent-management platf
 - Third-party fonts/map tiles expose ordinary network metadata to their providers. The privacy page must disclose this instead of claiming a zero-third-party architecture.
 - Future analytics, embeds, advertising or non-exempt storage would invalidate the informational-only notice and require a consent gate before those technologies execute.
 - New fixed/overlay UI can obscure mobile controls; browser coverage must explicitly check hit testing/viewport visibility.
+- Surface state is shared shell state. It must unregister cleanly during navigation so a plain route cannot inherit a stale hero footer or vice versa.
 
 ## Acceptance
 
@@ -64,13 +78,17 @@ Out of scope: introducing analytics/advertising, a full consent-management platf
 - [ ] Legal Notice does not fabricate provider identity/contact and explicitly records the LSSI-identification limitation.
 - [ ] First-visit notice is accessible, dismissible, persisted locally and does not masquerade as consent.
 - [ ] Permanent legal links remain available after dismissal.
-- [ ] Unit tests cover localized legal content and notice persistence.
+- [ ] Hero routes render the legal footer as a continuous dark terminal surface with no white band.
+- [ ] Plain routes render the legal footer on the same muted surface family as routed content.
+- [ ] Footer links and fixed bottom navigation remain visible, keyboard-accessible and unobscured at 390×844 and 1440×900.
+- [ ] Unit tests cover localized legal content, notice persistence and active layout-surface ownership.
+- [ ] Browser tests cover footer continuity for representative hero and plain routes.
 - [ ] CI, lint, Angular tests and browser evidence are green except for the pre-authorized visual-baseline enforcement blocker.
 - [ ] `.github/visual-baseline.json` remains unchanged without explicit approval.
 
 ## Checks
 
-Planned: repository CI, Angular unit suite, lint, build/deploy checks, PR visual evidence and exact reviewed-baseline comparison. Record exact run IDs after push.
+Repository CI, Angular unit suite, lint, build/deploy checks, dedicated legal-browser QA, PR visual evidence and exact reviewed-baseline comparison. Record exact run IDs after the final product head is pushed.
 
 ## Rollback
 
@@ -82,4 +100,4 @@ Continue on PR #36 and `codex/refactorizar-vista-segun-diseno-proporcionado`. Us
 
 ## Status
 
-Recon complete. Official guidance and actual storage/third-party behavior are identified. Implementation pending.
+Legal surfaces are implemented. Core CI and deploy checks recovered after keeping long legal copy lazy-loaded. Dedicated browser QA exposed and isolated a test-harness reload bug; commit `20fe2147ba3a934a283d2dfa6bd9de3a1877be66` corrects that harness. Follow-up footer surface-continuity regression documented from user-provided visual evidence; implementation and regression coverage pending.
