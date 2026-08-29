@@ -14,6 +14,7 @@ import {
   AppLayoutContentIdentifier,
   AppLayoutContentRegistration,
   AppLayoutContext,
+  AppLayoutFooterVisibility,
   AppLayoutNavigationKey,
   AppLayoutSurface
 } from '@shared/layout/app-layout-context.token';
@@ -38,6 +39,8 @@ export class AppLayoutContentDirective implements OnInit, OnDestroy, OnChanges {
   navigationKey: AppLayoutNavigationKey | null = null;
   @Input({ alias: 'appLayoutContentSurface' })
   surface: AppLayoutSurface = 'hero';
+  @Input({ alias: 'appLayoutContentFooter' })
+  footerVisibility: AppLayoutFooterVisibility = 'visible';
 
   ngOnInit(): void {
     this.applySurfaceClasses();
@@ -56,6 +59,10 @@ export class AppLayoutContentDirective implements OnInit, OnDestroy, OnChanges {
       shouldRegisterContent = true;
     }
 
+    if ('footerVisibility' in changes && !changes['footerVisibility'].isFirstChange()) {
+      shouldRegisterContent = true;
+    }
+
     if (shouldRegisterContent) {
       this.registerContent();
     }
@@ -69,7 +76,8 @@ export class AppLayoutContentDirective implements OnInit, OnDestroy, OnChanges {
     const registration: AppLayoutContentRegistration = {
       identifier: this.identifier,
       navigationKey: this.navigationKey ?? null,
-      surface: this.surface
+      surface: this.surface,
+      footerVisibility: this.footerVisibility
     };
 
     this.context.registerContent(registration);

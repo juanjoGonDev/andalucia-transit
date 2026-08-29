@@ -22,6 +22,9 @@ export class LegalFooterComponent {
   protected readonly activeSurface = computed<AppLayoutSurface>(
     () => this.layoutContext.snapshot().activeSurface ?? 'plain'
   );
+  protected readonly visible = computed(
+    () => this.layoutContext.snapshot().activeFooterVisibility !== 'hidden'
+  );
   protected readonly privacyRoute = [
     '/',
     LEGAL_ROUTE_SEGMENTS.base,

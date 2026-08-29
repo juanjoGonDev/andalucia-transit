@@ -4,11 +4,14 @@ import {
   AppLayoutContentRegistration,
   AppLayoutContext,
   AppLayoutContextSnapshot,
+  AppLayoutFooterVisibility,
   AppLayoutNavigationKey,
   AppLayoutSurface,
   AppLayoutTabIdentifier,
   AppLayoutTabRegistration
 } from '@shared/layout/app-layout-context.token';
+
+const DEFAULT_FOOTER_VISIBILITY: AppLayoutFooterVisibility = 'visible';
 
 @Injectable()
 export class AppLayoutContextStore implements AppLayoutContext {
@@ -21,11 +24,15 @@ export class AppLayoutContextStore implements AppLayoutContext {
   private readonly surfaces = signal<ReadonlyMap<AppLayoutContentIdentifier, AppLayoutSurface>>(
     new Map()
   );
+  private readonly footerVisibilities = signal<
+    ReadonlyMap<AppLayoutContentIdentifier, AppLayoutFooterVisibility>
+  >(new Map());
 
   private readonly currentSnapshot: Signal<AppLayoutContextSnapshot> = computed(() => ({
     activeContent: this.activeContent(),
     activeNavigationKey: this.resolveActiveNavigationKey(),
     activeSurface: this.resolveActiveSurface(),
+    activeFooterVisibility: this.resolveActiveFooterVisibility(),
     tabs: this.tabs(),
     activeTab: this.activeTab()
   }));
@@ -40,6 +47,13 @@ export class AppLayoutContextStore implements AppLayoutContext {
     nextSurfaces.set(registration.identifier, registration.surface);
     this.surfaces.set(nextSurfaces);
 
+    const nextFooterVisibilities = new Map(this.footerVisibilities());
+    nextFooterVisibilities.set(
+      registration.identifier,
+      registration.footerVisibility ?? DEFAULT_FOOTER_VISIBILITY
+    );
+    this.footerVisibilities.set(nextFooterVisibilities);
+
     this.activeContent.set(registration.identifier);
   }
 
@@ -51,6 +65,10 @@ export class AppLayoutContextStore implements AppLayoutContext {
     const nextSurfaces = new Map(this.surfaces());
     nextSurfaces.delete(identifier);
     this.surfaces.set(nextSurfaces);
+
+    const nextFooterVisibilities = new Map(this.footerVisibilities());
+    nextFooterVisibilities.delete(identifier);
+    this.footerVisibilities.set(nextFooterVisibilities);
 
     if (this.activeContent() !== identifier) {
       return;
@@ -112,5 +130,15 @@ export class AppLayoutContextStore implements AppLayoutContext {
     }
 
     return this.surfaces().get(activeIdentifier) ?? null;
+  }
+
+  private resolveActiveFooterVisibility(): AppLayoutFooterVisibility | null {
+    const activeIdentifier = this.activeContent();
+
+    if (!activeIdentifier) {
+      return null;
+    }
+
+    return this.footerVisibilities().get(activeIdentifier) ?? DEFAULT_FOOTER_VISIBILITY;
   }
 }

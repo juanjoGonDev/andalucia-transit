@@ -8,6 +8,7 @@ import {
   AppLayoutContentRegistration,
   AppLayoutContext,
   AppLayoutContextSnapshot,
+  AppLayoutFooterVisibility,
   AppLayoutTabIdentifier,
   AppLayoutTabRegistration
 } from '@shared/layout/app-layout-context.token';
@@ -41,6 +42,7 @@ class AppLayoutContextStub implements AppLayoutContext {
       activeContent: null,
       activeNavigationKey: null,
       activeSurface: null,
+      activeFooterVisibility: null,
       tabs: [],
       activeTab: null
     };
@@ -55,12 +57,14 @@ class AppLayoutContextStub implements AppLayoutContext {
       appLayoutContent
       [appLayoutContentNavigationKey]="navigationKey"
       [appLayoutContentSurface]="surface"
+      [appLayoutContentFooter]="footerVisibility"
     ></section>
   `
 })
 class HostComponent {
   navigationKey: string | null = 'navigation.home';
   surface: 'hero' | 'plain' = 'hero';
+  footerVisibility: AppLayoutFooterVisibility = 'visible';
 }
 
 describe('AppLayoutContentDirective', () => {
@@ -100,11 +104,21 @@ describe('AppLayoutContentDirective', () => {
     expect(context.registrations.at(-1)?.surface).toBe('plain');
   });
 
-  it('registers and unregisters content using the layout context', () => {
+  it('registers visible footer content by default', () => {
     expect(context.registrations.length).toBe(1);
     expect(context.registrations[0].navigationKey).toBe('navigation.home');
     expect(context.registrations[0].surface).toBe('hero');
+    expect(context.registrations[0].footerVisibility).toBe('visible');
+  });
 
+  it('re-registers content when the footer visibility changes', () => {
+    fixture.componentInstance.footerVisibility = 'hidden';
+    fixture.detectChanges();
+
+    expect(context.registrations.at(-1)?.footerVisibility).toBe('hidden');
+  });
+
+  it('unregisters content using the layout context', () => {
     fixture.destroy();
 
     expect(context.unregisteredIdentifiers.length).toBe(1);
