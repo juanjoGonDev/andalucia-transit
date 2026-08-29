@@ -1,4 +1,4 @@
-import { expect, test, type Page } from './visual-evidence.fixture';
+import { expect, test, type Locator, type Page } from './visual-evidence.fixture';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const LINES_PATH = '/lines';
@@ -93,6 +93,7 @@ test.describe('Lines province filter', () => {
     await expect(lines.nth(1)).toContainText('Campo de Gibraltar');
     await expect(page.locator('.lines__result-count')).toContainText('2 líneas');
     await assertNoHorizontalOverflow(page);
+    await assertControlIsUnobscured(page, page.getByRole('button', { name: 'Cerca de mí' }));
 
     await page.reload();
     await expect(page.getByLabel('Provincia').locator('option:checked')).toHaveText('Cádiz');
@@ -157,5 +158,29 @@ function readConsortiumId(requestUrl: string): number | null {
 async function assertNoHorizontalOverflow(page: Page): Promise<void> {
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
+  ).toBe(true);
+}
+
+async function assertControlIsUnobscured(page: Page, control: Locator): Promise<void> {
+  await expect(control).toBeVisible();
+
+  const box = await control.boundingBox();
+  expect(box).not.toBeNull();
+  if (!box) {
+    return;
+  }
+
+  expect(box.y).toBeGreaterThanOrEqual(0);
+  expect(box.y + box.height).toBeLessThanOrEqual(MOBILE_VIEWPORT.height);
+
+  expect(
+    await control.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      const elementAtCenter = document.elementFromPoint(
+        rect.left + rect.width / 2,
+        rect.top + rect.height / 2,
+      );
+      return elementAtCenter === element || element.contains(elementAtCenter);
+    }),
   ).toBe(true);
 }
