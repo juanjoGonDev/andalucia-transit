@@ -426,9 +426,7 @@ test.describe('network map exploration', () => {
     expect(
       Math.abs(mobileWorkspaceBox.y + mobileWorkspaceBox.height - MOBILE_VIEWPORT.height),
     ).toBeLessThanOrEqual(VIEWPORT_EDGE_TOLERANCE_PX);
-    expect(mobileNavigationBox.y).toBeLessThan(
-      mobileWorkspaceBox.y + mobileWorkspaceBox.height,
-    );
+    expect(mobileNavigationBox.y).toBeLessThan(mobileWorkspaceBox.y + mobileWorkspaceBox.height);
     expect(mobilePanelBox.y + mobilePanelBox.height).toBeLessThanOrEqual(
       mobileNavigationBox.y + VIEWPORT_EDGE_TOLERANCE_PX,
     );
