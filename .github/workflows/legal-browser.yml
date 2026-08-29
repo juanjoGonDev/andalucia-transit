@@ -1,0 +1,93 @@
+name: Legal browser QA
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - ready_for_review
+      - synchronize
+    paths:
+      - '.github/workflows/legal-browser.yml'
+      - 'src/app/app.routes.ts'
+      - 'src/app/features/legal/**'
+      - 'src/app/shared/layout/app-layout/**'
+      - 'src/app/shared/privacy/**'
+      - 'tests/playwright/legal-privacy.spec.ts'
+
+permissions: read-all
+
+concurrency:
+  group: legal-browser-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  legal-browser:
+    name: '⚖️ Legal privacy browser flow'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout immutable PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20.19.0
+
+      - name: Install deterministic tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@9.12.3 --activate
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install --with-deps chromium
+
+      - name: Start deterministic application
+        shell: bash
+        run: |
+          set -euo pipefail
+          PATH="$PWD/node_modules/.bin:$PATH" \
+            node scripts/dev/start-with-mock-mode.mjs data --host 127.0.0.1 --port 4200 \
+            > "$RUNNER_TEMP/andalucia-transit-legal.log" 2>&1 &
+          app_pid=$!
+          echo "$app_pid" > "$RUNNER_TEMP/andalucia-transit-legal.pid"
+
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent --show-error http://127.0.0.1:4200/ >/dev/null; then
+              exit 0
+            fi
+            if ! kill -0 "$app_pid" >/dev/null 2>&1; then
+              cat "$RUNNER_TEMP/andalucia-transit-legal.log" >&2
+              exit 1
+            fi
+            sleep 2
+          done
+
+          cat "$RUNNER_TEMP/andalucia-transit-legal.log" >&2
+          exit 1
+
+      - name: Verify privacy and legal flows
+        shell: bash
+        env:
+          E2E_BASE_URL: http://127.0.0.1:4200
+          E2E_MOCK_MODE: data
+        run: |
+          set -euo pipefail
+          pnpm exec playwright test tests/playwright/legal-privacy.spec.ts --project=chromium
+
+      - name: Stop deterministic application
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f "$RUNNER_TEMP/andalucia-transit-legal.pid" ]; then
+            app_pid=$(cat "$RUNNER_TEMP/andalucia-transit-legal.pid")
+            kill "$app_pid" >/dev/null 2>&1 || true
+          fi
