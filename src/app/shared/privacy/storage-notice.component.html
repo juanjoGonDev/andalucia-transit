@@ -1,0 +1,20 @@
+<aside
+  *ngIf="visible()"
+  class="storage-notice"
+  role="region"
+  [attr.aria-labelledby]="'storage-notice-title'"
+>
+  <div class="storage-notice__content">
+    <div class="storage-notice__copy">
+      <strong class="storage-notice__title" id="storage-notice-title">{{ copy().notice.title }}</strong>
+      <p class="storage-notice__message">{{ copy().notice.message }}</p>
+      <div class="storage-notice__links">
+        <a class="storage-notice__link" [routerLink]="privacyRoute">{{ copy().links.privacy }}</a>
+        <a class="storage-notice__link" [routerLink]="storageRoute">{{ copy().links.storage }}</a>
+      </div>
+    </div>
+    <button class="storage-notice__dismiss" type="button" (click)="dismiss()">
+      {{ copy().notice.dismiss }}
+    </button>
+  </div>
+</aside>

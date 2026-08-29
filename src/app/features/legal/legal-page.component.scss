@@ -1,0 +1,105 @@
+:host {
+  display: block;
+}
+
+.legal-page {
+  padding-block: var(--space-xl) calc(var(--space-4xl) + var(--space-xl));
+}
+
+.legal-page__article {
+  width: min(100%, 52rem);
+  margin-inline: auto;
+}
+
+.legal-page__header {
+  display: grid;
+  gap: var(--space-sm);
+  padding-block-end: var(--space-xl);
+  border-block-end: 1px solid var(--color-border-subtle);
+}
+
+.legal-page__eyebrow {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.legal-page__title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: clamp(2rem, 6vw, 3.25rem);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.legal-page__summary {
+  max-width: 46rem;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+  line-height: 1.65;
+}
+
+.legal-page__updated {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin: var(--space-sm) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.legal-page__updated time {
+  font-variant-numeric: tabular-nums;
+}
+
+.legal-page__sections {
+  display: grid;
+  gap: var(--space-2xl);
+  padding-block-start: var(--space-2xl);
+}
+
+.legal-page__section {
+  display: grid;
+  gap: var(--space-md);
+  scroll-margin-block-start: var(--space-4xl);
+}
+
+.legal-page__section-title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  line-height: 1.25;
+}
+
+.legal-page__paragraph {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+}
+
+.legal-page__list {
+  display: grid;
+  gap: var(--space-sm);
+  margin: 0;
+  padding-inline-start: var(--space-xl);
+  color: var(--color-text-secondary);
+}
+
+.legal-page__list-item {
+  padding-inline-start: var(--space-xs);
+  line-height: 1.65;
+}
+
+@media (max-width: 40rem) {
+  .legal-page {
+    padding-block-start: var(--space-lg);
+  }
+
+  .legal-page__sections {
+    gap: var(--space-xl);
+  }
+}
