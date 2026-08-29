@@ -5,6 +5,8 @@ import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.direct
 import { AppLayoutContextStore } from '@shared/layout/app-layout-context.store';
 import { APP_LAYOUT_CONTEXT } from '@shared/layout/app-layout-context.token';
 import { AppShellTopActionsComponent } from '@shared/layout/top-actions/app-shell-top-actions.component';
+import { LegalFooterComponent } from '@shared/privacy/legal-footer.component';
+import { StorageNoticeComponent } from '@shared/privacy/storage-notice.component';
 
 const MAIN_CONTENT_ID = 'app-main-content';
 const SKIP_LINK_LABEL_KEY = 'layout.skipToContent';
@@ -18,7 +20,9 @@ const MAIN_ROLE = 'main';
     AppShellTopActionsComponent,
     RouterOutlet,
     TranslateModule,
-    AccessibleButtonDirective
+    AccessibleButtonDirective,
+    LegalFooterComponent,
+    StorageNoticeComponent
   ],
   templateUrl: './app-layout.component.html',
   styleUrl: './app-layout.component.scss',

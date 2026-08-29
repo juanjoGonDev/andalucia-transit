@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LanguageService } from '@core/services/language.service';
@@ -7,7 +8,7 @@ import { StorageNoticeStateService } from './storage-notice-state.service';
 @Component({
   selector: 'app-storage-notice',
   standalone: true,
-  imports: [RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './storage-notice.component.html',
   styleUrl: './storage-notice.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

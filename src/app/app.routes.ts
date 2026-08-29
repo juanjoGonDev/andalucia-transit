@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { APP_CONFIG } from '@core/config';
+import { LEGAL_ROUTE_SEGMENTS } from '@features/legal/legal-content';
 import { FavoritesComponent } from '@features/favorites/favorites.component';
 import { HomeComponent } from '@features/home/home.component';
 import { AppLayoutComponent } from '@shared/layout/app-layout/app-layout.component';
@@ -99,6 +100,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('@features/map/map.component').then((module) => module.MapComponent),
         title: APP_CONFIG.translationKeys.navigation.map
+      },
+      {
+        path: LEGAL_ROUTE_SEGMENTS.base,
+        loadChildren: () =>
+          import('@features/legal/legal.routes').then((module) => module.LEGAL_ROUTES)
       }
     ]
   },
