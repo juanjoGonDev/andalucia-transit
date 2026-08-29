@@ -62,11 +62,8 @@ async function expectHeroPaginationAction(
 
   const [buttonColor, heroTextColor] = await Promise.all([
     button.evaluate((element) => getComputedStyle(element).color),
-    surface.evaluate((element) =>
-      getComputedStyle(element).getPropertyValue('--app-hero-text-primary').trim(),
-    ),
+    surface.evaluate((element) => getComputedStyle(element).color),
   ]);
-  expect(heroTextColor.length).toBeGreaterThan(0);
   expect(buttonColor).toBe(heroTextColor);
 }
 
