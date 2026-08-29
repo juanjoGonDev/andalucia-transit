@@ -8,7 +8,7 @@ import {
   AppLayoutContentRegistration,
   AppLayoutContext,
   AppLayoutContextSnapshot,
-  AppLayoutFooterVisibility,
+  AppLayoutFooterMode,
   AppLayoutTabIdentifier,
   AppLayoutTabRegistration
 } from '@shared/layout/app-layout-context.token';
@@ -42,7 +42,7 @@ class AppLayoutContextStub implements AppLayoutContext {
       activeContent: null,
       activeNavigationKey: null,
       activeSurface: null,
-      activeFooterVisibility: null,
+      activeFooterMode: null,
       tabs: [],
       activeTab: null
     };
@@ -57,14 +57,14 @@ class AppLayoutContextStub implements AppLayoutContext {
       appLayoutContent
       [appLayoutContentNavigationKey]="navigationKey"
       [appLayoutContentSurface]="surface"
-      [appLayoutContentFooter]="footerVisibility"
+      [appLayoutContentFooter]="footerMode"
     ></section>
   `
 })
 class HostComponent {
   navigationKey: string | null = 'navigation.home';
   surface: 'hero' | 'plain' = 'hero';
-  footerVisibility: AppLayoutFooterVisibility = 'visible';
+  footerMode: AppLayoutFooterMode = 'flow';
 }
 
 describe('AppLayoutContentDirective', () => {
@@ -104,18 +104,18 @@ describe('AppLayoutContentDirective', () => {
     expect(context.registrations.at(-1)?.surface).toBe('plain');
   });
 
-  it('registers visible footer content by default', () => {
+  it('registers flow footer placement by default', () => {
     expect(context.registrations.length).toBe(1);
     expect(context.registrations[0].navigationKey).toBe('navigation.home');
     expect(context.registrations[0].surface).toBe('hero');
-    expect(context.registrations[0].footerVisibility).toBe('visible');
+    expect(context.registrations[0].footerMode).toBe('flow');
   });
 
-  it('re-registers content when the footer visibility changes', () => {
-    fixture.componentInstance.footerVisibility = 'hidden';
+  it('re-registers content when footer placement changes', () => {
+    fixture.componentInstance.footerMode = 'overlay';
     fixture.detectChanges();
 
-    expect(context.registrations.at(-1)?.footerVisibility).toBe('hidden');
+    expect(context.registrations.at(-1)?.footerMode).toBe('overlay');
   });
 
   it('unregisters content using the layout context', () => {
