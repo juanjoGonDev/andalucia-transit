@@ -8,13 +8,13 @@ export type AppLayoutNavigationKey = string;
 
 export type AppLayoutSurface = 'hero' | 'plain';
 
-export type AppLayoutFooterVisibility = 'visible' | 'hidden';
+export type AppLayoutFooterMode = 'flow' | 'overlay';
 
 export interface AppLayoutContentRegistration {
   readonly identifier: AppLayoutContentIdentifier;
   readonly navigationKey?: AppLayoutNavigationKey | null;
   readonly surface: AppLayoutSurface;
-  readonly footerVisibility?: AppLayoutFooterVisibility;
+  readonly footerMode?: AppLayoutFooterMode;
 }
 
 export type AppLayoutTabIdentifier = string;
@@ -28,7 +28,7 @@ export interface AppLayoutContextSnapshot {
   readonly activeContent: AppLayoutContentIdentifier | null;
   readonly activeNavigationKey: AppLayoutNavigationKey | null;
   readonly activeSurface: AppLayoutSurface | null;
-  readonly activeFooterVisibility: AppLayoutFooterVisibility | null;
+  readonly activeFooterMode: AppLayoutFooterMode | null;
   readonly tabs: readonly AppLayoutTabRegistration[];
   readonly activeTab: AppLayoutTabIdentifier | null;
 }
@@ -47,7 +47,7 @@ const createNoopAppLayoutContext = (): AppLayoutContext => {
     activeContent: null,
     activeNavigationKey: null,
     activeSurface: null,
-    activeFooterVisibility: null,
+    activeFooterMode: null,
     tabs: [],
     activeTab: null
   };

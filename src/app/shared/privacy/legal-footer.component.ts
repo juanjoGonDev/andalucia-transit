@@ -2,7 +2,11 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { RouterLink } from '@angular/router';
 import { LanguageService } from '@core/services/language.service';
 import { LEGAL_ROUTE_SEGMENTS, getLegalUiCopy } from '@features/legal/legal-shell-content';
-import { APP_LAYOUT_CONTEXT, AppLayoutSurface } from '@shared/layout/app-layout-context.token';
+import {
+  APP_LAYOUT_CONTEXT,
+  AppLayoutFooterMode,
+  AppLayoutSurface
+} from '@shared/layout/app-layout-context.token';
 
 @Component({
   selector: 'app-legal-footer',
@@ -22,8 +26,8 @@ export class LegalFooterComponent {
   protected readonly activeSurface = computed<AppLayoutSurface>(
     () => this.layoutContext.snapshot().activeSurface ?? 'plain'
   );
-  protected readonly visible = computed(
-    () => this.layoutContext.snapshot().activeFooterVisibility !== 'hidden'
+  protected readonly footerMode = computed<AppLayoutFooterMode>(
+    () => this.layoutContext.snapshot().activeFooterMode ?? 'flow'
   );
   protected readonly privacyRoute = [
     '/',

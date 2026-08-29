@@ -4,14 +4,14 @@ import {
   AppLayoutContentRegistration,
   AppLayoutContext,
   AppLayoutContextSnapshot,
-  AppLayoutFooterVisibility,
+  AppLayoutFooterMode,
   AppLayoutNavigationKey,
   AppLayoutSurface,
   AppLayoutTabIdentifier,
   AppLayoutTabRegistration
 } from '@shared/layout/app-layout-context.token';
 
-const DEFAULT_FOOTER_VISIBILITY: AppLayoutFooterVisibility = 'visible';
+const DEFAULT_FOOTER_MODE: AppLayoutFooterMode = 'flow';
 
 @Injectable()
 export class AppLayoutContextStore implements AppLayoutContext {
@@ -24,15 +24,15 @@ export class AppLayoutContextStore implements AppLayoutContext {
   private readonly surfaces = signal<ReadonlyMap<AppLayoutContentIdentifier, AppLayoutSurface>>(
     new Map()
   );
-  private readonly footerVisibilities = signal<
-    ReadonlyMap<AppLayoutContentIdentifier, AppLayoutFooterVisibility>
-  >(new Map());
+  private readonly footerModes = signal<ReadonlyMap<AppLayoutContentIdentifier, AppLayoutFooterMode>>(
+    new Map()
+  );
 
   private readonly currentSnapshot: Signal<AppLayoutContextSnapshot> = computed(() => ({
     activeContent: this.activeContent(),
     activeNavigationKey: this.resolveActiveNavigationKey(),
     activeSurface: this.resolveActiveSurface(),
-    activeFooterVisibility: this.resolveActiveFooterVisibility(),
+    activeFooterMode: this.resolveActiveFooterMode(),
     tabs: this.tabs(),
     activeTab: this.activeTab()
   }));
@@ -47,12 +47,9 @@ export class AppLayoutContextStore implements AppLayoutContext {
     nextSurfaces.set(registration.identifier, registration.surface);
     this.surfaces.set(nextSurfaces);
 
-    const nextFooterVisibilities = new Map(this.footerVisibilities());
-    nextFooterVisibilities.set(
-      registration.identifier,
-      registration.footerVisibility ?? DEFAULT_FOOTER_VISIBILITY
-    );
-    this.footerVisibilities.set(nextFooterVisibilities);
+    const nextFooterModes = new Map(this.footerModes());
+    nextFooterModes.set(registration.identifier, registration.footerMode ?? DEFAULT_FOOTER_MODE);
+    this.footerModes.set(nextFooterModes);
 
     this.activeContent.set(registration.identifier);
   }
@@ -66,9 +63,9 @@ export class AppLayoutContextStore implements AppLayoutContext {
     nextSurfaces.delete(identifier);
     this.surfaces.set(nextSurfaces);
 
-    const nextFooterVisibilities = new Map(this.footerVisibilities());
-    nextFooterVisibilities.delete(identifier);
-    this.footerVisibilities.set(nextFooterVisibilities);
+    const nextFooterModes = new Map(this.footerModes());
+    nextFooterModes.delete(identifier);
+    this.footerModes.set(nextFooterModes);
 
     if (this.activeContent() !== identifier) {
       return;
@@ -132,13 +129,13 @@ export class AppLayoutContextStore implements AppLayoutContext {
     return this.surfaces().get(activeIdentifier) ?? null;
   }
 
-  private resolveActiveFooterVisibility(): AppLayoutFooterVisibility | null {
+  private resolveActiveFooterMode(): AppLayoutFooterMode | null {
     const activeIdentifier = this.activeContent();
 
     if (!activeIdentifier) {
       return null;
     }
 
-    return this.footerVisibilities().get(activeIdentifier) ?? DEFAULT_FOOTER_VISIBILITY;
+    return this.footerModes().get(activeIdentifier) ?? DEFAULT_FOOTER_MODE;
   }
 }
