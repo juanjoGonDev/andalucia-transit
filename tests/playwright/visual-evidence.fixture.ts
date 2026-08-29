@@ -33,12 +33,15 @@ interface ExactLineCatalogEntry {
 
 export const test = base.extend({
   page: async ({ page }, use) => {
-    if (EVIDENCE_DIR && EXACT_VISUAL_REGRESSION) {
+    if (EVIDENCE_DIR) {
       await page.addInitScript(() => {
         history.scrollRestoration = 'manual';
       });
       await page.clock.setFixedTime(FIXED_VISUAL_TIME);
-      await installExactVisualDataRoutes(page);
+
+      if (EXACT_VISUAL_REGRESSION) {
+        await installExactVisualDataRoutes(page);
+      }
     }
 
     await use(page);
