@@ -16,9 +16,12 @@ Finish the Province discovery filter requested for the Lines directory on PR #36
 - Product head `cbd6de9b795e208bb3c94c0972855a0371a06514` passed CI #1151 (`33221835240`) including lint, script tests, 455 Angular tests, deploy-pipeline checks and the aggregate gate.
 - Publish PR visual evidence #816 (`33221835257`) passed with the Province browser scenarios included in the blocking populated suite. The retained artifact is `9705510096`, digest `sha256:e10af518714b0207a9b629c7855e7c89c553aa018b0f337285a19dc214c5afc8`.
 - Visual regression baseline #43 (`33221835281`) rendered both the immutable baseline and product head successfully. Thirty-four of 36 screenshots matched exactly; only the expected Lines mobile and desktop screenshots changed after adding the visible Province control. The retained expected/actual/diff artifact is `9705551827`, digest `sha256:7bf595658bdcd437980c315d8423a0ffa7f613d62f215edb6432e9e19acc850c`.
-- Exact comparison reported 484,991 differing pixels in total: mobile Lines changed dimensions from 390×2536 to 390×2620 with 475,230 differing pixels, while desktop Lines kept 1440×1594 and contained 9,761 differing pixels. Every non-Lines screenshot remained byte-for-byte RGBA identical.
-- Current-head visual regression #46 (`33222285782`) reproduces the same isolated two-file Province delta on `db212ef70d2b072cdb5468eefa63c02fcb4ac7df`.
-- Manual review of the 390×844 current-head Lines capture identified a directly related mobile regression before baseline approval: adding Province increases the filter panel height enough that the fixed bottom navigation covers the `Cerca de mí` action in the initial viewport. The reviewed baseline shows the action immediately above the navigation, so accepting the new baseline without correcting this would normalize a regression introduced by the Province control.
+- Manual review of visual-regression head `db212ef70d2b072cdb5468eefa63c02fcb4ac7df` identified a directly related mobile regression before baseline approval: adding Province increased the filter panel height enough that the fixed bottom navigation covered the `Cerca de mí` action in the initial viewport. The reviewed baseline showed the action immediately above the navigation, so accepting that state would have normalized a regression introduced by the Province control.
+- Corrected product head `335eb3fdab65f5023284ff275c23b60e4033ee7b` passed CI #1159 (`33239896487`).
+- Publish PR visual evidence #832 (`33239896362`) passed on that exact corrected head. Its populated browser suite includes the Province scenario and verifies that `Cerca de mí` is visible, inside the initial 390×844 viewport and hit-testable rather than covered by the fixed bottom navigation. The retained artifact is `9711064529`, digest `sha256:35b90ef1358d436dcae04decef593941a9f6627d9b894578da03775ba843dae2`.
+- Manual review of the exact-head mobile and desktop Lines screenshots confirms that the mobile proximity action is now exposed immediately after line search and that the desktop action remains a single-line control in the existing second-row position.
+- Visual regression baseline #51 (`33239896365`) rendered both the immutable baseline and corrected head successfully, compared every required pixel and retained evidence. Enforcement alone failed because the reviewed baseline still predates the Province UI. Thirty-four of 36 screenshots remain exact matches; only Lines mobile and desktop differ. The retained expected/actual/diff artifact is `9711090257`, digest `sha256:515b6c94b7bcb108fca7da4a36eceebd19d122edf0277286fcc4d88bbb7b0256`.
+- The corrected exact comparison reports 491,192 differing pixels in total: mobile Lines changes dimensions from 390×2536 to 390×2620 with 481,431 differing pixels, while desktop Lines remains 1440×1594 with 9,761 differing pixels. Every non-Lines screenshot remains byte-for-byte RGBA identical.
 
 ## Decision
 
@@ -32,7 +35,7 @@ Finish the Province discovery filter requested for the Lines directory on PR #36
 8. Preserve explicit Near me behavior independently of province filtering.
 9. Keep deterministic browser coverage for a province shared by more than one consortium so aggregation cannot regress to a one-to-one province/area assumption.
 10. Do not advance `.github/visual-baseline.json` automatically. The exact gate is doing its job by blocking the intentional Lines visual change until that new contract is explicitly reviewed.
-11. Before baseline approval, keep the mobile `Cerca de mí` action directly operable in the initial viewport. Preserve the existing desktop filter arrangement, but on narrow layouts place the proximity action immediately after line search and before the geographic hierarchy so the fixed bottom navigation does not cover it.
+11. Keep the mobile `Cerca de mí` action directly operable in the initial viewport. Preserve the existing desktop filter arrangement, but on narrow layouts place the proximity action immediately after line search and before the geographic hierarchy so the fixed bottom navigation does not cover it.
 
 ## Acceptance
 
@@ -49,21 +52,24 @@ Finish the Province discovery filter requested for the Lines directory on PR #36
 - [x] Playwright covers multi-consortium province filtering, URL state and responsive no-overflow behavior in the blocking PR evidence workflow.
 - [x] Normal visual evidence is published for the changed Lines UI.
 - [x] Exact visual regression was evaluated with zero tolerance against the reviewed baseline and isolated the intentional change to Lines only.
-- [ ] Mobile Province coverage proves `Cerca de mí` is inside the initial 390×844 viewport and is not covered by the fixed bottom navigation.
+- [x] Mobile Province coverage proves `Cerca de mí` is inside the initial 390×844 viewport and is not covered by the fixed bottom navigation.
 - [ ] Advance the reviewed visual baseline after explicit review of the corrected Lines Province UI. **Requires user approval; not authorized.**
 
 ## Checks
 
-Repository-native validation on `cbd6de9b795e208bb3c94c0972855a0371a06514`:
+Repository-native validation on corrected product head `335eb3fdab65f5023284ff275c23b60e4033ee7b`:
 
-- `pnpm run lint`: passed through CI #1151.
+- CI #1159 (`33239896487`): passed.
+- Install dependencies: passed.
+- `pnpm run lint`: passed.
 - `pnpm run test:scripts`: passed, including canonical consortium province validation and malformed-source rejection.
-- Angular suite: 455/455 passed through CI #1151.
-- Deploy-pipeline/build checks: passed through CI #1151.
-- Focused Lines Province Playwright coverage: passed as part of the 38 populated scenarios in Publish PR visual evidence #816.
-- Deterministic empty-state browser checks and screenshot publication: passed in #816.
-- Reviewed-baseline exact visual regression: comparison completed in #43 and correctly failed enforcement because the reviewed baseline predates the visible Province selector; 34/36 screenshots are exact matches and both changed files are Lines screenshots.
-- Current-head exact comparison on `db212ef70d2b072cdb5468eefa63c02fcb4ac7df`: 36 compared, 34 exact matches, 2 expected Lines changes and 484,991 differing pixels. Enforcement remains blocked pending reviewed-baseline approval.
+- Angular tests and aggregate CI gate: passed.
+- Deploy-pipeline/build checks: passed.
+- Publish PR visual evidence #832 (`33239896362`): passed.
+- Province Playwright coverage: passed as part of the blocking populated responsive/accessibility suite, including explicit initial-viewport and hit-test coverage for the mobile `Cerca de mí` action.
+- Deterministic empty-state browser checks and screenshot publication: passed in #832.
+- Exact visual regression #51 (`33239896365`): baseline render, head render, zero-tolerance comparison and evidence retention passed; enforcement correctly failed because baseline approval is still pending.
+- Exact comparison: 36 compared, 34 exact matches, 2 Lines-only changes and 491,192 differing pixels.
 
 Known pre-existing non-blocking build warnings remain separate technical debt: bundle/style budget warnings and the `@messageformat/core` CommonJS warning.
 
@@ -73,11 +79,11 @@ Known pre-existing non-blocking build warnings remain separate technical debt: b
 - A province may contain multiple CTAN consortia. The implementation groups by canonical province value rather than assuming one province equals one consortium; Cádiz coverage exercises consortia 2 and 5.
 - Snapshot refresh gains one consortium-detail request per consortium. Failure is preferable to publishing an incomplete province dimension.
 - The new visible filter intentionally changes the reviewed Lines screenshots. Moving the baseline without review would convert a valid protection into self-approval.
-- A fixed bottom navigation can obscure viewport content even when document overflow is correct. Province-specific mobile coverage must verify visibility and hit testing, not only horizontal overflow.
+- Fixed bottom navigation can obscure viewport content even when document overflow is correct. Province-specific mobile coverage now protects the proximity action through both viewport bounds and center-point hit testing.
 
 ## Rollback
 
-Revert the province filter commits. The existing consortium/municipality/nucleus/proximity directory remains functional because province is additive catalog metadata and does not alter line identity or route APIs.
+Revert the province filter commits and the mobile filter-order follow-up. The existing consortium/municipality/nucleus/proximity directory remains functional because province is additive catalog metadata and does not alter line identity or route APIs.
 
 ## Delivery
 
@@ -85,4 +91,4 @@ Continue on PR #36 and branch `codex/refactorizar-vista-segun-diseno-proporciona
 
 ## Status
 
-Province behavior is implemented and the former source-data blocker is resolved by CTAN's documented consortium-detail `provincia` field. Core CI and normal browser evidence are green. Exact visual comparison is correctly blocking baseline movement. Before requesting baseline approval, fix and validate the directly related mobile `Cerca de mí` occlusion found during exact screenshot review.
+Province behavior and the directly related mobile proximity regression are implemented and validated. Core CI and normal exact-head browser evidence are green. The zero-tolerance visual comparator isolates the remaining visual delta to the two intended Lines screenshots. The only remaining Province-specific delivery gate is explicit approval to advance the reviewed visual baseline.
