@@ -89,6 +89,7 @@ describe('AppLayoutContentDirective', () => {
     expect(element.classList.contains('app-layout__surface')).toBeTrue();
     expect(element.classList.contains('app-layout__surface--hero')).toBeTrue();
     expect(element.classList.contains('app-layout__surface--plain')).toBeFalse();
+    expect(element.classList.contains('app-layout__surface--immersive')).toBeFalse();
   });
 
   it('switches to the plain surface variant when configured', () => {
@@ -111,11 +112,26 @@ describe('AppLayoutContentDirective', () => {
     expect(context.registrations[0].footerMode).toBe('flow');
   });
 
-  it('re-registers content when footer placement changes', () => {
+  it('makes overlay content an immersive viewport surface', () => {
     fixture.componentInstance.footerMode = 'overlay';
     fixture.detectChanges();
 
+    const element = fixture.debugElement.query(By.css('section')).nativeElement as HTMLElement;
+
     expect(context.registrations.at(-1)?.footerMode).toBe('overlay');
+    expect(element.classList.contains('app-layout__surface--immersive')).toBeTrue();
+  });
+
+  it('removes immersive viewport behavior when returning to flow placement', () => {
+    fixture.componentInstance.footerMode = 'overlay';
+    fixture.detectChanges();
+    fixture.componentInstance.footerMode = 'flow';
+    fixture.detectChanges();
+
+    const element = fixture.debugElement.query(By.css('section')).nativeElement as HTMLElement;
+
+    expect(context.registrations.at(-1)?.footerMode).toBe('flow');
+    expect(element.classList.contains('app-layout__surface--immersive')).toBeFalse();
   });
 
   it('unregisters content using the layout context', () => {
