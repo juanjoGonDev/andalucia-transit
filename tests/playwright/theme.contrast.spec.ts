@@ -4,6 +4,7 @@ const BASE_URL = process.env.E2E_BASE_URL;
 const HOME_PATH = '/';
 const ROUTE_SEARCH_PATH = '/routes';
 const MAP_PATH = '/map';
+const LINES_PATH = '/lines';
 const NEWS_PATH = '/news';
 const NORMAL_TEXT_CONTRAST_THRESHOLD = 4.5;
 const LARGE_TEXT_CONTRAST_THRESHOLD = 3;
@@ -197,6 +198,29 @@ test.describe('rendered theme contrast', () => {
     const linesInspector = page.locator('.map__inspector--lines');
     await linesInspector.locator(':scope > summary').click();
     await expectRenderedContrast(linesInspector.locator('.map__panel-title'), 'map lines heading');
+  });
+
+  test('keeps Lines pagination labels readable on the hero gradient', async ({ page }) => {
+    await open(page, LINES_PATH);
+
+    const pagination = page.locator('.lines__pagination');
+    await expect(pagination).toBeVisible({ timeout: 15_000 });
+    const actions = pagination.locator('.app-outline-button');
+    await expect(actions).toHaveCount(2);
+
+    const previous = actions.first();
+    const next = actions.last();
+    await expect(previous).toContainText('Anterior');
+    await expect(next).toContainText('Siguiente');
+    await expect(previous.locator('.material-symbols-outlined')).toBeVisible();
+    await expect(next.locator('.material-symbols-outlined')).toBeVisible();
+    await expectRenderedGradientContrast(next, page.locator('.lines'), 'lines next pagination action');
+
+    const [previousStyle, nextStyle] = await Promise.all([
+      readRenderedTextStyle(previous),
+      readRenderedTextStyle(next),
+    ]);
+    expect(previousStyle.foreground).toBe(nextStyle.foreground);
   });
 
   test('keeps populated news card metadata and summary WCAG AA compliant', async ({ page }) => {
