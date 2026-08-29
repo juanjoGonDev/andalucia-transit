@@ -1,6 +1,6 @@
 # Lines discovery and route-layout execution ledger
 
-Companion execution ledger for `.agents/specs/2026-08-28-lines-discovery-route-layout.md` and `.agents/specs/2026-08-28-route-workspace-schedule-disclosure.md`.
+Companion execution ledger for `.agents/specs/2026-08-28-lines-discovery-route-layout.md`, `.agents/specs/2026-08-28-route-workspace-schedule-disclosure.md` and `.agents/specs/2026-08-29-lines-province-filter.md`.
 
 ## Tracking rules
 
@@ -8,7 +8,7 @@ Companion execution ledger for `.agents/specs/2026-08-28-lines-discovery-route-l
 - Keep unsupported product claims blocked rather than inferred.
 - Do not auto-accept visual baselines.
 - Preserve unrelated PR work; no force-push.
-- Do not merge, release or deploy without explicit approval.
+- Do not merge, release, deploy or advance a reviewed baseline without explicit approval.
 - Keep final documentation-head workflow IDs in the PR body rather than creating an endless documentation-only validation chain.
 
 ## Implemented
@@ -25,6 +25,7 @@ Companion execution ledger for `.agents/specs/2026-08-28-lines-discovery-route-l
 
 - [x] Canonical line records are consumed through the line-directory owner.
 - [x] Line code/name query is implemented.
+- [x] Province filter is implemented from canonical CTAN consortium metadata.
 - [x] Transport-area/consortium filter is implemented.
 - [x] Municipality filter is implemented.
 - [x] Nucleus filter is implemented.
@@ -37,10 +38,16 @@ Companion execution ledger for `.agents/specs/2026-08-28-lines-discovery-route-l
 
 ### Province semantics
 
-- [x] Catalog/stop contracts were audited for province availability.
-- [x] No authoritative province field/mapping was found in the current canonical contracts.
-- [x] Province filter is therefore not shipped using guessed display-name mappings.
-- [ ] Add province filter only after an authoritative source is identified, documented and tested. **Blocked by source data.**
+- [x] The repository CTAN reference was audited directly instead of relying on the earlier catalog-only audit.
+- [x] `GET /Consorcios/:idConsorcio/consorcio` is the authoritative source and exposes required `provincia`, documented as `Provincia sede del Consorcio`.
+- [x] Snapshot consortium summaries fetch and validate `provincia`; missing/blank values fail snapshot generation.
+- [x] Province is persisted once on the consortium catalog entry rather than duplicated on line records.
+- [x] Lines derive province membership through canonical `consortiumId`; display-name and municipality inference remain rejected.
+- [x] Unique Province options are derived from canonical consortium metadata.
+- [x] Province selection is URL-backed and survives reload/navigation restoration.
+- [x] Province and narrower Area state are mutually reconciled so contradictory hierarchy state is not retained.
+- [x] Multi-consortium aggregation is browser-covered with Cádiz spanning consortia 2 and 5.
+- [x] Product semantics remain bounded to the CTAN consortium province; they do not claim geometric containment of the complete route.
 
 ### Shared route map and Line Detail
 
@@ -84,6 +91,10 @@ Companion execution ledger for `.agents/specs/2026-08-28-lines-discovery-route-l
 ### Layout/browser coverage
 
 - [x] Lines deterministic browser coverage includes 320×568, 390×844 and 1440×900.
+- [x] Province-specific browser coverage runs in the blocking PR visual-evidence workflow.
+- [x] Province coverage proves one selected province can aggregate multiple CTAN consortia.
+- [x] Province coverage proves URL restoration and Province/Area hierarchy reconciliation.
+- [x] Province coverage protects mobile no-horizontal-overflow behavior.
 - [x] Line Detail deterministic browser coverage includes 390×844, 768×1024 and 1440×900.
 - [x] Route Search expanded-preview deterministic coverage includes 390×844 and 1440×900.
 - [x] No-horizontal-document-overflow assertions protect affected Lines, Line Detail and expanded Route Search preview flows.
@@ -96,49 +107,64 @@ Companion execution ledger for `.agents/specs/2026-08-28-lines-discovery-route-l
 - [x] Map/list selection browser test exercises the Leaflet Canvas renderer contract.
 - [x] Deterministic OSM tile replacement prevents remote tile variance from dominating acceptance evidence.
 
-### Exact product-head evidence
+### Province behavior evidence
 
-Validated product head: `b5b01261c383a4ac29f109065d836618b733bde1`.
+Validated behavior head: `cbd6de9b795e208bb3c94c0972855a0371a06514`.
 
-- [x] CI #1106 / run `33203063151` succeeded.
+- [x] CI #1151 / run `33221835240` succeeded.
 - [x] Install dependencies succeeded.
 - [x] Lint succeeded.
-- [x] Script tests succeeded.
-- [x] Angular tests succeeded.
+- [x] Script tests succeeded, including CTAN province source validation and malformed-source rejection.
+- [x] Angular tests succeeded: 455/455.
 - [x] Deploy-pipeline checks succeeded.
-- [x] Final aggregate CI check succeeded.
-- [x] Publish PR visual evidence #726 / run `33203063149` succeeded.
+- [x] Final aggregate `Check all ok` succeeded.
+- [x] Publish PR visual evidence #816 / run `33221835257` succeeded.
 - [x] UI quality gates succeeded.
-- [x] Deterministic populated responsive/accessibility checks succeeded, including the reusable Route Search route disclosure coverage.
-- [x] Populated screenshot capture succeeded.
+- [x] Populated Playwright suite succeeded with 38 scenarios, including the Province-specific tests.
 - [x] Deterministic empty-state checks succeeded.
-- [x] Empty screenshot capture succeeded.
+- [x] Populated and empty screenshot capture succeeded.
 - [x] Immutable-head verification succeeded.
-- [x] Evidence artifact publication succeeded.
-- [x] Artifact `pr-36-visual-evidence-b5b01261c383a4ac29f109065d836618b733bde1`, id `9698624271`, digest `sha256:10ddef983b9b24837634d8eea4a5702dbde4e13fc75d915f315d002947c4201c` was published.
+- [x] Normal evidence artifact `pr-36-visual-evidence-cbd6de9b795e208bb3c94c0972855a0371a06514`, id `9705510096`, digest `sha256:e10af518714b0207a9b629c7855e7c89c553aa018b0f337285a19dc214c5afc8` was published.
 
 ## Visual regression architecture
 
 - [x] Exact-head reviewer-facing screenshots are deterministic and published as artifacts.
 - [x] Critical geometry/layout invariants are blocking browser assertions.
-- [ ] Introduce a trustworthy reviewed-baseline pixel-diff gate that does not self-seed expected images on clean CI checkouts.
+- [x] A trustworthy reviewed-baseline pixel-diff gate renders an immutable approved commit and the PR head independently.
+- [x] The baseline pointer is an immutable ancestor commit and cannot self-seed from the current head.
+- [x] The current-head deterministic harness is applied to both applications.
+- [x] Exact RGBA comparison uses zero tolerance and retains expected/actual/diff evidence.
+- [x] Clock, animation/caret, pointer/scroll state and Leaflet/tile variance are stabilized only for the exact regression path.
+- [x] Normal reviewer-facing evidence remains independent from exact-regression determinization.
 
-Current decision: use an immutable approved commit SHA as the baseline candidate, render `expected` from that commit and `actual` from the PR head, compare them, retain expected/actual/diff artifacts and change the baseline SHA only after reviewed approval.
+### Province visual-delta evidence
 
-**Status:** blocked pending explicit approval because this is a material CI architecture change. Do not implement it silently and do not treat a self-seeded `0 diff` result as regression evidence.
+Visual regression baseline #43 / run `33221835281` on `cbd6de9b795e208bb3c94c0972855a0371a06514`:
+
+- [x] Reviewed baseline `4f8ec97f59dab58a04c07a6aa6995f4fc4e6d9f1` validated as an immutable ancestor.
+- [x] Baseline application passed 36/36 harness scenarios without retries.
+- [x] Head application passed 36/36 harness scenarios without retries.
+- [x] 34/36 required screenshots are byte-for-byte RGBA identical.
+- [x] The only changed files are Lines mobile and Lines desktop, matching the surface intentionally changed by the Province selector.
+- [x] Mobile Lines changes from 390×2536 to 390×2620 and reports 475,230 differing pixels.
+- [x] Desktop Lines remains 1440×1594 and reports 9,761 differing pixels.
+- [x] Total exact difference is 484,991 pixels across exactly two files.
+- [x] Expected/actual/diff artifact `pr-36-visual-regression-cbd6de9b795e208bb3c94c0972855a0371a06514`, id `9705551827`, digest `sha256:7bf595658bdcd437980c315d8423a0ffa7f613d62f215edb6432e9e19acc850c` was retained.
+- [x] Enforcement failed rather than weakening thresholds, masking Lines or moving the baseline automatically.
+- [ ] Advance `.github/visual-baseline.json` after explicit visual review of the new Lines Province UI. **Requires user approval; not authorized.**
 
 ## Documentation and delivery
 
-- [x] Main follow-up specification reflects observed implementation/validation state.
-- [x] Reusable route-workspace/schedule-disclosure specification records product-head evidence.
+- [x] Main follow-up specification reflects current Province source truth and baseline architecture.
+- [x] Province-specific specification records CTAN evidence, implementation ownership and validation.
+- [x] Reusable route-workspace/schedule-disclosure specification records its product-head evidence.
 - [x] This checklist is an evidence ledger rather than a stale pending-task list.
 - [ ] Merge PR #36. **Requires explicit user approval; not authorized.**
 - [ ] Release/deploy. **Requires explicit user approval; not authorized.**
 
-Final documentation-head CI and visual-evidence run IDs are recorded in the PR body after this documentation commit completes. This avoids a self-referential follow-up commit solely to mark its own workflow result.
+Final documentation-head CI and visual-evidence run IDs belong in the PR body after the documentation commits complete. This avoids a self-referential follow-up commit solely to mark its own workflow result.
 
 ## Remaining blockers
 
-1. **Province filter:** authoritative province mapping is not present in the audited canonical source contracts.
-2. **Reviewed-baseline pixel diff:** architecture is defined, but implementation requires explicit approval for the CI design change.
-3. **Merge/release/deploy:** intentionally not performed without approval.
+1. **Reviewed Lines visual baseline:** the visible Province selector is an intentional UI change and exact regression enforcement correctly remains red until explicit baseline review/approval.
+2. **Merge/release/deploy:** intentionally not performed without approval.
