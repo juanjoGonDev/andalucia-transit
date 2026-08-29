@@ -266,11 +266,22 @@
 }
 
 .lines__pagination {
+  --app-outline-button-color: var(--app-hero-text-primary);
+  --app-outline-button-border: var(--app-hero-border-subtle);
+  --app-outline-button-color-hover: var(--app-hero-text-primary);
+  --app-outline-button-border-hover: var(--app-hero-text-primary);
+  --app-outline-button-background-hover: var(--app-hero-surface-overlay);
+
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-md);
   padding-block: var(--space-sm);
+}
+
+.lines__pagination .app-outline-button:disabled {
+  cursor: not-allowed;
+  opacity: var(--opacity-disabled);
 }
 
 .lines__page-status {
