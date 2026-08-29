@@ -24,6 +24,10 @@ const POPULATED_SPECS = Object.freeze([
   'tests/playwright/theme.contrast.spec.ts',
   'tests/playwright/visual-interaction-states.spec.ts',
 ]);
+const PRODUCT_CHECK_ONLY_SPECS = new Set([
+  'tests/playwright/map-exploration.spec.ts',
+  'tests/playwright/theme.contrast.spec.ts',
+]);
 
 const POPULATED_CAPTURES = Object.freeze([
   { route: '/', slug: 'home-data' },
@@ -178,8 +182,20 @@ async function verifyEvidenceDirectory(outDir) {
   }
 }
 
-async function verifyPopulatedBehavior(harnessRoot, baseUrl, evidenceRoot) {
-  await runCommand('pnpm', ['exec', 'playwright', 'test', ...POPULATED_SPECS], {
+export function selectPopulatedSpecs(verifyProductChecks = true) {
+  if (verifyProductChecks) {
+    return [...POPULATED_SPECS];
+  }
+  return POPULATED_SPECS.filter((spec) => !PRODUCT_CHECK_ONLY_SPECS.has(spec));
+}
+
+async function runPopulatedEvidenceHarness(
+  harnessRoot,
+  baseUrl,
+  evidenceRoot,
+  verifyProductChecks,
+) {
+  await runCommand('pnpm', ['exec', 'playwright', 'test', ...selectPopulatedSpecs(verifyProductChecks)], {
     cwd: harnessRoot,
     env: {
       E2E_BASE_URL: baseUrl,
@@ -230,9 +246,7 @@ export async function captureEvidence({
   try {
     app = startApplication(applicationRoot, 'data', port);
     await waitForReady(app, `${baseUrl}/`);
-    if (verifyProductChecks) {
-      await verifyPopulatedBehavior(harnessRoot, baseUrl, evidenceRoot);
-    }
+    await runPopulatedEvidenceHarness(harnessRoot, baseUrl, evidenceRoot, verifyProductChecks);
     await captureRoutes(
       { harnessRoot, outDir: evidenceRoot, baseUrl },
       POPULATED_CAPTURES,
