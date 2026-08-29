@@ -12,6 +12,7 @@ const MAXIMUM_MOBILE_PANEL_RATIO = 0.45;
 const MINIMUM_DESKTOP_PANEL_START_RATIO = 0.55;
 const MINIMUM_SEARCH_CODE_LENGTH = 2;
 const MINIMUM_TOUCH_TARGET_PX = 44;
+const VIEWPORT_EDGE_TOLERANCE_PX = 1;
 const CANVAS_HASH_OFFSET_BASIS = 2166136261;
 const CANVAS_HASH_PRIME = 16777619;
 const TARGET_STOP_NAME = 'La Gangosa';
@@ -350,8 +351,10 @@ test.describe('network map exploration', () => {
     const mapSurface = page.locator('.map__canvas');
     const searchShell = page.locator('.map__search-shell');
     const controls = page.locator('.map__controls');
+    const navigation = page.locator('.shell-actions__shell');
 
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
+    await expect(navigation).toBeVisible();
     await openMapSearch(page);
     await expect(controls).toBeVisible();
     const panel = await openNearbyInspector(page);
@@ -361,17 +364,26 @@ test.describe('network map exploration', () => {
     const mapBox = await mapSurface.boundingBox();
     const searchBox = await searchShell.boundingBox();
     const controlsBox = await controls.boundingBox();
+    const navigationBox = await navigation.boundingBox();
 
     expect(workspaceBox).not.toBeNull();
     expect(panelBox).not.toBeNull();
     expect(mapBox).not.toBeNull();
     expect(searchBox).not.toBeNull();
     expect(controlsBox).not.toBeNull();
+    expect(navigationBox).not.toBeNull();
 
-    if (!workspaceBox || !panelBox || !mapBox || !searchBox || !controlsBox) {
+    if (!workspaceBox || !panelBox || !mapBox || !searchBox || !controlsBox || !navigationBox) {
       return;
     }
 
+    expect(
+      Math.abs(workspaceBox.y + workspaceBox.height - DESKTOP_VIEWPORT.height),
+    ).toBeLessThanOrEqual(VIEWPORT_EDGE_TOLERANCE_PX);
+    expect(navigationBox.y).toBeLessThan(workspaceBox.y + workspaceBox.height);
+    expect(panelBox.y + panelBox.height).toBeLessThanOrEqual(
+      navigationBox.y + VIEWPORT_EDGE_TOLERANCE_PX,
+    );
     expect(mapBox.width).toBeGreaterThanOrEqual(workspaceBox.width - 1);
     expect(mapBox.height).toBeGreaterThanOrEqual(workspaceBox.height - 1);
     expect(searchBox.x).toBeGreaterThanOrEqual(mapBox.x);
@@ -386,6 +398,7 @@ test.describe('network map exploration', () => {
     await page.setViewportSize(MOBILE_VIEWPORT);
     await page.goto(mapUrl);
     await expect(mapSurface).not.toHaveAttribute('aria-busy', 'true', { timeout: 15_000 });
+    await expect(navigation).toBeVisible();
     await openMapSearch(page);
     const mobilePanel = await openNearbyInspector(page);
 
@@ -393,15 +406,32 @@ test.describe('network map exploration', () => {
     const mobileMapBox = await mapSurface.boundingBox();
     const mobilePanelBox = await mobilePanel.boundingBox();
     const mobileSearchBox = await searchShell.boundingBox();
+    const mobileNavigationBox = await navigation.boundingBox();
     expect(mobileWorkspaceBox).not.toBeNull();
     expect(mobileMapBox).not.toBeNull();
     expect(mobilePanelBox).not.toBeNull();
     expect(mobileSearchBox).not.toBeNull();
+    expect(mobileNavigationBox).not.toBeNull();
 
-    if (!mobileWorkspaceBox || !mobileMapBox || !mobilePanelBox || !mobileSearchBox) {
+    if (
+      !mobileWorkspaceBox ||
+      !mobileMapBox ||
+      !mobilePanelBox ||
+      !mobileSearchBox ||
+      !mobileNavigationBox
+    ) {
       return;
     }
 
+    expect(
+      Math.abs(mobileWorkspaceBox.y + mobileWorkspaceBox.height - MOBILE_VIEWPORT.height),
+    ).toBeLessThanOrEqual(VIEWPORT_EDGE_TOLERANCE_PX);
+    expect(mobileNavigationBox.y).toBeLessThan(
+      mobileWorkspaceBox.y + mobileWorkspaceBox.height,
+    );
+    expect(mobilePanelBox.y + mobilePanelBox.height).toBeLessThanOrEqual(
+      mobileNavigationBox.y + VIEWPORT_EDGE_TOLERANCE_PX,
+    );
     expect(mobileMapBox.height).toBeGreaterThanOrEqual(MINIMUM_MOBILE_MAP_HEIGHT);
     expect(mobileMapBox.height).toBeGreaterThanOrEqual(mobileWorkspaceBox.height - 1);
     expect(mobilePanelBox.y).toBeGreaterThan(mobileMapBox.y + mobileMapBox.height / 2);
