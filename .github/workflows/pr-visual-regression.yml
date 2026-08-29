@@ -92,7 +92,8 @@ jobs:
           node head/scripts/visual/capture-evidence.mjs \
             --workspace baseline \
             --outDir expected \
-            --port 4300
+            --port 4300 \
+            --verifyProductChecks false
 
       - name: Render pull request head
         shell: bash
@@ -101,7 +102,8 @@ jobs:
           node head/scripts/visual/capture-evidence.mjs \
             --workspace head \
             --outDir actual \
-            --port 4200
+            --port 4200 \
+            --verifyProductChecks true
 
       - name: Compare every required pixel
         id: visual_diff

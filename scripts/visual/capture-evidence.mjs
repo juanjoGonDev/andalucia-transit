@@ -178,11 +178,45 @@ async function verifyEvidenceDirectory(outDir) {
   }
 }
 
+async function verifyPopulatedBehavior(harnessRoot, baseUrl, evidenceRoot) {
+  await runCommand('pnpm', ['exec', 'playwright', 'test', ...POPULATED_SPECS], {
+    cwd: harnessRoot,
+    env: {
+      E2E_BASE_URL: baseUrl,
+      E2E_MOCK_MODE: 'data',
+      E2E_EVIDENCE_DIR: evidenceRoot,
+      E2E_EXACT_VISUAL_REGRESSION: 'true',
+    },
+  });
+}
+
+async function verifyEmptyBehavior(harnessRoot, baseUrl) {
+  await runCommand(
+    'pnpm',
+    ['exec', 'playwright', 'test', 'tests/playwright/deterministic-visual-states.spec.ts'],
+    {
+      cwd: harnessRoot,
+      env: { E2E_BASE_URL: baseUrl, E2E_MOCK_MODE: 'empty' },
+    },
+  );
+}
+
+export function parseVerifyProductChecks(value = 'true') {
+  if (value === 'true') {
+    return true;
+  }
+  if (value === 'false') {
+    return false;
+  }
+  throw new Error(`verifyProductChecks must be "true" or "false", received: ${value}`);
+}
+
 export async function captureEvidence({
   workspace,
   outDir,
   port,
   harnessWorkspace = HARNESS_ROOT,
+  verifyProductChecks = true,
 }) {
   const applicationRoot = resolve(workspace);
   const harnessRoot = resolve(harnessWorkspace);
@@ -196,15 +230,9 @@ export async function captureEvidence({
   try {
     app = startApplication(applicationRoot, 'data', port);
     await waitForReady(app, `${baseUrl}/`);
-    await runCommand('pnpm', ['exec', 'playwright', 'test', ...POPULATED_SPECS], {
-      cwd: harnessRoot,
-      env: {
-        E2E_BASE_URL: baseUrl,
-        E2E_MOCK_MODE: 'data',
-        E2E_EVIDENCE_DIR: evidenceRoot,
-        E2E_EXACT_VISUAL_REGRESSION: 'true',
-      },
-    });
+    if (verifyProductChecks) {
+      await verifyPopulatedBehavior(harnessRoot, baseUrl, evidenceRoot);
+    }
     await captureRoutes(
       { harnessRoot, outDir: evidenceRoot, baseUrl },
       POPULATED_CAPTURES,
@@ -213,14 +241,9 @@ export async function captureEvidence({
     await stopApplication(app, `${baseUrl}/`);
     app = startApplication(applicationRoot, 'empty', port);
     await waitForReady(app, `${baseUrl}/`);
-    await runCommand(
-      'pnpm',
-      ['exec', 'playwright', 'test', 'tests/playwright/deterministic-visual-states.spec.ts'],
-      {
-        cwd: harnessRoot,
-        env: { E2E_BASE_URL: baseUrl, E2E_MOCK_MODE: 'empty' },
-      },
-    );
+    if (verifyProductChecks) {
+      await verifyEmptyBehavior(harnessRoot, baseUrl);
+    }
     await captureRoutes(
       { harnessRoot, outDir: evidenceRoot, baseUrl },
       EMPTY_CAPTURES,
@@ -239,21 +262,28 @@ async function main() {
       workspace: { type: 'string' },
       outDir: { type: 'string' },
       port: { type: 'string' },
+      verifyProductChecks: { type: 'string', default: 'true' },
     },
     strict: true,
   });
 
   if (!values.workspace || !values.outDir || !values.port) {
     throw new Error(
-      'Usage: capture-evidence.mjs --workspace <dir> --outDir <dir> --port <number>',
+      'Usage: capture-evidence.mjs --workspace <dir> --outDir <dir> --port <number> [--verifyProductChecks true|false]',
     );
   }
   const port = Number(values.port);
   if (!Number.isSafeInteger(port) || port < 1 || port > 65_535) {
     throw new Error(`Invalid port: ${values.port}`);
   }
+  const verifyProductChecks = parseVerifyProductChecks(values.verifyProductChecks);
 
-  await captureEvidence({ workspace: values.workspace, outDir: values.outDir, port });
+  await captureEvidence({
+    workspace: values.workspace,
+    outDir: values.outDir,
+    port,
+    verifyProductChecks,
+  });
 }
 
 const entryPath = process.argv[1] ? resolve(process.argv[1]) : '';
