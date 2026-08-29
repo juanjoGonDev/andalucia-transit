@@ -214,7 +214,11 @@ test.describe('rendered theme contrast', () => {
     await expect(next).toContainText('Siguiente');
     await expect(previous.locator('.material-symbols-outlined')).toBeVisible();
     await expect(next.locator('.material-symbols-outlined')).toBeVisible();
-    await expectRenderedGradientContrast(next, page.locator('.lines'), 'lines next pagination action');
+    await expectRenderedGradientContrast(
+      next,
+      page.locator('.lines'),
+      'lines next pagination action',
+    );
 
     const [previousStyle, nextStyle] = await Promise.all([
       readRenderedTextStyle(previous),
