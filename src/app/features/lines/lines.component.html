@@ -98,21 +98,21 @@
                   </option>
                 </select>
               </label>
-            </div>
 
-            <div class="lines__filter-actions">
-              <button
-                type="button"
-                class="app-outline-button app-outline-button--compact"
-                [class.lines__near-button--active]="nearMeActive()"
-                [disabled]="locationLoading()"
-                [attr.aria-pressed]="nearMeActive()"
-                [attr.aria-busy]="locationLoading() ? 'true' : null"
-                (click)="useNearMe()"
-              >
-                <span class="material-symbols-outlined" aria-hidden="true">near_me</span>
-                {{ nearMeActive() ? copy().nearMeActive : copy().nearMe }}
-              </button>
+              <div class="lines__filter-actions">
+                <button
+                  type="button"
+                  class="app-outline-button app-outline-button--compact"
+                  [class.lines__near-button--active]="nearMeActive()"
+                  [disabled]="locationLoading()"
+                  [attr.aria-pressed]="nearMeActive()"
+                  [attr.aria-busy]="locationLoading() ? 'true' : null"
+                  (click)="useNearMe()"
+                >
+                  <span class="material-symbols-outlined" aria-hidden="true">near_me</span>
+                  {{ nearMeActive() ? copy().nearMeActive : copy().nearMe }}
+                </button>
+              </div>
             </div>
 
             <p *ngIf="locationError()" class="lines__status lines__status--error" role="alert">
