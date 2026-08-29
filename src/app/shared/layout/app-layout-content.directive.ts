@@ -23,6 +23,7 @@ const APP_LAYOUT_CONTENT_IDENTIFIER_DESCRIPTION = 'app-layout-content';
 const APP_LAYOUT_SURFACE_CLASS = 'app-layout__surface';
 const APP_LAYOUT_SURFACE_HERO_CLASS = 'app-layout__surface--hero';
 const APP_LAYOUT_SURFACE_PLAIN_CLASS = 'app-layout__surface--plain';
+const APP_LAYOUT_SURFACE_IMMERSIVE_CLASS = 'app-layout__surface--immersive';
 
 @Directive({
   selector: '[appLayoutContent]',
@@ -44,6 +45,7 @@ export class AppLayoutContentDirective implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void {
     this.applySurfaceClasses();
+    this.applyFooterModeClasses();
     this.registerContent();
   }
 
@@ -59,11 +61,10 @@ export class AppLayoutContentDirective implements OnInit, OnDestroy, OnChanges {
       shouldRegisterContent = true;
     }
 
-    if (
-      'appLayoutContentFooter' in changes &&
-      !changes['appLayoutContentFooter'].isFirstChange()
-    ) {
-      shouldRegisterContent = true;
+    if ('appLayoutContentFooter' in changes) {
+      this.applyFooterModeClasses();
+      shouldRegisterContent =
+        shouldRegisterContent || !changes['appLayoutContentFooter'].isFirstChange();
     }
 
     if (shouldRegisterContent) {
@@ -100,5 +101,16 @@ export class AppLayoutContentDirective implements OnInit, OnDestroy, OnChanges {
 
     this.renderer.addClass(hostElement, APP_LAYOUT_SURFACE_PLAIN_CLASS);
     this.renderer.removeClass(hostElement, APP_LAYOUT_SURFACE_HERO_CLASS);
+  }
+
+  private applyFooterModeClasses(): void {
+    const hostElement = this.elementRef.nativeElement;
+
+    if (this.appLayoutContentFooter === 'overlay') {
+      this.renderer.addClass(hostElement, APP_LAYOUT_SURFACE_IMMERSIVE_CLASS);
+      return;
+    }
+
+    this.renderer.removeClass(hostElement, APP_LAYOUT_SURFACE_IMMERSIVE_CLASS);
   }
 }

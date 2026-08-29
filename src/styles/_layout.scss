@@ -26,6 +26,15 @@
   overflow: hidden;
 }
 
+.app-layout__surface.app-layout__surface--immersive {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
 .app-layout__surface > .utility-container {
   flex: 1 1 auto;
   display: flex;
