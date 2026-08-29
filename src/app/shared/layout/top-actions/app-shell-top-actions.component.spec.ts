@@ -68,7 +68,8 @@ describe('AppShellTopActionsComponent', () => {
   it('marks the Lines directory as the current primary destination', () => {
     layoutContextStore.registerContent({
       identifier: Symbol('lines'),
-      navigationKey: LINE_DETAIL_BASE_SEGMENT
+      navigationKey: LINE_DETAIL_BASE_SEGMENT,
+      surface: 'hero'
     });
     fixture.detectChanges();
 
@@ -87,7 +88,8 @@ describe('AppShellTopActionsComponent', () => {
   it('maps both favorite routes to the persistent Favorites destination', () => {
     layoutContextStore.registerContent({
       identifier: Symbol('home-favorites'),
-      navigationKey: APP_CONFIG.routes.homeFavorites
+      navigationKey: APP_CONFIG.routes.homeFavorites,
+      surface: 'hero'
     });
     fixture.detectChanges();
 
@@ -161,7 +163,8 @@ describe('AppShellTopActionsComponent', () => {
   it('marks the active secondary destination inside the overflow', () => {
     layoutContextStore.registerContent({
       identifier: Symbol('settings'),
-      navigationKey: APP_CONFIG.routes.settings
+      navigationKey: APP_CONFIG.routes.settings,
+      surface: 'hero'
     });
     fixture.detectChanges();
 
