@@ -33,25 +33,29 @@ test.describe('legal footer and fixed navigation layout', () => {
       await expect(footer).toBeVisible();
       await expect(footer).toHaveClass(/legal-footer--overlay/u);
       await expect(navigation).toBeVisible();
+      await assertWorkspaceMatchesViewport(workspace, viewport.height);
 
-      const workspaceBox = await workspace.boundingBox();
+      const searchTrigger = page.locator('.map-search__trigger');
+      await searchTrigger.click();
+      await expect(page.locator('#map-network-search')).toBeFocused();
+
+      const nearbyTrigger = page.locator('.map__inspector--nearby > summary');
+      await nearbyTrigger.click();
+      await expect(page.locator('.map__inspector--nearby .map__panel')).toBeVisible();
+
+      await assertWorkspaceMatchesViewport(workspace, viewport.height);
+      expect(await page.evaluate(() => window.scrollY)).toBe(0);
+
       const footerBox = await footer.boundingBox();
       const navigationBox = await navigation.boundingBox();
 
-      expect(workspaceBox).not.toBeNull();
       expect(footerBox).not.toBeNull();
       expect(navigationBox).not.toBeNull();
 
-      if (!workspaceBox || !footerBox || !navigationBox) {
+      if (!footerBox || !navigationBox) {
         continue;
       }
 
-      expect(Math.abs(workspaceBox.height - viewport.height)).toBeLessThanOrEqual(
-        VIEWPORT_EDGE_TOLERANCE_PX
-      );
-      expect(Math.abs(workspaceBox.y + workspaceBox.height - viewport.height)).toBeLessThanOrEqual(
-        VIEWPORT_EDGE_TOLERANCE_PX
-      );
       expect(footerBox.y + footerBox.height).toBeLessThanOrEqual(
         navigationBox.y + VIEWPORT_EDGE_TOLERANCE_PX
       );
@@ -86,6 +90,22 @@ test.describe('legal footer and fixed navigation layout', () => {
 
 async function open(page: Page, path: string): Promise<void> {
   await page.goto(new URL(path, BASE_URL as string).toString());
+}
+
+async function assertWorkspaceMatchesViewport(workspace: Locator, viewportHeight: number): Promise<void> {
+  const workspaceBox = await workspace.boundingBox();
+  expect(workspaceBox).not.toBeNull();
+
+  if (!workspaceBox) {
+    return;
+  }
+
+  expect(Math.abs(workspaceBox.height - viewportHeight)).toBeLessThanOrEqual(
+    VIEWPORT_EDGE_TOLERANCE_PX
+  );
+  expect(Math.abs(workspaceBox.y + workspaceBox.height - viewportHeight)).toBeLessThanOrEqual(
+    VIEWPORT_EDGE_TOLERANCE_PX
+  );
 }
 
 async function assertAboveFixedNavigation(content: Locator, navigation: Locator): Promise<void> {
