@@ -18,13 +18,9 @@ test.describe('Legal and privacy surfaces', () => {
   test.skip(!BASE_URL, 'E2E_BASE_URL is required.');
 
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(
-      ({ noticeKey, languageKey }) => {
-        window.localStorage.removeItem(noticeKey);
-        window.localStorage.setItem(languageKey, 'es');
-      },
-      { noticeKey: STORAGE_NOTICE_KEY, languageKey: LANGUAGE_STORAGE_KEY }
-    );
+    await page.addInitScript((languageKey) => {
+      window.localStorage.setItem(languageKey, 'es');
+    }, LANGUAGE_STORAGE_KEY);
   });
 
   test('shows an informational first-visit notice and persists dismissal', async ({ page }) => {
