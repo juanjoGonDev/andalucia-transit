@@ -11,7 +11,7 @@
 .map__workspace {
   position: relative;
   width: 100%;
-  height: calc(100dvh - var(--map-nav-clearance));
+  height: 100dvh;
   min-height: 34rem;
   overflow: hidden;
   background: var(--color-surface-muted);
@@ -195,7 +195,7 @@
   position: absolute;
   z-index: var(--z-index-sticky);
   right: var(--space-sm);
-  bottom: var(--space-sm);
+  bottom: calc(var(--map-nav-clearance) + var(--space-sm));
   left: var(--space-sm);
   display: flex;
   flex-direction: column;
@@ -395,7 +395,7 @@
   .map__panel {
     top: var(--space-lg);
     right: calc(var(--space-lg) + 4rem);
-    bottom: var(--space-lg);
+    bottom: calc(var(--map-nav-clearance) + var(--space-lg));
     left: auto;
     width: min(22rem, calc(100vw - 8rem));
     max-height: none;
