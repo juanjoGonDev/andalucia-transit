@@ -12,12 +12,12 @@
 <app-app-shell-top-actions></app-app-shell-top-actions>
 <app-storage-notice></app-storage-notice>
 <section
-  class="app-shell__section"
+  class="app-shell__section app-layout__surface"
   [attr.id]="mainContentId"
   [attr.role]="mainContentRole"
   tabindex="-1"
   #mainContent
 >
   <router-outlet></router-outlet>
+  <app-legal-footer></app-legal-footer>
 </section>
-<app-legal-footer></app-legal-footer>
