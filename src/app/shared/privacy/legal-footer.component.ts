@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LanguageService } from '@core/services/language.service';
-import { LEGAL_ROUTE_SEGMENTS, getLegalUiCopy } from '@features/legal/legal-content';
+import {
+  LEGAL_ROUTE_SEGMENTS,
+  getLegalUiCopy
+} from '@features/legal/legal-shell-content';
 
 @Component({
   selector: 'app-legal-footer',

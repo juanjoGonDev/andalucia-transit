@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
-import { LEGAL_ROUTE_SEGMENTS, LegalDocumentId } from './legal-content';
+import type { LegalDocumentId } from './legal-content';
 import { LegalPageComponent } from './legal-page.component';
+import { LEGAL_ROUTE_SEGMENTS } from './legal-shell-content';
 
 const legalDocumentRoute = (documentId: LegalDocumentId, path: string) => ({
   path,

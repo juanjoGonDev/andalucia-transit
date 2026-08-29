@@ -1,10 +1,9 @@
 import {
   LEGAL_DOCUMENT_IDS,
-  LEGAL_ROUTE_SEGMENTS,
   getLegalDocument,
-  getLegalUiCopy,
   resolveLegalDocumentId
 } from './legal-content';
+import { LEGAL_ROUTE_SEGMENTS, getLegalUiCopy } from './legal-shell-content';
 
 describe('legal content', () => {
   for (const language of ['es', 'en'] as const) {

@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { APP_CONFIG } from '@core/config';
 import { FavoritesComponent } from '@features/favorites/favorites.component';
 import { HomeComponent } from '@features/home/home.component';
-import { LEGAL_ROUTE_SEGMENTS } from '@features/legal/legal-content';
+import { LEGAL_ROUTE_SEGMENTS } from '@features/legal/legal-shell-content';
 import { AppLayoutComponent } from '@shared/layout/app-layout/app-layout.component';
 import {
   LINE_DETAIL_BASE_SEGMENT,
