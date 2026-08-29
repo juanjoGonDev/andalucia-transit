@@ -108,10 +108,15 @@
 }
 
 .lines__filter-actions {
+  grid-column: span 2;
   display: flex;
   align-self: end;
   flex-wrap: wrap;
   gap: var(--space-sm);
+}
+
+.lines__filter-actions .app-outline-button {
+  white-space: nowrap;
 }
 
 .lines__near-button--active {
@@ -309,6 +314,7 @@
   }
 
   .lines__filter-actions {
+    grid-column: 1;
     order: -1;
   }
 
