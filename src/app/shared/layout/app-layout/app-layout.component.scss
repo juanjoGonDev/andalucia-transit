@@ -1,4 +1,5 @@
 :host {
+  --app-shell-navigation-clearance: calc(5.5rem + env(safe-area-inset-bottom, 0px));
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -8,6 +9,13 @@
 .app-shell__section {
   flex: 1 1 auto;
   display: flex;
+  flex-direction: column;
+}
+
+.app-shell__route {
+  flex: 0 0 auto;
+  display: flex;
+  min-height: 100dvh;
   flex-direction: column;
 }
 
