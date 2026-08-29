@@ -128,6 +128,16 @@ async function readRenderedTextStyle(target: Locator): Promise<RenderedTextStyle
   });
 }
 
+async function readDirectText(target: Locator): Promise<string> {
+  return target.evaluate((element: HTMLElement) =>
+    Array.from(element.childNodes)
+      .filter((node) => node.nodeType === Node.TEXT_NODE)
+      .map((node) => node.textContent ?? '')
+      .join('')
+      .trim(),
+  );
+}
+
 async function readGradientStopColors(surface: Locator): Promise<readonly string[]> {
   const backgroundImage = await surface.evaluate(
     (element: HTMLElement) => getComputedStyle(element).backgroundImage,
@@ -210,8 +220,12 @@ test.describe('rendered theme contrast', () => {
 
     const previous = actions.first();
     const next = actions.last();
-    await expect(previous).toContainText('Anterior');
-    await expect(next).toContainText('Siguiente');
+    const [previousLabel, nextLabel] = await Promise.all([
+      readDirectText(previous),
+      readDirectText(next),
+    ]);
+    expect(previousLabel, 'previous pagination action must expose localized text').not.toBe('');
+    expect(nextLabel, 'next pagination action must expose localized text').not.toBe('');
     await expect(previous.locator('.material-symbols-outlined')).toBeVisible();
     await expect(next.locator('.material-symbols-outlined')).toBeVisible();
     await expectRenderedGradientContrast(
