@@ -5,7 +5,7 @@ import { LegalPageComponent } from './legal-page.component';
 const legalDocumentRoute = (documentId: LegalDocumentId, path: string) => ({
   path,
   component: LegalPageComponent,
-  data: { legalDocumentId }
+  data: { legalDocumentId: documentId }
 });
 
 export const LEGAL_ROUTES: Routes = [
