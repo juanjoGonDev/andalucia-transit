@@ -24,6 +24,7 @@
   inset-inline-start: var(--space-lg);
   top: var(--space-lg);
   z-index: var(--z-index-dropdown);
+  pointer-events: none;
 }
 
 .app-shell__skip-button {
@@ -43,6 +44,7 @@
   box-shadow: var(--shadow-button);
   transform: translateY(calc(-1 * var(--space-4xl)));
   opacity: 0;
+  pointer-events: auto;
 }
 
 .app-shell__skip-button:focus-visible {
