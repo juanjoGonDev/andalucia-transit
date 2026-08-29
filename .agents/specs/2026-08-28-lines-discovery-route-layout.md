@@ -23,15 +23,17 @@ The requested product outcome is:
 - Line Detail exposed ordered stops but no route map.
 - The recent preview mobile breakpoint changed the time column to start alignment.
 - Route Search repeated origin/destination/date context below the form and used verbose arrival presentation that competed with departure time on narrow widths.
-- The existing PR screenshot workflow published exact-head evidence but did not provide a trustworthy reviewed-baseline pixel regression contract.
+- The original PR screenshot workflow published exact-head evidence but did not yet provide a trustworthy reviewed-baseline pixel regression contract.
 
 ### Implemented ownership
 
 - `src/app/app.routes.ts` owns separate Lines and Route Search routes.
 - `src/app/shared/layout/top-actions/app-shell-top-actions.component.ts` points the persistent Lines action at the Lines route and uses the Lines navigation copy.
 - `src/app/features/lines/` owns the Lines directory presentation while canonical filtering/pagination data comes from the existing line-directory domain/data owner rather than template parsing.
-- Lines URL state covers text query, transport area, municipality, nucleus and page; **Near me** requests geolocation only after explicit user action.
-- Province is intentionally absent because the audited catalog/stop contracts do not expose an authoritative province field.
+- Lines URL state covers text query, province, transport area, municipality, nucleus and page; **Near me** requests geolocation only after explicit user action.
+- Province is sourced from CTAN `GET /Consorcios/:idConsorcio/consorcio`. The documented `provincia` field is persisted once on the consortium catalog entry and Lines filters through canonical `consortiumId`; display-name inference and component-local province tables remain rejected.
+- The Province semantic is the CTAN province assigned to the owning consortium, described by CTAN as `Provincia sede del Consorcio`; it is not a geometric claim that every point of a route lies inside that province.
+- A province may aggregate multiple consortia. Deterministic coverage explicitly exercises Cádiz across consortia 2 and 5.
 - Line Detail consumes the shared transit route-map component and canonical route geometry/stop identity pipeline; it does not introduce another Leaflet transport-data client.
 - Line Detail uses a wide map-first workspace and a single-column mobile flow. Wide stop actions are stacked so the visible More information affordance cannot crush stop names.
 - Route Search uses its sticky form/workspace as the active selection owner; the former duplicated summary region is absent.
@@ -41,24 +43,25 @@ The requested product outcome is:
 
 ### Visual-review regressions fixed during validation
 
-Manual inspection of the exact-head screenshot artifact exposed two defects that automated functional checks had not made obvious:
+Manual inspection of exact-head screenshot evidence exposed two defects that automated functional checks had not made obvious:
 
 1. desktop Lines cards allowed side metadata to squeeze line names into near single-character columns;
 2. desktop Line Detail allowed the visible More information action to squeeze stop names in the 1/3 stops column.
 
-The final implementation moves Lines metadata below the primary line identity and stacks the wide Line Detail stop action below the stop-selection row. Playwright geometry assertions now protect the allocated content width instead of measuring intrinsic text glyph width.
+The implementation moves Lines metadata below the primary line identity and stacks the wide Line Detail stop action below the stop-selection row. Playwright geometry assertions protect allocated content width instead of measuring intrinsic text glyph width.
 
-### Exact product-head validation
+### Current product-head validation
 
-Validated product head: `9a23a73b7753ab61fb20f814b140f693323bda62`.
+Validated Province behavior head: `cbd6de9b795e208bb3c94c0972855a0371a06514`.
 
-- CI #1095, run `33194039906`: **success**.
-- Publish PR visual evidence #704, run `33194039880`: **success**.
-- Exact-head artifact: `pr-36-visual-evidence-9a23a73b7753ab61fb20f814b140f693323bda62`.
-- Artifact id: `9695064573`.
-- Artifact digest: `sha256:d891e7806e99c8c97590c1029e7287c6e285d40481ec518ccb8593033e2c0367`.
-- The workflow completed formatting/quality gates, deterministic populated browser checks, deterministic empty checks, screenshot capture, immutable-head verification and evidence publication successfully.
-- The generated desktop and mobile Lines and Line Detail screenshots were manually inspected after the workflow completed. The previously observed name-squeezing regressions are absent.
+- CI #1151, run `33221835240`: **success**. Install, lint, script tests, 455 Angular tests, deploy-pipeline checks and `Check all ok` passed.
+- Publish PR visual evidence #816, run `33221835257`: **success**.
+- The blocking populated Playwright suite includes `tests/playwright/lines-province-filter.spec.ts` and passed 38 scenarios, including multi-consortium Province aggregation and hierarchy/URL behavior.
+- Normal evidence artifact: `pr-36-visual-evidence-cbd6de9b795e208bb3c94c0972855a0371a06514`, id `9705510096`, digest `sha256:e10af518714b0207a9b629c7855e7c89c553aa018b0f337285a19dc214c5afc8`.
+- Visual regression baseline #43, run `33221835281`, rendered the immutable baseline `4f8ec97f59dab58a04c07a6aa6995f4fc4e6d9f1` and the product head successfully with the current deterministic harness. Both sides passed 36/36 harness scenarios without retries.
+- Exact RGBA comparison found 34/36 screenshots unchanged. Only `lines-data_es_390_844_full.png` and `lines-data_es_1440_900_full.png` differ, matching the intentional addition of the visible Province filter. Total difference: 484,991 pixels.
+- Exact artifact: `pr-36-visual-regression-cbd6de9b795e208bb3c94c0972855a0371a06514`, id `9705551827`, digest `sha256:7bf595658bdcd437980c315d8423a0ffa7f613d62f215edb6432e9e19acc850c`.
+- Enforcement remains red intentionally until the new Lines visual contract is explicitly reviewed and the immutable baseline pointer is advanced. No threshold, masking or self-seeding was introduced.
 
 ## Decision
 
@@ -73,12 +76,13 @@ The Lines surface consumes one canonical normalized line-directory owner. Search
 Supported discovery dimensions are:
 
 - line code/name query;
+- CTAN consortium province;
 - transport area/consortium;
 - municipality;
 - nucleus;
 - explicit Near me proximity.
 
-Province remains blocked until a trustworthy source maps the canonical transport identities to province. Display-name inference or component-local lookup tables are rejected.
+Province is owned by consortium metadata from the CTAN consortium-detail endpoint. Lines derive membership through `consortiumId`; province is not copied onto each line and is never inferred from names.
 
 ### 3. Reusable route-map contract
 
@@ -98,9 +102,9 @@ Recent preview time values keep one stable end-aligned column and tabular numera
 
 ### 7. Visual validation boundary
 
-The current exact-head workflow is authoritative evidence for deterministic browser states and contains explicit DOM/layout invariants. However, the repository still lacks a trustworthy reviewed-baseline pixel-diff source of truth that survives clean CI checkouts without self-seeding expected images.
+The repository now has a reviewed-baseline pixel-diff gate using an immutable commit SHA. The current-head harness renders both the approved baseline application as `expected` and the PR head as `actual`, compares every required RGBA pixel with zero tolerance, retains expected/actual/diff evidence and rejects self-seeded baselines.
 
-The safe proposed architecture is an immutable baseline commit SHA: start/capture the approved baseline commit as `expected`, start/capture the PR head as `actual`, compare them, retain expected/actual/diff artifacts and change the baseline SHA only after reviewed approval. This changes CI architecture and therefore requires explicit approval before implementation.
+A legitimate UI change may therefore leave the gate red until its visual evidence is reviewed. Advancing `.github/visual-baseline.json` is an approval action, not a test workaround.
 
 ## Acceptance
 
@@ -109,9 +113,10 @@ The safe proposed architecture is an immutable baseline commit SHA: start/captur
 - Persistent Lines navigation opens the dedicated Lines directory.
 - Route Search remains separately deep-linkable.
 - The fake C2 default journey is removed.
-- Lines renders canonical records with search, area, municipality, nucleus, explicit Near me and pagination behavior.
+- Lines renders canonical records with search, province, area, municipality, nucleus, explicit Near me and pagination behavior.
 - Filter/page state is URL-backed where implemented by the directory owner.
-- Province is not shown without authoritative source data.
+- Province comes from authoritative CTAN consortium metadata and aggregates every consortium sharing the selected province.
+- Province/area hierarchy state cannot remain contradictory in the URL.
 - Line Detail is deep-linkable and renders reusable route map plus ordered stops when geometry is usable.
 - Line Detail preserves the stop list when map data is unavailable through the existing error/fallback contract.
 - Desktop Line Detail keeps the map dominant without reducing stop names to unreadable columns.
@@ -120,44 +125,48 @@ The safe proposed architecture is an immutable baseline commit SHA: start/captur
 - Route Search has no redundant selection summary between form and timetable.
 - Route Search keeps the form/workspace sticky and preserves compact departure/arrival layout.
 - Recent preview time alignment no longer flips to start alignment on mobile.
-- Deterministic browser acceptance and exact-head screenshot evidence are green for the validated product head.
+- Core CI and normal exact-head browser evidence are green on the validated Province behavior head.
+- The exact reviewed-baseline gate is implemented and deterministically isolates the intentional Province UI change to the two Lines screenshots.
 
 ### Deliberately unresolved
 
-- **Province filter:** blocked on authoritative source data. Do not infer it.
-- **Reviewed-baseline pixel diff:** current evidence/geometry checks are green, but the baseline architecture described above is not implemented because it is a material CI design change requiring approval.
+- **Reviewed Lines baseline:** the new Province control intentionally changes Lines mobile and desktop screenshots. Baseline advancement requires explicit visual review/approval and has not been performed.
+- **Merge/release/deploy:** intentionally not performed without explicit approval.
 
 ## Checks
 
-The implementation has been exercised through repository-native gates on the exact product head:
+The implementation has been exercised through repository-native gates:
 
 - formatting/Prettier gate;
 - `pnpm run lint`;
-- `pnpm run test:scripts`;
-- Angular test suite;
+- `pnpm run test:scripts`, including CTAN province validation and malformed-source rejection;
+- 455 Angular tests;
 - deploy-pipeline checks and production build path;
 - focused Playwright responsive/accessibility/layout tests;
+- Province-specific browser behavior for a province spanning multiple consortia;
 - deterministic populated and empty browser applications;
 - exact-head screenshot capture and artifact publication;
-- manual inspection of the final Lines and Line Detail mobile/desktop screenshots.
+- immutable reviewed-baseline exact RGBA comparison with expected/actual/diff artifact retention.
 
 Known pre-existing non-blocking warnings remain separate technical debt: bundle/style budget warnings and the `@messageformat/core` CommonJS warning.
 
 ## Risks and rollback
 
 - CTAN field variance remains data-driven; unsupported fields must not be invented.
-- OSM tile rendering is nondeterministic, so deterministic browser acceptance mocks tile imagery while retaining the real Leaflet/geometry interaction contract.
+- CTAN calls `provincia` the consortium headquarters province. Product copy/semantics must not silently strengthen that into route-geometry containment.
+- A province can contain multiple CTAN consortia, so filtering must remain set-based on consortium IDs.
+- OSM tile rendering is nondeterministic, so deterministic browser acceptance neutralizes tile imagery while retaining the real Leaflet/geometry interaction contract.
 - The fixed shell navigation can overlay content visually while scrolling; page-owned bottom clearance must continue to keep terminal content reachable.
-- Each follow-up slice remains independently revertible: Lines layout, Line Detail layout, route-map behavior and Route Search presentation do not require a data migration.
+- Each follow-up slice remains independently revertible: Lines filters/layout, Line Detail layout, route-map behavior and Route Search presentation do not require a database migration.
 
 ## Delivery
 
-Continue on PR #36 and branch `codex/refactorizar-vista-segun-diseno-proporcionado`. Keep commits Conventional and atomic. Do not force-push. Do not merge, release or deploy without explicit approval.
+Continue on PR #36 and branch `codex/refactorizar-vista-segun-diseno-proporcionado`. Keep commits Conventional and atomic. Do not force-push. Do not merge, release, deploy or advance the reviewed visual baseline without explicit approval.
 
 The execution ledger is `.agents/specs/2026-08-28-lines-discovery-route-layout-checklist.md`.
 
 ## Status
 
-The supported product/UI follow-up is implemented and exact-head product validation is green at `9a23a73b7753ab61fb20f814b140f693323bda62`.
+The product/UI follow-up, authoritative Province filtering and browser coverage are implemented. Core CI and normal visual evidence are green on `cbd6de9b795e208bb3c94c0972855a0371a06514`.
 
-Two items remain intentionally open rather than being hidden or approximated: authoritative province mapping and the reviewed-baseline pixel-diff CI architecture. Province is source-blocked; the pixel-baseline change requires explicit approval because it materially changes CI architecture.
+The exact baseline gate is operating correctly and blocks only the intentional Lines visual change introduced by Province. The remaining Province-specific action is explicit visual approval before advancing the reviewed baseline.
