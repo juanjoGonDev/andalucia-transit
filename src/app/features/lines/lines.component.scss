@@ -109,6 +109,7 @@
 
 .lines__filter-actions {
   display: flex;
+  align-self: end;
   flex-wrap: wrap;
   gap: var(--space-sm);
 }
@@ -301,6 +302,14 @@
 
   .lines__filter-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lines__control--search {
+    order: -2;
+  }
+
+  .lines__filter-actions {
+    order: -1;
   }
 
   .lines__line {
