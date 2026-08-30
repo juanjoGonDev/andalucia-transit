@@ -44,6 +44,12 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 - Reviewed-baseline run `33326308710` on the exact product head completed checkout, reviewed-baseline resolution, deterministic install, baseline render, head render, exact comparison and evidence retention successfully; only baseline enforcement failed. Its artifact is `pr-36-visual-regression-337812d823662b10cdff2d50d20dca0b4f89d210` (artifact `9736388371`, digest `sha256:fcf8cdbfdcbbafa2f8bcd951c6791c36ed60db715a18624f88d6488e26e534e6`).
 - Exact `diff/summary.json` for `337812d...` compares 36 files, reports 36 changed files and 33,295,701 differing pixels. The 34 scrolling/full-page captures have expected dimension changes from the global legal/footer surfaces. Map remains exactly `390x844` and `1440x900`; its updated attribution position changes pixels only, not viewport dimensions.
 - Direct review of current `home-search-end_es_390_844_viewport.png`, mobile/desktop Map captures and representative mobile/desktop Lines document bottoms confirms the final shell order. In the current Map captures the Leaflet/OpenStreetMap attribution is visibly above navigation, navigation is above the legal footer, and the browser test confirms the attribution link is actually hit-testable rather than merely visible through an overlay.
+- The documentation-only head `379d9f30594c3438d5ee6204b311c69a2ea17c52` was validated by CI run `33327632905`, Legal browser QA run `33327632904`, Publish PR visual evidence run `33327632881`, and reviewed-baseline run `33327632926`; the latter again failed only enforcement while producing byte-identical reviewed-baseline evidence to product head `337812d...`.
+- User approval to advance the reviewed visual baseline was received explicitly by continuation on 2026-08-30 after the exact 36/36, 33,295,701-pixel delta and final visual review were reported.
+- Baseline commit `30139a4a250ec40e66151be5572e6932187c8c8c` (`test(visual): advance reviewed baseline`) changes only `.github/visual-baseline.json`, pinning approved commit `379d9f30594c3438d5ee6204b311c69a2ea17c52` to successful Publish PR visual evidence run `33327632881`, artifact `9736809949`, digest `sha256:232aa86a2056aac02477cdece156776414089770fdf0ab7d67e2abad5de2bc9b`.
+- The baseline-advance head completed CI run `33329370914`, Legal browser QA run `33329370894`, Publish PR visual evidence run `33329370895`, and Visual regression baseline run `33329370880` successfully.
+- Exact post-approval regression artifact `pr-36-visual-regression-30139a4a250ec40e66151be5572e6932187c8c8c` is artifact `9737239516`, digest `sha256:55e606f5326b14865fa6f59778354f59c7cf6080f5dde304eab5d519991e1a43`. Its `diff/summary.json` passes with 36 compared files, 0 changed files and 0 differing pixels. Map remains exactly `390x844` and `1440x900`.
+- Direct post-approval review of the exact-head mobile Map and Spanish Home document-end captures confirms attribution remains visible above navigation, navigation remains above the legal footer, and the document-end Search layout remains unclipped and correctly ordered.
 
 ## Decision
 
@@ -59,7 +65,7 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 10. Do not make legal copy non-interactive, click-through, or test-only-hidden to work around overlap. The notice remains fully usable while Map controls occupy only the remaining unobscured workspace.
 11. On narrow Map viewports, keep inspector panels in the lower half of the map and above the raised navigation by deriving their maximum scrollable height from the containing workspace and the same shell clearance. Do not solve the collision by moving the whole panel upward into the map's upper interaction region.
 12. Treat third-party Map controls at the bottom edge as part of the immersive workspace collision contract. Leaflet's bottom controls consume the existing Map shell clearance so required attribution remains visible and interactive above the application navigation/footer stack without duplicating clearance arithmetic.
-13. Do not advance `.github/visual-baseline.json` without explicit approval.
+13. Advance `.github/visual-baseline.json` only after explicit approval and only to immutable, inspected evidence. That approval was received for this change and the resulting exact comparison is green.
 
 ## Acceptance
 
@@ -82,7 +88,7 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 - [x] Existing Map exploration, focused-lines and rendered-contrast browser suites pass unchanged so the notice fix cannot merely bypass product interactions.
 - [x] The document-end diagnostic is executed under `es-ES`, matching its `_es_` evidence contract and exercising Spanish footer/form wrapping.
 - [x] Lint, Angular tests, deploy/build checks, legal browser QA and PR visual evidence pass on the exact validated heads.
-- [x] Reviewed visual baseline remains unchanged until explicit approval.
+- [x] Reviewed visual baseline was advanced only after explicit approval and the exact post-approval comparison passes 36/36 with 0 differing pixels.
 
 ## Checks
 
@@ -90,12 +96,12 @@ Focused Angular layout tests; `tests/playwright/footer-layout.spec.ts` including
 
 ## Rollback
 
-Revert the footer/navigation/storage-clearance shell commits, the Home visual-locale test commit and the Map attribution clearance test/fix commits. No API, persistence, database or remote migration is involved.
+Revert the footer/navigation/storage-clearance shell commits, the Home visual-locale test commit and the Map attribution clearance test/fix commits. Revert baseline commit `30139a4a250ec40e66151be5572e6932187c8c8c` separately if the reviewed visual contract itself must be rolled back. No API, persistence, database or remote migration is involved.
 
 ## Delivery
 
-Continue PR #36 on `codex/refactorizar-vista-segun-diseno-proporcionado` with atomic Conventional commits. Do not merge, release, deploy or advance the reviewed visual baseline without explicit approval.
+Continue PR #36 on `codex/refactorizar-vista-segun-diseno-proporcionado` with atomic Conventional commits. The reviewed visual baseline has been advanced under explicit approval. Do not merge, release or deploy without separate explicit approval.
 
 ## Status
 
-Footer-below-navigation, legal/footer shell integration, storage-notice clearance, Map viewport sizing, narrow inspector behavior, Spanish document-end evidence and Leaflet/OpenStreetMap attribution clearance are implemented and validated on product head `337812d823662b10cdff2d50d20dca0b4f89d210`. CI run `33326308733`, Legal browser QA run `33326308711` and Publish PR visual evidence run `33326308776` are green. Reviewed-baseline run `33326308710` renders all required evidence and completes exact comparison, then fails only the intentional enforcement gate because all 36 reviewed screenshots remain pinned to pre-legal/footer UI at baseline `4f8ec97f59dab58a04c07a6aa6995f4fc4e6d9f1`; its exact total is 33,295,701 differing pixels. The baseline has not been advanced. After this ledger update is itself validated on its exact head, the only remaining delivery action is explicit approval to update `.github/visual-baseline.json`; no merge, release or deployment is authorized.
+Footer-below-navigation, legal/footer shell integration, storage-notice clearance, Map viewport sizing, narrow inspector behavior, Spanish document-end evidence and Leaflet/OpenStreetMap attribution clearance are implemented and validated. Product head `337812d823662b10cdff2d50d20dca0b4f89d210` and documentation head `379d9f30594c3438d5ee6204b311c69a2ea17c52` produced identical reviewed UI evidence. After explicit approval, baseline commit `30139a4a250ec40e66151be5572e6932187c8c8c` pinned the immutable visual evidence from `379d9f3...`; CI run `33329370914`, Legal browser QA run `33329370894`, Publish PR visual evidence run `33329370895`, and Visual regression baseline run `33329370880` all passed. The exact post-approval baseline comparison reports 36 compared screenshots, 0 changed screenshots and 0 differing pixels. No merge, release or deployment is authorized or has been performed.
