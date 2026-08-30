@@ -6,7 +6,7 @@ $border: color-mix(in srgb, var(--color-text-inverse) 20%, transparent);
 :host {
   position: fixed;
   inset-inline: 0;
-  bottom: 0;
+  bottom: var(--app-shell-footer-visible-height, 0px);
   z-index: var(--z-index-sticky);
   pointer-events: none;
 }
