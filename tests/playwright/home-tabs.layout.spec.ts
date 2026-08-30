@@ -117,6 +117,8 @@ function rectanglesOverlap(first: RectangleBounds, second: RectangleBounds): boo
 }
 
 test.describe('home tabs responsive layout', () => {
+  test.use({ locale: 'es-ES' });
+
   test.skip(!BASE_URL, 'E2E_BASE_URL environment variable is required for home tabs tests.');
 
   for (const viewportWidth of MOBILE_VIEWPORT_WIDTHS) {
