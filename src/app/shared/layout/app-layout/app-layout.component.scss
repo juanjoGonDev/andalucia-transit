@@ -6,6 +6,14 @@
   background-color: var(--color-background-light);
 }
 
+.app-shell__section,
+.app-shell__route {
+  min-height: max(
+    0px,
+    calc(100dvh - var(--app-shell-storage-notice-height, 0px))
+  );
+}
+
 .app-shell__section {
   flex: 1 1 auto;
   display: flex;
@@ -15,10 +23,6 @@
 .app-shell__route {
   flex: 0 0 auto;
   display: flex;
-  min-height: max(
-    0px,
-    calc(100dvh - var(--app-shell-storage-notice-height, 0px))
-  );
   flex-direction: column;
 }
 
