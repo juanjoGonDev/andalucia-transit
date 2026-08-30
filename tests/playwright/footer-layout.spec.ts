@@ -134,11 +134,12 @@ test.describe('legal footer and fixed navigation layout', () => {
       const navigation = page.locator('.shell-actions__shell');
 
       await expect(submit).toBeVisible();
+      await expect(submit).toHaveAttribute('aria-disabled', 'true');
       await expect(footer).not.toHaveClass(/legal-footer--overlay/u);
       await scrollToDocumentEnd(page);
 
       await assertNavigationAboveFooter(navigation, footer);
-      await assertControlAboveNavigation(page, submit, navigation);
+      await assertControlClearOfNavigation(page, submit, navigation);
       await assertLegalLinkHitTestable(page, footer);
       await assertNoHorizontalOverflow(page);
     }
@@ -239,7 +240,7 @@ async function assertNavigationAboveFooter(navigation: Locator, footer: Locator)
     .toEqual({ navigationAboveFooter: true, gapWithinLimit: true });
 }
 
-async function assertControlAboveNavigation(
+async function assertControlClearOfNavigation(
   page: Page,
   control: Locator,
   navigation: Locator
@@ -263,17 +264,14 @@ async function assertControlAboveNavigation(
         x: controlBox.x + controlBox.width / 2,
         y: controlBox.y + controlBox.height - 2
       };
-      const hitTargets = await page.evaluate(
+      const navigationInterception = await page.evaluate(
         ({ centerPoint, lowerPoint }) => {
-          const matchesSubmit = (point: { x: number; y: number }): boolean =>
-            document
-              .elementFromPoint(point.x, point.y)
-              ?.closest('.route-search-form__submit')
-              ?.classList.contains('route-search-form__submit') ?? false;
+          const isNavigationTarget = (point: { x: number; y: number }): boolean =>
+            document.elementFromPoint(point.x, point.y)?.closest('.shell-actions__shell') !== null;
 
           return {
-            center: matchesSubmit(centerPoint),
-            lowerInset: matchesSubmit(lowerPoint)
+            center: isNavigationTarget(centerPoint),
+            lowerInset: isNavigationTarget(lowerPoint)
           };
         },
         { centerPoint: center, lowerPoint: lowerInset }
@@ -281,14 +279,14 @@ async function assertControlAboveNavigation(
 
       return {
         gapSufficient: gap >= MIN_CONTROL_NAVIGATION_GAP_PX,
-        centerHitTarget: hitTargets.center,
-        lowerInsetHitTarget: hitTargets.lowerInset
+        centerInterceptedByNavigation: navigationInterception.center,
+        lowerInsetInterceptedByNavigation: navigationInterception.lowerInset
       };
     })
     .toEqual({
       gapSufficient: true,
-      centerHitTarget: true,
-      lowerInsetHitTarget: true
+      centerInterceptedByNavigation: false,
+      lowerInsetInterceptedByNavigation: false
     });
 }
 
