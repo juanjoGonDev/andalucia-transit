@@ -1,8 +1,12 @@
 import { captureVisualEvidence, expect, test, type Page } from './visual-evidence.fixture';
+import { captureViewportVisualEvidence } from './viewport-visual-evidence';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const HOME_PATH = '/';
 const MAP_PATH = '/map';
+const STORAGE_NOTICE_KEY = 'andalucia-transit.privacyNotice.v1';
+const STORAGE_NOTICE_DISMISSED_VALUE = 'dismissed';
+const HOME_SEARCH_END_EVIDENCE = 'home-search-end_es_390_844_viewport.png';
 const MOBILE_VIEWPORT_WIDTHS = [320, 360, 390, 430] as const;
 const MOBILE_VIEWPORT_HEIGHT = 844;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
@@ -170,6 +174,32 @@ test.describe('home tabs responsive layout', () => {
       expectContained(selectedAfterSwitch[0], switchedMetrics.tabList);
     });
   }
+
+  test('captures Home search at document end in the canonical mobile viewport', async ({ page }) => {
+    const resolvedBaseUrl = BASE_URL as string;
+    await page.addInitScript(
+      ({ storageKey, dismissedValue }) => {
+        window.localStorage.setItem(storageKey, dismissedValue);
+      },
+      { storageKey: STORAGE_NOTICE_KEY, dismissedValue: STORAGE_NOTICE_DISMISSED_VALUE },
+    );
+    await page.setViewportSize({ width: 390, height: MOBILE_VIEWPORT_HEIGHT });
+
+    const url = new URL(HOME_PATH, resolvedBaseUrl);
+    url.searchParams.set('tab', 'search');
+    await page.goto(url.toString());
+    await expect(page.locator('.route-search-form__submit')).toBeVisible();
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () => window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 1,
+        ),
+      )
+      .toBe(true);
+
+    await captureViewportVisualEvidence(page, HOME_SEARCH_END_EVIDENCE);
+  });
 
   test('keeps persistent shell actions clear of mobile page titles', async ({ page }) => {
     const resolvedBaseUrl = BASE_URL as string;
