@@ -175,7 +175,9 @@ test.describe('home tabs responsive layout', () => {
     });
   }
 
-  test('captures Home search at document end in the canonical mobile viewport', async ({ page }) => {
+  test('captures Home search at document end in the canonical mobile viewport', async ({
+    page,
+  }) => {
     const resolvedBaseUrl = BASE_URL as string;
     await page.addInitScript(
       ({ storageKey, dismissedValue }) => {
