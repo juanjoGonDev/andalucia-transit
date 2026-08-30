@@ -8,18 +8,24 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 
 - User-provided Home evidence showed the first footer implementation as a large contrasting strip between the routed hero and fixed navigation.
 - User-provided Map evidence showed the footer reducing the visible map workspace and creating a separate grey band.
-- User clarification on 2026-08-30 showed the current implementation still renders `Política de privacidad / Aviso legal / Accesibilidad / Cookies` above the floating navigation. The intended order is the inverse: the floating navigation is above the legal row at document end, globally, and immediately above it on Map.
+- User clarification on 2026-08-30 showed the implementation still rendering `Política de privacidad / Aviso legal / Accesibilidad / Cookies` above the floating navigation. The intended order is the inverse: the floating navigation is above the legal row at document end, globally, and immediately above it on Map.
 - `AppShellTopActionsComponent` owns the floating navigation with `position: fixed`.
 - `LegalFooterComponent` is global and `AppLayoutComponent` owns both shell siblings, so footer/navigation collision geometry belongs to the shared layout rather than individual feature pages.
 - The previous flow footer reserved navigation clearance below its links and the immersive footer used `bottom: var(--app-shell-navigation-clearance)`. Those two rules explicitly encoded the rejected footer-above-navigation ordering.
-- `MapComponent` owns an immersive viewport workspace and existing Playwright coverage requires its lower edge to match the viewport edge.
+- `MapComponent` owns an immersive viewport workspace and browser coverage requires its lower edge to match the viewport edge.
 - The shared layout context already owns routed surface and footer placement state. No route-name selectors or per-feature footer offsets are required.
-- Exact visual-regression evidence on head `b429655369679a876f45f2fbd81028c110b1dd2c` reproduced a second shell regression: first-visit `app-storage-notice` sat above the routed section with a higher stacking layer and intercepted pointer events intended for Map search and inspector controls.
+- Exact visual-regression evidence reproduced a second shell regression: first-visit `app-storage-notice` sat above the routed section with a higher stacking layer and intercepted pointer events intended for Map search and inspector controls.
 - The same first-visit notice also preceded a route with a `100dvh` minimum and a Map workspace with `100dvh` height. Leaving both dimensions unconditional could create document scroll even though Map is specified as immersive and non-scrolling.
 - `app-storage-notice` itself remains mounted after dismissal while its inner notice is removed, so its host is a stable element whose rendered block size can be observed without route-specific wiring or duplicated legal state.
-- Shared storage-notice clearance and Map viewport sizing are now implemented. Publish PR visual evidence run `33314285300` on head `927d533bafd3e47896eb92cb827f0e9aa59aaa34` completed formatting, lint, script tests, 473/473 Angular tests and build, then ran 39 browser product checks.
-- That run passed 38/39 product checks. The only remaining deterministic failure is the existing mobile Map exploration invariant: after reserving the raised navigation/footer stack, `.map__panel` starts at `y=515.5` while the lower-half boundary is `y=530.5`. The same value reproduced on both retries.
-- The failure demonstrates that raising the panel bottom boundary alone is insufficient on narrow viewports: the panel must also cap its scrollable height to the lower-half space that remains above the raised navigation.
+- Shared storage-notice clearance, Map viewport sizing and narrow inspector height are implemented through the shared shell and Map workspace boundaries.
+- `tests/playwright/footer-layout.spec.ts` verifies ordinary flow routes and Map at 390x844 and 1440x900, including maximum-scroll ordering, footer-bottom placement, legal-link hit testing, overlay placement and absence of horizontal/Map vertical overflow.
+- Focused `AppLayoutComponent` tests verify footer visibility/resize lifecycle through `IntersectionObserver` and `ResizeObserver` without a hard-coded legal footer height.
+- A dedicated viewport diagnostic now captures Home search at the actual mobile document end with `fullPage: false`, because the canonical full-page screenshot harness intentionally resets scroll position before capture. The reviewed `actual/home-search-end_es_390_844_viewport.png` on head `307cf04fc711e6b85ab625523f1a1091c5930ae1` shows the Search action clear above the floating navigation, the navigation above the legal footer, and the legal links at the physical viewport bottom.
+- Manual review of the same exact-head visual-regression artifact also checked mobile Map plus representative mobile and desktop bottom-edge captures. The Map footer/navigation stack is visible in the required order without clipping; scrolling-route footer rows terminate the document without an obvious overlapping band.
+- Exact-head CI run `33320473071`, Legal browser QA run `33320473027`, and Publish PR visual evidence run `33320473039` all completed successfully on `307cf04fc711e6b85ab625523f1a1091c5930ae1`.
+- Publish PR visual evidence retained artifact `pr-36-visual-evidence-307cf04fc711e6b85ab625523f1a1091c5930ae1` (artifact `9734839301`, digest `sha256:659a0e01f891b22835dd18193b65eed758b780d2797fdcf6af6fe0007c537269`).
+- Reviewed-baseline run `33320473026` completed the baseline render, head render, exact comparison and evidence retention, then failed enforcement as expected because the approved baseline predates the global legal/footer shell changes. The exact summary compares 36 files and reports all 36 changed, with 33,291,773 differing pixels. Most flow screenshots also have larger document dimensions because the legal surfaces are now part of the intended document layout; Map remains exactly 390x844 and 1440x900 and differs only in pixels.
+- The visual-regression artifact is `pr-36-visual-regression-307cf04fc711e6b85ab625523f1a1091c5930ae1` (artifact `9734802449`, digest `sha256:198bcb2991587a9c44d13b2a042ce1b8d87990ab899751a11a7431f8599df61c`).
 
 ## Decision
 
@@ -38,28 +44,28 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 
 ## Acceptance
 
-- [ ] With the storage notice dismissed, Map workspace remains exactly one viewport high at 390x844 and 1440x900 and the document does not gain vertical scroll.
-- [ ] On a first visit with the storage notice visible, the notice remains readable/clickable, Map starts below it, the Map workspace ends at the viewport bottom, and the document does not gain vertical scroll.
-- [ ] First-visit Map search and inspector controls are hit-testable and usable without dismissing or clicking through the storage notice.
-- [ ] Dismissing the storage notice expands Map to the full viewport in-place without reload, overlap or scroll.
-- [ ] On Map, the legal footer is fixed at the viewport bottom and the floating navigation is immediately above it without overlap.
-- [ ] On mobile Map, an open inspector remains wholly above the floating navigation, starts in the lower half of the map, and scrolls internally when its content exceeds the remaining lower-half space.
-- [ ] On ordinary routes, the legal footer remains in document flow and is not permanently visible while the user is away from document end.
-- [ ] At maximum scroll on ordinary routes, the floating navigation is above the legal footer; the legal links are below it, fully visible and clickable.
-- [ ] The ordering and shell clearance are implemented at the shared shell boundary and therefore apply to all current/future routes using `AppLayoutComponent`, not only Home or legal pages.
-- [ ] Hero routes have no white/contrasting band between routed content and legal footer.
-- [ ] Plain routes use the same muted surface family as routed content.
-- [ ] Footer placement state unregisters cleanly during navigation.
-- [ ] Footer and storage-notice height changes do not create overlap after responsive wrapping, dismissal or locale changes.
-- [ ] No horizontal overflow at mobile or desktop evidence viewports.
-- [ ] Focused Angular tests cover shell-owned footer/storage clearance lifecycle; browser tests cover the spatial ordering on representative scrolling routes plus first-visit and dismissed-notice Map states.
-- [ ] Existing Map exploration, focused-lines and rendered-contrast browser suites pass unchanged so the notice fix cannot merely bypass product interactions.
-- [ ] Lint, Angular tests, deploy/build checks, legal browser QA and PR visual evidence pass on the exact product head.
-- [ ] Reviewed visual baseline remains unchanged until explicit approval.
+- [x] With the storage notice dismissed, Map workspace remains exactly one viewport high at 390x844 and 1440x900 and the document does not gain vertical scroll.
+- [x] On a first visit with the storage notice visible, the notice remains readable/clickable, Map starts below it, the Map workspace ends at the viewport bottom, and the document does not gain vertical scroll.
+- [x] First-visit Map search and inspector controls are hit-testable and usable without dismissing or clicking through the storage notice.
+- [x] Dismissing the storage notice expands Map to the full viewport in-place without reload, overlap or scroll.
+- [x] On Map, the legal footer is fixed at the viewport bottom and the floating navigation is immediately above it without overlap.
+- [x] On mobile Map, an open inspector remains wholly above the floating navigation, starts in the lower half of the map, and scrolls internally when its content exceeds the remaining lower-half space.
+- [x] On ordinary routes, the legal footer remains in document flow and is not permanently visible while the user is away from document end.
+- [x] At maximum scroll on ordinary routes, the floating navigation is above the legal footer; the legal links are below it, fully visible and clickable.
+- [x] The ordering and shell clearance are implemented at the shared shell boundary and therefore apply to all current/future routes using `AppLayoutComponent`, not only Home or legal pages.
+- [x] Hero routes have no white/contrasting band between routed content and legal footer.
+- [x] Plain routes use the same muted surface family as routed content.
+- [x] Footer placement state unregisters cleanly during navigation.
+- [x] Footer and storage-notice height changes do not create overlap after responsive wrapping, dismissal or locale changes.
+- [x] No horizontal overflow at mobile or desktop evidence viewports.
+- [x] Focused Angular tests cover shell-owned footer/storage clearance lifecycle; browser tests cover the spatial ordering on representative scrolling routes plus first-visit and dismissed-notice Map states.
+- [x] Existing Map exploration, focused-lines and rendered-contrast browser suites pass unchanged so the notice fix cannot merely bypass product interactions.
+- [x] Lint, Angular tests, deploy/build checks, legal browser QA and PR visual evidence pass on the exact product head validated above.
+- [x] Reviewed visual baseline remains unchanged until explicit approval.
 
 ## Checks
 
-Focused Angular layout tests; `tests/playwright/footer-layout.spec.ts`; `tests/playwright/legal-privacy.spec.ts`; existing `tests/playwright/map-exploration.spec.ts`; existing `tests/playwright/map-focused-lines.spec.ts`; `tests/playwright/theme.contrast.spec.ts`; repository CI; legal browser QA; PR visual evidence; exact visual-regression comparison.
+Focused Angular layout tests; `tests/playwright/footer-layout.spec.ts`; `tests/playwright/legal-privacy.spec.ts`; existing `tests/playwright/map-exploration.spec.ts`; existing `tests/playwright/map-focused-lines.spec.ts`; `tests/playwright/theme.contrast.spec.ts`; repository CI; legal browser QA; PR visual evidence; exact visual-regression comparison; manual review of the exact 390x844 document-end viewport capture and representative Map/mobile/desktop artifact screenshots.
 
 ## Rollback
 
@@ -71,4 +77,4 @@ Continue PR #36 on `codex/refactorizar-vista-segun-diseno-proporcionado` with at
 
 ## Status
 
-Footer-below-navigation, dynamic storage-notice clearance and Map viewport sizing are implemented through head `927d533bafd3e47896eb92cb827f0e9aa59aaa34`. Core quality checks on Publish PR visual evidence run `33314285300` are green and 38/39 product browser checks pass. The remaining owned regression is the mobile inspector panel height/position invariant; fix and exact-head reruns are pending.
+Product implementation and owned regression fixes are validated through head `307cf04fc711e6b85ab625523f1a1091c5930ae1`: CI, Legal browser QA and normal PR visual evidence are green, including first-visit/dismissed-notice Map behavior and the footer/navigation ordering. Exact visual regression remains red because the reviewed baseline predates the intentional global legal/footer shell changes; its 36/36 differences and retained screenshots have been inspected rather than bypassed. No reviewed baseline update has been made. The remaining delivery gate is explicit approval to advance `.github/visual-baseline.json` after this validation record is committed and the resulting exact documentation head is rechecked.
