@@ -3,7 +3,9 @@
 }
 
 .map {
-  --map-nav-clearance: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+  --map-nav-clearance: calc(
+    5.75rem + var(--app-shell-footer-visible-height, 0px) + env(safe-area-inset-bottom, 0px)
+  );
   --map-panel-width: min(23rem, 31vw);
   --map-control-size: 3rem;
 }
