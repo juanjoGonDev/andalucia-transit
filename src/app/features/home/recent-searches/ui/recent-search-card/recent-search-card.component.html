@@ -9,35 +9,48 @@
       <div class="recent-card__date">
         {{ searchDateKey | translate: { date: (searchDate | date: 'longDate') } }}
       </div>
-      <div class="recent-card__preview" [ngSwitch]="preview.status">
-        <div *ngSwitchCase="'loading'" class="recent-card__loading" role="status" aria-live="polite">
-          <span class="recent-card__visually-hidden">{{ loadingKey | translate }}</span>
-          <span class="recent-card__skeleton recent-card__skeleton--wide" aria-hidden="true"></span>
-          <span class="recent-card__skeleton" aria-hidden="true"></span>
-        </div>
-        <div *ngSwitchCase="'error'" class="recent-card__status recent-card__status--error">
-          {{ errorKey | translate }}
-        </div>
-        <div *ngSwitchCase="'disabled'" class="recent-card__status recent-card__status--disabled">
-          {{ previewDisabledKey | translate }}
-        </div>
-        <ng-container *ngSwitchCase="'ready'">
-          <ng-container *ngIf="hasEntries(preview); else noPreview">
-            <app-recent-search-preview-entry
-              *ngFor="let entry of entries(preview); trackBy: trackByEntry"
-              [entry]="entry"
-            ></app-recent-search-preview-entry>
-          </ng-container>
-        </ng-container>
-        <ng-template #noPreview>
-          <div class="recent-card__status recent-card__status--empty">
-            {{ noPreviewKey | translate }}
-          </div>
-        </ng-template>
+      <div class="recent-card__preview">
+        @switch (preview.status) {
+          @case ('loading') {
+            <div class="recent-card__loading" role="status" aria-live="polite">
+              <span class="recent-card__visually-hidden">{{ loadingKey | translate }}</span>
+              <span
+                class="recent-card__skeleton recent-card__skeleton--wide"
+                aria-hidden="true"
+              ></span>
+              <span class="recent-card__skeleton" aria-hidden="true"></span>
+            </div>
+          }
+          @case ('error') {
+            <div class="recent-card__status recent-card__status--error">
+              {{ errorKey | translate }}
+            </div>
+          }
+          @case ('disabled') {
+            <div class="recent-card__status recent-card__status--disabled">
+              {{ previewDisabledKey | translate }}
+            </div>
+          }
+          @case ('ready') {
+            @if (hasEntries(preview)) {
+              @for (entry of entries(preview); track trackByEntry($index, entry)) {
+                <app-recent-search-preview-entry
+                  [entry]="entry"
+                ></app-recent-search-preview-entry>
+              }
+            } @else {
+              <div class="recent-card__status recent-card__status--empty">
+                {{ noPreviewKey | translate }}
+              </div>
+            }
+          }
+        }
       </div>
-      <div *ngIf="showTodayNotice" class="recent-card__today">
-        {{ searchDateTodayKey | translate }}
-      </div>
+      @if (showTodayNotice) {
+        <div class="recent-card__today">
+          {{ searchDateTodayKey | translate }}
+        </div>
+      }
     </div>
   </button>
   <button
