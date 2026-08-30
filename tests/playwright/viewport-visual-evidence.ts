@@ -20,6 +20,6 @@ export async function captureViewportVisualEvidence(page: Page, name: string): P
     path: join(EVIDENCE_DIR, name),
     fullPage: false,
     animations: 'disabled',
-    caret: 'hide'
+    caret: 'hide',
   });
 }
