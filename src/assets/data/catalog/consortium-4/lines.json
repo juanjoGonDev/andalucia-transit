@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-28T17:11:43.604Z",
+    "generatedAt": "2026-08-30T10:19:13.499Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 4,
     "consortiumName": "Área de Málaga",
-    "itemCount": 106
+    "itemCount": 104
   },
   "lines": [
     {
@@ -340,31 +340,6 @@
       "modeId": "4",
       "operators": [
         "Metro Málaga"
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "330",
-      "code": "M-570",
-      "name": "Antequera-Casabermeja-Torremolinos (Servicio de Playa)",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Automóviles Mérida",
-        "S.L."
       ],
       "hasNews": false,
       "concession": null,
@@ -2605,31 +2580,6 @@
       "modeId": "1",
       "operators": [
         "Automóviles Mérida",
-        "S.L."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "332",
-      "code": "M-554",
-      "name": "Zalea- Cerralba-Parque Acuático de Torremolinos",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Autocares Sierra de las Nieves",
         "S.L."
       ],
       "hasNews": false,
