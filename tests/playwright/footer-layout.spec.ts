@@ -3,10 +3,12 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 const BASE_URL = process.env.E2E_BASE_URL;
 const STORAGE_NOTICE_KEY = 'andalucia-transit.privacyNotice.v1';
 const DISMISSED_VALUE = 'dismissed';
+const REPORTED_MOBILE_VIEWPORT = { width: 375, height: 667 } as const;
 const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 const VIEWPORT_EDGE_TOLERANCE_PX = 1;
 const MAX_BOTTOM_STACK_GAP_PX = 24;
+const MIN_CONTROL_NAVIGATION_GAP_PX = 12;
 const FLOW_ROUTE_PATHS = [
   '/',
   '/recents',
@@ -110,21 +112,35 @@ test.describe('legal footer and fixed navigation layout', () => {
         const navigation = page.locator('.shell-actions__shell');
 
         await expect(footer).not.toHaveClass(/legal-footer--overlay/u);
-        await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-        await expect
-          .poll(() =>
-            page.evaluate(
-              () =>
-                window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 1
-            )
-          )
-          .toBe(true);
+        await scrollToDocumentEnd(page);
 
         await assertNavigationAboveFooter(navigation, footer);
         await assertFooterTouchesViewportBottom(footer, viewport.height);
         await assertLegalLinkHitTestable(page, footer);
         await assertNoHorizontalOverflow(page);
       }
+    }
+  });
+
+  test('keeps Home search submit clear of raised navigation at document end', async ({ page }) => {
+    await dismissStorageNoticeOnLoad(page);
+
+    for (const viewport of [REPORTED_MOBILE_VIEWPORT, MOBILE_VIEWPORT]) {
+      await page.setViewportSize(viewport);
+      await open(page, '/?tab=search');
+
+      const submit = page.locator('.home__panel--search .route-search-form__submit');
+      const footer = page.locator('.legal-footer');
+      const navigation = page.locator('.shell-actions__shell');
+
+      await expect(submit).toBeVisible();
+      await expect(footer).not.toHaveClass(/legal-footer--overlay/u);
+      await scrollToDocumentEnd(page);
+
+      await assertNavigationAboveFooter(navigation, footer);
+      await assertControlAboveNavigation(page, submit, navigation);
+      await assertLegalLinkHitTestable(page, footer);
+      await assertNoHorizontalOverflow(page);
     }
   });
 });
@@ -149,6 +165,17 @@ async function showStorageNoticeOnLoad(page: Page): Promise<void> {
     },
     { noticeKey: STORAGE_NOTICE_KEY }
   );
+}
+
+async function scrollToDocumentEnd(page: Page): Promise<void> {
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 1
+      )
+    )
+    .toBe(true);
 }
 
 async function assertWorkspaceMatchesViewport(workspace: Locator, viewportHeight: number): Promise<void> {
@@ -210,6 +237,59 @@ async function assertNavigationAboveFooter(navigation: Locator, footer: Locator)
       };
     })
     .toEqual({ navigationAboveFooter: true, gapWithinLimit: true });
+}
+
+async function assertControlAboveNavigation(
+  page: Page,
+  control: Locator,
+  navigation: Locator
+): Promise<void> {
+  await expect
+    .poll(async () => {
+      const controlBox = await control.boundingBox();
+      const navigationBox = await navigation.boundingBox();
+
+      if (!controlBox || !navigationBox) {
+        return null;
+      }
+
+      const controlBottom = controlBox.y + controlBox.height;
+      const gap = navigationBox.y - controlBottom;
+      const center = {
+        x: controlBox.x + controlBox.width / 2,
+        y: controlBox.y + controlBox.height / 2
+      };
+      const lowerInset = {
+        x: controlBox.x + controlBox.width / 2,
+        y: controlBox.y + controlBox.height - 2
+      };
+      const hitTargets = await page.evaluate(
+        ({ centerPoint, lowerPoint }) => {
+          const matchesSubmit = (point: { x: number; y: number }): boolean =>
+            document
+              .elementFromPoint(point.x, point.y)
+              ?.closest('.route-search-form__submit')
+              ?.classList.contains('route-search-form__submit') ?? false;
+
+          return {
+            center: matchesSubmit(centerPoint),
+            lowerInset: matchesSubmit(lowerPoint)
+          };
+        },
+        { centerPoint: center, lowerPoint: lowerInset }
+      );
+
+      return {
+        gapSufficient: gap >= MIN_CONTROL_NAVIGATION_GAP_PX,
+        centerHitTarget: hitTargets.center,
+        lowerInsetHitTarget: hitTargets.lowerInset
+      };
+    })
+    .toEqual({
+      gapSufficient: true,
+      centerHitTarget: true,
+      lowerInsetHitTarget: true
+    });
 }
 
 async function assertFooterTouchesViewportBottom(footer: Locator, viewportHeight: number): Promise<void> {
