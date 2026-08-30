@@ -15,7 +15,10 @@
 .app-shell__route {
   flex: 0 0 auto;
   display: flex;
-  min-height: 100dvh;
+  min-height: max(
+    0px,
+    calc(100dvh - var(--app-shell-storage-notice-height, 0px))
+  );
   flex-direction: column;
 }
 
