@@ -1,4 +1,15 @@
-import { captureVisualEvidence, expect, test, type Page } from './visual-evidence.fixture';
+import {
+  selectVisualStopDetailEntry,
+  type VisualStopServicesSnapshotEntry,
+} from '../../scripts/visual/exact-visual-data';
+import {
+  captureVisualEvidence,
+  EXACT_VISUAL_REGRESSION,
+  expect,
+  installExactStopDetailVisualData,
+  test,
+  type Page,
+} from './visual-evidence.fixture';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const MOCK_MODE = process.env.E2E_MOCK_MODE;
@@ -14,17 +25,6 @@ const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 const DATA_ITEM_COUNT = 2;
 const NEWS_PAGE_SIZE = 8;
 const TRANSPARENT_BACKGROUND = 'rgba(0, 0, 0, 0)';
-
-interface StopServicesSnapshotFile {
-  readonly stops: readonly StopServicesSnapshotEntry[];
-}
-
-interface StopServicesSnapshotEntry {
-  readonly consortiumId: number;
-  readonly stopId: string;
-  readonly stopName: string;
-  readonly services: readonly unknown[];
-}
 
 async function open(page: Page, path: string): Promise<void> {
   const baseUrl = BASE_URL as string;
@@ -44,21 +44,21 @@ async function dismissDialog(page: Page): Promise<void> {
   await expect(page.locator('app-overlay-dialog-container[role="dialog"]')).toHaveCount(0);
 }
 
-async function loadPopulatedStop(page: Page): Promise<StopServicesSnapshotEntry> {
+async function loadPopulatedStop(page: Page): Promise<VisualStopServicesSnapshotEntry> {
+  if (EXACT_VISUAL_REGRESSION) {
+    const exactStop = selectVisualStopDetailEntry(undefined, true);
+    if (!exactStop) {
+      throw new Error('Exact Stop Detail fixture is missing its canonical populated stop.');
+    }
+    return exactStop;
+  }
+
   const baseUrl = BASE_URL as string;
   const response = await page.request.get(new URL(STOP_SERVICES_SNAPSHOT_PATH, baseUrl).toString());
   expect(response.ok()).toBe(true);
 
-  const snapshot = (await response.json()) as StopServicesSnapshotFile;
-  const stop = snapshot.stops.find(
-    (candidate) =>
-      Number.isSafeInteger(candidate.consortiumId) &&
-      candidate.consortiumId > 0 &&
-      candidate.stopId.trim().length > 0 &&
-      candidate.stopName.trim().length > 0 &&
-      candidate.services.length > 0,
-  );
-
+  const snapshot: unknown = await response.json();
+  const stop = selectVisualStopDetailEntry(snapshot, false);
   if (!stop) {
     throw new Error('Stop-services snapshot does not contain a populated stop fixture.');
   }
@@ -241,6 +241,7 @@ test.describe('deterministic interaction visual states', () => {
   });
 
   test('keeps stop tasks progressive and exposes real walking-map handoff', async ({ page }) => {
+    await installExactStopDetailVisualData(page);
     const stop = await loadPopulatedStop(page);
     await page.route(STOP_SCHEDULE_API_GLOB, async (route) => {
       await route.fulfill({ status: 503, contentType: 'application/json', body: '{}' });
