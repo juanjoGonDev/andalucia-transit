@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { parseVerifyProductChecks, selectPopulatedSpecs } from './capture-evidence.mjs';
+import {
+  buildScreenshotArgs,
+  parseVerifyProductChecks,
+  selectPopulatedSpecs,
+} from './capture-evidence.mjs';
 
 test('enables product checks by default', () => {
   assert.equal(parseVerifyProductChecks(), true);
@@ -33,4 +37,33 @@ test('runs the complete current-head product harness when product checks are ena
 
   assert.ok(headSpecs.includes('tests/playwright/map-exploration.spec.ts'));
   assert.ok(headSpecs.includes('tests/playwright/theme.contrast.spec.ts'));
+});
+
+test('stabilizes exact full-page screenshots before capture', () => {
+  const args = buildScreenshotArgs({
+    baseUrl: 'http://127.0.0.1:4200',
+    outDir: '/tmp/evidence',
+    route: '/news',
+    slug: 'news-data',
+    deterministicMapTiles: false,
+  });
+  const evalArg = args.find((arg) => arg.startsWith('--eval='));
+
+  assert.ok(evalArg, 'exact captures must inject a visual stabilizer');
+  assert.match(evalArg, /animation: none !important/u);
+  assert.match(evalArg, /transition: none !important/u);
+  assert.match(evalArg, /caret-color: transparent !important/u);
+});
+
+test('keeps deterministic map tiles alongside the exact capture stabilizer', () => {
+  const args = buildScreenshotArgs({
+    baseUrl: 'http://127.0.0.1:4200',
+    outDir: '/tmp/evidence',
+    route: '/map',
+    slug: 'map-data',
+    deterministicMapTiles: true,
+  });
+
+  assert.ok(args.some((arg) => arg.startsWith('--eval=')));
+  assert.ok(args.some((arg) => arg.startsWith('--evalFile=')));
 });

@@ -14,6 +14,8 @@ const HOST = '127.0.0.1';
 const SCRIPT_DIRECTORY = dirname(fileURLToPath(import.meta.url));
 const HARNESS_ROOT = resolve(SCRIPT_DIRECTORY, '..', '..');
 const MAP_TILE_SCRIPT = resolve(SCRIPT_DIRECTORY, 'determinize-map-tiles.js');
+const EXACT_CAPTURE_STABILIZER =
+  "document.head.append(Object.assign(document.createElement('style'), { textContent: '*, *::before, *::after { animation: none !important; transition: none !important; caret-color: transparent !important; }' }));";
 
 const POPULATED_SPECS = Object.freeze([
   'tests/playwright/deterministic-visual-states.spec.ts',
@@ -135,14 +137,7 @@ async function stopApplication(child, url) {
   await waitForUnavailable(url);
 }
 
-async function captureRoute({
-  harnessRoot,
-  outDir,
-  baseUrl,
-  route,
-  slug,
-  deterministicMapTiles,
-}) {
+export function buildScreenshotArgs({ baseUrl, outDir, route, slug, deterministicMapTiles }) {
   const args = [
     'run',
     'screenshot',
@@ -154,10 +149,23 @@ async function captureRoute({
     '--locale=es',
     '--breakpoints=390x844,1440x900',
     '--fullPage=true',
+    `--eval=${EXACT_CAPTURE_STABILIZER}`,
   ];
   if (deterministicMapTiles) {
     args.push(`--evalFile=${MAP_TILE_SCRIPT}`);
   }
+  return args;
+}
+
+async function captureRoute({
+  harnessRoot,
+  outDir,
+  baseUrl,
+  route,
+  slug,
+  deterministicMapTiles,
+}) {
+  const args = buildScreenshotArgs({ baseUrl, outDir, route, slug, deterministicMapTiles });
   await runCommand('pnpm', args, { cwd: harnessRoot });
 }
 
