@@ -6,6 +6,7 @@ import {
   captureVisualEvidence,
   EXACT_VISUAL_REGRESSION,
   expect,
+  installExactStopDetailVisualData,
   test,
   type Page,
 } from './visual-evidence.fixture';
@@ -129,6 +130,7 @@ test.describe('deterministic visual data states', () => {
   }) => {
     test.skip(MOCK_MODE !== 'data', 'Populated Stop Detail evidence requires E2E_MOCK_MODE=data.');
 
+    await installExactStopDetailVisualData(page);
     const stop = await loadPopulatedStop(page);
     await page.route(STOP_SCHEDULE_API_GLOB, async (route) => {
       await route.fulfill({ status: 503, contentType: 'application/json', body: '{}' });

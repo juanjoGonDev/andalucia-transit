@@ -68,6 +68,25 @@ export async function captureVisualEvidence(page: Page, name: string): Promise<v
   });
 }
 
+export async function installExactStopDetailVisualData(page: Page): Promise<void> {
+  if (!EXACT_VISUAL_REGRESSION) {
+    return;
+  }
+
+  await page.route(EXACT_STOP_SERVICES_SNAPSHOT_GLOB, async (route) => {
+    if (!getFramePath(route.request().frame().url()).startsWith(STOP_DETAIL_PATH_PREFIX)) {
+      await route.continue();
+      return;
+    }
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(buildExactStopServicesSnapshot()),
+    });
+  });
+}
+
 async function installExactVisualDataRoutes(page: Page): Promise<void> {
   await page.route(EXACT_LINE_CATALOG_GLOB, async (route) => {
     if (getFramePath(route.request().frame().url()) !== LINES_DIRECTORY_PATH) {
@@ -85,19 +104,6 @@ async function installExactVisualDataRoutes(page: Page): Promise<void> {
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({ lines: buildExactLineCatalog(consortiumId) }),
-    });
-  });
-
-  await page.route(EXACT_STOP_SERVICES_SNAPSHOT_GLOB, async (route) => {
-    if (!getFramePath(route.request().frame().url()).startsWith(STOP_DETAIL_PATH_PREFIX)) {
-      await route.continue();
-      return;
-    }
-
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(buildExactStopServicesSnapshot()),
     });
   });
 }
