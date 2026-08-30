@@ -186,6 +186,10 @@
   top: 9rem;
 }
 
+.map__leaflet .leaflet-bottom {
+  bottom: var(--map-nav-clearance);
+}
+
 .map__leaflet .leaflet-control-zoom a:hover,
 .map__leaflet .leaflet-control-zoom a:focus-visible {
   background: var(--color-primary-soft);
