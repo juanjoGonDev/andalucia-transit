@@ -37,6 +37,13 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 - Final reviewed-baseline run `33323861576` used immutable baseline `4f8ec97f59dab58a04c07a6aa6995f4fc4e6d9f1`. Head product checks passed 38/38 Playwright tests, all 36 required head screenshots were produced, exact comparison completed, and evidence retention succeeded. Enforcement alone failed because the reviewed baseline remains unchanged.
 - The final `diff/summary.json` compares 36 files, reports 36 changed files and 33,289,424 differing pixels. Thirty-four flow/full-page screenshots have dimension changes because the approved baseline predates the global legal/footer surfaces; Map remains exactly `390x844` and `1440x900` and differs only in pixels. Final regression artifact `pr-36-visual-regression-f8affd0f3914e98a2f013ea6d4b3753176338571` is artifact `9735719084`, digest `sha256:ce7dcfbd07822c27d596636cce6de32df8a6d652d5e604acba23319c4d8b2c2f`.
 - Manual final review of the Spanish Home document-end diagnostic and final mobile/desktop Map plus representative scrolling-route captures confirms the required spatial order and no footer/navigation clipping. Map retains its exact viewport dimensions with no document-scroll regression.
+- A subsequent final-review pass found a distinct Map regression in those captures: Leaflet/OpenStreetMap attribution remained at Leaflet's physical bottom edge while the application navigation/footer stack occupied that region, so on mobile the attribution was visually obscured and its OpenStreetMap link could not receive pointer hit-testing.
+- Regression commit `69c61601eed9dbc2547fb762a5c895dcb1b344fe` (`test(map): keep attribution above shell`) extended the existing Map layout browser test to require the attribution and OpenStreetMap link to be visible, spatially above navigation and hit-testable at both target viewports. Legal browser QA run `33326164991` reproduced the defect deterministically: 7 tests passed and the new Map test failed on the initial attempt and both retries with all three attribution predicates false.
+- Fix commit `337812d823662b10cdff2d50d20dca0b4f89d210` (`fix(map): keep attribution above shell`) raises Leaflet's bottom control container with the existing `--map-nav-clearance` custom property. It does not add a second footer/navigation height calculation or a Map-specific legal pixel constant.
+- Exact product head `337812d823662b10cdff2d50d20dca0b4f89d210` completed CI run `33326308733`, Legal browser QA run `33326308711`, and Publish PR visual evidence run `33326308776` successfully. The visual artifact is `pr-36-visual-evidence-337812d823662b10cdff2d50d20dca0b4f89d210` (artifact `9736366401`, digest `sha256:5e729b00e637941393c2401c9b31b8d6b08be1169db0f3c88002dd7ea7b5b53e`).
+- Reviewed-baseline run `33326308710` on the exact product head completed checkout, reviewed-baseline resolution, deterministic install, baseline render, head render, exact comparison and evidence retention successfully; only baseline enforcement failed. Its artifact is `pr-36-visual-regression-337812d823662b10cdff2d50d20dca0b4f89d210` (artifact `9736388371`, digest `sha256:fcf8cdbfdcbbafa2f8bcd951c6791c36ed60db715a18624f88d6488e26e534e6`).
+- Exact `diff/summary.json` for `337812d...` compares 36 files, reports 36 changed files and 33,295,701 differing pixels. The 34 scrolling/full-page captures have expected dimension changes from the global legal/footer surfaces. Map remains exactly `390x844` and `1440x900`; its updated attribution position changes pixels only, not viewport dimensions.
+- Direct review of current `home-search-end_es_390_844_viewport.png`, mobile/desktop Map captures and representative mobile/desktop Lines document bottoms confirms the final shell order. In the current Map captures the Leaflet/OpenStreetMap attribution is visibly above navigation, navigation is above the legal footer, and the browser test confirms the attribution link is actually hit-testable rather than merely visible through an overlay.
 
 ## Decision
 
@@ -51,7 +58,8 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 9. Account for footer and storage-notice size changes caused by viewport width, localization, dismissal and safe-area insets; never hard-code either legal surface's pixel height. Observe the stable storage-notice host so dismissal is reflected by a zero rendered height.
 10. Do not make legal copy non-interactive, click-through, or test-only-hidden to work around overlap. The notice remains fully usable while Map controls occupy only the remaining unobscured workspace.
 11. On narrow Map viewports, keep inspector panels in the lower half of the map and above the raised navigation by deriving their maximum scrollable height from the containing workspace and the same shell clearance. Do not solve the collision by moving the whole panel upward into the map's upper interaction region.
-12. Do not advance `.github/visual-baseline.json` without explicit approval.
+12. Treat third-party Map controls at the bottom edge as part of the immersive workspace collision contract. Leaflet's bottom controls consume the existing Map shell clearance so required attribution remains visible and interactive above the application navigation/footer stack without duplicating clearance arithmetic.
+13. Do not advance `.github/visual-baseline.json` without explicit approval.
 
 ## Acceptance
 
@@ -60,6 +68,7 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 - [x] First-visit Map search and inspector controls are hit-testable and usable without dismissing or clicking through the storage notice.
 - [x] Dismissing the storage notice expands Map to the full viewport in-place without reload, overlap or scroll.
 - [x] On Map, the legal footer is fixed at the viewport bottom and the floating navigation is immediately above it without overlap.
+- [x] Leaflet/OpenStreetMap attribution remains visible, spatially above application navigation and pointer-hit-testable on mobile and desktop Map viewports.
 - [x] On mobile Map, an open inspector remains wholly above the floating navigation, starts in the lower half of the map, and scrolls internally when its content exceeds the remaining lower-half space.
 - [x] On ordinary routes, the legal footer remains in document flow and is not permanently visible while the user is away from document end.
 - [x] At maximum scroll on ordinary routes, the floating navigation is above the legal footer; the legal links are below it, fully visible and clickable.
@@ -77,11 +86,11 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 
 ## Checks
 
-Focused Angular layout tests; `tests/playwright/footer-layout.spec.ts`; `tests/playwright/legal-privacy.spec.ts`; existing `tests/playwright/map-exploration.spec.ts`; existing `tests/playwright/map-focused-lines.spec.ts`; `tests/playwright/theme.contrast.spec.ts`; repository CI; legal browser QA; PR visual evidence; exact visual-regression comparison; manual review of the exact 390x844 document-end viewport capture and representative Map/mobile/desktop artifact screenshots; deterministic screenshot comparison against the immutable reviewed baseline.
+Focused Angular layout tests; `tests/playwright/footer-layout.spec.ts` including Leaflet/OpenStreetMap attribution hit-testing; `tests/playwright/legal-privacy.spec.ts`; existing `tests/playwright/map-exploration.spec.ts`; existing `tests/playwright/map-focused-lines.spec.ts`; `tests/playwright/theme.contrast.spec.ts`; repository CI; legal browser QA; PR visual evidence; exact visual-regression comparison; manual review of the exact 390x844 document-end viewport capture, current Map mobile/desktop attribution placement and representative scrolling-route artifact bottoms; deterministic screenshot comparison against the immutable reviewed baseline.
 
 ## Rollback
 
-Revert the footer/navigation/storage-clearance shell commits and the final Home visual-locale test commit. No API, persistence, database or remote migration is involved.
+Revert the footer/navigation/storage-clearance shell commits, the Home visual-locale test commit and the Map attribution clearance test/fix commits. No API, persistence, database or remote migration is involved.
 
 ## Delivery
 
@@ -89,4 +98,4 @@ Continue PR #36 on `codex/refactorizar-vista-segun-diseno-proporcionado` with at
 
 ## Status
 
-Footer-below-navigation, legal/footer shell integration, storage-notice clearance, Map viewport sizing, narrow inspector behavior and the Spanish document-end evidence contract are implemented and validated. Exact validated product/test head `f8affd0f3914e98a2f013ea6d4b3753176338571` is green for CI, Legal browser QA and normal PR visual evidence. Its reviewed-baseline run rendered all required evidence, passed the 38 head browser checks and exact comparator execution, then failed only because all 36 reviewed screenshots intentionally remain pinned to pre-legal/footer UI at baseline `4f8ec97f59dab58a04c07a6aa6995f4fc4e6d9f1`. The baseline has not been advanced. After recording this final evidence, the only remaining delivery action is explicit approval to update `.github/visual-baseline.json`; no merge, release or deployment is authorized.
+Footer-below-navigation, legal/footer shell integration, storage-notice clearance, Map viewport sizing, narrow inspector behavior, Spanish document-end evidence and Leaflet/OpenStreetMap attribution clearance are implemented and validated on product head `337812d823662b10cdff2d50d20dca0b4f89d210`. CI run `33326308733`, Legal browser QA run `33326308711` and Publish PR visual evidence run `33326308776` are green. Reviewed-baseline run `33326308710` renders all required evidence and completes exact comparison, then fails only the intentional enforcement gate because all 36 reviewed screenshots remain pinned to pre-legal/footer UI at baseline `4f8ec97f59dab58a04c07a6aa6995f4fc4e6d9f1`; its exact total is 33,295,701 differing pixels. The baseline has not been advanced. After this ledger update is itself validated on its exact head, the only remaining delivery action is explicit approval to update `.github/visual-baseline.json`; no merge, release or deployment is authorized.
