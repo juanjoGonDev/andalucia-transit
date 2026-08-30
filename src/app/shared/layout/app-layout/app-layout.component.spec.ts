@@ -81,30 +81,26 @@ class IntersectionObserverStub implements IntersectionObserver {
 
 class ResizeObserverStub implements ResizeObserver {
   static latest: ResizeObserverStub | null = null;
-  private target: Element | null = null;
+  private readonly targets = new Set<Element>();
 
   constructor(private readonly callback: ResizeObserverCallback) {
     ResizeObserverStub.latest = this;
   }
 
   disconnect(): void {
-    this.target = null;
+    this.targets.clear();
   }
 
   observe(target: Element): void {
-    this.target = target;
+    this.targets.add(target);
   }
 
   unobserve(target: Element): void {
-    if (this.target === target) {
-      this.target = null;
-    }
+    this.targets.delete(target);
   }
 
-  emit(): void {
-    const target = this.target;
-
-    if (!target) {
+  emit(target: Element): void {
+    if (!this.targets.has(target)) {
       throw new Error('ResizeObserver target is not registered.');
     }
 
@@ -122,8 +118,10 @@ class ResizeObserverStub implements ResizeObserver {
 
 const MAIN_ROLE = 'main';
 const FOOTER_CLEARANCE_PROPERTY = '--app-shell-footer-visible-height';
+const STORAGE_NOTICE_HEIGHT_PROPERTY = '--app-shell-storage-notice-height';
 const INITIAL_FOOTER_HEIGHT = 72;
 const RESIZED_FOOTER_HEIGHT = 96;
+const STORAGE_NOTICE_HEIGHT = 148;
 
 describe('AppLayoutComponent', () => {
   let fixture: ComponentFixture<AppLayoutComponent>;
@@ -262,9 +260,34 @@ describe('AppLayoutComponent', () => {
     );
 
     bounds.and.returnValue(new DOMRect(0, 0, 390, RESIZED_FOOTER_HEIGHT));
-    resizeObserver.emit();
+    resizeObserver.emit(footer);
     expect(fixture.nativeElement.style.getPropertyValue(FOOTER_CLEARANCE_PROPERTY)).toBe(
       `${RESIZED_FOOTER_HEIGHT}px`
     );
+  });
+
+  it('publishes the rendered storage notice height and clears it after dismissal', () => {
+    const noticeHost = fixture.nativeElement.querySelector('app-storage-notice') as HTMLElement | null;
+    const resizeObserver = ResizeObserverStub.latest;
+
+    expect(noticeHost).not.toBeNull();
+    expect(resizeObserver).not.toBeNull();
+
+    if (!noticeHost || !resizeObserver) {
+      return;
+    }
+
+    const bounds = spyOn(noticeHost, 'getBoundingClientRect').and.returnValue(
+      new DOMRect(0, 0, 390, STORAGE_NOTICE_HEIGHT)
+    );
+
+    resizeObserver.emit(noticeHost);
+    expect(fixture.nativeElement.style.getPropertyValue(STORAGE_NOTICE_HEIGHT_PROPERTY)).toBe(
+      `${STORAGE_NOTICE_HEIGHT}px`
+    );
+
+    bounds.and.returnValue(new DOMRect(0, 0, 390, 0));
+    resizeObserver.emit(noticeHost);
+    expect(fixture.nativeElement.style.getPropertyValue(STORAGE_NOTICE_HEIGHT_PROPERTY)).toBe('0px');
   });
 });
