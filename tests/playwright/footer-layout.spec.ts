@@ -89,6 +89,7 @@ test.describe('legal footer and fixed navigation layout', () => {
       await assertWorkspaceMatchesViewport(workspace, viewport.height);
       await assertNoVerticalDocumentScroll(page);
       await assertNavigationAboveFooter(navigation, footer);
+      await assertMapAttributionClearOfNavigation(page, navigation);
       await assertFooterTouchesViewportBottom(footer, viewport.height);
       await assertLegalLinkHitTestable(page, footer);
       expect(await footer.evaluate((element) => getComputedStyle(element).position)).toBe('fixed');
@@ -238,6 +239,60 @@ async function assertNavigationAboveFooter(navigation: Locator, footer: Locator)
       };
     })
     .toEqual({ navigationAboveFooter: true, gapWithinLimit: true });
+}
+
+async function assertMapAttributionClearOfNavigation(page: Page, navigation: Locator): Promise<void> {
+  const attribution = page.locator('.leaflet-control-attribution');
+  const osmLink = attribution.getByRole('link', { name: /OpenStreetMap/u });
+
+  await expect(attribution).toBeVisible();
+  await expect(osmLink).toBeVisible();
+
+  await expect
+    .poll(async () => {
+      const attributionBox = await attribution.boundingBox();
+      const osmLinkBox = await osmLink.boundingBox();
+      const navigationBox = await navigation.boundingBox();
+
+      if (!attributionBox || !osmLinkBox || !navigationBox) {
+        return null;
+      }
+
+      const hitTest = await page.evaluate(
+        ({ attributionPoint, osmPoint }) => ({
+          attribution:
+            document
+              .elementFromPoint(attributionPoint.x, attributionPoint.y)
+              ?.closest('.leaflet-control-attribution') !== null,
+          osmLink:
+            document.elementFromPoint(osmPoint.x, osmPoint.y)?.closest('a')?.textContent?.includes(
+              'OpenStreetMap'
+            ) ?? false
+        }),
+        {
+          attributionPoint: {
+            x: attributionBox.x + attributionBox.width / 2,
+            y: attributionBox.y + attributionBox.height / 2
+          },
+          osmPoint: {
+            x: osmLinkBox.x + osmLinkBox.width / 2,
+            y: osmLinkBox.y + osmLinkBox.height / 2
+          }
+        }
+      );
+
+      return {
+        attributionAboveNavigation:
+          attributionBox.y + attributionBox.height <= navigationBox.y + VIEWPORT_EDGE_TOLERANCE_PX,
+        attributionHitTestable: hitTest.attribution,
+        osmLinkHitTestable: hitTest.osmLink
+      };
+    })
+    .toEqual({
+      attributionAboveNavigation: true,
+      attributionHitTestable: true,
+      osmLinkHitTestable: true
+    });
 }
 
 async function assertControlClearOfNavigation(
