@@ -26,16 +26,42 @@ test.describe('legal footer and fixed navigation layout', () => {
   test.use({ locale: 'es-ES' });
   test.skip(!BASE_URL, 'E2E_BASE_URL is required.');
 
-  test.beforeEach(async ({ page }) => {
-    await page.addInitScript(
-      ({ noticeKey, dismissedValue }) => {
-        window.localStorage.setItem(noticeKey, dismissedValue);
-      },
-      { noticeKey: STORAGE_NOTICE_KEY, dismissedValue: DISMISSED_VALUE }
-    );
+  test('keeps first-visit storage notice above immersive map controls without document scroll', async ({
+    page
+  }) => {
+    await showStorageNoticeOnLoad(page);
+
+    for (const viewport of [MOBILE_VIEWPORT, DESKTOP_VIEWPORT]) {
+      await page.setViewportSize(viewport);
+      await open(page, '/map');
+
+      const notice = page.locator('.storage-notice');
+      const workspace = page.locator('.map__workspace');
+
+      await expect(notice).toBeVisible();
+      await expect(workspace).toBeVisible();
+      await assertWorkspaceFillsRemainingViewport(workspace, notice, viewport.height);
+      await assertNoVerticalDocumentScroll(page);
+
+      const searchTrigger = page.locator('.map-search__trigger');
+      await searchTrigger.click();
+      await expect(page.locator('#map-network-search')).toBeFocused();
+
+      const linesTrigger = page.locator('.map__inspector--lines > summary');
+      await linesTrigger.click();
+      await expect(page.locator('.map__inspector--lines .map__panel')).toBeVisible();
+
+      await notice.locator('.storage-notice__dismiss').click();
+      await expect(notice).toBeHidden();
+      await assertWorkspaceMatchesViewport(workspace, viewport.height);
+      await assertNoVerticalDocumentScroll(page);
+      await assertNoHorizontalOverflow(page);
+    }
   });
 
   test('keeps immersive map at full viewport with navigation above the legal footer', async ({ page }) => {
+    await dismissStorageNoticeOnLoad(page);
+
     for (const viewport of [MOBILE_VIEWPORT, DESKTOP_VIEWPORT]) {
       await page.setViewportSize(viewport);
       await open(page, '/map');
@@ -72,6 +98,8 @@ test.describe('legal footer and fixed navigation layout', () => {
   });
 
   test('keeps navigation above the legal footer at maximum scroll across shell routes', async ({ page }) => {
+    await dismissStorageNoticeOnLoad(page);
+
     for (const viewport of [MOBILE_VIEWPORT, DESKTOP_VIEWPORT]) {
       await page.setViewportSize(viewport);
 
@@ -105,6 +133,24 @@ async function open(page: Page, path: string): Promise<void> {
   await page.goto(new URL(path, BASE_URL as string).toString());
 }
 
+async function dismissStorageNoticeOnLoad(page: Page): Promise<void> {
+  await page.addInitScript(
+    ({ noticeKey, dismissedValue }) => {
+      window.localStorage.setItem(noticeKey, dismissedValue);
+    },
+    { noticeKey: STORAGE_NOTICE_KEY, dismissedValue: DISMISSED_VALUE }
+  );
+}
+
+async function showStorageNoticeOnLoad(page: Page): Promise<void> {
+  await page.addInitScript(
+    ({ noticeKey }) => {
+      window.localStorage.removeItem(noticeKey);
+    },
+    { noticeKey: STORAGE_NOTICE_KEY }
+  );
+}
+
 async function assertWorkspaceMatchesViewport(workspace: Locator, viewportHeight: number): Promise<void> {
   const workspaceBox = await workspace.boundingBox();
   expect(workspaceBox).not.toBeNull();
@@ -116,6 +162,29 @@ async function assertWorkspaceMatchesViewport(workspace: Locator, viewportHeight
   expect(Math.abs(workspaceBox.height - viewportHeight)).toBeLessThanOrEqual(
     VIEWPORT_EDGE_TOLERANCE_PX
   );
+  expect(Math.abs(workspaceBox.y + workspaceBox.height - viewportHeight)).toBeLessThanOrEqual(
+    VIEWPORT_EDGE_TOLERANCE_PX
+  );
+}
+
+async function assertWorkspaceFillsRemainingViewport(
+  workspace: Locator,
+  notice: Locator,
+  viewportHeight: number
+): Promise<void> {
+  const workspaceBox = await workspace.boundingBox();
+  const noticeBox = await notice.boundingBox();
+
+  expect(workspaceBox).not.toBeNull();
+  expect(noticeBox).not.toBeNull();
+
+  if (!workspaceBox || !noticeBox) {
+    return;
+  }
+
+  const noticeBottom = noticeBox.y + noticeBox.height;
+
+  expect(Math.abs(workspaceBox.y - noticeBottom)).toBeLessThanOrEqual(VIEWPORT_EDGE_TOLERANCE_PX);
   expect(Math.abs(workspaceBox.y + workspaceBox.height - viewportHeight)).toBeLessThanOrEqual(
     VIEWPORT_EDGE_TOLERANCE_PX
   );
