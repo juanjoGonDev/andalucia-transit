@@ -14,9 +14,12 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 - The previous flow footer reserved navigation clearance below its links and the immersive footer used `bottom: var(--app-shell-navigation-clearance)`. Those two rules explicitly encoded the rejected footer-above-navigation ordering.
 - `MapComponent` owns an immersive viewport workspace and existing Playwright coverage requires its lower edge to match the viewport edge.
 - The shared layout context already owns routed surface and footer placement state. No route-name selectors or per-feature footer offsets are required.
-- Exact visual-regression run `33305555767`, job `99241395507`, reproduced a second shell regression on head `b429655369679a876f45f2fbd81028c110b1dd2c`: 7 Map/browser tests fail because the first-visit `app-storage-notice` sits above the routed section with a higher stacking layer and intercepts pointer events intended for Map search and inspector controls.
-- The same first-visit notice also precedes a route with a `100dvh` minimum and a Map workspace with `100dvh` height. Leaving both dimensions unconditional can create document scroll even though Map is specified as immersive and non-scrolling.
+- Exact visual-regression evidence on head `b429655369679a876f45f2fbd81028c110b1dd2c` reproduced a second shell regression: first-visit `app-storage-notice` sat above the routed section with a higher stacking layer and intercepted pointer events intended for Map search and inspector controls.
+- The same first-visit notice also preceded a route with a `100dvh` minimum and a Map workspace with `100dvh` height. Leaving both dimensions unconditional could create document scroll even though Map is specified as immersive and non-scrolling.
 - `app-storage-notice` itself remains mounted after dismissal while its inner notice is removed, so its host is a stable element whose rendered block size can be observed without route-specific wiring or duplicated legal state.
+- Shared storage-notice clearance and Map viewport sizing are now implemented. Publish PR visual evidence run `33314285300` on head `927d533bafd3e47896eb92cb827f0e9aa59aaa34` completed formatting, lint, script tests, 473/473 Angular tests and build, then ran 39 browser product checks.
+- That run passed 38/39 product checks. The only remaining deterministic failure is the existing mobile Map exploration invariant: after reserving the raised navigation/footer stack, `.map__panel` starts at `y=515.5` while the lower-half boundary is `y=530.5`. The same value reproduced on both retries.
+- The failure demonstrates that raising the panel bottom boundary alone is insufficient on narrow viewports: the panel must also cap its scrollable height to the lower-half space that remains above the raised navigation.
 
 ## Decision
 
@@ -30,7 +33,8 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 8. Map uses the same measured storage-notice height to consume exactly the remaining viewport below the notice. Dismissing the notice returns the measurement to zero and Map expands back to the full viewport without reload or document scroll.
 9. Account for footer and storage-notice size changes caused by viewport width, localization, dismissal and safe-area insets; never hard-code either legal surface's pixel height. Observe the stable storage-notice host so dismissal is reflected by a zero rendered height.
 10. Do not make legal copy non-interactive, click-through, or test-only-hidden to work around overlap. The notice remains fully usable while Map controls occupy only the remaining unobscured workspace.
-11. Do not advance `.github/visual-baseline.json` without explicit approval.
+11. On narrow Map viewports, keep inspector panels in the lower half of the map and above the raised navigation by deriving their maximum scrollable height from the containing workspace and the same shell clearance. Do not solve the collision by moving the whole panel upward into the map's upper interaction region.
+12. Do not advance `.github/visual-baseline.json` without explicit approval.
 
 ## Acceptance
 
@@ -39,6 +43,7 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 - [ ] First-visit Map search and inspector controls are hit-testable and usable without dismissing or clicking through the storage notice.
 - [ ] Dismissing the storage notice expands Map to the full viewport in-place without reload, overlap or scroll.
 - [ ] On Map, the legal footer is fixed at the viewport bottom and the floating navigation is immediately above it without overlap.
+- [ ] On mobile Map, an open inspector remains wholly above the floating navigation, starts in the lower half of the map, and scrolls internally when its content exceeds the remaining lower-half space.
 - [ ] On ordinary routes, the legal footer remains in document flow and is not permanently visible while the user is away from document end.
 - [ ] At maximum scroll on ordinary routes, the floating navigation is above the legal footer; the legal links are below it, fully visible and clickable.
 - [ ] The ordering and shell clearance are implemented at the shared shell boundary and therefore apply to all current/future routes using `AppLayoutComponent`, not only Home or legal pages.
@@ -66,4 +71,4 @@ Continue PR #36 on `codex/refactorizar-vista-segun-diseno-proporcionado` with at
 
 ## Status
 
-Footer-below-navigation behavior is implemented and browser-covered on `b429655369679a876f45f2fbd81028c110b1dd2c`. Exact visual-regression evidence then exposed the first-visit storage notice overlapping Map controls; shared dynamic storage-notice clearance and regression coverage are pending.
+Footer-below-navigation, dynamic storage-notice clearance and Map viewport sizing are implemented through head `927d533bafd3e47896eb92cb827f0e9aa59aaa34`. Core quality checks on Publish PR visual evidence run `33314285300` are green and 38/39 product browser checks pass. The remaining owned regression is the mobile inspector panel height/position invariant; fix and exact-head reruns are pending.
