@@ -30,6 +30,13 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 - Exact-head normal visual evidence is retained as `pr-36-visual-evidence-35fe923dbff680d6915cc68b98fcae1c50ea2038` (artifact `9735113647`, digest `sha256:779b2eb0851d1bddddc99b79d6e014493d4bbf652c5768994e49bb03a6780b5f`).
 - Exact-head reviewed-baseline run `33321733796` again completed rendering/comparison and failed only baseline enforcement. Artifact `pr-36-visual-regression-35fe923dbff680d6915cc68b98fcae1c50ea2038` is `9735140931` with digest `sha256:eb76fcc5d7d7431952f13b80da1ffead9696dd08fed47993f9b4b4db575c2bc6`.
 - The exact-head `diff/summary.json` is byte-identical to the product-validation summary: 36/36 changed and 33,291,773 differing pixels. SHA-256 checks of the document-end diagnostic, mobile/desktop Map, mobile Home and desktop Lines actual screenshots are also identical between the product-validation and documentation heads, proving the documentation-only commit did not alter the rendered UI.
+- Final review found that `home-search-end_es_390_844_viewport.png` was named as Spanish evidence but the Home Playwright suite inherited the default browser locale. The analogous interaction-state suite already pins `es-ES`; `tests/playwright/home-tabs.layout.spec.ts` now does the same so the document-end diagnostic validates the actual Spanish wrapping contract instead of an English rendering.
+- Locale fix commit `c7d1b8a6f7ca46ffbb531ba961e67dd9759edd23` added only `test.use({ locale: 'es-ES' })`. Its first PR visual run exposed a missing final newline through the workflow's Prettier gate; formatting-only commit `f8affd0f3914e98a2f013ea6d4b3753176338571` corrected that without product-code changes.
+- Exact head `f8affd0f3914e98a2f013ea6d4b3753176338571` completed CI run `33323861566`, Legal browser QA run `33323861575`, and Publish PR visual evidence run `33323861570` successfully. The normal visual workflow passed quality gates, populated browser checks, captures, empty-state checks, immutable-head verification, artifact retention and publication.
+- Final normal visual artifact `pr-36-visual-evidence-f8affd0f3914e98a2f013ea6d4b3753176338571` is artifact `9735700796`, digest `sha256:1b8be73a3582c9c29af80a908ad1d000dc71c848884033b9d8f8c0e60e0364bf`.
+- Final reviewed-baseline run `33323861576` used immutable baseline `4f8ec97f59dab58a04c07a6aa6995f4fc4e6d9f1`. Head product checks passed 38/38 Playwright tests, all 36 required head screenshots were produced, exact comparison completed, and evidence retention succeeded. Enforcement alone failed because the reviewed baseline remains unchanged.
+- The final `diff/summary.json` compares 36 files, reports 36 changed files and 33,289,424 differing pixels. Thirty-four flow/full-page screenshots have dimension changes because the approved baseline predates the global legal/footer surfaces; Map remains exactly `390x844` and `1440x900` and differs only in pixels. Final regression artifact `pr-36-visual-regression-f8affd0f3914e98a2f013ea6d4b3753176338571` is artifact `9735719084`, digest `sha256:ce7dcfbd07822c27d596636cce6de32df8a6d652d5e604acba23319c4d8b2c2f`.
+- Manual final review of the Spanish Home document-end diagnostic and final mobile/desktop Map plus representative scrolling-route captures confirms the required spatial order and no footer/navigation clipping. Map retains its exact viewport dimensions with no document-scroll regression.
 
 ## Decision
 
@@ -64,16 +71,17 @@ Refine the legal footer introduced in PR #36 so it never steals usable viewport 
 - [x] No horizontal overflow at mobile or desktop evidence viewports.
 - [x] Focused Angular tests cover shell-owned footer/storage clearance lifecycle; browser tests cover the spatial ordering on representative scrolling routes plus first-visit and dismissed-notice Map states.
 - [x] Existing Map exploration, focused-lines and rendered-contrast browser suites pass unchanged so the notice fix cannot merely bypass product interactions.
+- [x] The document-end diagnostic is executed under `es-ES`, matching its `_es_` evidence contract and exercising Spanish footer/form wrapping.
 - [x] Lint, Angular tests, deploy/build checks, legal browser QA and PR visual evidence pass on the exact validated heads.
 - [x] Reviewed visual baseline remains unchanged until explicit approval.
 
 ## Checks
 
-Focused Angular layout tests; `tests/playwright/footer-layout.spec.ts`; `tests/playwright/legal-privacy.spec.ts`; existing `tests/playwright/map-exploration.spec.ts`; existing `tests/playwright/map-focused-lines.spec.ts`; `tests/playwright/theme.contrast.spec.ts`; repository CI; legal browser QA; PR visual evidence; exact visual-regression comparison; manual review of the exact 390x844 document-end viewport capture and representative Map/mobile/desktop artifact screenshots; deterministic screenshot hash comparison across the documentation-only head.
+Focused Angular layout tests; `tests/playwright/footer-layout.spec.ts`; `tests/playwright/legal-privacy.spec.ts`; existing `tests/playwright/map-exploration.spec.ts`; existing `tests/playwright/map-focused-lines.spec.ts`; `tests/playwright/theme.contrast.spec.ts`; repository CI; legal browser QA; PR visual evidence; exact visual-regression comparison; manual review of the exact 390x844 document-end viewport capture and representative Map/mobile/desktop artifact screenshots; deterministic screenshot comparison against the immutable reviewed baseline.
 
 ## Rollback
 
-Revert the footer/navigation/storage-clearance shell commits. No API, persistence, database or remote migration is involved.
+Revert the footer/navigation/storage-clearance shell commits and the final Home visual-locale test commit. No API, persistence, database or remote migration is involved.
 
 ## Delivery
 
@@ -81,4 +89,4 @@ Continue PR #36 on `codex/refactorizar-vista-segun-diseno-proporcionado` with at
 
 ## Status
 
-Footer-below-navigation, legal/footer shell integration, storage-notice clearance, Map viewport sizing and the narrow inspector regression are implemented and fully validated. Product head `307cf04fc711e6b85ab625523f1a1091c5930ae1` is green for CI, Legal browser QA and normal PR visual evidence. Documentation head `35fe923dbff680d6915cc68b98fcae1c50ea2038` is also green for those gates and rendered byte-identical reviewed-baseline summaries plus identical representative screenshot hashes. The reviewed baseline remains intentionally unchanged, so Visual regression baseline is the only red gate. The only remaining delivery action is explicit approval to update `.github/visual-baseline.json`; no merge, release or deployment is authorized.
+Footer-below-navigation, legal/footer shell integration, storage-notice clearance, Map viewport sizing, narrow inspector behavior and the Spanish document-end evidence contract are implemented and validated. Exact validated product/test head `f8affd0f3914e98a2f013ea6d4b3753176338571` is green for CI, Legal browser QA and normal PR visual evidence. Its reviewed-baseline run rendered all required evidence, passed the 38 head browser checks and exact comparator execution, then failed only because all 36 reviewed screenshots intentionally remain pinned to pre-legal/footer UI at baseline `4f8ec97f59dab58a04c07a6aa6995f4fc4e6d9f1`. The baseline has not been advanced. After recording this final evidence, the only remaining delivery action is explicit approval to update `.github/visual-baseline.json`; no merge, release or deployment is authorized.
