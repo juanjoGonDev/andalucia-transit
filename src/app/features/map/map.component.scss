@@ -6,17 +6,13 @@
   --map-nav-clearance: calc(5.75rem + env(safe-area-inset-bottom, 0px));
   --map-panel-width: min(23rem, 31vw);
   --map-control-size: 3rem;
-  --map-workspace-height: max(
-    0px,
-    calc(100dvh - var(--app-shell-storage-notice-height, 0px))
-  );
 }
 
 .map__workspace {
   position: relative;
   width: 100%;
-  height: var(--map-workspace-height);
-  min-height: min(34rem, var(--map-workspace-height));
+  height: 100%;
+  min-height: 0;
   overflow: hidden;
   background: var(--color-surface-muted);
 }
@@ -360,10 +356,6 @@
 }
 
 @media (min-width: 40rem) {
-  .map__workspace {
-    min-height: min(40rem, var(--map-workspace-height));
-  }
-
   .map__search-shell {
     top: var(--space-lg);
     left: var(--space-lg);
@@ -408,10 +400,6 @@
 }
 
 @media (min-width: 64rem) {
-  .map__workspace {
-    min-height: min(42rem, var(--map-workspace-height));
-  }
-
   .map__panel {
     width: var(--map-panel-width);
   }
