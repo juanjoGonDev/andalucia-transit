@@ -201,7 +201,10 @@
   left: var(--space-sm);
   display: flex;
   flex-direction: column;
-  max-height: min(50dvh, 26rem);
+  max-height: min(
+    26rem,
+    calc(50% - var(--map-nav-clearance) - var(--space-sm) - var(--space-xs))
+  );
   padding: var(--space-md-plus);
   overflow-y: auto;
   overscroll-behavior: contain;
