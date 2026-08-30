@@ -13,7 +13,6 @@
   z-index: 1;
   gap: clamp(calc(var(--space-lg) + var(--space-3xs)), 4vw, var(--space-3xl));
   padding-block-start: clamp(var(--space-lg), 5vw, var(--space-3xl));
-  padding-block-end: 0;
 }
 
 .home__header {
