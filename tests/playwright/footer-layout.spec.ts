@@ -191,21 +191,25 @@ async function assertWorkspaceFillsRemainingViewport(
 }
 
 async function assertNavigationAboveFooter(navigation: Locator, footer: Locator): Promise<void> {
-  const navigationBox = await navigation.boundingBox();
-  const footerBox = await footer.boundingBox();
+  await expect
+    .poll(async () => {
+      const navigationBox = await navigation.boundingBox();
+      const footerBox = await footer.boundingBox();
 
-  expect(navigationBox).not.toBeNull();
-  expect(footerBox).not.toBeNull();
+      if (!navigationBox || !footerBox) {
+        return null;
+      }
 
-  if (!navigationBox || !footerBox) {
-    return;
-  }
+      const navigationBottom = navigationBox.y + navigationBox.height;
+      const gap = footerBox.y - navigationBottom;
 
-  const navigationBottom = navigationBox.y + navigationBox.height;
-  const gap = footerBox.y - navigationBottom;
-
-  expect(navigationBottom).toBeLessThanOrEqual(footerBox.y + VIEWPORT_EDGE_TOLERANCE_PX);
-  expect(gap).toBeLessThanOrEqual(MAX_BOTTOM_STACK_GAP_PX);
+      return {
+        navigationAboveFooter:
+          navigationBottom <= footerBox.y + VIEWPORT_EDGE_TOLERANCE_PX,
+        gapWithinLimit: gap <= MAX_BOTTOM_STACK_GAP_PX
+      };
+    })
+    .toEqual({ navigationAboveFooter: true, gapWithinLimit: true });
 }
 
 async function assertFooterTouchesViewportBottom(footer: Locator, viewportHeight: number): Promise<void> {
