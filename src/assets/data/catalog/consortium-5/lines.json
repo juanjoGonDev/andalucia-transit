@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-29T11:30:12.449Z",
+    "generatedAt": "2026-08-30T10:19:13.499Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 5,
     "consortiumName": "Campo de Gibraltar",
-    "itemCount": 15
+    "itemCount": 14
   },
   "lines": [
     {
@@ -60,30 +60,6 @@
       "id": "9",
       "code": "M-161",
       "name": "Barbate-Facinas-Algeciras",
-      "mode": "Autobús",
-      "modeId": "1",
-      "operators": [
-        "Transportes Generales Comes"
-      ],
-      "hasNews": true,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
-      "id": "19",
-      "code": "M-470",
-      "name": "Bus Playa",
       "mode": "Autobús",
       "modeId": "1",
       "operators": [

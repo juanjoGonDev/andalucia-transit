@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-08-29T11:30:12.449Z",
+    "generatedAt": "2026-08-30T10:19:13.499Z",
     "timezone": "Europe/Madrid",
     "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía",
     "consortiumId": 3,
     "consortiumName": "Área de Granada",
-    "itemCount": 71
+    "itemCount": 70
   },
   "lines": [
     {
@@ -1208,31 +1208,6 @@
       "inboundPath": []
     },
     {
-      "id": "971",
-      "code": "0110-V",
-      "name": "Granada - Peligros -Caserío Fonseca - Monteluz",
-      "mode": "AUTOBUS",
-      "modeId": "1",
-      "operators": [
-        "NEX Continental Holdings",
-        "S.L.U."
-      ],
-      "hasNews": false,
-      "concession": null,
-      "notes": null,
-      "modeNotes": null,
-      "accessibility": null,
-      "thickness": null,
-      "color": null,
-      "outboundThermometerUrl": null,
-      "inboundThermometerUrl": null,
-      "hasOutbound": false,
-      "hasInbound": false,
-      "path": [],
-      "outboundPath": [],
-      "inboundPath": []
-    },
-    {
       "id": "1130",
       "code": "0390P",
       "name": "Granada - Pinos Genil - Güejar Sierra provisional",
@@ -1567,7 +1542,7 @@
         "Alsa Granada Airport",
         "S.L."
       ],
-      "hasNews": true,
+      "hasNews": false,
       "concession": null,
       "notes": null,
       "modeNotes": null,
