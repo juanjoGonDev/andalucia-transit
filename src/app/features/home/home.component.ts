@@ -2,35 +2,23 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   QueryList,
   ViewChild,
   ViewChildren,
-  computed,
   inject,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
-import { LanguageService } from '@core/services/language.service';
 import { HomeTabStorage } from '@data/home/home-tab.storage';
-import {
-  FavoriteCollectionFacade,
-  FavoriteCollectionSnapshot,
-} from '@domain/favorites/favorite-collection.facade';
 import { RouteSearchExecutionService } from '@domain/route-search/route-search-execution.service';
 import {
   RouteSearchSelection,
   RouteSearchStateService,
 } from '@domain/route-search/route-search-state.service';
-import { getFavoritesUiCopy } from '@features/favorites/favorites-ui.copy';
-import {
-  HomeFavoritePreviewItem,
-  HomeFavoritesPreviewComponent,
-} from '@features/home/favorites-preview/home-favorites-preview.component';
+import { HomeFavoritesPanelComponent } from '@features/home/favorites-preview/home-favorites-panel.component';
 import { HOME_TABS, HomeTabId } from '@features/home/home.types';
 import { HomeRecentSearchesComponent } from '@features/home/recent-searches/home-recent-searches.component';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
@@ -59,11 +47,6 @@ const ACTIVE_TAB_INDEX = 0 as const;
 const INACTIVE_TAB_INDEX = -1 as const;
 const STEP_PREVIOUS = -1 as const;
 const STEP_NEXT = 1 as const;
-const EMPTY_FAVORITE_COLLECTION: FavoriteCollectionSnapshot = {
-  stops: [],
-  lines: [],
-  total: 0,
-};
 
 @Component({
   selector: 'app-home',
@@ -73,7 +56,7 @@ const EMPTY_FAVORITE_COLLECTION: FavoriteCollectionSnapshot = {
     TranslateModule,
     RouteSearchFormComponent,
     HomeRecentSearchesComponent,
-    HomeFavoritesPreviewComponent,
+    HomeFavoritesPanelComponent,
     AccessibleButtonDirective,
     AppLayoutContentDirective,
   ],
@@ -85,14 +68,10 @@ export class HomeComponent {
   private readonly router = inject(Router);
   private readonly routeSearchState = inject(RouteSearchStateService);
   private readonly execution = inject(RouteSearchExecutionService);
-  private readonly favoriteCollection = inject(FavoriteCollectionFacade);
-  private readonly language = inject(LanguageService);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
   private readonly homeTabStorage = inject(HomeTabStorage);
 
   private readonly translation = APP_CONFIG.translationKeys.home;
-  private readonly favoritePreviewLimit = APP_CONFIG.homeData.favoriteStops.homePreviewLimit;
   private readonly defaultTab = APP_CONFIG.homeData.tabs.defaultTab;
   private readonly tabQueryParam = APP_CONFIG.homeData.tabs.queryParam;
   private readonly supportedTabs = new Set<HomeTabId>(HOME_TABS);
@@ -130,15 +109,8 @@ export class HomeComponent {
     { id: 'favorites', labelKey: this.translation.tabs.favorites },
   ];
   protected readonly tabRole = TAB_ROLE;
-  protected readonly summaryTitleKey = this.translation.summary.lastSearch;
-  protected readonly summarySeeAllKey = this.translation.summary.seeAll;
-  protected readonly summaryEmptyKey = this.translation.summary.empty;
-  protected readonly searchTitleKey = this.translation.sections.search.title;
   protected readonly recentStopsTitleKey = this.translation.sections.recentStops.title;
   protected readonly recentStopsClearKey = this.translation.sections.recentStops.actions.clearAll;
-  protected readonly favoritesCopy = computed(() => getFavoritesUiCopy(this.language.currentLanguage()));
-  protected readonly favoritesCodeLabelKey = APP_CONFIG.translationKeys.favorites.list.code;
-  protected readonly favoritesNucleusLabelKey = APP_CONFIG.translationKeys.favorites.list.nucleus;
   protected readonly activeTab = signal<HomeTabId>(this.defaultTab);
   protected readonly recentClearActionVisible = signal(false);
   protected readonly layoutNavigationKey = signal<AppLayoutNavigationKey>(APP_CONFIG.routes.home);
@@ -149,29 +121,11 @@ export class HomeComponent {
   @ViewChildren('homeTabButton', { read: AccessibleButtonDirective })
   private tabButtons?: QueryList<AccessibleButtonDirective>;
 
-  private readonly favorites = signal<FavoriteCollectionSnapshot>(EMPTY_FAVORITE_COLLECTION);
-  protected readonly favoritePreview = computed<readonly HomeFavoritePreviewItem[]>(() => {
-    const current = this.favorites();
-    const limit = Math.max(this.favoritePreviewLimit, 0);
-    if (limit === 0 || current.total === 0) {
-      return [];
-    }
-
-    const items: HomeFavoritePreviewItem[] = [
-      ...current.stops.map((favorite) => ({ kind: 'stop' as const, favorite })),
-      ...current.lines.map((favorite) => ({ kind: 'line' as const, favorite })),
-    ];
-    items.sort((left, right) => left.favorite.name.localeCompare(right.favorite.name, 'es-ES'));
-    return Object.freeze(items.slice(0, limit));
-  });
-  protected readonly hasFavorites = computed(() => this.favorites().total > 0);
-
   protected readonly currentSelection$ = this.routeSearchState.selection$;
 
   private pendingTabFocusRestore = false;
 
   constructor() {
-    this.observeFavorites();
     this.syncActiveTabWithRoute();
     this.observeRouteChanges();
   }
@@ -204,12 +158,9 @@ export class HomeComponent {
 
   protected async onClearRecentSearches(): Promise<void> {
     const component = this.recentSearchesComponent;
-
-    if (!component) {
-      return;
+    if (component) {
+      await component.clearAll();
     }
-
-    await component.clearAll();
   }
 
   protected async openFavoritesView(): Promise<void> {
@@ -262,18 +213,9 @@ export class HomeComponent {
     await this.router.navigate(commands);
   }
 
-  private observeFavorites(): void {
-    this.favoriteCollection.favorites$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((favorites) => this.favorites.set(favorites));
-  }
-
   private observeRouteChanges(): void {
     this.router.events
-      .pipe(
-        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef),
-      )
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe((event) => {
         const url = event.urlAfterRedirects ?? event.url ?? '';
         const path = this.resolveRoutePath(url);
@@ -320,23 +262,15 @@ export class HomeComponent {
     }
 
     const trimmed = url.startsWith('/') ? url.slice(1) : url;
-    const path = trimmed.split('?')[0]?.split('#')[0] ?? '';
-
-    if (!path) {
-      return APP_CONFIG.routes.home;
-    }
-
-    return path;
+    return trimmed.split('?')[0]?.split('#')[0] ?? APP_CONFIG.routes.home;
   }
 
   private resolveTabFromPath(path: string | null | undefined): HomeTabId {
-    const routePath = path ?? APP_CONFIG.routes.home;
-    return this.homeTabRoutes.get(routePath) ?? 'search';
+    return this.homeTabRoutes.get(path ?? APP_CONFIG.routes.home) ?? 'search';
   }
 
   private resolveNavigationKeyFromPath(path: string | null | undefined): AppLayoutNavigationKey {
-    const routePath = path ?? APP_CONFIG.routes.home;
-    return this.homeNavigationKeys.get(routePath) ?? APP_CONFIG.routes.home;
+    return this.homeNavigationKeys.get(path ?? APP_CONFIG.routes.home) ?? APP_CONFIG.routes.home;
   }
 
   private resolveNavigationKeyFromTab(tab: HomeTabId): AppLayoutNavigationKey | null {
@@ -353,43 +287,30 @@ export class HomeComponent {
     }
 
     const pathTab = this.resolveTabFromPath(path);
-
     if (path === APP_CONFIG.routes.home) {
       return storedTab ?? pathTab ?? this.defaultTab;
     }
 
-    if (this.isHomeTabRoute(path)) {
-      return pathTab;
-    }
-
-    return storedTab ?? pathTab ?? this.defaultTab;
+    return this.isHomeTabRoute(path) ? pathTab : storedTab ?? pathTab ?? this.defaultTab;
   }
 
   private async navigateToTab(tab: HomeTabId, extras?: NavigationExtras): Promise<void> {
     const commands = this.homeTabCommands.get(tab);
-
-    if (!commands) {
-      return;
+    if (commands) {
+      await this.navigate(commands, false, extras);
     }
-
-    await this.navigate(commands, false, extras);
   }
 
   private buildTabNavigationExtras(tab: HomeTabId, replaceUrl = false): NavigationExtras {
     return {
-      queryParams: this.buildTabQueryParams(tab),
+      queryParams: { [this.tabQueryParam]: tab },
       queryParamsHandling: 'merge',
       replaceUrl,
     };
   }
 
-  private buildTabQueryParams(tab: HomeTabId): Record<string, string> {
-    return { [this.tabQueryParam]: tab };
-  }
-
   private async ensureCanonicalRoute(tab: HomeTabId, path: string, queryTab: HomeTabId | null): Promise<void> {
     const pathTab = this.resolveTabFromPath(path);
-
     if (pathTab !== tab) {
       await this.navigateToTab(tab, this.buildTabNavigationExtras(tab, true));
       return;
@@ -398,7 +319,7 @@ export class HomeComponent {
     if (queryTab !== tab) {
       await this.router.navigate([], {
         relativeTo: this.route,
-        queryParams: this.buildTabQueryParams(tab),
+        queryParams: { [this.tabQueryParam]: tab },
         queryParamsHandling: 'merge',
         replaceUrl: true,
       });
@@ -406,125 +327,54 @@ export class HomeComponent {
   }
 
   private extractTabFromUrl(url: string): HomeTabId | null {
-    if (!url) {
-      return null;
-    }
-
-    const tree = this.router.parseUrl(url);
-    const value = tree.queryParams?.[this.tabQueryParam];
-
-    if (typeof value !== 'string') {
-      return null;
-    }
-
-    return this.resolveTabFromQueryParam(value);
+    const value = this.router.parseUrl(url).queryParams?.[this.tabQueryParam];
+    return typeof value === 'string' ? this.resolveTabFromQueryParam(value) : null;
   }
 
   private resolveTabFromQueryParam(value: string | null | undefined): HomeTabId | null {
-    if (!this.isHomeTabId(value)) {
-      return null;
-    }
-
-    return value;
+    return this.isHomeTabId(value) ? value : null;
   }
 
   private isHomeTabId(value: string | null | undefined): value is HomeTabId {
-    if (typeof value !== 'string') {
-      return false;
-    }
-
-    return this.supportedTabs.has(value as HomeTabId);
+    return typeof value === 'string' && this.supportedTabs.has(value as HomeTabId);
   }
 
   private updateLayoutNavigationKeyForTab(tab: HomeTabId): void {
     const nextKey = this.resolveNavigationKeyFromTab(tab);
-
-    if (!nextKey || this.layoutNavigationKey() === nextKey) {
-      return;
+    if (nextKey && this.layoutNavigationKey() !== nextKey) {
+      this.layoutNavigationKey.set(nextKey);
     }
-
-    this.layoutNavigationKey.set(nextKey);
   }
 
   private activateRelativeTab(index: number, step: number): void {
     const total = this.tabs.length;
-
-    if (total === 0) {
-      return;
+    if (total > 0) {
+      this.activateTabByIndex((index + step + total) % total);
     }
-
-    const normalized = (index + step + total) % total;
-    this.activateTabByIndex(normalized);
   }
 
   private activateTabByIndex(index: number): void {
     const tab = this.tabs[index];
-
-    if (!tab) {
-      return;
+    if (tab) {
+      this.selectTab(tab.id);
     }
-
-    this.selectTab(tab.id);
   }
 
   private queueFocusOnTab(tab: HomeTabId): void {
-    this.schedule(() => this.focusTabById(tab));
+    queueMicrotask(() => this.focusTabById(tab));
   }
 
   private focusTabById(tab: HomeTabId): void {
-    const index = this.findTabIndex(tab);
-
-    if (index < 0) {
-      return;
-    }
-
-    this.focusTabByIndex(index);
-  }
-
-  private focusTabByIndex(index: number): void {
-    const directives = this.tabButtons;
-
-    if (!directives) {
-      return;
-    }
-
-    const collection = directives.toArray();
-    const directive = collection[index];
-
-    if (!directive) {
-      return;
-    }
-
-    directive.focus();
-  }
-
-  private findTabIndex(tab: HomeTabId): number {
-    return this.tabs.findIndex((option) => option.id === tab);
+    const index = this.tabs.findIndex((option) => option.id === tab);
+    const directive = index >= 0 ? this.tabButtons?.toArray()[index] : undefined;
+    directive?.focus();
   }
 
   private isHomeTabRoute(path: string | null | undefined): boolean {
-    if (!path) {
-      return false;
-    }
-
-    return this.homeTabRoutes.has(path);
+    return Boolean(path && this.homeTabRoutes.has(path));
   }
 
   private isHomeTabCommand(commands: NavigationCommands): boolean {
-    for (const segment of commands) {
-      if (!segment || segment === '/') {
-        continue;
-      }
-
-      if (this.homeTabRoutes.has(segment)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  private schedule(callback: () => void): void {
-    queueMicrotask(callback);
+    return commands.some((segment) => Boolean(segment && segment !== '/' && this.homeTabRoutes.has(segment)));
   }
 }
