@@ -311,7 +311,7 @@ export class LinesComponent {
   }
 
   protected lineCommands(line: LineDirectoryEntry): NavigationCommands {
-    return buildLineDetailNavigation(line.consortiumId, line.lineId).commands;
+    return buildLineDetailNavigation(line.consortiumId, line.lineId, line.name).commands;
   }
 
   protected isLineFavorite(line: LineDirectoryEntry): boolean {
