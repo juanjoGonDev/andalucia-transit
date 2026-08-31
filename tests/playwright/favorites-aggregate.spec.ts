@@ -11,6 +11,7 @@ const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const STOP_FAVORITE_COUNT = 2;
 const LINE_FAVORITE_COUNT = 1;
 const AGGREGATE_FAVORITE_COUNT = STOP_FAVORITE_COUNT + LINE_FAVORITE_COUNT;
+const MOCK_LINE_CONSORTIUM_ID = 6;
 const MOCK_LINE_CODE = 'M-101';
 const MOCK_LINE_NAME = 'Almería - Huércal - Viator - Campamento';
 
@@ -96,12 +97,16 @@ test.describe('aggregate favorites product checks', () => {
   test('exposes the canonical saved line as favorite directly from the line directory', async ({
     page,
   }) => {
-    await open(page, LINES_PATH);
-    await page.locator('.lines__input').fill(MOCK_LINE_CODE);
+    const query = new URLSearchParams({
+      q: MOCK_LINE_CODE,
+      area: String(MOCK_LINE_CONSORTIUM_ID),
+    });
+    await open(page, `${LINES_PATH}?${query.toString()}`);
 
     const lineItem = page.locator('.lines__item').filter({ hasText: MOCK_LINE_CODE });
     await expect(lineItem).toHaveCount(1, { timeout: 15_000 });
     await expect(lineItem.locator('.lines__line-name')).toHaveText(MOCK_LINE_NAME);
+    await expect(page.locator('.lines__input')).toHaveValue(MOCK_LINE_CODE);
 
     const favorite = lineItem.locator('.lines__favorite');
     await expect(favorite).toBeVisible();
