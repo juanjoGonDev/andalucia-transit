@@ -33,6 +33,10 @@ import {
   buildLineKey
 } from '@domain/lines/line-directory.service';
 import { LineFavoriteCandidate, LineFavoritesFacade } from '@domain/lines/line-favorites.facade';
+import {
+  LINES_FAVORITE_ACTIVE_ICON,
+  LINES_FAVORITE_INACTIVE_ICON
+} from '@features/lines/lines.config';
 import { LinesUiCopy, getLinesUiCopy } from '@features/lines/lines-ui.copy';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import {
@@ -79,8 +83,6 @@ const QUERY_PARAM_AREA = 'area';
 const QUERY_PARAM_MUNICIPALITY = 'municipality';
 const QUERY_PARAM_NUCLEUS = 'nucleus';
 const QUERY_PARAM_PAGE = 'page';
-const FAVORITE_ACTIVE_ICON = 'star' as const;
-const FAVORITE_INACTIVE_ICON = 'star_border' as const;
 const EMPTY_LINES: readonly LineDirectoryEntry[] = Object.freeze([]);
 const EMPTY_MUNICIPALITIES: readonly CatalogMunicipalityEntry[] = Object.freeze([]);
 const EMPTY_NUCLEI: readonly CatalogNucleusEntry[] = Object.freeze([]);
@@ -317,7 +319,7 @@ export class LinesComponent {
   }
 
   protected favoriteIcon(line: LineDirectoryEntry): string {
-    return this.isLineFavorite(line) ? FAVORITE_ACTIVE_ICON : FAVORITE_INACTIVE_ICON;
+    return this.isLineFavorite(line) ? LINES_FAVORITE_ACTIVE_ICON : LINES_FAVORITE_INACTIVE_ICON;
   }
 
   protected favoriteLabel(line: LineDirectoryEntry): string {
