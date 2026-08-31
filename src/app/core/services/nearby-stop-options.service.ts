@@ -5,6 +5,7 @@ import {
   StopDirectoryOption,
   StopDirectoryService
 } from '@data/stops/stop-directory.service';
+import { normalizeRequiredStopNucleus } from '@data/stops/stop-metadata.util';
 
 export interface NearbyStopOption extends StopDirectoryOption {
   readonly distanceInMeters: number;
@@ -40,6 +41,7 @@ export class NearbyStopOptionsService {
 
           const candidate: NearbyStopOption = {
             ...entry.option,
+            nucleus: normalizeRequiredStopNucleus(entry.option.nucleus),
             distanceInMeters: entry.distanceInMeters
           };
           const existing = unique.get(candidate.id);
