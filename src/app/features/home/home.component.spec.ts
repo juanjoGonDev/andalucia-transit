@@ -1,15 +1,21 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, DefaultUrlSerializer, NavigationEnd, NavigationExtras, Router, UrlTree, convertToParamMap } from '@angular/router';
 import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
-import { Subject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
+import { LanguageService } from '@core/services/language.service';
 import { HomeTabStorage } from '@data/home/home-tab.storage';
+import {
+  FavoriteCollectionFacade,
+  FavoriteCollectionSnapshot
+} from '@domain/favorites/favorite-collection.facade';
+import { LineFavorite } from '@domain/lines/line-favorites.facade';
 import { RouteSearchExecutionService } from '@domain/route-search/route-search-execution.service';
 import { RouteSearchSelection, RouteSearchStateService } from '@domain/route-search/route-search-state.service';
-import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
+import { StopFavorite } from '@domain/stops/favorites.facade';
 import { StopDirectoryOption } from '@domain/stops/stop-directory.facade';
 import { HomeComponent } from '@features/home/home.component';
 import { HomeTabId } from '@features/home/home.types';
@@ -75,8 +81,17 @@ class RouteSearchExecutionStub {
   prepare = jasmine.createSpy('prepare').and.returnValue(['', 'routes']);
 }
 
-class FavoritesFacadeStub {
-  readonly favorites$ = of<readonly StopFavorite[]>([]);
+class FavoriteCollectionFacadeStub {
+  private readonly subject = new BehaviorSubject<FavoriteCollectionSnapshot>({
+    stops: [],
+    lines: [],
+    total: 0
+  });
+  readonly favorites$ = this.subject.asObservable();
+
+  emit(stops: readonly StopFavorite[], lines: readonly LineFavorite[]): void {
+    this.subject.next({ stops, lines, total: stops.length + lines.length });
+  }
 }
 
 class HomeTabStorageStub {
@@ -155,12 +170,17 @@ class RouteSearchFormStubComponent {
 })
 class HomeRecentSearchesStubComponent {}
 
+const languageService = {
+  currentLanguage: signal<'es' | 'en'>('es').asReadonly()
+};
+
 describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
   let router: RouterStub;
   let execution: RouteSearchExecutionStub;
   let routeStub: ActivatedRouteStub;
   let tabStorage: HomeTabStorageStub;
+  let favoriteCollection: FavoriteCollectionFacadeStub;
   let originalIntersectionObserver: typeof IntersectionObserver | undefined;
   const originOption: StopDirectoryOption = {
     id: 'origin',
@@ -200,7 +220,8 @@ describe('HomeComponent', () => {
         { provide: ActivatedRoute, useClass: ActivatedRouteStub },
         { provide: RouteSearchStateService, useClass: RouteSearchStateStub },
         { provide: RouteSearchExecutionService, useClass: RouteSearchExecutionStub },
-        { provide: FavoritesFacade, useClass: FavoritesFacadeStub },
+        { provide: FavoriteCollectionFacade, useClass: FavoriteCollectionFacadeStub },
+        { provide: LanguageService, useValue: languageService },
         { provide: HomeTabStorage, useClass: HomeTabStorageStub }
       ]
     })
@@ -219,6 +240,7 @@ describe('HomeComponent', () => {
     execution = TestBed.inject(RouteSearchExecutionService) as unknown as RouteSearchExecutionStub;
     routeStub = TestBed.inject(ActivatedRoute) as unknown as ActivatedRouteStub;
     tabStorage = TestBed.inject(HomeTabStorage) as unknown as HomeTabStorageStub;
+    favoriteCollection = TestBed.inject(FavoriteCollectionFacade) as unknown as FavoriteCollectionFacadeStub;
     tabStorage.value = null;
     tabStorage.read.calls.reset();
     tabStorage.write.calls.reset();
@@ -457,20 +479,30 @@ describe('HomeComponent', () => {
     expect(tabStorage.write.calls.mostRecent().args[0]).toBe('favorites');
   }));
 
-  it('restores focus to the active tab after navigating away and returning', fakeAsync(() => {
+  it('includes line favorites in the home favorites preview', fakeAsync(() => {
+    const line: LineFavorite = {
+      id: '6|100',
+      consortiumId: 6,
+      lineId: '100',
+      code: 'M-100',
+      name: 'Circular Huércal de Almería',
+      mode: 'Autobús'
+    };
+    favoriteCollection.emit([], [line]);
+    fixture.detectChanges();
+
+    const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
+    component.selectTab('favorites');
+    fixture.detectChanges();
+    flushMicrotasks();
+
+    expect(fixture.nativeElement.textContent).toContain('Circular Huércal de Almería');
+    expect(fixture.nativeElement.textContent).toContain('Favoritos');
+  }));
+
+  it('restores focus to the active tab after opening aggregate favorites and returning', fakeAsync(() => {
     fixture.detectChanges();
     const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
-    const favorite: StopFavorite = {
-      id: 'favorite-1',
-      code: '001',
-      name: 'Favorite Stop',
-      municipality: 'Seville',
-      municipalityId: 'sev',
-      nucleus: 'Centro',
-      nucleusId: 'sev-centro',
-      consortiumId: 1,
-      stopIds: ['stop-1']
-    };
 
     component.selectTab('favorites');
     fixture.detectChanges();
@@ -478,11 +510,11 @@ describe('HomeComponent', () => {
 
     router.navigate.calls.reset();
 
-    component.openFavorite(favorite);
+    component.openFavoritesView();
     fixture.detectChanges();
     flushMicrotasks();
 
-    expect(router.navigate).toHaveBeenCalledWith(['/', APP_CONFIG.routes.stopDetailBase, 'stop-1']);
+    expect(router.navigate).toHaveBeenCalledWith(['/', APP_CONFIG.routes.favorites]);
 
     router.emitNavigation(APP_CONFIG.routes.homeFavorites);
     fixture.detectChanges();
@@ -499,6 +531,6 @@ interface HomeComponentTestingApi {
   onSelectionConfirmed(selection: RouteSearchSelection): Promise<void>;
   isTabActive(tab: HomeTabId): boolean;
   selectTab(tab: HomeTabId): void;
-  openFavorite(favorite: StopFavorite): Promise<void>;
+  openFavoritesView(): Promise<void>;
   layoutNavigationKey(): AppLayoutNavigationKey;
 }
