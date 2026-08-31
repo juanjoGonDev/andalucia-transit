@@ -19,8 +19,8 @@ describe('RouteLinesApiService', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: HttpClient, useValue: http },
-        { provide: APP_CONFIG_TOKEN, useValue: APP_CONFIG }
-      ]
+        { provide: APP_CONFIG_TOKEN, useValue: APP_CONFIG },
+      ],
     });
 
     service = TestBed.inject(RouteLinesApiService);
@@ -30,7 +30,7 @@ describe('RouteLinesApiService', () => {
     const stops = [
       { idParada: 15, idZona: 'A', latitud: 36.84, longitud: -2.46 },
       { idParada: 16, idZona: 'A', latitud: 36.841, longitud: -2.461 },
-      { idParada: 17, idZona: 'B', latitud: 36.842, longitud: -2.462 }
+      { idParada: 17, idZona: 'B', latitud: 36.842, longitud: -2.462 },
     ];
 
     http.get.and.callFake((url: string) => {
@@ -45,8 +45,8 @@ describe('RouteLinesApiService', () => {
             codigo: 'M-301',
             nombre: 'Almería - Aguadulce',
             descripcion: 'Autobús',
-            prioridad: 8
-          }
+            prioridad: 8,
+          },
         ]);
       }
 
@@ -57,15 +57,15 @@ describe('RouteLinesApiService', () => {
             codigo: 'M-301',
             nombre: 'Almería - Aguadulce',
             descripcion: 'Autobús',
-            prioridad: 6
+            prioridad: 6,
           },
           {
             idLinea: 380,
             codigo: 'M-380',
             nombre: 'Almería - El Ejido',
             descripcion: 'Autobús',
-            prioridad: 4
-          }
+            prioridad: 4,
+          },
         ]);
       }
 
@@ -73,22 +73,22 @@ describe('RouteLinesApiService', () => {
     });
 
     const result = await firstValueFrom(
-      service.getLinesNearLocation(7, { latitude: 36.8401, longitude: -2.4601 })
+      service.getLinesNearLocation(7, { latitude: 36.8401, longitude: -2.4601 }),
     );
 
     expect(http.get.calls.allArgs()).toEqual([
       [
         'https://api.ctan.es/v1/Consorcios/7/paradas',
-        { params: { latitud: '36.8401', longitud: '-2.4601' } }
+        { params: { latitud: '36.8401', longitud: '-2.4601' } },
       ],
       [
         'https://api.ctan.es/v1/Consorcios/7/paradas/lineasPorParadas/15',
-        { params: { lang: 'ES' } }
+        { params: { lang: 'ES' } },
       ],
       [
         'https://api.ctan.es/v1/Consorcios/7/paradas/lineasPorParadas/16',
-        { params: { lang: 'ES' } }
-      ]
+        { params: { lang: 'ES' } },
+      ],
     ]);
     expect(result.map((line) => line.code)).toEqual(['M-301', 'M-380']);
     expect(result[0]?.priority).toBe(8);
@@ -101,16 +101,16 @@ describe('RouteLinesApiService', () => {
           idLinea: 380,
           codigo: 'M-380',
           nombre: 'Almería - Aguadulce - El Ejido',
-          descripcion: 'Autobús'
-        }
-      ])
+          descripcion: 'Autobús',
+        },
+      ]),
     );
 
     const result = await firstValueFrom(service.getLinesForStops(4, ['625', '627']));
 
     expect(http.get).toHaveBeenCalledOnceWith(
       'https://api.ctan.es/v1/Consorcios/4/paradas/lineasPorParadas/625/627',
-      { params: { lang: 'ES' } }
+      { params: { lang: 'ES' } },
     );
     expect(result).toEqual([
       {
@@ -118,8 +118,8 @@ describe('RouteLinesApiService', () => {
         code: 'M-380',
         name: 'Almería - Aguadulce - El Ejido',
         mode: 'Autobús',
-        priority: 0
-      }
+        priority: 0,
+      },
     ]);
   });
 
@@ -130,27 +130,27 @@ describe('RouteLinesApiService', () => {
           idLinea: 380,
           codigo: 'M-380',
           nombre: 'Adra - Venta Del Viso NN',
-          descripcion: 'Autobús'
+          descripcion: 'Autobús',
         },
         {
           idLinea: 381,
           codigo: 'M-381',
           nombre: 'Annarosa - Centro',
-          descripcion: 'Autobús'
+          descripcion: 'Autobús',
         },
         {
           idLinea: 382,
           codigo: 'M-382',
           nombre: 'NN Express - Centro',
-          descripcion: 'Autobús'
+          descripcion: 'Autobús',
         },
         {
           idLinea: 383,
           codigo: 'M-383',
           nombre: 'Destino nN',
-          descripcion: 'Autobús'
-        }
-      ])
+          descripcion: 'Autobús',
+        },
+      ]),
     );
 
     const result = await firstValueFrom(service.getLinesForStops(8, ['79']));
@@ -159,7 +159,7 @@ describe('RouteLinesApiService', () => {
       'Adra - Venta Del Viso',
       'Annarosa - Centro',
       'NN Express - Centro',
-      'Destino'
+      'Destino',
     ]);
   });
 
@@ -170,7 +170,7 @@ describe('RouteLinesApiService', () => {
 
     expect(http.get).toHaveBeenCalledOnceWith(
       'https://api.ctan.es/v1/Consorcios/4/paradas/lineasPorParadas/625',
-      { params: { lang: 'ES' } }
+      { params: { lang: 'ES' } },
     );
   });
 
@@ -181,14 +181,14 @@ describe('RouteLinesApiService', () => {
         codigo: 'M-110',
         nombre: 'Málaga-Torremolinos-Benalmádena Costa',
         modo: 'Autobús',
-        polilinea: '36.7213,-4.4214;36.7192,-4.4238;36.7168,-4.4261'
-      })
+        polilinea: '36.7213,-4.4214;36.7192,-4.4238;36.7168,-4.4261',
+      }),
     );
 
     const result = await firstValueFrom(service.getLineDetail(4, '177'));
 
     expect(http.get).toHaveBeenCalledOnceWith('https://api.ctan.es/v1/Consorcios/4/lineas/177', {
-      params: { lang: 'ES' }
+      params: { lang: 'ES' },
     });
     expect(result).toEqual({
       lineId: '177',
@@ -198,8 +198,8 @@ describe('RouteLinesApiService', () => {
       coordinates: [
         { latitude: 36.7213, longitude: -4.4214 },
         { latitude: 36.7192, longitude: -4.4238 },
-        { latitude: 36.7168, longitude: -4.4261 }
-      ]
+        { latitude: 36.7168, longitude: -4.4261 },
+      ],
     });
   });
 
@@ -210,7 +210,7 @@ describe('RouteLinesApiService', () => {
         codigo: 'M-380',
         nombre: 'Almería - El Ejido',
         modo: 'Autobús',
-        polilinea: ''
+        polilinea: '',
       }),
       of([
         {
@@ -223,7 +223,7 @@ describe('RouteLinesApiService', () => {
           nombre: 'Third',
           sentido: 1,
           orden: 3,
-          modos: 1
+          modos: 1,
         },
         {
           idParada: 16,
@@ -235,7 +235,7 @@ describe('RouteLinesApiService', () => {
           nombre: 'First',
           sentido: 1,
           orden: 1,
-          modos: 1
+          modos: 1,
         },
         {
           idParada: 17,
@@ -247,7 +247,7 @@ describe('RouteLinesApiService', () => {
           nombre: 'Second',
           sentido: 1,
           orden: 2,
-          modos: 1
+          modos: 1,
         },
         {
           idParada: 19,
@@ -259,27 +259,21 @@ describe('RouteLinesApiService', () => {
           nombre: 'Return',
           sentido: 2,
           orden: 1,
-          modos: 1
-        }
-      ])
+          modos: 1,
+        },
+      ]),
     );
 
     const result = await firstValueFrom(service.getLineDetail(7, '380'));
 
     expect(http.get.calls.allArgs()).toEqual([
-      [
-        'https://api.ctan.es/v1/Consorcios/7/lineas/380',
-        { params: { lang: 'ES' } }
-      ],
-      [
-        'https://api.ctan.es/v1/Consorcios/7/lineas/380/paradas',
-        { params: { lang: 'ES' } }
-      ]
+      ['https://api.ctan.es/v1/Consorcios/7/lineas/380', { params: { lang: 'ES' } }],
+      ['https://api.ctan.es/v1/Consorcios/7/lineas/380/paradas', { params: { lang: 'ES' } }],
     ]);
     expect(result.coordinates).toEqual([
       { latitude: 36.84, longitude: -2.46 },
       { latitude: 36.83, longitude: -2.45 },
-      { latitude: 36.82, longitude: -2.44 }
+      { latitude: 36.82, longitude: -2.44 },
     ]);
   });
 
@@ -290,9 +284,9 @@ describe('RouteLinesApiService', () => {
         codigo: 'M-380',
         nombre: 'Almería - El Ejido',
         modo: 'Autobús',
-        polilinea: ''
+        polilinea: '',
       }),
-      throwError(() => new Error('stops unavailable'))
+      throwError(() => new Error('stops unavailable')),
     );
 
     const result = await firstValueFrom(service.getLineDetail(7, '380'));
@@ -311,19 +305,19 @@ describe('RouteLinesApiService', () => {
           [-5.9845, 37.3891],
           [-5.9801, 37.3868],
           ['invalid', 37.38],
-          [-999, 999]
-        ])
-      })
+          [-999, 999],
+        ]),
+      }),
     );
 
     const result = await firstValueFrom(service.getLineDetail(1, '55'));
 
     expect(http.get).toHaveBeenCalledOnceWith('https://api.ctan.es/v1/Consorcios/1/lineas/55', {
-      params: { lang: 'ES' }
+      params: { lang: 'ES' },
     });
     expect(result.coordinates).toEqual([
       { latitude: 37.3891, longitude: -5.9845 },
-      { latitude: 37.3868, longitude: -5.9801 }
+      { latitude: 37.3868, longitude: -5.9801 },
     ]);
   });
 });
