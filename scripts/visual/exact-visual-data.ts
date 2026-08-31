@@ -71,6 +71,53 @@ export function buildExactStopServicesSnapshot(): VisualStopServicesSnapshot {
   };
 }
 
+export function buildExactNewsList(consortiumId: number): readonly Record<string, unknown>[] {
+  if (consortiumId === 6) {
+    return [
+      ...Array.from({ length: 10 }, (_, index) => ({
+        idNoticia: 600 + index,
+        titulo: `Aviso Almería ${index + 1}`,
+        resumen: `Información de servicio de Almería ${index + 1}`,
+        categoria: index % 2 === 0 ? 'Avisos' : 'Tarifas',
+        fechaInicio: `2026-08-${String(28 - index).padStart(2, '0')}T09:00:00+02:00`,
+        orden: index,
+      })),
+      {
+        idNoticia: 699,
+        titulo: 'Noticia CTAN sin contenido',
+        resumen: '__',
+        texto: '<p>&nbsp;</p>',
+        categoria: 'Avisos',
+        fechaInicio: '2026-08-29T09:00:00+02:00',
+        orden: 99,
+      },
+    ];
+  }
+
+  if (consortiumId === 9) {
+    return [
+      {
+        idNoticia: 901,
+        titulo: 'Aviso Costa de Huelva',
+        resumen: 'Información de servicio de Huelva',
+        categoria: 'Avisos',
+        fechaInicio: '2026-08-18T09:00:00+02:00',
+        orden: 0,
+      },
+      {
+        idNoticia: 902,
+        titulo: 'Tarifa Costa de Huelva',
+        resumen: 'Información tarifaria de Huelva',
+        categoria: 'Tarifas',
+        fechaInicio: '2026-08-17T09:00:00+02:00',
+        orden: 1,
+      },
+    ];
+  }
+
+  return [];
+}
+
 export function selectVisualStopDetailEntry(
   payload: unknown,
   exactVisualRegression: boolean,
