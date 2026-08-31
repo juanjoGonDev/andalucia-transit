@@ -180,14 +180,14 @@
       },
       "clearAll": {
         "title": "Remove all favorites?",
-        "message": "All saved favorite stops will be deleted.",
+        "message": "All saved favorite stops and lines will be deleted.",
         "confirm": "Remove all",
         "cancel": "Cancel"
       },
       "details": {
         "name": "Name",
         "code": "Code",
-        "count": "Stops to remove"
+        "count": "Favorites to remove"
       }
     }
   },

@@ -180,14 +180,14 @@
       },
       "clearAll": {
         "title": "¿Eliminar todas las favoritas?",
-        "message": "Se borrarán todas las paradas favoritas guardadas.",
+        "message": "Se borrarán todas las paradas y líneas favoritas guardadas.",
         "confirm": "Eliminar todas",
         "cancel": "Cancelar"
       },
       "details": {
         "name": "Nombre",
         "code": "Código",
-        "count": "Paradas a eliminar"
+        "count": "Favoritos a eliminar"
       }
     }
   },
