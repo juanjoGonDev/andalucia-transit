@@ -19,7 +19,10 @@ const STOP_SERVICES_SNAPSHOT_PATH = '/assets/data/snapshots/stop-services/latest
 const STOP_SCHEDULE_API_GLOB = '**/v1/Consorcios/*/paradas/**';
 const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
-const DATA_ITEM_COUNT = 2;
+const RECENT_ITEM_COUNT = 2;
+const STOP_FAVORITE_COUNT = 2;
+const LINE_FAVORITE_COUNT = 1;
+const AGGREGATE_FAVORITE_COUNT = STOP_FAVORITE_COUNT + LINE_FAVORITE_COUNT;
 
 async function open(page: Page, path: string): Promise<void> {
   const baseUrl = BASE_URL as string;
@@ -100,7 +103,7 @@ test.describe('deterministic visual data states', () => {
     const emptyState = page.locator('.home-recent__empty');
 
     if (MOCK_MODE === 'data') {
-      await expect(items).toHaveCount(DATA_ITEM_COUNT);
+      await expect(items).toHaveCount(RECENT_ITEM_COUNT);
       await expect(emptyState).toBeHidden();
       return;
     }
@@ -109,19 +112,29 @@ test.describe('deterministic visual data states', () => {
     await expect(emptyState).toBeVisible();
   });
 
-  test('renders favorites according to the selected mock mode', async ({ page }) => {
+  test('renders aggregate stop and line favorites according to the selected mock mode', async ({
+    page,
+  }) => {
     await open(page, FAVORITES_PATH);
 
     const items = page.locator('.favorites__item');
+    const entityTitles = page.locator('.favorites__entity-title');
     const emptyState = page.locator('.favorites__empty');
 
     if (MOCK_MODE === 'data') {
-      await expect(items).toHaveCount(DATA_ITEM_COUNT);
+      await expect(items).toHaveCount(AGGREGATE_FAVORITE_COUNT);
+      await expect(entityTitles).toHaveText(['Líneas', 'Paradas']);
+      await expect(page.getByText('Circular Huércal de Almería', { exact: true })).toBeVisible();
+      await expect(page.locator('.favorites-card__name')).not.toContainText(/\sNN\s*$/iu);
       await expect(emptyState).toBeHidden();
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
+      ).toBe(true);
       return;
     }
 
     await expect(items).toHaveCount(0);
+    await expect(entityTitles).toHaveCount(0);
     await expect(emptyState).toBeVisible();
   });
 
