@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, DefaultUrlSerializer, NavigationEnd, NavigationExtras, Router, UrlTree, convertToParamMap } from '@angular/router';
-import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, Subject, of } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
@@ -237,6 +237,10 @@ describe('HomeComponent', () => {
         add: { imports: [RouteSearchFormStubComponent, HomeRecentSearchesStubComponent] }
       })
       .compileComponents();
+
+    const translate = TestBed.inject(TranslateService);
+    translate.setDefaultLang('es');
+    translate.use('es');
 
     originalIntersectionObserver = window.IntersectionObserver;
     (window as unknown as { IntersectionObserver: typeof IntersectionObserver }).IntersectionObserver =
