@@ -53,13 +53,15 @@ describe('HomeFavoritesPreviewComponent', () => {
     });
   });
 
-  it('links a line favorite to canonical line detail', () => {
+  it('links a line favorite to descriptive line detail while retaining canonical identity', () => {
     fixture.componentRef.setInput('favorites', [{ kind: 'line', favorite: LINE_FAVORITE }]);
     fixture.detectChanges();
 
     const routerLink = fixture.debugElement.query(By.directive(RouterLink)).injector.get(RouterLink);
 
-    expect(routerLink.urlTree?.toString()).toBe('/lines/6/100');
+    expect(routerLink.urlTree?.toString()).toBe(
+      '/lines/6/100/circular-huercal-de-almeria'
+    );
     expect(fixture.nativeElement.textContent).toContain('Circular Huércal de Almería');
     expect(fixture.nativeElement.textContent).toContain('M-100');
   });
