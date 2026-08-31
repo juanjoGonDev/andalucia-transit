@@ -3,52 +3,53 @@
     class="home-favorites-preview__item"
     *ngFor="let item of favorites; trackBy: trackByFavoriteId"
   >
-    <ng-container [ngSwitch]="item.kind">
+    <ng-container *ngIf="stopFavorite(item) as favorite; else lineFavoriteCard">
       <app-interactive-card
-        *ngSwitchCase="'stop'"
         class="home-favorites-preview__card"
         [bodyClasses]="cardBodyClasses"
-        [primaryCommands]="stopDetailCommands(item.favorite)"
-        [primaryQueryParams]="stopDetailQueryParams(item.favorite)"
+        [primaryCommands]="stopDetailCommands(favorite)"
+        [primaryQueryParams]="stopDetailQueryParams(favorite)"
       >
         <div class="home-favorites-preview__content">
           <div class="home-favorites-preview__header">
-            <span class="home-favorites-preview__name">{{ item.favorite.name }}</span>
+            <span class="home-favorites-preview__name">{{ favorite.name }}</span>
             <span class="home-favorites-preview__arrow" aria-hidden="true">→</span>
-            <span class="home-favorites-preview__location">{{ item.favorite.municipality }}</span>
+            <span class="home-favorites-preview__location">{{ favorite.municipality }}</span>
           </div>
           <div class="home-favorites-preview__details">
             <span class="home-favorites-preview__chip">
               <span class="home-favorites-preview__chip-label">{{ codeLabel }}</span>
-              <span class="home-favorites-preview__chip-value">{{ item.favorite.code }}</span>
+              <span class="home-favorites-preview__chip-value">{{ favorite.code }}</span>
             </span>
-            <span *ngIf="item.favorite.nucleus" class="home-favorites-preview__chip">
+            <span *ngIf="favorite.nucleus" class="home-favorites-preview__chip">
               <span class="home-favorites-preview__chip-label">{{ nucleusLabel }}</span>
-              <span class="home-favorites-preview__chip-value">{{ item.favorite.nucleus }}</span>
-            </span>
-          </div>
-        </div>
-      </app-interactive-card>
-
-      <app-interactive-card
-        *ngSwitchCase="'line'"
-        class="home-favorites-preview__card"
-        [bodyClasses]="cardBodyClasses"
-        [primaryCommands]="lineDetailCommands(item.favorite)"
-      >
-        <div class="home-favorites-preview__content">
-          <div class="home-favorites-preview__header">
-            <span class="home-favorites-preview__name">{{ item.favorite.name }}</span>
-            <span class="home-favorites-preview__arrow" aria-hidden="true">→</span>
-            <span class="home-favorites-preview__location">{{ item.favorite.code }}</span>
-          </div>
-          <div *ngIf="item.favorite.mode" class="home-favorites-preview__details">
-            <span class="home-favorites-preview__chip">
-              <span class="home-favorites-preview__chip-value">{{ item.favorite.mode }}</span>
+              <span class="home-favorites-preview__chip-value">{{ favorite.nucleus }}</span>
             </span>
           </div>
         </div>
       </app-interactive-card>
     </ng-container>
+
+    <ng-template #lineFavoriteCard>
+      <app-interactive-card
+        *ngIf="lineFavorite(item) as favorite"
+        class="home-favorites-preview__card"
+        [bodyClasses]="cardBodyClasses"
+        [primaryCommands]="lineDetailCommands(favorite)"
+      >
+        <div class="home-favorites-preview__content">
+          <div class="home-favorites-preview__header">
+            <span class="home-favorites-preview__name">{{ favorite.name }}</span>
+            <span class="home-favorites-preview__arrow" aria-hidden="true">→</span>
+            <span class="home-favorites-preview__location">{{ favorite.code }}</span>
+          </div>
+          <div *ngIf="favorite.mode" class="home-favorites-preview__details">
+            <span class="home-favorites-preview__chip">
+              <span class="home-favorites-preview__chip-value">{{ favorite.mode }}</span>
+            </span>
+          </div>
+        </div>
+      </app-interactive-card>
+    </ng-template>
   </li>
 </ul>
