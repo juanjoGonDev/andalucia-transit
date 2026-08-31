@@ -1,10 +1,11 @@
 import { spawn } from 'node:child_process';
-import { access } from 'node:fs/promises';
 import { constants as fsConstants } from 'node:fs';
+import { access } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
 import { chromium } from 'playwright';
+import { enforceCoverageGates } from './coverage-gates.mjs';
 
 const NEWLINE = '\n';
 const EXIT_SUCCESS = 0;
@@ -12,6 +13,10 @@ const ERROR_PREFIX = '[run-angular-tests]';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const prepareScript = resolve(__dirname, 'prepare.mjs');
+const coverageSummaryPath = resolve(
+  __dirname,
+  '../../coverage/andalucia-transit/coverage-summary.json',
+);
 
 async function spawnAsync(command, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -41,7 +46,7 @@ async function ensureChromiumBinary() {
   }
 }
 
-function runAngularTests(chromePath) {
+async function runAngularTests(chromePath) {
   const baseArgs = [
     'test',
     '--browsers=ChromeHeadlessNoSandbox',
@@ -49,20 +54,15 @@ function runAngularTests(chromePath) {
     '--code-coverage',
   ];
   const extraArgs = process.argv.slice(2);
-  const child = spawn('npx', ['ng', ...baseArgs, ...extraArgs], {
+
+  await spawnAsync('npx', ['ng', ...baseArgs, ...extraArgs], {
     stdio: 'inherit',
     env: {
       ...process.env,
       CHROME_BIN: chromePath,
     },
   });
-  child.on('exit', code => {
-    process.exit(code ?? 1);
-  });
-  child.on('error', error => {
-    process.stderr.write(`${ERROR_PREFIX} ${error.message}${NEWLINE}`);
-    process.exit(1);
-  });
+  await enforceCoverageGates(coverageSummaryPath);
 }
 
 ensureChromiumBinary()
