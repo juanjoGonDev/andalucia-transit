@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { AppConfig, SupportedLanguage } from '@core/config';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
+import { normalizeStopNucleus } from '@data/stops/stop-metadata.util';
 
 interface StopInfoApiResponse {
   readonly idParada: string;
@@ -114,7 +115,7 @@ const toStopInfoRecord = (
   isMain: toBooleanFlag(response.principal),
   isInactive: toBooleanFlag(response.inactiva),
   municipality: toNullableString(response.municipio),
-  nucleus: toNullableString(response.nucleo),
+  nucleus: normalizeStopNucleus(response.nucleo),
   location: buildLocation(response.latitud, response.longitud),
   correspondences: extractCorrespondenceValues(response.correspondecias)
 });
