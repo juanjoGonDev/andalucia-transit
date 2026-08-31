@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
@@ -6,6 +7,14 @@ const CURRENT_THEME = {
   background: '#f6f7f8',
   primary: '#0061fe',
   secondary: '#060f2b'
+} as const;
+
+const APPROVED_ICON = {
+  height: 1254,
+  mimeType: 'image/webp',
+  payloadSha256: '5fe98391a9eed6de6cc7616a0604978063a270c79e7329cf137f3384ac2107be',
+  renderedRgbaSha256: '57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef',
+  width: 1254
 } as const;
 
 interface ManifestIcon {
@@ -26,6 +35,12 @@ async function readManifest(): Promise<WebManifest> {
   return JSON.parse(content) as WebManifest;
 }
 
+function readEmbeddedPayload(svg: string): Buffer {
+  const match = svg.match(/href="data:image\/webp;base64,([^"]+)"/);
+  assert.ok(match?.[1], 'favicon.svg must embed the approved lossless WebP payload');
+  return Buffer.from(match[1], 'base64');
+}
+
 test('PWA manifest uses the current application theme', async () => {
   const manifest = await readManifest();
 
@@ -33,7 +48,7 @@ test('PWA manifest uses the current application theme', async () => {
   assert.equal(manifest.background_color, CURRENT_THEME.background);
 });
 
-test('PWA manifest exposes separate any and maskable install icons', async () => {
+test('PWA manifest has one canonical icon for any and maskable purposes', async () => {
   const manifest = await readManifest();
 
   assert.deepEqual(manifest.icons, [
@@ -41,33 +56,23 @@ test('PWA manifest exposes separate any and maskable install icons', async () =>
       src: 'favicon.svg',
       sizes: 'any',
       type: 'image/svg+xml',
-      purpose: 'any'
-    },
-    {
-      src: 'app-icon-maskable.svg',
-      sizes: 'any',
-      type: 'image/svg+xml',
-      purpose: 'maskable'
+      purpose: 'any maskable'
     }
   ]);
+
+  await assert.rejects(readFile('public/app-icon-maskable.svg', 'utf8'));
 });
 
-test('favicon and maskable icon stay identical to the approved bus and Andalusia artwork', async () => {
-  const [favicon, maskable] = await Promise.all([
-    readFile('public/favicon.svg', 'utf8'),
-    readFile('public/app-icon-maskable.svg', 'utf8')
-  ]);
+test('canonical icon embeds the exact approved lossless payload', async () => {
+  const icon = await readFile('public/favicon.svg', 'utf8');
+  const payload = readEmbeddedPayload(icon);
 
-  assert.equal(maskable, favicon);
-  assert.match(favicon, /id="andalucia-outline"/);
-  assert.match(favicon, /id="route-network"/);
-  assert.match(favicon, /id="route-stops"/);
-  assert.match(favicon, /id="bus"/);
-  assert.match(favicon, /id="canvas" width="512" height="512" fill="#02040a"/);
-  assert.match(favicon, new RegExp(CURRENT_THEME.primary));
-  assert.match(favicon, new RegExp(CURRENT_THEME.secondary));
-  assert.doesNotMatch(favicon, /#3f51b5/i);
-  assert.doesNotMatch(favicon, /junta/i);
+  assert.match(icon, new RegExp(`viewBox="0 0 ${APPROVED_ICON.width} ${APPROVED_ICON.height}"`));
+  assert.match(icon, new RegExp(`width="${APPROVED_ICON.width}"`));
+  assert.match(icon, new RegExp(`height="${APPROVED_ICON.height}"`));
+  assert.equal(createHash('sha256').update(payload).digest('hex'), APPROVED_ICON.payloadSha256);
+  assert.doesNotMatch(icon, /#3f51b5/i);
+  assert.doesNotMatch(icon, /junta/i);
 });
 
 test('document metadata colors mobile browser chrome with the current primary', async () => {
@@ -81,7 +86,7 @@ test('document metadata colors mobile browser chrome with the current primary', 
   assert.match(index, /<meta name="apple-mobile-web-app-capable" content="yes">/);
 });
 
-test('service worker precaches manifest and can update install artwork', async () => {
+test('service worker precaches manifest and can update canonical icon artwork', async () => {
   const config = await readFile('ngsw-config.json', 'utf8');
   const parsed = JSON.parse(config) as {
     readonly assetGroups: readonly {
@@ -98,3 +103,5 @@ test('service worker precaches manifest and can update install artwork', async (
   assert.ok(appGroup.resources.files.includes('/favicon.svg'));
   assert.ok(assetsGroup.resources.files.some((pattern) => pattern.includes('svg')));
 });
+
+export { APPROVED_ICON };
