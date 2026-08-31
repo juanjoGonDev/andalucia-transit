@@ -2,87 +2,107 @@
 
 ## Request
 
-Implement the favorite-management workflow across the actual traveler surfaces and remove CTAN's `NN` sentinel everywhere it can reach user-facing line names.
+Implement favorite management across the traveler surfaces and remove CTAN's `NN` sentinel everywhere it can reach user-facing stop or line names.
 
-The task was reopened after direct browser validation showed the prior implementation was incomplete:
+The task was reopened after direct browser validation showed the first iteration was incomplete:
 
-- `/lines` still rendered catalog names such as `Almería - Huércal - Viator - Campamento NN` and `Almería - Los Molinos - El Mamí - Venta Gaspar - El Alquián NN`.
+- `/lines` still rendered catalog names such as `Almería - Huércal - Viator - Campamento NN`.
 - The line directory exposed no favorite action.
 - Line detail exposed no favorite action.
-- The Favorites experience remained stop-only rather than aggregating the favorite entity types reachable from the application.
+- Favorites remained stop-only rather than aggregating all favoriteable traveler entities.
 
-Stop favorites already added in this pull request remain in scope: Stop Detail must keep its favorite toggle and Favorites must keep canonical stop discovery without forcing a detour through route search.
+Stop favorites remain in scope: Stop Detail keeps its favorite toggle and Favorites keeps canonical stop discovery without forcing a detour through route search.
 
 ## Evidence
 
-- User browser evidence on 2026-08-31 shows `/lines` rendering multiple terminal `NN` tokens from catalog line names.
-- `LinesComponent` renders `LineDirectoryEntry.name`.
-- `LineDirectoryService` maps `CatalogLineEntry.name` without normalization.
-- `ConsortiumCatalogService.readLines()` trims line names but does not remove the provider sentinel.
-- `RouteLinesApiService` already removes terminal `NN` for `lineasPorParadas`, proving the provider sentinel occurs in line-name contracts, but that normalization is private to one API mapper and therefore does not protect the catalog or line-detail contract.
-- `route-line-detail.mapper.ts` also maps `detail.nombre` verbatim.
-- Stop favorites have one canonical owner through `StopFavoritesService`/`FavoritesFacade`; the Favorites page and Home preview consume only that stop stream today.
-- There is no line-favorite domain/storage owner in the current branch.
-- The existing line directory and line detail are first-class navigable traveler surfaces and therefore must expose the same persistent favorite affordance when lines become favoriteable.
+- User browser evidence on 2026-08-31 showed `/lines` rendering multiple terminal `NN` tokens from catalog line names.
+- The CTAN Almería catalog confirms line `id=1`, code `M-101`, raw name `Almería - Huércal - Viator - Campamento NN`.
+- `/lines` consumes `ConsortiumCatalogService`; this was a separate line-name path from `lineasPorParadas` and line detail.
+- Stop favorites already had a canonical store/facade, but there was no line-favorite owner or aggregate favorite read model.
+- Exact-head browser evidence on `9f5915b1ec69265b72efa91686579b7793049e38` shows M-101 as `Almería - Huércal - Viator - Campamento`, with an active favorite control, and Favorites contains one line plus two stops.
 
 ## Decision
 
-1. Introduce one line-name normalization owner in the line data boundary and reuse it for catalog lines, stop-line summaries, and line detail. Remove only an isolated, case-insensitive terminal `NN` token plus terminal whitespace. Preserve internal `NN` text and legitimate names such as `Annarosa - Centro` and `NN Express - Centro`.
-2. Keep stop favorite storage unchanged and introduce a separate line-favorite store with a stable consortium-aware key. Do not overload stop contracts with line fields.
-3. Expose line favorite mutations through a line facade; consumers must not write local storage directly.
-4. Add a read-model aggregator that combines stop and line favorites for surfaces that present "Favorites" as one product concept. The underlying stop and line stores remain authoritative for their own entities.
-5. Add keyboard-accessible line favorite toggles to the Lines directory cards and Line Detail hero. Do not nest buttons inside links.
-6. The Favorites page aggregates both entity types, filters both with its search text, keeps canonical stop discovery in add mode, and lets users remove either entity type.
-7. The Home Favorites preview consumes the aggregate rather than silently omitting line favorites.
-8. Reuse existing star icons and shared navigation builders. Add localized copy only where the existing stop-specific wording would otherwise become misleading.
-9. No browser alert/confirm primitives are allowed; destructive confirmation continues through the shared overlay dialog.
-10. Any rendered UI change requires exact-head mobile and desktop visual evidence. Do not advance the reviewed baseline again without explicit approval after the new evidence is inspected.
+1. Own line-name normalization in `line-metadata.util.ts` and reuse it for catalog lines, stop-line summaries, and line detail. Remove only an isolated, case-insensitive terminal `NN` token plus terminal whitespace. Preserve internal `NN` text such as `Annarosa - Centro` and `NN Express - Centro`.
+2. Keep stop favorite storage unchanged and add a separate line-favorite store keyed by `(consortiumId,lineId)`. Never derive identity from the visible commercial line code.
+3. Expose line favorite mutations through a line facade; UI does not write storage directly.
+4. Use `FavoriteCollectionFacade` as a read-model aggregator for surfaces that present Favorites as one product concept while retaining separate authoritative stores.
+5. Expose keyboard-accessible favorite toggles in `/lines`, Line Detail and Stop Detail. Keep the line-card favorite button independent from the navigation link.
+6. Favorites renders line and stop sections, filters both, removes either type, clears both only after shared-dialog confirmation, and retains canonical stop-directory discovery in add mode.
+7. Home consumes the aggregate through a deferred panel so aggregate dependencies do not increase the initial production bundle.
+8. Keep historical baseline rendering compatible with older application code. New product-only Playwright checks run only against the current head.
+9. Do not advance the reviewed visual baseline without explicit approval after inspection of exact-head evidence.
 
 ## Acceptance
 
-- No user-facing line name produced from catalog lines, `lineasPorParadas`, or line detail ends with the isolated CTAN `NN` sentinel.
-- Internal `NN` text remains unchanged.
-- `/lines` exposes an independent favorite toggle per line without breaking card navigation, keyboard access, pagination, filtering, or responsive layout.
-- Line Detail exposes favorite state and add/remove mutation for the current consortium-aware line.
-- Favorite state updates reactively between Lines, Line Detail, Favorites, and Home when those surfaces are open after navigation.
+- No user-facing stop metadata or line name produced from catalog lines, `lineasPorParadas`, or line detail exposes the isolated CTAN `NN` sentinel.
+- Legitimate internal `NN` text remains unchanged.
+- `/lines` exposes a separate favorite toggle per line without breaking card navigation, keyboard access, pagination, filters or responsive layout.
+- Line Detail and Stop Detail expose current favorite state and add/remove mutation.
+- Favorite state is consortium-aware and consistent across Lines, Line Detail, Favorites and Home.
 - Repeated line toggles do not create duplicate persisted entries.
-- Favorites presents saved stops and saved lines in one experience, supports text filtering across both, and preserves stop-directory discovery for adding stop favorites.
-- Clearing all favorites clears both stores only after shared-dialog confirmation.
-- Home Favorites preview includes line favorites rather than reading only the stop store.
-- Existing stop favorite behavior and historical `NN` stop-metadata normalization remain intact.
-- Spanish and English labels describe aggregate favorites accurately.
-- Mobile 390×844 and desktop 1440×900 evidence covers Lines with favorite actions, Line Detail with favorite action, and the aggregated Favorites page with no horizontal overflow or overlapping interactive controls.
+- Favorites presents saved stops and lines together, filters both, retains stop discovery/add mode and can remove/clear both entity types.
+- Home preview includes line favorites.
+- Existing stop favorites remain backward compatible.
+- Spanish and English copy describe aggregate favorites accurately.
+- Production bundle budgets remain unchanged and green.
+- Mobile 390×844 and desktop 1440×900 evidence covers Lines, Line Detail and aggregated Favorites without horizontal overflow or inaccessible controls.
 
 ## Tests
 
-- Pure line-name normalization tests cover terminal sentinel case/whitespace variants and legitimate internal text.
-- Catalog tests prove the directory data source normalizes terminal `NN`.
-- Route-lines API tests continue to prove stop-line summary normalization.
-- Line-detail mapper/API coverage proves detail names normalize through the same owner.
-- Line favorite storage/service tests cover hydration validation, stable keys, add/remove/toggle, deduplication and persistence.
+- Pure stop and line normalization tests cover exact/case/whitespace sentinels and legitimate counterexamples.
+- Catalog tests prove `/lines` normalizes the reported `NN` path.
+- Route-line summary and line-detail mapper tests use the same line normalization owner.
+- Line favorite storage/service tests cover validation, mock modes, stable keys, hydration, persistence, add/remove/toggle/clear and deduplication.
 - Aggregate facade tests prove stop and line streams are combined without duplicating ownership.
-- Lines component coverage proves favorite state, toggle mutation and separate link/button semantics.
-- Line Detail component coverage proves current-line favorite state and mutation.
-- Favorites component coverage proves aggregate rendering/filtering/removal/clear-all while retaining stop discovery.
-- Home preview coverage proves both favorite entity types navigate to their canonical detail routes.
-- Playwright exact-head coverage verifies the reported `/lines` sentinel fixture and the aggregate favorite workflow at required viewports.
+- Lines, Line Detail, Stop Detail, Favorites and Home preview component tests cover their favorite behavior.
+- Playwright product checks verify the deterministic aggregate, M-101 favorite state in `/lines`, Line Detail favorite mutation, sentinel removal and responsive overflow.
+- Historical visual regression uses a baseline-compatible harness; product-only assertions are excluded from baseline rendering.
+
+## Validation evidence
+
+Validated executable head before this documentation update: `9f5915b1ec69265b72efa91686579b7793049e38`.
+
+- CI run `33432453940`: pass (install, lint, Angular tests, script tests, deploy pipeline, aggregate gate).
+- Legal browser QA run `33432453913`: pass.
+- Visual evidence run `33432453929`: pass.
+- Visual evidence artifact `9773224517`: `pr-439-visual-evidence-9f5915b1ec69265b72efa91686579b7793049e38`.
+- Visual evidence digest: `sha256:b2d7ae67827f22c3c1bb44508a43b09f7aa800fc1eacc0e2dc83b65d85ee6ab1`.
+- Visual regression run `33432454026`:
+  - reviewed baseline render: pass, 32/32 checks;
+  - current-head product render: pass, 42/42 checks;
+  - pixel comparison executed successfully;
+  - 28/36 screenshots match exactly;
+  - 8/36 differ only on intentionally changed surfaces: Lines mobile/desktop, Line Detail mobile/desktop, Favorites populated mobile/desktop and Favorites empty mobile/desktop;
+  - enforcement remains red because the prior reviewed baseline has not been advanced.
+
+Manual inspection of exact-head evidence confirms:
+
+- `/lines` no longer shows terminal `NN`; M-101 is normalized and visibly favorite.
+- Favorites mobile/desktop contains sections for Lines and Stops, the add/search controls and remove actions, without terminal `NN`.
+- Favorites empty state remains coherent and the clear action is disabled.
+- Line Detail mobile/desktop exposes the favorite control and keeps the route/stops layout usable.
+- The full-page mobile captures show the fixed bottom navigation at its viewport-fixed position; end-of-document content remains reachable and no horizontal overflow was found.
+- Unrelated visual surfaces match the reviewed baseline pixel-for-pixel.
 
 ## Risks
 
-- Broad substring replacement would corrupt legitimate names; normalization must remain terminal-token-only.
+- A broad substring replacement would corrupt legitimate names; normalization must remain terminal-token-only.
 - Stop and line local-storage payloads must remain separate so existing stop favorites require no migration.
-- A line favorite created from Line Detail may have less optional presentation metadata than one created from the directory; the persisted contract must require only fields available on both surfaces.
-- Updating the visual baseline before inspecting the new evidence would normalize an unreviewed UI contract and is forbidden.
+- Line identity must remain `(consortiumId,lineId)`; commercial codes are presentation data and are not guaranteed unique/stable identifiers.
+- The current UI intentionally differs from the reviewed baseline on favorite controls and aggregate Favorites. Advancing the baseline is an explicit visual-contract decision.
 
 ## Rollback
 
-Revert the commits added after the 2026-08-31 browser-validation reopening. Stop-favorite data already persisted under its existing key remains backward compatible. Line favorites use their own key and can be removed independently.
+Revert the reopened-scope commits. Existing stop-favorite data remains backward compatible. Line favorites use their own storage key and can be removed independently.
 
 ## Delivery status
 
-- Reopened browser reproduction: complete.
-- Root cause for `/lines` sentinel leak: confirmed in the catalog line-name path.
-- Missing line-favorite domain/store: confirmed.
-- Missing aggregate favorite read model: confirmed.
-- Implementation/tests/runtime/visual evidence: in progress.
-- Reviewed visual baseline: previous approval remains valid only for the previous UI; a new baseline update requires explicit approval after this reopened scope is validated.
+- Functional implementation: complete.
+- Unit/component/script/build validation: green on executable head `9f5915b1...`.
+- Legal browser QA: green.
+- Product Playwright checks: 42/42 green in visual-regression head render.
+- Exact-head visual evidence: generated and manually reviewed.
+- Historical baseline compatibility: green.
+- Pixel regression gate: intentionally red on 8 affected screenshots pending explicit approval of the new visual baseline.
+- Merge/release/deploy: not performed.
