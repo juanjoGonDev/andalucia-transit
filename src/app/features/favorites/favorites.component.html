@@ -7,8 +7,8 @@
     <div class="app-layout__body">
       <header class="favorites__hero app-hero">
         <div class="app-hero__intro">
-          <h1 class="app-hero__title">{{ copy().title }}</h1>
-          <p class="app-hero__description">{{ copy().description }}</p>
+          <h1 class="app-hero__title">{{ 'favorites.title' | translate }}</h1>
+          <p class="app-hero__description">{{ 'favorites.description' | translate }}</p>
         </div>
         <div class="app-hero__actions favorites__controls">
           <div class="favorites__search">
@@ -60,44 +60,56 @@
         class="favorites__add-panel app-async-reveal"
         aria-live="polite"
       >
-        <ng-container *ngIf="addResults$ | async as options">
-          <ul *ngIf="options.length" class="favorites__add-list" role="list">
-            <li *ngFor="let option of options; trackBy: trackSearchOption">
-              <button
-                type="button"
-                class="favorites__add-result"
-                [attr.aria-pressed]="option.isFavorite"
-                [attr.aria-label]="favoriteToggleLabel(option) | translate"
-                (click)="toggleFavorite(option)"
-              >
-                <span class="favorites__add-result-copy">
-                  <strong class="favorites__add-result-name">{{ option.name }}</strong>
-                  <span class="favorites__add-result-meta">
-                    {{ option.municipality }}
-                    <ng-container *ngIf="option.nucleus"> · {{ option.nucleus }}</ng-container>
-                    · {{ codeLabelKey | translate }} {{ option.code }}
-                  </span>
-                </span>
-                <span
-                  class="material-symbols-outlined favorites__add-result-icon"
-                  [attr.data-active]="option.isFavorite ? 'true' : null"
-                  aria-hidden="true"
+        <ng-container *ngIf="addResultsState$ | async as state">
+          <div *ngIf="state.status === 'error'; else addResults" class="favorites__add-error" role="status">
+            <p class="favorites__add-error-message">{{ 'favorites.search.error' | translate }}</p>
+            <button
+              type="button"
+              class="app-outline-button app-outline-button--compact"
+              (click)="retryAddSearch()"
+            >
+              {{ 'favorites.search.retry' | translate }}
+            </button>
+          </div>
+          <ng-template #addResults>
+            <ul *ngIf="state.options.length" class="favorites__add-list" role="list">
+              <li *ngFor="let option of state.options; trackBy: trackSearchOption">
+                <button
+                  type="button"
+                  class="favorites__add-result"
+                  [attr.aria-pressed]="option.isFavorite"
+                  [attr.aria-label]="favoriteToggleLabel(option) | translate"
+                  (click)="toggleFavorite(option)"
                 >
-                  {{ favoriteToggleIcon(option) }}
-                </span>
-              </button>
-            </li>
-          </ul>
+                  <span class="favorites__add-result-copy">
+                    <strong class="favorites__add-result-name">{{ option.name }}</strong>
+                    <span class="favorites__add-result-meta">
+                      {{ option.municipality }}
+                      <ng-container *ngIf="option.nucleus"> · {{ option.nucleus }}</ng-container>
+                      · {{ codeLabelKey | translate }} {{ option.code }}
+                    </span>
+                  </span>
+                  <span
+                    class="material-symbols-outlined favorites__add-result-icon"
+                    [attr.data-active]="option.isFavorite ? 'true' : null"
+                    aria-hidden="true"
+                  >
+                    {{ favoriteToggleIcon(option) }}
+                  </span>
+                </button>
+              </li>
+            </ul>
+          </ng-template>
         </ng-container>
       </section>
 
       <section class="favorites__panel">
         <div *ngIf="!hasResults()" class="favorites__empty">
-          <p class="favorites__empty-message">{{ copy().empty }}</p>
+          <p class="favorites__empty-message">{{ 'favorites.empty' | translate }}</p>
         </div>
 
         <section *ngIf="filteredLines().length" class="favorites__entity-section">
-          <h2 class="favorites__entity-title">{{ copy().linesTitle }}</h2>
+          <h2 class="favorites__entity-title">{{ 'favorites.sections.lines' | translate }}</h2>
           <ul class="favorites__list" role="list">
             <li class="favorites__item" *ngFor="let line of filteredLines(); trackBy: trackLine">
               <app-interactive-card
@@ -121,7 +133,7 @@
                         <span class="favorites-card__chip-value">{{ line.code }}</span>
                       </span>
                       <span *ngIf="line.mode" class="favorites-card__chip">
-                        <span class="favorites-card__chip-label">{{ copy().lineModeLabel }}</span>
+                        <span class="favorites-card__chip-label">{{ 'favorites.list.mode' | translate }}</span>
                         <span class="favorites-card__chip-value">{{ line.mode }}</span>
                       </span>
                     </span>
@@ -133,7 +145,7 @@
         </section>
 
         <section *ngIf="stopGroups().length" class="favorites__entity-section">
-          <h2 class="favorites__entity-title">{{ copy().stopsTitle }}</h2>
+          <h2 class="favorites__entity-title">{{ 'favorites.sections.stops' | translate }}</h2>
           <div class="favorites__groups">
             <section
               class="favorites__group"

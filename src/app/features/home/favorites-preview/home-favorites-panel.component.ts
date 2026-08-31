@@ -12,12 +12,10 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '@core/config';
-import { LanguageService } from '@core/services/language.service';
 import {
   FavoriteCollectionFacade,
   FavoriteCollectionSnapshot
 } from '@domain/favorites/favorite-collection.facade';
-import { getFavoritesUiCopy } from '@features/favorites/favorites-ui.copy';
 import {
   HomeFavoritePreviewItem,
   HomeFavoritesPreviewComponent
@@ -38,14 +36,12 @@ const EMPTY_FAVORITE_COLLECTION: FavoriteCollectionSnapshot = {
 })
 export class HomeFavoritesPanelComponent {
   private readonly favoriteCollection = inject(FavoriteCollectionFacade);
-  private readonly language = inject(LanguageService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly previewLimit = APP_CONFIG.homeData.favoriteStops.homePreviewLimit;
   private readonly favorites = signal<FavoriteCollectionSnapshot>(EMPTY_FAVORITE_COLLECTION);
 
   @Output() readonly openFavorites = new EventEmitter<void>();
 
-  protected readonly copy = computed(() => getFavoritesUiCopy(this.language.currentLanguage()));
   protected readonly codeLabelKey = APP_CONFIG.translationKeys.favorites.list.code;
   protected readonly nucleusLabelKey = APP_CONFIG.translationKeys.favorites.list.nucleus;
   protected readonly hasFavorites = computed(() => this.favorites().total > 0);

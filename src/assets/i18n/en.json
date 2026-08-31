@@ -148,20 +148,28 @@
     }
   },
   "favorites": {
-    "title": "Favorite stops",
-    "description": "Organize your favorite stops and jump straight to their details.",
+    "title": "Favorites",
+    "description": "Save the stops and lines you use most and jump quickly to their details.",
     "search": {
       "label": "Search",
-      "placeholder": "Filter by name, code, or municipality"
+      "placeholder": "Filter by name, code, or municipality",
+      "error": "We couldn't search the stop directory. Check your connection and try again.",
+      "retry": "Try again"
     },
-    "empty": "You have not added any favorite stops yet.",
+    "empty": "You have not added any favorite stops or lines yet.",
     "actions": {
       "clearAll": "Remove all",
-      "remove": "Remove from favorites"
+      "remove": "Remove from favorites",
+      "open": "Open favorites"
+    },
+    "sections": {
+      "stops": "Stops",
+      "lines": "Lines"
     },
     "list": {
       "code": "Code",
-      "nucleus": "District"
+      "nucleus": "District",
+      "mode": "Mode"
     },
     "dialogs": {
       "remove": {

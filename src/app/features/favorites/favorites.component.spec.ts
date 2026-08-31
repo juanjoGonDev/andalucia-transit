@@ -2,9 +2,14 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import {
+  TranslateCompiler,
+  TranslateLoader,
+  TranslateModule,
+  TranslateService
+} from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom, of, throwError } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { LanguageService } from '@core/services/language.service';
 import {
@@ -29,8 +34,35 @@ import {
 } from '@shared/ui/dialog/overlay-dialog.service';
 
 class FakeTranslateLoader implements TranslateLoader {
-  getTranslation(): Observable<Record<string, string>> {
-    return of({});
+  getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
+    return of({
+      favorites: {
+        title: 'Favoritos',
+        description: 'Guarda tus paradas y líneas habituales y accede rápidamente a sus detalles.',
+        search: {
+          label: 'Buscar',
+          placeholder: 'Filtra por nombre, código o municipio',
+          error: 'No pudimos buscar paradas. Comprueba tu conexión e inténtalo de nuevo.',
+          retry: 'Intentar de nuevo'
+        },
+        empty: 'Todavía no has añadido ninguna parada o línea favorita.',
+        actions: {
+          clearAll: 'Eliminar todas',
+          remove: 'Eliminar de favoritos',
+          open: 'Abrir favoritos'
+        },
+        sections: { lines: 'Líneas', stops: 'Paradas' },
+        list: { code: 'Código', nucleus: 'Núcleo', mode: 'Modo' }
+      },
+      home: {
+        sections: {
+          search: {
+            addFavoriteLabel: 'Añadir a favoritos',
+            removeFavoriteLabel: 'Eliminar de favoritos'
+          }
+        }
+      }
+    });
   }
 }
 
@@ -220,6 +252,9 @@ describe('FavoritesComponent', () => {
       ]
     }).compileComponents();
 
+    const translate = TestBed.inject(TranslateService);
+    await firstValueFrom(translate.use('es'));
+
     fixture = TestBed.createComponent(FavoritesComponent);
     component = fixture.componentInstance;
     const router = TestBed.inject(Router);
@@ -284,6 +319,36 @@ describe('FavoritesComponent', () => {
     result.click();
     expect(favoritesFacade.toggle).toHaveBeenCalledWith(
       jasmine.objectContaining({ id: DIRECTORY_OPTION.id, nucleus: '' })
+    );
+  }));
+
+  it('surfaces stop-directory failures and retries the current search', fakeAsync(() => {
+    stopDirectory.searchStops.and.returnValues(
+      throwError(() => new Error('Network error')),
+      of([DIRECTORY_OPTION])
+    );
+    fixture.detectChanges();
+
+    const access = accessProtected(component);
+    access.toggleAddMode.call(component);
+    fixture.detectChanges();
+    access.searchControl.setValue('Ada');
+    tick(APP_CONFIG.homeData.search.debounceMs);
+    fixture.detectChanges();
+
+    const error = fixture.nativeElement.querySelector('.favorites__add-error') as HTMLElement;
+    expect(error).not.toBeNull();
+    expect(error.textContent).toContain('No pudimos buscar paradas');
+
+    const retry = error.querySelector('button') as HTMLButtonElement;
+    retry.click();
+    tick();
+    fixture.detectChanges();
+
+    expect(stopDirectory.searchStops).toHaveBeenCalledTimes(2);
+    expect(fixture.nativeElement.querySelector('.favorites__add-error')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.favorites__add-result')?.textContent).toContain(
+      'Ada Byron IES (Universidad)'
     );
   }));
 

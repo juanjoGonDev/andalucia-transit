@@ -13,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   BehaviorSubject,
   Observable,
+  Subject,
   catchError,
   combineLatest,
   debounceTime,
@@ -24,7 +25,6 @@ import {
   switchMap
 } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
-import { LanguageService } from '@core/services/language.service';
 import { FavoriteCollectionFacade } from '@domain/favorites/favorite-collection.facade';
 import { LineFavorite } from '@domain/lines/line-favorites.facade';
 import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
@@ -32,10 +32,6 @@ import {
   StopDirectoryFacade,
   StopDirectoryOption
 } from '@domain/stops/stop-directory.facade';
-import {
-  FavoritesUiCopy,
-  getFavoritesUiCopy
-} from '@features/favorites/favorites-ui.copy';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import {
@@ -76,6 +72,11 @@ type FavoriteSearchOption = StopDirectoryOption & {
   readonly isFavorite: boolean;
 };
 
+type FavoriteSearchState =
+  | { readonly status: 'idle'; readonly options: readonly FavoriteSearchOption[] }
+  | { readonly status: 'ready'; readonly options: readonly FavoriteSearchOption[] }
+  | { readonly status: 'error'; readonly options: readonly FavoriteSearchOption[] };
+
 const QUERY_LOCALE = 'es-ES' as const;
 const NORMALIZE_FORM = 'NFD' as const;
 const DIACRITIC_PATTERN = /\p{M}/gu;
@@ -112,7 +113,6 @@ export class FavoritesComponent {
   private readonly dialog = inject(OverlayDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly formBuilder = inject(FormBuilder);
-  private readonly language = inject(LanguageService);
 
   private readonly translations = APP_CONFIG.translationKeys.favorites;
   private readonly favoriteIconName = APP_CONFIG.homeData.favoriteStops.icon;
@@ -123,9 +123,6 @@ export class FavoritesComponent {
   private readonly addSearchDebounceMs = APP_CONFIG.homeData.search.debounceMs;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.favorites;
 
-  protected readonly copy = computed<FavoritesUiCopy>(() =>
-    getFavoritesUiCopy(this.language.currentLanguage())
-  );
   protected readonly searchLabelKey = this.translations.searchLabel;
   protected readonly searchPlaceholderKey = this.translations.searchPlaceholder;
   protected readonly searchFieldType = SEARCH_TEXT_FIELD_TYPE;
@@ -152,6 +149,7 @@ export class FavoritesComponent {
   private readonly totalFavorites = signal(0);
   private readonly searchTerm = signal('');
   private readonly addModeSubject = new BehaviorSubject(false);
+  private readonly addSearchRetry = new Subject<void>();
 
   protected readonly addMode$ = this.addModeSubject.asObservable();
   protected readonly hasFavorites = computed(() => this.totalFavorites() > 0);
@@ -172,27 +170,33 @@ export class FavoritesComponent {
     distinctUntilChanged()
   );
 
-  protected readonly addResults$: Observable<readonly FavoriteSearchOption[]> = combineLatest([
+  protected readonly addResultsState$: Observable<FavoriteSearchState> = combineLatest([
     this.addMode$,
     this.addQuery$,
-    this.favoritesFacade.favorites$
+    this.favoritesFacade.favorites$,
+    this.addSearchRetry.pipe(startWith(undefined))
   ]).pipe(
     switchMap(([adding, query, favorites]) => {
       if (!adding || query.length < 2) {
-        return of(EMPTY_ADD_RESULTS);
+        return of<FavoriteSearchState>({ status: 'idle', options: EMPTY_ADD_RESULTS });
       }
 
       const favoriteIds = new Set(favorites.map((favorite) => favorite.id));
       return this.stopDirectory.searchStops({ query, limit: this.addResultsLimit }).pipe(
-        map((options) =>
-          Object.freeze(
-            options.map((option) => ({
-              ...option,
-              isFavorite: favoriteIds.has(option.id)
-            }))
-          )
+        map(
+          (options): FavoriteSearchState => ({
+            status: 'ready',
+            options: Object.freeze(
+              options.map((option) => ({
+                ...option,
+                isFavorite: favoriteIds.has(option.id)
+              }))
+            )
+          })
         ),
-        catchError(() => of(EMPTY_ADD_RESULTS))
+        catchError(() =>
+          of<FavoriteSearchState>({ status: 'error', options: EMPTY_ADD_RESULTS })
+        )
       );
     })
   );
@@ -236,6 +240,10 @@ export class FavoritesComponent {
 
   protected toggleAddMode(): void {
     this.addModeSubject.next(!this.addModeSubject.value);
+  }
+
+  protected retryAddSearch(): void {
+    this.addSearchRetry.next();
   }
 
   protected toggleFavorite(option: FavoriteSearchOption): void {

@@ -1,13 +1,13 @@
 <header class="home__panel-header">
   <div class="home__panel-heading home__stack">
-    <h3 class="home__panel-title">{{ copy().title }}</h3>
+    <h3 class="home__panel-title">{{ 'favorites.title' | translate }}</h3>
   </div>
   <button
     type="button"
     class="app-button app-button--ghost home__panel-action"
     (click)="openFavorites.emit()"
   >
-    {{ copy().openFavorites }}
+    {{ 'favorites.actions.open' | translate }}
   </button>
 </header>
 
@@ -20,5 +20,5 @@
 </ng-container>
 
 <ng-template #favoritesEmpty>
-  <p class="home-recent__empty">{{ copy().empty }}</p>
+  <p class="home-recent__empty">{{ 'favorites.empty' | translate }}</p>
 </ng-template>

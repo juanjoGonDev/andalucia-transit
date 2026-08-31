@@ -60,6 +60,20 @@
   box-shadow: var(--shadow-sm);
 }
 
+.favorites__add-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.favorites__add-error-message {
+  flex: 1 1 18rem;
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
 .favorites__add-list {
   display: grid;
   gap: var(--space-sm);
