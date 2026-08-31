@@ -19,6 +19,7 @@ const EXACT_CAPTURE_STABILIZER =
 
 const POPULATED_SPECS = Object.freeze([
   'tests/playwright/deterministic-visual-states.spec.ts',
+  'tests/playwright/exact-news-visual.spec.ts',
   'tests/playwright/home-tabs.layout.spec.ts',
   'tests/playwright/lines-directory.layout.spec.ts',
   'tests/playwright/map-exploration.spec.ts',
@@ -38,7 +39,6 @@ const POPULATED_CAPTURES = Object.freeze([
   { route: '/recents', slug: 'recent-data' },
   { route: '/favorites', slug: 'favorites-data' },
   { route: '/settings', slug: 'settings-data' },
-  { route: '/news', slug: 'news-data' },
 ]);
 
 const EMPTY_CAPTURES = Object.freeze([
@@ -197,6 +197,10 @@ export function selectPopulatedSpecs(verifyProductChecks = true) {
   return POPULATED_SPECS.filter((spec) => !PRODUCT_CHECK_ONLY_SPECS.has(spec));
 }
 
+export function selectPopulatedCaptures() {
+  return POPULATED_CAPTURES.map((capture) => ({ ...capture }));
+}
+
 async function runPopulatedEvidenceHarness(
   harnessRoot,
   baseUrl,
@@ -257,7 +261,7 @@ export async function captureEvidence({
     await runPopulatedEvidenceHarness(harnessRoot, baseUrl, evidenceRoot, verifyProductChecks);
     await captureRoutes(
       { harnessRoot, outDir: evidenceRoot, baseUrl },
-      POPULATED_CAPTURES,
+      selectPopulatedCaptures(),
     );
 
     await stopApplication(app, `${baseUrl}/`);
