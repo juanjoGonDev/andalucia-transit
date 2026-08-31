@@ -31,6 +31,8 @@ const chromeFlags = [
 ];
 
 module.exports = function (config) {
+  const strictPwaCoverage = process.env.PWA_COVERAGE_ONLY === '1';
+
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
@@ -53,9 +55,20 @@ module.exports = function (config) {
       subdir: '.',
       reporters: [
         { type: 'html' },
-        { type: 'json-summary', file: 'coverage-summary.json' },
         { type: 'text-summary' },
       ],
+      ...(strictPwaCoverage
+        ? {
+            check: {
+              global: {
+                statements: 100,
+                branches: 100,
+                functions: 100,
+                lines: 100,
+              },
+            },
+          }
+        : {}),
     },
     reporters: ['progress', 'kjhtml'],
     port: 9876,
@@ -72,7 +85,6 @@ module.exports = function (config) {
       }
     },
     singleRun: true,
-    autoWatch: false,
     restartOnFileChange: true,
   });
 };
