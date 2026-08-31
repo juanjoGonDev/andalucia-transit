@@ -118,6 +118,7 @@ test.describe('deterministic visual data states', () => {
     const emptyState = page.locator('.favorites__empty');
 
     if (MOCK_MODE === 'data') {
+      await expect(items.first()).toBeVisible({ timeout: 15_000 });
       expect(await items.count()).toBeGreaterThan(0);
       await expect(emptyState).toBeHidden();
       expect(
