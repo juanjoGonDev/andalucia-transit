@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   buildScreenshotArgs,
   parseVerifyProductChecks,
+  selectPopulatedCaptures,
   selectPopulatedSpecs,
 } from './capture-evidence.mjs';
 
@@ -26,6 +27,7 @@ test('keeps evidence-producing specs while excluding head-only product checks fr
   const baselineSpecs = selectPopulatedSpecs(false);
 
   assert.ok(baselineSpecs.includes('tests/playwright/deterministic-visual-states.spec.ts'));
+  assert.ok(baselineSpecs.includes('tests/playwright/exact-news-visual.spec.ts'));
   assert.ok(baselineSpecs.includes('tests/playwright/lines-directory.layout.spec.ts'));
   assert.ok(baselineSpecs.includes('tests/playwright/visual-interaction-states.spec.ts'));
   assert.ok(!baselineSpecs.includes('tests/playwright/map-exploration.spec.ts'));
@@ -39,12 +41,19 @@ test('runs the complete current-head product harness when product checks are ena
   assert.ok(headSpecs.includes('tests/playwright/theme.contrast.spec.ts'));
 });
 
+test('keeps volatile News out of direct exact CLI captures', () => {
+  const captures = selectPopulatedCaptures();
+
+  assert.ok(!captures.some((capture) => capture.route === '/news'));
+  assert.ok(!captures.some((capture) => capture.slug === 'news-data'));
+});
+
 test('stabilizes exact full-page screenshots before capture', () => {
   const args = buildScreenshotArgs({
     baseUrl: 'http://127.0.0.1:4200',
     outDir: '/tmp/evidence',
-    route: '/news',
-    slug: 'news-data',
+    route: '/settings',
+    slug: 'settings-data',
     deterministicMapTiles: false,
   });
   const evalArg = args.find((arg) => arg.startsWith('--eval='));
