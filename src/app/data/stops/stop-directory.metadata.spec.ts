@@ -49,7 +49,7 @@ describe('StopDirectoryService stop metadata', () => {
     expect(options).toEqual([]);
   });
 
-  it('normalizes the sentinel in full chunk records while preserving real names', async () => {
+  it('normalizes the sentinel in full chunk records while preserving real nuclei', async () => {
     const sentinelPromise = firstValueFrom(
       service.getStopBySignature(CONSORTIUM_ID, SENTINEL_STOP_ID)
     );
@@ -63,7 +63,7 @@ describe('StopDirectoryService stop metadata', () => {
     const [sentinel, legitimate] = await Promise.all([sentinelPromise, legitimatePromise]);
 
     expect(sentinel?.nucleus).toBe('');
-    expect(legitimate?.nucleus).toBe('Annarosa');
+    expect(legitimate?.nucleus).toBe('Centro');
   });
 
   function flushIndex(): void {
@@ -85,7 +85,7 @@ describe('StopDirectoryService stop metadata', () => {
       ],
       searchIndex: [
         createSearchEntry(SENTINEL_STOP_ID, 'La Gangosa - Av. Prado', ' NN '),
-        createSearchEntry(LEGITIMATE_STOP_ID, 'Plaza Central', 'Annarosa')
+        createSearchEntry(LEGITIMATE_STOP_ID, 'Plaza Central', 'Centro')
       ]
     });
   }
@@ -103,7 +103,7 @@ describe('StopDirectoryService stop metadata', () => {
       },
       stops: [
         createChunkEntry(SENTINEL_STOP_ID, 'La Gangosa - Av. Prado', ' nN '),
-        createChunkEntry(LEGITIMATE_STOP_ID, 'Plaza Central', 'Annarosa')
+        createChunkEntry(LEGITIMATE_STOP_ID, 'Plaza Central', 'Centro')
       ]
     });
   }
