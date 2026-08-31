@@ -24,14 +24,25 @@ import {
   switchMap
 } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
+import { LanguageService } from '@core/services/language.service';
+import { FavoriteCollectionFacade } from '@domain/favorites/favorite-collection.facade';
+import { LineFavorite } from '@domain/lines/line-favorites.facade';
 import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
 import {
   StopDirectoryFacade,
   StopDirectoryOption
 } from '@domain/stops/stop-directory.facade';
+import {
+  FavoritesUiCopy,
+  getFavoritesUiCopy
+} from '@features/favorites/favorites-ui.copy';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
-import { buildStopDetailNavigation } from '@shared/navigation/navigation.util';
+import {
+  NavigationCommands,
+  buildLineDetailNavigation,
+  buildStopDetailNavigation
+} from '@shared/navigation/navigation.util';
 import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/interactive-card.component';
 import {
   ConfirmDialogComponent,
@@ -45,7 +56,7 @@ import {
   TextFieldType
 } from '@shared/ui/forms/app-text-field.component';
 
-interface FavoriteListItem {
+interface FavoriteStopListItem {
   readonly id: string;
   readonly name: string;
   readonly code: string;
@@ -58,7 +69,7 @@ interface FavoriteListItem {
 interface FavoriteGroupView {
   readonly id: string;
   readonly municipality: string;
-  readonly stops: readonly FavoriteListItem[];
+  readonly stops: readonly FavoriteStopListItem[];
 }
 
 type FavoriteSearchOption = StopDirectoryOption & {
@@ -96,10 +107,12 @@ const EMPTY_ADD_RESULTS: readonly FavoriteSearchOption[] = Object.freeze([]);
 })
 export class FavoritesComponent {
   private readonly favoritesFacade = inject(FavoritesFacade);
+  private readonly favoriteCollection = inject(FavoriteCollectionFacade);
   private readonly stopDirectory = inject(StopDirectoryFacade);
   private readonly dialog = inject(OverlayDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly language = inject(LanguageService);
 
   private readonly translations = APP_CONFIG.translationKeys.favorites;
   private readonly favoriteIconName = APP_CONFIG.homeData.favoriteStops.icon;
@@ -110,8 +123,9 @@ export class FavoritesComponent {
   private readonly addSearchDebounceMs = APP_CONFIG.homeData.search.debounceMs;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.favorites;
 
-  protected readonly titleKey = this.translations.title;
-  protected readonly descriptionKey = this.translations.description;
+  protected readonly copy = computed<FavoritesUiCopy>(() =>
+    getFavoritesUiCopy(this.language.currentLanguage())
+  );
   protected readonly searchLabelKey = this.translations.searchLabel;
   protected readonly searchPlaceholderKey = this.translations.searchPlaceholder;
   protected readonly searchFieldType = SEARCH_TEXT_FIELD_TYPE;
@@ -119,7 +133,6 @@ export class FavoritesComponent {
   protected readonly textFieldLabelModes = TEXT_FIELD_LABEL_MODES;
   protected readonly searchIcon = SEARCH_ICON_NAME;
   protected readonly addIcon = ADD_ICON_NAME;
-  protected readonly emptyKey = this.translations.empty;
   protected readonly clearAllLabelKey = this.translations.actions.clearAll;
   protected readonly removeLabelKey = this.translations.actions.remove;
   protected readonly addFavoriteLabelKey =
@@ -134,14 +147,23 @@ export class FavoritesComponent {
 
   protected readonly searchControl = this.formBuilder.nonNullable.control('');
 
-  private readonly favorites = signal<readonly StopFavorite[]>([]);
+  private readonly stopFavorites = signal<readonly StopFavorite[]>([]);
+  private readonly lineFavorites = signal<readonly LineFavorite[]>([]);
+  private readonly totalFavorites = signal(0);
   private readonly searchTerm = signal('');
   private readonly addModeSubject = new BehaviorSubject(false);
 
   protected readonly addMode$ = this.addModeSubject.asObservable();
-  protected readonly hasFavorites = computed(() => this.favorites().length > 0);
-  protected readonly groups = computed(() => this.buildGroups(this.favorites(), this.searchTerm()));
-  protected readonly hasResults = computed(() => this.groups().length > 0);
+  protected readonly hasFavorites = computed(() => this.totalFavorites() > 0);
+  protected readonly stopGroups = computed(() =>
+    this.buildStopGroups(this.stopFavorites(), this.searchTerm())
+  );
+  protected readonly filteredLines = computed(() =>
+    this.filterLines(this.lineFavorites(), this.searchTerm())
+  );
+  protected readonly hasResults = computed(
+    () => this.stopGroups().length > 0 || this.filteredLines().length > 0
+  );
 
   private readonly addQuery$ = this.searchControl.valueChanges.pipe(
     startWith(this.searchControl.value),
@@ -184,7 +206,11 @@ export class FavoritesComponent {
     return group.id;
   }
 
-  protected trackStop(_: number, item: FavoriteListItem): string {
+  protected trackStop(_: number, item: FavoriteStopListItem): string {
+    return item.id;
+  }
+
+  protected trackLine(_: number, item: LineFavorite): string {
     return item.id;
   }
 
@@ -216,7 +242,7 @@ export class FavoritesComponent {
     this.favoritesFacade.toggle(option);
   }
 
-  protected async remove(item: FavoriteListItem): Promise<void> {
+  protected async removeStop(item: FavoriteStopListItem): Promise<void> {
     const confirmed = await this.confirm({
       titleKey: this.translations.dialogs.remove.title,
       messageKey: this.translations.dialogs.remove.message,
@@ -228,61 +254,84 @@ export class FavoritesComponent {
       ]
     });
 
-    if (!confirmed) {
-      return;
+    if (confirmed) {
+      this.favoriteCollection.removeStop(item.id);
     }
+  }
 
-    this.favoritesFacade.remove(item.id);
+  protected async removeLine(item: LineFavorite): Promise<void> {
+    const confirmed = await this.confirm({
+      titleKey: this.removeFavoriteLabelKey,
+      messageKey: this.removeFavoriteLabelKey,
+      confirmKey: this.translations.dialogs.remove.confirm,
+      cancelKey: this.translations.dialogs.remove.cancel,
+      details: [
+        { labelKey: this.translations.dialogs.details.name, value: item.name },
+        { labelKey: this.translations.dialogs.details.code, value: item.code }
+      ]
+    });
+
+    if (confirmed) {
+      this.favoriteCollection.removeLine(item.id);
+    }
   }
 
   protected async clearAll(): Promise<void> {
     const confirmed = await this.confirm({
       titleKey: this.translations.dialogs.clearAll.title,
-      messageKey: this.translations.dialogs.clearAll.message,
+      messageKey: this.translations.dialogs.clearAll.title,
       confirmKey: this.translations.dialogs.clearAll.confirm,
       cancelKey: this.translations.dialogs.clearAll.cancel,
       details: [
         {
           labelKey: this.translations.dialogs.details.count,
-          value: this.favorites().length.toString()
+          value: this.totalFavorites().toString()
         }
       ]
     });
 
-    if (!confirmed) {
-      return;
+    if (confirmed) {
+      this.favoriteCollection.clear();
     }
-
-    this.favoritesFacade.clear();
   }
 
   protected async onClearAllActivated(): Promise<void> {
-    if (!this.hasFavorites()) {
-      return;
+    if (this.hasFavorites()) {
+      await this.clearAll();
     }
-
-    await this.clearAll();
   }
 
-  protected async onRemoveActivated(item: FavoriteListItem): Promise<void> {
-    await this.remove(item);
+  protected async onRemoveStopActivated(item: FavoriteStopListItem): Promise<void> {
+    await this.removeStop(item);
   }
 
-  protected stopDetailCommands(item: FavoriteListItem): readonly string[] {
+  protected async onRemoveLineActivated(item: LineFavorite): Promise<void> {
+    await this.removeLine(item);
+  }
+
+  protected stopDetailCommands(item: FavoriteStopListItem): readonly string[] {
     return this.buildStopDetailNavigation(item).commands;
   }
 
-  protected stopDetailQueryParams(item: FavoriteListItem): Readonly<Record<string, string>> {
+  protected stopDetailQueryParams(item: FavoriteStopListItem): Readonly<Record<string, string>> {
     return this.buildStopDetailNavigation(item).queryParams;
   }
 
-  private observeFavorites(): void {
-    this.favoritesFacade.favorites$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((favorites) => this.favorites.set(favorites));
+  protected lineDetailCommands(item: LineFavorite): NavigationCommands {
+    return buildLineDetailNavigation(item.consortiumId, item.lineId).commands;
   }
 
-  private buildStopDetailNavigation(item: FavoriteListItem) {
+  private observeFavorites(): void {
+    this.favoriteCollection.favorites$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((snapshot) => {
+        this.stopFavorites.set(snapshot.stops);
+        this.lineFavorites.set(snapshot.lines);
+        this.totalFavorites.set(snapshot.total);
+      });
+  }
+
+  private buildStopDetailNavigation(item: FavoriteStopListItem) {
     const stopId = item.stopIds[0] ?? item.id;
     return buildStopDetailNavigation(item.consortiumId, stopId);
   }
@@ -293,29 +342,22 @@ export class FavoritesComponent {
       .subscribe((value) => this.searchTerm.set(this.normalizeQuery(value)));
   }
 
-  private buildGroups(
+  private buildStopGroups(
     favorites: readonly StopFavorite[],
     query: string
   ): readonly FavoriteGroupView[] {
-    if (!favorites.length) {
-      return [];
-    }
-
     const filtered = query
-      ? favorites.filter((favorite) => this.matchesQuery(favorite, query))
+      ? favorites.filter((favorite) => this.matchesStopQuery(favorite, query))
       : favorites;
-
     if (!filtered.length) {
       return [];
     }
 
-    const groups = new Map<string, FavoriteListItem[]>();
-
+    const groups = new Map<string, FavoriteStopListItem[]>();
     for (const favorite of filtered) {
-      const item = this.toListItem(favorite);
+      const item = this.toStopListItem(favorite);
       const groupId = favorite.municipalityId || favorite.municipality;
       const bucket = groups.get(groupId);
-
       if (bucket) {
         bucket.push(item);
       } else {
@@ -326,27 +368,33 @@ export class FavoritesComponent {
     const mapped = Array.from(groups.entries(), ([id, stops]) => ({
       id,
       municipality: stops[0]?.municipality ?? '',
-      stops: this.sortStops(stops)
+      stops: stops.slice().sort((left, right) => left.name.localeCompare(right.name, QUERY_LOCALE))
     }));
-
-    mapped.sort((first, second) => first.municipality.localeCompare(second.municipality, QUERY_LOCALE));
+    mapped.sort((left, right) => left.municipality.localeCompare(right.municipality, QUERY_LOCALE));
 
     return Object.freeze(
       mapped.map((group) => ({
-        id: group.id,
-        municipality: group.municipality,
+        ...group,
         stops: Object.freeze(group.stops)
       }))
     );
   }
 
-  private sortStops(stops: FavoriteListItem[]): FavoriteListItem[] {
-    return stops
-      .slice()
-      .sort((first, second) => first.name.localeCompare(second.name, QUERY_LOCALE));
+  private filterLines(favorites: readonly LineFavorite[], query: string): readonly LineFavorite[] {
+    if (!query) {
+      return favorites;
+    }
+
+    return Object.freeze(
+      favorites.filter((favorite) =>
+        [favorite.code, favorite.name, favorite.mode]
+          .map((value) => this.normalizeValue(value))
+          .some((value) => value.includes(query))
+      )
+    );
   }
 
-  private toListItem(favorite: StopFavorite): FavoriteListItem {
+  private toStopListItem(favorite: StopFavorite): FavoriteStopListItem {
     return {
       id: favorite.id,
       name: favorite.name,
@@ -355,29 +403,17 @@ export class FavoritesComponent {
       nucleus: favorite.nucleus,
       consortiumId: favorite.consortiumId,
       stopIds: favorite.stopIds
-    } satisfies FavoriteListItem;
+    };
   }
 
-  private matchesQuery(favorite: StopFavorite, query: string): boolean {
-    const normalizedName = this.normalizeValue(favorite.name);
-    const normalizedCode = this.normalizeValue(favorite.code);
-    const normalizedMunicipality = this.normalizeValue(favorite.municipality);
-    const normalizedNucleus = this.normalizeValue(favorite.nucleus);
-
-    return (
-      normalizedName.includes(query) ||
-      normalizedCode.includes(query) ||
-      normalizedMunicipality.includes(query) ||
-      normalizedNucleus.includes(query)
-    );
+  private matchesStopQuery(favorite: StopFavorite, query: string): boolean {
+    return [favorite.name, favorite.code, favorite.municipality, favorite.nucleus]
+      .map((value) => this.normalizeValue(value))
+      .some((value) => value.includes(query));
   }
 
   private normalizeQuery(value: string | null): string {
-    if (!value) {
-      return '';
-    }
-
-    return this.normalizeValue(value);
+    return value ? this.normalizeValue(value) : '';
   }
 
   private normalizeValue(value: string): string {
@@ -395,8 +431,6 @@ export class FavoritesComponent {
         autoFocus: false
       }
     );
-
-    const result = await firstValueFrom(dialogRef.afterClosed());
-    return result === true;
+    return (await firstValueFrom(dialogRef.afterClosed())) === true;
   }
 }
