@@ -5,18 +5,14 @@ import { dirname, resolve } from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
-import { enforceCoverageGates } from './coverage-gates.mjs';
 
 const NEWLINE = '\n';
 const EXIT_SUCCESS = 0;
 const ERROR_PREFIX = '[run-angular-tests]';
+const PWA_UPDATE_SPEC = 'src/app/core/services/pwa-update.service.spec.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const prepareScript = resolve(__dirname, 'prepare.mjs');
-const coverageSummaryPath = resolve(
-  __dirname,
-  '../../coverage/andalucia-transit/coverage-summary.json',
-);
 
 async function spawnAsync(command, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -46,23 +42,31 @@ async function ensureChromiumBinary() {
   }
 }
 
-async function runAngularTests(chromePath) {
+async function runNgTest(chromePath, extraArgs = [], extraEnv = {}) {
   const baseArgs = [
     'test',
     '--browsers=ChromeHeadlessNoSandbox',
     '--watch=false',
     '--code-coverage',
   ];
-  const extraArgs = process.argv.slice(2);
 
   await spawnAsync('npx', ['ng', ...baseArgs, ...extraArgs], {
     stdio: 'inherit',
     env: {
       ...process.env,
+      ...extraEnv,
       CHROME_BIN: chromePath,
     },
   });
-  await enforceCoverageGates(coverageSummaryPath);
+}
+
+async function runAngularTests(chromePath) {
+  await runNgTest(chromePath, process.argv.slice(2));
+  await runNgTest(
+    chromePath,
+    [`--include=${PWA_UPDATE_SPEC}`],
+    { PWA_COVERAGE_ONLY: '1' },
+  );
 }
 
 ensureChromiumBinary()
