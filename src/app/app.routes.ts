@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { APP_CONFIG } from '@core/config';
-import { FavoritesComponent } from '@features/favorites/favorites.component';
 import { HomeComponent } from '@features/home/home.component';
 import { LEGAL_ROUTE_SEGMENTS } from '@features/legal/legal-shell-content';
 import { AppLayoutComponent } from '@shared/layout/app-layout/app-layout.component';
@@ -32,7 +31,10 @@ export const routes: Routes = [
       },
       {
         path: APP_CONFIG.routes.favorites,
-        component: FavoritesComponent,
+        loadComponent: () =>
+          import('@features/favorites/favorites.component').then(
+            (module) => module.FavoritesComponent
+          ),
         title: APP_CONFIG.translationKeys.navigation.favorites
       },
       {
