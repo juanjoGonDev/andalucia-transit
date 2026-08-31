@@ -105,15 +105,34 @@ describe('LineFavoritesStorage', () => {
     expect(storage.load()).toEqual([]);
   });
 
-  it('does not read or mutate persisted favorites while mock data mode is active', () => {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify([FAVORITE]));
+  it('uses deterministic favorites in data mode without mutating persisted user data', () => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify([{ ...FAVORITE, name: 'Persisted' }]));
     runtimeFlags.mockMode = 'data';
 
-    expect(storage.load()).toEqual([]);
+    expect(storage.load()).toEqual([
+      {
+        id: '6|100',
+        consortiumId: 6,
+        lineId: '100',
+        code: 'M-100',
+        name: 'Circular Huércal de Almería',
+        mode: 'AUTOBUS'
+      }
+    ]);
 
     storage.save([{ ...FAVORITE, name: 'Changed' }]);
     storage.clear();
 
+    expect(window.localStorage.getItem(STORAGE_KEY)).toBe(
+      JSON.stringify([{ ...FAVORITE, name: 'Persisted' }])
+    );
+  });
+
+  it('uses an empty deterministic collection in empty mode', () => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify([FAVORITE]));
+    runtimeFlags.mockMode = 'empty';
+
+    expect(storage.load()).toEqual([]);
     expect(window.localStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify([FAVORITE]));
   });
 });
