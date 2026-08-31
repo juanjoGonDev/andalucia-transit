@@ -139,7 +139,13 @@ describe('LinesComponent favorites', () => {
     expect(access.favoriteIcon(LINE)).toBe('star');
   });
 
-  it('keeps favorite mutation separate from canonical line navigation', () => {
-    expect(access.lineCommands(LINE)).toEqual(['/', 'lines', '6', '100']);
+  it('keeps favorite mutation separate from descriptive line navigation', () => {
+    expect(access.lineCommands(LINE)).toEqual([
+      '/',
+      'lines',
+      '6',
+      '100',
+      'circular-huercal-de-almeria'
+    ]);
   });
 });
