@@ -32,6 +32,17 @@
           </div>
           <div
             appAccessibleButton
+            class="app-button app-button--primary app-button--compact favorites__add"
+            [appAccessibleButtonPressed]="(addMode$ | async) === true"
+            [attr.aria-expanded]="(addMode$ | async) === true"
+            aria-controls="favorites-add-results"
+            (appAccessibleButtonActivated)="toggleAddMode()"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">{{ addIcon }}</span>
+            {{ addFavoriteLabelKey | translate }}
+          </div>
+          <div
+            appAccessibleButton
             class="app-outline-button app-outline-button--compact favorites__clear"
             [appAccessibleButtonDisabled]="!hasFavorites()"
             [class.is-disabled]="!hasFavorites()"
@@ -42,6 +53,43 @@
           </div>
         </div>
       </header>
+
+      <section
+        *ngIf="(addMode$ | async) === true"
+        id="favorites-add-results"
+        class="favorites__add-panel app-async-reveal"
+        aria-live="polite"
+      >
+        <ng-container *ngIf="addResults$ | async as options">
+          <ul *ngIf="options.length" class="favorites__add-list" role="list">
+            <li *ngFor="let option of options; trackBy: trackSearchOption">
+              <button
+                type="button"
+                class="favorites__add-result"
+                [attr.aria-pressed]="option.isFavorite"
+                [attr.aria-label]="favoriteToggleLabel(option) | translate"
+                (click)="toggleFavorite(option)"
+              >
+                <span class="favorites__add-result-copy">
+                  <strong class="favorites__add-result-name">{{ option.name }}</strong>
+                  <span class="favorites__add-result-meta">
+                    {{ option.municipality }}
+                    <ng-container *ngIf="option.nucleus"> · {{ option.nucleus }}</ng-container>
+                    · {{ codeLabelKey | translate }} {{ option.code }}
+                  </span>
+                </span>
+                <span
+                  class="material-symbols-outlined favorites__add-result-icon"
+                  [attr.data-active]="option.isFavorite ? 'true' : null"
+                  aria-hidden="true"
+                >
+                  {{ favoriteToggleIcon(option) }}
+                </span>
+              </button>
+            </li>
+          </ul>
+        </ng-container>
+      </section>
 
       <section class="favorites__panel">
         <div *ngIf="!hasResults()" class="favorites__empty">
@@ -74,7 +122,7 @@
                           <span class="favorites-card__chip-label">{{ codeLabelKey | translate }}</span>
                           <span class="favorites-card__chip-value">{{ stop.code }}</span>
                         </span>
-                        <span class="favorites-card__chip">
+                        <span *ngIf="stop.nucleus" class="favorites-card__chip">
                           <span class="favorites-card__chip-label">{{ nucleusLabelKey | translate }}</span>
                           <span class="favorites-card__chip-value">{{ stop.nucleus }}</span>
                         </span>
