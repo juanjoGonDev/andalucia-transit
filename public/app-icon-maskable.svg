@@ -1,15 +1,94 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Andalucia Transit icon">
-  <rect width="64" height="64" fill="#060f2b"/>
-  <path
-    d="M17 38.5 25.5 23h13L47 38.5"
-    fill="none"
-    stroke="#52a8ff"
-    stroke-width="5"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  <circle cx="18" cy="40" r="6" fill="#0061fe"/>
-  <circle cx="32" cy="20" r="6" fill="#ffffff"/>
-  <circle cx="46" cy="40" r="6" fill="#0061fe"/>
-  <path d="M24 47h16" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Andalucia Transit icon">
+  <defs>
+    <radialGradient id="background" cx="50%" cy="42%" r="78%">
+      <stop offset="0%" stop-color="#102b63"/>
+      <stop offset="62%" stop-color="#071a45"/>
+      <stop offset="100%" stop-color="#060f2b"/>
+    </radialGradient>
+    <linearGradient id="bus-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1675ff"/>
+      <stop offset="100%" stop-color="#0061fe"/>
+    </linearGradient>
+    <linearGradient id="windshield" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e9eef7"/>
+    </linearGradient>
+    <filter id="bus-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#02091c" flood-opacity=".55"/>
+    </filter>
+  </defs>
+
+  <rect id="canvas" width="512" height="512" fill="#02040a"/>
+  <rect width="512" height="512" rx="108" fill="url(#background)"/>
+
+  <g id="andalucia-outline" fill="none" stroke="#0b54d4" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".92">
+    <path d="M42 242
+      C51 231 56 218 65 211
+      C75 202 78 188 86 176
+      C92 165 97 151 106 148
+      C115 145 121 160 131 161
+      C143 163 153 169 163 180
+      C175 191 187 181 194 173
+      C203 162 214 157 222 162
+      C226 164 231 154 236 148
+      C242 140 237 128 237 121
+      C236 111 244 101 256 98
+      C270 94 274 83 279 72
+      C284 62 297 65 306 66
+      C315 66 319 78 328 80
+      C339 82 340 92 347 93
+      C358 95 364 112 376 118
+      C387 124 401 119 411 117
+      C423 114 431 118 439 116
+      C449 113 453 120 461 115
+      C473 107 484 113 493 114"/>
+    <path d="M493 114
+      C500 117 500 127 498 136
+      C495 146 504 153 507 161
+      C512 171 503 181 495 187
+      C487 194 489 205 497 213
+      C506 222 507 230 503 237
+      C498 247 488 246 483 257
+      C478 266 484 273 480 282
+      C474 294 459 298 447 306
+      C437 313 425 322 413 318
+      C401 314 394 301 383 302
+      C372 303 367 313 359 318
+      C350 324 339 321 328 315
+      C318 310 310 316 300 319
+      C287 323 274 320 260 315
+      C249 311 238 316 227 322
+      C214 329 202 327 191 323
+      C180 319 174 331 165 337
+      C157 342 147 337 138 331
+      C127 325 117 320 108 316
+      C95 311 101 299 98 290
+      C94 279 83 272 74 266
+      C64 259 55 251 42 242"/>
+  </g>
+
+  <g id="route-network" fill="none" stroke="#0061fe" stroke-width="5" stroke-linecap="round" stroke-dasharray="3 10" opacity=".95">
+    <path d="M67 221 C91 220 99 252 117 290"/>
+    <path d="M67 221 C112 213 140 194 173 201"/>
+    <path d="M340 260 C374 272 401 259 425 194"/>
+  </g>
+  <g id="route-stops" fill="#1675ff">
+    <circle cx="67" cy="221" r="8"/>
+    <circle cx="117" cy="290" r="8"/>
+    <circle cx="425" cy="194" r="8"/>
+  </g>
+
+  <g id="bus" filter="url(#bus-shadow)">
+    <rect x="162" y="163" width="188" height="190" rx="34" fill="url(#bus-body)"/>
+    <path d="M151 223 H163 V273 H151 C143 273 137 267 137 259 V237 C137 229 143 223 151 223Z" fill="#0968ff"/>
+    <path d="M361 223 H349 V273 H361 C369 273 375 267 375 259 V237 C375 229 369 223 361 223Z" fill="#0968ff"/>
+    <rect x="218" y="176" width="77" height="16" rx="8" fill="#ffffff"/>
+    <rect x="177" y="202" width="158" height="87" rx="18" fill="url(#windshield)"/>
+    <path d="M260 289 L335 214 V271 C335 281 327 289 317 289Z" fill="#dfe6f2" opacity=".52"/>
+    <circle cx="193" cy="319" r="14" fill="#ffffff"/>
+    <circle cx="319" cy="319" r="14" fill="#ffffff"/>
+    <rect x="224" y="319" width="64" height="8" rx="4" fill="#0b54d4"/>
+    <rect x="178" y="351" width="27" height="17" rx="7" fill="#0968ff"/>
+    <rect x="307" y="351" width="27" height="17" rx="7" fill="#0968ff"/>
+  </g>
 </svg>

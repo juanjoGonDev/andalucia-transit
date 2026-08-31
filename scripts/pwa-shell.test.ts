@@ -33,7 +33,7 @@ test('PWA manifest uses the current application theme', async () => {
   assert.equal(manifest.background_color, CURRENT_THEME.background);
 });
 
-test('PWA manifest exposes separate any and maskable vector icons', async () => {
+test('PWA manifest exposes separate any and maskable install icons', async () => {
   const manifest = await readManifest();
 
   assert.deepEqual(manifest.icons, [
@@ -52,13 +52,22 @@ test('PWA manifest exposes separate any and maskable vector icons', async () => 
   ]);
 });
 
-test('maskable install artwork owns the full canvas and current brand colors', async () => {
-  const icon = await readFile('public/app-icon-maskable.svg', 'utf8');
+test('favicon and maskable icon stay identical to the approved bus and Andalusia artwork', async () => {
+  const [favicon, maskable] = await Promise.all([
+    readFile('public/favicon.svg', 'utf8'),
+    readFile('public/app-icon-maskable.svg', 'utf8')
+  ]);
 
-  assert.match(icon, /<rect width="64" height="64" fill="#060f2b"\/>/);
-  assert.match(icon, new RegExp(CURRENT_THEME.primary));
-  assert.match(icon, new RegExp(CURRENT_THEME.secondary));
-  assert.doesNotMatch(icon, /#3f51b5/i);
+  assert.equal(maskable, favicon);
+  assert.match(favicon, /id="andalucia-outline"/);
+  assert.match(favicon, /id="route-network"/);
+  assert.match(favicon, /id="route-stops"/);
+  assert.match(favicon, /id="bus"/);
+  assert.match(favicon, /id="canvas" width="512" height="512" fill="#02040a"/);
+  assert.match(favicon, new RegExp(CURRENT_THEME.primary));
+  assert.match(favicon, new RegExp(CURRENT_THEME.secondary));
+  assert.doesNotMatch(favicon, /#3f51b5/i);
+  assert.doesNotMatch(favicon, /junta/i);
 });
 
 test('document metadata colors mobile browser chrome with the current primary', async () => {
@@ -72,7 +81,7 @@ test('document metadata colors mobile browser chrome with the current primary', 
   assert.match(index, /<meta name="apple-mobile-web-app-capable" content="yes">/);
 });
 
-test('service worker precaches manifest and can update vector install artwork', async () => {
+test('service worker precaches manifest and can update install artwork', async () => {
   const config = await readFile('ngsw-config.json', 'utf8');
   const parsed = JSON.parse(config) as {
     readonly assetGroups: readonly {
