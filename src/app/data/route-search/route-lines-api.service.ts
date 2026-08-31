@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, from, map, of, shareReplay, switchMap } from 'rxjs';
 import { AppConfig } from '@core/config';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
+import { normalizeLineDisplayName } from '@data/lines/line-metadata.util';
 import type {
   RouteLineCoordinate,
   RouteLineDetail,
@@ -185,7 +186,6 @@ const STOPS_SEGMENT = 'paradas' as const;
 const LINES_SEGMENT = 'lineas' as const;
 const LINES_BY_STOPS_SEGMENT = 'lineasPorParadas' as const;
 const PATH_SEPARATOR = '/' as const;
-const TERMINAL_NUCLEUS_SENTINEL_PATTERN = /(?:^|\s)NN\s*$/i;
 
 const EMPTY_LINE_LIST: readonly RouteLineSummary[] = Object.freeze([]);
 const EMPTY_LINE_STOPS: readonly RouteLineStop[] = Object.freeze([]);
@@ -216,17 +216,13 @@ function mapLineSummaries(entries: readonly ApiLineSummary[]): readonly RouteLin
       ({
         lineId: String(entry.idLinea),
         code: entry.codigo,
-        name: normalizeRouteLineName(entry.nombre),
+        name: normalizeLineDisplayName(entry.nombre),
         mode: entry.descripcion ?? entry.modo ?? '',
         priority: Number(entry.prioridad ?? 0),
       }) satisfies RouteLineSummary,
   );
 
   return Object.freeze(summaries);
-}
-
-function normalizeRouteLineName(name: string): string {
-  return name.trim().replace(TERMINAL_NUCLEUS_SENTINEL_PATTERN, '').trimEnd();
 }
 
 function normalizeZoneId(value: string | number | null | undefined): string | null {
