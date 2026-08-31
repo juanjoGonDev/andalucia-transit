@@ -20,6 +20,7 @@ const EXACT_CAPTURE_STABILIZER =
 const POPULATED_SPECS = Object.freeze([
   'tests/playwright/deterministic-visual-states.spec.ts',
   'tests/playwright/exact-news-visual.spec.ts',
+  'tests/playwright/favorites-aggregate.spec.ts',
   'tests/playwright/home-tabs.layout.spec.ts',
   'tests/playwright/lines-directory.layout.spec.ts',
   'tests/playwright/map-exploration.spec.ts',
@@ -28,6 +29,7 @@ const POPULATED_SPECS = Object.freeze([
   'tests/playwright/visual-interaction-states.spec.ts',
 ]);
 const PRODUCT_CHECK_ONLY_SPECS = new Set([
+  'tests/playwright/favorites-aggregate.spec.ts',
   'tests/playwright/map-exploration.spec.ts',
   'tests/playwright/theme.contrast.spec.ts',
 ]);
