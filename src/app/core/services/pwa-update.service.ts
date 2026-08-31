@@ -8,6 +8,7 @@ const PWA_RECOVERY_SESSION_KEY = 'andalucia-transit:pwa-recovery';
 export class PwaUpdateService {
   private readonly swUpdate = inject(SwUpdate);
   private initialized = false;
+  private activationInProgress = false;
 
   initialize(): void {
     if (this.initialized || !this.swUpdate.isEnabled) {
@@ -21,18 +22,39 @@ export class PwaUpdateService {
       .subscribe(() => void this.activateReadyVersion());
 
     this.swUpdate.unrecoverable.subscribe(() => this.recoverUnrecoverableState());
+    void this.checkForUpdate();
   }
 
   reloadCurrentVersion(): void {
     globalThis.location.reload();
   }
 
-  private async activateReadyVersion(): Promise<void> {
+  private async checkForUpdate(): Promise<void> {
     try {
-      await this.swUpdate.activateUpdate();
+      await this.swUpdate.checkForUpdate();
+    } catch {
+      // Keep the current version when an update check cannot reach the server.
+    }
+  }
+
+  private async activateReadyVersion(): Promise<void> {
+    if (this.activationInProgress) {
+      return;
+    }
+
+    this.activationInProgress = true;
+
+    try {
+      const activated = await this.swUpdate.activateUpdate();
+      if (!activated) {
+        this.activationInProgress = false;
+        return;
+      }
+
       sessionStorage.removeItem(PWA_RECOVERY_SESSION_KEY);
       this.reloadCurrentVersion();
     } catch {
+      this.activationInProgress = false;
       // Keep the currently loaded, internally consistent version when activation fails.
     }
   }
