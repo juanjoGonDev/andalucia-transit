@@ -45,8 +45,81 @@
   color: var(--color-primary);
 }
 
+.favorites__add,
 .favorites__clear {
   align-self: flex-start;
+}
+
+.favorites__add-panel {
+  width: min(100%, 64rem);
+  margin: 0 auto;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.favorites__add-list {
+  display: grid;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.favorites__add-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  width: 100%;
+  min-height: 3.25rem;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-light);
+  color: var(--color-text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.favorites__add-result:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.favorites__add-result:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.favorites__add-result-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.favorites__add-result-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.favorites__add-result-meta {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.favorites__add-result-icon {
+  flex: 0 0 auto;
+  color: var(--color-text-secondary);
+}
+
+.favorites__add-result-icon[data-active='true'] {
+  color: var(--color-primary);
 }
 
 .favorites__panel {
@@ -61,8 +134,6 @@
   width: min(100%, 64rem);
   margin: 0 auto;
 }
-
-
 
 .favorites__clear-icon {
   font-size: calc(var(--font-size-base) + var(--space-3xs));
@@ -193,6 +264,19 @@
 }
 
 @media (max-width: 40rem) {
+  .favorites__add,
+  .favorites__clear {
+    flex: 1 1 auto;
+  }
+
+  .favorites__add-result {
+    align-items: flex-start;
+  }
+
+  .favorites__add-result-meta {
+    white-space: normal;
+  }
+
   .favorites-card__content {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -220,4 +304,3 @@
     flex: 0 1 22rem;
   }
 }
-
