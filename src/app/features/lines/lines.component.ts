@@ -33,11 +33,11 @@ import {
   buildLineKey
 } from '@domain/lines/line-directory.service';
 import { LineFavoriteCandidate, LineFavoritesFacade } from '@domain/lines/line-favorites.facade';
+import { LinesUiCopy, getLinesUiCopy } from '@features/lines/lines-ui.copy';
 import {
   LINES_FAVORITE_ACTIVE_ICON,
   LINES_FAVORITE_INACTIVE_ICON
 } from '@features/lines/lines.config';
-import { LinesUiCopy, getLinesUiCopy } from '@features/lines/lines-ui.copy';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import {
   LINE_DETAIL_BASE_SEGMENT,
