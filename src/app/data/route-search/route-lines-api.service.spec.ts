@@ -123,6 +123,46 @@ describe('RouteLinesApiService', () => {
     ]);
   });
 
+  it('removes only the terminal CTAN NN sentinel from stop-line names', async () => {
+    http.get.and.returnValue(
+      of([
+        {
+          idLinea: 380,
+          codigo: 'M-380',
+          nombre: 'Adra - Venta Del Viso NN',
+          descripcion: 'Autobús'
+        },
+        {
+          idLinea: 381,
+          codigo: 'M-381',
+          nombre: 'Annarosa - Centro',
+          descripcion: 'Autobús'
+        },
+        {
+          idLinea: 382,
+          codigo: 'M-382',
+          nombre: 'NN Express - Centro',
+          descripcion: 'Autobús'
+        },
+        {
+          idLinea: 383,
+          codigo: 'M-383',
+          nombre: 'Destino nN',
+          descripcion: 'Autobús'
+        }
+      ])
+    );
+
+    const result = await firstValueFrom(service.getLinesForStops(8, ['79']));
+
+    expect(result.map((line) => line.name)).toEqual([
+      'Adra - Venta Del Viso',
+      'Annarosa - Centro',
+      'NN Express - Centro',
+      'Destino'
+    ]);
+  });
+
   it('does not issue a second stop-line request when the canonical CTAN route fails', async () => {
     http.get.and.returnValue(throwError(() => new Error('CTAN unavailable')));
 
