@@ -1,11 +1,10 @@
 import { Injectable, Signal, inject, signal } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { TranslateService } from '@ngx-translate/core';
-
-import { APP_CONFIG_TOKEN } from '../tokens/app-config.token';
-import { APP_CONFIG, SupportedLanguage, AppConfig } from '../config';
-import { LanguageOption } from '../interfaces/language-option.interface';
-import { resolveLanguage } from '../../domain/utils/language.util';
+import { APP_CONFIG, AppConfig, SupportedLanguage } from '@core/config';
+import { LanguageOption } from '@core/interfaces/language-option.interface';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
+import { resolveLanguage } from '@domain/utils/language.util';
 
 const storageAvailable = (): boolean => typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
 

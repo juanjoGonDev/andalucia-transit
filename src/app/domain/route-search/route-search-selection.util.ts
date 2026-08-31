@@ -1,9 +1,9 @@
-import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
 import {
   StopConnection,
   buildStopConnectionKey
-} from '../../data/route-search/stop-connections.service';
-import { RouteSearchLineMatch, RouteSearchSelection } from './route-search-state.service';
+} from '@data/route-search/stop-connections.service';
+import { StopDirectoryOption } from '@data/stops/stop-directory.service';
+import { RouteSearchLineMatch, RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 
 interface LineAggregate {
   readonly lineId: string;

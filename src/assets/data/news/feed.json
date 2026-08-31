@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "generatedAt": "2025-10-24T08:00:00+02:00",
+    "timezone": "Europe/Madrid",
+    "providerName": "Portal de Datos Abiertos de la Red de Consorcios de Transporte de Andalucía"
+  },
+  "articles": [
+    {
+      "id": "sevilla-metro-updates",
+      "titleKey": "news.feed.sevillaMetroUpdates.title",
+      "summaryKey": "news.feed.sevillaMetroUpdates.summary",
+      "link": "https://www.ctan.es/noticias/ampliacion-metro-sevilla",
+      "publishedAt": "2025-09-28T07:45:00+02:00"
+    },
+    {
+      "id": "malaga-night-routes",
+      "titleKey": "news.feed.malagaNightRoutes.title",
+      "summaryKey": "news.feed.malagaNightRoutes.summary",
+      "link": "https://www.ctan.es/noticias/refuerzo-nocturno-malaga",
+      "publishedAt": "2025-09-15T22:00:00+02:00"
+    },
+    {
+      "id": "cadiz-digital-tickets",
+      "titleKey": "news.feed.cadizDigitalTickets.title",
+      "summaryKey": "news.feed.cadizDigitalTickets.summary",
+      "link": "https://www.ctan.es/noticias/billete-digital-cadiz",
+      "publishedAt": "2025-08-30T09:30:00+02:00"
+    }
+  ]
+}

@@ -1,12 +1,31 @@
+.route-search__results {
+  color: var(--color-text-primary);
+}
+
+.route-search__summary,
+.route-search__timeline,
+.route-search__empty {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  color: var(--color-text-primary);
+}
+
+.route-search__timeline {
+  padding: clamp(var(--space-md), 2.5vw, var(--space-xl));
+}
+
 .route-search__no-upcoming {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   align-items: center;
   padding: 1.25rem;
-  border-radius: 1rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
   background-color: var(--color-surface);
-  box-shadow: var(--shadow-xs);
+  box-shadow: var(--shadow-card);
 }
 
 .route-search__no-upcoming-text {
@@ -44,31 +63,68 @@
   color: inherit;
 }
 
-:host-context(.dark) .route-search__accuracy {
-  background-color: var(--color-surface);
-  color: var(--color-text-muted-dark);
+.route-search__async {
+  margin-top: var(--space-lg);
 }
 
-:host-context(.dark) .route-search__accuracy-icon {
-  color: var(--color-primary-light);
+.route-search__loading-lines {
+  display: grid;
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 30rem;
+  margin-top: var(--space-xs);
+}
+
+.route-search__loading-line {
+  width: 58%;
+  height: 0.65rem;
+}
+
+.route-search__loading-line--medium {
+  width: 74%;
+}
+
+.route-search__loading-line--wide {
+  width: 92%;
 }
 
 .route-search__empty {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  padding: clamp(var(--space-lg), 3vw, var(--space-2xl));
+  text-align: left;
 }
 
-.route-search__empty-button {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: var(--radius-lg);
-  background: var(--color-primary);
-  color: var(--color-button-text);
+.route-search__empty--results {
+  max-width: none;
+  margin: 0;
+}
+
+.route-search__empty-title {
+  margin: 0;
+  font-size: 1.25rem;
   font-weight: 600;
-  cursor: pointer;
+  color: inherit;
+}
+
+.route-search__empty-description {
+  max-width: 46rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.route-search__empty-action {
+  min-width: 12rem;
+  align-self: flex-start;
+}
+
+@media (max-width: 40rem) {
+  .route-search__empty-action {
+    width: 100%;
+  }
 }

@@ -1,6 +1,6 @@
-import { createLinter, LintResult } from 'actionlint';
-import { readdir, readFile, stat } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, relative, resolve } from 'node:path';
+import { LintResult, createLinter } from 'actionlint';
 
 const START_MESSAGE = 'Validating GitHub Actions workflows.' as const;
 const DISCOVERY_MESSAGE_SINGULAR = 'Found 1 workflow file to validate.' as const;

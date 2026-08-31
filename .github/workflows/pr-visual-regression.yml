@@ -1,0 +1,145 @@
+name: Visual regression baseline
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+permissions: read-all
+
+concurrency:
+  group: pr-visual-regression-${{ github.event.pull_request.head.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compare:
+    name: '🔬 Compare reviewed visual baseline'
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPOSITORY: ${{ github.repository }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - name: Checkout immutable head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: head
+
+      - name: Resolve reviewed baseline
+        id: baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          baseline_sha=$(jq -r '.commit' head/.github/visual-baseline.json)
+          if [[ ! "$baseline_sha" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Visual baseline must be an immutable 40-character commit SHA" >&2
+            exit 1
+          fi
+          if [ "$baseline_sha" = "$HEAD_SHA" ]; then
+            echo "Visual baseline cannot self-seed from the current head" >&2
+            exit 1
+          fi
+          compare_status=$(gh api "repos/$REPOSITORY/compare/$baseline_sha...$HEAD_SHA" --jq '.status')
+          if [ "$compare_status" != 'ahead' ]; then
+            echo "Visual baseline $baseline_sha must be an ancestor of head $HEAD_SHA; compare status: $compare_status" >&2
+            exit 1
+          fi
+          echo "sha=$baseline_sha" >> "$GITHUB_OUTPUT"
+          echo "BASELINE_SHA=$baseline_sha" >> "$GITHUB_ENV"
+
+      - name: Checkout reviewed baseline
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ steps.baseline.outputs.sha }}
+          path: baseline
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 20.19.0
+
+      - name: Install deterministic dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@9.12.3 --activate
+          (
+            cd head
+            pnpm install --frozen-lockfile
+          )
+          (
+            cd baseline
+            pnpm install --frozen-lockfile
+          )
+
+      - name: Render reviewed baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          node head/scripts/visual/capture-evidence.mjs \
+            --workspace baseline \
+            --outDir expected \
+            --port 4300 \
+            --verifyProductChecks false
+
+      - name: Render pull request head
+        shell: bash
+        run: |
+          set -euo pipefail
+          node head/scripts/visual/capture-evidence.mjs \
+            --workspace head \
+            --outDir actual \
+            --port 4200 \
+            --verifyProductChecks true
+
+      - name: Compare every required pixel
+        id: visual_diff
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          node head/scripts/visual/compare-evidence.mjs \
+            --expected expected \
+            --actual actual \
+            --diff diff
+
+      - name: Retain expected actual and diff evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pr-${{ github.event.pull_request.number }}-visual-regression-${{ github.event.pull_request.head.sha }}
+          path: |
+            expected/*.png
+            actual/*.png
+            diff/*.png
+            diff/summary.json
+          if-no-files-found: warn
+          retention-days: 7
+          compression-level: 0
+
+      - name: Enforce reviewed baseline
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ '${{ steps.visual_diff.outcome }}' != 'success' ]; then
+            if [ -f diff/summary.json ]; then
+              cat diff/summary.json
+            fi
+            echo "Rendered head differs from reviewed baseline $BASELINE_SHA" >&2
+            exit 1
+          fi
+          echo "All required screenshots match reviewed baseline $BASELINE_SHA exactly."

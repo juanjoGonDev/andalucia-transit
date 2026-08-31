@@ -1,4 +1,4 @@
-import { SupportedLanguage } from '../config';
+import { SupportedLanguage } from '@core/config';
 
 export interface LanguageOption {
   code: SupportedLanguage;

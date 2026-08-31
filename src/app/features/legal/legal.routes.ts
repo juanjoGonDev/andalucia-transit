@@ -1,0 +1,22 @@
+import { Routes } from '@angular/router';
+import type { LegalDocumentId } from './legal-content';
+import { LegalPageComponent } from './legal-page.component';
+import { LEGAL_ROUTE_SEGMENTS } from './legal-shell-content';
+
+const legalDocumentRoute = (documentId: LegalDocumentId, path: string) => ({
+  path,
+  component: LegalPageComponent,
+  data: { legalDocumentId: documentId }
+});
+
+export const LEGAL_ROUTES: Routes = [
+  {
+    path: '',
+    redirectTo: LEGAL_ROUTE_SEGMENTS.privacy,
+    pathMatch: 'full'
+  },
+  legalDocumentRoute('privacy', LEGAL_ROUTE_SEGMENTS.privacy),
+  legalDocumentRoute('storage', LEGAL_ROUTE_SEGMENTS.storage),
+  legalDocumentRoute('terms', LEGAL_ROUTE_SEGMENTS.terms),
+  legalDocumentRoute('notice', LEGAL_ROUTE_SEGMENTS.notice)
+];

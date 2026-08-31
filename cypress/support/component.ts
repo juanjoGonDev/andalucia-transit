@@ -1,11 +1,9 @@
 import './commands';
 import { mount } from 'cypress/angular';
 
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      mount: typeof mount;
-    }
+declare module 'cypress' {
+  interface Chainable<_Subject = unknown> {
+    mount: typeof mount;
   }
 }
 

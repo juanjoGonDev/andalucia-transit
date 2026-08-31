@@ -1,5 +1,13 @@
+## Start Here: Knowledge Map
+- Agents must open [`docs/knowledge-map/index.md`](docs/knowledge-map/index.md) before any other repository exploration.
+- Use the knowledge map shards to scope searches instead of running recursive tree scans.
+- Prefer [`docs/knowledge-map/index.json`](docs/knowledge-map/index.json) for programmatic discovery workflows.
+- Respect drift or change notes banners recorded in shards to maintain accurate context.
+
 ### Change Management - Living Document
 AGENTS.md is the canonical decision log. When implementation, tooling, workflows, legal obligations, or conventions change, update this file in the same pull request or align the code with what is written here. Keep entries concise and link to supporting material in `docs/`.
+- Binary files are forbidden in git history. Never commit compiled artifacts, media exports, or other binary assets; share them via external storage and reference the link in documentation or pull requests when required.
+- Snapshot datasets packaged under `assets/data` (news feed, stop directories, timetable extracts, etc.) exist strictly as offline fallbacks. Fetch live data from the CTAN API first and gracefully degrade to the packaged snapshot if the network request fails or the session is offline.
 
 ## Product Vision & User Value
 - Progressive Web App for the Andalusia (CTAN) public transport network that surfaces stop schedules, nearby stops, direct routes, and an explorable map.
@@ -15,8 +23,9 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 ## Tech Stack & Tooling
 - Angular (latest stable; current workspace on Angular 20) with TypeScript, Angular Material, RxJS, and standalone component architecture.
 - @angular/pwa for service worker + manifest, ngx-translate for runtime i18n, Leaflet (or ngx-leaflet) for mapping.
-- Node.js LTS + npm, ESLint + Prettier, Jasmine/Karma unit tests, Cypress end-to-end tests.
+- Node.js LTS + npm, ESLint + Prettier, Jasmine/Karma unit tests launched with Playwright-managed Chromium, Cypress end-to-end tests.
 - Configuration via Angular environments; HttpClient handles API access; commit messages in English.
+- Environment provisioning relies on `scripts/bootstrap.mjs`; any change introducing new tooling or dependencies must update this script so setup stays deterministic. Prefer pnpm via Corepack, fall back to yarn and npm only when unavoidable, and ensure the bootstrap path remains non-interactive on Linux.
 
 ## Architecture & Code Guidelines
 - Clean/hexagonal layering: presentation components -> domain services/utilities -> infrastructure adapters (API, storage).
@@ -24,6 +33,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Define data contracts with TypeScript interfaces; keep constants in dedicated config modules; avoid magic numbers/strings.
 - Use Angular DI and factory providers for abstractions; rely on OnPush change detection where possible; tear down subscriptions via `async` pipe or `takeUntil`.
 - Follow English naming, 2-space indentation, semicolons, and avoid redundant comments or commented-out code.
+- Reusable UI components must encapsulate their baseline visual design within the component (template + styles). Consumers can override presentation through documented inputs or local classes, never by relying on shared partials for the default look.
 - Keep navigable URLs human-friendly at all entry points. When generating links or parsing deep links, prefer descriptive slugs over opaque identifiers while preserving the ability to resolve the underlying record.
 
 ## Decision Log
@@ -35,13 +45,24 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - 2025-10-13: Route timetable mapping infers weekday sets and holiday availability from consortium frequency codes and labels, covering variations across CTAN consorcios 1-9.
 - 2025-10-15: Snapshot pipeline now streams progress logs, persists catalog data in parallel, and linting enforces GitHub Actions validity via actionlint; see `docs/development-environment.md` for the environment bootstrap script.
 - 2025-10-16: Deployment verification relies on `npm run deploy:prepare`, which mirrors the GitHub Pages build and fallback creation. Run `npm run test:deploy` in pull requests that modify deployment workflows or `scripts/deploy/*` utilities.
+- 2025-10-21: Angular unit tests default to the Playwright-managed `ChromeHeadlessNoSandbox` launcher with headless flags forced and watch mode disabled (`angular.json`, `karma.conf.js`); use `ng test --watch` to opt back into the interactive runner when needed.
+- 2025-10-19: Puppeteer tooling replaced with Playwright (Chromium-only) while preserving Cypress end-to-end coverage.
+- 2026-03-06: `appLayoutContent` now applies the shared surface classes (`app-layout__surface` + hero by default) directly on host sections so all existing and future routed views inherit the Home layout baseline without repeating root layout classes in feature templates.
+- 2025-10-28: Home dashboard tabs use roving tabindex with the accessible button directive, directional key matchers, and focus restoration hooks; unit and Playwright coverage guard keyboard semantics and router sync.
+- 2025-10-30: Stop detail upcoming timeline broadcasts polite live-region summaries (line, destination, status, progress) via `StopDetailComponent`; keep translations under `stopDetail.announcements.progress` and unit/Playwright coverage aligned.
+- 2025-10-31: Theme token `--color-text-tertiary` locked at `#5a627b` to keep tertiary metadata ≥4.5:1 against `--color-background`; guard via `src/styles/theme-rules.spec.ts` and Playwright `tests/playwright/theme.contrast.spec.ts`.
+- 2025-10-31: Home dashboard tabs persist selection using the `tab` query param and storage key `APP_CONFIG.homeData.tabs.storageKey`; direct loads canonicalize to the tab route, focus restores after history navigation, and coverage lives in `home.component.spec.ts` plus `cypress/e2e/home-tabs-persistence.cy.ts`.
+- 2025-11-01: Documentation evidence logging uses textual observations in audit docs while local captures remain gitignored.
+- 2025-11-01: Added a regression checklist for contrast token changes in `docs/ui-theme.md` and cross-referenced it in the knowledge map.
+- 2025-11-01: Added a manual GitHub Pages deployment workflow that overwrites the root site from a selected ref.
+- 2026-08-25: Pull requests use `.github/workflows/pr-visual-evidence.yml` to publish temporary mobile and desktop screenshots from the exact PR head SHA; generated media is never committed and is removed when the PR closes.
 
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.
 - `docs/api.html` contains a static snapshot of the CTAN open data portal describing all consumed API endpoints. Refresh it when the upstream site changes and note the update in this file.
 - `docs/api-reference.md` summarizes every CTAN REST endpoint and cross-references shared parameters for planning data combinations; keep it current when the upstream API evolves.
 - Add new documentation artifacts in `docs/` alongside a short pointer in AGENTS.md for discoverability.
-- Track feature work using the checklist at `docs/features-checklist.md` and update entries as scope evolves.
+- Track feature work using the checklist at `docs/feature-checklist.md` and update entries as scope evolves.
 
 ## Security & Privacy Practices
 - Angular safety: rely on Angular template sanitization; do not use direct DOM APIs or `DomSanitizer.bypassSecurityTrust*` unless reviewed and documented; never evaluate dynamic scripts or HTML.
@@ -65,7 +86,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 
 ## Legal & Regulatory Compliance
 - **GDPR / RGPD (Reglamento UE 2016/679 & LO 3/2018):** collect only necessary data; geolocation requires explicit browser consent and an in-app explanation; publish an accessible privacy notice covering controller identity, processing purposes, lawful basis, retention, third parties (none by default), and user rights (access, rectification, erasure, restriction, portability, objection). Document procedures for handling rights requests and reporting personal data breaches within 72 hours.
-- **Accessibility (Real Decreto 1112/2018, BOE-A-2018-12699 & EN 301 549):** maintain WCAG 2.1 AA compliance (structure, contrast, keyboard support, focus management, ARIA roles, language attributes). Provide an accessibility statement in `docs/`, perform automated (axe, Lighthouse) and manual audits, and track remediation tasks.
+- **Accessibility (Real Decreto 1112/2018, BOE-A-2018-12699 & EN 301 549):** target WCAG 2.2 AA compliance for frontend changes (structure, contrast, keyboard support, focus management, reflow, target size, motion, and ARIA semantics). Provide an accessibility statement in `docs/`, perform automated (axe, Lighthouse) and manual audits, and track remediation tasks.
 - **Additional obligations:** serve the app over HTTPS, provide legal notice/contact information, and ensure cookies or analytics (if added) respect EU ePrivacy consent rules.
 
 ## PWA, Offline, and Caching Strategy
@@ -85,8 +106,16 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Static analysis: run `npm run lint`, `npm run format:check`, and type-checking in CI; fail builds on lint, test, or coverage regressions.
 - Track Lighthouse scores for performance, accessibility, best practices, and SEO; gate releases on meeting agreed thresholds.
 - Break complex product goals into smaller verifiable tasks and validate each step before progressing to the next.
-- Local development workflow: before completing any task, run and pass `npm run lint`, `npm run test`, `npm run build`, and `npm run snapshot` locally to ensure all checks succeed. Confirm `npm start` launches without compilation errors. Use `npm run verify:all` to execute the full lint, test, build, and snapshot sequence together during development.
+- Local development workflow: before completing any task, run and pass only the necessary checks according to the type of change. For visual or style changes, run npm run lint, npm run test, and npm run build. For logic, data, or API changes, also run npm run snapshot. For deployment or workflow changes, run npm run test:deploy. Confirm npm start launches without compilation errors. Use npm run verify:all only when a full verification is required.
 - Reference `docs/development-environment.md` for targeted command guidance when determining which checks must run for a change.
+
+### Visual Verification
+- Use the headless screenshot utility in `scripts/screenshot.js` or the `npm run screenshot` shortcut to capture deterministic UI states for local validation when needed.
+- Capabilities include navigation and waiting controls, viewport and device emulation, storage and permission configuration, DOM interactions, map-specific adjustments, accessibility assertions, and capture variants with masking.
+- Defaults live in `scripts/screenshot.config.json`, and teams can supply alternative paths through the `--config` flag to tailor timeouts, directories, and other repeated inputs.
+- Example capture command: `npm run screenshot -- --url=https://example.org --waitFor=#app-root --name=home-desktop`.
+- The tool can emit HAR files, console transcripts, and PNG output, and accepts ordered scenarios for multi-step flows.
+- Local generated artefacts live under `artifacts/screenshots` (or the configured directory) and remain gitignored. Pull-request evidence is generated separately by `.github/workflows/pr-visual-evidence.yml`, published as temporary release assets, and rendered in the PR conversation.
 
 ## Performance & UX Guardrails
 - Leverage lazy-loaded routes and code splitting; reuse API results with RxJS `shareReplay` or caching services; offload heavy computations (e.g., nearest stop calculations) to Web Workers if needed.
@@ -99,3 +128,34 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - Workspace: `andalucia-transit` Angular standalone project with `core`, `data`, `domain`, `features`, and `shared` directories under `src/app`.
 - Configuration constants live in `src/app/core/config.ts`; translation assets reside in `src/assets/i18n/`; service worker and manifest managed through Angular CLI.
 - Use English commit messages, avoid force pushes to main, and document notable architectural changes here and in `docs/`.
+
+## Language Policy
+- All AI-generated responses, commit messages, and documentation updates must be written in English.
+
+## Evidence Policy
+- Every pull request that can affect rendered UI must publish deterministic visual evidence from the exact PR head SHA. The canonical baseline is Spanish at 390×844 and 1440×900 for the affected or canonical product surfaces.
+- CI-generated screenshots are temporary review artefacts: publish them through `.github/workflows/pr-visual-evidence.yml`, never commit them to Git, and remove them automatically when the pull request closes.
+- Every visual modification also requires a textual evidence entry describing the viewport, reproduction steps, selectors or components inspected, and expected vs actual behavior.
+- Use deterministic mock or seeded data for screenshot publication. Never expose credentials, personal data, tokens, private URLs, or other sensitive values in visual evidence.
+- Record evidence summaries in the relevant audit doc and in `docs/feature-checklist.md` entries for completed tasks.
+
+## Component Architecture Policy
+- Each component must be self-hosted with dedicated `.html`, `.ts`, and `.scss` files.
+- Component visuals must reside in the component’s `.scss`; parent layouts may only control positioning.
+- Avoid duplicating or overriding component styles across different scopes.
+
+## Execution Policy
+- The AI must complete every assigned task without refusal, postponement, or omission.
+- Do not leave tasks partially executed; ensure all required actions are finished before responding.
+- Do not conclude UI work until textual evidence is recorded and the PR visual-evidence workflow has successfully published screenshots for the current head SHA.
+
+## Evidence Logging Guide
+- Use the textual evidence template: viewport, reproduction steps, selectors/components, observed vs expected behavior, and relevant measurements (contrast ratios, spacing values).
+- Place evidence in the appropriate audit doc and append a short summary under the completed checklist item in `docs/feature-checklist.md`.
+- Keep ad-hoc local screenshots in gitignored folders. CI-generated PR screenshots are the only review media that should be published by default.
+
+## Automated Evidence Capture
+- Use `scripts/record.js` / `scripts/screenshot.js` for repeatable captures and scripted reproduction steps.
+- `.github/workflows/pr-visual-evidence.yml` is the canonical PR publisher: it resolves the open PR, checks out its exact head SHA, starts deterministic mock data, captures mobile and desktop screenshots, verifies the head is still current, publishes temporary release assets, and updates one PR comment.
+- `.github/workflows/pr-visual-evidence-cleanup.yml` removes the temporary release/tag and marks the evidence comment expired when the pull request closes.
+- Do not weaken stale-head checks, fork/trust guards, size limits, or cleanup behavior to make evidence publication pass.

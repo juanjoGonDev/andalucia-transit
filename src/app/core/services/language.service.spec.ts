@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { of } from 'rxjs';
-
-import { LanguageService } from './language.service';
-import { APP_CONFIG } from '../config';
+import { APP_CONFIG } from '@core/config';
+import { LanguageService } from '@core/services/language.service';
 
 class EmptyTranslateLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
@@ -23,7 +23,10 @@ describe('LanguageService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: EmptyTranslateLoader } }),
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: EmptyTranslateLoader },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
+        }),
         MatNativeDateModule
       ]
     });

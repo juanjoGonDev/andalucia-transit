@@ -1,19 +1,19 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { registerLocaleData } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import localeEs from '@angular/common/locales/es';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { Observable, of } from 'rxjs';
-
-import { AppComponent } from './app';
-import { routes } from './app.routes';
+import { AppComponent } from '@app/app';
+import { routes } from '@app/app.routes';
 import {
   StopDirectoryOption,
   StopDirectoryService
-} from './data/stops/stop-directory.service';
-import { AppShellComponent } from './shared/layout/app-shell/app-shell.component';
+} from '@data/stops/stop-directory.service';
+import { AppLayoutComponent } from '@shared/layout/app-layout/app-layout.component';
 
 class StopDirectoryTestingService {
   searchStops(): Observable<readonly StopDirectoryOption[]> {
@@ -21,6 +21,14 @@ class StopDirectoryTestingService {
   }
 
   getStopById(): Observable<null> {
+    return of(null);
+  }
+
+  getOptionByStopId(): Observable<StopDirectoryOption | null> {
+    return of(null);
+  }
+
+  getOptionByStopSignature(): Observable<StopDirectoryOption | null> {
     return of(null);
   }
 }
@@ -46,7 +54,8 @@ describe('AppComponent', () => {
           loader: {
             provide: TranslateLoader,
             useClass: TranslateTestingLoader
-          }
+          },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
         })
       ],
       providers: [
@@ -72,10 +81,10 @@ describe('AppComponent', () => {
 
   it('navigates to the home component for the root path', async () => {
     const harness = await RouterTestingHarness.create();
-    const instance = await harness.navigateByUrl('/', AppShellComponent);
-    expect(instance).toBeInstanceOf(AppShellComponent);
+    const instance = await harness.navigateByUrl('/', AppLayoutComponent);
+    expect(instance).toBeInstanceOf(AppLayoutComponent);
     const rendered = harness.routeNativeElement as HTMLElement;
     expect(rendered.querySelector('.home')).not.toBeNull();
-    expect(rendered.querySelector('app-bottom-navigation')).not.toBeNull();
+    expect(rendered.querySelector('.shell-actions')).not.toBeNull();
   });
 });

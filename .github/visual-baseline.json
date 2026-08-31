@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "commit": "379d9f30594c3438d5ee6204b311c69a2ea17c52",
+  "evidence": {
+    "workflowRun": 33327632881,
+    "artifactId": 9736809949,
+    "artifactDigest": "sha256:232aa86a2056aac02477cdece156776414089770fdf0ab7d67e2abad5de2bc9b"
+  }
+}

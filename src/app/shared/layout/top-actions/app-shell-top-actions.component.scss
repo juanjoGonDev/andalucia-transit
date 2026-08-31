@@ -1,0 +1,167 @@
+$surface: var(--color-navigation-surface);
+$foreground: var(--color-navigation-item);
+$hover: color-mix(in srgb, var(--color-text-inverse) 14%, transparent);
+$border: color-mix(in srgb, var(--color-text-inverse) 20%, transparent);
+
+:host {
+  position: fixed;
+  inset-inline: 0;
+  bottom: var(--app-shell-footer-visible-height, 0px);
+  z-index: var(--z-index-sticky);
+  pointer-events: none;
+}
+
+.shell-actions {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-xs) var(--space-sm) max(var(--space-xs), env(safe-area-inset-bottom, 0px));
+}
+
+.shell-actions__container {
+  width: min(100%, 40rem);
+}
+
+.shell-actions__shell {
+  position: relative;
+  padding: var(--space-xs);
+  border: 1px solid $border;
+  border-radius: var(--radius-xl);
+  background: $surface;
+  color: $foreground;
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+}
+
+.shell-actions__buttons {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-3xs);
+}
+
+.shell-actions__button {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 3.5rem;
+  padding: var(--space-xs) var(--space-3xs);
+  border: 0;
+  border-radius: var(--radius-lg);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4xs);
+  background: transparent;
+  color: color-mix(in srgb, $foreground 78%, transparent);
+  text-decoration: none;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.shell-actions__button:hover,
+.shell-actions__button:focus-visible,
+.shell-actions__button--active {
+  background: $hover;
+  color: $foreground;
+}
+
+.shell-actions__button--active {
+  background: color-mix(in srgb, var(--color-primary) 34%, transparent);
+}
+
+.shell-actions__button--active .shell-actions__button-icon {
+  font-variation-settings: 'FILL' 1, 'wght' 650, 'GRAD' 0, 'opsz' 24;
+}
+
+.shell-actions__button:focus-visible,
+.shell-actions__menu-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.shell-actions__button-label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.shell-actions__overflow {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: calc(100% + var(--space-sm));
+  width: min(18rem, calc(100vw - (2 * var(--space-md))));
+  max-height: min(24rem, calc(100dvh - 7rem - env(safe-area-inset-top, 0px)));
+  overflow: auto;
+  padding: var(--space-xs);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-dialog-surface);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+.shell-actions__list {
+  display: grid;
+  gap: var(--space-3xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shell-actions__menu-button {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr) 1.5rem;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: 2.75rem;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  color: inherit;
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.shell-actions__menu-button:hover,
+.shell-actions__menu-button:focus-visible {
+  background: var(--color-surface-muted);
+}
+
+.shell-actions__menu-button[aria-current='page'] {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+.shell-actions__current {
+  justify-self: end;
+}
+
+@media (min-width: 48rem) {
+  .shell-actions {
+    padding-inline: var(--space-lg);
+  }
+
+  .shell-actions__button {
+    min-height: 3rem;
+    padding-inline: var(--space-sm);
+    flex-direction: row;
+  }
+
+  .shell-actions__button--menu {
+    min-width: 3rem;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .shell-actions__button:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell-actions__button {
+    transition: none;
+  }
+}

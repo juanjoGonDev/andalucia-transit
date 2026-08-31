@@ -1,0 +1,116 @@
+import {
+  Directive,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  SimpleChanges,
+  inject
+} from '@angular/core';
+import {
+  APP_LAYOUT_CONTEXT,
+  AppLayoutContentIdentifier,
+  AppLayoutContentRegistration,
+  AppLayoutContext,
+  AppLayoutFooterMode,
+  AppLayoutNavigationKey,
+  AppLayoutSurface
+} from '@shared/layout/app-layout-context.token';
+
+const APP_LAYOUT_CONTENT_IDENTIFIER_DESCRIPTION = 'app-layout-content';
+const APP_LAYOUT_SURFACE_CLASS = 'app-layout__surface';
+const APP_LAYOUT_SURFACE_HERO_CLASS = 'app-layout__surface--hero';
+const APP_LAYOUT_SURFACE_PLAIN_CLASS = 'app-layout__surface--plain';
+const APP_LAYOUT_SURFACE_IMMERSIVE_CLASS = 'app-layout__surface--immersive';
+
+@Directive({
+  selector: '[appLayoutContent]',
+  standalone: true
+})
+export class AppLayoutContentDirective implements OnInit, OnDestroy, OnChanges {
+  private readonly context: AppLayoutContext = inject(APP_LAYOUT_CONTEXT);
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef<HTMLElement>);
+  private readonly renderer = inject(Renderer2);
+  private readonly identifier: AppLayoutContentIdentifier = Symbol(
+    APP_LAYOUT_CONTENT_IDENTIFIER_DESCRIPTION
+  );
+  @Input({ alias: 'appLayoutContentNavigationKey' })
+  navigationKey: AppLayoutNavigationKey | null = null;
+  @Input({ alias: 'appLayoutContentSurface' })
+  surface: AppLayoutSurface = 'hero';
+  @Input()
+  appLayoutContentFooter: AppLayoutFooterMode = 'flow';
+
+  ngOnInit(): void {
+    this.applySurfaceClasses();
+    this.applyFooterModeClasses();
+    this.registerContent();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    let shouldRegisterContent = false;
+
+    if ('surface' in changes) {
+      this.applySurfaceClasses();
+      shouldRegisterContent = !changes['surface'].isFirstChange();
+    }
+
+    if ('navigationKey' in changes && !changes['navigationKey'].isFirstChange()) {
+      shouldRegisterContent = true;
+    }
+
+    if ('appLayoutContentFooter' in changes) {
+      this.applyFooterModeClasses();
+      shouldRegisterContent =
+        shouldRegisterContent || !changes['appLayoutContentFooter'].isFirstChange();
+    }
+
+    if (shouldRegisterContent) {
+      this.registerContent();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.context.unregisterContent(this.identifier);
+  }
+
+  private registerContent(): void {
+    const registration: AppLayoutContentRegistration = {
+      identifier: this.identifier,
+      navigationKey: this.navigationKey ?? null,
+      surface: this.surface,
+      footerMode: this.appLayoutContentFooter
+    };
+
+    this.context.registerContent(registration);
+  }
+
+  private applySurfaceClasses(): void {
+    const hostElement = this.elementRef.nativeElement;
+    const useHeroSurface = this.surface !== 'plain';
+
+    this.renderer.addClass(hostElement, APP_LAYOUT_SURFACE_CLASS);
+
+    if (useHeroSurface) {
+      this.renderer.addClass(hostElement, APP_LAYOUT_SURFACE_HERO_CLASS);
+      this.renderer.removeClass(hostElement, APP_LAYOUT_SURFACE_PLAIN_CLASS);
+      return;
+    }
+
+    this.renderer.addClass(hostElement, APP_LAYOUT_SURFACE_PLAIN_CLASS);
+    this.renderer.removeClass(hostElement, APP_LAYOUT_SURFACE_HERO_CLASS);
+  }
+
+  private applyFooterModeClasses(): void {
+    const hostElement = this.elementRef.nativeElement;
+
+    if (this.appLayoutContentFooter === 'overlay') {
+      this.renderer.addClass(hostElement, APP_LAYOUT_SURFACE_IMMERSIVE_CLASS);
+      return;
+    }
+
+    this.renderer.removeClass(hostElement, APP_LAYOUT_SURFACE_IMMERSIVE_CLASS);
+  }
+}

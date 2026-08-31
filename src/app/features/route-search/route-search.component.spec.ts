@@ -1,27 +1,33 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { BehaviorSubject, of } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router, convertToParamMap, provideRouter } from '@angular/router';
+import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DateTime } from 'luxon';
-
-import { RouteSearchComponent } from './route-search.component';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
+import { BehaviorSubject, of } from 'rxjs';
+import { LineRouteWorkspaceService } from '@domain/lines/line-route-workspace.service';
 import {
   RouteSearchDepartureView,
   RouteSearchResultsService,
   RouteSearchResultsViewModel
-} from '../../domain/route-search/route-search-results.service';
-import { RouteSearchSelection, RouteSearchStateService } from '../../domain/route-search/route-search-state.service';
-import { StopDirectoryOption, StopDirectoryService } from '../../data/stops/stop-directory.service';
-import { RouteSearchSelectionResolverService } from '../../domain/route-search/route-search-selection-resolver.service';
-import { buildDateSlug, buildStopSlug } from '../../domain/route-search/route-search-url.util';
-import { RouteSearchFormComponent } from './route-search-form/route-search-form.component';
+} from '@domain/route-search/route-search-results.service';
+import { RouteSearchSelectionResolverService } from '@domain/route-search/route-search-selection-resolver.service';
+import { RouteSearchSelection, RouteSearchStateService } from '@domain/route-search/route-search-state.service';
+import { buildDateSlug, buildStopSlug } from '@domain/route-search/route-search-url.util';
+import { StopDirectoryFacade, StopDirectoryOption } from '@domain/stops/stop-directory.facade';
+import { RouteSearchDepartureRoutePreviewComponent } from '@features/route-search/departure-route-preview/route-search-departure-route-preview.component';
+import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
+import { RouteSearchComponent } from '@features/route-search/route-search.component';
 
 class TranslateTestingLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
     return of({
-      'routeSearch.scheduleAccuracyWarning': 'Schedules may change'
+      'routeSearch.scheduleAccuracyWarning': 'Schedules may change',
+      'routeSearch.emptyResults': 'No routes found',
+      'routeSearch.emptyResultsDescription': 'Try another combination',
+      'routeSearch.emptyResultsAction': 'Adjust search',
+      'routeSearch.arrivalAt': 'Arrives at {time}'
     });
   }
 }
@@ -38,6 +44,23 @@ class RouteSearchResultsServiceStub {
   }
 }
 
+class LineRouteWorkspaceServiceStub {
+  load(): ReturnType<LineRouteWorkspaceService['load']> {
+    return of({
+      detail: {
+        lineId: 'line-1',
+        code: '001',
+        name: 'Line One',
+        mode: 'Bus',
+        coordinates: []
+      },
+      stops: [],
+      coordinates: [],
+      resolvedDirection: 0
+    });
+  }
+}
+
 @Component({
   selector: 'app-route-search-form',
   standalone: true,
@@ -47,6 +70,7 @@ class RouteSearchFormStubComponent {
   @Input() initialSelection: RouteSearchSelection | null = null;
   @Input() originDraft: StopDirectoryOption | null = null;
   @Output() readonly selectionConfirmed = new EventEmitter<RouteSearchSelection>();
+  focusOriginField = jasmine.createSpy('focusOriginField');
 }
 
 class RouteSearchSelectionResolverServiceStub {
@@ -57,7 +81,7 @@ class RouteSearchSelectionResolverServiceStub {
     .and.returnValue(of(null));
 }
 
-class StopDirectoryServiceStub {
+class StopDirectoryFacadeStub {
   private readonly options = new Map<string, StopDirectoryOption>();
 
   setOptions(...options: StopDirectoryOption[]): void {
@@ -119,7 +143,7 @@ describe('RouteSearchComponent', () => {
   let resultsService: RouteSearchResultsServiceStub;
   let resolver: RouteSearchSelectionResolverServiceStub;
   let activatedRoute: ActivatedRouteStub;
-  let directoryService: StopDirectoryServiceStub;
+  let directoryFacade: StopDirectoryFacadeStub;
 
   const origin: StopDirectoryOption = {
     id: 'alpha',
@@ -147,26 +171,28 @@ describe('RouteSearchComponent', () => {
 
   beforeEach(async () => {
     activatedRoute = new ActivatedRouteStub();
-    directoryService = new StopDirectoryServiceStub();
-    directoryService.setOptions(origin, destination);
+    directoryFacade = new StopDirectoryFacadeStub();
+    directoryFacade.setOptions(origin, destination);
 
     await TestBed.configureTestingModule({
       imports: [
         RouteSearchComponent,
         RouteSearchFormStubComponent,
         TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: TranslateTestingLoader }
+          loader: { provide: TranslateLoader, useClass: TranslateTestingLoader },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
         })
       ],
       providers: [
         provideRouter([]),
         { provide: RouteSearchResultsService, useClass: RouteSearchResultsServiceStub },
+        { provide: LineRouteWorkspaceService, useClass: LineRouteWorkspaceServiceStub },
         {
           provide: RouteSearchSelectionResolverService,
           useClass: RouteSearchSelectionResolverServiceStub
         },
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: StopDirectoryService, useValue: directoryService }
+        { provide: StopDirectoryFacade, useValue: directoryFacade }
       ]
     })
       .overrideComponent(RouteSearchComponent, {
@@ -182,10 +208,13 @@ describe('RouteSearchComponent', () => {
     resolver = TestBed.inject(
       RouteSearchSelectionResolverService
     ) as unknown as RouteSearchSelectionResolverServiceStub;
+    const translate = TestBed.inject(TranslateService);
+    translate.setDefaultLang('en');
+    translate.use('en');
     fixture = TestBed.createComponent(RouteSearchComponent);
   });
 
-  it('renders the selected route summary and departures', () => {
+  it('renders departures for the selected route without a duplicated route summary', () => {
     const departure: RouteSearchDepartureView = {
       id: 'service-1',
       lineId: 'L1',
@@ -215,21 +244,20 @@ describe('RouteSearchComponent', () => {
       nextDepartureId: 'service-1'
     } satisfies RouteSearchResultsViewModel;
 
-    state.setSelection({
+    const selection = {
       origin,
       destination,
       queryDate: new Date('2025-02-02T00:00:00Z'),
       lineMatches: []
-    });
+    } satisfies RouteSearchSelection;
+    state.setSelection(selection);
 
     fixture.detectChanges();
 
-    const summaryValues = fixture.debugElement
-      .queryAll(By.css('.route-search__summary-value'))
-      .map((debugElement) => (debugElement.nativeElement as HTMLElement).textContent?.trim() ?? '');
-
-    expect(summaryValues.some((value) => value.includes('Alpha Station'))).toBeTrue();
-    expect(summaryValues.some((value) => value.includes('Beta Terminal'))).toBeTrue();
+    expect(fixture.debugElement.query(By.css('.route-search__summary'))).toBeNull();
+    const form = fixture.debugElement.query(By.directive(RouteSearchFormStubComponent))
+      .componentInstance as RouteSearchFormStubComponent;
+    expect(form.initialSelection).toEqual(selection);
 
     const item = fixture.debugElement.query(By.css('.route-search__item'));
     expect(item).not.toBeNull();
@@ -237,8 +265,14 @@ describe('RouteSearchComponent', () => {
     expect(lineLabel.textContent).toContain('001');
     const holidayBadge = item?.query(By.css('.route-search__item-frequency'));
     expect(holidayBadge).not.toBeNull();
-    const arrival = item?.query(By.css('.route-search__item-arrival'));
-    expect(arrival).not.toBeNull();
+    const arrival = item?.query(By.css('.route-search__item-arrival-time'))?.nativeElement as HTMLElement;
+    expect(arrival.textContent?.trim()).toBe('08:20');
+    expect(arrival.getAttribute('aria-label')).toContain('08:20');
+
+    const routePreview = item?.query(By.directive(RouteSearchDepartureRoutePreviewComponent))
+      ?.componentInstance as RouteSearchDepartureRoutePreviewComponent;
+    expect(routePreview.consortiumId).toBe(origin.consortiumId);
+    expect(routePreview.departure).toEqual(departure);
   });
 
   it('prefills the origin field from the query parameter', () => {
@@ -335,11 +369,44 @@ describe('RouteSearchComponent', () => {
     expect(navigateSpy).toHaveBeenCalled();
   });
 
-  it('shows the empty state when no selection is available', () => {
+  it('shows only the search workspace when no selection is available', () => {
     fixture.detectChanges();
 
-    const empty = fixture.debugElement.query(By.css('.route-search__empty'));
-    expect(empty).not.toBeNull();
+    expect(fixture.debugElement.query(By.css('.route-search__results'))).toBeNull();
+    expect(fixture.debugElement.query(By.css('.route-search__summary'))).toBeNull();
+    expect(fixture.debugElement.query(By.directive(RouteSearchFormStubComponent))).not.toBeNull();
+  });
+
+  it('renders actionable guidance when a selection has no results', () => {
+    state.setSelection({
+      origin,
+      destination,
+      queryDate: new Date('2025-02-02T00:00:00Z'),
+      lineMatches: []
+    });
+
+    fixture.detectChanges();
+
+    const title = fixture.debugElement.query(By.css('.route-search__empty-title'));
+    expect(title).not.toBeNull();
+    const titleContent = (title?.nativeElement as HTMLElement).textContent?.trim() ?? '';
+    expect(titleContent).toBe('No routes found');
+
+    const description = fixture.debugElement.query(By.css('.route-search__empty-description'));
+    expect(description).not.toBeNull();
+    const descriptionContent = (description?.nativeElement as HTMLElement).textContent?.trim() ?? '';
+    expect(descriptionContent).toBe('Try another combination');
+
+    const action = fixture.debugElement.query(By.css('.route-search__empty-action'));
+    expect(action).not.toBeNull();
+
+    const formDebugElement = fixture.debugElement.query(By.directive(RouteSearchFormStubComponent));
+    const form = formDebugElement.componentInstance as RouteSearchFormStubComponent;
+    Reflect.set(fixture.componentInstance as object, 'formComponent', form);
+
+    action?.triggerEventHandler('appAccessibleButtonActivated', {});
+
+    expect(form.focusOriginField).toHaveBeenCalled();
   });
 
   it('shows the no upcoming message when all lines lack future services', () => {
@@ -474,11 +541,10 @@ describe('RouteSearchComponent', () => {
 
     fixture.detectChanges();
 
-    const summaryValues = fixture.debugElement
-      .queryAll(By.css('.route-search__summary-value'))
-      .map((debugElement) => (debugElement.nativeElement as HTMLElement).textContent?.trim() ?? '');
-
-    expect(summaryValues.some((value) => value.includes('Alpha Station'))).toBeTrue();
-    expect(summaryValues.some((value) => value.includes('Beta Terminal'))).toBeTrue();
+    const form = fixture.debugElement.query(By.directive(RouteSearchFormStubComponent))
+      .componentInstance as RouteSearchFormStubComponent;
+    expect(form.initialSelection?.origin.name).toBe('Alpha Station');
+    expect(form.initialSelection?.destination.name).toBe('Beta Terminal');
+    expect(fixture.debugElement.query(By.css('.route-search__summary'))).toBeNull();
   });
 });

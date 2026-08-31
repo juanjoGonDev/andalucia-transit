@@ -1,0 +1,83 @@
+<nav class="shell-actions" [attr.aria-label]="menuLabelKey | translate">
+  <div class="shell-actions__container">
+    <div class="shell-actions__shell">
+      @if (menuOpen()) {
+        <div id="shell-actions-overflow" class="shell-actions__overflow">
+          <ul class="shell-actions__list">
+            @for (entry of entries; track entry.navigationKey) {
+              <li>
+                <a
+                  class="shell-actions__menu-button"
+                  [routerLink]="entry.commands"
+                  [attr.aria-current]="isActive(entry.navigationKey) ? 'page' : null"
+                  (click)="closeMenu()"
+                >
+                  <span class="material-symbols-outlined" aria-hidden="true">{{ entry.icon }}</span>
+                  <span>{{ entry.labelKey | translate }}</span>
+                  @if (isActive(entry.navigationKey)) {
+                    <span class="material-symbols-outlined shell-actions__current" aria-hidden="true">check</span>
+                  }
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      <div class="shell-actions__buttons">
+        <a
+          class="shell-actions__button shell-actions__button--quick"
+          [class.shell-actions__button--active]="isActive(routes.home)"
+          [routerLink]="homeLinkCommands"
+          [attr.aria-current]="isActive(routes.home) ? 'page' : null"
+          [attr.aria-label]="homeLabelKey | translate"
+        >
+          <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">home</span>
+          <span class="shell-actions__button-label">{{ homeLabelKey | translate }}</span>
+        </a>
+        <a
+          class="shell-actions__button shell-actions__button--quick"
+          [class.shell-actions__button--active]="isActive(linesNavigationKey)"
+          [routerLink]="linesLinkCommands"
+          [attr.aria-current]="isActive(linesNavigationKey) ? 'page' : null"
+          [attr.aria-label]="linesLabelKey | translate"
+        >
+          <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">route</span>
+          <span class="shell-actions__button-label">{{ linesLabelKey | translate }}</span>
+        </a>
+        <a
+          class="shell-actions__button shell-actions__button--quick"
+          [class.shell-actions__button--active]="isActive(routes.map)"
+          [routerLink]="mapLinkCommands"
+          [attr.aria-current]="isActive(routes.map) ? 'page' : null"
+          [attr.aria-label]="mapLabelKey | translate"
+        >
+          <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">map</span>
+          <span class="shell-actions__button-label">{{ mapLabelKey | translate }}</span>
+        </a>
+        <a
+          class="shell-actions__button shell-actions__button--quick"
+          [class.shell-actions__button--active]="favoritesActive()"
+          [routerLink]="favoritesLinkCommands"
+          [attr.aria-current]="favoritesActive() ? 'page' : null"
+          [attr.aria-label]="favoritesLabelKey | translate"
+        >
+          <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">star</span>
+          <span class="shell-actions__button-label">{{ favoritesLabelKey | translate }}</span>
+        </a>
+        <button
+          #menuTrigger
+          type="button"
+          class="shell-actions__button shell-actions__button--menu"
+          [class.shell-actions__button--active]="moreActive()"
+          [attr.aria-expanded]="menuOpen()"
+          aria-controls="shell-actions-overflow"
+          [attr.aria-label]="menuLabelKey | translate"
+          (click)="toggleMenu()"
+        >
+          <span class="material-symbols-outlined shell-actions__button-icon" aria-hidden="true">menu</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

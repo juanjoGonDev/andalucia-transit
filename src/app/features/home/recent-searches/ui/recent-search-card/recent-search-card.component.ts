@@ -1,19 +1,19 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-
 import {
   RecentSearchPreviewEntry,
   RecentSearchPreviewState
-} from '../../recent-searches.models';
-import { RecentSearchPreviewEntryComponent } from '../recent-search-preview-entry/recent-search-preview-entry.component';
+} from '@features/home/recent-searches/recent-searches.models';
+import { RecentSearchPreviewEntryComponent } from '@features/home/recent-searches/ui/recent-search-preview-entry/recent-search-preview-entry.component';
+import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/interactive-card.component';
 
 @Component({
   selector: 'app-recent-search-card',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RecentSearchPreviewEntryComponent],
+  imports: [CommonModule, TranslateModule, RecentSearchPreviewEntryComponent, InteractiveCardComponent],
   templateUrl: './recent-search-card.component.html',
-  styleUrl: './recent-search-card.component.scss',
+  styleUrls: ['./recent-search-card.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecentSearchCardComponent {
@@ -41,8 +41,7 @@ export class RecentSearchCardComponent {
     this.open.emit();
   }
 
-  protected onRemove(event: MouseEvent): void {
-    event.stopPropagation();
+  protected onRemove(): void {
     this.remove.emit();
   }
 

@@ -1,0 +1,13 @@
+<footer
+  class="legal-footer"
+  [class.legal-footer--hero]="activeSurface() === 'hero'"
+  [class.legal-footer--plain]="activeSurface() === 'plain'"
+  [class.legal-footer--overlay]="footerMode() === 'overlay'"
+>
+  <nav class="legal-footer__nav" [attr.aria-label]="copy().footerLabel">
+    <a class="legal-footer__link" [routerLink]="privacyRoute">{{ copy().links.privacy }}</a>
+    <a class="legal-footer__link" [routerLink]="storageRoute">{{ copy().links.storage }}</a>
+    <a class="legal-footer__link" [routerLink]="termsRoute">{{ copy().links.terms }}</a>
+    <a class="legal-footer__link" [routerLink]="noticeRoute">{{ copy().links.notice }}</a>
+  </nav>
+</footer>

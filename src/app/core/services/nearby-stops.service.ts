@@ -1,15 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-
+import { APP_CONFIG } from '@core/config';
 import type {
-  NearbyStopRecord,
-  NearbyStopResult as LoaderNearbyStopResult
-} from './nearby-stops.loader';
-
-import { APP_CONFIG } from '../config';
-import type { GeoCoordinate } from '../../domain/utils/geo-distance.util';
+  NearbyStopResult as LoaderNearbyStopResult,
+  NearbyStopRecord
+} from '@core/services/nearby-stops.loader';
+import type { GeoCoordinate } from '@domain/utils/geo-distance.util';
 
 export type NearbyStopResult = LoaderNearbyStopResult;
+export type { NearbyStopRecord };
 
 @Injectable({ providedIn: 'root' })
 export class NearbyStopsService {
@@ -22,6 +21,10 @@ export class NearbyStopsService {
 
   private stopsPromise: Promise<readonly NearbyStopRecord[]> | null = null;
   private loaderPromise: Promise<NearbyStopsLoaderModule> | null = null;
+
+  getAllStops(): Promise<readonly NearbyStopRecord[]> {
+    return this.loadStops();
+  }
 
   async findClosestStops(
     position: GeoCoordinate,
@@ -63,11 +66,11 @@ export class NearbyStopsService {
 
   private loadLoaderModule(): Promise<NearbyStopsLoaderModule> {
     if (!this.loaderPromise) {
-      this.loaderPromise = import('./nearby-stops.loader');
+      this.loaderPromise = import('@core/services/nearby-stops.loader');
     }
 
     return this.loaderPromise;
   }
 }
 
-type NearbyStopsLoaderModule = typeof import('./nearby-stops.loader');
+type NearbyStopsLoaderModule = typeof import('@core/services/nearby-stops.loader');

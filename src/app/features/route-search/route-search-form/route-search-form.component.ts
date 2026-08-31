@@ -1,15 +1,18 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
   Output,
   SimpleChanges,
+  ViewChild,
   inject
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   FormBuilder,
@@ -20,13 +23,12 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
+import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatOptionModule, MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
-import { MatButtonModule } from '@angular/material/button';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   BehaviorSubject,
   Observable,
@@ -43,41 +45,40 @@ import {
   startWith,
   switchMap
 } from 'rxjs/operators';
-import { TranslateModule } from '@ngx-translate/core';
-
-import { APP_CONFIG } from '../../../core/config';
-import {
-  StopDirectoryOption,
-  StopDirectoryService,
-  StopDirectoryStopSignature,
-  StopSearchRequest
-} from '../../../data/stops/stop-directory.service';
-import {
-  StopConnectionsService,
-  StopConnection,
-  STOP_CONNECTION_DIRECTION,
-  buildStopConnectionKey,
-  mergeStopConnectionMaps
-} from '../../../data/route-search/stop-connections.service';
-import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
-import {
-  collectRouteLineMatches,
-  createRouteSearchSelection
-} from '../../../domain/route-search/route-search-selection.util';
-import { StopFavoritesService, StopFavorite } from '../../../domain/stops/stop-favorites.service';
-import { MaterialSymbolName } from '../../../shared/ui/types/material-symbol-name';
-import { GeolocationService } from '../../../core/services/geolocation.service';
-import {
-  NearbyStopResult,
-  NearbyStopsService
-} from '../../../core/services/nearby-stops.service';
-import { GEOLOCATION_REQUEST_OPTIONS } from '../../../core/services/geolocation-request.options';
-import { GeoCoordinate } from '../../../domain/utils/geo-distance.util';
+import { APP_CONFIG } from '@core/config';
+import { classifyGeolocationError } from '@core/services/geolocation-error.util';
+import { GEOLOCATION_REQUEST_OPTIONS } from '@core/services/geolocation-request.options';
+import { GeolocationService } from '@core/services/geolocation.service';
 import {
   NearbyStopOption,
   NearbyStopOptionsService
-} from '../../../core/services/nearby-stop-options.service';
-import { buildDistanceDisplay } from '../../../domain/utils/distance-display.util';
+} from '@core/services/nearby-stop-options.service';
+import {
+  NearbyStopResult,
+  NearbyStopsService
+} from '@core/services/nearby-stops.service';
+import {
+  collectRouteLineMatches,
+  createRouteSearchSelection
+} from '@domain/route-search/route-search-selection.util';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
+import {
+  STOP_CONNECTION_DIRECTION,
+  StopConnection,
+  StopConnectionsFacade,
+  buildStopConnectionKey
+} from '@domain/route-search/stop-connections.facade';
+import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
+import {
+  StopDirectoryFacade,
+  StopDirectoryOption,
+  StopDirectoryStopSignature,
+  StopSearchRequest
+} from '@domain/stops/stop-directory.facade';
+import { buildDistanceDisplay } from '@domain/utils/distance-display.util';
+import { GeoCoordinate } from '@domain/utils/geo-distance.util';
+import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { MaterialSymbolName } from '@shared/ui/types/material-symbol-name';
 
 interface StopOptionDistanceLabel {
   readonly translationKey: string;
@@ -138,7 +139,7 @@ const EMPTY_ORIGIN_OPTIONS: CategorizedOriginOptions = Object.freeze({
     MatOptionModule,
     MatNativeDateModule,
     MatDatepickerModule,
-    MatButtonModule
+    AccessibleButtonDirective
   ],
   templateUrl: './route-search-form.component.html',
   styleUrl: './route-search-form.component.scss',
@@ -154,10 +155,10 @@ export class RouteSearchFormComponent implements OnChanges {
   private static readonly SORT_LOCALE = 'es-ES' as const;
 
   private readonly formBuilder = inject(FormBuilder);
-  private readonly stopDirectory = inject(StopDirectoryService);
+  private readonly stopDirectory = inject(StopDirectoryFacade);
   private readonly nearbyStopOptions = inject(NearbyStopOptionsService);
-  private readonly stopConnections = inject(StopConnectionsService);
-  private readonly favoritesService = inject(StopFavoritesService);
+  private readonly stopConnections = inject(StopConnectionsFacade);
+  private readonly favorites = inject(FavoritesFacade);
   private readonly destroyRef = inject(DestroyRef);
   private readonly geolocation = inject(GeolocationService);
   private readonly nearbyStops = inject(NearbyStopsService);
@@ -165,9 +166,12 @@ export class RouteSearchFormComponent implements OnChanges {
   @Input() initialSelection: RouteSearchSelection | null = null;
   @Input() originDraft: StopAutocompleteOption | null = null;
   @Output() readonly selectionConfirmed = new EventEmitter<RouteSearchSelection>();
+  @ViewChild('originInput', { read: ElementRef })
+  private originInput?: ElementRef<HTMLInputElement>;
 
   private readonly translation = APP_CONFIG.translationKeys.home.sections.search;
-  private readonly distanceTranslation = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.distance;
+  private readonly nearbyTranslation = APP_CONFIG.translationKeys.home.dialogs.nearbyStops;
+  private readonly distanceTranslation = this.nearbyTranslation.distance;
   private readonly searchIds = APP_CONFIG.homeData.search;
   private readonly maxAutocompleteOptions = APP_CONFIG.homeData.search.maxAutocompleteOptions;
   private readonly searchDebounceMs = APP_CONFIG.homeData.search.debounceMs;
@@ -189,18 +193,28 @@ export class RouteSearchFormComponent implements OnChanges {
   readonly originLabelKey = this.translation.originLabel;
   readonly destinationLabelKey = this.translation.destinationLabel;
   readonly dateLabelKey = this.translation.dateLabel;
-  readonly originPlaceholderKey = this.translation.originPlaceholder;
-  readonly destinationPlaceholderKey = this.translation.destinationPlaceholder;
   readonly swapLabelKey = this.translation.swapLabel;
   readonly noRoutesMessageKey = this.translation.noRoutes;
   readonly favoritesGroupLabelKey = this.translation.favoritesGroupLabel;
   readonly addFavoriteLabelKey = this.translation.addFavoriteLabel;
   readonly removeFavoriteLabelKey = this.translation.removeFavoriteLabel;
+  readonly originLocationLoadingKey = this.nearbyTranslation.loading;
+  readonly submitErrorKey = APP_CONFIG.translationKeys.home.sections.recentStops.previewError;
 
   readonly originIcon: MaterialSymbolName = 'my_location';
   readonly destinationIcon: MaterialSymbolName = 'flag';
   readonly dateIcon: MaterialSymbolName = 'calendar_today';
   readonly swapIcon: MaterialSymbolName = 'swap_vert';
+
+  focusOriginField(): void {
+    const element = this.originInput?.nativeElement;
+
+    if (!element) {
+      return;
+    }
+
+    element.focus();
+  }
 
   readonly searchForm: FormGroup<RouteSearchFormGroup> = this.formBuilder.group({
     origin: this.formBuilder.control<StopAutocompleteValue>(null, {
@@ -269,12 +283,12 @@ export class RouteSearchFormComponent implements OnChanges {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  private readonly favoriteOptions$ = this.favoritesService.favorites$.pipe(
+  private readonly favoriteOptions$ = this.favorites.favorites$.pipe(
     map((favorites) => favorites.map((favorite) => this.fromFavorite(favorite))),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  private readonly favoriteIds$ = this.favoritesService.favorites$.pipe(
+  private readonly favoriteIds$ = this.favorites.favorites$.pipe(
     map((favorites) => new Set(favorites.map((favorite) => favorite.id))),
     shareReplay({ bufferSize: 1, refCount: true })
   );
@@ -364,8 +378,11 @@ export class RouteSearchFormComponent implements OnChanges {
   readonly trackOption = (_: number, option: StopAutocompleteOption): string => option.id;
 
   readonly noRoutes$ = new BehaviorSubject<boolean>(false);
+  readonly submitLoading$ = new BehaviorSubject<boolean>(false);
+  readonly submitError$ = new BehaviorSubject<boolean>(false);
   protected readonly originLocationActionLabelKey = this.translation.originLocationActionLabel;
   protected originLocationLoading = false;
+  protected originLocationErrorKey: string | null = null;
 
   private lastPatchedSelectionId: string | null = null;
 
@@ -381,7 +398,7 @@ export class RouteSearchFormComponent implements OnChanges {
     event.preventDefault();
     event.stopPropagation();
 
-    this.favoritesService.toggle(option);
+    this.favorites.toggle(option);
   }
 
   constructor() {
@@ -402,7 +419,19 @@ export class RouteSearchFormComponent implements OnChanges {
     datepicker.open();
   }
 
+  protected onSubmitTrigger(): void {
+    if (this.searchForm.invalid || this.submitLoading$.getValue()) {
+      return;
+    }
+
+    void this.submit();
+  }
+
   async submit(): Promise<void> {
+    if (this.submitLoading$.getValue()) {
+      return;
+    }
+
     const origin = this.toStopOption(this.originControl.value);
     const destination = this.toStopOption(this.destinationControl.value);
 
@@ -411,15 +440,24 @@ export class RouteSearchFormComponent implements OnChanges {
       return;
     }
 
-    const selection = await this.buildSelection(origin, destination);
+    this.submitLoading$.next(true);
+    this.submitError$.next(false);
 
-    if (!selection) {
-      this.showNoRoutes();
-      return;
+    try {
+      const selection = await this.buildSelection(origin, destination);
+
+      if (!selection) {
+        this.showNoRoutes();
+        return;
+      }
+
+      this.hideNoRoutes();
+      this.selectionConfirmed.emit(selection);
+    } catch {
+      this.submitError$.next(true);
+    } finally {
+      this.submitLoading$.next(false);
     }
-
-    this.hideNoRoutes();
-    this.selectionConfirmed.emit(selection);
   }
 
   swap(): void {
@@ -440,6 +478,7 @@ export class RouteSearchFormComponent implements OnChanges {
     }
 
     this.originLocationLoading = true;
+    this.originLocationErrorKey = null;
 
     try {
       const position = await this.geolocation.getCurrentPosition(GEOLOCATION_REQUEST_OPTIONS);
@@ -450,8 +489,9 @@ export class RouteSearchFormComponent implements OnChanges {
       const nearbyStops = await this.nearbyStops.findClosestStops(coordinates);
       const options = await firstValueFrom(this.loadRecommendedOptions(nearbyStops));
       this.recommendedOriginOptions.next(options);
-    } catch {
+    } catch (error) {
       this.recommendedOriginOptions.next(EMPTY_OPTIONS);
+      this.originLocationErrorKey = this.resolveOriginLocationErrorKey(error);
     } finally {
       this.originLocationLoading = false;
     }
@@ -863,6 +903,8 @@ export class RouteSearchFormComponent implements OnChanges {
       .subscribe(([origin, destination]) => {
         this.ensureDistinctStops(origin, destination);
         this.hideNoRoutes();
+        this.submitError$.next(false);
+        this.originLocationErrorKey = null;
       });
   }
 
@@ -1042,6 +1084,21 @@ export class RouteSearchFormComponent implements OnChanges {
     }
   }
 
+  private resolveOriginLocationErrorKey(error: unknown): string {
+    const kind = classifyGeolocationError(error);
+
+    switch (kind) {
+      case 'notSupported':
+        return this.nearbyTranslation.notSupported;
+      case 'permissionDenied':
+        return this.nearbyTranslation.permissionDenied;
+      case 'positionUnavailable':
+      case 'timeout':
+      case 'unknown':
+        return this.nearbyTranslation.unknownError;
+    }
+  }
+
   private loadBidirectionalConnections(
     signatures: readonly StopDirectoryStopSignature[]
   ): Observable<ReadonlyMap<string, StopConnection>> {
@@ -1052,7 +1109,7 @@ export class RouteSearchFormComponent implements OnChanges {
     return forkJoin([
       this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Forward),
       this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Backward)
-    ]).pipe(map((connections) => mergeStopConnectionMaps(connections)));
+    ]).pipe(map((connections) => this.stopConnections.mergeConnections(connections)));
   }
 }
 

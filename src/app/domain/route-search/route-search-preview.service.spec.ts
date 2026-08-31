@@ -1,14 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { Subject, Subscription } from 'rxjs';
-
-import { RouteSearchPreview, RouteSearchPreviewService } from './route-search-preview.service';
+import { StopDirectoryOption } from '@data/stops/stop-directory.service';
+import { RouteSearchPreview, RouteSearchPreviewService } from '@domain/route-search/route-search-preview.service';
 import {
-  RouteSearchResultsService,
   RouteSearchDepartureView,
+  RouteSearchResultsService,
   RouteSearchResultsViewModel
-} from './route-search-results.service';
-import { RouteSearchSelection } from './route-search-state.service';
-import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
+} from '@domain/route-search/route-search-results.service';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 
 class RouteSearchResultsStub {
   private subject = new Subject<RouteSearchResultsViewModel>();

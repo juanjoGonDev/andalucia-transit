@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable, shareReplay } from 'rxjs';
-
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
-import { AppConfig } from '../../core/config';
+import { Observable, map, shareReplay } from 'rxjs';
+import { AppConfig } from '@core/config';
+import { buildStopIdentity } from '@core/services/stop-identity.util';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 
 export interface StopScheduleSnapshotRecord {
   readonly metadata: SnapshotMetadata;
@@ -84,6 +84,7 @@ interface StopScheduleSnapshotServiceEntry {
 interface SnapshotDataset {
   readonly metadata: SnapshotMetadata;
   readonly stopMap: ReadonlyMap<string, StopScheduleSnapshot>;
+  readonly stopMapByIdentity: ReadonlyMap<string, StopScheduleSnapshot>;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -97,17 +98,18 @@ export class StopScheduleSnapshotRepository {
 
   getSnapshotForStop(stopId: string): Observable<StopScheduleSnapshotRecord | null> {
     return this.dataset$.pipe(
-      map((dataset) => {
-        const stop = dataset.stopMap.get(stopId);
-        if (!stop) {
-          return null;
-        }
+      map((dataset) => toSnapshotRecord(dataset, dataset.stopMap.get(stopId) ?? null))
+    );
+  }
 
-        return {
-          metadata: dataset.metadata,
-          stop
-        } satisfies StopScheduleSnapshotRecord;
-      })
+  getSnapshotForStopSignature(
+    consortiumId: number,
+    stopId: string
+  ): Observable<StopScheduleSnapshotRecord | null> {
+    const identity = buildStopIdentity(consortiumId, stopId);
+
+    return this.dataset$.pipe(
+      map((dataset) => toSnapshotRecord(dataset, dataset.stopMapByIdentity.get(identity) ?? null))
     );
   }
 
@@ -121,39 +123,66 @@ function normalizeDataset(file: StopScheduleSnapshotFile): SnapshotDataset {
     generatedAt: new Date(file.metadata.generatedAt),
     timezone: file.metadata.timezone
   };
+  const stopMap = new Map<string, StopScheduleSnapshot>();
+  const stopMapByIdentity = new Map<string, StopScheduleSnapshot>();
 
-  const entries = file.stops.map<readonly [string, StopScheduleSnapshot]>((entry) => [
-    entry.stopId,
-    {
-      consortiumId: entry.consortiumId,
-      stopId: entry.stopId,
-      stopCode: entry.stopCode,
-      stopName: entry.stopName,
-      municipality: entry.municipality,
-      nucleus: entry.nucleus,
-      location: {
-        latitude: entry.location.latitude,
-        longitude: entry.location.longitude
-      },
-      services: entry.services.map((service) => ({
-        lineId: service.lineId,
-        lineCode: service.lineCode,
-        lineName: service.lineName,
-        destination: service.destination,
-        scheduledTime: new Date(service.scheduledTime),
-        direction: service.direction,
-        stopType: service.stopType
-      })),
-      query: {
-        requestedAt: new Date(entry.query.requestedAt),
-        startTime: new Date(entry.query.startTime),
-        endTime: new Date(entry.query.endTime)
-      }
-    } satisfies StopScheduleSnapshot
-  ]);
+  for (const entry of file.stops) {
+    const stop = normalizeStop(entry);
+    const identity = buildStopIdentity(stop.consortiumId, stop.stopId);
+
+    stopMapByIdentity.set(identity, stop);
+
+    if (!stopMap.has(stop.stopId)) {
+      stopMap.set(stop.stopId, stop);
+    }
+  }
 
   return {
     metadata,
-    stopMap: new Map(entries)
+    stopMap,
+    stopMapByIdentity
   } satisfies SnapshotDataset;
+}
+
+function normalizeStop(entry: StopScheduleSnapshotEntry): StopScheduleSnapshot {
+  return {
+    consortiumId: entry.consortiumId,
+    stopId: entry.stopId,
+    stopCode: entry.stopCode,
+    stopName: entry.stopName,
+    municipality: entry.municipality,
+    nucleus: entry.nucleus,
+    location: {
+      latitude: entry.location.latitude,
+      longitude: entry.location.longitude
+    },
+    services: entry.services.map((service) => ({
+      lineId: service.lineId,
+      lineCode: service.lineCode,
+      lineName: service.lineName,
+      destination: service.destination,
+      scheduledTime: new Date(service.scheduledTime),
+      direction: service.direction,
+      stopType: service.stopType
+    })),
+    query: {
+      requestedAt: new Date(entry.query.requestedAt),
+      startTime: new Date(entry.query.startTime),
+      endTime: new Date(entry.query.endTime)
+    }
+  } satisfies StopScheduleSnapshot;
+}
+
+function toSnapshotRecord(
+  dataset: SnapshotDataset,
+  stop: StopScheduleSnapshot | null
+): StopScheduleSnapshotRecord | null {
+  if (!stop) {
+    return null;
+  }
+
+  return {
+    metadata: dataset.metadata,
+    stop
+  } satisfies StopScheduleSnapshotRecord;
 }

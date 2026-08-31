@@ -1,10 +1,14 @@
 import { StopDirectoryConsortiumConfig } from './stop-directory';
 
+export interface CatalogConsortiumConfig extends StopDirectoryConsortiumConfig {
+  readonly province: string;
+}
+
 export interface CatalogConfig {
   readonly baseUrl: string;
   readonly timezone: string;
   readonly providerName: string;
-  readonly consortiums: readonly StopDirectoryConsortiumConfig[];
+  readonly consortiums: readonly CatalogConsortiumConfig[];
 }
 
 export interface CatalogDependencies {
@@ -16,7 +20,7 @@ export interface CatalogMetadata {
   readonly generatedAt: string;
   readonly timezone: string;
   readonly providerName: string;
-  readonly consortiums: readonly StopDirectoryConsortiumConfig[];
+  readonly consortiums: readonly CatalogConsortiumConfig[];
 }
 
 export interface CatalogBuildResult {
@@ -25,7 +29,7 @@ export interface CatalogBuildResult {
 }
 
 export interface ConsortiumDataset {
-  readonly summary: StopDirectoryConsortiumConfig;
+  readonly summary: CatalogConsortiumConfig;
   readonly municipalities: readonly MunicipalityEntry[];
   readonly nuclei: readonly NucleusEntry[];
   readonly lines: readonly LineEntry[];

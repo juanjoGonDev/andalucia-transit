@@ -1,7 +1,6 @@
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
-
-import { GeoCoordinate, calculateDistanceInMeters } from '../../domain/utils/geo-distance.util';
+import { Observable, firstValueFrom } from 'rxjs';
+import { buildStopIdentity } from '@core/services/stop-identity.util';
+import { GeoCoordinate, calculateDistanceInMeters } from '@domain/utils/geo-distance.util';
 
 interface StopDirectoryIndexFile {
   readonly chunks: readonly StopDirectoryChunkDescriptor[];
@@ -16,22 +15,41 @@ interface StopDirectoryChunkFile {
 }
 
 interface StopDirectoryChunkEntry {
+  readonly consortiumId: number;
   readonly stopId: string;
+  readonly stopCode: string;
   readonly name: string;
+  readonly municipality: string;
+  readonly municipalityId: string;
+  readonly nucleus: string;
+  readonly nucleusId: string;
+  readonly zone: string | null;
   readonly location: {
     readonly latitude: number;
     readonly longitude: number;
   };
 }
 
+export interface NearbyStopsHttpClient {
+  get<T>(url: string): Observable<T>;
+}
+
 export interface NearbyStopRecord {
+  readonly consortiumId: number;
   readonly stopId: string;
+  readonly stopCode: string;
   readonly name: string;
+  readonly municipality: string;
+  readonly municipalityId: string;
+  readonly nucleus: string;
+  readonly nucleusId: string;
+  readonly zone: string | null;
   readonly latitude: number;
   readonly longitude: number;
 }
 
 export interface NearbyStopResult {
+  readonly consortiumId: number;
   readonly id: string;
   readonly name: string;
   readonly distanceInMeters: number;
@@ -41,7 +59,7 @@ const EMPTY_RECORDS: readonly NearbyStopRecord[] = Object.freeze([]);
 const EMPTY_RESULTS: readonly NearbyStopResult[] = Object.freeze([]);
 
 export async function loadNearbyStopRecords(
-  http: HttpClient,
+  http: NearbyStopsHttpClient,
   indexPath: string
 ): Promise<readonly NearbyStopRecord[]> {
   const index = await firstValueFrom(http.get<StopDirectoryIndexFile>(indexPath));
@@ -60,14 +78,23 @@ export async function loadNearbyStopRecords(
     );
 
     for (const stop of chunk.stops) {
-      if (seen.has(stop.stopId)) {
+      const identity = buildStopIdentity(stop.consortiumId, stop.stopId);
+
+      if (seen.has(identity)) {
         continue;
       }
 
-      seen.add(stop.stopId);
+      seen.add(identity);
       records.push({
+        consortiumId: stop.consortiumId,
         stopId: stop.stopId,
+        stopCode: stop.stopCode,
         name: stop.name,
+        municipality: stop.municipality,
+        municipalityId: stop.municipalityId,
+        nucleus: stop.nucleus,
+        nucleusId: stop.nucleusId,
+        zone: stop.zone,
         latitude: stop.location.latitude,
         longitude: stop.location.longitude
       });
@@ -100,6 +127,7 @@ export function buildNearbyStopResults(
     }
 
     candidates.push({
+      consortiumId: record.consortiumId,
       id: record.stopId,
       name: record.name,
       distanceInMeters: distance

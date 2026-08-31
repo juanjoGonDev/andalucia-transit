@@ -1,0 +1,53 @@
+<details
+  *ngIf="departure as item"
+  class="route-search-route-preview"
+  (toggle)="onToggle($event)"
+>
+  <summary class="route-search-route-preview__summary">
+    <span class="material-symbols-outlined" aria-hidden="true">route</span>
+    <span class="route-search-route-preview__summary-text">
+      {{ workspaceCopy().routeTitle }} · {{ item.lineCode }} · {{ item.destination }}
+    </span>
+    <span class="material-symbols-outlined route-search-route-preview__chevron" aria-hidden="true">
+      expand_more
+    </span>
+  </summary>
+
+  <div *ngIf="expanded()" class="route-search-route-preview__body">
+    <div
+      *ngIf="isLoading()"
+      class="route-search-route-preview__status"
+      role="status"
+      aria-live="polite"
+    >
+      <span class="app-loading-indicator" aria-hidden="true"></span>
+      <span>{{ 'map.focusedLines.previewLoading' | translate }}</span>
+    </div>
+
+    <div *ngIf="isError()" class="route-search-route-preview__status" role="alert">
+      <span class="material-symbols-outlined" aria-hidden="true">error</span>
+      <span>{{ 'map.focusedLines.previewError' | translate }}</span>
+      <button
+        type="button"
+        class="app-outline-button app-outline-button--compact"
+        (click)="retry()"
+      >
+        {{ 'home.dialogs.nearbyStops.retry' | translate }}
+      </button>
+    </div>
+
+    <app-transit-route-workspace
+      *ngIf="readyViewModel() as viewModel"
+      [routeId]="workspaceRouteId(viewModel)"
+      [coordinates]="viewModel.coordinates"
+      [stops]="viewModel.stops"
+      [selectedStopId]="selectedStopId()"
+      [accessibleLabel]="workspaceCopy().routeMapLabel(item.lineCode)"
+      [stopsTitle]="workspaceCopy().stopsTitle"
+      [stopDetailsLabel]="workspaceCopy().moreInformation"
+      [mapUnavailableLabel]="workspaceCopy().mapUnavailable"
+      (stopSelected)="selectStop($event)"
+      (stopDetails)="openStop($event)"
+    ></app-transit-route-workspace>
+  </div>
+</details>

@@ -1,28 +1,28 @@
 import { Injectable, inject } from '@angular/core';
 import { DateTime } from 'luxon';
-import { catchError, forkJoin, map, Observable, of, switchMap, throwError } from 'rxjs';
-
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
-import { AppConfig } from '../../core/config';
-import { RuntimeFlagsService } from '../../core/runtime/runtime-flags.service';
-import { StopSchedule, StopScheduleResult, StopService } from '../../domain/stop-schedule/stop-schedule.model';
+import { Observable, catchError, forkJoin, map, of, switchMap, throwError } from 'rxjs';
+import { AppConfig } from '@core/config';
+import { RuntimeFlagsService } from '@core/runtime/runtime-flags.service';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 import {
-  StopScheduleSnapshotRepository,
   StopScheduleSnapshotRecord,
+  StopScheduleSnapshotRepository,
   StopScheduleSnapshotService
-} from './stop-schedule-snapshot.repository';
-import { StopDirectoryService, StopDirectoryRecord } from '../stops/stop-directory.service';
+} from '@data/services/stop-schedule-snapshot.repository';
 import {
   ApiStopInformation,
-  ApiStopServicesResponse,
   ApiStopServiceEntry,
+  ApiStopServicesResponse,
   StopScheduleApiService
-} from './stop-schedule.api-service';
+} from '@data/services/stop-schedule.api-service';
+import { StopDirectoryRecord, StopDirectoryService } from '@data/stops/stop-directory.service';
+import { StopSchedule, StopScheduleResult, StopService } from '@domain/stop-schedule/stop-schedule.model';
 
 const API_RESPONSE_DATE_FORMAT = 'yyyy-LL-dd HH:mm' as const;
 
 interface StopScheduleRequestOptions {
   readonly queryDate?: Date;
+  readonly consortiumId?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -40,8 +40,12 @@ export class StopScheduleService {
     options?: StopScheduleRequestOptions
   ): Observable<StopScheduleResult> {
     const targetDate = options?.queryDate ?? new Date();
+    const metadata$ =
+      options?.consortiumId !== undefined
+        ? this.directory.getStopBySignature(options.consortiumId, stopId)
+        : this.directory.getStopById(stopId);
 
-    return this.directory.getStopById(stopId).pipe(
+    return metadata$.pipe(
       switchMap((metadata) => {
         if (!metadata) {
           return throwError(() => new Error(`Unknown stop identifier: ${stopId}`));
@@ -72,25 +76,25 @@ export class StopScheduleService {
     apiError: unknown,
     options?: { readonly targetDate?: Date }
   ): Observable<StopScheduleResult> {
-    return this.snapshotRepository.getSnapshotForStop(metadata.stopId).pipe(
-      switchMap((record) => {
-        if (!record) {
-          if (apiError) {
-            return throwError(() =>
-              buildApiUnavailableError(
-                metadata,
-                this.config.data.providerName,
-                apiError
-              )
+    return this.snapshotRepository
+      .getSnapshotForStopSignature(metadata.consortiumId, metadata.stopId)
+      .pipe(
+        switchMap((record) => {
+          if (!record) {
+            if (apiError) {
+              return throwError(() =>
+                buildApiUnavailableError(metadata, this.config.data.providerName, apiError)
+              );
+            }
+
+            return throwError(
+              () => new Error(`Snapshot not available for stop ${metadata.stopId}`)
             );
           }
 
-          return throwError(() => new Error(`Snapshot not available for stop ${metadata.stopId}`));
-        }
-
-        return of(this.buildSnapshotResult(record, options?.targetDate ?? null));
-      })
-    );
+          return of(this.buildSnapshotResult(record, options?.targetDate ?? null));
+        })
+      );
   }
 
   private buildApiResult(
@@ -236,9 +240,13 @@ function mapSnapshotService(
 }
 
 function createServiceDateTime(startDateTime: DateTime, time: string): DateTime {
-  const candidate = DateTime.fromFormat(`${startDateTime.toFormat('yyyy-LL-dd')} ${time}`, API_RESPONSE_DATE_FORMAT, {
-    zone: startDateTime.zone
-  });
+  const candidate = DateTime.fromFormat(
+    `${startDateTime.toFormat('yyyy-LL-dd')} ${time}`,
+    API_RESPONSE_DATE_FORMAT,
+    {
+      zone: startDateTime.zone
+    }
+  );
 
   if (!candidate.isValid) {
     return startDateTime;

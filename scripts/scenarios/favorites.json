@@ -1,0 +1,6 @@
+[
+  {"type":"eval","script":"localStorage.setItem('andalucia-transit.stopFavorites','[{\\\"id\\\":\\\"040101\\\",\\\"code\\\":\\\"040101\\\",\\\"name\\\":\\\"Estación Intermodal\\\",\\\"municipality\\\":\\\"ALMERÍA\\\",\\\"municipalityId\\\":\\\"04013\\\",\\\"nucleus\\\":\\\"ALMERÍA\\\",\\\"nucleusId\\\":\\\"0401301\\\",\\\"consortiumId\\\":1,\\\"stopIds\\\":[\\\"1:040101\\\"]},{\\\"id\\\":\\\"040370\\\",\\\"code\\\":\\\"040370\\\",\\\"name\\\":\\\"La Gangosa - Av. Prado\\\",\\\"municipality\\\":\\\"VÍCAR\\\",\\\"municipalityId\\\":\\\"04103\\\",\\\"nucleus\\\":\\\"LA GANGOSA\\\",\\\"nucleusId\\\":\\\"0410303\\\",\\\"consortiumId\\\":1,\\\"stopIds\\\":[\\\"1:040370\\\"]}]');"},
+  {"type":"goto","url":"http://localhost:4201/favorites"},
+  {"type":"waitFor","selector":".favorites__group"},
+  {"type":"sleep","duration":600}
+]

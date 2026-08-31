@@ -1,31 +1,32 @@
 import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
+import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, firstValueFrom, of } from 'rxjs';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-
-import { RouteSearchFormComponent } from './route-search-form.component';
-import {
-  StopDirectoryOption,
-  StopDirectoryService,
-  StopDirectoryStopSignature,
-  StopSearchRequest
-} from '../../../data/stops/stop-directory.service';
-import {
-  StopConnection,
-  StopConnectionsService,
-  STOP_CONNECTION_DIRECTION,
-  StopConnectionDirection,
-  buildStopConnectionKey
-} from '../../../data/route-search/stop-connections.service';
-import { RouteSearchSelection } from '../../../domain/route-search/route-search-state.service';
-import { NearbyStopResult, NearbyStopsService } from '../../../core/services/nearby-stops.service';
+import { APP_CONFIG } from '@core/config';
+import { GeolocationService } from '@core/services/geolocation.service';
 import {
   NearbyStopOption,
   NearbyStopOptionsService
-} from '../../../core/services/nearby-stop-options.service';
-import { GeolocationService } from '../../../core/services/geolocation.service';
-import { APP_CONFIG } from '../../../core/config';
-import { StopFavoritesService, StopFavorite } from '../../../domain/stops/stop-favorites.service';
+} from '@core/services/nearby-stop-options.service';
+import { NearbyStopResult, NearbyStopsService } from '@core/services/nearby-stops.service';
+import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
+import {
+  STOP_CONNECTION_DIRECTION,
+  StopConnection,
+  StopConnectionDirection,
+  StopConnectionsFacade,
+  buildStopConnectionKey,
+  mergeStopConnectionMaps
+} from '@domain/route-search/stop-connections.facade';
+import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
+import {
+  StopDirectoryFacade,
+  StopDirectoryOption,
+  StopDirectoryStopSignature,
+  StopSearchRequest
+} from '@domain/stops/stop-directory.facade';
+import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 
 const ORIGIN_OPTION: StopDirectoryOption = {
   id: '7:origin-stop',
@@ -83,6 +84,14 @@ class DirectoryStub {
   getOptionByStopId(stopId: string) {
     return of(this.options.get(stopId) ?? null);
   }
+
+  getOptionByStopSignature(consortiumId: number, stopId: string) {
+    const match = Array.from(this.options.values()).find(
+      (option) => option.consortiumId === consortiumId && option.stopIds.includes(stopId)
+    );
+
+    return of(match ?? null);
+  }
 }
 
 class ConnectionsStub {
@@ -102,6 +111,12 @@ class ConnectionsStub {
   ) {
     const key = this.buildKey(signatures, direction);
     return of(this.responses.get(key) ?? new Map());
+  }
+
+  mergeConnections(
+    maps: readonly ReadonlyMap<string, StopConnection>[]
+  ): ReadonlyMap<string, StopConnection> {
+    return mergeStopConnectionMaps(maps);
   }
 
   private buildKey(
@@ -130,8 +145,13 @@ class GeolocationStub {
     timestamp: Date.now(),
     toJSON: () => ({})
   };
+  error: unknown | null = null;
 
   async getCurrentPosition(): Promise<GeolocationPosition> {
+    if (this.error !== null) {
+      throw this.error;
+    }
+
     return this.position;
   }
 }
@@ -156,9 +176,68 @@ class NearbyStopOptionsStub {
   }
 }
 
-class FavoritesStub {
-  readonly favorites$ = new BehaviorSubject<readonly StopFavorite[]>([]);
-  toggle = jasmine.createSpy('toggle');
+class FavoritesFacadeStub {
+  private favoritesIndex = new Map<string, StopFavorite>();
+  private readonly favoritesSubject = new BehaviorSubject<readonly StopFavorite[]>([]);
+  readonly favorites$ = this.favoritesSubject.asObservable();
+
+  add(option: StopDirectoryOption): void {
+    if (this.favoritesIndex.has(option.id)) {
+      return;
+    }
+
+    const next = [...this.favoritesSubject.value, this.toFavorite(option)];
+    this.setFavorites(next);
+  }
+
+  remove(id: StopFavorite['id']): void {
+    if (!this.favoritesIndex.has(id)) {
+      return;
+    }
+
+    const next = this.favoritesSubject.value.filter((favorite) => favorite.id !== id);
+    this.setFavorites(next);
+  }
+
+  clear(): void {
+    if (!this.favoritesSubject.value.length) {
+      return;
+    }
+
+    this.setFavorites([]);
+  }
+
+  toggle(option: StopDirectoryOption): void {
+    if (this.favoritesIndex.has(option.id)) {
+      this.remove(option.id);
+      return;
+    }
+
+    this.add(option);
+  }
+
+  isFavorite(id: StopFavorite['id']): boolean {
+    return this.favoritesIndex.has(id);
+  }
+
+  private setFavorites(favorites: readonly StopFavorite[]): void {
+    this.favoritesIndex = new Map(favorites.map((favorite) => [favorite.id, favorite] as const));
+    this.favoritesSubject.next(favorites);
+  }
+
+  private toFavorite(option: StopDirectoryOption): StopFavorite {
+    return {
+      id: option.id,
+      code: option.code,
+      name: option.name,
+      municipality: option.municipality,
+      municipalityId: option.municipalityId,
+      nucleus: option.nucleus,
+      nucleusId: option.nucleusId,
+      consortiumId: option.consortiumId,
+      stopIds: option.stopIds
+    } satisfies StopFavorite;
+  }
 }
 
 class TranslateLoaderStub implements TranslateLoader {
@@ -174,29 +253,30 @@ describe('RouteSearchFormComponent', () => {
   let geolocation: GeolocationStub;
   let nearbyStops: NearbyStopsStub;
   let nearbyStopOptions: NearbyStopOptionsStub;
-  let favorites: FavoritesStub;
+  let favorites: FavoritesFacadeStub;
 
   beforeEach(async () => {
     connections = new ConnectionsStub();
     geolocation = new GeolocationStub();
     nearbyStops = new NearbyStopsStub();
     nearbyStopOptions = new NearbyStopOptionsStub();
-    favorites = new FavoritesStub();
+    favorites = new FavoritesFacadeStub();
 
     await TestBed.configureTestingModule({
       imports: [
         RouteSearchFormComponent,
         TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: TranslateLoaderStub }
+          loader: { provide: TranslateLoader, useClass: TranslateLoaderStub },
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
         })
       ],
       providers: [
-        { provide: StopDirectoryService, useClass: DirectoryStub },
-        { provide: StopConnectionsService, useValue: connections },
+        { provide: StopDirectoryFacade, useClass: DirectoryStub },
+        { provide: StopConnectionsFacade, useValue: connections },
         { provide: GeolocationService, useValue: geolocation },
         { provide: NearbyStopsService, useValue: nearbyStops },
         { provide: NearbyStopOptionsService, useValue: nearbyStopOptions },
-        { provide: StopFavoritesService, useValue: favorites }
+        { provide: FavoritesFacade, useValue: favorites }
       ]
     }).compileComponents();
 
@@ -238,10 +318,7 @@ describe('RouteSearchFormComponent', () => {
 
     const builtSelection = await (
       component as unknown as RouteSearchFormComponentPublicApi
-    ).buildSelection(
-      ORIGIN_OPTION,
-      DESTINATION_OPTION
-    );
+    ).buildSelection(ORIGIN_OPTION, DESTINATION_OPTION);
     expect(builtSelection).not.toBeNull();
 
     const emitSpy = spyOn(component.selectionConfirmed, 'emit');
@@ -252,6 +329,37 @@ describe('RouteSearchFormComponent', () => {
     expect(emitted.origin).toEqual(ORIGIN_OPTION);
     expect(emitted.destination).toEqual(DESTINATION_OPTION);
     expect(emitted.lineMatches.length).toBe(1);
+  });
+
+  it('prevents duplicate submissions while a route selection is resolving', async () => {
+    component.searchForm.controls.origin.setValue(ORIGIN_OPTION);
+    component.searchForm.controls.destination.setValue(DESTINATION_OPTION);
+
+    const pendingSelection = createDeferred<RouteSearchSelection | null>();
+    const api = component as unknown as RouteSearchFormComponentPublicApi;
+    const buildSelectionSpy = spyOn(api, 'buildSelection').and.returnValue(pendingSelection.promise);
+    const emitSpy = spyOn(component.selectionConfirmed, 'emit');
+
+    const firstSubmit = component.submit();
+    const secondSubmit = component.submit();
+    fixture.detectChanges();
+
+    expect(buildSelectionSpy).toHaveBeenCalledTimes(1);
+    expect(api.submitLoading$.getValue()).toBeTrue();
+    expect(
+      fixture.nativeElement.querySelector('.route-search-form__submit')?.getAttribute('aria-busy')
+    ).toBe('true');
+
+    pendingSelection.resolve({
+      origin: ORIGIN_OPTION,
+      destination: DESTINATION_OPTION,
+      queryDate: new Date(component.minSearchDate),
+      lineMatches: []
+    });
+    await Promise.all([firstSubmit, secondSubmit]);
+
+    expect(emitSpy).toHaveBeenCalledTimes(1);
+    expect(api.submitLoading$.getValue()).toBeFalse();
   });
 
   it('shows the no routes feedback when nothing matches', async () => {
@@ -301,6 +409,7 @@ describe('RouteSearchFormComponent', () => {
   it('recommends nearby origins after requesting location', async () => {
     nearbyStops.results = [
       {
+        consortiumId: ORIGIN_OPTION.consortiumId,
         id: ORIGIN_OPTION.stopIds[0] ?? '',
         name: ORIGIN_OPTION.name,
         distanceInMeters: 150
@@ -324,9 +433,23 @@ describe('RouteSearchFormComponent', () => {
     });
   });
 
+  it('surfaces geolocation permission failures instead of silently clearing results', async () => {
+    geolocation.error = { code: 1 };
+
+    await component.recommendOriginFromLocation();
+    fixture.detectChanges();
+
+    const api = component as unknown as RouteSearchFormComponentPublicApi;
+    expect(api.originLocationErrorKey).toBe(
+      APP_CONFIG.translationKeys.home.dialogs.nearbyStops.permissionDenied
+    );
+    expect(fixture.nativeElement.querySelector('.app-async-status--error')).not.toBeNull();
+  });
+
   it('hides recommended origins when they do not match the query', fakeAsync(() => {
     nearbyStops.results = [
       {
+        consortiumId: ORIGIN_OPTION.consortiumId,
         id: ORIGIN_OPTION.stopIds[0] ?? '',
         name: ORIGIN_OPTION.name,
         distanceInMeters: 150
@@ -368,10 +491,26 @@ describe('RouteSearchFormComponent', () => {
 });
 
 interface RouteSearchFormComponentPublicApi {
+  readonly submitLoading$: BehaviorSubject<boolean>;
+  readonly originLocationErrorKey: string | null;
   buildSelection(
     origin: StopDirectoryOption,
     destination: StopDirectoryOption
   ): Promise<RouteSearchSelection | null>;
+}
+
+interface Deferred<T> {
+  readonly promise: Promise<T>;
+  readonly resolve: (value: T | PromiseLike<T>) => void;
+}
+
+function createDeferred<T>(): Deferred<T> {
+  let resolve!: Deferred<T>['resolve'];
+  const promise = new Promise<T>((resolver) => {
+    resolve = resolver;
+  });
+
+  return { promise, resolve };
 }
 
 function buildConnection(stopId: string, consortiumId: number): StopConnection {
@@ -379,9 +518,7 @@ function buildConnection(stopId: string, consortiumId: number): StopConnection {
     consortiumId,
     stopId,
     originStopIds: ORIGIN_OPTION.stopIds,
-    lineSignatures: [
-      { lineId: 'line', lineCode: '001', direction: 0 }
-    ]
+    lineSignatures: [{ lineId: 'line', lineCode: '001', direction: 0 }]
   };
 }
 

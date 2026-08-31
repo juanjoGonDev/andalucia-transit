@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable, of, shareReplay, switchMap } from 'rxjs';
-
-import { APP_CONFIG_TOKEN } from '../../core/tokens/app-config.token';
-import { AppConfig } from '../../core/config';
+import { Observable, map, of, shareReplay, switchMap } from 'rxjs';
+import { AppConfig } from '@core/config';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 
 const SEARCH_LOCALE = 'es-ES' as const;
 const MIN_QUERY_LENGTH = 2;
@@ -268,13 +267,20 @@ function resolveChunkBasePath(indexPath: string): string {
 
 function buildDirectoryIndex(file: StopDirectoryIndexFile): StopDirectoryIndex {
   const entries = new Map<string, StopDirectorySearchEntry>();
+  const ambiguousStopIds = new Set<string>();
   const compositeEntries = new Map<string, StopDirectorySearchEntry>();
   const groups = new Map<string, StopDirectorySearchEntry[]>();
 
   for (const entry of file.searchIndex) {
-    if (!entries.has(entry.stopId)) {
-      entries.set(entry.stopId, entry);
+    if (!ambiguousStopIds.has(entry.stopId)) {
+      if (entries.has(entry.stopId)) {
+        entries.delete(entry.stopId);
+        ambiguousStopIds.add(entry.stopId);
+      } else {
+        entries.set(entry.stopId, entry);
+      }
     }
+
     compositeEntries.set(buildEntryKey(entry.consortiumId, entry.stopId), entry);
     const key = buildGroupKey(entry);
     const bucket = groups.get(key);

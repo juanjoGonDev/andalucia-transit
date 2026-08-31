@@ -1,23 +1,39 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
 import { DateTime } from 'luxon';
-
-import { StopScheduleService } from './stop-schedule.service';
-import { StopDirectoryService, StopDirectoryRecord } from '../stops/stop-directory.service';
+import { of, throwError } from 'rxjs';
+import { RuntimeFlagsService } from '@core/runtime/runtime-flags.service';
 import {
-  StopScheduleSnapshotRepository,
-  StopScheduleSnapshotRecord
-} from './stop-schedule-snapshot.repository';
-import { StopScheduleApiService, ApiStopInformation, ApiStopServicesResponse } from './stop-schedule.api-service';
-import { RuntimeFlagsService } from '../../core/runtime/runtime-flags.service';
-import { StopScheduleResult } from '../../domain/stop-schedule/stop-schedule.model';
+  StopScheduleSnapshotRecord,
+  StopScheduleSnapshotRepository
+} from '@data/services/stop-schedule-snapshot.repository';
+import {
+  ApiStopInformation,
+  ApiStopServicesResponse,
+  StopScheduleApiService
+} from '@data/services/stop-schedule.api-service';
+import { StopScheduleService } from '@data/services/stop-schedule.service';
+import { StopDirectoryRecord, StopDirectoryService } from '@data/stops/stop-directory.service';
+import { StopScheduleResult } from '@domain/stop-schedule/stop-schedule.model';
 
 class StopDirectoryStub {
-  constructor(private readonly record: StopDirectoryRecord | null) {}
+  constructor(
+    private readonly record: StopDirectoryRecord | null,
+    private readonly signatureRecord: StopDirectoryRecord | null = record
+  ) {}
 
   getStopById() {
     return of(this.record);
+  }
+
+  getStopBySignature(consortiumId: number, stopId: string) {
+    const record = this.signatureRecord;
+
+    if (!record || record.consortiumId !== consortiumId || record.stopId !== stopId) {
+      return of(null);
+    }
+
+    return of(record);
   }
 }
 
@@ -34,6 +50,20 @@ class SnapshotRepositoryStub {
 
   getSnapshotForStop() {
     return of(this.record);
+  }
+
+  getSnapshotForStopSignature(consortiumId: number, stopId: string) {
+    const record = this.record;
+
+    if (
+      !record ||
+      record.stop.consortiumId !== consortiumId ||
+      record.stop.stopId !== stopId
+    ) {
+      return of(null);
+    }
+
+    return of(record);
   }
 }
 
@@ -138,14 +168,21 @@ describe('StopScheduleService', () => {
       apiShouldFail?: boolean;
       forceSnapshot?: boolean;
       snapshot?: StopScheduleSnapshotRecord | null;
+      signatureRecord?: StopDirectoryRecord | null;
     } = {}
   ): StopScheduleService {
     const snapshot = options.snapshot === undefined ? snapshotRecord : options.snapshot;
+    const signatureRecord =
+      options.signatureRecord === undefined ? metadata : options.signatureRecord;
+
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         StopScheduleService,
-        { provide: StopDirectoryService, useValue: new StopDirectoryStub(metadata) },
+        {
+          provide: StopDirectoryService,
+          useValue: new StopDirectoryStub(metadata, signatureRecord)
+        },
         {
           provide: StopScheduleSnapshotRepository,
           useValue: new SnapshotRepositoryStub(snapshot)
@@ -194,6 +231,47 @@ describe('StopScheduleService', () => {
         expect(result.schedule.services[0].direction).toBe(2);
         expect(result.schedule.services[0].isAccessible).toBeTrue();
         expect(result.schedule.services[0].isUniversityOnly).toBeTrue();
+        done();
+      },
+      error: done.fail
+    });
+  });
+
+  it('uses consortium context to resolve a duplicate stop identifier', (done) => {
+    const duplicateMetadata: StopDirectoryRecord = {
+      ...metadata,
+      consortiumId: 4,
+      stopCode: 'M-55',
+      name: 'Málaga duplicate stop',
+      municipality: 'Málaga',
+      municipalityId: 'malaga',
+      nucleus: 'Centro',
+      nucleusId: 'centro',
+      location: { latitude: 36.721, longitude: -4.421 }
+    };
+    const duplicateSnapshot: StopScheduleSnapshotRecord = {
+      ...snapshotRecord,
+      stop: {
+        ...snapshotRecord.stop,
+        consortiumId: duplicateMetadata.consortiumId,
+        stopCode: duplicateMetadata.stopCode,
+        stopName: duplicateMetadata.name,
+        municipality: duplicateMetadata.municipality,
+        nucleus: duplicateMetadata.nucleus,
+        location: duplicateMetadata.location
+      }
+    };
+    const service = setup({
+      forceSnapshot: true,
+      signatureRecord: duplicateMetadata,
+      snapshot: duplicateSnapshot
+    });
+
+    service.getStopSchedule('55', { consortiumId: 4 }).subscribe({
+      next: (result: StopScheduleResult) => {
+        expect(result.dataSource.type).toBe('snapshot');
+        expect(result.schedule.stopCode).toBe('M-55');
+        expect(result.schedule.stopName).toBe('Málaga duplicate stop');
         done();
       },
       error: done.fail

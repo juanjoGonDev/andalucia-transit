@@ -1,0 +1,54 @@
+<div class="transit-route-workspace">
+  <div class="transit-route-workspace__map-column">
+    <app-route-map
+      *ngIf="coordinates.length >= 2; else mapUnavailable"
+      [routeId]="routeId"
+      [coordinates]="coordinates"
+      [stops]="stops"
+      [selectedStopId]="selectedStopId"
+      [accessibleLabel]="accessibleLabel"
+      [stopDetailsLabel]="stopDetailsLabel"
+      (stopSelected)="selectStop($event)"
+      (stopDetails)="openStop($event)"
+    ></app-route-map>
+    <ng-template #mapUnavailable>
+      <div class="transit-route-workspace__map-unavailable" role="status">
+        <span class="material-symbols-outlined" aria-hidden="true">map</span>
+        <p>{{ mapUnavailableLabel }}</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <section
+    class="transit-route-workspace__stops-panel"
+    [attr.aria-label]="stopsTitle || null"
+  >
+    <h2 class="transit-route-workspace__stops-title">{{ stopsTitle }}</h2>
+    <ol *ngIf="stops.length" class="transit-route-workspace__stops">
+      <li
+        *ngFor="let stop of stops; trackBy: trackStop"
+        class="transit-route-workspace__stop-row"
+        [class.transit-route-workspace__stop-row--selected]="selectedStopId === stop.stopId"
+      >
+        <button
+          type="button"
+          class="transit-route-workspace__stop-select"
+          [attr.aria-pressed]="selectedStopId === stop.stopId"
+          (click)="selectStop(stop.stopId)"
+        >
+          <span class="transit-route-workspace__marker" aria-hidden="true"></span>
+          <span class="transit-route-workspace__stop-name">{{ stop.name }}</span>
+        </button>
+        <button
+          type="button"
+          class="transit-route-workspace__stop-details"
+          [attr.aria-label]="stopDetailsLabel + ': ' + stop.name"
+          (click)="openStop(stop.stopId)"
+        >
+          <span>{{ stopDetailsLabel }}</span>
+          <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+        </button>
+      </li>
+    </ol>
+  </section>
+</div>

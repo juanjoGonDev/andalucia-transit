@@ -1,201 +1,317 @@
-<section class="stop-detail">
-  <ng-container *ngIf="isLoading$ | async; else scheduleContent">
-    <section class="stop-detail__card stop-detail__card--centered">
-      <div class="stop-detail__status stop-detail__loading">
-        <span class="material-symbols-outlined stop-detail__status-icon stop-detail__loading-icon">hourglass_top</span>
-        <p class="stop-detail__loading-text">{{ translationKeys.loading | translate }}</p>
-      </div>
-    </section>
-  </ng-container>
-
-  <ng-template #scheduleContent>
-    <ng-container *ngIf="loadError$ | async; else scheduleLoaded">
-      <section class="stop-detail__card stop-detail__card--centered">
-        <div class="stop-detail__status stop-detail__error">
-          <span class="material-symbols-outlined stop-detail__status-icon stop-detail__error-icon">warning</span>
-          <p class="stop-detail__error-text">{{ translationKeys.error.title | translate }}</p>
-          <p class="stop-detail__error-description">{{ translationKeys.error.description | translate }}</p>
-        </div>
-      </section>
-    </ng-container>
-  </ng-template>
-
-  <ng-template #scheduleLoaded>
-    <ng-container *ngIf="viewModel$ | async as viewModel">
-      <section class="stop-detail__card">
-        <div class="stop-detail__summary">
-          <div class="stop-detail__summary-heading">
-            <span class="stop-detail__tag">{{ viewModel.stopCode }}</span>
-            <h1 class="stop-detail__title">{{ viewModel.stopName }}</h1>
-            <p class="stop-detail__subtitle">{{ translationKeys.subtitle | translate }}</p>
-          </div>
-          <div class="stop-detail__meta">
-            <div class="stop-detail__meta-item">
-              <span class="stop-detail__meta-label">{{ translationKeys.header.stopCodeLabel | translate }}</span>
-              <span class="stop-detail__meta-value">{{ viewModel.stopCode }}</span>
-            </div>
-            <div class="stop-detail__meta-item">
-              <span class="stop-detail__meta-label">{{ translationKeys.header.scheduleDateLabel | translate }}</span>
-              <span class="stop-detail__meta-value">{{ viewModel.scheduleDate | date: 'fullDate' }}</span>
-            </div>
-            <div class="stop-detail__meta-item">
-              <span class="stop-detail__meta-label">{{ translationKeys.header.lastUpdatedLabel | translate }}</span>
-              <span class="stop-detail__meta-value">{{ viewModel.generatedAt | date: 'shortTime' }}</span>
+<section
+  class="stop-detail"
+  appLayoutContent
+  [appLayoutContentNavigationKey]="layoutNavigationKey"
+>
+  <div class="utility-container">
+    <div class="app-layout__body">
+      <ng-container *ngIf="isLoading$ | async; else scheduleContent">
+        <section class="stop-detail__card stop-detail__card--centered app-async-reveal">
+          <div
+            class="stop-detail__status stop-detail__loading"
+            [attr.role]="statusRole"
+            [attr.aria-live]="politeLiveRegion"
+          >
+            <span class="app-loading-indicator app-loading-indicator--lg" aria-hidden="true"></span>
+            <p class="stop-detail__loading-text">{{ translationKeys.loading | translate }}</p>
+            <div class="stop-detail__loading-preview" aria-hidden="true">
+              <span
+                class="app-loading-skeleton stop-detail__loading-line stop-detail__loading-line--wide"
+              ></span>
+              <span class="app-loading-skeleton stop-detail__loading-line"></span>
             </div>
           </div>
-          <p class="stop-detail__data-origin" *ngIf="viewModel.dataSource as source">
-            <ng-container [ngSwitch]="source.type">
-              <span *ngSwitchCase="'api'">
-                {{ translationKeys.source.live | translate:{ provider: source.providerName } }}
-              </span>
-              <span *ngSwitchCase="'snapshot'">
-                {{ translationKeys.source.snapshot | translate:{
-                  provider: source.providerName,
-                  date: source.snapshotTime | date: 'fullDate',
-                  time: source.snapshotTime | date: 'shortTime'
-                } }}
-              </span>
+        </section>
+      </ng-container>
+
+      <ng-template #scheduleContent>
+        <ng-container *ngIf="loadError$ | async; else scheduleLoaded">
+          <section class="stop-detail__card stop-detail__card--centered app-async-reveal">
+            <div
+              class="stop-detail__status stop-detail__error"
+              [attr.role]="statusRole"
+              [attr.aria-live]="assertiveLiveRegion"
+            >
+              <span class="material-symbols-outlined stop-detail__status-icon stop-detail__error-icon"
+                >warning</span
+              >
+              <p class="stop-detail__error-text">{{ translationKeys.error.title | translate }}</p>
+              <p class="stop-detail__error-description">
+                {{ translationKeys.error.description | translate }}
+              </p>
+              <div
+                appAccessibleButton
+                class="app-outline-button stop-detail__retry"
+                (appAccessibleButtonActivated)="retrySchedule()"
+              >
+                {{ retryKey | translate }}
+              </div>
+            </div>
+          </section>
+        </ng-container>
+      </ng-template>
+
+      <ng-template #scheduleLoaded>
+        <ng-container *ngIf="viewModel$ | async as viewModel">
+          <section class="stop-detail__card app-async-reveal">
+            <div class="stop-detail__summary">
+              <div class="stop-detail__summary-heading">
+                <span class="stop-detail__tag">{{ viewModel.stopCode }}</span>
+                <h1 class="stop-detail__title">{{ viewModel.stopName }}</h1>
+                <p class="stop-detail__subtitle">{{ translationKeys.subtitle | translate }}</p>
+              </div>
+              <div class="stop-detail__meta">
+                <div class="stop-detail__meta-item">
+                  <span class="stop-detail__meta-label">{{
+                    translationKeys.header.scheduleDateLabel | translate
+                  }}</span>
+                  <span class="stop-detail__meta-value">{{
+                    viewModel.scheduleDate | date: 'fullDate'
+                  }}</span>
+                </div>
+                <div class="stop-detail__meta-item">
+                  <span class="stop-detail__meta-label">{{
+                    translationKeys.header.lastUpdatedLabel | translate
+                  }}</span>
+                  <span class="stop-detail__meta-value">{{
+                    viewModel.generatedAt | date: 'shortTime'
+                  }}</span>
+                </div>
+              </div>
+              <p class="stop-detail__data-origin" *ngIf="viewModel.dataSource as source">
+                <ng-container [ngSwitch]="source.type">
+                  <span *ngSwitchCase="'api'">
+                    {{ translationKeys.source.live | translate: { provider: source.providerName } }}
+                  </span>
+                  <span *ngSwitchCase="'snapshot'">
+                    {{
+                      translationKeys.source.snapshot
+                        | translate
+                          : {
+                              provider: source.providerName,
+                              date: source.snapshotTime | date: 'fullDate',
+                              time: source.snapshotTime | date: 'shortTime',
+                            }
+                    }}
+                  </span>
+                </ng-container>
+              </p>
+            </div>
+          </section>
+
+          <nav
+            class="stop-detail__tabs app-async-reveal"
+            role="tablist"
+            [attr.aria-label]="translationKeys.title | translate"
+          >
+            <button
+              type="button"
+              id="stop-detail-tab-departures"
+              class="stop-detail__tab"
+              data-stop-section="departures"
+              role="tab"
+              aria-controls="stop-detail-panel-departures"
+              [attr.aria-selected]="isSectionActive('departures')"
+              [attr.tabindex]="sectionTabIndex('departures')"
+              (click)="selectSection('departures')"
+              (keydown)="onSectionTabKeydown($event, 'departures')"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+              <span>{{ translationKeys.schedule.upcomingTitle | translate }}</span>
+            </button>
+            <button
+              type="button"
+              id="stop-detail-tab-lines"
+              class="stop-detail__tab"
+              data-stop-section="lines"
+              role="tab"
+              aria-controls="stop-detail-panel-lines"
+              [attr.aria-selected]="isSectionActive('lines')"
+              [attr.tabindex]="sectionTabIndex('lines')"
+              (click)="selectSection('lines')"
+              (keydown)="onSectionTabKeydown($event, 'lines')"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">route</span>
+              <span>{{ linesLabelKey | translate }}</span>
+            </button>
+            <button
+              type="button"
+              id="stop-detail-tab-directions"
+              class="stop-detail__tab"
+              data-stop-section="directions"
+              role="tab"
+              aria-controls="stop-detail-panel-directions"
+              [attr.aria-selected]="isSectionActive('directions')"
+              [attr.tabindex]="sectionTabIndex('directions')"
+              (click)="selectSection('directions')"
+              (keydown)="onSectionTabKeydown($event, 'directions')"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">directions_walk</span>
+              <span>{{ directionsLabelKey | translate }}</span>
+            </button>
+          </nav>
+
+          <ng-container [ngSwitch]="activeSection()">
+            <section
+              *ngSwitchCase="'departures'"
+              id="stop-detail-panel-departures"
+              class="stop-detail__panel stop-detail__panel--departures app-async-reveal"
+              role="tabpanel"
+              aria-labelledby="stop-detail-tab-departures"
+            >
+              <header class="stop-detail__panel-header">
+                <div>
+                  <h2 class="stop-detail__panel-title">
+                    {{ translationKeys.schedule.upcomingTitle | translate }}
+                  </h2>
+                  <p class="stop-detail__panel-subtitle">
+                    {{
+                      translationKeys.schedule.upcomingSubtitle
+                        | translate: { count: viewModel.upcoming.length }
+                    }}
+                  </p>
+                </div>
+                <label class="stop-detail__control">
+                  <span class="stop-detail__control-label">{{
+                    translationKeys.filters.destinationLabel | translate
+                  }}</span>
+                  <select class="stop-detail__select" [formControl]="destinationControl">
+                    <option [value]="allDestinationsOption">
+                      {{ translationKeys.filters.allDestinations | translate }}
+                    </option>
+                    <option
+                      *ngFor="let destination of viewModel.availableDestinations"
+                      [value]="destination"
+                    >
+                      {{ destination }}
+                    </option>
+                  </select>
+                </label>
+              </header>
+
+              <div
+                *ngIf="timelineAnnouncement$ | async as announcement"
+                class="app-visually-hidden stop-detail__live-region"
+                aria-live="polite"
+              >
+                {{ announcement }}
+              </div>
+
+              <ng-container *ngIf="viewModel.upcoming.length; else emptyUpcoming">
+                <ul class="stop-detail__list">
+                  <li
+                    *ngFor="let item of viewModel.upcoming; trackBy: trackByServiceId"
+                    class="stop-detail__list-item"
+                    [class.stop-detail__list-item--highlight]="item.isNext"
+                  >
+                    <div class="stop-detail__list-main">
+                      <div class="stop-detail__time-block">
+                        <span class="stop-detail__time">{{ item.arrivalTime | date: 'HH:mm' }}</span>
+                        <span class="stop-detail__relative" *ngIf="item.minutesUntilArrival > 0">
+                          {{
+                            translationKeys.status.arrivesIn
+                              | translate: { minutes: item.minutesUntilArrival }
+                          }}
+                        </span>
+                        <span class="stop-detail__relative" *ngIf="item.minutesUntilArrival === 0">
+                          {{ translationKeys.status.arrivingNow | translate }}
+                        </span>
+                      </div>
+                      <div class="stop-detail__info">
+                        <span class="stop-detail__line">{{ item.lineCode }}</span>
+                        <span class="stop-detail__destination">{{ item.destination }}</span>
+                      </div>
+                    </div>
+                    <div class="stop-detail__badges">
+                      <span
+                        *ngIf="item.isAccessible"
+                        class="stop-detail__badge-icon"
+                        role="img"
+                        [attr.aria-label]="translationKeys.badges.accessible | translate"
+                      >
+                        <span class="material-symbols-outlined">accessible_forward</span>
+                      </span>
+                      <span
+                        *ngIf="item.isUniversityOnly"
+                        class="stop-detail__badge-icon"
+                        role="img"
+                        [attr.aria-label]="translationKeys.badges.universityOnly | translate"
+                      >
+                        <span class="material-symbols-outlined">school</span>
+                      </span>
+                    </div>
+                    <div class="stop-detail__progress" aria-hidden="true">
+                      <div
+                        class="stop-detail__progress-bar"
+                        [style.width.%]="item.progressPercentage"
+                      ></div>
+                    </div>
+                  </li>
+                </ul>
+              </ng-container>
+              <ng-template #emptyUpcoming>
+                <p class="stop-detail__empty">
+                  {{ translationKeys.schedule.emptyUpcoming | translate }}
+                </p>
+              </ng-template>
+
+              <details *ngIf="viewModel.past.length" class="stop-detail__history">
+                <summary class="stop-detail__history-summary">
+                  <span>{{ translationKeys.schedule.pastTitle | translate }}</span>
+                  <span class="stop-detail__history-count">{{
+                    translationKeys.schedule.pastSubtitle
+                      | translate: { count: viewModel.past.length }
+                  }}</span>
+                </summary>
+                <ul class="stop-detail__list stop-detail__history-list">
+                  <li
+                    *ngFor="let item of viewModel.past; trackBy: trackByServiceId"
+                    class="stop-detail__list-item stop-detail__list-item--muted"
+                  >
+                    <div class="stop-detail__list-main">
+                      <div class="stop-detail__time-block">
+                        <span class="stop-detail__time">{{ item.arrivalTime | date: 'HH:mm' }}</span>
+                        <span class="stop-detail__relative">
+                          {{
+                            translationKeys.status.departedAgo
+                              | translate: { minutes: item.minutesSinceDeparture }
+                          }}
+                        </span>
+                      </div>
+                      <div class="stop-detail__info">
+                        <span class="stop-detail__line">{{ item.lineCode }}</span>
+                        <span class="stop-detail__destination">{{ item.destination }}</span>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </details>
+            </section>
+
+            <ng-container *ngIf="stopRouteContext$ | async as context">
+              <app-stop-utility
+                *ngSwitchCase="'lines'"
+                id="stop-detail-panel-lines"
+                role="tabpanel"
+                aria-labelledby="stop-detail-tab-lines"
+                mode="lines"
+                [stopId]="context.stopId"
+                [consortiumId]="context.consortiumId"
+              ></app-stop-utility>
+
+              <app-stop-utility
+                *ngSwitchCase="'directions'"
+                id="stop-detail-panel-directions"
+                role="tabpanel"
+                aria-labelledby="stop-detail-tab-directions"
+                mode="directions"
+                [stopId]="context.stopId"
+                [consortiumId]="context.consortiumId"
+              ></app-stop-utility>
             </ng-container>
-          </p>
-        </div>
-        <div class="stop-detail__controls">
-          <label class="stop-detail__control">
-            <span class="stop-detail__control-label">{{ translationKeys.filters.destinationLabel | translate }}</span>
-            <select class="stop-detail__select" [formControl]="destinationControl">
-              <option [value]="allDestinationsOption">
-                {{ translationKeys.filters.allDestinations | translate }}
-              </option>
-              <option *ngFor="let destination of viewModel.availableDestinations" [value]="destination">
-                {{ destination }}
-              </option>
-            </select>
-          </label>
-        </div>
-      </section>
-
-      <section class="stop-detail__panels">
-        <section class="stop-detail__panel">
-          <header class="stop-detail__panel-header">
-            <div>
-              <h2 class="stop-detail__panel-title">{{ translationKeys.schedule.upcomingTitle | translate }}</h2>
-              <p class="stop-detail__panel-subtitle">
-                {{ translationKeys.schedule.upcomingSubtitle | translate:{ count: viewModel.upcoming.length } }}
-              </p>
-            </div>
-          </header>
-          <ng-container *ngIf="viewModel.upcoming.length; else emptyUpcoming">
-            <ul class="stop-detail__list">
-              <li
-                *ngFor="let item of viewModel.upcoming; trackBy: trackByServiceId"
-                class="stop-detail__list-item"
-                [class.stop-detail__list-item--highlight]="item.isNext"
-              >
-                <div class="stop-detail__list-main">
-                  <div class="stop-detail__time-block">
-                    <span class="stop-detail__time">{{ item.arrivalTime | date: 'HH:mm' }}</span>
-                    <span
-                      class="stop-detail__relative"
-                      *ngIf="item.minutesUntilArrival > 0"
-                    >
-                      {{ translationKeys.status.arrivesIn | translate:{ minutes: item.minutesUntilArrival } }}
-                    </span>
-                    <span
-                      class="stop-detail__relative"
-                      *ngIf="item.minutesUntilArrival === 0"
-                    >
-                      {{ translationKeys.status.arrivingNow | translate }}
-                    </span>
-                  </div>
-                  <div class="stop-detail__info">
-                    <span class="stop-detail__line">{{ item.lineCode }}</span>
-                    <span class="stop-detail__destination">{{ item.destination }}</span>
-                  </div>
-                </div>
-                <div class="stop-detail__badges">
-                  <span
-                    *ngIf="item.isAccessible"
-                    class="stop-detail__badge-icon"
-                    role="img"
-                    [attr.aria-label]="translationKeys.badges.accessible | translate"
-                  >
-                    <span class="material-symbols-outlined">accessible_forward</span>
-                  </span>
-                  <span
-                    *ngIf="item.isUniversityOnly"
-                    class="stop-detail__badge-icon"
-                    role="img"
-                    [attr.aria-label]="translationKeys.badges.universityOnly | translate"
-                  >
-                    <span class="material-symbols-outlined">school</span>
-                  </span>
-                </div>
-                <div class="stop-detail__progress" aria-hidden="true">
-                  <div
-                    class="stop-detail__progress-bar"
-                    [style.width.%]="item.progressPercentage"
-                  ></div>
-                </div>
-              </li>
-            </ul>
           </ng-container>
-          <ng-template #emptyUpcoming>
-            <p class="stop-detail__empty">{{ translationKeys.schedule.emptyUpcoming | translate }}</p>
-          </ng-template>
-        </section>
-
-        <section class="stop-detail__panel">
-          <header class="stop-detail__panel-header">
-            <div>
-              <h2 class="stop-detail__panel-title">{{ translationKeys.schedule.pastTitle | translate }}</h2>
-              <p class="stop-detail__panel-subtitle">
-                {{ translationKeys.schedule.pastSubtitle | translate:{ count: viewModel.past.length } }}
-              </p>
-            </div>
-          </header>
-          <ng-container *ngIf="viewModel.past.length; else emptyPast">
-            <ul class="stop-detail__list">
-              <li
-                *ngFor="let item of viewModel.past; trackBy: trackByServiceId"
-                class="stop-detail__list-item stop-detail__list-item--muted"
-              >
-                <div class="stop-detail__list-main">
-                  <div class="stop-detail__time-block">
-                    <span class="stop-detail__time">{{ item.arrivalTime | date: 'HH:mm' }}</span>
-                    <span class="stop-detail__relative">
-                      {{ translationKeys.status.departedAgo | translate:{ minutes: item.minutesSinceDeparture } }}
-                    </span>
-                  </div>
-                  <div class="stop-detail__info">
-                    <span class="stop-detail__line">{{ item.lineCode }}</span>
-                    <span class="stop-detail__destination">{{ item.destination }}</span>
-                  </div>
-                </div>
-                <div class="stop-detail__badges">
-                  <span
-                    *ngIf="item.isAccessible"
-                    class="stop-detail__badge-icon"
-                    role="img"
-                    [attr.aria-label]="translationKeys.badges.accessible | translate"
-                  >
-                    <span class="material-symbols-outlined">accessible_forward</span>
-                  </span>
-                  <span
-                    *ngIf="item.isUniversityOnly"
-                    class="stop-detail__badge-icon"
-                    role="img"
-                    [attr.aria-label]="translationKeys.badges.universityOnly | translate"
-                  >
-                    <span class="material-symbols-outlined">school</span>
-                  </span>
-                </div>
-              </li>
-            </ul>
-          </ng-container>
-          <ng-template #emptyPast>
-            <p class="stop-detail__empty">{{ translationKeys.schedule.emptyPast | translate }}</p>
-          </ng-template>
-        </section>
-      </section>
-    </ng-container>
-  </ng-template>
+        </ng-container>
+      </ng-template>
+    </div>
+  </div>
 </section>

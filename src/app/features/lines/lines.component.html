@@ -1,0 +1,206 @@
+<section class="lines" appLayoutContent [appLayoutContentNavigationKey]="layoutNavigationKey">
+  <div class="utility-container">
+    <div class="app-layout__body">
+      <header class="lines__hero app-hero">
+        <div class="app-hero__intro">
+          <h1 class="app-hero__title">{{ copy().title }}</h1>
+          <p class="app-hero__description">{{ copy().description }}</p>
+        </div>
+      </header>
+
+      <main class="lines__content">
+        <ng-container *ngIf="view$ | async as view">
+          <section class="lines__filters" aria-labelledby="lines-filter-title">
+            <div class="lines__filters-heading">
+              <div>
+                <h2 id="lines-filter-title" class="lines__filters-title">{{ copy().filtersTitle }}</h2>
+                <span class="lines__result-count" aria-live="polite">{{ copy().resultCount(view.total) }}</span>
+              </div>
+              <button type="button" class="app-outline-button app-outline-button--compact" (click)="clearFilters()">
+                <span class="material-symbols-outlined" aria-hidden="true">filter_alt_off</span>
+                {{ copy().clearFilters }}
+              </button>
+            </div>
+
+            <div class="lines__filter-grid">
+              <label class="lines__control lines__control--search">
+                <span class="lines__control-label">{{ copy().searchLabel }}</span>
+                <span class="lines__search-wrap">
+                  <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                  <input
+                    type="search"
+                    class="lines__input"
+                    [ngModel]="queryText()"
+                    (ngModelChange)="onQueryInput($event)"
+                    [placeholder]="copy().searchPlaceholder"
+                    autocomplete="off"
+                  />
+                </span>
+              </label>
+
+              <label class="lines__control" *ngIf="provinces$ | async as provinces">
+                <span class="lines__control-label">{{ copy().provinceLabel }}</span>
+                <select
+                  class="lines__select"
+                  [ngModel]="view.filters.province"
+                  (ngModelChange)="selectProvince($event)"
+                >
+                  <option [ngValue]="null">{{ copy().allProvinces }}</option>
+                  <option *ngFor="let province of provinces; trackBy: trackProvince" [ngValue]="province">
+                    {{ province }}
+                  </option>
+                </select>
+              </label>
+
+              <label class="lines__control" *ngIf="areas$ | async as areas">
+                <span class="lines__control-label">{{ copy().areaLabel }}</span>
+                <select
+                  class="lines__select"
+                  [ngModel]="view.filters.areaId"
+                  (ngModelChange)="selectArea($event)"
+                >
+                  <option [ngValue]="null">{{ copy().allAreas }}</option>
+                  <option *ngFor="let area of areas; trackBy: trackArea" [ngValue]="area.id">
+                    {{ area.name }}
+                  </option>
+                </select>
+              </label>
+
+              <label class="lines__control" *ngIf="municipalities$ | async as municipalities">
+                <span class="lines__control-label">{{ copy().municipalityLabel }}</span>
+                <select
+                  class="lines__select"
+                  [disabled]="!view.filters.areaId"
+                  [ngModel]="view.filters.municipalityId"
+                  (ngModelChange)="selectMunicipality($event)"
+                >
+                  <option [ngValue]="null">{{ copy().allMunicipalities }}</option>
+                  <option
+                    *ngFor="let municipality of municipalities; trackBy: trackMunicipality"
+                    [ngValue]="municipality.id"
+                  >
+                    {{ municipality.name }}
+                  </option>
+                </select>
+              </label>
+
+              <label class="lines__control" *ngIf="nuclei$ | async as nuclei">
+                <span class="lines__control-label">{{ copy().nucleusLabel }}</span>
+                <select
+                  class="lines__select"
+                  [disabled]="!view.filters.areaId"
+                  [ngModel]="view.filters.nucleusId"
+                  (ngModelChange)="selectNucleus($event)"
+                >
+                  <option [ngValue]="null">{{ copy().allNuclei }}</option>
+                  <option *ngFor="let nucleus of nuclei; trackBy: trackNucleus" [ngValue]="nucleus.id">
+                    {{ nucleus.name }}
+                  </option>
+                </select>
+              </label>
+
+              <div class="lines__filter-actions">
+                <button
+                  type="button"
+                  class="app-outline-button app-outline-button--compact"
+                  [class.lines__near-button--active]="nearMeActive()"
+                  [disabled]="locationLoading()"
+                  [attr.aria-pressed]="nearMeActive()"
+                  [attr.aria-busy]="locationLoading() ? 'true' : null"
+                  (click)="useNearMe()"
+                >
+                  <span class="material-symbols-outlined" aria-hidden="true">near_me</span>
+                  {{ nearMeActive() ? copy().nearMeActive : copy().nearMe }}
+                </button>
+              </div>
+            </div>
+
+            <p *ngIf="locationError()" class="lines__status lines__status--error" role="alert">
+              {{ copy().locationError }}
+            </p>
+            <p
+              *ngIf="view.geographyStatus === 'loading'"
+              class="lines__status"
+              role="status"
+              aria-live="polite"
+            >
+              {{ copy().loadingGeography }}
+            </p>
+          </section>
+
+          <section *ngIf="view.status === 'loading'" class="lines__async" role="status" aria-live="polite">
+            <span class="app-loading-indicator app-loading-indicator--lg" aria-hidden="true"></span>
+            <span>{{ copy().loading }}</span>
+          </section>
+
+          <section *ngIf="view.status === 'error'" class="lines__empty" role="alert">
+            <span class="material-symbols-outlined" aria-hidden="true">error</span>
+            <p>{{ copy().empty }}</p>
+          </section>
+
+          <ng-container *ngIf="view.status === 'ready'">
+            <ul *ngIf="view.lines.length; else emptyLines" class="lines__list">
+              <li *ngFor="let line of view.lines; trackBy: trackLine" class="lines__item">
+                <a
+                  class="lines__line"
+                  [routerLink]="lineCommands(line)"
+                  [attr.aria-label]="copy().openLine(line.code, line.name)"
+                >
+                  <div class="lines__line-main">
+                    <span class="lines__line-code">{{ line.code }}</span>
+                    <div class="lines__line-copy">
+                      <h2 class="lines__line-name">{{ line.name }}</h2>
+                      <p class="lines__line-area">{{ line.areaName }}</p>
+                    </div>
+                  </div>
+                  <div class="lines__line-meta">
+                    <span *ngIf="line.mode" class="lines__line-mode">{{ line.mode }}</span>
+                    <span *ngIf="line.operators.length" class="lines__line-operator">
+                      {{ line.operators[0] }}
+                    </span>
+                  </div>
+                  <span class="material-symbols-outlined lines__line-chevron" aria-hidden="true">chevron_right</span>
+                </a>
+              </li>
+            </ul>
+
+            <nav
+              *ngIf="view.pageCount > 1"
+              class="lines__pagination"
+              [attr.aria-label]="copy().paginationLabel"
+            >
+              <button
+                type="button"
+                class="app-outline-button app-outline-button--compact"
+                [disabled]="view.page <= 1"
+                (click)="previousPage(view)"
+              >
+                <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                {{ copy().previousPage }}
+              </button>
+              <span class="lines__page-status" aria-live="polite">
+                {{ copy().pageStatus(view.page, view.pageCount) }}
+              </span>
+              <button
+                type="button"
+                class="app-outline-button app-outline-button--compact"
+                [disabled]="view.page >= view.pageCount"
+                (click)="nextPage(view)"
+              >
+                {{ copy().nextPage }}
+                <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+              </button>
+            </nav>
+          </ng-container>
+
+          <ng-template #emptyLines>
+            <section class="lines__empty" role="status" aria-live="polite">
+              <span class="material-symbols-outlined" aria-hidden="true">route</span>
+              <p>{{ view.total === 0 ? copy().noMatches : copy().empty }}</p>
+            </section>
+          </ng-template>
+        </ng-container>
+      </main>
+    </div>
+  </div>
+</section>

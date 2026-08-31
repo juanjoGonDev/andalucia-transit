@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
-
-import { RouteSearchHistoryService } from './route-search-history.service';
-import { RouteSearchHistoryStorage, RouteSearchHistoryStoredEntry } from '../../data/route-search/route-search-history.storage';
-import { StopDirectoryOption } from '../../data/stops/stop-directory.service';
-import { createRouteSearchSelection } from './route-search-selection.util';
-import { RouteSearchLineMatch } from './route-search-state.service';
+import { RouteSearchHistoryStorage, RouteSearchHistoryStoredEntry } from '@data/route-search/route-search-history.storage';
+import { StopDirectoryOption } from '@data/stops/stop-directory.service';
+import { RouteSearchHistoryService } from '@domain/route-search/route-search-history.service';
+import { createRouteSearchSelection } from '@domain/route-search/route-search-selection.util';
+import { RouteSearchLineMatch } from '@domain/route-search/route-search-state.service';
 
 class RouteSearchHistoryStorageStub {
   private value: RouteSearchHistoryStoredEntry[] = [];

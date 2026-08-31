@@ -1,0 +1,117 @@
+:host {
+  display: block;
+}
+
+.stop-utility {
+  display: block;
+}
+
+.stop-utility__panel {
+  display: grid;
+  gap: var(--space-md);
+  min-width: 0;
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.stop-utility__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.stop-utility__icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.stop-utility__title,
+.stop-utility__place,
+.stop-utility__status {
+  margin: 0;
+}
+
+.stop-utility__title {
+  color: var(--color-text-strong);
+  font-size: var(--font-size-title-md);
+}
+
+.stop-utility__place,
+.stop-utility__status {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.stop-utility__lines {
+  display: grid;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stop-utility__line {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  min-height: 3rem;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.stop-utility__line:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.stop-utility__line:focus-visible,
+.stop-utility__map-link:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.stop-utility__line-code {
+  padding: var(--space-3xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.stop-utility__line-name {
+  min-width: 0;
+  color: var(--color-text-strong);
+  font-weight: var(--font-weight-semibold);
+}
+
+.stop-utility__map-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.stop-utility__map-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: 2.75rem;
+  text-decoration: none;
+}

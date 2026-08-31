@@ -1,6 +1,5 @@
 import { DateTime } from 'luxon';
-
-import { ApiRouteTimetableResponse } from './route-timetable.api-service';
+import { ApiRouteTimetableResponse } from '@data/route-search/route-timetable.api-service';
 
 export interface RouteTimetableEntry {
   readonly lineId: string;
@@ -82,7 +81,7 @@ function buildFrequencyMap(entries: readonly RouteTimetableFrequencyApi[]): Read
   return new Map(mapped.map((entry) => [entry.code, entry] as const));
 }
 
-function shouldIncludeFrequency(
+export function shouldIncludeFrequency(
   frequency: RouteTimetableFrequency,
   weekday: number,
   isHoliday: boolean
@@ -168,7 +167,7 @@ function normalizeNotes(notes: string): string | null {
   return trimmed;
 }
 
-function isHolidayOnlyFrequency(frequency: RouteTimetableFrequency): boolean {
+export function isHolidayOnlyFrequency(frequency: RouteTimetableFrequency): boolean {
   const rule = getFrequencyRule(frequency);
 
   if (rule) {

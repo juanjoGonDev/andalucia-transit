@@ -10,6 +10,11 @@ The workspace ships with ESLint, Prettier, Jasmine/Karma unit testing, and Cypre
 - `npm run lint:unused` runs the Angular ESLint pipeline with the unused import rules enabled.
 - `npm run lint:deps` inspects the workspace for unused or missing npm packages.
 
+## Media capture
+
+- `pnpm run record` launches the Playwright-based recorder that captures screenshots and videos with the same DOM automation flow as the legacy screenshot utility. Refer to [docs/recording-guide.md](docs/recording-guide.md) for full flag descriptions and troubleshooting tips.
+- Document demo captures with textual evidence (viewport, reproduction steps, selectors, observed vs expected) and keep any locally captured media in gitignored directories such as `artifacts/screenshots`.
+
 ## Star History
 
 <a href="https://www.star-history.com/?repos=juanjoGonDev%2Fandalucia-transit&type=date&legend=top-left">
