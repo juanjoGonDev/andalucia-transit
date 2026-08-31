@@ -148,8 +148,9 @@ export class StopDetailComponent {
 
   private readonly favoriteOption$: Observable<StopDirectoryOption | null> =
     this.stopRouteContext$.pipe(
-      switchMap(({ stopId, consortiumId }) => this.loadFavoriteOption(stopId, consortiumId)),
-      catchError(() => of(null)),
+      switchMap(({ stopId, consortiumId }) =>
+        this.loadFavoriteOption(stopId, consortiumId).pipe(catchError(() => of(null)))
+      ),
       shareReplay({ bufferSize: 1, refCount: true })
     );
 

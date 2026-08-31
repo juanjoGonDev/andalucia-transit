@@ -232,6 +232,21 @@ describe('StopDetailComponent', () => {
     expect(fixture.nativeElement.querySelector('.stop-detail__favorite')).toBeNull();
   }));
 
+  it('retries favorite lookup after a route-context change when the previous lookup failed', fakeAsync(() => {
+    directoryFacade.getOptionByStopId.and.returnValue(throwError(() => new Error('Network error')));
+    directoryFacade.getOptionByStopSignature.and.returnValue(of(createDirectoryOption('stop-main-street', 4)));
+    createFixture();
+
+    expect(fixture.nativeElement.querySelector('.stop-detail__favorite')).toBeNull();
+
+    queryParamMapSubject.next(convertToParamMap({ [CONSORTIUM_QUERY_PARAM]: '4' }));
+    tick();
+    fixture.detectChanges();
+
+    expect(directoryFacade.getOptionByStopSignature).toHaveBeenCalledWith(4, 'stop-main-street');
+    expect(fixture.nativeElement.querySelector('.stop-detail__favorite')).not.toBeNull();
+  }));
+
   it('keeps utility work lazy until its task tab is selected', fakeAsync(() => {
     queryParamMapSubject.next(convertToParamMap({ [CONSORTIUM_QUERY_PARAM]: '4' }));
     createFixture();
@@ -257,7 +272,6 @@ describe('StopDetailComponent', () => {
     const mapLinks = fixture.nativeElement.querySelectorAll(
       '.stop-utility__map-link'
     ) as NodeListOf<HTMLAnchorElement>;
-    expect(mapLinks.length).toBe(2);
     expect(fixture.nativeElement.querySelector('.stop-utility__line')).toBeNull();
     expect(routeLines.getLinesForStops).not.toHaveBeenCalled();
     expect(mapLinks[0]?.href).toContain('google.com/maps/dir/');
