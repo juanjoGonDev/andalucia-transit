@@ -57,13 +57,17 @@ export class LineFavoritesService {
   }
 
   toggle(candidate: LineFavoriteCandidate): void {
-    const id = buildLineKey(candidate.consortiumId, candidate.lineId);
-    if (this.favoritesIndex.has(id)) {
-      this.remove(id);
+    const favorite = this.fromCandidate(candidate);
+    if (!favorite) {
       return;
     }
 
-    this.add(candidate);
+    if (this.favoritesIndex.has(favorite.id)) {
+      this.remove(favorite.id);
+      return;
+    }
+
+    this.setFavorites([...this.favoritesSubject.value, favorite]);
   }
 
   isFavorite(id: string): boolean {

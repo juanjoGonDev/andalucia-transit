@@ -83,4 +83,14 @@ describe('LineFavoritesService', () => {
     expect((await firstValueFrom(service.favorites$)).length).toBe(0);
     expect(storage.clear).toHaveBeenCalled();
   });
+
+  it('toggles an existing favorite when the candidate line id only differs by whitespace', async () => {
+    const service = TestBed.inject(LineFavoritesService);
+
+    service.add(CANDIDATE);
+    service.toggle({ ...CANDIDATE, lineId: ' 101 ' });
+
+    expect(await firstValueFrom(service.favorites$)).toEqual([]);
+    expect(storage.clear).toHaveBeenCalled();
+  });
 });
