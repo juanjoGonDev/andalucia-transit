@@ -25,6 +25,8 @@ export interface LinesUiCopy {
   readonly paginationLabel: string;
   readonly previousPage: string;
   readonly nextPage: string;
+  readonly addFavorite: string;
+  readonly removeFavorite: string;
   readonly openLine: (code: string, name: string) => string;
   readonly resultCount: (count: number) => string;
   readonly pageStatus: (current: number, total: number) => string;
@@ -56,6 +58,8 @@ const COPY: Readonly<Record<SupportedLanguage, LinesUiCopy>> = {
     paginationLabel: 'Paginación de líneas',
     previousPage: 'Anterior',
     nextPage: 'Siguiente',
+    addFavorite: 'Añadir línea a favoritos',
+    removeFavorite: 'Eliminar línea de favoritos',
     openLine: (code, name) => `Abrir línea ${code}, ${name}`,
     resultCount: (count) => `${count} ${count === 1 ? 'línea' : 'líneas'}`,
     pageStatus: (current, total) => `Página ${current} de ${total}`
@@ -85,6 +89,8 @@ const COPY: Readonly<Record<SupportedLanguage, LinesUiCopy>> = {
     paginationLabel: 'Lines pagination',
     previousPage: 'Previous',
     nextPage: 'Next',
+    addFavorite: 'Add line to favorites',
+    removeFavorite: 'Remove line from favorites',
     openLine: (code, name) => `Open line ${code}, ${name}`,
     resultCount: (count) => `${count} ${count === 1 ? 'line' : 'lines'}`,
     pageStatus: (current, total) => `Page ${current} of ${total}`
