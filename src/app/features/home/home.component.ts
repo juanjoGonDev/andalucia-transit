@@ -15,14 +15,22 @@ import { ActivatedRoute, NavigationEnd, NavigationExtras, Router } from '@angula
 import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
+import { LanguageService } from '@core/services/language.service';
 import { HomeTabStorage } from '@data/home/home-tab.storage';
+import {
+  FavoriteCollectionFacade,
+  FavoriteCollectionSnapshot,
+} from '@domain/favorites/favorite-collection.facade';
 import { RouteSearchExecutionService } from '@domain/route-search/route-search-execution.service';
 import {
   RouteSearchSelection,
   RouteSearchStateService,
 } from '@domain/route-search/route-search-state.service';
-import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
-import { HomeFavoritesPreviewComponent } from '@features/home/favorites-preview/home-favorites-preview.component';
+import { getFavoritesUiCopy } from '@features/favorites/favorites-ui.copy';
+import {
+  HomeFavoritePreviewItem,
+  HomeFavoritesPreviewComponent,
+} from '@features/home/favorites-preview/home-favorites-preview.component';
 import { HOME_TABS, HomeTabId } from '@features/home/home.types';
 import { HomeRecentSearchesComponent } from '@features/home/recent-searches/home-recent-searches.component';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
@@ -51,6 +59,11 @@ const ACTIVE_TAB_INDEX = 0 as const;
 const INACTIVE_TAB_INDEX = -1 as const;
 const STEP_PREVIOUS = -1 as const;
 const STEP_NEXT = 1 as const;
+const EMPTY_FAVORITE_COLLECTION: FavoriteCollectionSnapshot = {
+  stops: [],
+  lines: [],
+  total: 0,
+};
 
 @Component({
   selector: 'app-home',
@@ -72,7 +85,8 @@ export class HomeComponent {
   private readonly router = inject(Router);
   private readonly routeSearchState = inject(RouteSearchStateService);
   private readonly execution = inject(RouteSearchExecutionService);
-  private readonly favoritesFacade = inject(FavoritesFacade);
+  private readonly favoriteCollection = inject(FavoriteCollectionFacade);
+  private readonly language = inject(LanguageService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
   private readonly homeTabStorage = inject(HomeTabStorage);
@@ -122,9 +136,7 @@ export class HomeComponent {
   protected readonly searchTitleKey = this.translation.sections.search.title;
   protected readonly recentStopsTitleKey = this.translation.sections.recentStops.title;
   protected readonly recentStopsClearKey = this.translation.sections.recentStops.actions.clearAll;
-  protected readonly favoritesTitleKey = this.translation.sections.favorites.title;
-  protected readonly favoritesActionKey = this.translation.sections.favorites.action;
-  protected readonly favoritesEmptyKey = this.translation.sections.favorites.empty;
+  protected readonly favoritesCopy = computed(() => getFavoritesUiCopy(this.language.currentLanguage()));
   protected readonly favoritesCodeLabelKey = APP_CONFIG.translationKeys.favorites.list.code;
   protected readonly favoritesNucleusLabelKey = APP_CONFIG.translationKeys.favorites.list.nucleus;
   protected readonly activeTab = signal<HomeTabId>(this.defaultTab);
@@ -137,23 +149,22 @@ export class HomeComponent {
   @ViewChildren('homeTabButton', { read: AccessibleButtonDirective })
   private tabButtons?: QueryList<AccessibleButtonDirective>;
 
-  private readonly favorites = signal<readonly StopFavorite[]>([]);
-  protected readonly favoritePreview = computed(() => {
+  private readonly favorites = signal<FavoriteCollectionSnapshot>(EMPTY_FAVORITE_COLLECTION);
+  protected readonly favoritePreview = computed<readonly HomeFavoritePreviewItem[]>(() => {
     const current = this.favorites();
-
-    if (!current.length) {
-      return [] as readonly StopFavorite[];
-    }
-
     const limit = Math.max(this.favoritePreviewLimit, 0);
-
-    if (limit === 0) {
-      return [] as readonly StopFavorite[];
+    if (limit === 0 || current.total === 0) {
+      return [];
     }
 
-    return current.slice(0, limit);
+    const items: HomeFavoritePreviewItem[] = [
+      ...current.stops.map((favorite) => ({ kind: 'stop' as const, favorite })),
+      ...current.lines.map((favorite) => ({ kind: 'line' as const, favorite })),
+    ];
+    items.sort((left, right) => left.favorite.name.localeCompare(right.favorite.name, 'es-ES'));
+    return Object.freeze(items.slice(0, limit));
   });
-  protected readonly hasFavorites = computed(() => this.favorites().length > 0);
+  protected readonly hasFavorites = computed(() => this.favorites().total > 0);
 
   protected readonly currentSelection$ = this.routeSearchState.selection$;
 
@@ -184,12 +195,6 @@ export class HomeComponent {
 
   protected async onSelectionConfirmed(selection: RouteSearchSelection): Promise<void> {
     const commands = this.execution.prepare(selection);
-    await this.navigate(commands);
-  }
-
-  protected async openFavorite(favorite: StopFavorite): Promise<void> {
-    const stopId = favorite.stopIds[0] ?? favorite.id;
-    const commands: readonly string[] = ['/', APP_CONFIG.routes.stopDetailBase, stopId];
     await this.navigate(commands);
   }
 
@@ -258,7 +263,7 @@ export class HomeComponent {
   }
 
   private observeFavorites(): void {
-    this.favoritesFacade.favorites$
+    this.favoriteCollection.favorites$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((favorites) => this.favorites.set(favorites));
   }
