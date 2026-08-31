@@ -32,6 +32,7 @@ import {
   LineDirectoryService,
   buildLineKey
 } from '@domain/lines/line-directory.service';
+import { LineFavoriteCandidate, LineFavoritesFacade } from '@domain/lines/line-favorites.facade';
 import { LinesUiCopy, getLinesUiCopy } from '@features/lines/lines-ui.copy';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import {
@@ -78,6 +79,8 @@ const QUERY_PARAM_AREA = 'area';
 const QUERY_PARAM_MUNICIPALITY = 'municipality';
 const QUERY_PARAM_NUCLEUS = 'nucleus';
 const QUERY_PARAM_PAGE = 'page';
+const FAVORITE_ACTIVE_ICON = 'star' as const;
+const FAVORITE_INACTIVE_ICON = 'star_border' as const;
 const EMPTY_LINES: readonly LineDirectoryEntry[] = Object.freeze([]);
 const EMPTY_MUNICIPALITIES: readonly CatalogMunicipalityEntry[] = Object.freeze([]);
 const EMPTY_NUCLEI: readonly CatalogNucleusEntry[] = Object.freeze([]);
@@ -97,11 +100,13 @@ export class LinesComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly catalog = inject(ConsortiumCatalogService);
   private readonly directory = inject(LineDirectoryService);
+  private readonly lineFavorites = inject(LineFavoritesFacade);
   private readonly geolocation = inject(GeolocationService);
   private readonly language = inject(LanguageService);
 
   private readonly queryChanges = new Subject<string>();
   private readonly nearbyKeys = new BehaviorSubject<ReadonlySet<string> | null>(null);
+  private readonly favoriteLineIds = signal<ReadonlySet<string>>(new Set<string>());
 
   protected readonly layoutNavigationKey = LINE_DETAIL_BASE_SEGMENT;
   protected readonly copy = computed<LinesUiCopy>(() => getLinesUiCopy(this.language.currentLanguage()));
@@ -192,6 +197,12 @@ export class LinesComponent {
       .pipe(debounceTime(250), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((query) =>
         this.updateQueryParams({ [QUERY_PARAM_QUERY]: normalizeQuery(query), page: null })
+      );
+
+    this.lineFavorites.favorites$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((favorites) =>
+        this.favoriteLineIds.set(new Set(favorites.map((favorite) => favorite.id)))
       );
   }
 
@@ -301,6 +312,22 @@ export class LinesComponent {
     return buildLineDetailNavigation(line.consortiumId, line.lineId).commands;
   }
 
+  protected isLineFavorite(line: LineDirectoryEntry): boolean {
+    return this.favoriteLineIds().has(buildLineKey(line.consortiumId, line.lineId));
+  }
+
+  protected favoriteIcon(line: LineDirectoryEntry): string {
+    return this.isLineFavorite(line) ? FAVORITE_ACTIVE_ICON : FAVORITE_INACTIVE_ICON;
+  }
+
+  protected favoriteLabel(line: LineDirectoryEntry): string {
+    return this.isLineFavorite(line) ? this.copy().removeFavorite : this.copy().addFavorite;
+  }
+
+  protected toggleFavorite(line: LineDirectoryEntry): void {
+    this.lineFavorites.toggle(this.toFavoriteCandidate(line));
+  }
+
   protected trackLine(_: number, line: LineDirectoryEntry): string {
     return buildLineKey(line.consortiumId, line.lineId);
   }
@@ -319,6 +346,16 @@ export class LinesComponent {
 
   protected trackNucleus(_: number, nucleus: CatalogNucleusEntry): string {
     return nucleus.id;
+  }
+
+  private toFavoriteCandidate(line: LineDirectoryEntry): LineFavoriteCandidate {
+    return {
+      consortiumId: line.consortiumId,
+      lineId: line.lineId,
+      code: line.code,
+      name: line.name,
+      mode: line.mode
+    };
   }
 
   private updateQueryParams(queryParams: Readonly<Record<string, string | number | null>>): void {
