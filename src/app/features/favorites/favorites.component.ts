@@ -326,7 +326,7 @@ export class FavoritesComponent {
   }
 
   protected lineDetailCommands(item: LineFavorite): NavigationCommands {
-    return buildLineDetailNavigation(item.consortiumId, item.lineId).commands;
+    return buildLineDetailNavigation(item.consortiumId, item.lineId, item.name).commands;
   }
 
   private observeFavorites(): void {
