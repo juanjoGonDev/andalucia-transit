@@ -20,6 +20,8 @@ Stop favorites remain in scope: Stop Detail keeps its favorite toggle and Favori
 - `/lines` consumes `ConsortiumCatalogService`; this was a separate line-name path from `lineasPorParadas` and line detail.
 - Stop favorites already had a canonical store/facade, but there was no line-favorite owner or aggregate favorite read model.
 - Exact-head browser evidence on `9f5915b1ec69265b72efa91686579b7793049e38` shows M-101 as `Almería - Huércal - Viator - Campamento`, with an active favorite control, and Favorites contains one line plus two stops.
+- Final pre-approval visual-regression run `33433358751` reproduced the reviewed result exactly: 28/36 screenshots unchanged and the same 8 intentional screenshots changed, with `4,241,767` differing pixels and no extra surface regressions.
+- After the pending baseline decision was presented explicitly, the user answered `continue`; this is the explicit approval used to advance the reviewed visual contract.
 
 ## Decision
 
@@ -31,7 +33,7 @@ Stop favorites remain in scope: Stop Detail keeps its favorite toggle and Favori
 6. Favorites renders line and stop sections, filters both, removes either type, clears both only after shared-dialog confirmation, and retains canonical stop-directory discovery in add mode.
 7. Home consumes the aggregate through a deferred panel so aggregate dependencies do not increase the initial production bundle.
 8. Keep historical baseline rendering compatible with older application code. New product-only Playwright checks run only against the current head.
-9. Do not advance the reviewed visual baseline without explicit approval after inspection of exact-head evidence.
+9. Advance the visual baseline only after exact-head evidence is inspected and the user explicitly approves the changed visual contract. That approval was received after run `33433358751`, and baseline commit `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5` is now the reviewed owner.
 
 ## Acceptance
 
@@ -47,6 +49,7 @@ Stop favorites remain in scope: Stop Detail keeps its favorite toggle and Favori
 - Spanish and English copy describe aggregate favorites accurately.
 - Production bundle budgets remain unchanged and green.
 - Mobile 390×844 and desktop 1440×900 evidence covers Lines, Line Detail and aggregated Favorites without horizontal overflow or inaccessible controls.
+- The approved baseline reproduces every required screenshot pixel-for-pixel from a later approval head.
 
 ## Tests
 
@@ -61,48 +64,79 @@ Stop favorites remain in scope: Stop Detail keeps its favorite toggle and Favori
 
 ## Validation evidence
 
-Validated executable head before this documentation update: `9f5915b1ec69265b72efa91686579b7793049e38`.
+Validated executable head before the initial documentation update: `9f5915b1ec69265b72efa91686579b7793049e38`.
 
 - CI run `33432453940`: pass (install, lint, Angular tests, script tests, deploy pipeline, aggregate gate).
 - Legal browser QA run `33432453913`: pass.
 - Visual evidence run `33432453929`: pass.
 - Visual evidence artifact `9773224517`: `pr-439-visual-evidence-9f5915b1ec69265b72efa91686579b7793049e38`.
 - Visual evidence digest: `sha256:b2d7ae67827f22c3c1bb44508a43b09f7aa800fc1eacc0e2dc83b65d85ee6ab1`.
-- Visual regression run `33432454026`:
+
+Final reviewed pre-approval head: `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`.
+
+- CI run `33433358683`: pass.
+- Legal browser QA run `33433358726`: pass.
+- Visual evidence run `33433358656`: pass.
+- Visual evidence artifact `9773567292`: `pr-439-visual-evidence-5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`.
+- Visual evidence digest: `sha256:4bc66b7550b428e276266eb2f241ffe575a0c34dd14fd8585df133652b586095`.
+- Visual regression run `33433358751`:
   - reviewed baseline render: pass, 32/32 checks;
   - current-head product render: pass, 42/42 checks;
   - pixel comparison executed successfully;
   - 28/36 screenshots match exactly;
-  - 8/36 differ only on intentionally changed surfaces: Lines mobile/desktop, Line Detail mobile/desktop, Favorites populated mobile/desktop and Favorites empty mobile/desktop;
-  - enforcement remains red because the prior reviewed baseline has not been advanced.
+  - exactly 8/36 differ on the intentionally changed surfaces: Lines mobile/desktop, Line Detail mobile/desktop, Favorites populated mobile/desktop and Favorites empty mobile/desktop;
+  - total differing pixels: `4,241,767`;
+  - no unrelated surface changed.
 
-Manual inspection of exact-head evidence confirms:
+The approved baseline now points to `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5` using the exact visual evidence above. Baseline approval commit: `d5dc519655a9c911bb2bac6ebc3d86e0c8a16856` (`test(visual): approve aggregate favorites baseline`).
 
-- `/lines` no longer shows terminal `NN`; M-101 is normalized and visibly favorite.
-- Favorites mobile/desktop contains sections for Lines and Stops, the add/search controls and remove actions, without terminal `NN`.
-- Favorites empty state remains coherent and the clear action is disabled.
-- Line Detail mobile/desktop exposes the favorite control and keeps the route/stops layout usable.
-- The full-page mobile captures show the fixed bottom navigation at its viewport-fixed position; end-of-document content remains reachable and no horizontal overflow was found.
-- Unrelated visual surfaces match the reviewed baseline pixel-for-pixel.
+Validation on the approval head `d5dc519655a9c911bb2bac6ebc3d86e0c8a16856`:
+
+- CI run `33435506632`: pass.
+- Legal browser QA run `33435506571`: pass.
+- Visual evidence run `33435506576`: pass.
+- Visual evidence artifact `9774331555`: `pr-439-visual-evidence-d5dc519655a9c911bb2bac6ebc3d86e0c8a16856`.
+- Visual evidence digest: `sha256:7da40f6e83571c30fca56801ee40abbd4c6909caca7e7b48a0429ff3b5c868be`.
+- Visual regression run `33435506656`: pass.
+  - reviewed baseline resolution: pass;
+  - reviewed baseline render: pass;
+  - pull-request head render: pass;
+  - every required pixel comparison: pass;
+  - reviewed-baseline enforcement: pass.
+
+## Final visual review
+
+The exact approval-head evidence was manually re-inspected after the baseline became green.
+
+- `/lines` mobile and desktop show M-101 as `Almería - Huércal - Viator - Campamento`, never the terminal sentinel, with the favorite state and independent star actions intact.
+- Line Detail mobile and desktop keep the favorite control, map route, stop list and OpenStreetMap attribution visible and usable.
+- Favorites populated mobile and desktop show aggregate `Líneas` and `Paradas`, search, add, clear and per-item remove controls without dangling metadata or terminal `NN`.
+- Favorites empty mobile and desktop keep a coherent empty state and disabled clear action.
+- Stop Detail, route search, map, home, recents, settings, drawer and news evidence were reviewed in the exact-head contact sheets with no newly introduced clipping, overflow, missing content or layout regression.
+- Loading and recoverable route-search states remain readable and actionable on mobile.
+- The fixed bottom navigation appears at its viewport-fixed position in full-page screenshots; this can visually cross document content in the capture, but the end-of-document evidence remains reachable and the product overflow assertions pass.
+- No horizontal overflow was found on the affected 390×844 or 1440×900 surfaces.
 
 ## Risks
 
 - A broad substring replacement would corrupt legitimate names; normalization must remain terminal-token-only.
 - Stop and line local-storage payloads must remain separate so existing stop favorites require no migration.
 - Line identity must remain `(consortiumId,lineId)`; commercial codes are presentation data and are not guaranteed unique/stable identifiers.
-- The current UI intentionally differs from the reviewed baseline on favorite controls and aggregate Favorites. Advancing the baseline is an explicit visual-contract decision.
+- The approved visual baseline now intentionally includes the aggregate favorite controls and layout. Future deviations are gated by exact-pixel comparison.
 
 ## Rollback
 
-Revert the reopened-scope commits. Existing stop-favorite data remains backward compatible. Line favorites use their own storage key and can be removed independently.
+Revert the reopened-scope commits and the baseline approval commit. Existing stop-favorite data remains backward compatible. Line favorites use their own storage key and can be removed independently. If only the visual contract must be rolled back, restore `.github/visual-baseline.json` to the previously reviewed immutable baseline.
 
 ## Delivery status
 
 - Functional implementation: complete.
-- Unit/component/script/build validation: green on executable head `9f5915b1...`.
+- Unit/component/script/build validation: green.
 - Legal browser QA: green.
-- Product Playwright checks: 42/42 green in visual-regression head render.
+- Product Playwright checks: 42/42 green in the exact visual harness.
 - Exact-head visual evidence: generated and manually reviewed.
 - Historical baseline compatibility: green.
-- Pixel regression gate: intentionally red on 8 affected screenshots pending explicit approval of the new visual baseline.
+- Reviewed visual baseline: explicitly approved and advanced to `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`.
+- Pixel regression gate: green on approval head `d5dc519655a9c911bb2bac6ebc3d86e0c8a16856`.
+- Final review of the approval head: clean.
 - Merge/release/deploy: not performed.
