@@ -69,8 +69,14 @@
                     (openFavorites)="openFavoritesView()"
                   ></app-home-favorites-panel>
                 } @placeholder {
-                  <div class="home-recent__empty" role="status" aria-live="polite">
+                  <div
+                    class="home-recent__empty"
+                    role="status"
+                    aria-live="polite"
+                    aria-busy="true"
+                  >
                     <span class="app-loading-indicator" aria-hidden="true"></span>
+                    <span class="app-visually-hidden">{{ 'favorites.title' | translate }}…</span>
                   </div>
                 }
               </div>
