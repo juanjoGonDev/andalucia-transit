@@ -53,7 +53,7 @@ module.exports = function (config) {
       subdir: '.',
       reporters: [
         { type: 'html' },
-        { type: 'json-summary' },
+        { type: 'json-summary', file: 'coverage-summary.json' },
         { type: 'text-summary' },
       ],
     },
