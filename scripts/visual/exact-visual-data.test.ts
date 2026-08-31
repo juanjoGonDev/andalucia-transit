@@ -3,6 +3,7 @@ import test from 'node:test';
 
 import {
   FIXED_VISUAL_TIME_ISO,
+  buildExactNewsList,
   buildExactStopServicesSnapshot,
   selectVisualStopDetailEntry,
 } from './exact-visual-data';
@@ -57,4 +58,16 @@ test('canonical Stop Detail fixture is internally time-stable and returns fresh 
 
   assert.ok(scheduledTimes.some((scheduledTime) => scheduledTime < fixedTime));
   assert.ok(scheduledTimes.some((scheduledTime) => scheduledTime > fixedTime));
+});
+
+test('canonical News feed is stable across exact renders', () => {
+  const firstAlmeria = buildExactNewsList(6);
+  const secondAlmeria = buildExactNewsList(6);
+  const huelva = buildExactNewsList(9);
+
+  assert.deepEqual(firstAlmeria, secondAlmeria);
+  assert.notStrictEqual(firstAlmeria, secondAlmeria);
+  assert.equal(firstAlmeria.length, 11);
+  assert.equal(huelva.length, 2);
+  assert.deepEqual(buildExactNewsList(1), []);
 });
