@@ -105,17 +105,17 @@ describe('LineFavoritesStorage', () => {
     expect(storage.load()).toEqual([]);
   });
 
-  it('uses deterministic favorites in data mode without mutating persisted user data', () => {
+  it('uses the canonical catalog line in data mode without mutating persisted user data', () => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify([{ ...FAVORITE, name: 'Persisted' }]));
     runtimeFlags.mockMode = 'data';
 
     expect(storage.load()).toEqual([
       {
-        id: '6|100',
+        id: '6|1',
         consortiumId: 6,
-        lineId: '100',
-        code: 'M-100',
-        name: 'Circular Huércal de Almería',
+        lineId: '1',
+        code: 'M-101',
+        name: 'Almería - Huércal - Viator - Campamento',
         mode: 'AUTOBUS'
       }
     ]);
