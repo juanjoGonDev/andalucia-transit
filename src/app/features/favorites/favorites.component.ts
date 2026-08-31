@@ -10,9 +10,25 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { firstValueFrom } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  firstValueFrom,
+  map,
+  of,
+  startWith,
+  switchMap
+} from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
+import {
+  StopDirectoryFacade,
+  StopDirectoryOption
+} from '@domain/stops/stop-directory.facade';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import { buildStopDetailNavigation } from '@shared/navigation/navigation.util';
@@ -45,6 +61,10 @@ interface FavoriteGroupView {
   readonly stops: readonly FavoriteListItem[];
 }
 
+type FavoriteSearchOption = StopDirectoryOption & {
+  readonly isFavorite: boolean;
+};
+
 const QUERY_LOCALE = 'es-ES' as const;
 const NORMALIZE_FORM = 'NFD' as const;
 const DIACRITIC_PATTERN = /\p{M}/gu;
@@ -54,6 +74,8 @@ const FAVORITES_CARD_REMOVE_CLASSES: readonly string[] = ['favorites-card__remov
 const SEARCH_TEXT_FIELD_TYPE: TextFieldType = 'search';
 const SEARCH_AUTOCOMPLETE_ATTRIBUTE = 'off';
 const SEARCH_ICON_NAME = 'search' as const;
+const ADD_ICON_NAME = 'add' as const;
+const EMPTY_ADD_RESULTS: readonly FavoriteSearchOption[] = Object.freeze([]);
 
 @Component({
   selector: 'app-favorites',
@@ -74,13 +96,18 @@ const SEARCH_ICON_NAME = 'search' as const;
 })
 export class FavoritesComponent {
   private readonly favoritesFacade = inject(FavoritesFacade);
+  private readonly stopDirectory = inject(StopDirectoryFacade);
   private readonly dialog = inject(OverlayDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly formBuilder = inject(FormBuilder);
 
   private readonly translations = APP_CONFIG.translationKeys.favorites;
   private readonly favoriteIconName = APP_CONFIG.homeData.favoriteStops.icon;
+  private readonly favoriteActiveIconName = APP_CONFIG.homeData.favoriteStops.activeIcon;
+  private readonly favoriteInactiveIconName = APP_CONFIG.homeData.favoriteStops.inactiveIcon;
   private readonly removeIconName = APP_CONFIG.homeData.favoriteStops.removeIcon;
+  private readonly addResultsLimit = APP_CONFIG.homeData.search.maxAutocompleteOptions;
+  private readonly addSearchDebounceMs = APP_CONFIG.homeData.search.debounceMs;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.favorites;
 
   protected readonly titleKey = this.translations.title;
@@ -91,9 +118,14 @@ export class FavoritesComponent {
   protected readonly searchAutocompleteAttribute = SEARCH_AUTOCOMPLETE_ATTRIBUTE;
   protected readonly textFieldLabelModes = TEXT_FIELD_LABEL_MODES;
   protected readonly searchIcon = SEARCH_ICON_NAME;
+  protected readonly addIcon = ADD_ICON_NAME;
   protected readonly emptyKey = this.translations.empty;
   protected readonly clearAllLabelKey = this.translations.actions.clearAll;
   protected readonly removeLabelKey = this.translations.actions.remove;
+  protected readonly addFavoriteLabelKey =
+    APP_CONFIG.translationKeys.home.sections.search.addFavoriteLabel;
+  protected readonly removeFavoriteLabelKey =
+    APP_CONFIG.translationKeys.home.sections.search.removeFavoriteLabel;
   protected readonly codeLabelKey = this.translations.list.code;
   protected readonly nucleusLabelKey = this.translations.list.nucleus;
   protected readonly favoritesCardHostClasses = FAVORITES_CARD_HOST_CLASSES;
@@ -104,10 +136,44 @@ export class FavoritesComponent {
 
   private readonly favorites = signal<readonly StopFavorite[]>([]);
   private readonly searchTerm = signal('');
+  private readonly addModeSubject = new BehaviorSubject(false);
 
+  protected readonly addMode$ = this.addModeSubject.asObservable();
   protected readonly hasFavorites = computed(() => this.favorites().length > 0);
   protected readonly groups = computed(() => this.buildGroups(this.favorites(), this.searchTerm()));
   protected readonly hasResults = computed(() => this.groups().length > 0);
+
+  private readonly addQuery$ = this.searchControl.valueChanges.pipe(
+    startWith(this.searchControl.value),
+    debounceTime(this.addSearchDebounceMs),
+    map((value) => this.normalizeQuery(value)),
+    distinctUntilChanged()
+  );
+
+  protected readonly addResults$: Observable<readonly FavoriteSearchOption[]> = combineLatest([
+    this.addMode$,
+    this.addQuery$,
+    this.favoritesFacade.favorites$
+  ]).pipe(
+    switchMap(([adding, query, favorites]) => {
+      if (!adding || query.length < 2) {
+        return of(EMPTY_ADD_RESULTS);
+      }
+
+      const favoriteIds = new Set(favorites.map((favorite) => favorite.id));
+      return this.stopDirectory.searchStops({ query, limit: this.addResultsLimit }).pipe(
+        map((options) =>
+          Object.freeze(
+            options.map((option) => ({
+              ...option,
+              isFavorite: favoriteIds.has(option.id)
+            }))
+          )
+        ),
+        catchError(() => of(EMPTY_ADD_RESULTS))
+      );
+    })
+  );
 
   constructor() {
     this.observeFavorites();
@@ -122,12 +188,32 @@ export class FavoritesComponent {
     return item.id;
   }
 
+  protected trackSearchOption(_: number, option: FavoriteSearchOption): string {
+    return option.id;
+  }
+
   protected favoriteIcon(): string {
     return this.favoriteIconName;
   }
 
   protected removeIcon(): string {
     return this.removeIconName;
+  }
+
+  protected favoriteToggleIcon(option: FavoriteSearchOption): string {
+    return option.isFavorite ? this.favoriteActiveIconName : this.favoriteInactiveIconName;
+  }
+
+  protected favoriteToggleLabel(option: FavoriteSearchOption): string {
+    return option.isFavorite ? this.removeFavoriteLabelKey : this.addFavoriteLabelKey;
+  }
+
+  protected toggleAddMode(): void {
+    this.addModeSubject.next(!this.addModeSubject.value);
+  }
+
+  protected toggleFavorite(option: FavoriteSearchOption): void {
+    this.favoritesFacade.toggle(option);
   }
 
   protected async remove(item: FavoriteListItem): Promise<void> {
