@@ -7,8 +7,8 @@
     <div class="app-layout__body">
       <header class="favorites__hero app-hero">
         <div class="app-hero__intro">
-          <h1 class="app-hero__title">{{ titleKey | translate }}</h1>
-          <p class="app-hero__description">{{ descriptionKey | translate }}</p>
+          <h1 class="app-hero__title">{{ copy().title }}</h1>
+          <p class="app-hero__description">{{ copy().description }}</p>
         </div>
         <div class="app-hero__actions favorites__controls">
           <div class="favorites__search">
@@ -93,47 +93,89 @@
 
       <section class="favorites__panel">
         <div *ngIf="!hasResults()" class="favorites__empty">
-          <p class="favorites__empty-message">{{ emptyKey | translate }}</p>
+          <p class="favorites__empty-message">{{ copy().empty }}</p>
         </div>
 
-        <div *ngIf="hasResults()" class="favorites__groups">
-          <section class="favorites__group" *ngFor="let group of groups(); trackBy: trackGroup">
-            <h2 class="favorites__group-title">{{ group.municipality }}</h2>
-            <ul class="favorites__list" role="list">
-              <li class="favorites__item" *ngFor="let stop of group.stops; trackBy: trackStop">
-                <app-interactive-card
-                  [ngClass]="favoritesCardHostClasses"
-                  [bodyClasses]="favoritesCardBodyClasses"
-                  [removeClasses]="favoritesCardRemoveClasses"
-                  [removeIconName]="removeIcon()"
-                  [removeAriaLabel]="removeLabelKey | translate"
-                  [primaryCommands]="stopDetailCommands(stop)"
-                  [primaryQueryParams]="stopDetailQueryParams(stop)"
-                  (removeActivated)="onRemoveActivated(stop)"
-                >
-                  <div class="favorites-card__content">
-                    <span class="material-symbols-outlined favorites-card__icon" aria-hidden="true">
-                      {{ favoriteIcon() }}
-                    </span>
-                    <span class="favorites-card__text">
-                      <span class="favorites-card__name">{{ stop.name }}</span>
-                      <span class="favorites-card__meta">
-                        <span class="favorites-card__chip">
-                          <span class="favorites-card__chip-label">{{ codeLabelKey | translate }}</span>
-                          <span class="favorites-card__chip-value">{{ stop.code }}</span>
-                        </span>
-                        <span *ngIf="stop.nucleus" class="favorites-card__chip">
-                          <span class="favorites-card__chip-label">{{ nucleusLabelKey | translate }}</span>
-                          <span class="favorites-card__chip-value">{{ stop.nucleus }}</span>
-                        </span>
+        <section *ngIf="filteredLines().length" class="favorites__entity-section">
+          <h2 class="favorites__entity-title">{{ copy().linesTitle }}</h2>
+          <ul class="favorites__list" role="list">
+            <li class="favorites__item" *ngFor="let line of filteredLines(); trackBy: trackLine">
+              <app-interactive-card
+                [ngClass]="favoritesCardHostClasses"
+                [bodyClasses]="favoritesCardBodyClasses"
+                [removeClasses]="favoritesCardRemoveClasses"
+                [removeIconName]="removeIcon()"
+                [removeAriaLabel]="removeLabelKey | translate"
+                [primaryCommands]="lineDetailCommands(line)"
+                (removeActivated)="onRemoveLineActivated(line)"
+              >
+                <div class="favorites-card__content">
+                  <span class="material-symbols-outlined favorites-card__icon" aria-hidden="true">
+                    route
+                  </span>
+                  <span class="favorites-card__text">
+                    <span class="favorites-card__name">{{ line.name }}</span>
+                    <span class="favorites-card__meta">
+                      <span class="favorites-card__chip">
+                        <span class="favorites-card__chip-label">{{ codeLabelKey | translate }}</span>
+                        <span class="favorites-card__chip-value">{{ line.code }}</span>
+                      </span>
+                      <span *ngIf="line.mode" class="favorites-card__chip">
+                        <span class="favorites-card__chip-label">{{ copy().lineModeLabel }}</span>
+                        <span class="favorites-card__chip-value">{{ line.mode }}</span>
                       </span>
                     </span>
-                  </div>
-                </app-interactive-card>
-              </li>
-            </ul>
-          </section>
-        </div>
+                  </span>
+                </div>
+              </app-interactive-card>
+            </li>
+          </ul>
+        </section>
+
+        <section *ngIf="stopGroups().length" class="favorites__entity-section">
+          <h2 class="favorites__entity-title">{{ copy().stopsTitle }}</h2>
+          <div class="favorites__groups">
+            <section
+              class="favorites__group"
+              *ngFor="let group of stopGroups(); trackBy: trackGroup"
+            >
+              <h3 class="favorites__group-title">{{ group.municipality }}</h3>
+              <ul class="favorites__list" role="list">
+                <li class="favorites__item" *ngFor="let stop of group.stops; trackBy: trackStop">
+                  <app-interactive-card
+                    [ngClass]="favoritesCardHostClasses"
+                    [bodyClasses]="favoritesCardBodyClasses"
+                    [removeClasses]="favoritesCardRemoveClasses"
+                    [removeIconName]="removeIcon()"
+                    [removeAriaLabel]="removeLabelKey | translate"
+                    [primaryCommands]="stopDetailCommands(stop)"
+                    [primaryQueryParams]="stopDetailQueryParams(stop)"
+                    (removeActivated)="onRemoveStopActivated(stop)"
+                  >
+                    <div class="favorites-card__content">
+                      <span class="material-symbols-outlined favorites-card__icon" aria-hidden="true">
+                        {{ favoriteIcon() }}
+                      </span>
+                      <span class="favorites-card__text">
+                        <span class="favorites-card__name">{{ stop.name }}</span>
+                        <span class="favorites-card__meta">
+                          <span class="favorites-card__chip">
+                            <span class="favorites-card__chip-label">{{ codeLabelKey | translate }}</span>
+                            <span class="favorites-card__chip-value">{{ stop.code }}</span>
+                          </span>
+                          <span *ngIf="stop.nucleus" class="favorites-card__chip">
+                            <span class="favorites-card__chip-label">{{ nucleusLabelKey | translate }}</span>
+                            <span class="favorites-card__chip-value">{{ stop.nucleus }}</span>
+                          </span>
+                        </span>
+                      </span>
+                    </div>
+                  </app-interactive-card>
+                </li>
+              </ul>
+            </section>
+          </div>
+        </section>
       </section>
     </div>
   </div>
