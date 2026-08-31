@@ -2,12 +2,14 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   QueryList,
   ViewChild,
   ViewChildren,
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, NavigationExtras, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs';
@@ -70,6 +72,7 @@ export class HomeComponent {
   private readonly execution = inject(RouteSearchExecutionService);
   private readonly route = inject(ActivatedRoute);
   private readonly homeTabStorage = inject(HomeTabStorage);
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly translation = APP_CONFIG.translationKeys.home;
   private readonly defaultTab = APP_CONFIG.homeData.tabs.defaultTab;
@@ -215,10 +218,18 @@ export class HomeComponent {
 
   private observeRouteChanges(): void {
     this.router.events
-      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe((event) => {
         const url = event.urlAfterRedirects ?? event.url ?? '';
         const path = this.resolveRoutePath(url);
+
+        if (!this.homeTabRoutes.has(path)) {
+          return;
+        }
+
         const queryTab = this.extractTabFromUrl(url);
         const storedTab = this.homeTabStorage.read();
         const nextTab = this.resolvePreferredTab(path, queryTab, storedTab);
@@ -371,7 +382,7 @@ export class HomeComponent {
   }
 
   private isHomeTabRoute(path: string | null | undefined): boolean {
-    return Boolean(path && this.homeTabRoutes.has(path));
+    return this.homeTabRoutes.has(path ?? APP_CONFIG.routes.home);
   }
 
   private isHomeTabCommand(commands: NavigationCommands): boolean {
