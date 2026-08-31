@@ -2,74 +2,64 @@
 
 ## Request
 
-Refresh the installed Andalucia Transit PWA shell so it matches the current product theme instead of the legacy indigo bus identity. Remove the white startup mismatch, align mobile browser chrome with the current theme, make newly deployed versions take effect without requiring reinstall, and use the user-approved bus-over-Andalusia artwork for both the favicon and installed PWA identity without implying official Junta de Andalucia affiliation.
+Refresh the installed Andalucia Transit PWA shell so it matches the current product theme, adopts new deployments without requiring reinstall, and uses the user-approved bus-stop identity for both favicon and installed PWA surfaces. The approved reference is the generated 1254×1254 image reviewed in this task: a single-support bus stop, front-facing bus, and clock hanging from the upper stop structure on a dark navy/blue application background.
 
 ## Evidence
 
-- The current product theme owns `--color-primary: #0061fe`, `--color-primary-strong: #0b54d4`, `--color-secondary: #060f2b`, and `--color-background: #f6f7f8` in `src/styles/theme-rules.css`.
-- The original `public/favicon.svg` used legacy `#3f51b5` and rendered a generic bus glyph.
-- The original `public/manifest.webmanifest` used `theme_color: #3f51b5`, `background_color: #f7f7f7`, and embedded legacy bus PNGs as data URLs.
-- The original `src/index.html` had no `theme-color` metadata.
-- Angular service worker registration was enabled in production, but no `SwUpdate` lifecycle owner activated a ready version, checked immediately at startup, or handled unrecoverable cache state.
-- `ngsw-config.json` precaches the shell and manifest and caches SVG assets, so changed PWA artwork participates in Angular service-worker versioning.
-- Root `AGENTS.md` forbids binary/media assets in git history. The approved raster concept therefore cannot be committed directly; its bus, route stops, dark-blue palette, and stylized Andalusia outline are reproduced as native SVG artwork.
-- The approved identity is explicitly independent branding. It must not contain the Junta de Andalucia logo, wordmark, or any other official-government mark.
+- The current theme owns `--color-primary: #0061fe`, `--color-primary-strong: #0b54d4`, `--color-secondary: #060f2b`, and `--color-background: #f6f7f8` in `src/styles/theme-rules.css`.
+- The original favicon and manifest used the legacy indigo identity and startup colors.
+- The original document had no explicit mobile `theme-color` metadata.
+- Angular service worker registration existed without an application-owned `SwUpdate` adoption lifecycle.
+- Root `AGENTS.md` forbids committing binary files. The exact approved reference therefore cannot be added as a standalone PNG/WebP file.
+- The user explicitly requires zero pixel difference between the approved reference and the SVG identity. A hand-traced/vector approximation cannot satisfy that acceptance criterion reliably.
 
 ## Decision
 
-1. Treat the current semantic theme as source of truth: primary blue `#0061fe`, strong blue `#0b54d4`, dark brand surface `#060f2b`, and app background `#f6f7f8`.
-2. Use the approved visual concept: a clearly recognizable front-facing bus over a stylized Andalusia map outline with route dots/stops. Keep it simple enough to remain legible at favicon size.
-3. Reproduce the approved concept as native SVG rather than committing the generated PNG, preserving the repository binary-asset rule.
-4. Keep `favicon.svg` and `app-icon-maskable.svg` visually identical and full-canvas opaque. Static regression coverage enforces equality so the browser favicon and installed PWA cannot drift.
-5. Do not include Junta de Andalucia branding or any element that could imply this is an official application.
-6. Keep concrete SVG files in the manifest so service-worker hashing and browser asset inspection remain explicit.
-7. Add `theme-color` and related shell metadata to the document head and align the manifest startup background with the current app background.
-8. Use one root-level Angular `SwUpdate` lifecycle. Subscribe before the first explicit `checkForUpdate()`, activate one ready version at a time, reload only after successful activation, and bound unrecoverable recovery with session storage.
-9. Do not use `skipWaiting`, custom service-worker forks, cache deletion, polling storms, or uninstall/reinstall instructions as the normal update mechanism.
+1. Keep the current semantic theme as the shell source of truth: primary `#0061fe`, strong blue `#0b54d4`, dark surface `#060f2b`, background `#f6f7f8`.
+2. Use one canonical `public/favicon.svg` for both browser favicon and PWA `any maskable` purposes so there is no second artwork owner that can drift.
+3. Preserve the approved reference pixels losslessly inside the SVG as an embedded WebP payload. The repository still stores an SVG/XML text file and no standalone binary asset. This is intentional because exact zero-pixel fidelity is a stronger user acceptance requirement than a hand-authored vector approximation.
+4. Pin the embedded payload SHA-256, intrinsic dimensions, and browser-rendered RGBA SHA-256 in tests. CI must fail if any approved pixel changes.
+5. Verify the rendered SVG in Chromium at the native 1254×1254 canvas and require the exact reviewed RGBA digest `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`.
+6. Keep the identity independent: no Junta de Andalucia logo, wordmark, or other official-government mark.
+7. Keep manifest/browser startup colors aligned with the current theme and retain the root-owned `SwUpdate` lifecycle already implemented in this PR.
+8. Do not use `skipWaiting`, custom service-worker forks, cache deletion, polling storms, or uninstall/reinstall as the normal update mechanism.
 
 ## Acceptance
 
-- Favicon and installed PWA icon use the approved bus + Andalusia + route concept and no longer use the legacy indigo bus or interim abstract network mark.
-- The bus remains immediately recognizable at small sizes; the Andalusia outline and route markers remain secondary context rather than competing with the bus.
-- No Junta de Andalucia logo, wordmark, or official-government identity is present.
+- `public/favicon.svg` renders exactly the approved 1254×1254 reference at native size with zero differing pixels in Chromium.
+- The canonical rendered RGBA SHA-256 is `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`.
+- The embedded lossless payload SHA-256 is `5fe98391a9eed6de6cc7616a0604978063a270c79e7329cf137f3384ac2107be`.
+- The manifest uses the same `favicon.svg` for both `any` and `maskable` install purposes; there is no duplicate maskable artwork owner.
+- The obsolete `public/app-icon-maskable.svg` is removed.
+- The favicon/PWA artwork contains the approved single-support stop, front-facing bus, and upper hanging clock composition and does not use the rejected Andalusia-map concept.
+- No Junta de Andalucia logo, wordmark, or official-government identity is introduced.
 - Manifest `theme_color`, manifest `background_color`, browser `theme-color`, and startup shell use the current theme palette.
-- Manifest exposes general-purpose and maskable SVG install icons; the maskable asset owns an opaque full canvas.
-- Favicon and maskable PWA artwork remain byte-identical as text so identity cannot drift between surfaces.
-- Production builds include the icon files and Angular service-worker asset matching covers SVG artwork while the manifest remains precached.
-- Initialization performs one immediate update check when the service worker is enabled.
-- A `VERSION_READY` event activates the update and causes exactly one controlled reload after successful activation.
-- Duplicate ready events cannot start concurrent activations.
-- A rejected startup update check keeps the current application usable.
-- Rejected activation or `activateUpdate() === false` does not reload or loop, and a later ready event can retry.
-- An `unrecoverable` event performs bounded recovery and cannot enter a reload loop.
-- Disabled/unavailable service worker is a no-op.
-- Unit tests cover startup check success/failure, ready/non-ready events, duplicate ready events, empty/failed activation, retry, disabled service worker, unrecoverable recovery, reload-loop guard, and idempotent initialization.
-- Static tests verify manifest colors/icon purposes, approved icon structure, favicon/PWA parity, absence of legacy/Junta branding, mobile browser metadata, and service-worker asset coverage.
-- Relevant changed lifecycle logic retains 100% practical branch coverage; repository coverage gates do not regress.
-- `pnpm run format:check`, `pnpm run lint`, targeted/full tests, production build, deploy preparation where applicable, visual evidence and GitHub CI are green before delivery.
+- Production builds include the canonical SVG and Angular service-worker asset matching covers it while the manifest remains precached.
+- PWA update lifecycle edge cases remain covered: startup check success/failure, ready/non-ready events, duplicate ready events, false/rejected activation, retry, disabled service worker, unrecoverable recovery, reload-loop guard, and idempotent initialization.
+- Relevant changed lifecycle logic retains practical 100% branch coverage and repository coverage gates do not regress.
+- `pnpm run format:check`, `pnpm run lint`, script tests, Angular tests, production/deploy checks, Playwright PWA shell verification, visual evidence, and GitHub CI are green before delivery.
 
 ## Risks
 
-- Browser/PWA launcher metadata may retain an old icon temporarily even after the manifest changes; this is platform cache behavior, distinct from application service-worker version adoption.
-- Reloading immediately on `VERSION_READY` can interrupt active interaction. If a transactional unsaved flow is introduced, activation must defer to a safe boundary.
-- `SwUpdate.activateUpdate()` must be followed by a reload to avoid mixed-version chunk loading.
-- Service-worker recovery must remain bounded to avoid reload loops during a genuinely broken deployment.
-- The reviewed exact-visual baseline currently points to a historical PR commit that is no longer an ancestor of squashed `main`; the visual workflow intentionally rejects that topology. Do not advance the reviewed baseline without explicit approval.
+- The exact-fidelity SVG embeds a compressed raster payload, so it is materially larger than a hand-authored vector icon. This is a deliberate trade-off for the explicit zero-pixel-diff requirement; the service worker caches the asset after first retrieval.
+- Some launchers retain old installed icon metadata after a manifest change. Platform launcher cache refresh is distinct from Angular service-worker version adoption.
+- Reloading on `VERSION_READY` can interrupt active interaction; if a future transactional unsaved flow is introduced, update activation must defer to a safe boundary.
+- The reviewed visual-baseline pointer is independently topologically diverged from current `main`; do not advance it without explicit approval.
 
 ## Tests
 
-- Unit: PWA update lifecycle service, including startup `checkForUpdate`, ready/non-ready events, concurrent-ready suppression, empty activation, activation rejection/retry, unrecoverable state, session guard and disabled service worker.
-- App integration unit: root component initializes the PWA lifecycle through a test double.
-- Static: manifest contract, current-theme metadata, approved bus/map/route structure, favicon-maskable parity, full-canvas safety, absence of legacy/Junta branding, and service-worker asset coverage.
-- Browser/visual: exact-head PR evidence remains required for rendered product surfaces; installed launcher behavior itself must not be inferred solely from DOM screenshots.
+- Static: manifest theme and canonical icon contract, embedded payload MIME/dimensions/SHA, opaque/full-canvas source, absence of duplicate maskable icon owner, mobile browser metadata, and service-worker asset coverage.
+- Browser: load the served SVG into a canvas at 1254×1254, hash the rendered RGBA bytes with Web Crypto, and compare against the approved digest. This is the zero-pixel-diff gate.
+- Unit: existing `SwUpdate` lifecycle and root initialization coverage.
+- Visual evidence: exact-head deterministic product screenshots remain required; installed launcher metadata is separately validated by the PWA shell contract.
 
 ## Rollback
 
-Revert this PR. Existing PWA installs will return to the previous manifest/service-worker behavior on the next version transition; no backend or persistent data migration is involved.
+Revert this PR. No backend, API, database, or persistent-data migration is involved.
 
 ## Delivery status
 
 - Reconnaissance: complete.
-- Specification: updated with approved icon identity and repository media policy.
-- Implementation: icon replacement pending exact-head validation.
+- Specification: updated for the final approved exact-fidelity identity.
+- Implementation: pending exact reference application.
 - CI/final review: pending.
