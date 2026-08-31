@@ -103,7 +103,10 @@ jobs:
             .agents/specs/2026-08-25-home-mobile-tabs.md
             .agents/specs/2026-08-26-map-all-stops-navigation.md
             .agents/specs/2026-08-26-visual-state-audit.md
+            .agents/specs/2026-08-31-stop-favorites-management.md
             .github/workflows/pr-visual-evidence.yml
+            src/app/data/route-search/route-lines-api.service.spec.ts
+            src/app/data/route-search/route-lines-api.service.ts
             src/app/data/route-search/route-search-preferences.storage.ts
             src/app/features/home/home.component.scss
             src/app/features/map/map.component.html
@@ -299,6 +302,8 @@ jobs:
             line-detail-data_es_1440_900_full.png
             stop-detail-data_es_390_844_full.png
             stop-detail-data_es_1440_900_full.png
+            stop-detail-lines_es_390_844_full.png
+            stop-detail-lines_es_1440_900_full.png
             stop-detail-directions_es_390_844_full.png
             stop-detail-directions_es_1440_900_full.png
             recent-data_es_390_844_full.png
@@ -415,6 +420,7 @@ jobs:
           | Lines | Directory and filters | <img src="$base/lines-data_es_390_844_full.png" width="220" alt="Lines directory at 390 by 844 pixels"> | <img src="$base/lines-data_es_1440_900_full.png" width="420" alt="Lines directory at 1440 by 900 pixels"> |
           | Line Detail | Interactive route and stops | <img src="$base/line-detail-data_es_390_844_full.png" width="220" alt="Line detail route map and stops at 390 by 844 pixels"> | <img src="$base/line-detail-data_es_1440_900_full.png" width="420" alt="Line detail route map and stops at 1440 by 900 pixels"> |
           | Stop Detail | Populated data | <img src="$base/stop-detail-data_es_390_844_full.png" width="220" alt="Stop Detail populated state at 390 by 844 pixels"> | <img src="$base/stop-detail-data_es_1440_900_full.png" width="420" alt="Stop Detail populated state at 1440 by 900 pixels"> |
+          | Stop Detail | Lines tab with normalized CTAN names | <img src="$base/stop-detail-lines_es_390_844_full.png" width="220" alt="Stop Detail lines tab with normalized CTAN names at 390 by 844 pixels"> | <img src="$base/stop-detail-lines_es_1440_900_full.png" width="420" alt="Stop Detail lines tab with normalized CTAN names at 1440 by 900 pixels"> |
           | Stop Detail | Walking directions tab | <img src="$base/stop-detail-directions_es_390_844_full.png" width="220" alt="Stop Detail walking directions tab at 390 by 844 pixels"> | <img src="$base/stop-detail-directions_es_1440_900_full.png" width="420" alt="Stop Detail walking directions tab at 1440 by 900 pixels"> |
           | Recent searches | Populated data | <img src="$base/recent-data_es_390_844_full.png" width="220" alt="Recent searches populated state at 390 by 844 pixels"> | <img src="$base/recent-data_es_1440_900_full.png" width="420" alt="Recent searches populated state at 1440 by 900 pixels"> |
           | Favorites | Populated data | <img src="$base/favorites-data_es_390_844_full.png" width="220" alt="Favorites populated state at 390 by 844 pixels"> | <img src="$base/favorites-data_es_1440_900_full.png" width="420" alt="Favorites populated state at 1440 by 900 pixels"> |
