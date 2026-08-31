@@ -34,6 +34,11 @@ Stop favorites remain in scope: Stop Detail keeps its favorite toggle and Favori
 7. Home consumes the aggregate through a deferred panel so aggregate dependencies do not increase the initial production bundle.
 8. Keep historical baseline rendering compatible with older application code. New product-only Playwright checks run only against the current head.
 9. Advance the visual baseline only after exact-head evidence is inspected and the user explicitly approves the changed visual contract. That approval was received after run `33433358751`, and baseline commit `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5` is now the reviewed owner.
+10. Treat Favorites copy as ngx-translate-owned UI content. Do not keep a parallel TypeScript copy dictionary.
+11. Treat stop-directory search failures as recoverable errors, distinct from a successful empty result, and preserve a retry path without resetting the query.
+12. Normalize line favorite candidates before toggle lookup so persisted identity and mutation identity use the same canonical key.
+13. Recover favorite-option lookup errors inside each Stop Detail `switchMap` inner observable so later route-context emissions remain live.
+14. Keep visual-evidence workflow writes disabled on fork repositories with the explicit repository-fork guard required by `AGENTS.md`.
 
 ## Acceptance
 
@@ -43,24 +48,32 @@ Stop favorites remain in scope: Stop Detail keeps its favorite toggle and Favori
 - Line Detail and Stop Detail expose current favorite state and add/remove mutation.
 - Favorite state is consortium-aware and consistent across Lines, Line Detail, Favorites and Home.
 - Repeated line toggles do not create duplicate persisted entries.
+- Whitespace-equivalent line IDs toggle the same canonical favorite.
 - Favorites presents saved stops and lines together, filters both, retains stop discovery/add mode and can remove/clear both entity types.
+- Stop-directory lookup errors in Favorites are visible and retryable rather than rendered as an empty success state.
 - Home preview includes line favorites.
 - Existing stop favorites remain backward compatible.
-- Spanish and English copy describe aggregate favorites accurately.
+- Spanish and English copy describe aggregate favorites accurately, including the global-clear confirmation.
+- Favorites user-facing copy is owned by ngx-translate dictionaries and consumed through translation keys.
+- Stop Detail can recover from a failed favorite lookup when the route context changes.
 - Production bundle budgets remain unchanged and green.
 - Mobile 390×844 and desktop 1440×900 evidence covers Lines, Line Detail and aggregated Favorites without horizontal overflow or inaccessible controls.
 - The approved baseline reproduces every required screenshot pixel-for-pixel from a later approval head.
+- The visual-evidence workflow cannot run its write-capable publish job for fork repositories.
 
 ## Tests
 
 - Pure stop and line normalization tests cover exact/case/whitespace sentinels and legitimate counterexamples.
 - Catalog tests prove `/lines` normalizes the reported `NN` path.
 - Route-line summary and line-detail mapper tests use the same line normalization owner.
-- Line favorite storage/service tests cover validation, mock modes, stable keys, hydration, persistence, add/remove/toggle/clear and deduplication.
+- Line favorite storage/service tests cover validation, mock modes, stable keys, hydration, persistence, add/remove/toggle/clear, deduplication and whitespace-equivalent toggle identity.
 - Aggregate facade tests prove stop and line streams are combined without duplicating ownership.
 - Lines, Line Detail, Stop Detail, Favorites and Home preview component tests cover their favorite behavior.
+- Favorites component coverage distinguishes directory error from empty results and proves retry reissues the current query.
+- Stop Detail component coverage proves a failed favorite lookup does not terminate later route-context lookup attempts.
 - Playwright product checks verify the deterministic aggregate, M-101 favorite state in `/lines`, Line Detail favorite mutation, sentinel removal and responsive overflow.
 - Historical visual regression uses a baseline-compatible harness; product-only assertions are excluded from baseline rendering.
+- Workflow validation must include the repository's deploy/workflow checks after the anti-fork guard change.
 
 ## Validation evidence
 
@@ -104,6 +117,31 @@ Validation on the approval head `d5dc519655a9c911bb2bac6ebc3d86e0c8a16856`:
   - every required pixel comparison: pass;
   - reviewed-baseline enforcement: pass.
 
+### Review remediation evidence
+
+CodeRabbit's post-baseline review on head `d2cf6d9dde785fb8bd7480df8796a3236bdd3d9e` produced six inline findings plus one repository-policy workflow finding. All seven were reproduced against the then-current code and accepted as valid.
+
+Applied review commits:
+
+- `65bc55074b377f76660ac9a5dec6a8032864184a` — `fix(favorites): normalize line toggle identity`.
+- `529eeea12032211eab2726f9f785bfb43ce37264` — `style(e2e): sort favorites fixture import`.
+- `c483f9710eb842d91205db3394d8b87c9864cc01` — `fix(stop-detail): recover favorite lookup per route`.
+- `09b00ab02e293a6d1cc1b1932220396ffa7a9194` — `refactor(lines): centralize favorite icon config`.
+- `7c748e2e2c6499c4f9643f31b38973e7ee49595e` — `fix(favorites): localize copy and expose search retry`.
+- `a8c90724fdb0aff870439f670aff8c99ffb9812b` — `fix(ci): block visual evidence on forks`.
+- `828671b08252295003907bed6f14199450616bac` — `fix(test): restore home coverage with favorites translations`; this restores the full pre-existing Home test fixture after a too-broad intermediate test-only replacement and leaves only the required translation fixture delta in the final tree.
+- `bee8fadf935ae7c9cdee8c0dbccfbcf1df3fc42a` — `style(lines): satisfy feature import order`.
+- `2b50e93e8a0b2522b649875846635854a2efd3db` — `fix(favorites): describe aggregate clear action`.
+
+CI run `33443245175` on `a8c90724fdb0aff870439f670aff8c99ffb9812b` supplied two actionable failures and two useful passing checks:
+
+- deploy pipeline: pass, validating the workflow/deploy guard changes;
+- script tests: pass;
+- lint: failed only because `lines-ui.copy` needed to sort before `lines.config`;
+- Angular tests: failed because `HomeComponent`'s fake translation loader still returned an empty dictionary after Home Favorites switched to ngx-translate keys.
+
+Both failures were corrected without weakening checks. Exact-head CI, visual regression, legal browser QA, visual evidence, full CodeRabbit review and final visual inspection are pending on the documentation head created after this section.
+
 ## Final visual review
 
 The exact approval-head evidence was manually re-inspected after the baseline became green.
@@ -117,12 +155,16 @@ The exact approval-head evidence was manually re-inspected after the baseline be
 - The fixed bottom navigation appears at its viewport-fixed position in full-page screenshots; this can visually cross document content in the capture, but the end-of-document evidence remains reachable and the product overflow assertions pass.
 - No horizontal overflow was found on the affected 390×844 or 1440×900 surfaces.
 
+This section describes the already approved baseline head. A new final visual review is required after the review-remediation head becomes green.
+
 ## Risks
 
 - A broad substring replacement would corrupt legitimate names; normalization must remain terminal-token-only.
 - Stop and line local-storage payloads must remain separate so existing stop favorites require no migration.
 - Line identity must remain `(consortiumId,lineId)`; commercial codes are presentation data and are not guaranteed unique/stable identifiers.
 - The approved visual baseline now intentionally includes the aggregate favorite controls and layout. Future deviations are gated by exact-pixel comparison.
+- The new Favorites search error state is intentionally recoverable and must not regress into a successful-empty presentation.
+- Final delivery remains blocked until the remediation head passes exact-head CI/evidence and the requested full CodeRabbit review is clean or all new valid findings are addressed.
 
 ## Rollback
 
@@ -130,13 +172,13 @@ Revert the reopened-scope commits and the baseline approval commit. Existing sto
 
 ## Delivery status
 
-- Functional implementation: complete.
-- Unit/component/script/build validation: green.
-- Legal browser QA: green.
-- Product Playwright checks: 42/42 green in the exact visual harness.
-- Exact-head visual evidence: generated and manually reviewed.
-- Historical baseline compatibility: green.
-- Reviewed visual baseline: explicitly approved and advanced to `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`.
-- Pixel regression gate: green on approval head `d5dc519655a9c911bb2bac6ebc3d86e0c8a16856`.
-- Final review of the approval head: clean.
+- Functional implementation: review remediation applied; exact-head validation pending.
+- Unit/component/script/build validation: pending on the remediation documentation head.
+- Legal browser QA: pending on the remediation documentation head.
+- Product Playwright checks: pending on the remediation documentation head.
+- Exact-head visual evidence: pending on the remediation documentation head.
+- Historical baseline compatibility: pending on the remediation documentation head.
+- Reviewed visual baseline: remains `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`; this round should reproduce it because permanent visible product copy was preserved except for the more accurate aggregate clear-dialog wording.
+- Full CodeRabbit review requested by the user: pending until exact-head checks are green.
+- Final review of the remediation head: pending.
 - Merge/release/deploy: not performed.
