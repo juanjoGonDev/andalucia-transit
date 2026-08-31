@@ -279,7 +279,7 @@ export class FavoritesComponent {
   protected async clearAll(): Promise<void> {
     const confirmed = await this.confirm({
       titleKey: this.translations.dialogs.clearAll.title,
-      messageKey: this.translations.dialogs.clearAll.title,
+      messageKey: this.translations.dialogs.clearAll.message,
       confirmKey: this.translations.dialogs.clearAll.confirm,
       cancelKey: this.translations.dialogs.clearAll.cancel,
       details: [
