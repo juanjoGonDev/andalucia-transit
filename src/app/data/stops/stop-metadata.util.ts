@@ -12,3 +12,7 @@ export function normalizeStopNucleus(value: string | null | undefined): string |
     ? null
     : normalized;
 }
+
+export function normalizeRequiredStopNucleus(value: string | null | undefined): string {
+  return normalizeStopNucleus(value) ?? '';
+}
