@@ -21,10 +21,13 @@ jobs:
   publish:
     name: '🖼️ Publish PR screenshots'
     if: >-
-      github.event_name == 'push' ||
+      github.event.repository.fork == false &&
       (
-        github.event.pull_request.head.repo.full_name == github.repository &&
-        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)
+        github.event_name == 'push' ||
+        (
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)
+        )
       )
     runs-on: ubuntu-latest
     timeout-minutes: 30
