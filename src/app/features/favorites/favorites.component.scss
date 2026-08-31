@@ -154,6 +154,18 @@
   text-align: center;
 }
 
+.favorites__entity-section {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.favorites__entity-title {
+  margin: 0;
+  color: var(--color-text-strong);
+  font-size: var(--font-size-title-md);
+  line-height: var(--line-height-heading);
+}
+
 .favorites__groups {
   display: flex;
   flex-direction: column;
