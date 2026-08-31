@@ -56,7 +56,26 @@
           <section class="stop-detail__card app-async-reveal">
             <div class="stop-detail__summary">
               <div class="stop-detail__summary-heading">
-                <span class="stop-detail__tag">{{ viewModel.stopCode }}</span>
+                <div class="stop-detail__summary-heading-top">
+                  <span class="stop-detail__tag">{{ viewModel.stopCode }}</span>
+                  <ng-container *ngIf="favoriteState$ | async as favoriteState">
+                    <button
+                      *ngIf="favoriteState.option as favoriteOption"
+                      type="button"
+                      class="stop-detail__favorite"
+                      [attr.aria-pressed]="favoriteState.isFavorite"
+                      [attr.aria-label]="
+                        (favoriteState.isFavorite ? removeFavoriteLabelKey : addFavoriteLabelKey)
+                          | translate
+                      "
+                      (click)="toggleFavorite(favoriteOption)"
+                    >
+                      <span class="material-symbols-outlined" aria-hidden="true">
+                        {{ favoriteState.isFavorite ? favoriteActiveIcon : favoriteInactiveIcon }}
+                      </span>
+                    </button>
+                  </ng-container>
+                </div>
                 <h1 class="stop-detail__title">{{ viewModel.stopName }}</h1>
                 <p class="stop-detail__subtitle">{{ translationKeys.subtitle | translate }}</p>
               </div>
