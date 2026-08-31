@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { RuntimeFlagsService } from '@core/runtime/runtime-flags.service';
+import { MockDataMode, RuntimeFlagsService } from '@core/runtime/runtime-flags.service';
+import { getMockLineFavoriteStoredItems } from '@data/mock/home-mock-data';
 
 export interface LineFavoriteStoredItem {
   readonly id: string;
@@ -19,7 +20,13 @@ export class LineFavoritesStorage {
   private memoryStore: string | null = null;
 
   load(): readonly LineFavoriteStoredItem[] {
-    if (this.isMockModeActive()) {
+    const mode = this.mockDataMode();
+
+    if (mode === 'data') {
+      return getMockLineFavoriteStoredItems();
+    }
+
+    if (mode === 'empty') {
       return [];
     }
 
@@ -118,7 +125,11 @@ export class LineFavoritesStorage {
     this.memoryStore = value;
   }
 
+  private mockDataMode(): MockDataMode {
+    return this.runtimeFlags.mockDataMode();
+  }
+
   private isMockModeActive(): boolean {
-    return this.runtimeFlags.mockDataMode() !== null;
+    return this.mockDataMode() !== null;
   }
 }
