@@ -66,14 +66,14 @@
               <div *ngSwitchCase="'favorites'" class="home__panel home__panel--favorites home__stack">
                 <header class="home__panel-header">
                   <div class="home__panel-heading home__stack">
-                    <h3 class="home__panel-title">{{ favoritesTitleKey | translate }}</h3>
+                    <h3 class="home__panel-title">{{ favoritesCopy().title }}</h3>
                   </div>
                   <div
                     appAccessibleButton
                     class="app-button app-button--ghost home__panel-action"
                     (appAccessibleButtonActivated)="openFavoritesView()"
                   >
-                    {{ favoritesActionKey | translate }}
+                    {{ favoritesCopy().openFavorites }}
                   </div>
                 </header>
                 <ng-container *ngIf="hasFavorites(); else favoritesEmpty">
@@ -84,7 +84,7 @@
                   ></app-home-favorites-preview>
                 </ng-container>
                 <ng-template #favoritesEmpty>
-                  <p class="home-recent__empty">{{ favoritesEmptyKey | translate }}</p>
+                  <p class="home-recent__empty">{{ favoritesCopy().empty }}</p>
                 </ng-template>
               </div>
             </ng-container>
