@@ -29,11 +29,11 @@ const MOCK_FAVORITES: readonly StopFavoriteStoredItem[] = Object.freeze([
 
 const MOCK_LINE_FAVORITES: readonly LineFavoriteStoredItem[] = Object.freeze([
   {
-    id: '6|100',
+    id: '6|1',
     consortiumId: 6,
-    lineId: '100',
-    code: 'M-100',
-    name: 'Circular Huércal de Almería',
+    lineId: '1',
+    code: 'M-101',
+    name: 'Almería - Huércal - Viator - Campamento',
     mode: 'AUTOBUS'
   }
 ]);
