@@ -7,6 +7,7 @@ class SwUpdateStub {
   readonly versionUpdates = new Subject<VersionEvent>();
   readonly unrecoverable = new Subject<{ reason: string; type: 'UNRECOVERABLE_STATE' }>();
   isEnabled = true;
+  checkForUpdate = jasmine.createSpy('checkForUpdate').and.resolveTo(false);
   activateUpdate = jasmine.createSpy('activateUpdate').and.resolveTo(true);
 }
 
@@ -23,6 +24,23 @@ describe('PwaUpdateService', () => {
     });
     service = TestBed.inject(PwaUpdateService);
     reloadSpy = spyOn(service, 'reloadCurrentVersion');
+  });
+
+  it('checks for a new version when initialized', () => {
+    service.initialize();
+
+    expect(swUpdate.checkForUpdate).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the current version when the startup update check fails', async () => {
+    swUpdate.checkForUpdate.and.rejectWith(new Error('offline'));
+
+    service.initialize();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(swUpdate.checkForUpdate).toHaveBeenCalledTimes(1);
+    expect(reloadSpy).not.toHaveBeenCalled();
   });
 
   it('activates and reloads when a new version is ready', async () => {
@@ -51,6 +69,44 @@ describe('PwaUpdateService', () => {
     expect(reloadSpy).not.toHaveBeenCalled();
   });
 
+  it('does not reload when activation reports that no version was activated', async () => {
+    swUpdate.activateUpdate.and.resolveTo(false);
+    service.initialize();
+
+    swUpdate.versionUpdates.next({
+      type: 'VERSION_READY',
+      currentVersion: { hash: 'old', appData: undefined },
+      latestVersion: { hash: 'new', appData: undefined }
+    });
+    await Promise.resolve();
+
+    expect(swUpdate.activateUpdate).toHaveBeenCalledTimes(1);
+    expect(reloadSpy).not.toHaveBeenCalled();
+  });
+
+  it('allows a later ready event to retry after an empty activation', async () => {
+    swUpdate.activateUpdate.and.resolveTo(false);
+    service.initialize();
+
+    swUpdate.versionUpdates.next({
+      type: 'VERSION_READY',
+      currentVersion: { hash: 'old', appData: undefined },
+      latestVersion: { hash: 'new', appData: undefined }
+    });
+    await Promise.resolve();
+
+    swUpdate.activateUpdate.and.resolveTo(true);
+    swUpdate.versionUpdates.next({
+      type: 'VERSION_READY',
+      currentVersion: { hash: 'old', appData: undefined },
+      latestVersion: { hash: 'newer', appData: undefined }
+    });
+    await Promise.resolve();
+
+    expect(swUpdate.activateUpdate).toHaveBeenCalledTimes(2);
+    expect(reloadSpy).toHaveBeenCalledTimes(1);
+  });
+
   it('does not reload when activation fails', async () => {
     swUpdate.activateUpdate.and.rejectWith(new Error('activation failed'));
     service.initialize();
@@ -66,6 +122,31 @@ describe('PwaUpdateService', () => {
     expect(reloadSpy).not.toHaveBeenCalled();
   });
 
+  it('ignores duplicate ready events while activation is in progress', async () => {
+    let resolveActivation: ((value: boolean) => void) | undefined;
+    swUpdate.activateUpdate.and.returnValue(
+      new Promise<boolean>((resolve) => {
+        resolveActivation = resolve;
+      })
+    );
+    service.initialize();
+
+    const readyEvent: VersionEvent = {
+      type: 'VERSION_READY',
+      currentVersion: { hash: 'old', appData: undefined },
+      latestVersion: { hash: 'new', appData: undefined }
+    };
+    swUpdate.versionUpdates.next(readyEvent);
+    swUpdate.versionUpdates.next(readyEvent);
+
+    expect(swUpdate.activateUpdate).toHaveBeenCalledTimes(1);
+
+    resolveActivation?.(true);
+    await Promise.resolve();
+
+    expect(reloadSpy).toHaveBeenCalledTimes(1);
+  });
+
   it('is a no-op when the service worker is disabled', () => {
     swUpdate.isEnabled = false;
 
@@ -76,6 +157,7 @@ describe('PwaUpdateService', () => {
       latestVersion: { hash: 'new', appData: undefined }
     });
 
+    expect(swUpdate.checkForUpdate).not.toHaveBeenCalled();
     expect(swUpdate.activateUpdate).not.toHaveBeenCalled();
     expect(reloadSpy).not.toHaveBeenCalled();
   });
@@ -104,7 +186,7 @@ describe('PwaUpdateService', () => {
     expect(reloadSpy).not.toHaveBeenCalled();
   });
 
-  it('initializes only once', () => {
+  it('initializes only once', async () => {
     service.initialize();
     service.initialize();
 
@@ -113,7 +195,10 @@ describe('PwaUpdateService', () => {
       currentVersion: { hash: 'old', appData: undefined },
       latestVersion: { hash: 'new', appData: undefined }
     });
+    await Promise.resolve();
 
+    expect(swUpdate.checkForUpdate).toHaveBeenCalledTimes(1);
     expect(swUpdate.activateUpdate).toHaveBeenCalledTimes(1);
+    expect(reloadSpy).toHaveBeenCalledTimes(1);
   });
 });
