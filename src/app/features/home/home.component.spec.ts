@@ -479,7 +479,7 @@ describe('HomeComponent', () => {
     expect(tabStorage.write.calls.mostRecent().args[0]).toBe('favorites');
   }));
 
-  it('includes line favorites in the home favorites preview', fakeAsync(() => {
+  it('includes line favorites in the home favorites preview', async () => {
     const line: LineFavorite = {
       id: '6|100',
       consortiumId: 6,
@@ -494,11 +494,12 @@ describe('HomeComponent', () => {
     const component = fixture.componentInstance as unknown as HomeComponentTestingApi;
     component.selectTab('favorites');
     fixture.detectChanges();
-    flushMicrotasks();
+    await fixture.whenStable();
+    fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('Circular Huércal de Almería');
     expect(fixture.nativeElement.textContent).toContain('Favoritos');
-  }));
+  });
 
   it('restores focus to the active tab after opening aggregate favorites and returning', fakeAsync(() => {
     fixture.detectChanges();
