@@ -20,6 +20,9 @@ Apply the reported stop/favorites UX feedback without mixing it into the PWA bra
 - `RouteSearchFormComponent` proves the canonical favorite mutation path: `FavoritesFacade.toggle(StopDirectoryOption)`.
 - `StopDetailComponent` owns the consortium-aware routed stop context and now resolves a canonical favorite option without coupling schedule loading to directory resolution.
 - `FavoritesComponent` now reuses its existing search field for local filtering and canonical directory discovery while add mode is active.
+- Canonical CI run `33401952365` passed on implementation head `f20d8669a0392e72aa2574ff39ee552080ee7913`: install, lint, Angular tests, script tests, deploy-pipeline checks and aggregate status were green.
+- Exact-head visual-evidence run `33401957680` passed on the same implementation head and retained artifact `pr-439-visual-evidence-f20d8669a0392e72aa2574ff39ee552080ee7913` with digest `sha256:107b5862b7be30e88fc0112f16c515ae20faf75a80900d03be970e8a77fac2f0`.
+- Final screenshot inspection covered Favorites populated/empty states and Stop Detail departures/lines/directions at 390×844 and 1440×900. No `NN` sentinel, horizontal overflow, broken card layout, dangling metadata separator or viewport-specific visual regression was found. The fixed bottom navigation appearing over the middle of full-page captures is the expected full-page rendering position of a viewport-fixed control rather than evidence of hidden end-of-document content; the empty mobile Favorites capture shows the same navigation clear of the content at document end.
 
 ## Decision
 
@@ -61,7 +64,7 @@ Apply the reported stop/favorites UX feedback without mixing it into the PWA bra
 - Favorites component coverage for add-mode directory search, stale-query cancellation behavior through RxJS state, add/remove toggles, existing list filtering, and hidden empty nucleus metadata.
 - `RouteLinesApiService` coverage proves terminal `NN` removal while preserving `Annarosa - Centro` and `NN Express - Centro`.
 - Playwright interaction coverage injects the reported `Adra - Venta Del Viso NN` response into Stop Detail → Lines, asserts `Adra - Venta Del Viso`, checks overflow at 390×844 and 1440×900, and captures both states.
-- Existing lint, unit, coverage, build/deploy and exact-head visual evidence workflows must remain green.
+- The repository visual-evidence workflow publishes Stop Detail → Lines captures as mandatory evidence and passed on implementation head `f20d8669a0392e72aa2574ff39ee552080ee7913`.
 
 ## Risks
 
@@ -70,7 +73,7 @@ Apply the reported stop/favorites UX feedback without mixing it into the PWA bra
 - Existing stored favorites are normalized on hydration; their stable IDs and stop identifiers are not rewritten.
 - A stop-detail schedule may load even when the directory snapshot cannot resolve the same stop. Favorite UI degrades independently rather than failing the schedule page.
 - Directory search on Favorites adds network/snapshot work only while add mode is active and a useful query is present.
-- The repository's visual-regression baseline currently references a commit that is no longer an ancestor of `main` after an earlier squash merge. That inherited baseline check must not be rewritten or advanced without explicit baseline approval.
+- The repository's visual-regression baseline currently references commit `379d9f30594c3438d5ee6204b311c69a2ea17c52`, which is no longer an ancestor of this branch after an earlier squash merge. Run `33401952446` therefore fails at baseline ancestry resolution before rendering. That inherited baseline must not be rewritten or advanced without explicit baseline approval.
 
 ## Rollback
 
@@ -79,8 +82,9 @@ Revert this pull request. No backend, API, database or destructive storage migra
 ## Delivery status
 
 - Reconnaissance: complete.
-- Specification: complete and updated with the dual `NN` sources.
-- Tests: implementation and regression coverage complete; final exact-head workflow validation pending.
+- Specification: complete and synchronized with the dual `NN` sources and final implementation evidence.
+- Tests: complete; canonical unit/script/deploy checks and Playwright interaction coverage passed on the implementation head.
 - Implementation: complete for nucleus metadata, favorites management and terminal stop-line summary sentinel normalization.
-- Runtime/visual validation: exact Stop Detail → Lines screenshots are wired into Playwright; publication and final screenshot inspection pending from the final head.
-- CI/final review: canonical CI passed on intermediate head `51338dd89f38436d818aee6307b6417e33f0aac8`; final-head CI/evidence and final review remain pending. The inherited visual-baseline ancestry failure requires explicit baseline approval rather than an autonomous baseline mutation.
+- Runtime/visual validation: complete on implementation head `f20d8669a0392e72aa2574ff39ee552080ee7913`; the final evidence artifact was inspected across the affected Favorites and Stop Detail mobile/desktop states with no new visual defect found.
+- Final documentation sync: this commit changes only this specification. Recheck CI and visual evidence on the resulting documentation-only head without changing runtime code.
+- CI/final review: runtime/code final review is clean. The only unresolved gate is the inherited visual-baseline ancestry failure, which requires explicit baseline approval rather than an autonomous baseline mutation.
