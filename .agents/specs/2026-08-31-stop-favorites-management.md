@@ -20,9 +20,11 @@ Apply the reported stop/favorites UX feedback without mixing it into the PWA bra
 - `RouteSearchFormComponent` proves the canonical favorite mutation path: `FavoritesFacade.toggle(StopDirectoryOption)`.
 - `StopDetailComponent` owns the consortium-aware routed stop context and now resolves a canonical favorite option without coupling schedule loading to directory resolution.
 - `FavoritesComponent` now reuses its existing search field for local filtering and canonical directory discovery while add mode is active.
-- Canonical CI run `33401952365` passed on implementation head `f20d8669a0392e72aa2574ff39ee552080ee7913`: install, lint, Angular tests, script tests, deploy-pipeline checks and aggregate status were green.
-- Exact-head visual-evidence run `33401957680` passed on the same implementation head and retained artifact `pr-439-visual-evidence-f20d8669a0392e72aa2574ff39ee552080ee7913` with digest `sha256:107b5862b7be30e88fc0112f16c515ae20faf75a80900d03be970e8a77fac2f0`.
+- Canonical implementation CI run `33401952365` passed on implementation head `f20d8669a0392e72aa2574ff39ee552080ee7913`: install, lint, Angular tests, script tests, deploy-pipeline checks and aggregate status were green.
+- Exact-head visual-evidence run `33401957680` passed on that implementation head and retained artifact `pr-439-visual-evidence-f20d8669a0392e72aa2574ff39ee552080ee7913` with digest `sha256:107b5862b7be30e88fc0112f16c515ae20faf75a80900d03be970e8a77fac2f0`.
 - Final screenshot inspection covered Favorites populated/empty states and Stop Detail departures/lines/directions at 390×844 and 1440×900. No `NN` sentinel, horizontal overflow, broken card layout, dangling metadata separator or viewport-specific visual regression was found. The fixed bottom navigation appearing over the middle of full-page captures is the expected full-page rendering position of a viewport-fixed control rather than evidence of hidden end-of-document content; the empty mobile Favorites capture shows the same navigation clear of the content at document end.
+- A final CI hardening pass found that a failed baseline-ancestry resolution was followed by a second, misleading `BASELINE_SHA: unbound variable` failure in `Enforce reviewed baseline`. Commit `63266f97431ffa3ae8da10d824cee672e1633613` makes downstream artifact/enforcement steps conditional on successful baseline resolution and sources the immutable baseline SHA from the step output. Run `33404790828` confirms the gate now fails only at `Resolve reviewed baseline`, with downstream comparison/enforcement steps skipped.
+- CI run `33404790782` and visual-evidence run `33404790708` passed on the CI-hardened head `63266f97431ffa3ae8da10d824cee672e1633613`.
 
 ## Decision
 
@@ -36,6 +38,7 @@ Apply the reported stop/favorites UX feedback without mixing it into the PWA bra
 8. Favorites keeps one visible search field. Its existing query continues to filter saved favorites; when add mode is enabled, the same query also searches the canonical stop directory and shows matching stops with add/remove favorite actions.
 9. Directory discovery is debounced, requires the existing minimum useful query length through the directory service, cancels stale requests with `switchMap`, and never blocks the saved-favorites list.
 10. Reuse existing translated add/remove favorite strings and existing favorite icons where possible; no browser alert/modal is introduced.
+11. A visual-baseline ancestry failure is authoritative by itself. Do not run downstream comparison/enforcement steps when baseline resolution failed, and do not mask the root cause with missing environment state.
 
 ## Acceptance
 
@@ -53,6 +56,7 @@ Apply the reported stop/favorites UX feedback without mixing it into the PWA bra
 - Spanish and English use existing localized favorite action copy.
 - Stop Detail → Lines is browser-tested at 390×844 and 1440×900 with the reported terminal sentinel fixture, no horizontal overflow and exact screenshots from the PR head.
 - Mobile and desktop layouts remain usable, with touch targets and focus states meeting existing design-system rules.
+- Baseline ancestry errors remain visible as the sole baseline-gate root cause; later steps do not introduce a secondary shell failure.
 
 ## Tests
 
@@ -64,7 +68,8 @@ Apply the reported stop/favorites UX feedback without mixing it into the PWA bra
 - Favorites component coverage for add-mode directory search, stale-query cancellation behavior through RxJS state, add/remove toggles, existing list filtering, and hidden empty nucleus metadata.
 - `RouteLinesApiService` coverage proves terminal `NN` removal while preserving `Annarosa - Centro` and `NN Express - Centro`.
 - Playwright interaction coverage injects the reported `Adra - Venta Del Viso NN` response into Stop Detail → Lines, asserts `Adra - Venta Del Viso`, checks overflow at 390×844 and 1440×900, and captures both states.
-- The repository visual-evidence workflow publishes Stop Detail → Lines captures as mandatory evidence and passed on implementation head `f20d8669a0392e72aa2574ff39ee552080ee7913`.
+- The repository visual-evidence workflow publishes Stop Detail → Lines captures as mandatory evidence and passed on the implementation and CI-hardened heads.
+- Workflow run `33404790828` verifies the baseline reporting fix: `Resolve reviewed baseline` fails for the known diverged baseline, while artifact retention and enforcement are skipped instead of failing again with an unset variable.
 
 ## Risks
 
@@ -73,7 +78,7 @@ Apply the reported stop/favorites UX feedback without mixing it into the PWA bra
 - Existing stored favorites are normalized on hydration; their stable IDs and stop identifiers are not rewritten.
 - A stop-detail schedule may load even when the directory snapshot cannot resolve the same stop. Favorite UI degrades independently rather than failing the schedule page.
 - Directory search on Favorites adds network/snapshot work only while add mode is active and a useful query is present.
-- The repository's visual-regression baseline currently references commit `379d9f30594c3438d5ee6204b311c69a2ea17c52`, which is no longer an ancestor of this branch after an earlier squash merge. Run `33401952446` therefore fails at baseline ancestry resolution before rendering. That inherited baseline must not be rewritten or advanced without explicit baseline approval.
+- The repository's visual-regression baseline currently references commit `379d9f30594c3438d5ee6204b311c69a2ea17c52`, which is no longer an ancestor of this branch after an earlier squash merge. The baseline gate therefore fails before rendering. That inherited baseline must not be rewritten or advanced without explicit baseline approval.
 
 ## Rollback
 
@@ -82,9 +87,10 @@ Revert this pull request. No backend, API, database or destructive storage migra
 ## Delivery status
 
 - Reconnaissance: complete.
-- Specification: complete and synchronized with the dual `NN` sources and final implementation evidence.
-- Tests: complete; canonical unit/script/deploy checks and Playwright interaction coverage passed on the implementation head.
+- Specification: complete and synchronized with the dual `NN` sources, final implementation evidence and baseline-gate reporting fix.
+- Tests: complete; canonical unit/script/deploy checks and Playwright interaction coverage passed on the implementation and CI-hardened heads.
 - Implementation: complete for nucleus metadata, favorites management and terminal stop-line summary sentinel normalization.
-- Runtime/visual validation: complete on implementation head `f20d8669a0392e72aa2574ff39ee552080ee7913`; the final evidence artifact was inspected across the affected Favorites and Stop Detail mobile/desktop states with no new visual defect found.
-- Final documentation sync: this commit changes only this specification. Recheck CI and visual evidence on the resulting documentation-only head without changing runtime code.
-- CI/final review: runtime/code final review is clean. The only unresolved gate is the inherited visual-baseline ancestry failure, which requires explicit baseline approval rather than an autonomous baseline mutation.
+- Runtime/visual validation: complete; final evidence was inspected across the affected Favorites and Stop Detail mobile/desktop states with no new visual defect found.
+- CI reporting hardening: complete; the baseline gate now preserves the original ancestry error and does not emit a secondary unset-variable failure.
+- Remaining gate: the reviewed visual baseline itself is still diverged and requires explicit user approval before `.github/visual-baseline.json` can be advanced or replaced.
+- This specification sync is documentation-only. Exact-head CI/evidence after this sync is recorded in the PR body rather than creating another self-referential documentation commit.
