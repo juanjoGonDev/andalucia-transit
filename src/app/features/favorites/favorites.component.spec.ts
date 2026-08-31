@@ -372,7 +372,7 @@ describe('FavoritesComponent', () => {
     expect(chips[0]?.textContent).toContain('001');
   });
 
-  it('builds canonical stop and line detail navigation', () => {
+  it('builds canonical stop and descriptive line detail navigation', () => {
     const access = accessProtected(component);
     const stop = toStopListItem(FAVORITES[0]);
 
@@ -388,7 +388,8 @@ describe('FavoritesComponent', () => {
       '/',
       'lines',
       '6',
-      '100'
+      '100',
+      'circular-huercal-de-almeria'
     ]);
   });
 
