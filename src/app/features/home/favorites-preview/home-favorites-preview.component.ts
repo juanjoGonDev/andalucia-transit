@@ -32,6 +32,14 @@ export class HomeFavoritesPreviewComponent {
     return `${item.kind}:${item.favorite.id}`;
   }
 
+  protected stopFavorite(item: HomeFavoritePreviewItem): StopFavorite | null {
+    return item.kind === 'stop' ? item.favorite : null;
+  }
+
+  protected lineFavorite(item: HomeFavoritePreviewItem): LineFavorite | null {
+    return item.kind === 'line' ? item.favorite : null;
+  }
+
   protected stopDetailCommands(favorite: StopFavorite): readonly string[] {
     return this.buildStopDetailNavigation(favorite).commands;
   }
