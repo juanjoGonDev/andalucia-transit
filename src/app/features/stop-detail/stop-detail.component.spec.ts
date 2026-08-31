@@ -12,7 +12,12 @@ import { APP_CONFIG } from '@core/config';
 import { RouteLinesApiService } from '@data/route-search/route-lines-api.service';
 import { StopScheduleFacade } from '@domain/stop-schedule/stop-schedule.facade';
 import { StopSchedule, StopScheduleResult, StopService } from '@domain/stop-schedule/stop-schedule.model';
-import { StopDirectoryFacade, StopDirectoryRecord } from '@domain/stops/stop-directory.facade';
+import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
+import {
+  StopDirectoryFacade,
+  StopDirectoryOption,
+  StopDirectoryRecord
+} from '@domain/stops/stop-directory.facade';
 import { addMinutesToDate } from '@domain/utils/time.util';
 import { StopDetailComponent } from '@features/stop-detail/stop-detail.component';
 import { APP_LAYOUT_CONTEXT, AppLayoutContext } from '@shared/layout/app-layout-context.token';
@@ -26,6 +31,14 @@ class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
     return of({
       navigation: { lines: 'Lines' },
+      home: {
+        sections: {
+          search: {
+            addFavoriteLabel: 'Add to favorites',
+            removeFavoriteLabel: 'Remove from favorites'
+          }
+        }
+      },
       map: {
         focusedLines: {
           loading: 'Loading lines',
@@ -71,11 +84,22 @@ class FakeTranslateLoader implements TranslateLoader {
   }
 }
 
+class FavoritesFacadeStub {
+  private readonly subject = new BehaviorSubject<readonly StopFavorite[]>([]);
+  readonly favorites$ = this.subject.asObservable();
+  readonly toggle = jasmine.createSpy('toggle');
+
+  emit(favorites: readonly StopFavorite[]): void {
+    this.subject.next(favorites);
+  }
+}
+
 describe('StopDetailComponent', () => {
   let fixture: ComponentFixture<StopDetailComponent>;
   let router: jasmine.SpyObj<Router>;
   let scheduleFacade: jasmine.SpyObj<StopScheduleFacade>;
   let directoryFacade: jasmine.SpyObj<StopDirectoryFacade>;
+  let favoritesFacade: FavoritesFacadeStub;
   let routeLines: jasmine.SpyObj<RouteLinesApiService>;
   let paramMapSubject: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
   let queryParamMapSubject: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
@@ -90,13 +114,21 @@ describe('StopDetailComponent', () => {
     scheduleFacade.loadStopSchedule.and.callFake((stopId: string) => of(createResult(stopId)));
 
     directoryFacade = jasmine.createSpyObj<StopDirectoryFacade>('StopDirectoryFacade', [
+      'getOptionByStopId',
+      'getOptionByStopSignature',
       'getRecordByStopId',
       'getRecordByStopSignature'
     ]);
+    directoryFacade.getOptionByStopId.and.callFake((stopId) => of(createDirectoryOption(stopId)));
+    directoryFacade.getOptionByStopSignature.and.callFake((consortiumId, stopId) =>
+      of(createDirectoryOption(stopId, consortiumId))
+    );
     directoryFacade.getRecordByStopId.and.callFake((stopId) => of(createDirectoryRecord(stopId)));
     directoryFacade.getRecordByStopSignature.and.callFake((consortiumId, stopId) =>
       of(createDirectoryRecord(stopId, consortiumId))
     );
+
+    favoritesFacade = new FavoritesFacadeStub();
 
     routeLines = jasmine.createSpyObj<RouteLinesApiService>('RouteLinesApiService', [
       'getLinesForStops'
@@ -132,6 +164,7 @@ describe('StopDetailComponent', () => {
       providers: [
         { provide: StopScheduleFacade, useValue: scheduleFacade },
         { provide: StopDirectoryFacade, useValue: directoryFacade },
+        { provide: FavoritesFacade, useValue: favoritesFacade },
         { provide: RouteLinesApiService, useValue: routeLines },
         {
           provide: ActivatedRoute,
@@ -152,6 +185,51 @@ describe('StopDetailComponent', () => {
   it('requests the schedule for the routed stop identifier', fakeAsync(() => {
     createFixture();
     expect(scheduleFacade.loadStopSchedule).toHaveBeenCalledWith('stop-main-street');
+  }));
+
+  it('resolves the routed stop and exposes an inactive favorite toggle', fakeAsync(() => {
+    createFixture();
+
+    expect(directoryFacade.getOptionByStopId).toHaveBeenCalledWith('stop-main-street');
+    const button = fixture.nativeElement.querySelector('.stop-detail__favorite') as HTMLButtonElement;
+    expect(button).not.toBeNull();
+    expect(button.getAttribute('aria-pressed')).toBe('false');
+    expect(button.getAttribute('aria-label')).toBe('Add to favorites');
+  }));
+
+  it('uses consortium-aware lookup for the favorite toggle', fakeAsync(() => {
+    queryParamMapSubject.next(convertToParamMap({ [CONSORTIUM_QUERY_PARAM]: '4' }));
+    createFixture();
+
+    expect(directoryFacade.getOptionByStopSignature).toHaveBeenCalledWith(4, 'stop-main-street');
+  }));
+
+  it('reacts to favorite changes and toggles the canonical stop option', fakeAsync(() => {
+    const option = createDirectoryOption('stop-main-street');
+    directoryFacade.getOptionByStopId.and.returnValue(of(option));
+    createFixture();
+
+    favoritesFacade.emit([toFavorite(option)]);
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector('.stop-detail__favorite') as HTMLButtonElement;
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+    expect(button.getAttribute('aria-label')).toBe('Remove from favorites');
+
+    button.click();
+    fixture.detectChanges();
+
+    expect(favoritesFacade.toggle).toHaveBeenCalledOnceWith(option);
+  }));
+
+  it('keeps schedule detail usable when the stop cannot be resolved for favorites', fakeAsync(() => {
+    directoryFacade.getOptionByStopId.and.returnValue(of(null));
+    createFixture();
+
+    expect(fixture.nativeElement.querySelector('.stop-detail__title')?.textContent).toContain('Test Stop');
+    expect(fixture.nativeElement.querySelector('.stop-detail__favorite')).toBeNull();
   }));
 
   it('keeps utility work lazy until its task tab is selected', fakeAsync(() => {
@@ -317,6 +395,34 @@ function createResult(stopId: string, services: readonly StopService[] = []): St
       queryTime: now,
       snapshotTime: null
     }
+  } as const;
+}
+
+function createDirectoryOption(stopId: string, consortiumId = 7): StopDirectoryOption {
+  return {
+    id: `${consortiumId}:${stopId}`,
+    code: '056',
+    name: 'Main Street',
+    municipality: 'Sevilla',
+    municipalityId: 'sevilla',
+    nucleus: 'Sevilla',
+    nucleusId: 'sevilla',
+    consortiumId,
+    stopIds: [stopId]
+  } as const;
+}
+
+function toFavorite(option: StopDirectoryOption): StopFavorite {
+  return {
+    id: option.id,
+    code: option.code,
+    name: option.name,
+    municipality: option.municipality,
+    municipalityId: option.municipalityId,
+    nucleus: option.nucleus,
+    nucleusId: option.nucleusId,
+    consortiumId: option.consortiumId,
+    stopIds: option.stopIds
   } as const;
 }
 
