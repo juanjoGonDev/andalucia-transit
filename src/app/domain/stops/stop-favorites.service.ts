@@ -1,11 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { StopDirectoryOption } from '@data/stops/stop-directory.service';
-import { normalizeRequiredStopNucleus } from '@data/stops/stop-metadata.util';
 import {
   StopFavoriteStoredItem,
   StopFavoritesStorage
 } from '@data/stops/stop-favorites.storage';
+import { normalizeRequiredStopNucleus } from '@data/stops/stop-metadata.util';
 
 export interface StopFavorite {
   readonly id: string;
