@@ -16,6 +16,7 @@ const MOCK_MODE = process.env.E2E_MOCK_MODE;
 const RECENT_PATH = '/recents';
 const STOP_SERVICES_SNAPSHOT_PATH = '/assets/data/snapshots/stop-services/latest.json';
 const STOP_SCHEDULE_API_GLOB = '**/v1/Consorcios/*/paradas/**';
+const STOP_LINES_API_GLOB = '**/v1/Consorcios/*/paradas/lineasPorParadas/**';
 const TIMETABLE_API_GLOB = '**/v1/Consorcios/*/horarios_origen_destino*';
 const HOLIDAY_API_GLOB = '**/PublicHolidays/**';
 const NEWS_LIST_URL_PATTERN =
@@ -25,6 +26,8 @@ const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
 const DATA_ITEM_COUNT = 2;
 const NEWS_PAGE_SIZE = 8;
 const TRANSPARENT_BACKGROUND = 'rgba(0, 0, 0, 0)';
+const REPORTED_SENTINEL_LINE_NAME = 'Adra - Venta Del Viso NN';
+const CLEAN_SENTINEL_LINE_NAME = 'Adra - Venta Del Viso';
 
 async function open(page: Page, path: string): Promise<void> {
   const baseUrl = BASE_URL as string;
@@ -246,6 +249,28 @@ test.describe('deterministic interaction visual states', () => {
     await page.route(STOP_SCHEDULE_API_GLOB, async (route) => {
       await route.fulfill({ status: 503, contentType: 'application/json', body: '{}' });
     });
+    await page.route(STOP_LINES_API_GLOB, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          {
+            idLinea: 380,
+            codigo: 'M-380',
+            nombre: REPORTED_SENTINEL_LINE_NAME,
+            descripcion: 'Autobús',
+            prioridad: 8,
+          },
+          {
+            idLinea: 381,
+            codigo: 'M-381',
+            nombre: 'Annarosa - Centro',
+            descripcion: 'Autobús',
+            prioridad: 4,
+          },
+        ]),
+      });
+    });
 
     for (const viewport of [MOBILE_VIEWPORT, DESKTOP_VIEWPORT]) {
       await page.setViewportSize(viewport);
@@ -265,6 +290,24 @@ test.describe('deterministic interaction visual states', () => {
         page.locator('.stop-detail__panel--departures .stop-detail__select'),
       ).toBeVisible();
       await expect(page.locator('app-stop-utility')).toHaveCount(0);
+
+      await page.locator('[data-stop-section="lines"]').click();
+      await expect(page.locator('[data-stop-section="lines"]')).toHaveAttribute(
+        'aria-selected',
+        'true',
+      );
+      await expect(page.locator('.stop-detail__panel--departures')).toHaveCount(0);
+      await expect(page.locator('.stop-utility__line-name')).toHaveText([
+        CLEAN_SENTINEL_LINE_NAME,
+        'Annarosa - Centro',
+      ]);
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
+      ).toBe(true);
+      await captureVisualEvidence(
+        page,
+        `stop-detail-lines_es_${viewport.width}_${viewport.height}_full.png`,
+      );
 
       await page.locator('[data-stop-section="directions"]').click();
       await expect(page.locator('[data-stop-section="directions"]')).toHaveAttribute(
