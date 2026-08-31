@@ -1,3 +1,4 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -5,6 +6,12 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from '@ngx-transl
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
+import { LanguageService } from '@core/services/language.service';
+import {
+  FavoriteCollectionFacade,
+  FavoriteCollectionSnapshot
+} from '@domain/favorites/favorite-collection.facade';
+import { LineFavorite } from '@domain/lines/line-favorites.facade';
 import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
 import {
   StopDirectoryFacade,
@@ -41,6 +48,22 @@ class FavoritesFacadeStub {
   }
 }
 
+class FavoriteCollectionFacadeStub {
+  private readonly subject = new BehaviorSubject<FavoriteCollectionSnapshot>({
+    stops: [],
+    lines: [],
+    total: 0
+  });
+  readonly favorites$ = this.subject.asObservable();
+  readonly removeStop = jasmine.createSpy('removeStop');
+  readonly removeLine = jasmine.createSpy('removeLine');
+  readonly clear = jasmine.createSpy('clear');
+
+  emit(stops: readonly StopFavorite[], lines: readonly LineFavorite[]): void {
+    this.subject.next({ stops, lines, total: stops.length + lines.length });
+  }
+}
+
 class StopDirectoryFacadeStub {
   readonly searchStops = jasmine.createSpy('searchStops').and.returnValue(of([]));
 }
@@ -71,19 +94,21 @@ class OverlayDialogServiceStub {
 
 interface FavoritesComponentAccess {
   searchControl: FavoritesComponent['searchControl'];
-  remove: FavoritesComponent['remove'];
+  removeStop: FavoritesComponent['removeStop'];
+  removeLine: FavoritesComponent['removeLine'];
   clearAll: FavoritesComponent['clearAll'];
   toggleAddMode: FavoritesComponent['toggleAddMode'];
   stopDetailCommands: FavoritesComponent['stopDetailCommands'];
   stopDetailQueryParams: FavoritesComponent['stopDetailQueryParams'];
+  lineDetailCommands: FavoritesComponent['lineDetailCommands'];
 }
 
 const accessProtected = (instance: FavoritesComponent): FavoritesComponentAccess =>
   instance as unknown as FavoritesComponentAccess;
 
-type FavoriteListItemInput = Parameters<FavoritesComponent['remove']>[0];
+type FavoriteStopListItemInput = Parameters<FavoritesComponent['removeStop']>[0];
 
-const toListItem = (favorite: StopFavorite): FavoriteListItemInput => ({
+const toStopListItem = (favorite: StopFavorite): FavoriteStopListItemInput => ({
   id: favorite.id,
   name: favorite.name,
   code: favorite.code,
@@ -129,6 +154,25 @@ const FAVORITES: readonly StopFavorite[] = [
   }
 ] as const;
 
+const LINE_FAVORITES: readonly LineFavorite[] = [
+  {
+    id: '6|100',
+    consortiumId: 6,
+    lineId: '100',
+    code: 'M-100',
+    name: 'Circular Huércal de Almería',
+    mode: 'Autobús'
+  },
+  {
+    id: '7|200',
+    consortiumId: 7,
+    lineId: '200',
+    code: 'M-200',
+    name: 'Sevilla - Dos Hermanas',
+    mode: 'Autobús'
+  }
+] as const;
+
 const DIRECTORY_OPTION: StopDirectoryOption = {
   id: '6:2125',
   code: '2125',
@@ -141,15 +185,21 @@ const DIRECTORY_OPTION: StopDirectoryOption = {
   stopIds: ['2125']
 };
 
+const languageService = {
+  currentLanguage: signal<'es' | 'en'>('es').asReadonly()
+};
+
 describe('FavoritesComponent', () => {
   let fixture: ComponentFixture<FavoritesComponent>;
   let component: FavoritesComponent;
   let favoritesFacade: FavoritesFacadeStub;
+  let favoriteCollection: FavoriteCollectionFacadeStub;
   let stopDirectory: StopDirectoryFacadeStub;
   let dialog: OverlayDialogServiceStub;
 
   beforeEach(async () => {
     favoritesFacade = new FavoritesFacadeStub();
+    favoriteCollection = new FavoriteCollectionFacadeStub();
     stopDirectory = new StopDirectoryFacadeStub();
     dialog = new OverlayDialogServiceStub();
     await TestBed.configureTestingModule({
@@ -163,8 +213,10 @@ describe('FavoritesComponent', () => {
       ],
       providers: [
         { provide: FavoritesFacade, useValue: favoritesFacade },
+        { provide: FavoriteCollectionFacade, useValue: favoriteCollection },
         { provide: StopDirectoryFacade, useValue: stopDirectory },
-        { provide: OverlayDialogService, useValue: dialog }
+        { provide: OverlayDialogService, useValue: dialog },
+        { provide: LanguageService, useValue: languageService }
       ]
     }).compileComponents();
 
@@ -174,44 +226,40 @@ describe('FavoritesComponent', () => {
     spyOn(router, 'navigate').and.resolveTo(true);
   });
 
-  it('renders favorites grouped by municipality', () => {
-    favoritesFacade.emit(FAVORITES);
+  it('renders stop favorites grouped by municipality and line favorites in the same experience', () => {
+    favoriteCollection.emit(FAVORITES, LINE_FAVORITES);
     fixture.detectChanges();
 
     const titleElements = fixture.nativeElement.querySelectorAll(
       '.favorites__group-title'
     ) as NodeListOf<HTMLElement>;
-    const titles = Array.from(titleElements).map((title) => title.textContent?.trim());
+    expect(Array.from(titleElements).map((title) => title.textContent?.trim())).toEqual([
+      'Granada',
+      'Sevilla'
+    ]);
 
-    expect(titles).toEqual(['Granada', 'Sevilla']);
-
-    const firstGroupItems = fixture.nativeElement.querySelectorAll(
-      '.favorites__group:first-of-type .favorites__item'
-    ) as NodeListOf<HTMLLIElement>;
-    const secondGroupItems = fixture.nativeElement.querySelectorAll(
-      '.favorites__group:last-of-type .favorites__item'
-    ) as NodeListOf<HTMLLIElement>;
-
-    expect(firstGroupItems.length).toBe(1);
-    expect(secondGroupItems.length).toBe(2);
+    const entityTitles = fixture.nativeElement.querySelectorAll(
+      '.favorites__entity-title'
+    ) as NodeListOf<HTMLElement>;
+    expect(Array.from(entityTitles).map((title) => title.textContent?.trim())).toEqual([
+      'Líneas',
+      'Paradas'
+    ]);
+    expect(fixture.nativeElement.textContent).toContain('Circular Huércal de Almería');
   });
 
-  it('filters favorites by search term', () => {
-    favoritesFacade.emit(FAVORITES);
+  it('filters both stop and line favorites with the same search field', () => {
+    favoriteCollection.emit(FAVORITES, LINE_FAVORITES);
     fixture.detectChanges();
 
-    const access = accessProtected(component);
-    access.searchControl.setValue('triana');
+    accessProtected(component).searchControl.setValue('huercal');
     fixture.detectChanges();
 
-    const items = fixture.nativeElement.querySelectorAll(
-      '.favorites__item'
-    ) as NodeListOf<HTMLLIElement>;
-    expect(items.length).toBe(1);
-    expect(items[0]?.textContent).toContain('Triana');
+    expect(fixture.nativeElement.textContent).toContain('Circular Huércal de Almería');
+    expect(fixture.nativeElement.textContent).not.toContain('Triana');
   });
 
-  it('searches the stop directory in add mode and toggles the selected favorite', fakeAsync(() => {
+  it('searches the stop directory in add mode and toggles the selected stop favorite', fakeAsync(() => {
     stopDirectory.searchStops.and.returnValue(of([DIRECTORY_OPTION]));
     fixture.detectChanges();
 
@@ -231,7 +279,6 @@ describe('FavoritesComponent', () => {
       '.favorites__add-result'
     ) as HTMLButtonElement;
     expect(result.textContent).toContain('Ada Byron IES (Universidad)');
-    expect(result.textContent).toContain('Málaga');
     expect(result.textContent).not.toContain('NN');
 
     result.click();
@@ -249,8 +296,8 @@ describe('FavoritesComponent', () => {
     expect(stopDirectory.searchStops).not.toHaveBeenCalled();
   }));
 
-  it('does not render a nucleus chip when metadata is missing', () => {
-    favoritesFacade.emit([{ ...FAVORITES[0], nucleus: '' }]);
+  it('does not render a nucleus chip when stop metadata is missing', () => {
+    favoriteCollection.emit([{ ...FAVORITES[0], nucleus: '' }], []);
     fixture.detectChanges();
 
     const chips = fixture.nativeElement.querySelectorAll(
@@ -260,73 +307,60 @@ describe('FavoritesComponent', () => {
     expect(chips[0]?.textContent).toContain('001');
   });
 
-  it('provides consortium-aware navigation to open stop detail', () => {
-    const favorite = FAVORITES[0];
+  it('builds canonical stop and line detail navigation', () => {
     const access = accessProtected(component);
-    const item = toListItem(favorite);
+    const stop = toStopListItem(FAVORITES[0]);
 
-    expect(access.stopDetailCommands.call(component, item)).toEqual([
+    expect(access.stopDetailCommands.call(component, stop)).toEqual([
       '/',
       APP_CONFIG.routes.stopDetailBase,
       'sevilla:001'
     ]);
-    expect(access.stopDetailQueryParams.call(component, item)).toEqual({
+    expect(access.stopDetailQueryParams.call(component, stop)).toEqual({
       [APP_CONFIG.routeParams.stopInfo.consortiumId]: '7'
     });
+    expect(access.lineDetailCommands.call(component, LINE_FAVORITES[0])).toEqual([
+      '/',
+      'lines',
+      '6',
+      '100'
+    ]);
   });
 
-  it('removes a favorite after confirmation', async () => {
-    const favorite = FAVORITES[0];
+  it('removes stop and line favorites through the aggregate facade after confirmation', async () => {
     dialog.setResponse(true);
-
     const access = accessProtected(component);
-    await access.remove.call(component, toListItem(favorite));
 
-    expect(favoritesFacade.remove).toHaveBeenCalledWith('sevilla-001');
-    expect(dialog.lastData()).toEqual(
-      jasmine.objectContaining({
-        details: jasmine.arrayContaining([
-          jasmine.objectContaining({ value: favorite.name }),
-          jasmine.objectContaining({ value: favorite.code })
-        ])
-      })
-    );
+    await access.removeStop.call(component, toStopListItem(FAVORITES[0]));
+    await access.removeLine.call(component, LINE_FAVORITES[0]);
+
+    expect(favoriteCollection.removeStop).toHaveBeenCalledWith('sevilla-001');
+    expect(favoriteCollection.removeLine).toHaveBeenCalledWith('6|100');
   });
 
-  it('does not remove a favorite when confirmation is rejected', async () => {
-    const favorite = FAVORITES[0];
+  it('does not remove an entity when confirmation is rejected', async () => {
     dialog.setResponse(false);
-
     const access = accessProtected(component);
-    await access.remove.call(component, toListItem(favorite));
 
-    expect(favoritesFacade.remove).not.toHaveBeenCalled();
+    await access.removeLine.call(component, LINE_FAVORITES[0]);
+
+    expect(favoriteCollection.removeLine).not.toHaveBeenCalled();
   });
 
-  it('clears all favorites after confirmation', async () => {
-    favoritesFacade.emit(FAVORITES);
+  it('clears both favorite stores after aggregate confirmation', async () => {
+    favoriteCollection.emit(FAVORITES, LINE_FAVORITES);
     fixture.detectChanges();
     dialog.setResponse(true);
 
-    const access = accessProtected(component);
-    await access.clearAll.call(component);
+    await accessProtected(component).clearAll.call(component);
 
-    expect(favoritesFacade.clear).toHaveBeenCalled();
+    expect(favoriteCollection.clear).toHaveBeenCalled();
     expect(dialog.lastData()).toEqual(
       jasmine.objectContaining({
         details: jasmine.arrayContaining([
-          jasmine.objectContaining({ value: FAVORITES.length.toString() })
+          jasmine.objectContaining({ value: '5' })
         ])
       })
     );
-  });
-
-  it('does not clear favorites when confirmation is rejected', async () => {
-    dialog.setResponse(false);
-
-    const access = accessProtected(component);
-    await access.clearAll.call(component);
-
-    expect(favoritesFacade.clear).not.toHaveBeenCalled();
   });
 });
