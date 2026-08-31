@@ -49,7 +49,7 @@ export class HomeFavoritesPreviewComponent {
   }
 
   protected lineDetailCommands(favorite: LineFavorite): NavigationCommands {
-    return buildLineDetailNavigation(favorite.consortiumId, favorite.lineId).commands;
+    return buildLineDetailNavigation(favorite.consortiumId, favorite.lineId, favorite.name).commands;
   }
 
   private buildStopDetailNavigation(favorite: StopFavorite) {
