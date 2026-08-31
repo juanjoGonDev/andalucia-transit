@@ -36,7 +36,9 @@ Keep exact visual regression deterministic after daily CTAN data refreshes. Zero
 - Exact artifact `9748327575`, digest `sha256:eab75f4fc004437954cb6920d182a3033fa71ada6b9f4a6a6c923d099064d50c`, reports `passed: true`, `comparedFiles: 36`, `changedFiles: 0`, `totalDiffPixels: 0`.
 - Canonical exact News now renders at stable dimensions `390x3268` and `1440x1890` for both baseline and head.
 - `stop-detail-data` and `stop-detail-directions` also remain exact matches at mobile and desktop targets.
-- Direct artifact review confirms the canonical Stop Detail remains representative: stop `2528`, timetable metadata, upcoming/recent service state, directions state, responsive mobile/desktop layout, current legal notice/footer shell, and walking-map links are all rendered.
+- Final ledger head `abeac54225b2eec8da77156e6e8de6dc99664d36` also passed every repository workflow: CI `33366390356`, Legal browser QA `33366390359`, Publish PR visual evidence `33366390391`, and Visual regression baseline `33366390346`.
+- Exact artifact `9748546707`, digest `sha256:a025afb4d46344f5160a1e5c4fdd569c4f2528aaf63e00d4c02da94e7d8a10e5`, reports `passed: true`, `comparedFiles: 36`, `changedFiles: 0`, and `totalDiffPixels: 0`.
+- Direct final artifact review covered exact News, Stop Detail, and Map. News is stable at `390x3268` / `1440x1890`; Stop Detail departures and directions remain pixel-identical; Map remains `390x844` / `1440x900` with Leaflet/OpenStreetMap attribution visible above navigation.
 - The existing mobile floating-navigation overlap visible in Stop Detail is unchanged from the reviewed baseline and is not introduced by this determinism work.
 - `.github/visual-baseline.json` was not modified by this task.
 
@@ -63,18 +65,19 @@ Keep exact visual regression deterministic after daily CTAN data refreshes. Zero
 - [x] Exact comparator remains RGBA zero tolerance.
 - [x] CI, Legal browser QA, normal visual evidence, and exact visual regression are green on the same executable/test head.
 - [x] Final executable/test artifact compares all 36 mandatory screenshots with zero unexpected pixels.
+- [x] Final ledger head also passes CI, Legal browser QA, normal visual evidence, and exact visual regression.
+- [x] Final ledger artifact compares all 36 mandatory screenshots with zero unexpected pixels.
 - [x] Reviewed baseline is unchanged by this determinism fix.
 - [x] PR remains open and unmerged; no release or deploy is performed.
 
 ## Checks
 
 - Focused tooling unit tests for canonical Stop Detail and News data: passed through CI `33365726002`.
-- Repository script tests, TypeScript, lint, application tests and build: passed in CI `33365726002`.
-- Legal/privacy browser flow: passed in `33365725965`.
-- Normal PR visual evidence: passed in `33365725972` with the normal workflow's current-data `/news` capture unchanged.
-- Exact baseline/head Playwright renders and RGBA comparator: passed in `33365725991`, 36/36 exact, 0 differing pixels.
-- Exact artifact manually inspected for Stop Detail mobile/desktop departures and directions states; exact News dimensions and pixel identity verified from `diff/summary.json`.
-- Final documentation-head validation remains required after this ledger update.
+- Repository script tests, TypeScript, lint, application tests and build: passed in CI `33365726002` and final ledger CI `33366390356`.
+- Legal/privacy browser flow: passed in `33365725965` and final ledger run `33366390359`.
+- Normal PR visual evidence: passed in `33365725972` and final ledger run `33366390391` with current-data `/news` capture unchanged.
+- Exact baseline/head Playwright renders and RGBA comparator: passed in `33365725991` and final ledger run `33366390346`, both 36/36 exact with 0 differing pixels.
+- Final exact artifact `9748546707` manually reviewed for News, Stop Detail, and Map critical states.
 
 ## Risks
 
@@ -105,4 +108,4 @@ Implementation commits include:
 
 ## Status
 
-`validation` — the complete executable/test head is green with 36/36 exact matches, zero differing pixels, normal current-data visual evidence green, and no baseline modification. This final ledger commit must pass the same repository workflows before delivery.
+`done` — exact dynamic data is deterministic for Stop Detail and News, normal evidence still uses current data, exact RGBA comparison remains zero tolerance, the reviewed baseline is unchanged, and the final validated ledger head is green with 36/36 exact matches and zero differing pixels.
