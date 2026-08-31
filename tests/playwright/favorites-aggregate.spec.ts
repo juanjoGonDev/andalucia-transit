@@ -97,6 +97,7 @@ test.describe('aggregate favorites product checks', () => {
     page,
   }) => {
     await open(page, LINES_PATH);
+    await page.locator('.lines__input').fill(MOCK_LINE_CODE);
 
     const lineItem = page.locator('.lines__item').filter({ hasText: MOCK_LINE_CODE });
     await expect(lineItem).toHaveCount(1, { timeout: 15_000 });
