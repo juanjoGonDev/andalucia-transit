@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { StopDirectoryOption } from '@data/stops/stop-directory.service';
+import { normalizeRequiredStopNucleus } from '@data/stops/stop-metadata.util';
 import {
   StopFavoriteStoredItem,
   StopFavoritesStorage
@@ -127,7 +128,7 @@ export class StopFavoritesService {
       name: option.name,
       municipality: option.municipality,
       municipalityId: option.municipalityId,
-      nucleus: option.nucleus,
+      nucleus: normalizeRequiredStopNucleus(option.nucleus),
       nucleusId: option.nucleusId,
       consortiumId: option.consortiumId,
       stopIds: option.stopIds
@@ -141,7 +142,7 @@ export class StopFavoritesService {
       name: item.name,
       municipality: item.municipality,
       municipalityId: item.municipalityId,
-      nucleus: item.nucleus,
+      nucleus: normalizeRequiredStopNucleus(item.nucleus),
       nucleusId: item.nucleusId,
       consortiumId: item.consortiumId,
       stopIds: item.stopIds
