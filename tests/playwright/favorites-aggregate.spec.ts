@@ -1,4 +1,4 @@
-import { expect, test, type Page } from './visual-evidence.fixture';
+import { expect, type Page, test } from './visual-evidence.fixture';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const MOCK_MODE = process.env.E2E_MOCK_MODE;
