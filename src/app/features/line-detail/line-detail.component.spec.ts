@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { LanguageService } from '@core/services/language.service';
@@ -77,6 +77,12 @@ class LineFavoritesFacadeStub {
   }
 }
 
+class FakeTranslateLoader implements TranslateLoader {
+  getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
+    return of({});
+  }
+}
+
 const activatedRoute = {
   paramMap: of(convertToParamMap({ consortiumId: '7', lineId: 'line-1' })),
   snapshot: {
@@ -96,7 +102,13 @@ describe('LineDetailComponent', () => {
     lineFavorites = new LineFavoritesFacadeStub();
 
     await TestBed.configureTestingModule({
-      imports: [LineDetailComponent, TransitRouteWorkspaceStubComponent, TranslateModule.forRoot()],
+      imports: [
+        LineDetailComponent,
+        TransitRouteWorkspaceStubComponent,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
       providers: [
         provideRouter([]),
         { provide: ActivatedRoute, useValue: activatedRoute },
