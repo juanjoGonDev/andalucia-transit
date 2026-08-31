@@ -11,6 +11,8 @@ const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const STOP_FAVORITE_COUNT = 2;
 const LINE_FAVORITE_COUNT = 1;
 const AGGREGATE_FAVORITE_COUNT = STOP_FAVORITE_COUNT + LINE_FAVORITE_COUNT;
+const MOCK_LINE_CODE = 'M-101';
+const MOCK_LINE_NAME = 'Almería - Huércal - Viator - Campamento';
 
 const lineDetailResponse = {
   idLinea: '259',
@@ -78,7 +80,7 @@ test.describe('aggregate favorites product checks', () => {
 
     await expect(page.locator('.favorites__item')).toHaveCount(AGGREGATE_FAVORITE_COUNT);
     await expect(page.locator('.favorites__entity-title')).toHaveText(['Líneas', 'Paradas']);
-    await expect(page.getByText('Circular Huércal de Almería', { exact: true })).toBeVisible();
+    await expect(page.getByText(MOCK_LINE_NAME, { exact: true })).toBeVisible();
 
     const names = await page.locator('.favorites-card__name').allTextContents();
     expect(names).toHaveLength(AGGREGATE_FAVORITE_COUNT);
@@ -91,15 +93,16 @@ test.describe('aggregate favorites product checks', () => {
     ).toBe(true);
   });
 
-  test('exposes line favorite management directly from the line directory', async ({ page }) => {
+  test('exposes the canonical saved line as favorite directly from the line directory', async ({
+    page,
+  }) => {
     await open(page, LINES_PATH);
 
-    const firstItem = page.locator('.lines__item').first();
-    await expect(firstItem).toBeVisible({ timeout: 15_000 });
-    const firstName = await firstItem.locator('.lines__line-name').textContent();
-    expect(firstName ?? '').not.toMatch(/\sNN\s*$/iu);
+    const lineItem = page.locator('.lines__item').filter({ hasText: MOCK_LINE_CODE });
+    await expect(lineItem).toHaveCount(1, { timeout: 15_000 });
+    await expect(lineItem.locator('.lines__line-name')).toHaveText(MOCK_LINE_NAME);
 
-    const favorite = firstItem.locator('.lines__favorite');
+    const favorite = lineItem.locator('.lines__favorite');
     await expect(favorite).toBeVisible();
     await expect(favorite).toHaveAttribute('aria-pressed', 'true');
     await favorite.click();
