@@ -3,13 +3,63 @@ import { expect, test, type Page } from './visual-evidence.fixture';
 const BASE_URL = process.env.E2E_BASE_URL;
 const MOCK_MODE = process.env.E2E_MOCK_MODE;
 const FAVORITES_PATH = '/favorites';
+const LINES_PATH = '/lines';
+const LINE_DETAIL_PATH = '/lines/1/259';
+const LINE_API_GLOB = '**/v1/Consorcios/1/lineas/259**';
+const OSM_TILE_GLOB = 'https://*.tile.openstreetmap.org/**';
 const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const STOP_FAVORITE_COUNT = 2;
 const LINE_FAVORITE_COUNT = 1;
 const AGGREGATE_FAVORITE_COUNT = STOP_FAVORITE_COUNT + LINE_FAVORITE_COUNT;
 
+const lineDetailResponse = {
+  idLinea: '259',
+  codigo: '1011',
+  nombre: 'M-101A Circular Bormujos - Castilleja - Tomares NN',
+  modo: 'Bus',
+  polilinea: [
+    [37.373, -6.072],
+    [37.379, -6.052],
+    [37.386, -6.012],
+  ],
+} as const;
+
+const lineStopsResponse = [
+  {
+    idParada: '4101',
+    idLinea: '259',
+    idNucleo: '1001',
+    idZona: 'A',
+    latitud: 37.373,
+    longitud: -6.072,
+    nombre: 'Bormujos Centro',
+    sentido: 0,
+    orden: 1,
+    modos: 1,
+  },
+] as const;
+
 async function open(page: Page, path: string): Promise<void> {
   await page.goto(new URL(path, BASE_URL as string).toString());
+}
+
+async function stubLineDetail(page: Page): Promise<void> {
+  await page.route(LINE_API_GLOB, async (route) => {
+    const path = new URL(route.request().url()).pathname;
+    const body = path.endsWith('/paradas') ? lineStopsResponse : lineDetailResponse;
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(body),
+    });
+  });
+  await page.route(OSM_TILE_GLOB, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'image/svg+xml',
+      body: '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"/>',
+    });
+  });
 }
 
 test.describe('aggregate favorites product checks', () => {
@@ -39,5 +89,35 @@ test.describe('aggregate favorites product checks', () => {
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
     ).toBe(true);
+  });
+
+  test('exposes line favorite management directly from the line directory', async ({ page }) => {
+    await open(page, LINES_PATH);
+
+    const firstItem = page.locator('.lines__item').first();
+    await expect(firstItem).toBeVisible({ timeout: 15_000 });
+    const firstName = await firstItem.locator('.lines__line-name').textContent();
+    expect(firstName ?? '').not.toMatch(/\sNN\s*$/iu);
+
+    const favorite = firstItem.locator('.lines__favorite');
+    await expect(favorite).toBeVisible();
+    await expect(favorite).toHaveAttribute('aria-pressed', 'true');
+    await favorite.click();
+    await expect(favorite).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('exposes line favorite management from line detail and normalizes its title', async ({ page }) => {
+    await stubLineDetail(page);
+    await open(page, LINE_DETAIL_PATH);
+
+    await expect(page.locator('.line-detail__heading h1')).toHaveText(
+      'M-101A Circular Bormujos - Castilleja - Tomares',
+      { timeout: 15_000 },
+    );
+    const favorite = page.locator('.line-detail__favorite');
+    await expect(favorite).toBeVisible();
+    await expect(favorite).toHaveAttribute('aria-pressed', 'false');
+    await favorite.click();
+    await expect(favorite).toHaveAttribute('aria-pressed', 'true');
   });
 });
