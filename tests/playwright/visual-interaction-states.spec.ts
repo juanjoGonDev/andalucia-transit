@@ -139,6 +139,11 @@ test.describe('deterministic interaction visual states', () => {
   test.skip(MOCK_MODE !== 'data', 'E2E_MOCK_MODE=data is required for interaction-state tests.');
 
   test('shows a usable favorites add panel instead of an empty surface', async ({ page }) => {
+    test.skip(
+      EXACT_VISUAL_REGRESSION,
+      'Favorites add-mode behavior is a current-head product check, not a baseline contract.',
+    );
+
     await page.setViewportSize(MOBILE_VIEWPORT);
     await open(page, '/favorites');
 
