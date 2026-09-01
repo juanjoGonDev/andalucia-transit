@@ -19,7 +19,7 @@ The task was reopened after direct browser validation showed that the first iter
 - The final full CodeRabbit review on documentation head `9923f12da42ddcb18fe8e69cd2d0df84889a83d3` completed as run `6f348221-b89e-437a-b3f7-3603707eb05e` and found one additional valid canonical-URL defect: max-length truncation could leave a trailing word separator in a descriptive slug.
 - The slug defect was reproduced before the fix with a test-only head: CI `33491669476`, Angular job `99804434901`, reported exactly 1 failure and 519 successes because a 120-character truncation produced a trailing `-`.
 - The next exact-head full review on `352dc58a070b4e6f57b8444ae41a2fbb1fb50685` found one additional valid CTAN boundary defect: `lineasPorParadas` summaries whose entire name normalizes from `NN` to an empty string were still emitted, allowing a blank line entry to reach stop-based results.
-- That blank-summary defect was reproduced before the implementation change with test-only head `cd51e99169abcdc38dfc8cdd8a1df6f2bd488f73`: CI `33496529782`, Angular job `99820001995`, reported exactly `1 FAILED, 520 SUCCESS` because `M-380` remained in the result after its name normalized from ` NN ` to empty.
+- That blank-summary defect was reproduced before the implementation change with test-only head `cd51e99169abcdc38dfc8cdd8a1df6f2bd488f73`: CI `33496529782`, Angular job `99820001995`, reported exactly `1 FAILED, 520 SUCCESS` because `M-380` remained in the result after its name normalized from `NN` to empty.
 
 ## Decision
 
