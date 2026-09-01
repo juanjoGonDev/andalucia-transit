@@ -163,6 +163,29 @@ describe('RouteLinesApiService', () => {
     ]);
   });
 
+  it('drops stop-line entries whose normalized CTAN name is empty', async () => {
+    http.get.and.returnValue(
+      of([
+        {
+          idLinea: 380,
+          codigo: 'M-380',
+          nombre: ' NN ',
+          descripcion: 'Autobús',
+        },
+        {
+          idLinea: 381,
+          codigo: 'M-381',
+          nombre: 'Almería - El Ejido',
+          descripcion: 'Autobús',
+        },
+      ]),
+    );
+
+    const result = await firstValueFrom(service.getLinesForStops(8, ['79']));
+
+    expect(result.map((line) => line.code)).toEqual(['M-381']);
+  });
+
   it('does not issue a second stop-line request when the canonical CTAN route fails', async () => {
     http.get.and.returnValue(throwError(() => new Error('CTAN unavailable')));
 
