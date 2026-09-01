@@ -3,12 +3,16 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, from, map, of, shareReplay, switchMap } from 'rxjs';
 import { AppConfig } from '@core/config';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
+import { normalizeLineDisplayName } from '@data/lines/line-metadata.util';
 import type {
   RouteLineCoordinate,
-  RouteLineDetail
+  RouteLineDetail,
 } from '@data/route-search/route-line-detail.mapper';
 
-export type { RouteLineCoordinate, RouteLineDetail } from '@data/route-search/route-line-detail.mapper';
+export type {
+  RouteLineCoordinate,
+  RouteLineDetail,
+} from '@data/route-search/route-line-detail.mapper';
 
 export interface RouteLineSummary {
   readonly lineId: string;
@@ -44,7 +48,7 @@ export class RouteLinesApiService {
 
   getLinesForStops(
     consortiumId: number,
-    stopIds: readonly string[]
+    stopIds: readonly string[],
   ): Observable<readonly RouteLineSummary[]> {
     if (!stopIds.length) {
       return of(EMPTY_LINE_LIST);
@@ -69,26 +73,20 @@ export class RouteLinesApiService {
 
   getLinesNearLocation(
     consortiumId: number,
-    coordinate: RouteLineCoordinate
+    coordinate: RouteLineCoordinate,
   ): Observable<readonly RouteLineSummary[]> {
     const stopsUrl = this.buildStopsUrl(consortiumId);
 
     return from(import('./route-lines-nearby.loader')).pipe(
       switchMap(({ loadLinesNearLocation }) =>
-        loadLinesNearLocation(
-          this.http,
-          stopsUrl,
-          coordinate,
-          (stopId) => this.getLinesForStops(consortiumId, [stopId])
-        )
-      )
+        loadLinesNearLocation(this.http, stopsUrl, coordinate, (stopId) =>
+          this.getLinesForStops(consortiumId, [stopId]),
+        ),
+      ),
     );
   }
 
-  getLineStops(
-    consortiumId: number,
-    lineId: string
-  ): Observable<readonly RouteLineStop[]> {
+  getLineStops(consortiumId: number, lineId: string): Observable<readonly RouteLineStop[]> {
     if (!lineId) {
       return of(EMPTY_LINE_STOPS);
     }
@@ -120,14 +118,11 @@ export class RouteLinesApiService {
     const detailUrl = this.buildLineDetailUrl(consortiumId, lineId);
     const request$ = from(import('./route-line-detail-with-stops.loader')).pipe(
       switchMap(({ loadLineDetailWithStopFallback }) =>
-        loadLineDetailWithStopFallback(
-          this.http,
-          detailUrl,
-          this.language,
-          () => this.getLineStops(consortiumId, lineId)
-        )
+        loadLineDetailWithStopFallback(this.http, detailUrl, this.language, () =>
+          this.getLineStops(consortiumId, lineId),
+        ),
       ),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     );
 
     this.lineDetailsCache.set(cacheKey, request$);
@@ -159,7 +154,7 @@ export class RouteLinesApiService {
 interface ApiLineSummary {
   readonly idLinea: string | number;
   readonly codigo: string;
-  readonly nombre: string;
+  readonly nombre: unknown;
   readonly descripcion?: string;
   readonly modo?: string;
   readonly prioridad?: string | number;
@@ -216,13 +211,22 @@ function buildLineDetailCacheKey(consortiumId: number, lineId: string): string {
 }
 
 function mapLineSummaries(entries: readonly ApiLineSummary[]): readonly RouteLineSummary[] {
-  const summaries = entries.map((entry) => ({
-    lineId: String(entry.idLinea),
-    code: entry.codigo,
-    name: entry.nombre,
-    mode: entry.descripcion ?? entry.modo ?? '',
-    priority: Number(entry.prioridad ?? 0)
-  } satisfies RouteLineSummary));
+  const summaries = entries
+    .map((entry) => {
+      const name = normalizeLineDisplayName(entry.nombre);
+      if (!name) {
+        return null;
+      }
+
+      return {
+        lineId: String(entry.idLinea),
+        code: entry.codigo,
+        name,
+        mode: entry.descripcion ?? entry.modo ?? '',
+        priority: Number(entry.prioridad ?? 0),
+      } satisfies RouteLineSummary;
+    })
+    .filter((summary): summary is RouteLineSummary => summary !== null);
 
   return Object.freeze(summaries);
 }
@@ -246,23 +250,26 @@ function mapLineStops(response: ApiLineStopsResponse): readonly RouteLineStop[] 
   }
 
   const stops = entries
-    .map((stop: ApiLineStop) => ({
-      stopId: String(stop.idParada),
-      lineId: String(stop.idLinea),
-      direction: Number(stop.sentido),
-      order: Number(stop.orden),
-      nucleusId: String(stop.idNucleo),
-      zoneId: normalizeZoneId(stop.idZona),
-      latitude: Number(stop.latitud),
-      longitude: Number(stop.longitud),
-      name: stop.nombre
-    } satisfies RouteLineStop))
+    .map(
+      (stop: ApiLineStop) =>
+        ({
+          stopId: String(stop.idParada),
+          lineId: String(stop.idLinea),
+          direction: Number(stop.sentido),
+          order: Number(stop.orden),
+          nucleusId: String(stop.idNucleo),
+          zoneId: normalizeZoneId(stop.idZona),
+          latitude: Number(stop.latitud),
+          longitude: Number(stop.longitud),
+          name: stop.nombre,
+        }) satisfies RouteLineStop,
+    )
     .filter(
       (stop: RouteLineStop) =>
         Number.isFinite(stop.latitude) &&
         Number.isFinite(stop.longitude) &&
         Number.isFinite(stop.direction) &&
-        Number.isFinite(stop.order)
+        Number.isFinite(stop.order),
     );
 
   return Object.freeze(stops);

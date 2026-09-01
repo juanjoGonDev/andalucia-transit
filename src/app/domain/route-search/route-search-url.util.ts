@@ -1,3 +1,4 @@
+import { buildDescriptiveSlug } from '@core/routing/url-slug';
 import { StopDirectoryOption } from '@data/stops/stop-directory.service';
 
 export interface RouteSearchSegments {
@@ -7,14 +8,13 @@ export interface RouteSearchSegments {
 }
 
 const SLUG_SEPARATOR = '--';
-const WORD_SEPARATOR = '-';
-const MAX_SLUG_LENGTH = 120;
 const CONSORTIUM_PREFIX = 'c';
 const STOP_PREFIX = 's';
+const STOP_SLUG_FALLBACK = 'stop' as const;
 
 export function buildStopSlug(option: StopDirectoryOption): string {
   const primaryStopId = option.stopIds[0] ?? option.id;
-  const normalizedName = normalizeSlugValue(option.name);
+  const normalizedName = buildDescriptiveSlug(option.name, STOP_SLUG_FALLBACK);
   const metadata = `${CONSORTIUM_PREFIX}${option.consortiumId}${STOP_PREFIX}${primaryStopId}`;
   return `${normalizedName}${SLUG_SEPARATOR}${metadata}`;
 }
@@ -111,19 +111,6 @@ export function parseDateSlug(slug: string): Date | null {
   }
 
   return date;
-}
-
-function normalizeSlugValue(value: string): string {
-  const normalized = value
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/gu, WORD_SEPARATOR)
-    .replace(new RegExp(`${WORD_SEPARATOR}{2,}`, 'g'), WORD_SEPARATOR)
-    .replace(new RegExp(`^${WORD_SEPARATOR}|${WORD_SEPARATOR}$`, 'g'), '');
-
-  const trimmed = normalized.slice(0, MAX_SLUG_LENGTH);
-  return trimmed || 'stop';
 }
 
 function padNumber(value: number): string {

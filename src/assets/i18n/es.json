@@ -148,20 +148,30 @@
     }
   },
   "favorites": {
-    "title": "Paradas favoritas",
-    "description": "Organiza tus paradas favoritas y navega rápidamente a cada una.",
+    "title": "Favoritos",
+    "description": "Guarda tus paradas y líneas habituales y accede rápidamente a sus detalles.",
     "search": {
       "label": "Buscar",
-      "placeholder": "Filtra por nombre, código o municipio"
+      "placeholder": "Filtra por nombre, código o municipio",
+      "error": "No pudimos buscar en el directorio de paradas. Comprueba tu conexión e inténtalo de nuevo.",
+      "retry": "Intentar de nuevo"
     },
-    "empty": "Todavía no has añadido paradas favoritas.",
+    "empty": "Todavía no has añadido ninguna parada o línea favorita.",
     "actions": {
       "clearAll": "Eliminar todas",
-      "remove": "Eliminar de favoritos"
+      "remove": "Eliminar de favoritos",
+      "open": "Abrir favoritos",
+      "addLine": "Añadir línea a favoritos",
+      "removeLine": "Eliminar línea de favoritos"
+    },
+    "sections": {
+      "stops": "Paradas",
+      "lines": "Líneas"
     },
     "list": {
       "code": "Código",
-      "nucleus": "Núcleo"
+      "nucleus": "Núcleo",
+      "mode": "Modo"
     },
     "dialogs": {
       "remove": {
@@ -172,14 +182,14 @@
       },
       "clearAll": {
         "title": "¿Eliminar todas las favoritas?",
-        "message": "Se borrarán todas las paradas favoritas guardadas.",
+        "message": "Se borrarán todas las paradas y líneas favoritas guardadas.",
         "confirm": "Eliminar todas",
         "cancel": "Cancelar"
       },
       "details": {
         "name": "Nombre",
         "code": "Código",
-        "count": "Paradas a eliminar"
+        "count": "Favoritos a eliminar"
       }
     }
   },

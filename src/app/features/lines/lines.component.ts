@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signa
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   BehaviorSubject,
   Observable,
@@ -32,7 +33,14 @@ import {
   LineDirectoryService,
   buildLineKey
 } from '@domain/lines/line-directory.service';
+import { LineFavoriteCandidate, LineFavoritesFacade } from '@domain/lines/line-favorites.facade';
 import { LinesUiCopy, getLinesUiCopy } from '@features/lines/lines-ui.copy';
+import {
+  LINES_ADD_FAVORITE_LABEL_KEY,
+  LINES_FAVORITE_ACTIVE_ICON,
+  LINES_FAVORITE_INACTIVE_ICON,
+  LINES_REMOVE_FAVORITE_LABEL_KEY
+} from '@features/lines/lines.config';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import {
   LINE_DETAIL_BASE_SEGMENT,
@@ -86,7 +94,7 @@ const EMPTY_PROVINCES: readonly string[] = Object.freeze([]);
 @Component({
   selector: 'app-lines',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, AppLayoutContentDirective],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule, AppLayoutContentDirective],
   templateUrl: './lines.component.html',
   styleUrl: './lines.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -97,11 +105,13 @@ export class LinesComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly catalog = inject(ConsortiumCatalogService);
   private readonly directory = inject(LineDirectoryService);
+  private readonly lineFavorites = inject(LineFavoritesFacade);
   private readonly geolocation = inject(GeolocationService);
   private readonly language = inject(LanguageService);
 
   private readonly queryChanges = new Subject<string>();
   private readonly nearbyKeys = new BehaviorSubject<ReadonlySet<string> | null>(null);
+  private readonly favoriteLineIds = signal<ReadonlySet<string>>(new Set<string>());
 
   protected readonly layoutNavigationKey = LINE_DETAIL_BASE_SEGMENT;
   protected readonly copy = computed<LinesUiCopy>(() => getLinesUiCopy(this.language.currentLanguage()));
@@ -192,6 +202,12 @@ export class LinesComponent {
       .pipe(debounceTime(250), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((query) =>
         this.updateQueryParams({ [QUERY_PARAM_QUERY]: normalizeQuery(query), page: null })
+      );
+
+    this.lineFavorites.favorites$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((favorites) =>
+        this.favoriteLineIds.set(new Set(favorites.map((favorite) => favorite.id)))
       );
   }
 
@@ -298,7 +314,25 @@ export class LinesComponent {
   }
 
   protected lineCommands(line: LineDirectoryEntry): NavigationCommands {
-    return buildLineDetailNavigation(line.consortiumId, line.lineId).commands;
+    return buildLineDetailNavigation(line.consortiumId, line.lineId, line.name).commands;
+  }
+
+  protected isLineFavorite(line: LineDirectoryEntry): boolean {
+    return this.favoriteLineIds().has(buildLineKey(line.consortiumId, line.lineId));
+  }
+
+  protected favoriteIcon(line: LineDirectoryEntry): string {
+    return this.isLineFavorite(line) ? LINES_FAVORITE_ACTIVE_ICON : LINES_FAVORITE_INACTIVE_ICON;
+  }
+
+  protected favoriteLabelKey(line: LineDirectoryEntry): string {
+    return this.isLineFavorite(line)
+      ? LINES_REMOVE_FAVORITE_LABEL_KEY
+      : LINES_ADD_FAVORITE_LABEL_KEY;
+  }
+
+  protected toggleFavorite(line: LineDirectoryEntry): void {
+    this.lineFavorites.toggle(this.toFavoriteCandidate(line));
   }
 
   protected trackLine(_: number, line: LineDirectoryEntry): string {
@@ -319,6 +353,16 @@ export class LinesComponent {
 
   protected trackNucleus(_: number, nucleus: CatalogNucleusEntry): string {
     return nucleus.id;
+  }
+
+  private toFavoriteCandidate(line: LineDirectoryEntry): LineFavoriteCandidate {
+    return {
+      consortiumId: line.consortiumId,
+      lineId: line.lineId,
+      code: line.code,
+      name: line.name,
+      mode: line.mode
+    };
   }
 
   private updateQueryParams(queryParams: Readonly<Record<string, string | number | null>>): void {

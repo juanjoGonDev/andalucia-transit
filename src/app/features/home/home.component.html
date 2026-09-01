@@ -64,28 +64,21 @@
                 ></app-home-recent-searches>
               </div>
               <div *ngSwitchCase="'favorites'" class="home__panel home__panel--favorites home__stack">
-                <header class="home__panel-header">
-                  <div class="home__panel-heading home__stack">
-                    <h3 class="home__panel-title">{{ favoritesTitleKey | translate }}</h3>
-                  </div>
+                @defer (when activeTab() === 'favorites') {
+                  <app-home-favorites-panel
+                    (openFavorites)="openFavoritesView()"
+                  ></app-home-favorites-panel>
+                } @placeholder {
                   <div
-                    appAccessibleButton
-                    class="app-button app-button--ghost home__panel-action"
-                    (appAccessibleButtonActivated)="openFavoritesView()"
+                    class="home-recent__empty"
+                    role="status"
+                    aria-live="polite"
+                    aria-busy="true"
                   >
-                    {{ favoritesActionKey | translate }}
+                    <span class="app-loading-indicator" aria-hidden="true"></span>
+                    <span class="app-visually-hidden">{{ 'favorites.title' | translate }}…</span>
                   </div>
-                </header>
-                <ng-container *ngIf="hasFavorites(); else favoritesEmpty">
-                  <app-home-favorites-preview
-                    [favorites]="favoritePreview()"
-                    [codeLabel]="favoritesCodeLabelKey | translate"
-                    [nucleusLabel]="favoritesNucleusLabelKey | translate"
-                  ></app-home-favorites-preview>
-                </ng-container>
-                <ng-template #favoritesEmpty>
-                  <p class="home-recent__empty">{{ favoritesEmptyKey | translate }}</p>
-                </ng-template>
+                }
               </div>
             </ng-container>
           </div>

@@ -24,6 +24,11 @@ import {
   StopScheduleUiModel,
   buildStopScheduleUiModel
 } from '@domain/stop-schedule/stop-schedule.transform';
+import { FavoritesFacade } from '@domain/stops/favorites.facade';
+import {
+  StopDirectoryFacade,
+  StopDirectoryOption
+} from '@domain/stops/stop-directory.facade';
 import { StopUtilityComponent } from '@features/stop-detail/stop-utility/stop-utility.component';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
@@ -52,6 +57,11 @@ const STOP_DETAIL_SECTIONS: readonly StopDetailSection[] = Object.freeze([
 export interface StopRouteContext {
   readonly stopId: string;
   readonly consortiumId: number | null;
+}
+
+interface StopFavoriteState {
+  readonly option: StopDirectoryOption | null;
+  readonly isFavorite: boolean;
 }
 
 const areStopRouteContextsEqual = (left: StopRouteContext, right: StopRouteContext): boolean =>
@@ -86,6 +96,8 @@ export class StopDetailComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly stopScheduleFacade = inject(StopScheduleFacade);
+  private readonly stopDirectory = inject(StopDirectoryFacade);
+  private readonly favorites = inject(FavoritesFacade);
   private readonly translate = inject(TranslateService);
   private readonly scheduleRefresh = new Subject<void>();
 
@@ -93,6 +105,12 @@ export class StopDetailComponent {
   protected readonly retryKey = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.retry;
   protected readonly linesLabelKey = APP_CONFIG.translationKeys.navigation.lines;
   protected readonly directionsLabelKey = APP_CONFIG.translationKeys.stopInfo.directions.title;
+  protected readonly addFavoriteLabelKey =
+    APP_CONFIG.translationKeys.home.sections.search.addFavoriteLabel;
+  protected readonly removeFavoriteLabelKey =
+    APP_CONFIG.translationKeys.home.sections.search.removeFavoriteLabel;
+  protected readonly favoriteActiveIcon = APP_CONFIG.homeData.favoriteStops.activeIcon;
+  protected readonly favoriteInactiveIcon = APP_CONFIG.homeData.favoriteStops.inactiveIcon;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.stopDetailBase;
   protected readonly destinationControl = new FormControl<string>(ALL_DESTINATIONS_OPTION, {
     nonNullable: true
@@ -125,6 +143,25 @@ export class StopDetailComponent {
   ]).pipe(
     map(([stopId, consortiumId]) => ({ stopId, consortiumId }) satisfies StopRouteContext),
     distinctUntilChanged(areStopRouteContextsEqual),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+
+  private readonly favoriteOption$: Observable<StopDirectoryOption | null> =
+    this.stopRouteContext$.pipe(
+      switchMap(({ stopId, consortiumId }) =>
+        this.loadFavoriteOption(stopId, consortiumId).pipe(catchError(() => of(null)))
+      ),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
+
+  protected readonly favoriteState$: Observable<StopFavoriteState> = combineLatest([
+    this.favoriteOption$,
+    this.favorites.favorites$
+  ]).pipe(
+    map(([option, favorites]) => ({
+      option,
+      isFavorite: option !== null && favorites.some((favorite) => favorite.id === option.id)
+    })),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
@@ -201,6 +238,10 @@ export class StopDetailComponent {
     this.scheduleRefresh.next();
   }
 
+  protected toggleFavorite(option: StopDirectoryOption): void {
+    this.favorites.toggle(option);
+  }
+
   protected selectSection(section: StopDetailSection): void {
     this.activeSection.set(section);
   }
@@ -242,6 +283,17 @@ export class StopDetailComponent {
       `[data-stop-section="${nextSection}"]`
     );
     nextTab?.focus();
+  }
+
+  private loadFavoriteOption(
+    stopId: string,
+    consortiumId: number | null
+  ): Observable<StopDirectoryOption | null> {
+    if (consortiumId === null) {
+      return this.stopDirectory.getOptionByStopId(stopId);
+    }
+
+    return this.stopDirectory.getOptionByStopSignature(consortiumId, stopId);
   }
 
   private loadStopSchedule(

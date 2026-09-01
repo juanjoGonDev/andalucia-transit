@@ -2,14 +2,18 @@ import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
-import { of } from 'rxjs';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { BehaviorSubject, of } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { LanguageService } from '@core/services/language.service';
 import type {
   RouteLineCoordinate,
   RouteLineStop
 } from '@data/route-search/route-lines-api.service';
+import {
+  LineFavorite,
+  LineFavoritesFacade
+} from '@domain/lines/line-favorites.facade';
 import {
   LineRouteWorkspaceService,
   LineRouteWorkspaceViewModel
@@ -63,6 +67,22 @@ class LineRouteWorkspaceServiceStub {
   }
 }
 
+class LineFavoritesFacadeStub {
+  private readonly subject = new BehaviorSubject<readonly LineFavorite[]>([]);
+  readonly favorites$ = this.subject.asObservable();
+  readonly toggle = jasmine.createSpy('toggle');
+
+  emit(favorites: readonly LineFavorite[]): void {
+    this.subject.next(favorites);
+  }
+}
+
+class FakeTranslateLoader implements TranslateLoader {
+  getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
+    return of({});
+  }
+}
+
 const activatedRoute = {
   paramMap: of(convertToParamMap({ consortiumId: '7', lineId: 'line-1' })),
   snapshot: {
@@ -76,14 +96,24 @@ const languageService = {
 
 describe('LineDetailComponent', () => {
   let fixture: ComponentFixture<LineDetailComponent>;
+  let lineFavorites: LineFavoritesFacadeStub;
 
   beforeEach(async () => {
+    lineFavorites = new LineFavoritesFacadeStub();
+
     await TestBed.configureTestingModule({
-      imports: [LineDetailComponent, TransitRouteWorkspaceStubComponent, TranslateModule.forRoot()],
+      imports: [
+        LineDetailComponent,
+        TransitRouteWorkspaceStubComponent,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
       providers: [
         provideRouter([]),
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: LineRouteWorkspaceService, useClass: LineRouteWorkspaceServiceStub },
+        { provide: LineFavoritesFacade, useValue: lineFavorites },
         { provide: LanguageService, useValue: languageService }
       ]
     })
@@ -132,6 +162,45 @@ describe('LineDetailComponent', () => {
       ['/', APP_CONFIG.routes.stopDetailBase, 'stop-b'],
       { queryParams: { consortiumId: '7' } }
     );
+  });
+
+  it('toggles the current line through the canonical line-favorites facade', () => {
+    fixture.detectChanges();
+
+    const favoriteButton = fixture.nativeElement.querySelector(
+      '.line-detail__favorite'
+    ) as HTMLButtonElement;
+    expect(favoriteButton.getAttribute('aria-pressed')).toBe('false');
+
+    favoriteButton.click();
+
+    expect(lineFavorites.toggle).toHaveBeenCalledOnceWith({
+      consortiumId: 7,
+      lineId: 'line-1',
+      code: 'L1',
+      name: 'Line One',
+      mode: 'Bus'
+    });
+  });
+
+  it('reflects favorite state emitted by another surface', () => {
+    fixture.detectChanges();
+    lineFavorites.emit([
+      {
+        id: '7|line-1',
+        consortiumId: 7,
+        lineId: 'line-1',
+        code: 'L1',
+        name: 'Line One',
+        mode: 'Bus'
+      }
+    ]);
+    fixture.detectChanges();
+
+    const favoriteButton = fixture.nativeElement.querySelector(
+      '.line-detail__favorite'
+    ) as HTMLButtonElement;
+    expect(favoriteButton.getAttribute('aria-pressed')).toBe('true');
   });
 });
 

@@ -8,16 +8,16 @@ describe('StopDirectoryFacade', () => {
   let facade: StopDirectoryFacade;
 
   beforeEach(() => {
-    service = jasmine.createSpyObj<StopDirectoryService>(
-      'StopDirectoryService',
-      ['getOptionByStopId', 'getStopById', 'getOptionByStopSignature', 'searchStops']
-    );
+    service = jasmine.createSpyObj<StopDirectoryService>('StopDirectoryService', [
+      'getOptionByStopId',
+      'getStopById',
+      'getOptionByStopSignature',
+      'getStopBySignature',
+      'searchStops'
+    ]);
 
     TestBed.configureTestingModule({
-      providers: [
-        StopDirectoryFacade,
-        { provide: StopDirectoryService, useValue: service }
-      ]
+      providers: [StopDirectoryFacade, { provide: StopDirectoryService, useValue: service }]
     });
 
     facade = TestBed.inject(StopDirectoryFacade);
@@ -43,7 +43,7 @@ describe('StopDirectoryFacade', () => {
     expect(service.getStopById).toHaveBeenCalledWith('stop-avenida');
   });
 
-  it('delegates getOptionByStopSignature to the directory service', () => {
+  it('delegates consortium-aware option lookup to the directory service', () => {
     const expected$ = of(null);
     service.getOptionByStopSignature.and.returnValue(expected$);
 
@@ -51,6 +51,16 @@ describe('StopDirectoryFacade', () => {
 
     expect(result$).toBe(expected$);
     expect(service.getOptionByStopSignature).toHaveBeenCalledWith(7, 'stop-avenida');
+  });
+
+  it('delegates consortium-aware record lookup to the directory service', () => {
+    const expected$ = of(null);
+    service.getStopBySignature.and.returnValue(expected$);
+
+    const result$ = facade.getRecordByStopSignature(7, 'stop-avenida');
+
+    expect(result$).toBe(expected$);
+    expect(service.getStopBySignature).toHaveBeenCalledWith(7, 'stop-avenida');
   });
 
   it('delegates searchStops to the directory service', () => {
