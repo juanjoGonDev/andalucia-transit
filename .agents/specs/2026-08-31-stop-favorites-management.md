@@ -18,6 +18,8 @@ The task was reopened after direct browser validation showed that the first iter
 - Exact-head validation on `72e85ff672fedeeb81d10aee5f7e15d572d64a93` proved the third-review fixes after restoring unrelated Lines filtering/pagination/province-option invariants accidentally changed during the i18n remediation.
 - The final full CodeRabbit review on documentation head `9923f12da42ddcb18fe8e69cd2d0df84889a83d3` completed as run `6f348221-b89e-437a-b3f7-3603707eb05e` and found one additional valid canonical-URL defect: max-length truncation could leave a trailing word separator in a descriptive slug.
 - The slug defect was reproduced before the fix with a test-only head: CI `33491669476`, Angular job `99804434901`, reported exactly 1 failure and 519 successes because a 120-character truncation produced a trailing `-`.
+- The next exact-head full review on `352dc58a070b4e6f57b8444ae41a2fbb1fb50685` found one additional valid CTAN boundary defect: `lineasPorParadas` summaries whose entire name normalizes from `NN` to an empty string were still emitted, allowing a blank line entry to reach stop-based results.
+- That blank-summary defect was reproduced before the implementation change with test-only head `cd51e99169abcdc38dfc8cdd8a1df6f2bd488f73`: CI `33496529782`, Angular job `99820001995`, reported exactly `1 FAILED, 520 SUCCESS` because `M-380` remained in the result after its name normalized from ` NN ` to empty.
 
 ## Decision
 
@@ -45,11 +47,13 @@ The task was reopened after direct browser validation showed that the first iter
 22. Review remediation must not alter unrelated Lines filtering, pagination, or province-option semantics. Accidental changes to those invariants are reverted rather than accepted as incidental refactoring.
 23. The final CodeRabbit result for a fully validated documentation head is recorded in the PR discussion/body rather than creating a new commit solely to copy external-review metadata into this specification.
 24. `buildDescriptiveSlug` keeps the 120-character upper bound, then removes word separators introduced at the truncation boundary. The existing normalization and fallback semantics remain unchanged, and a generated canonical slug must not end in `-`.
+25. `mapLineSummaries` must apply the canonical line-name normalizer before constructing a `RouteLineSummary` and discard entries whose normalized name is empty. Stop-based line discovery therefore follows the same invariant as catalog mapping and never exposes a blank line created by the CTAN `NN` sentinel.
 
 ## Acceptance
 
 - No known user-facing stop metadata or line-name path exposes the isolated CTAN `NN` sentinel.
 - Legitimate internal `NN` text remains unchanged.
+- Stop-based line results omit entries whose entire CTAN name normalizes to empty rather than rendering a blank line.
 - `/lines`, Line Detail, and Stop Detail expose current favorite state and add/remove mutation.
 - Favorite state is consortium-aware and consistent across Lines, Line Detail, Favorites, and Home.
 - Repeated adds do not create duplicate line favorites.
@@ -76,6 +80,7 @@ The task was reopened after direct browser validation showed that the first iter
 
 - Stop and line normalization tests cover exact/case/whitespace sentinels and legitimate counterexamples.
 - Catalog, `lineasPorParadas`, and line-detail mapper tests reuse the same line normalization owner.
+- `RouteLinesApiService` regression coverage proves an all-`NN`/whitespace stop-line entry is discarded after normalization while a valid sibling line remains.
 - Line favorite storage/service tests cover validation, mock modes, hydration, persistence, add/remove/toggle/clear, deduplication, stable keys, whitespace-equivalent toggle identity, browser-storage read/write/remove failures, and persisted duplicates that converge to one canonical id.
 - Aggregate facade tests prove stop and line streams are combined without duplicating ownership.
 - Lines, Line Detail, Stop Detail, Favorites, and Home preview component tests cover favorite behavior.
@@ -128,6 +133,13 @@ Fourth/final-review remediation:
 - `c3509fca53d80270ef6d91dc60c5a16cfee04cef` — remove separators introduced at the truncation boundary after slicing while preserving the existing slug normalization, fallback, and maximum length.
 
 The test-only head failed exactly as expected before the fix. The final-review thread was answered with the failing TDD evidence plus exact fix-head CI/Legal/visual evidence and resolved only after all gates were green.
+
+Fifth/final-review remediation:
+
+- `cd51e99169abcdc38dfc8cdd8a1df6f2bd488f73` — add the stop-line regression proving an entry whose complete CTAN name is `NN` must disappear after normalization while a valid sibling remains.
+- `adbf0e4adb1d305d46716f802c5078ce9f4cc8c7` — compute the normalized stop-line name before constructing `RouteLineSummary` and filter only entries whose canonical display name is empty.
+
+The test-only head failed exactly on the new assertion before production changed. The executable fix head then passed all unit, lint, script, deploy, Legal browser, visual-evidence, and reviewed-baseline gates.
 
 ## Validation evidence
 
@@ -191,6 +203,22 @@ Fourth-review executable head `c3509fca53d80270ef6d91dc60c5a16cfee04cef`:
 - Visual regression `33491718023`: pass.
 - Artifact comparison against `9923f12d`: 37/39 PNGs are pixel-identical. Only the mobile and desktop map captures contain minor tile-rendering pixel variation; both were re-inspected and show no material change to application UI, controls, map attribution, navigation, or layout.
 
+Fifth-review TDD test-only head `cd51e99169abcdc38dfc8cdd8a1df6f2bd488f73`:
+
+- CI `33496529782`: failed only in Angular tests as intended by the red phase.
+- Angular job `99820001995`: `1 FAILED, 520 SUCCESS`; the failure shows `M-380` was still emitted before the mapper filtered the empty normalized name.
+- Install, lint, script tests, and deploy-pipeline validation passed on the same test-only head.
+
+Fifth-review executable head `adbf0e4adb1d305d46716f802c5078ce9f4cc8c7`:
+
+- CI `33496747033`: pass; Angular job `99820651844` reports `TOTAL: 521 SUCCESS` with 82.24% statement, 63.26% branch, 81.34% function, and 82.41% line coverage.
+- Legal browser QA `33496746960`: pass.
+- Visual evidence `33496747043`: pass.
+- Visual artifact `9796154663`: `pr-439-visual-evidence-adbf0e4adb1d305d46716f802c5078ce9f4cc8c7`.
+- Visual artifact digest: `sha256:11c2f0599fde1b421fb68d6700d335e21fa7c5d64ee10e82da94ed362e995a7e`.
+- Visual regression `33496747005`: pass, including render of baseline/head, required-pixel comparison, retained evidence, and reviewed-baseline enforcement.
+- Artifact inventory remains 39 PNGs. Compared with `352dc58a`, 33 are byte-identical; the six differing captures were individually re-inspected. The two map changes are minor live OSM tile pixels, while the route-preview and desktop Stop Detail changes are full-page capture/fixed-navigation scroll composition. No material application UI, content, attribution, layout, responsive, or control regression is present.
+
 This specification commit follows a fully validated executable head. Its new exact head must pass the repository gates before the final CodeRabbit full review is requested. Once that review completes, its external result is recorded in the PR discussion/body rather than creating another documentation-only review loop.
 
 ## Final visual review
@@ -201,9 +229,12 @@ The third-review artifact `9792950897` was downloaded and all 39 screenshots wer
 
 The fourth-review artifact `9794148565` was compared against the previously validated `9923f12d` artifact. Thirty-seven captures are byte-decoded pixel-identical. The only RGBA differences are inside the live OSM tile content of the two map screenshots; visual inspection of both widths confirms the application overlays, attribution, privacy notice, navigation, controls, spacing, and responsive behavior remain coherent. The exact reviewed-baseline workflow also passed on `c3509fca`.
 
+The fifth-review artifact `9796154663` was compared against the fully inspected `352dc58a` artifact. Thirty-three of 39 PNGs are byte-identical. All six differences were inspected: mobile/desktop map differences are limited to live OSM tile pixels; route-preview differences reflect viewport-fixed bottom-navigation composition while full-page capture scrolls; the two desktop Stop Detail differences are the same full-page scroll-position effect. The affected cards, line labels, map attribution, navigation, privacy notice, spacing, and reachable content remain coherent, and the exact reviewed-baseline workflow passes.
+
 ## Risks
 
 - Broad `NN` substring replacement would corrupt legitimate names; normalization must stay terminal-token-only.
+- A data boundary that consumes `normalizeLineDisplayName` must not emit a record whose normalized display name is empty; filtering belongs at the mapper boundary rather than fabricating fallback text.
 - Stop and line local-storage payloads must remain separate so existing stop favorites require no migration.
 - Line identity must remain `(consortiumId,lineId)`; commercial codes and slugs are presentation data.
 - Search errors must remain distinguishable from successful empty directory responses.
@@ -222,11 +253,14 @@ Revert the reopened-scope commits and, if necessary, restore `.github/visual-bas
 - Second full CodeRabbit review: completed; valid findings remediated, one inapplicable pure-TestBed suggestion declined with evidence.
 - Third CodeRabbit review findings: fixed, exact-head validated, answered, and resolved.
 - Fourth/final CodeRabbit finding from `9923f12d`: reproduced with a failing regression test, fixed, exact-head validated, answered, and resolved.
+- Fifth/final CodeRabbit finding from `352dc58a`: reproduced with a failing regression test and fixed on `adbf0e4a`; exact-head CI, Legal QA, visual evidence, and visual regression are green.
 - Descriptive line navigation: implemented with legacy compatibility and canonical truncation-boundary cleanup.
-- Unit/component/script/deploy validation: green on the fourth-review executable head.
-- Legal browser QA: green on the fourth-review executable head.
-- Product visual evidence and baseline comparison: green on the fourth-review executable head; 39-screen comparison re-inspected.
+- CTAN stop-line summary boundary: now rejects entries whose canonical display name is empty after sentinel normalization.
+- Unit/component/script/deploy validation: green on the fifth-review executable head.
+- Legal browser QA: green on the fifth-review executable head.
+- Product visual evidence and baseline comparison: green on the fifth-review executable head; all six non-identical captures re-inspected and the remaining 33 are byte-identical to the prior fully inspected artifact.
 - Documentation exact-head validation: pending after this commit.
+- Fifth-review inline thread: pending response/resolution until the documentation head is green.
 - Final CodeRabbit full review requested by the owner: pending until the documentation head is green.
 - Final review: pending.
 - Merge/release/deploy: not performed.
