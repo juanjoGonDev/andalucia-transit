@@ -18,7 +18,7 @@ export interface RouteLineDetail {
 interface ApiRouteLineDetail {
   readonly idLinea: string | number;
   readonly codigo: string;
-  readonly nombre: string;
+  readonly nombre: unknown;
   readonly modo: string;
   readonly polilinea: unknown;
 }
