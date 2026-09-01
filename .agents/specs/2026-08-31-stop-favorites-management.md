@@ -252,7 +252,7 @@ Sixth-review executable/security head `d421743b47581f297901b70900ad997edd0d181f`
 - Visual regression `33516554346`: pass. The exact reviewed-baseline comparison reports `0/36 changed files, 0 differing pixels` against baseline `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`.
 - The 41-image publication artifact was compared with the preceding validated 41-image artifact: 38 PNGs are byte-identical. The two map differences are limited to live OSM tile rendering. The mobile Stop Detail publication capture differs in composition, but the independent reviewed-baseline run renders that same state as an exact pixel match; inspection found no material UI, content, attribution, layout, responsive, or control regression.
 
-This specification commit follows a fully validated executable/security head. Its new exact head must pass the repository gates before the final CodeRabbit review is requested. Once that review completes, its external result is recorded in the PR discussion/body rather than creating another documentation-only review loop.
+Documentation head `75ea456f1dceb998a40296ae8f12ef1a8f9f1ae7` passed all repository gates before CodeRabbit review run `115517bd-09d1-4b5b-b390-5ccc877efd38`. External review state after that point is maintained in the PR discussion/body per decision 23 rather than copied back into this specification.
 
 ## Final visual review
 
@@ -277,7 +277,7 @@ The sixth-review artifact `9803976359` contains the same 41 named states as the 
 - Descriptive line slugs are non-authoritative. A stale or manually edited slug may still resolve because the consortium and line id remain the canonical route parameters; newly generated links restore the current descriptive slug.
 - Browser storage is best-effort. When localStorage is unavailable the fallback preserves behavior for the current runtime, but it cannot provide persistence across page/process restarts.
 - Fork hardening must remain present on both visual workflows; same-repository PR checks alone do not prove that the repository itself is not a fork.
-- Final delivery remains pending exact-head validation of this documentation commit, the final CodeRabbit review, and final PR/status review.
+- Final delivery requires the PR discussion/body and final PR/status review to remain synchronized; external review state is not duplicated here after decision 23.
 
 ## Rollback
 
@@ -292,14 +292,11 @@ Revert the reopened-scope commits and, if necessary, restore `.github/visual-bas
 - Fourth/final CodeRabbit finding from `9923f12d`: reproduced with a failing regression test, fixed, exact-head validated, answered, and resolved.
 - Fifth/final CodeRabbit finding from `352dc58a`: reproduced with a failing regression test and fixed on `adbf0e4a`; exact-head CI, Legal QA, visual evidence, and visual regression are green.
 - Sixth CodeRabbit findings from `60b705bf`: malformed CTAN line-name metadata was reproduced with a failing regression and fixed through the canonical normalizer plus honest `unknown` DTO boundaries; visual regression now explicitly blocks repository forks. The executable/security head `d421743b` has all four gates green.
+- Sixth-review CTAN inline thread: resolved after CodeRabbit verified the runtime-boundary fix on `d421743b`.
+- Documentation head `75ea456f`: CI, Legal browser QA, visual evidence, and reviewed visual regression all passed; the 41-image artifact was inspected and the deterministic baseline reported `0/36` changed required screenshots with zero differing pixels.
+- CodeRabbit review `115517bd-09d1-4b5b-b390-5ccc877efd38` reviewed the changes through `75ea456f` and found no additional product or security defect; its only actionable item was this stale delivery-status wording.
 - Descriptive line navigation: implemented with legacy compatibility and canonical truncation-boundary cleanup.
 - CTAN stop-line summary boundary: rejects entries whose canonical display name is empty after sentinel or malformed-value normalization.
 - CTAN line-detail boundary: preserves an empty display name for malformed upstream `nombre` values instead of throwing.
-- Unit/component/script/deploy validation: green on the sixth-review executable/security head.
-- Legal browser QA: green on the sixth-review executable/security head.
-- Product visual evidence and baseline comparison: green on the sixth-review executable/security head; 38/41 publication PNGs are byte-identical to the preceding artifact, all three differences were inspected, and the canonical baseline run reports `0/36` changed required screenshots with zero differing pixels.
-- Sixth-review CTAN inline thread: answered with RED/GREEN and exact-head evidence; final resolution/confirmation pending.
-- Documentation exact-head validation: pending after this commit.
-- Final CodeRabbit review requested by the owner: pending until the documentation head is green.
-- Final review: pending.
+- Live external review/final-delivery state is maintained in the PR discussion/body per decision 23.
 - Merge/release/deploy: not performed.
