@@ -165,7 +165,7 @@
                   type="button"
                   class="lines__favorite"
                   [attr.aria-pressed]="isLineFavorite(line)"
-                  [attr.aria-label]="favoriteLabel(line)"
+                  [attr.aria-label]="favoriteLabelKey(line) | translate"
                   (click)="toggleFavorite(line)"
                 >
                   <span class="material-symbols-outlined" aria-hidden="true">{{ favoriteIcon(line) }}</span>

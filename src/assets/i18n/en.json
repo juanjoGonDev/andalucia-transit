@@ -160,7 +160,9 @@
     "actions": {
       "clearAll": "Remove all",
       "remove": "Remove from favorites",
-      "open": "Open favorites"
+      "open": "Open favorites",
+      "addLine": "Add line to favorites",
+      "removeLine": "Remove line from favorites"
     },
     "sections": {
       "stops": "Stops",

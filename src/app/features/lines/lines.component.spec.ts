@@ -1,7 +1,8 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
-import { BehaviorSubject, of } from 'rxjs';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { GeolocationService } from '@core/services/geolocation.service';
 import { LanguageService } from '@core/services/language.service';
 import { ConsortiumCatalogService } from '@data/catalog/consortium-catalog.service';
@@ -14,6 +15,12 @@ import {
   LineFavoritesFacade
 } from '@domain/lines/line-favorites.facade';
 import { LinesComponent } from '@features/lines/lines.component';
+
+class FakeTranslateLoader implements TranslateLoader {
+  getTranslation(): Observable<Record<string, string>> {
+    return of({});
+  }
+}
 
 class CatalogStub {
   loadConsortiums() {
@@ -69,7 +76,7 @@ const languageService = {
 
 interface LinesComponentAccess {
   isLineFavorite(line: LineDirectoryEntry): boolean;
-  favoriteLabel(line: LineDirectoryEntry): string;
+  favoriteLabelKey(line: LineDirectoryEntry): string;
   favoriteIcon(line: LineDirectoryEntry): string;
   toggleFavorite(line: LineDirectoryEntry): void;
   lineCommands(line: LineDirectoryEntry): readonly string[];
@@ -84,7 +91,12 @@ describe('LinesComponent favorites', () => {
     lineFavorites = new LineFavoritesStub();
 
     TestBed.configureTestingModule({
-      imports: [LinesComponent],
+      imports: [
+        LinesComponent,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
       providers: [
         {
           provide: ActivatedRoute,
@@ -108,7 +120,7 @@ describe('LinesComponent favorites', () => {
 
   it('toggles a directory line through the canonical line favorite facade', () => {
     expect(access.isLineFavorite(LINE)).toBeFalse();
-    expect(access.favoriteLabel(LINE)).toBe('Añadir línea a favoritos');
+    expect(access.favoriteLabelKey(LINE)).toBe('favorites.actions.addLine');
     expect(access.favoriteIcon(LINE)).toBe('star_border');
 
     access.toggleFavorite(LINE);
@@ -135,7 +147,7 @@ describe('LinesComponent favorites', () => {
     ]);
 
     expect(access.isLineFavorite(LINE)).toBeTrue();
-    expect(access.favoriteLabel(LINE)).toBe('Eliminar línea de favoritos');
+    expect(access.favoriteLabelKey(LINE)).toBe('favorites.actions.removeLine');
     expect(access.favoriteIcon(LINE)).toBe('star');
   });
 

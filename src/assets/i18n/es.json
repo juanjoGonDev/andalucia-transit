@@ -160,7 +160,9 @@
     "actions": {
       "clearAll": "Eliminar todas",
       "remove": "Eliminar de favoritos",
-      "open": "Abrir favoritos"
+      "open": "Abrir favoritos",
+      "addLine": "Añadir línea a favoritos",
+      "removeLine": "Eliminar línea de favoritos"
     },
     "sections": {
       "stops": "Paradas",

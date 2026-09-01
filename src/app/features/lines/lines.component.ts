@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signa
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   BehaviorSubject,
   Observable,
@@ -35,8 +36,10 @@ import {
 import { LineFavoriteCandidate, LineFavoritesFacade } from '@domain/lines/line-favorites.facade';
 import { LinesUiCopy, getLinesUiCopy } from '@features/lines/lines-ui.copy';
 import {
+  LINES_ADD_FAVORITE_LABEL_KEY,
   LINES_FAVORITE_ACTIVE_ICON,
-  LINES_FAVORITE_INACTIVE_ICON
+  LINES_FAVORITE_INACTIVE_ICON,
+  LINES_REMOVE_FAVORITE_LABEL_KEY
 } from '@features/lines/lines.config';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import {
@@ -91,7 +94,7 @@ const EMPTY_PROVINCES: readonly string[] = Object.freeze([]);
 @Component({
   selector: 'app-lines',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, AppLayoutContentDirective],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule, AppLayoutContentDirective],
   templateUrl: './lines.component.html',
   styleUrl: './lines.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -322,8 +325,10 @@ export class LinesComponent {
     return this.isLineFavorite(line) ? LINES_FAVORITE_ACTIVE_ICON : LINES_FAVORITE_INACTIVE_ICON;
   }
 
-  protected favoriteLabel(line: LineDirectoryEntry): string {
-    return this.isLineFavorite(line) ? this.copy().removeFavorite : this.copy().addFavorite;
+  protected favoriteLabelKey(line: LineDirectoryEntry): string {
+    return this.isLineFavorite(line)
+      ? LINES_REMOVE_FAVORITE_LABEL_KEY
+      : LINES_ADD_FAVORITE_LABEL_KEY;
   }
 
   protected toggleFavorite(line: LineDirectoryEntry): void {
@@ -419,11 +424,7 @@ function buildView(
       return false;
     }
 
-    if (
-      geography.status === 'ready' &&
-      geography.keys &&
-      !geography.keys.has(buildLineKey(line.consortiumId, line.lineId))
-    ) {
+    if (geography.keys && !geography.keys.has(buildLineKey(line.consortiumId, line.lineId))) {
       return false;
     }
 
@@ -434,25 +435,20 @@ function buildView(
     return true;
   });
 
-  const pageCount = Math.max(FIRST_PAGE, Math.ceil(filtered.length / PAGE_SIZE));
+  const total = filtered.length;
+  const pageCount = Math.max(FIRST_PAGE, Math.ceil(total / PAGE_SIZE));
   const page = Math.min(filters.page, pageCount);
   const start = (page - FIRST_PAGE) * PAGE_SIZE;
 
   return {
     status: 'ready',
-    filters,
+    filters: { ...filters, page },
     lines: Object.freeze(filtered.slice(start, start + PAGE_SIZE)),
-    total: filtered.length,
+    total,
     page,
     pageCount,
     geographyStatus: geography.status
   };
-}
-
-function buildProvinceOptions(areas: readonly ConsortiumCatalogEntry[]): readonly string[] {
-  const provinces = [...new Set(areas.map((area) => area.province).filter(isNonNullText))];
-  provinces.sort((left, right) => left.localeCompare(right, 'es-ES'));
-  return provinces.length > 0 ? Object.freeze(provinces) : EMPTY_PROVINCES;
 }
 
 function buildProvinceConsortiumIds(
@@ -468,8 +464,12 @@ function buildProvinceConsortiumIds(
   );
 }
 
-function isNonNullText(value: string | null | undefined): value is string {
-  return value !== null && value !== undefined;
+function buildProvinceOptions(areas: readonly ConsortiumCatalogEntry[]): readonly string[] {
+  return Object.freeze(
+    Array.from(new Set(areas.map((area) => area.province).filter(Boolean))).sort((left, right) =>
+      left.localeCompare(right, 'es-ES')
+    )
+  );
 }
 
 function normalizeQuery(value: string): string {
