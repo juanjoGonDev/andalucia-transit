@@ -211,16 +211,22 @@ function buildLineDetailCacheKey(consortiumId: number, lineId: string): string {
 }
 
 function mapLineSummaries(entries: readonly ApiLineSummary[]): readonly RouteLineSummary[] {
-  const summaries = entries.map(
-    (entry) =>
-      ({
+  const summaries = entries
+    .map((entry) => {
+      const name = normalizeLineDisplayName(entry.nombre);
+      if (!name) {
+        return null;
+      }
+
+      return {
         lineId: String(entry.idLinea),
         code: entry.codigo,
-        name: normalizeLineDisplayName(entry.nombre),
+        name,
         mode: entry.descripcion ?? entry.modo ?? '',
         priority: Number(entry.prioridad ?? 0),
-      }) satisfies RouteLineSummary,
-  );
+      } satisfies RouteLineSummary;
+    })
+    .filter((summary): summary is RouteLineSummary => summary !== null);
 
   return Object.freeze(summaries);
 }
