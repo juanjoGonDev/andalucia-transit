@@ -96,6 +96,30 @@ describe('LineFavoritesStorage', () => {
     ]);
   });
 
+  it('uses the in-memory value when local storage reads fail', () => {
+    storage.save([FAVORITE]);
+    spyOn(Storage.prototype, 'getItem').and.throwError('Storage blocked');
+
+    expect(storage.load()).toEqual([FAVORITE]);
+  });
+
+  it('keeps mutations usable when local storage writes fail', () => {
+    spyOn(Storage.prototype, 'setItem').and.throwError('Quota exceeded');
+
+    expect(() => storage.save([FAVORITE])).not.toThrow();
+    expect(storage.load()).toEqual([FAVORITE]);
+  });
+
+  it('keeps clear usable when local storage removal fails', () => {
+    storage.save([FAVORITE]);
+    const removeItem = spyOn(Storage.prototype, 'removeItem').and.throwError('Storage blocked');
+
+    expect(() => storage.clear()).not.toThrow();
+    expect(storage.load()).toEqual([]);
+
+    removeItem.and.callThrough();
+  });
+
   it('clears persisted favorites', () => {
     storage.save([FAVORITE]);
 

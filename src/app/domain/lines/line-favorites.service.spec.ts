@@ -59,6 +59,32 @@ describe('LineFavoritesService', () => {
     ]);
   });
 
+  it('deduplicates persisted favorites by canonical line identity during hydration', async () => {
+    storage.load.and.returnValue([
+      STORED_LINE,
+      {
+        ...STORED_LINE,
+        id: 'legacy-duplicate',
+        lineId: ' 101 ',
+        code: ' M-101 ',
+        name: ' Almería - Huércal - Viator - Campamento NN '
+      }
+    ]);
+    const service = TestBed.inject(LineFavoritesService);
+
+    const favorites = await firstValueFrom(service.favorites$);
+
+    expect(favorites).toHaveSize(1);
+    expect(favorites[0]).toEqual(
+      jasmine.objectContaining({
+        id: '6|101',
+        lineId: '101',
+        code: 'M-101',
+        name: 'Almería - Huércal - Viator - Campamento'
+      })
+    );
+  });
+
   it('persists one consortium-aware favorite for repeated adds', async () => {
     const service = TestBed.inject(LineFavoritesService);
 

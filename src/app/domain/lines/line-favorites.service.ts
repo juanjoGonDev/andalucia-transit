@@ -75,11 +75,16 @@ export class LineFavoritesService {
   }
 
   private loadInitialFavorites(): readonly LineFavorite[] {
-    const mapped = this.storage
-      .load()
-      .map((item) => this.fromStoredItem(item))
-      .filter((item): item is LineFavorite => item !== null);
-    return this.sortFavorites(mapped);
+    const uniqueFavorites = new Map<string, LineFavorite>();
+
+    for (const item of this.storage.load()) {
+      const favorite = this.fromStoredItem(item);
+      if (favorite && !uniqueFavorites.has(favorite.id)) {
+        uniqueFavorites.set(favorite.id, favorite);
+      }
+    }
+
+    return this.sortFavorites([...uniqueFavorites.values()]);
   }
 
   private fromCandidate(candidate: LineFavoriteCandidate): LineFavorite | null {

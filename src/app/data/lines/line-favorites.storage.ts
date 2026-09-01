@@ -18,6 +18,7 @@ const JSON_PARSE_REVIVER = (_key: string, value: unknown): unknown => value;
 export class LineFavoritesStorage {
   private readonly runtimeFlags = inject(RuntimeFlagsService);
   private memoryStore: string | null = null;
+  private preferMemoryStore = false;
 
   load(): readonly LineFavoriteStoredItem[] {
     const mode = this.mockDataMode();
@@ -102,27 +103,54 @@ export class LineFavoritesStorage {
   }
 
   private readValue(): string | null {
-    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
+    if (this.preferMemoryStore) {
       return this.memoryStore;
     }
 
-    return window.localStorage.getItem(LINE_FAVORITES_STORAGE_KEY);
+    const storage = this.resolveStorage();
+    if (!storage) {
+      return this.memoryStore;
+    }
+
+    try {
+      const value = storage.getItem(LINE_FAVORITES_STORAGE_KEY);
+      this.memoryStore = value;
+      return value;
+    } catch {
+      this.preferMemoryStore = true;
+      return this.memoryStore;
+    }
   }
 
   private writeValue(value: string | null): void {
-    if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
-      this.memoryStore = value;
-      return;
-    }
-
-    if (value === null) {
-      window.localStorage.removeItem(LINE_FAVORITES_STORAGE_KEY);
-      this.memoryStore = null;
-      return;
-    }
-
-    window.localStorage.setItem(LINE_FAVORITES_STORAGE_KEY, value);
     this.memoryStore = value;
+    const storage = this.resolveStorage();
+    if (!storage) {
+      return;
+    }
+
+    try {
+      if (value === null) {
+        storage.removeItem(LINE_FAVORITES_STORAGE_KEY);
+      } else {
+        storage.setItem(LINE_FAVORITES_STORAGE_KEY, value);
+      }
+      this.preferMemoryStore = false;
+    } catch {
+      this.preferMemoryStore = true;
+    }
+  }
+
+  private resolveStorage(): Storage | null {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+
+    try {
+      return window.localStorage;
+    } catch {
+      return null;
+    }
   }
 
   private mockDataMode(): MockDataMode {
