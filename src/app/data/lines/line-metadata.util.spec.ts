@@ -14,4 +14,10 @@ describe('normalizeLineDisplayName', () => {
     expect(normalizeLineDisplayName('NN Express - Centro')).toBe('NN Express - Centro');
     expect(normalizeLineDisplayName('Línea ANN')).toBe('Línea ANN');
   });
+
+  it('rejects non-string CTAN metadata without throwing', () => {
+    expect(normalizeLineDisplayName(null as unknown as string)).toBe('');
+    expect(normalizeLineDisplayName(42 as unknown as string)).toBe('');
+    expect(normalizeLineDisplayName(undefined as unknown as string)).toBe('');
+  });
 });
