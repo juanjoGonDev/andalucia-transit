@@ -1,0 +1,24 @@
+<header class="home__panel-header">
+  <div class="home__panel-heading home__stack">
+    <h3 class="home__panel-title">{{ 'favorites.title' | translate }}</h3>
+  </div>
+  <button
+    type="button"
+    class="app-button app-button--ghost home__panel-action"
+    (click)="openFavorites.emit()"
+  >
+    {{ 'favorites.actions.open' | translate }}
+  </button>
+</header>
+
+<ng-container *ngIf="hasFavorites(); else favoritesEmpty">
+  <app-home-favorites-preview
+    [favorites]="preview()"
+    [codeLabel]="codeLabelKey | translate"
+    [nucleusLabel]="nucleusLabelKey | translate"
+  ></app-home-favorites-preview>
+</ng-container>
+
+<ng-template #favoritesEmpty>
+  <p class="home-recent__empty">{{ 'favorites.empty' | translate }}</p>
+</ng-template>

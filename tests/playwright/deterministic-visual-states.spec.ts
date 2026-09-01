@@ -19,7 +19,7 @@ const STOP_SERVICES_SNAPSHOT_PATH = '/assets/data/snapshots/stop-services/latest
 const STOP_SCHEDULE_API_GLOB = '**/v1/Consorcios/*/paradas/**';
 const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
-const DATA_ITEM_COUNT = 2;
+const RECENT_ITEM_COUNT = 2;
 
 async function open(page: Page, path: string): Promise<void> {
   const baseUrl = BASE_URL as string;
@@ -100,7 +100,7 @@ test.describe('deterministic visual data states', () => {
     const emptyState = page.locator('.home-recent__empty');
 
     if (MOCK_MODE === 'data') {
-      await expect(items).toHaveCount(DATA_ITEM_COUNT);
+      await expect(items).toHaveCount(RECENT_ITEM_COUNT);
       await expect(emptyState).toBeHidden();
       return;
     }
@@ -109,15 +109,21 @@ test.describe('deterministic visual data states', () => {
     await expect(emptyState).toBeVisible();
   });
 
-  test('renders favorites according to the selected mock mode', async ({ page }) => {
+  test('renders a non-empty favorites collection in populated mode and an empty state otherwise', async ({
+    page,
+  }) => {
     await open(page, FAVORITES_PATH);
 
     const items = page.locator('.favorites__item');
     const emptyState = page.locator('.favorites__empty');
 
     if (MOCK_MODE === 'data') {
-      await expect(items).toHaveCount(DATA_ITEM_COUNT);
+      await expect(items.first()).toBeVisible({ timeout: 15_000 });
+      expect(await items.count()).toBeGreaterThan(0);
       await expect(emptyState).toBeHidden();
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
+      ).toBe(true);
       return;
     }
 

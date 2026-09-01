@@ -1,0 +1,302 @@
+# Stop and line favorite management
+
+## Request
+
+Implement favorite management across traveler surfaces and remove CTAN's `NN` sentinel wherever it can reach user-facing stop or line names.
+
+The task was reopened after direct browser validation showed that the first iteration was incomplete: `/lines` still rendered terminal `NN`, line favorites did not exist as a domain concept, Favorites remained stop-only, and favorite management was not consistently available from detail surfaces.
+
+## Evidence
+
+- Browser evidence on 2026-08-31 showed `/lines` rendering catalog names such as `Almería - Huércal - Viator - Campamento NN`.
+- CTAN's Almería catalog identifies that line as consortium `6`, line id `1`, code `M-101`; commercial code is therefore presentation data, not canonical identity.
+- `/lines`, `lineasPorParadas`, and line detail use separate data contracts and all require the same line-name normalization rule.
+- Stop favorites already had an authoritative store/facade; line favorites did not.
+- CodeRabbit review on head `d2cf6d9dde785fb8bd7480df8796a3236bdd3d9e` produced six inline findings plus one workflow-policy finding. All seven were reproduced against code and accepted as valid.
+- The requested post-remediation full CodeRabbit review completed on head `99567e85a6a7c1ea52692835ea23a51404916776`. It found an inaccessible deferred loading status, an unisolated translation dependency in the Line Detail spec, and a human-readable line URL gap. It also suggested adding Angular TestBed to a pure normalization spec; that suggestion was not applied because the test has no Angular dependency and peer pure utility specs follow the same framework-free pattern.
+- The third CodeRabbit pass produced two additional valid findings: browser-storage failures could break line-favorite persistence/hydration, and the newly added Lines favorite action labels duplicated the project's ngx-translate source of truth.
+- Exact-head validation on `72e85ff672fedeeb81d10aee5f7e15d572d64a93` proved the third-review fixes after restoring unrelated Lines filtering/pagination/province-option invariants accidentally changed during the i18n remediation.
+- The final full CodeRabbit review on documentation head `9923f12da42ddcb18fe8e69cd2d0df84889a83d3` completed as run `6f348221-b89e-437a-b3f7-3603707eb05e` and found one additional valid canonical-URL defect: max-length truncation could leave a trailing word separator in a descriptive slug.
+- The slug defect was reproduced before the fix with a test-only head: CI `33491669476`, Angular job `99804434901`, reported exactly 1 failure and 519 successes because a 120-character truncation produced a trailing `-`.
+- The next exact-head full review on `352dc58a070b4e6f57b8444ae41a2fbb1fb50685` found one additional valid CTAN boundary defect: `lineasPorParadas` summaries whose entire name normalizes from `NN` to an empty string were still emitted, allowing a blank line entry to reach stop-based results.
+- That blank-summary defect was reproduced before the implementation change with test-only head `cd51e99169abcdc38dfc8cdd8a1df6f2bd488f73`: CI `33496529782`, Angular job `99820001995`, reported exactly `1 FAILED, 520 SUCCESS` because `M-380` remained in the result after its name normalized from `NN` to empty.
+- The later full CodeRabbit review on head `60b705bf86a8d545cbef07f2a4556838810dc4f1` completed as run `67c63c45-a703-45e8-9c85-d8d3b79b6655` and found two additional valid boundary/security defects: CTAN line `nombre` values could be non-string at runtime despite the TypeScript DTOs, and the visual-regression workflow did not explicitly block execution when the repository itself is a fork.
+- The malformed CTAN-name defect was reproduced before the implementation change with test-only head `8f0757592fe7fce7ce8d481ae0742ec9e124915a`: CI `33515016027`, Angular job `99879840507`, reported exactly `1 FAILED, 523 SUCCESS` with `TypeError: Cannot read properties of null (reading 'trim')` in `normalizeLineDisplayName`.
+
+## Decision
+
+1. `line-metadata.util.ts` owns line display-name normalization. Remove only an isolated, case-insensitive terminal `NN` token plus trailing whitespace. Preserve legitimate internal text such as `Annarosa - Centro` and `NN Express - Centro`.
+2. Keep stop and line favorite persistence as separate authoritative stores. Line identity is `(consortiumId,lineId)` and is never derived from the visible commercial code.
+3. Expose line mutations through `LineFavoritesFacade`; UI does not write storage directly.
+4. Use `FavoriteCollectionFacade` as the read-model aggregator for surfaces that display stops and lines together.
+5. Provide keyboard-accessible favorite toggles in `/lines`, Line Detail, and Stop Detail. Keep the line-card favorite action independent from card navigation.
+6. Favorites renders stop and line sections, filters both, removes either type, clears both after confirmation, and retains stop-directory discovery directly in add mode.
+7. Treat Favorites copy as ngx-translate-owned UI content. Do not keep a parallel TypeScript copy dictionary.
+8. Treat stop-directory search failures as recoverable errors distinct from successful empty results; preserve the current query and expose retry.
+9. Normalize line favorite candidates before toggle lookup so mutation identity matches persisted identity, including whitespace-equivalent line ids.
+10. Recover Stop Detail favorite-option lookup errors inside each `switchMap` inner observable so later route-context emissions remain live.
+11. Keep Lines favorite icon values in the feature configuration module.
+12. The write-capable visual-evidence publish job must require `github.event.repository.fork == false` before the existing push/same-repository PR authorization checks.
+13. Keep historical baseline rendering compatible with older application code while running product-only Playwright assertions only against the current head.
+14. Advance visual baselines only after exact-head evidence is inspected and explicitly approved.
+15. Deferred Home Favorites loading must expose translated status text to assistive technology while the decorative loading indicator remains `aria-hidden`.
+16. Line Detail component tests isolate ngx-translate with the repository's fake-loader pattern rather than relying on the default loader.
+17. Pure utility tests remain framework-free unless the unit under test actually depends on Angular; do not add TestBed solely to satisfy a generalized convention claim.
+18. Line-detail links are descriptive without moving identity into presentation text. New navigation uses `/lines/:consortiumId/:lineId/:lineSlug`, while the existing `/lines/:consortiumId/:lineId` route remains supported for bookmarks and deep links. `buildDescriptiveSlug` is the single normalization owner and route-search stop slugs reuse it rather than duplicating the algorithm.
+19. Browser storage failures must not make line favorites unusable. `LineFavoritesStorage` keeps an in-memory fallback and catches storage access, read, write, and remove failures.
+20. Hydration deduplicates stored line favorites by canonical `favorite.id` before sorting and publishing state so the observable collection and lookup index share the same unique identity set.
+21. Lines favorite add/remove labels belong to ngx-translate dictionaries. The component exposes stable keys and the template resolves them with `translate`; visible copy is not duplicated in `lines-ui.copy.ts`.
+22. Review remediation must not alter unrelated Lines filtering, pagination, or province-option semantics. Accidental changes to those invariants are reverted rather than accepted as incidental refactoring.
+23. The final CodeRabbit result for a fully validated documentation head is recorded in the PR discussion/body rather than creating a new commit solely to copy external-review metadata into this specification.
+24. `buildDescriptiveSlug` keeps the 120-character upper bound, then removes word separators introduced at the truncation boundary. The existing normalization and fallback semantics remain unchanged, and a generated canonical slug must not end in `-`.
+25. `mapLineSummaries` must apply the canonical line-name normalizer before constructing a `RouteLineSummary` and discard entries whose normalized name is empty. Stop-based line discovery therefore follows the same invariant as catalog mapping and never exposes a blank line created by the CTAN `NN` sentinel.
+26. Treat CTAN line-name values as untrusted runtime data. `normalizeLineDisplayName(value: unknown)` is the single runtime-validation owner: non-string values normalize to an empty display name, `lineasPorParadas` summaries with an empty canonical name are omitted, and line detail preserves an empty-name fallback rather than throwing. CTAN DTOs expose `nombre: unknown` so compile-time types match the external boundary.
+27. Both visual-evidence publication and reviewed visual-regression jobs explicitly require `github.event.repository.fork == false`. The visual-regression job retains its existing same-repository PR and trusted-author checks; the new condition additionally blocks execution when this repository is itself a fork.
+
+## Acceptance
+
+- No known user-facing stop metadata or line-name path exposes the isolated CTAN `NN` sentinel.
+- Legitimate internal `NN` text remains unchanged.
+- Stop-based line results omit entries whose entire CTAN name normalizes to empty rather than rendering a blank line.
+- Missing, `null`, numeric, or otherwise non-string CTAN line names do not throw during normalization; invalid summaries are omitted and invalid detail names resolve to the existing empty-name fallback.
+- `/lines`, Line Detail, and Stop Detail expose current favorite state and add/remove mutation.
+- Favorite state is consortium-aware and consistent across Lines, Line Detail, Favorites, and Home.
+- Repeated adds do not create duplicate line favorites.
+- Whitespace-equivalent line ids toggle the same canonical favorite.
+- Favorites presents stops and lines together, filters both, retains stop discovery/add mode, and can remove or clear both entity types.
+- Stop-directory lookup errors in Favorites are visible and retryable rather than rendered as empty success.
+- Home preview includes line favorites without increasing the initial production bundle beyond the existing budget.
+- Existing stop favorites remain backward compatible.
+- Spanish and English copy describe aggregate favorites accurately and is consumed through ngx-translate keys.
+- Stop Detail can recover from a failed favorite lookup when route context changes.
+- The visual-evidence publish job cannot run in fork repositories.
+- The reviewed visual-regression job cannot run when the repository itself is a fork.
+- The deferred Home Favorites placeholder announces loading state to assistive technology.
+- Line Detail tests do not depend on the real translation loader.
+- Line links generated by Lines, Favorites, and Home include a stable descriptive slug while preserving consortium id and line id in the path.
+- Existing legacy line-detail URLs remain routable.
+- Generated descriptive slugs remain within 120 characters and never end in a separator introduced by truncation.
+- Line favorites continue to load and mutate in memory when browser storage access, read, write, or remove operations fail.
+- Persisted line favorites that normalize to the same canonical identity hydrate as one favorite.
+- Lines favorite accessible labels follow the active ngx-translate locale without a parallel TypeScript label source.
+- Existing Lines geography filtering, page clamping, and typed province-option behavior remain unchanged by review remediation.
+- Mobile 390×844 and desktop 1440×900 evidence remains free of horizontal overflow and inaccessible affected controls.
+
+## Tests
+
+- Stop and line normalization tests cover exact/case/whitespace sentinels and legitimate counterexamples.
+- Line-name normalization regression coverage passes `null`, numeric, and missing/non-string CTAN metadata through the canonical normalizer and requires an empty result without an exception.
+- Catalog, `lineasPorParadas`, and line-detail mapper tests reuse the same line normalization owner.
+- `RouteLinesApiService` regression coverage proves an all-`NN`/whitespace stop-line entry is discarded after normalization while a valid sibling line remains.
+- Line favorite storage/service tests cover validation, mock modes, hydration, persistence, add/remove/toggle/clear, deduplication, stable keys, whitespace-equivalent toggle identity, browser-storage read/write/remove failures, and persisted duplicates that converge to one canonical id.
+- Aggregate facade tests prove stop and line streams are combined without duplicating ownership.
+- Lines, Line Detail, Stop Detail, Favorites, and Home preview component tests cover favorite behavior.
+- Favorites component tests distinguish directory error from empty results and prove retry reissues the current query.
+- Stop Detail component tests prove a failed favorite lookup does not terminate later route-context lookup attempts.
+- Navigation tests cover descriptive line URLs, legacy line URLs, slug normalization, and the descriptive route registration.
+- `url-slug.spec.ts` directly covers the max-length boundary so truncation cannot leave a trailing separator; its test-only commit is required to fail before the implementation fix.
+- Existing route-search URL tests continue to cover the same slug output through the shared normalization owner.
+- Playwright product checks verify aggregate favorites, canonical M-101 favorite state in `/lines`, Line Detail mutation, sentinel removal, legacy deep-link compatibility, and responsive overflow.
+- Workflow/deploy checks validate both explicit repository-fork guards for visual evidence and visual regression.
+- Historical visual regression remains baseline-compatible and product-only assertions are excluded from baseline rendering.
+
+## Review remediation
+
+First review remediation:
+
+- `65bc55074b377f76660ac9a5dec6a8032864184a` — `fix(favorites): normalize line toggle identity`.
+- `529eeea12032211eab2726f9f785bfb43ce37264` — `style(e2e): sort favorites fixture import`.
+- `c483f9710eb842d91205db3394d8b87c9864cc01` — `fix(stop-detail): recover favorite lookup per route`.
+- `09b00ab02e293a6d1cc1b1932220396ffa7a9194` — `refactor(lines): centralize favorite icon config`.
+- `7c748e2e2c6499c4f9643f31b38973e7ee49595e` — `fix(favorites): localize copy and expose search retry`.
+- `a8c90724fdb0aff870439f670aff8c99ffb9812b` — `fix(ci): block visual evidence on forks`.
+- `828671b08252295003907bed6f14199450616bac` — restore the full Home test fixture after the translation migration.
+- `bee8fadf935ae7c9cdee8c0dbccfbcf1df3fc42a` — satisfy Lines feature import ordering.
+- `2b50e93e8a0b2522b649875846635854a2efd3db` — correct aggregate clear-dialog wording.
+- `99567e85a6a7c1ea52692835ea23a51404916776` — initialize Favorites translations in the Home test fixture.
+
+Second full-review remediation:
+
+- `f2afdf16dafb5cbe58ec6b8b0b524bab466bc2ac` — isolate Line Detail translations in its component spec.
+- `eaad04b517ffa6915f6af72c5bda6e64fbbbc0b3` — expose accessible deferred loading status on Home.
+- `773873ef9bf3feb5faba8821633d4b563ac6c010` and `43adf07505a126b61e205aea06f758ae0a1bfc4a` — centralize URL slug normalization and make route-search reuse it.
+- `3222b77da857e297150aadf15f64c13167ab0682` through `9d27866967d8824360adf5931c9bd82cad9eb11d` — add descriptive line route generation, legacy compatibility, and route-level coverage.
+- `c7e5b7f7a659f42512516f4d628495e23866213c` through `76e9b20c1ecc442bcca4bbdaa86553870ae5c883` — adopt descriptive line links and regression coverage in Home, Favorites, and Lines.
+- `ac81dfa505f9430c5256c7c952d1f803ee5ad967` — remove a redundant direct helper spec after behavior-level navigation and route-search coverage proved the shared slug owner.
+
+The two second-review inline threads that required code changes are resolved after CodeRabbit confirmed the fixes. The pure TestBed suggestion is intentionally not implemented. The descriptive-URL nitpick is accepted and implemented as a backwards-compatible route extension rather than replacing canonical identity with a slug.
+
+Third review remediation:
+
+- `a1ec4afd2ff68eb0360ecbab2dbe9b3a2a069e47` — harden line-favorite browser persistence with an in-memory fallback and deduplicate canonical favorites during hydration, with regression coverage for storage exceptions and equivalent persisted identities.
+- `6b4c15294f3eda2d81fba235663bcd00076c531d` — move the Lines favorite add/remove labels into ngx-translate dictionaries and resolve stable keys from the template.
+- `72e85ff672fedeeb81d10aee5f7e15d572d64a93` — restore the pre-existing Lines geography, pagination, and typed province-option invariants that were accidentally changed in the i18n commit; this also removes the resulting lint/type failures without weakening checks.
+
+Both third-review inline threads were answered with exact commit/test/run evidence and resolved only after the `72e85ff6` exact-head CI, Legal QA, visual evidence, and visual regression gates were green.
+
+Fourth/final-review remediation:
+
+- `54e1c6fd9e07ec99e27c44f56f72118088fe4f1e` — add a direct regression test for a separator landing exactly on the 120-character truncation boundary.
+- `c3509fca53d80270ef6d91dc60c5a16cfee04cef` — remove separators introduced at the truncation boundary after slicing while preserving the existing slug normalization, fallback, and maximum length.
+
+The test-only head failed exactly as expected before the fix. The final-review thread was answered with the failing TDD evidence plus exact fix-head CI/Legal/visual evidence and resolved only after all gates were green.
+
+Fifth/final-review remediation:
+
+- `cd51e99169abcdc38dfc8cdd8a1df6f2bd488f73` — add the stop-line regression proving an entry whose complete CTAN name is `NN` must disappear after normalization while a valid sibling remains.
+- `adbf0e4adb1d305d46716f802c5078ce9f4cc8c7` — compute the normalized stop-line name before constructing `RouteLineSummary` and filter only entries whose canonical display name is empty.
+
+The test-only head failed exactly on the new assertion before production changed. The executable fix head then passed all unit, lint, script, deploy, Legal browser, visual-evidence, and reviewed-baseline gates.
+
+Sixth/final-review remediation:
+
+- `8f0757592fe7fce7ce8d481ae0742ec9e124915a` — add the runtime-boundary regression proving non-string CTAN line-name metadata must normalize to empty without throwing.
+- `0d9b5ae4077ace5527f765e19cacafb5592b40e1` — make `normalizeLineDisplayName` accept `unknown` and reject every non-string value before string operations.
+- `08bf66bf8be83ac0cb8324cdeb21c597b90c5ef9` — type CTAN line-detail `nombre` as `unknown` so the mapper exposes the real external trust boundary.
+- `fc35bb0b73bf99887cb1249544744dd8a63f43ff` — type stop-based CTAN line-summary `nombre` as `unknown`; existing empty-name filtering then rejects malformed summaries.
+- `d421743b47581f297901b70900ad997edd0d181f` — explicitly block reviewed visual-regression execution when the repository itself is a fork while retaining same-repository and trusted-author gates.
+
+The test-only head failed exactly on the new malformed-name assertion before production changed. The executable/security head then passed all unit, lint, script, deploy, Legal browser, visual-evidence, and reviewed-baseline gates.
+
+## Validation evidence
+
+Approved product baseline:
+
+- baseline owner `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`;
+- evidence run `33433358656`;
+- artifact `9773567292`;
+- digest `sha256:4bc66b7550b428e276266eb2f241ffe575a0c34dd14fd8585df133652b586095`;
+- baseline approval commit `d5dc519655a9c911bb2bac6ebc3d86e0c8a16856`.
+
+First review-remediation executable head: `99567e85a6a7c1ea52692835ea23a51404916776`.
+
+- CI `33444976102`: pass.
+- Legal browser QA `33444976125`: pass.
+- Visual evidence `33444976127`: pass.
+- Visual artifact `9777749693`: `pr-439-visual-evidence-99567e85a6a7c1ea52692835ea23a51404916776`.
+- Visual artifact digest: `sha256:63adb3ca475e1e4a77b43ea8ab68e5cf2c3f2060b882b77f90d7db00d08f9c8d`.
+- Visual regression `33444976173`: pass.
+
+Second-review code head `76e9b20c1ecc442bcca4bbdaa86553870ae5c883`:
+
+- CI `33448949883`: pass, including lint, Angular tests, script tests, deploy-pipeline validation, and aggregate gate.
+- Legal browser QA `33448949867`: pass.
+- The later validation/documentation cycle superseded this head before final delivery evidence was recorded.
+
+Third-review executable head `72e85ff672fedeeb81d10aee5f7e15d572d64a93`:
+
+- CI `33488658229`: pass, including install, lint, Angular tests, script tests, deploy-pipeline validation, and aggregate gate.
+- Legal browser QA `33488658269`: pass.
+- Visual evidence `33488658192`: pass.
+- Visual artifact `9792950897`: `pr-439-visual-evidence-72e85ff672fedeeb81d10aee5f7e15d572d64a93`.
+- Visual artifact digest: `sha256:6274dba9ea6b4d86043976ff3e896e514d07f6eba9cde8f3abe1f939a6fbe5de`.
+- Visual regression `33488658262`: pass.
+- Artifact inventory: 39 PNG screenshots spanning populated, empty, loading, error, dialog, drawer, map, mobile, and desktop states.
+
+Third-review documentation head `9923f12da42ddcb18fe8e69cd2d0df84889a83d3`:
+
+- CI `33489419114`: pass.
+- Legal browser QA `33489419168`: pass.
+- Visual evidence `33489419072`: pass.
+- Visual artifact `9793239158`: `pr-439-visual-evidence-9923f12da42ddcb18fe8e69cd2d0df84889a83d3`.
+- Visual artifact digest: `sha256:17bed5dfac823b32785fa5d909460fe53860625671713d482f1badc38688ba29`.
+- Visual regression `33489419102`: pass.
+- The 39 screenshots were RGBA-identical to the validated third-review executable artifact.
+- Full CodeRabbit review run `6f348221-b89e-437a-b3f7-3603707eb05e`: completed with one valid trailing-separator finding.
+
+Fourth-review TDD test-only head `54e1c6fd9e07ec99e27c44f56f72118088fe4f1e`:
+
+- CI `33491669476`: failed only in Angular tests as intended by the red phase.
+- Angular job `99804434901`: `1 FAILED, 519 SUCCESS`; both failed assertions show the generated 120-character slug ending in `-`.
+- Lint, script tests, and deploy-pipeline validation passed on the same test-only head.
+
+Fourth-review executable head `c3509fca53d80270ef6d91dc60c5a16cfee04cef`:
+
+- CI `33491718008`: pass; Angular tests report `TOTAL: 520 SUCCESS`.
+- Legal browser QA `33491718006`: pass.
+- Visual evidence `33491717993`: pass.
+- Visual artifact `9794148565`: `pr-439-visual-evidence-c3509fca53d80270ef6d91dc60c5a16cfee04cef`.
+- Visual artifact digest: `sha256:f516803cdc5c189e54749a8b631aa7ae78308db42cc70e91ca4fb9fd56ff3e3d`.
+- Visual regression `33491718023`: pass.
+- Artifact comparison against `9923f12d`: 37/39 PNGs are pixel-identical. Only the mobile and desktop map captures contain minor tile-rendering pixel variation; both were re-inspected and show no material change to application UI, controls, map attribution, navigation, or layout.
+
+Fifth-review TDD test-only head `cd51e99169abcdc38dfc8cdd8a1df6f2bd488f73`:
+
+- CI `33496529782`: failed only in Angular tests as intended by the red phase.
+- Angular job `99820001995`: `1 FAILED, 520 SUCCESS`; the failure shows `M-380` was still emitted before the mapper filtered the empty normalized name.
+- Install, lint, script tests, and deploy-pipeline validation passed on the same test-only head.
+
+Fifth-review executable head `adbf0e4adb1d305d46716f802c5078ce9f4cc8c7`:
+
+- CI `33496747033`: pass; Angular job `99820651844` reports `TOTAL: 521 SUCCESS` with 82.24% statement, 63.26% branch, 81.34% function, and 82.41% line coverage.
+- Legal browser QA `33496746960`: pass.
+- Visual evidence `33496747043`: pass.
+- Visual artifact `9796154663`: `pr-439-visual-evidence-adbf0e4adb1d305d46716f802c5078ce9f4cc8c7`.
+- Visual artifact digest: `sha256:11c2f0599fde1b421fb68d6700d335e21fa7c5d64ee10e82da94ed362e995a7e`.
+- Visual regression `33496747005`: pass, including render of baseline/head, required-pixel comparison, retained evidence, and reviewed-baseline enforcement.
+- Artifact inventory remains 39 PNGs. Compared with `352dc58a`, 33 are byte-identical; the six differing captures were individually re-inspected. The two map changes are minor live OSM tile pixels, while the route-preview and desktop Stop Detail changes are full-page capture/fixed-navigation scroll composition. No material application UI, content, attribution, layout, responsive, or control regression is present.
+
+Sixth-review TDD test-only head `8f0757592fe7fce7ce8d481ae0742ec9e124915a`:
+
+- CI `33515016027`: failed only in Angular tests as intended by the red phase.
+- Angular job `99879840507`: `1 FAILED, 523 SUCCESS`; the failure is `TypeError: Cannot read properties of null (reading 'trim')` in `normalizeLineDisplayName`.
+- Lint, script tests, and deploy-pipeline validation passed on the same test-only head.
+
+Sixth-review executable/security head `d421743b47581f297901b70900ad997edd0d181f`:
+
+- CI `33516554249`: pass; Angular job `99885010958` reports `TOTAL: 524 SUCCESS` with 82.26% statement, 63.36% branch, 81.34% function, and 82.43% line coverage.
+- Legal browser QA `33516554385`: pass.
+- Visual evidence `33516554223`: pass.
+- Visual artifact `9803976359`: `pr-439-visual-evidence-d421743b47581f297901b70900ad997edd0d181f`.
+- Visual artifact digest: `sha256:3772d4f934c6048836f25bbfff7ed241fc061bddc3092a4d4b9c7bcc789274ad`.
+- Visual regression `33516554346`: pass. The exact reviewed-baseline comparison reports `0/36 changed files, 0 differing pixels` against baseline `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`.
+- The 41-image publication artifact was compared with the preceding validated 41-image artifact: 38 PNGs are byte-identical. The two map differences are limited to live OSM tile rendering. The mobile Stop Detail publication capture differs in composition, but the independent reviewed-baseline run renders that same state as an exact pixel match; inspection found no material UI, content, attribution, layout, responsive, or control regression.
+
+Documentation head `75ea456f1dceb998a40296ae8f12ef1a8f9f1ae7` passed all repository gates before CodeRabbit review run `115517bd-09d1-4b5b-b390-5ccc877efd38`. External review state after that point is maintained in the PR discussion/body per decision 23 rather than copied back into this specification.
+
+## Final visual review
+
+The first remediation artifact contained 39 screenshots and was manually re-inspected. Lines, Line Detail, aggregate Favorites, Stop Detail, Home, map, route search, recents, settings, drawer, news, and dialog states remained coherent in the generated mobile/desktop evidence. No new horizontal overflow or clipping was observed. The fixed bottom navigation remained at its viewport-fixed position in full-page mobile captures; automated overflow assertions passed and end content remained reachable.
+
+The third-review artifact `9792950897` was downloaded and all 39 screenshots were re-inspected. The affected Lines, Line Detail, aggregate Favorites, Stop Detail, Home, map, route search, recents, settings, drawer, news, dialog, loading, error, and empty states remained visually coherent at the captured 390×844 and 1440×900 targets. No new clipping, horizontal overflow, broken hierarchy, or inaccessible-looking affected control was observed. The fixed navigation appears over intermediate content in full-page captures because Playwright composites a viewport-fixed element while scrolling; viewport checks and automated overflow assertions passed, and the content remains reachable.
+
+The fourth-review artifact `9794148565` was compared against the previously validated `9923f12d` artifact. Thirty-seven captures are byte-decoded pixel-identical. The only RGBA differences are inside the live OSM tile content of the two map screenshots; visual inspection of both widths confirms the application overlays, attribution, privacy notice, navigation, controls, spacing, and responsive behavior remain coherent. The exact reviewed-baseline workflow also passed on `c3509fca`.
+
+The fifth-review artifact `9796154663` was compared against the fully inspected `352dc58a` artifact. Thirty-three of 39 PNGs are byte-identical. All six differences were inspected: mobile/desktop map differences are limited to live OSM tile pixels; route-preview differences reflect viewport-fixed bottom-navigation composition while full-page capture scrolls; the two desktop Stop Detail differences are the same full-page scroll-position effect. The affected cards, line labels, map attribution, navigation, privacy notice, spacing, and reachable content remain coherent, and the exact reviewed-baseline workflow passes.
+
+The sixth-review artifact `9803976359` contains the same 41 named states as the preceding validated publication artifact. Thirty-eight PNGs are byte-identical. Both map differences are live OSM tile variation with unchanged application overlays and attribution. The remaining mobile Stop Detail publication-capture difference was inspected and cross-checked against the independent reviewed-baseline run `33516554346`, which reports the required Stop Detail mobile state as an exact match and `0/36` changed required screenshots overall. No material current-head visual regression is present.
+
+## Risks
+
+- Broad `NN` substring replacement would corrupt legitimate names; normalization must stay terminal-token-only.
+- A data boundary that consumes `normalizeLineDisplayName` must not emit a record whose normalized display name is empty; filtering belongs at the mapper boundary rather than fabricating fallback text.
+- CTAN JSON is untrusted at runtime even when the expected schema describes strings. Line-name normalization must retain its `unknown` boundary and runtime type guard so malformed upstream values cannot terminate route discovery or detail mapping.
+- Stop and line local-storage payloads must remain separate so existing stop favorites require no migration.
+- Line identity must remain `(consortiumId,lineId)`; commercial codes and slugs are presentation data.
+- Search errors must remain distinguishable from successful empty directory responses.
+- Descriptive line slugs are non-authoritative. A stale or manually edited slug may still resolve because the consortium and line id remain the canonical route parameters; newly generated links restore the current descriptive slug.
+- Browser storage is best-effort. When localStorage is unavailable the fallback preserves behavior for the current runtime, but it cannot provide persistence across page/process restarts.
+- Fork hardening must remain present on both visual workflows; same-repository PR checks alone do not prove that the repository itself is not a fork.
+- Final delivery requires the PR discussion/body and final PR/status review to remain synchronized; external review state is not duplicated here after decision 23.
+
+## Rollback
+
+Revert the reopened-scope commits and, if necessary, restore `.github/visual-baseline.json` to the previous reviewed immutable baseline. Existing stop-favorite data remains backward compatible; line favorites use a separate storage key and can be removed independently. The descriptive route can be rolled back independently because the legacy line-detail route remains registered.
+
+## Delivery status
+
+- Functional implementation: complete.
+- First CodeRabbit review findings: fixed and validated.
+- Second full CodeRabbit review: completed; valid findings remediated, one inapplicable pure-TestBed suggestion declined with evidence.
+- Third CodeRabbit review findings: fixed, exact-head validated, answered, and resolved.
+- Fourth/final CodeRabbit finding from `9923f12d`: reproduced with a failing regression test, fixed, exact-head validated, answered, and resolved.
+- Fifth/final CodeRabbit finding from `352dc58a`: reproduced with a failing regression test and fixed on `adbf0e4a`; exact-head CI, Legal QA, visual evidence, and visual regression are green.
+- Sixth CodeRabbit findings from `60b705bf`: malformed CTAN line-name metadata was reproduced with a failing regression and fixed through the canonical normalizer plus honest `unknown` DTO boundaries; visual regression now explicitly blocks repository forks. The executable/security head `d421743b` has all four gates green.
+- Sixth-review CTAN inline thread: resolved after CodeRabbit verified the runtime-boundary fix on `d421743b`.
+- Documentation head `75ea456f`: CI, Legal browser QA, visual evidence, and reviewed visual regression all passed; the 41-image artifact was inspected and the deterministic baseline reported `0/36` changed required screenshots with zero differing pixels.
+- CodeRabbit review `115517bd-09d1-4b5b-b390-5ccc877efd38` reviewed the changes through `75ea456f` and found no additional product or security defect; its only actionable item was this stale delivery-status wording.
+- Descriptive line navigation: implemented with legacy compatibility and canonical truncation-boundary cleanup.
+- CTAN stop-line summary boundary: rejects entries whose canonical display name is empty after sentinel or malformed-value normalization.
+- CTAN line-detail boundary: preserves an empty display name for malformed upstream `nombre` values instead of throwing.
+- Live external review/final-delivery state is maintained in the PR discussion/body per decision 23.
+- Merge/release/deploy: not performed.

@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map, of, shareReplay, switchMap } from 'rxjs';
 import { AppConfig } from '@core/config';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
+import { normalizeRequiredStopNucleus } from '@data/stops/stop-metadata.util';
 
 const SEARCH_LOCALE = 'es-ES' as const;
 const MIN_QUERY_LENGTH = 2;
@@ -303,7 +304,7 @@ function buildDirectoryIndex(file: StopDirectoryIndexFile): StopDirectoryIndex {
       entry,
       normalizedName: normalize(entry.name),
       normalizedMunicipality: normalize(entry.municipality),
-      normalizedNucleus: normalize(entry.nucleus),
+      normalizedNucleus: normalize(normalizeRequiredStopNucleus(entry.nucleus)),
       normalizedCode: normalize(entry.stopCode)
     }))
     .sort((first, second) => first.entry.name.localeCompare(second.entry.name, SEARCH_LOCALE));
@@ -335,7 +336,7 @@ function mapChunkEntryToRecord(entry: StopDirectoryChunkEntry): StopDirectoryRec
     name: entry.name,
     municipality: entry.municipality,
     municipalityId: entry.municipalityId,
-    nucleus: entry.nucleus,
+    nucleus: normalizeRequiredStopNucleus(entry.nucleus),
     nucleusId: entry.nucleusId,
     zone: entry.zone,
     location: {
@@ -505,7 +506,7 @@ function toOption(
     name: entry.name,
     municipality: entry.municipality,
     municipalityId: entry.municipalityId,
-    nucleus: entry.nucleus,
+    nucleus: normalizeRequiredStopNucleus(entry.nucleus),
     nucleusId: entry.nucleusId,
     consortiumId: entry.consortiumId,
     stopIds: Object.freeze(orderedIds)
