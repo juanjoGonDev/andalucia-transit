@@ -13,6 +13,7 @@ export function buildDescriptiveSlug(value: string, fallback: string): string {
       ''
     );
 
-  const trimmed = normalized.slice(0, URL_SLUG_MAX_LENGTH);
+  const truncated = normalized.slice(0, URL_SLUG_MAX_LENGTH);
+  const trimmed = truncated.replace(new RegExp(`${URL_SLUG_WORD_SEPARATOR}+$`, 'g'), '');
   return trimmed || fallback;
 }
