@@ -94,6 +94,23 @@ test.describe('aggregate favorites product checks', () => {
     ).toBe(true);
   });
 
+  test('shows a dedicated stop-directory search when add mode opens', async ({ page }) => {
+    await open(page, FAVORITES_PATH);
+
+    const addAction = page.getByRole('button', { name: 'Añadir a favoritos' }).first();
+    await expect(addAction).toHaveAttribute('aria-expanded', 'false');
+    await addAction.click();
+    await expect(addAction).toHaveAttribute('aria-expanded', 'true');
+
+    const panel = page.locator('.favorites__add-panel');
+    await expect(panel).toBeVisible();
+    await expect(panel.getByRole('heading', { name: 'Añadir a favoritos' })).toBeVisible();
+    await expect(panel.getByRole('searchbox', { name: 'Buscar' })).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
+    ).toBe(true);
+  });
+
   test('exposes the canonical saved line as favorite directly from the line directory', async ({
     page,
   }) => {
