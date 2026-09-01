@@ -34,7 +34,7 @@
             appAccessibleButton
             class="app-button app-button--primary app-button--compact favorites__add"
             [appAccessibleButtonPressed]="(addMode$ | async) === true"
-            [attr.aria-expanded]="(addMode$ | async) === true"
+            [appAccessibleButtonExpanded]="(addMode$ | async) === true"
             aria-controls="favorites-add-results"
             (appAccessibleButtonActivated)="toggleAddMode()"
           >
