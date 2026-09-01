@@ -424,7 +424,11 @@ function buildView(
       return false;
     }
 
-    if (geography.keys && !geography.keys.has(buildLineKey(line.consortiumId, line.lineId))) {
+    if (
+      geography.status === 'ready' &&
+      geography.keys &&
+      !geography.keys.has(buildLineKey(line.consortiumId, line.lineId))
+    ) {
       return false;
     }
 
@@ -435,20 +439,25 @@ function buildView(
     return true;
   });
 
-  const total = filtered.length;
-  const pageCount = Math.max(FIRST_PAGE, Math.ceil(total / PAGE_SIZE));
+  const pageCount = Math.max(FIRST_PAGE, Math.ceil(filtered.length / PAGE_SIZE));
   const page = Math.min(filters.page, pageCount);
   const start = (page - FIRST_PAGE) * PAGE_SIZE;
 
   return {
     status: 'ready',
-    filters: { ...filters, page },
+    filters,
     lines: Object.freeze(filtered.slice(start, start + PAGE_SIZE)),
-    total,
+    total: filtered.length,
     page,
     pageCount,
     geographyStatus: geography.status
   };
+}
+
+function buildProvinceOptions(areas: readonly ConsortiumCatalogEntry[]): readonly string[] {
+  const provinces = [...new Set(areas.map((area) => area.province).filter(isNonNullText))];
+  provinces.sort((left, right) => left.localeCompare(right, 'es-ES'));
+  return provinces.length > 0 ? Object.freeze(provinces) : EMPTY_PROVINCES;
 }
 
 function buildProvinceConsortiumIds(
@@ -464,12 +473,8 @@ function buildProvinceConsortiumIds(
   );
 }
 
-function buildProvinceOptions(areas: readonly ConsortiumCatalogEntry[]): readonly string[] {
-  return Object.freeze(
-    Array.from(new Set(areas.map((area) => area.province).filter(Boolean))).sort((left, right) =>
-      left.localeCompare(right, 'es-ES')
-    )
-  );
+function isNonNullText(value: string | null | undefined): value is string {
+  return value !== null && value !== undefined;
 }
 
 function normalizeQuery(value: string): string {
