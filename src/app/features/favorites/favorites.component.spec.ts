@@ -294,6 +294,17 @@ describe('FavoritesComponent', () => {
     expect(fixture.nativeElement.textContent).not.toContain('Triana');
   });
 
+  it('shows a dedicated directory search field when add mode opens', () => {
+    fixture.detectChanges();
+
+    accessProtected(component).toggleAddMode.call(component);
+    fixture.detectChanges();
+
+    const panel = fixture.nativeElement.querySelector('.favorites__add-panel') as HTMLElement;
+    expect(panel).not.toBeNull();
+    expect(panel.querySelector('.favorites__add-search-field')).not.toBeNull();
+  });
+
   it('searches the stop directory in add mode and toggles the selected stop favorite', fakeAsync(() => {
     stopDirectory.searchStops.and.returnValue(of([DIRECTORY_OPTION]));
     fixture.detectChanges();
