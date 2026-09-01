@@ -126,6 +126,7 @@ class OverlayDialogServiceStub {
 
 interface FavoritesComponentAccess {
   searchControl: FavoritesComponent['searchControl'];
+  addSearchControl: FavoritesComponent['searchControl'];
   removeStop: FavoritesComponent['removeStop'];
   removeLine: FavoritesComponent['removeLine'];
   clearAll: FavoritesComponent['clearAll'];
@@ -305,6 +306,19 @@ describe('FavoritesComponent', () => {
     expect(panel.querySelector('.favorites__add-search-field')).not.toBeNull();
   });
 
+  it('keeps the saved-favorites filter independent from directory search', fakeAsync(() => {
+    fixture.detectChanges();
+    const access = accessProtected(component);
+    access.toggleAddMode.call(component);
+    fixture.detectChanges();
+
+    access.searchControl.setValue('Ada');
+    tick(APP_CONFIG.homeData.search.debounceMs);
+    fixture.detectChanges();
+
+    expect(stopDirectory.searchStops).not.toHaveBeenCalled();
+  }));
+
   it('searches the stop directory in add mode and toggles the selected stop favorite', fakeAsync(() => {
     stopDirectory.searchStops.and.returnValue(of([DIRECTORY_OPTION]));
     fixture.detectChanges();
@@ -312,7 +326,7 @@ describe('FavoritesComponent', () => {
     const access = accessProtected(component);
     access.toggleAddMode.call(component);
     fixture.detectChanges();
-    access.searchControl.setValue('Ada');
+    access.addSearchControl.setValue('Ada');
     tick(APP_CONFIG.homeData.search.debounceMs);
     fixture.detectChanges();
 
@@ -343,7 +357,7 @@ describe('FavoritesComponent', () => {
     const access = accessProtected(component);
     access.toggleAddMode.call(component);
     fixture.detectChanges();
-    access.searchControl.setValue('Ada');
+    access.addSearchControl.setValue('Ada');
     tick(APP_CONFIG.homeData.search.debounceMs);
     fixture.detectChanges();
 
@@ -365,7 +379,7 @@ describe('FavoritesComponent', () => {
 
   it('does not query the directory while add mode is closed', fakeAsync(() => {
     fixture.detectChanges();
-    accessProtected(component).searchControl.setValue('Ada');
+    accessProtected(component).addSearchControl.setValue('Ada');
     tick(APP_CONFIG.homeData.search.debounceMs);
     fixture.detectChanges();
 
@@ -434,9 +448,7 @@ describe('FavoritesComponent', () => {
     expect(favoriteCollection.clear).toHaveBeenCalled();
     expect(dialog.lastData()).toEqual(
       jasmine.objectContaining({
-        details: jasmine.arrayContaining([
-          jasmine.objectContaining({ value: '5' })
-        ])
+        details: jasmine.arrayContaining([jasmine.objectContaining({ value: '5' })])
       })
     );
   });

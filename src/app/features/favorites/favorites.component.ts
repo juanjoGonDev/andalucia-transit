@@ -143,6 +143,7 @@ export class FavoritesComponent {
   protected readonly favoritesCardRemoveClasses = FAVORITES_CARD_REMOVE_CLASSES;
 
   protected readonly searchControl = this.formBuilder.nonNullable.control('');
+  protected readonly addSearchControl = this.formBuilder.nonNullable.control('');
 
   private readonly stopFavorites = signal<readonly StopFavorite[]>([]);
   private readonly lineFavorites = signal<readonly LineFavorite[]>([]);
@@ -163,8 +164,8 @@ export class FavoritesComponent {
     () => this.stopGroups().length > 0 || this.filteredLines().length > 0
   );
 
-  private readonly addQuery$ = this.searchControl.valueChanges.pipe(
-    startWith(this.searchControl.value),
+  private readonly addQuery$ = this.addSearchControl.valueChanges.pipe(
+    startWith(this.addSearchControl.value),
     debounceTime(this.addSearchDebounceMs),
     map((value) => this.normalizeQuery(value)),
     distinctUntilChanged()

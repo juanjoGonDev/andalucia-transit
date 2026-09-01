@@ -58,49 +58,74 @@
         *ngIf="(addMode$ | async) === true"
         id="favorites-add-results"
         class="favorites__add-panel app-async-reveal"
-        aria-live="polite"
       >
-        <ng-container *ngIf="addResultsState$ | async as state">
-          <div *ngIf="state.status === 'error'; else addResults" class="favorites__add-error" role="status">
-            <p class="favorites__add-error-message">{{ 'favorites.search.error' | translate }}</p>
-            <button
-              type="button"
-              class="app-outline-button app-outline-button--compact"
-              (click)="retryAddSearch()"
+        <div class="favorites__add-search">
+          <h2 class="favorites__add-title">{{ addFavoriteLabelKey | translate }}</h2>
+          <app-text-field
+            class="favorites__add-search-field"
+            [label]="searchLabelKey | translate"
+            [placeholder]="searchPlaceholderKey | translate"
+            [type]="searchFieldType"
+            [autocomplete]="searchAutocompleteAttribute"
+            [formControl]="addSearchControl"
+          >
+            <span
+              appTextFieldPrefix
+              class="material-symbols-outlined favorites__search-icon"
+              aria-hidden="true"
             >
-              {{ 'favorites.search.retry' | translate }}
-            </button>
-          </div>
-          <ng-template #addResults>
-            <ul *ngIf="state.options.length" class="favorites__add-list" role="list">
-              <li *ngFor="let option of state.options; trackBy: trackSearchOption">
-                <button
-                  type="button"
-                  class="favorites__add-result"
-                  [attr.aria-pressed]="option.isFavorite"
-                  [attr.aria-label]="favoriteToggleLabel(option) | translate"
-                  (click)="toggleFavorite(option)"
-                >
-                  <span class="favorites__add-result-copy">
-                    <strong class="favorites__add-result-name">{{ option.name }}</strong>
-                    <span class="favorites__add-result-meta">
-                      {{ option.municipality }}
-                      <ng-container *ngIf="option.nucleus"> · {{ option.nucleus }}</ng-container>
-                      · {{ codeLabelKey | translate }} {{ option.code }}
-                    </span>
-                  </span>
-                  <span
-                    class="material-symbols-outlined favorites__add-result-icon"
-                    [attr.data-active]="option.isFavorite ? 'true' : null"
-                    aria-hidden="true"
+              {{ searchIcon }}
+            </span>
+          </app-text-field>
+        </div>
+
+        <div class="favorites__add-results" aria-live="polite">
+          <ng-container *ngIf="addResultsState$ | async as state">
+            <div
+              *ngIf="state.status === 'error'; else addResults"
+              class="favorites__add-error"
+              role="status"
+            >
+              <p class="favorites__add-error-message">{{ 'favorites.search.error' | translate }}</p>
+              <button
+                type="button"
+                class="app-outline-button app-outline-button--compact"
+                (click)="retryAddSearch()"
+              >
+                {{ 'favorites.search.retry' | translate }}
+              </button>
+            </div>
+            <ng-template #addResults>
+              <ul *ngIf="state.options.length" class="favorites__add-list" role="list">
+                <li *ngFor="let option of state.options; trackBy: trackSearchOption">
+                  <button
+                    type="button"
+                    class="favorites__add-result"
+                    [attr.aria-pressed]="option.isFavorite"
+                    [attr.aria-label]="favoriteToggleLabel(option) | translate"
+                    (click)="toggleFavorite(option)"
                   >
-                    {{ favoriteToggleIcon(option) }}
-                  </span>
-                </button>
-              </li>
-            </ul>
-          </ng-template>
-        </ng-container>
+                    <span class="favorites__add-result-copy">
+                      <strong class="favorites__add-result-name">{{ option.name }}</strong>
+                      <span class="favorites__add-result-meta">
+                        {{ option.municipality }}
+                        <ng-container *ngIf="option.nucleus"> · {{ option.nucleus }}</ng-container>
+                        · {{ codeLabelKey | translate }} {{ option.code }}
+                      </span>
+                    </span>
+                    <span
+                      class="material-symbols-outlined favorites__add-result-icon"
+                      [attr.data-active]="option.isFavorite ? 'true' : null"
+                      aria-hidden="true"
+                    >
+                      {{ favoriteToggleIcon(option) }}
+                    </span>
+                  </button>
+                </li>
+              </ul>
+            </ng-template>
+          </ng-container>
+        </div>
       </section>
 
       <section class="favorites__panel">
