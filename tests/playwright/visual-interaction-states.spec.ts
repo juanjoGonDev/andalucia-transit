@@ -138,6 +138,24 @@ test.describe('deterministic interaction visual states', () => {
   );
   test.skip(MOCK_MODE !== 'data', 'E2E_MOCK_MODE=data is required for interaction-state tests.');
 
+  test('shows a usable favorites add panel instead of an empty surface', async ({ page }) => {
+    await page.setViewportSize(MOBILE_VIEWPORT);
+    await open(page, '/favorites');
+
+    const addAction = page.getByRole('button', { name: 'Añadir a favoritos' }).first();
+    await expect(addAction).toHaveAttribute('aria-expanded', 'false');
+    await addAction.click();
+    await expect(addAction).toHaveAttribute('aria-expanded', 'true');
+
+    const panel = page.locator('.favorites__add-panel');
+    await expect(panel).toBeVisible();
+    await expect(panel.getByRole('heading', { name: 'Añadir a favoritos' })).toBeVisible();
+    await expect(panel.getByRole('searchbox', { name: 'Buscar' })).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
+    ).toBe(true);
+  });
+
   test('keeps confirm dialogs on one coherent shared surface', async ({ page }) => {
     for (const viewport of [MOBILE_VIEWPORT, DESKTOP_VIEWPORT]) {
       await page.setViewportSize(viewport);
