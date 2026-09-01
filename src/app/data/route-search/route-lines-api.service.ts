@@ -154,7 +154,7 @@ export class RouteLinesApiService {
 interface ApiLineSummary {
   readonly idLinea: string | number;
   readonly codigo: string;
-  readonly nombre: string;
+  readonly nombre: unknown;
   readonly descripcion?: string;
   readonly modo?: string;
   readonly prioridad?: string | number;
