@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import { filter } from 'rxjs';
-
-const PWA_RECOVERY_SESSION_KEY = 'andalucia-transit:pwa-recovery';
+import { PWA_RECOVERY_SESSION_KEY } from '@core/services/pwa-update.config';
 
 @Injectable({ providedIn: 'root' })
 export class PwaUpdateService {

@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SwUpdate, VersionEvent } from '@angular/service-worker';
 import { Subject } from 'rxjs';
+import { PWA_RECOVERY_SESSION_KEY } from '@core/services/pwa-update.config';
 import { PwaUpdateService } from '@core/services/pwa-update.service';
 
 class SwUpdateStub {
@@ -182,13 +183,13 @@ describe('PwaUpdateService', () => {
     });
 
     expect(reloadSpy).toHaveBeenCalledTimes(1);
-    expect(sessionStorage.getItem('andalucia-transit:pwa-recovery')).toBe('1');
+    expect(sessionStorage.getItem(PWA_RECOVERY_SESSION_KEY)).toBe('1');
 
     resolveActivation?.(true);
     await Promise.resolve();
 
     expect(reloadSpy).toHaveBeenCalledTimes(1);
-    expect(sessionStorage.getItem('andalucia-transit:pwa-recovery')).toBe('1');
+    expect(sessionStorage.getItem(PWA_RECOVERY_SESSION_KEY)).toBe('1');
   });
 
   it('is a no-op when the service worker is disabled', () => {
@@ -215,11 +216,11 @@ describe('PwaUpdateService', () => {
     });
 
     expect(reloadSpy).toHaveBeenCalledTimes(1);
-    expect(sessionStorage.getItem('andalucia-transit:pwa-recovery')).toBe('1');
+    expect(sessionStorage.getItem(PWA_RECOVERY_SESSION_KEY)).toBe('1');
   });
 
   it('guards unrecoverable recovery against reload loops', () => {
-    sessionStorage.setItem('andalucia-transit:pwa-recovery', '1');
+    sessionStorage.setItem(PWA_RECOVERY_SESSION_KEY, '1');
     service.initialize();
 
     swUpdate.unrecoverable.next({
