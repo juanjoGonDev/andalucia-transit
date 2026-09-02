@@ -40,7 +40,7 @@ Out of scope:
 - The supplied SVG declares `1095x1095` with `viewBox="0 0 1095 1095"` and uses four primary paint values: `#02193e`, `#0162f3`, `#fdfdfd`, and `#000`.
 - Commit `2f6a456609c41b05971acb37f66eac90716fae7c` adopts that exact blob as `public/favicon.svg` and removes the temporary filename, so production now uses the user's actual SVG rather than a recreation.
 - CI measured the exact current SVG UTF-8 SHA-256 as `b12a92b917b9d194b7f37ca2e6c031a91c5fc81160c62f5c521fb58eac841e92`.
-- `scripts/pwa-contract.ts` pins the supplied input by Git blob SHA and retains the authoritative rendered digest. The source is not described as final/approved while its rendered pixels still fail the authoritative digest.
+- Commit `5d2120da02731f4bfddc05b154413a536cb84da6` adds that UTF-8 SHA-256 to `scripts/pwa-contract.ts` and makes `scripts/pwa-shell.test.ts` assert it, alongside the existing Git blob SHA identity and authoritative rendered digest. The source is not described as final/approved while its rendered pixels still fail the authoritative digest.
 
 ### Exact render result and bounded color investigation
 
@@ -56,8 +56,10 @@ Out of scope:
 
 ### Legacy WebP recovery cleanup
 
-- Historical investigation proved the WebP was never fully versioned: payload chunks 00, 02, and 03 existed while chunk 01 did not; the retained chunks represented only a small fraction of the RIFF payload and could not reconstruct the original.
-- Recovery covered PR comments/reviews, commit history/comments, refs, branches/tags/forks, Actions logs/artifacts, releases, repository searches, public hash searches, and available conversation attachments. No complete verifiable WebP was recovered.
+- Historical investigation proved the WebP was never fully versioned: payload chunks 00, 02, and 03 existed while chunk 01 did not.
+- The retained RIFF prefix declares a complete WebP size of 663,028 bytes, equivalent to 884,040 Base64 characters. The three retained fragments total 58,438 Base64 characters, only about 6.61% of the payload, leaving about 93.39% missing; they cannot reconstruct the original.
+- Git history contains the sequence `payload-00` → `payload-02` → `payload-03`, and repository commit search for `payload chunk 01` returns no commit.
+- Recovery covered PR comments/reviews, commit history/comments, refs, branches/tags/forks, Actions logs/artifacts, releases, repository searches, public hash searches, and available conversation attachments. No complete verifiable WebP or exact approved raster was recovered; relevant historical and current workflow runs expose no recoverable visual artifact containing it.
 - SHA-256 cannot reconstruct missing bytes.
 - The user explicitly selected the supplied SVG path instead. The incomplete chunk files therefore ceased to own any runtime/test behavior and had no references.
 - Commit `f30042f507c3ee8f3a75a874a0179daf9332144d` removes `scripts/pwa-icon/payload-00.txt`, `payload-02.txt`, and `payload-03.txt` as obsolete recovery debris.
@@ -74,14 +76,14 @@ Out of scope:
 
 ### Verification ownership and CI
 
-- `scripts/pwa-contract.ts` is the verification-contract owner for theme values, contractual 1254x1254 render dimensions, supplied SVG blob identity, and the authoritative RGBA digest.
-- `scripts/pwa-shell.test.ts` verifies theme, one canonical manifest icon, exact supplied SVG source identity, document metadata, and service-worker asset coverage.
+- `scripts/pwa-contract.ts` is the verification-contract owner for theme values, contractual 1254x1254 render dimensions, supplied SVG Git blob SHA-1, supplied SVG UTF-8 SHA-256, and the authoritative RGBA digest.
+- `scripts/pwa-shell.test.ts` verifies theme, one canonical manifest icon, both exact supplied SVG source identities, document metadata, and service-worker asset coverage.
 - `tests/playwright/pwa-icon.assert.ts` is the sole browser-side exact-render implementation. It fetches the served SVG, draws it in Chromium to 1254x1254, hashes RGBA bytes, logs the actual digest, and compares against the authoritative digest.
 - Both `tests/playwright/pwa-shell.spec.ts` and the deterministic visual suite reuse that helper rather than recalculating identity separately.
 - `scripts/dev/run-angular-tests.mjs` runs the full Angular suite plus the focused PWA suite; `scripts/dev/pwa-coverage-gate.mjs` fails closed unless the focused branch summary is exactly non-zero 100%. Its parser has eight dedicated tests.
 - CodeRabbit findings for child-process `close` ownership and import order were fixed by `10dbcf8e5d960d54f6481495e5e46cb8e61a079e` and `0cd7ffcb5772a7aca8f7090e88d103d40201fcf6`.
-- CI #1466 (`33607930001`) on diagnostic head `73d77897...` completed success: install, lint, script tests, Angular, deploy pipeline, and required `Check all ok` were green.
-- Visual Evidence #1473 (`33607929909`) reached the real browser assertion and failed only on exact icon identity: 41 Playwright tests passed and one PWA identity test failed with received `7f0680a6...` versus expected `57aeab24...`.
+- CI #1470 (`33623320472`) on head `5d2120da02731f4bfddc05b154413a536cb84da6` completed success: install, lint, script tests, Angular, deploy pipeline, and required `Check all ok` were green. `Test scripts` passed 11/11 suites and the PWA shell test asserted source SHA-256 `b12a92b...`.
+- Visual Evidence #1481 (`33623320415`) reached the real browser assertion and failed only on exact icon identity: 41 Playwright tests passed and one PWA identity test failed with received `7f0680a6...` versus expected `57aeab24...`.
 - The permanent exact render gate remains intentionally fail-closed; CI success alone is not sufficient task acceptance while visual identity fails.
 
 ### Formatting baseline
@@ -94,8 +96,8 @@ Out of scope:
 - Reviewed baseline pointer remains `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`.
 - PR #439 final head `f3305fe2cf86be988ab5365534be33c16e42e78c` passed visual regression against that baseline with 0/36 changed screenshots and zero differing pixels.
 - Its squash merge on `main`, `b6509aaa214dc932588dc6bb0ed068ef097ce8c5`, has the exact same Git tree SHA `7e7651c07c8d9b65faab439dfbdcee1d3e269cbd` as the validated head.
-- Visual Regression #356 still fails at baseline resolution because squash topology made the reviewed pointer diverged, not because the trees differ.
-- `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is the evidence-backed ancestry repair candidate. `.github/visual-baseline.json` must not change without explicit approval.
+- Visual Regression #360 (`33623320446`) on head `5d2120da02731f4bfddc05b154413a536cb84da6` still fails at baseline resolution because squash topology made the reviewed pointer diverged, not because the trees differ; no screenshot comparison runs.
+- `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is the evidence-backed ancestry repair candidate. `.github/visual-baseline.json` must not change without explicit approval; a generic continuation command is not approval.
 
 ## Decision
 
@@ -152,13 +154,14 @@ Revert this PR. No backend, API, database, persistent-data migration, release, o
 
 ## Delivery status
 
-- Reconnaissance/specification: updated through the supplied-SVG integration and exact Chromium render investigation.
+- Reconnaissance/specification: updated through the supplied-SVG integration, exact Chromium render investigation, and historical payload recovery audit.
 - PWA shell colors, manifest ownership, service-worker lifecycle, unavailable-storage hardening, recovery-key SSOT, branch-coverage enforcement, CodeRabbit fixes, and both overlapping reload races: implemented and covered.
-- Exact supplied SVG: integrated literally as `public/favicon.svg`; source Git blob `69b7f7dd...`, source SHA-256 `b12a92b9...`.
-- Static required CI: green on the integrated SVG path; CI #1466 is fully successful.
-- Exact browser identity: blocked. Current Chromium RGBA is `7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b`; target remains `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`.
+- Exact supplied SVG: integrated literally as `public/favicon.svg`; source Git blob `69b7f7dd...` and source UTF-8 SHA-256 `b12a92b9...` are both pinned/asserted by the shared static contract after `5d2120da02731f4bfddc05b154413a536cb84da6`.
+- Static required CI: green on head `5d2120da...`; CI #1470 (`33623320472`) is fully successful.
+- Exact browser identity: blocked. Visual Evidence #1481 (`33623320415`) passes 41/42 Playwright tests; current Chromium RGBA is `7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b`, target remains `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`.
 - Known palette adjustment: exhausted with 72/72 distinct candidate hashes and no exact match; diagnostic code was removed afterward.
-- Historical incomplete WebP payload fragments: removed because the user selected the SVG path and no runtime/test code references them.
+- Historical incomplete WebP payload: unrecoverable from repository evidence; about 93.39% of its Base64 payload is absent and no `payload-01` commit or workflow artifact supplies it. The obsolete retained fragments were removed after the user selected the SVG path.
 - Next evidence required for artwork changes: the exact approved PNG/reference pixels or an equivalent exact source so a per-pixel diff can drive changes.
-- Visual baseline ancestry repair: evidence complete but unapplied; explicit approval is required.
+- Visual baseline ancestry repair: evidence complete but unapplied; explicit approval is required. Visual Regression #360 (`33623320446`) stops at ancestry resolution before rendering.
+- Human approval: intentionally not requested while either visual gate is red.
 - Final visual/runtime review: blocked until the exact artwork can pass and the reviewed baseline can run. No hash, gate, or baseline will be weakened to bypass either blocker.
