@@ -21,6 +21,7 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - The reviewed baseline commit `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5` is independently diverged from both current `main` and this PR head; merging current `main` cannot make that commit an ancestor of the PR.
 - The baseline divergence is explained by the squash merge of PR #439. Its final head `f3305fe2cf86be988ab5365534be33c16e42e78c` passed visual-regression run `33530397106` with `0/36` changed screenshots and zero differing pixels against reviewed baseline `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`.
 - Squash merge commit `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` and validated PR #439 head `f3305fe2cf86be988ab5365534be33c16e42e78c` have the exact same Git tree SHA, `7e7651c07c8d9b65faab439dfbdcee1d3e269cbd`. The ancestry failure is therefore caused by squash topology, not by a file-tree difference between the validated final PR head and its merged `main` commit.
+- The static Node gate and Playwright PWA gate previously duplicated the approved icon dimensions, MIME type, both exact digests, and expected shell colors. This created two independently editable copies of the same acceptance contract.
 
 ## Decision
 
@@ -35,6 +36,7 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 9. Fail closed while the canonical bytes are unavailable. Do not regenerate, approximate, interpolate, weaken the tests, or replace either pinned digest to make CI pass.
 10. Treat recovery-marker storage as a fallible browser boundary. Failure to clear the marker after a successful activation must not block the required reload. Unrecoverable-state auto-recovery must reload only after the loop-prevention marker has been read and persisted successfully; if storage cannot guarantee the guard, remain on the current page rather than risk an unbounded reload loop.
 11. Treat the visual-baseline ancestry failure as a separate squash-topology defect. Do not weaken the ancestry gate or rewrite `.github/visual-baseline.json` automatically. If the baseline pointer is explicitly approved for repair, `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is the evidence-backed candidate because its tree is byte-for-byte identical to the fully validated PR #439 final head that rendered with zero pixel differences against the currently reviewed baseline.
+12. `scripts/pwa-contract.ts` is the single test-contract owner for approved icon dimensions, MIME type, payload/render digests, and expected PWA shell colors. Static Node tests and Playwright consume that contract rather than maintaining parallel literals. `public/favicon.svg` remains the sole artwork owner; this shared module owns only verification constants.
 
 ## Acceptance
 
@@ -51,6 +53,7 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - Successful version activation still reloads when recovery-marker cleanup storage is unavailable.
 - Unrecoverable-state recovery fails closed without reloading when its loop-prevention marker cannot be read or persisted.
 - Relevant changed lifecycle logic retains practical 100% branch coverage and repository coverage gates do not regress.
+- Static and browser PWA verification consume one shared exact-icon/shell contract; changing an approved digest, dimension, MIME type, or expected shell color requires changing one owner rather than synchronized copies.
 - `pnpm run format:check`, `pnpm run lint`, script tests, Angular tests, production/deploy checks, Playwright PWA shell verification, visual evidence, and GitHub CI are green before delivery.
 
 ## Risks
@@ -62,11 +65,13 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - Reloading on `VERSION_READY` can interrupt active interaction; if a future transactional unsaved flow is introduced, update activation must defer to a safe boundary.
 - If browser storage is unavailable, unrecoverable-state auto-reload is deliberately suppressed because the reload-loop guard cannot be persisted safely; the user may remain on the currently loaded version until storage becomes available or the page is manually revisited.
 - The reviewed visual-baseline pointer is topologically stale after squash merge #439. Although `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is proven tree-equivalent to the fully validated final PR head, changing the reviewed pointer still requires explicit approval.
+- The Playwright PWA runtime assertion cannot execute while the earlier exact-payload quality gate rejects the interim favicon. Lint and the Node runner validate the shared module/import shape, but final browser execution remains part of post-payload validation.
 
 ## Tests
 
 - Static: manifest theme and canonical icon contract, embedded payload MIME/dimensions/SHA, opaque/full-canvas source, absence of duplicate maskable icon owner, mobile browser metadata, and service-worker asset coverage.
 - Browser: load the served SVG into a canvas at 1254×1254, hash the rendered RGBA bytes with Web Crypto, and compare against the approved digest. This is the zero-pixel-diff gate.
+- Shared contract: `scripts/pwa-contract.ts` supplies the same immutable dimensions, MIME, exact digests, and shell colors to both static Node and browser Playwright verification.
 - Unit: `SwUpdate` lifecycle and root initialization coverage, including blocked/unavailable `sessionStorage` behavior for recovery-marker cleanup and reload-loop protection.
 - Visual evidence: exact-head deterministic product screenshots remain required; installed launcher metadata is separately validated by the PWA shell contract.
 - Recovery audit: verify PR commit ancestry, refs, comments, retained workflow artifacts/logs, and temporary release assets before accepting any recovered payload as canonical.
@@ -78,9 +83,9 @@ Revert this PR. No backend, API, database, or persistent-data migration is invol
 
 ## Delivery status
 
-- Reconnaissance: complete, including a full recovery audit of PR ancestry, refs, comments, workflow data, temporary release assets, baseline topology, and update-lifecycle storage boundaries.
-- Specification: updated for the final approved exact-fidelity identity, the verified missing-payload blocker, fail-closed recovery-storage behavior, and the proven squash-merge baseline topology.
-- Update lifecycle, shell colors, single manifest icon ownership, and unavailable-storage handling: implemented.
+- Reconnaissance: complete, including a full recovery audit of PR ancestry, refs, comments, workflow data, temporary release assets, baseline topology, update-lifecycle storage boundaries, and duplicated PWA verification constants.
+- Specification: updated for the final approved exact-fidelity identity, the verified missing-payload blocker, fail-closed recovery-storage behavior, proven squash-merge baseline topology, and shared verification-contract ownership.
+- Update lifecycle, shell colors, single manifest icon ownership, unavailable-storage handling, and PWA verification-contract SSOT: implemented.
 - Exact approved identity: blocked because the canonical WebP bytes are incomplete; `payload-01.txt` was never committed and no verifiable alternate source was recovered.
 - Baseline ancestry repair: evidence complete but intentionally not applied. `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is tree-identical to validated PR #439 head `f3305fe2cf86be988ab5365534be33c16e42e78c`, which rendered with zero pixel differences against the reviewed baseline; explicit user approval is still required before changing the baseline pointer.
-- CI/final review: incomplete. Exact-icon tests must remain red until the canonical payload is restored; no baseline or digest may be changed to bypass the blocker.
+- CI/final review: incomplete. The shared contract refactor is accepted by lint, the static Node runner reaches the expected exact-payload failure, and Angular remains green; Playwright PWA execution, visual evidence, and final review remain blocked until the canonical payload is restored. No baseline or digest may be changed to bypass the blockers.
