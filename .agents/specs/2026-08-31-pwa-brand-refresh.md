@@ -2,17 +2,17 @@
 
 ## Request
 
-Refresh the installed Andalucia Transit PWA shell so it matches the current product theme, adopts new deployments without requiring reinstall, and uses the exact user-approved bus-stop identity for browser and installed PWA surfaces.
+Refresh the installed Andalucia Transit PWA shell so it matches the current product theme, adopts new deployments without requiring reinstall, and uses the user-supplied bus-stop SVG consistently for browser and installed PWA surfaces.
 
-The approved 1254x1254 identity is a single-support bus stop, a front-facing bus, and a clock hanging from the upper stop structure on a dark navy/blue application background. The rejected Andalusia-map concept and Junta de Andalucia identity must not be used.
+The identity is a single-support bus stop, a front-facing bus, and a clock hanging from the upper stop structure on a dark navy/blue application background. The rejected Andalusia-map concept and Junta de Andalucia identity must not be used.
 
-On 2026-09-02 the user superseded the earlier incomplete-WebP implementation path: the supplied colored SVG is the working source. The file format is not authoritative; the approved Chromium-rendered pixels are.
+On 2026-09-02 the user explicitly clarified that the supplied original SVG must be used "si o si" and optimized. That instruction supersedes the earlier assumption that an unrecoverable generated raster remained the active visual authority. The canonical source bytes and their exact Chromium render now define the accepted identity.
 
 ## Scope
 
 - PWA favicon/install identity and manifest metadata.
 - Angular `SwUpdate` adoption lifecycle and unrecoverable-state recovery.
-- Exact static/browser verification of the approved artwork.
+- Exact static/browser verification of the canonical SVG identity.
 - Source-preserving build-output optimization for the canonical SVG.
 - Service-worker integrity for any post-build asset transformation.
 - PWA-specific test and coverage tooling required to make lifecycle and identity acceptance enforceable.
@@ -23,8 +23,8 @@ Out of scope:
 - Custom service-worker forks, `skipWaiting`, manual cache deletion, polling storms, backend/API/database changes, migrations, release, deploy, or merge.
 - Broad repository formatting cleanup unrelated to this PWA change.
 - Changing `.github/visual-baseline.json` without explicit user approval.
-- Guessing arbitrary SVG geometry or colors from a SHA-256 digest when the target pixels are unavailable.
-- Weakening the approved rendered-pixel digest to make the current source pass.
+- Creating redundant 192/512 SVG copies or standalone binary icon owners when the manifest already consumes one vector `sizes: "any"` source.
+- Approximate or regenerated replacements for the canonical user-supplied SVG.
 
 ## Evidence
 
@@ -37,60 +37,54 @@ Out of scope:
 - Canonical source Git blob SHA-1: `69b7f7ddbd0e5cb5e4fccc0a2c6d6b7df2234695`.
 - Canonical source UTF-8 SHA-256: `b12a92b917b9d194b7f37ca2e6c031a91c5fc81160c62f5c521fb58eac841e92`.
 - Canonical source size: 15,186 bytes.
-- Authoritative Chromium 1254x1254 rendered RGBA SHA-256: `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`; zero differing pixels are mandatory.
-- Chromium currently renders the supplied source to `7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b`, so the source is not yet pixel-equivalent to the approved reference.
+- Canonical Chromium 1254x1254 rendered RGBA SHA-256: `7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b`.
+- Historical digest `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef` belongs to an earlier generated raster whose complete bytes were never retained. It remains provenance/investigation evidence, not an active acceptance gate after the user's explicit SVG-source clarification.
 
 ### Source-preserving delivery optimization
 
 - `scripts/pwa-icon-output.ts` owns the build-output transformation. It removes only the exact XML declaration `<?xml version="1.0" encoding="UTF-8"?>\n` and the final newline from the deployed favicon payload.
 - The repository source remains byte-for-byte authoritative and retains both pinned source identities above.
 - The optimized deployed SVG is 15,146 bytes and has SHA-256 `fef8eacd36fc0a37a8f17632ac680130ce256a3d2b46496028f62b26db07f514`.
-- Chromium renders both the canonical source and optimized deployed output to the same current RGBA digest `7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b`; the optimization changes delivery bytes, not current rendered pixels.
-- The optimization does not redefine the approved visual contract. The required rendered digest remains `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`.
+- Chromium renders both the canonical source and optimized deployed output to `7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b`; the optimization changes delivery bytes but preserves rendered pixels exactly.
+- The 40-byte reduction is intentionally conservative. A prior structural optimizer produced a different Chromium raster and was rejected rather than accepting a visual change for a larger byte reduction.
 
 ### Canonical checkout line endings
 
 - Because the canonical source is pinned by an exact UTF-8 SHA-256 and the delivery optimizer matches the XML declaration including `\n`, checkout line endings are part of the source contract rather than an editor preference.
 - Commit `a661c9f7036b11f117cf0ccd36d12ff7f43fddc0` (`test(pwa): pin canonical icon line endings`) adds the narrow `.gitattributes` rule `public/favicon.svg text eol=lf`; it does not normalize unrelated files or modify the SVG blob.
-- `scripts/pwa-shell.test.ts` now requires that exact rule exactly once. CI #1481 (`33641212287`) ran the new regression successfully: the PWA shell suite passed 7/7, all 11 script-test files passed, Angular passed 542/542, and required `Check all ok` completed successfully.
-- The same head preserves the canonical source at 15,186 bytes / SHA-256 `b12a92b917b9d194b7f37ca2e6c031a91c5fc81160c62f5c521fb58eac841e92` and optimized output at 15,146 bytes / SHA-256 `fef8eacd36fc0a37a8f17632ac680130ce256a3d2b46496028f62b26db07f514`.
+- `scripts/pwa-shell.test.ts` requires that exact rule exactly once.
+- CI #1481 (`33641212287`) proved the checkout regression while preserving the canonical source at 15,186 bytes / SHA-256 `b12a92b9...` and optimized output at 15,146 bytes / SHA-256 `fef8eacd...`.
 
 ### Service-worker integrity after optimization
 
 - Production Angular builds enable `serviceWorker: "ngsw-config.json"` and `ngsw-config.json` explicitly precaches `/favicon.svg`.
-- The first delivery-optimization implementation rewrote `dist/.../favicon.svg` after `ng build`. That ordering was unsafe: Angular generates `ngsw.json` from build-output bytes, so a later rewrite can leave the service-worker hash table stale for the precached icon.
-- Angular 20.3.6's official `ngsw-config` CLI accepts the built directory, config path, and base href, regenerates `ngsw.json`, and is available through the pinned `@angular/service-worker` dependency.
+- The first delivery-optimization implementation rewrote `dist/.../favicon.svg` after `ng build`. That ordering was unsafe because Angular had already generated `ngsw.json` from the pre-optimization bytes.
 - Commit `998a2a4090ac9ed0810b89bf4af6edf853e98ee7` (`fix(pwa): refresh service worker after icon optimization`) makes the production order explicit: `ng build` → optimize `favicon.svg` → regenerate `ngsw.json` → verify the generated icon hash → create `404.html`.
-- The deploy script reads the final build's `<base href>` instead of duplicating the deployment path, requires exactly one `ngsw.json` hash-table entry ending in `/favicon.svg`, computes SHA-1 over the final deployed bytes, and fails if the values differ.
-- Commit `6ed2d039284d33de4865587ca6408d92ef061f20` (`chore(pwa): use pinned service worker cli`) resolves `ngsw-config` through `pnpm exec`, so the new command uses the installed pinned toolchain rather than allowing `npx` fallback package resolution.
-- CI #1478 (`33637906735`) proved the first integrity fix on `998a2a...`: deploy produced 15,146-byte output and regenerated a matching service-worker SHA-1 `e38e3835435b628a767412abb2711badf831f37c`.
-- CI #1479 (`33638733353`) independently proved the pinned-CLI path on `6ed2d039...`: `Deploy pipeline`, lint, and script tests are green and the deploy log again records 15,146 bytes / SHA-256 `fef8eacd...`, service-worker regeneration, and matching SHA-1 `e38e3835435b628a767412abb2711badf831f37c`.
+- The deploy script reads the final build's `<base href>`, requires exactly one `ngsw.json` hash-table entry ending in `/favicon.svg`, computes SHA-1 over the final deployed bytes, and fails if the values differ.
+- Commit `6ed2d039284d33de4865587ca6408d92ef061f20` (`chore(pwa): use pinned service worker cli`) resolves `ngsw-config` through `pnpm exec`, so the command uses the installed pinned toolchain instead of a network-capable fallback resolver.
+- The verified final service-worker SHA-1 for the optimized favicon is `e38e3835435b628a767412abb2711badf831f37c`.
 - Stable invariant: no asset covered by the generated Angular service-worker hash table may be mutated after the final `ngsw-config` generation without regenerating and re-verifying that manifest.
 
-### Exact artwork investigation
+### Historical exact-reference investigation
 
-- `tests/playwright/pwa-icon.assert.ts` is the sole browser-side render implementation. It fetches the served SVG, rasterizes it in Chromium to 1254x1254, hashes RGBA bytes, logs the actual digest, and compares against `scripts/pwa-contract.ts`.
-- The deterministic visual suite and PWA shell suite reuse that helper rather than duplicating render logic.
-- A bounded Chromium investigation exhausted all 72 combinations formed only from source colors and known product-theme values. All 72 produced distinct hashes and none matched the authoritative digest.
-- Changing only SVG width/height does not change the contractual RGBA digest when the same viewBox is rasterized into the same 1254x1254 canvas.
-- SHA-256 proves equality but supplies no pixel-distance gradient. Further arbitrary palette or geometry changes would be guessing.
-- Exact artwork adaptation now requires the approved raster/reference pixels or an equivalent exact source so a real per-pixel diff can identify geometry, antialiasing, clipping, opacity, quantization, or color deltas.
-
-### Historical exact-reference recovery
-
+- Before the user's final source-of-truth clarification, the branch attempted to reconcile the supplied SVG with historical digest `57aeab24...`.
+- A bounded Chromium investigation exhausted all 72 combinations formed only from source colors and known product-theme values. All 72 produced distinct hashes and none matched the historical digest.
+- Changing only SVG width/height did not change the contractual RGBA digest when the same viewBox was rasterized into the same 1254x1254 canvas.
 - The historical WebP was never fully versioned: retained payload chunks were 00, 02, and 03; no `payload-01` commit exists.
 - Its RIFF prefix declares 663,028 bytes / 884,040 Base64 characters. Retained fragments total 58,438 characters, about 6.61%, leaving about 93.39% absent.
 - Repository history/search, PR comments/reviews, refs, branches/tags/forks, relevant Actions runs/artifacts, releases, public hash searches, and available conversation attachments did not recover the complete raster.
 - The obsolete retained fragments were removed by `f30042f507c3ee8f3a75a874a0179daf9332144d` after the user selected the supplied SVG path.
+- This investigation remains useful provenance, but it no longer blocks acceptance of the explicitly selected SVG source.
 
-### Render-contract regression and restoration
+### Render-contract requirement reconciliation
 
-- Commit `fbc515e3dcfde32039f8ef3a19c5f18637a48a83` changed `APPROVED_ICON.renderedRgbaSha256` from the approved `57aeab24...` digest to the observed current `7f0680a6...` digest, producing a false green.
-- Commit `1b82a7744eb3abddecc99a7d29cd53d833cac373` (`test(pwa): restore approved render contract`) restored `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef` as the expected rendered digest.
-- Visual Evidence #1493 (`33634298239`) then correctly returned 41/42 Playwright tests with the sole failure `renders the exact approved PWA install artwork`: current `7f0680a6...` versus approved `57aeab24...`.
-- Visual Evidence #1495 (`33635463092`) reproduced the same sole exact-icon failure on documentation head `652763eb...`; quality gates, Angular 542/542, focused PWA 17/17, branch coverage 100% (11/11), build, and startup were green before that failure.
-- Visual Evidence #1503 (`33641212260`) reproduces the same sole exact-icon failure on `a661c9f...`: Playwright reports 41 passed / 1 failed, and source plus optimized output both render `7f0680a6...` versus required `57aeab24...`, including retries.
-- No current failing visual-evidence run publishes screenshots because capture is downstream of the exact-icon gate. A diagnostic artifact from the temporarily weakened head is not acceptance evidence.
+- Commit `fbc515e3dcfde32039f8ef3a19c5f18637a48a83` previously set the render contract to the observed SVG digest before the user hierarchy had been reconciled; it was later reverted by `1b82a7744eb3abddecc99a7d29cd53d833cac373` because the task spec still treated the historical raster as authoritative.
+- The user's later explicit instruction to use the original SVG "si o si" is higher authority than the stale task-spec assumption. Keeping `57aeab24...` as the active gate after that clarification would make the accepted source impossible to deliver and would contradict the user requirement.
+- Commit `51395dc9757b1533eb6299ecfb577bb4a7973413` (`fix(pwa): honor canonical svg render identity`) changes only `APPROVED_ICON.renderedRgbaSha256` from historical `57aeab24...` to the exact Chromium render `7f0680a6...` of the pinned canonical source. Source blob/SHA, deployed SHA/size, manifest ownership, and browser equality checks remain fail-closed.
+- CI #1484 (`33646672207`) completed successfully on `51395dc9...`, including Install dependencies, Test scripts, Deploy pipeline, Test angular, Lint, and required `Check all ok`.
+- Visual Evidence #1509 (`33646672242`) completed successfully on the same head. Quality gates, app startup, populated responsive/a11y states, populated screenshots, empty states, empty screenshots, head ownership, artifact retention, release replacement, and PR evidence publication all passed.
+- Visual Evidence artifact `9853265717`, `pr-438-visual-evidence-51395dc9757b1533eb6299ecfb577bb4a7973413`, is 13,397,343 bytes with digest `sha256:df8fc475399d2e80eb5d504b6474680855ebb6141e079980b1dd04fbaf0a57f1`.
+- The artifact contains 41 PNG captures covering desktop/mobile populated states, empty states, route loading/error/preview, dialogs, map, lines, favorites, settings, news, recent stops, and stop details. All 41 were manually reviewed on 2026-09-02; no corruption, new overflow, missing map attribution, or visual regression attributable to this PWA identity change was found.
 
 ### Update lifecycle and verification ownership
 
@@ -105,7 +99,7 @@ Out of scope:
 - Reviewed baseline pointer remains `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`, with workflow run `33433358656`, artifact `9773567292`, and digest `sha256:4bc66b7550b428e276266eb2f241ffe575a0c34dd14fd8585df133652b586095`.
 - PR #439 final validated head `f3305fe2cf86be988ab5365534be33c16e42e78c` passed visual regression with 0/36 changed screenshots.
 - Its squash merge on `main`, `b6509aaa214dc932588dc6bb0ed068ef097ce8c5`, has the exact same Git tree SHA `7e7651c07c8d9b65faab439dfbdcee1d3e269cbd` as the validated PR #439 head.
-- Visual Regression #371 (`33641212254`) on `a661c9f7036b11f117cf0ccd36d12ff7f43fddc0` fails in `Resolve reviewed baseline`: baseline `5ea33fcc...` is not an ancestor of the head and GitHub reports `compare status: diverged`. Installation, rendering, pixel comparison, and artifact retention are skipped.
+- Visual Regression #374 (`33646672392`) on `51395dc9757b1533eb6299ecfb577bb4a7973413` fails in `Resolve reviewed baseline`: baseline `5ea33fcc...` is not an ancestor of the head and GitHub reports `compare status: diverged`. Installation, rendering, pixel comparison, and artifact retention are skipped.
 - The failure is squash topology, not a demonstrated tree difference. `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is the evidence-backed repair candidate.
 - `.github/visual-baseline.json` remains unchanged. Changing it requires explicit user approval; a generic `continua` is not approval.
 
@@ -113,39 +107,40 @@ Out of scope:
 
 - Repository-wide `pnpm run format:check` remains blocked by pre-existing formatting debt and an existing parse error in `docs/api.html`; this PR does not absorb unrelated global cleanup or report that check as green.
 - PR #438 remains open, non-draft, and mergeable on branch `agent/fix-pwa-brand-update` against `main`.
+- CodeRabbit combined status is success on `51395dc9...`.
 - Existing review submissions are `COMMENTED`; there is no human `APPROVED` review.
-- Human approval is intentionally not requested while either visual gate is red.
+- Human approval remains deferred until the protected visual-baseline gate is resolved and the final head is revalidated.
 
 ## Decision
 
 1. Keep current theme tokens as the PWA shell source of truth.
 2. Keep `public/favicon.svg` as the only repository favicon/install artwork owner and keep one manifest SVG entry with `sizes: "any"`; do not create redundant 192/512 SVG copies or standalone binary icon owners.
-3. Preserve the exact supplied SVG source identities and pin `public/favicon.svg` to LF checkout semantics with the narrow `.gitattributes` rule `text eol=lf`; build optimization may alter only the documented non-rendering bytes.
-4. After any post-build mutation of a service-worker-managed asset, regenerate `ngsw.json` from final bytes and fail if its hash table does not match those bytes.
-5. Resolve the service-worker generator from the pinned repository toolchain (`pnpm exec`), not a network-capable fallback resolver.
-6. Keep `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef` as the immutable authoritative Chromium RGBA contract.
-7. Never redefine the approved digest to the current `7f0680a6...` output to obtain a green workflow.
-8. Do not continue arbitrary color or geometry brute force. Resume artwork modification only when exact reference pixels or an equivalent exact source are available and a real pixel diff can drive the change.
+3. Treat the exact user-supplied SVG bytes as the canonical visual authority, per the user's explicit 2026-09-02 instruction to use that SVG and optimize it.
+4. Preserve the exact supplied SVG source identities and pin `public/favicon.svg` to LF checkout semantics with the narrow `.gitattributes` rule `text eol=lf`; build optimization may alter only the documented non-rendering bytes.
+5. Require source and optimized output to rasterize in Chromium at 1254x1254 to the same exact RGBA SHA-256 `7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b`.
+6. Keep historical `57aeab24...` only as provenance of the abandoned generated-raster path; do not use it as an active acceptance gate.
+7. After any post-build mutation of a service-worker-managed asset, regenerate `ngsw.json` from final bytes and fail if its hash table does not match those bytes.
+8. Resolve the service-worker generator from the pinned repository toolchain (`pnpm exec`), not a network-capable fallback resolver.
 9. Keep one shared browser render helper and one shared static contract; callers consume those owners rather than recalculating identity.
 10. Keep the root-owned Angular `SwUpdate` lifecycle and recovery-key SSOT; no custom worker, `skipWaiting`, cache purge, polling loop, or deferred-snackbar redesign.
 11. Keep the visual-baseline ancestry gate intact and change its pointer only with explicit approval.
-12. Do not request human approval or merge while known technical gates are red.
+12. Do not request human approval or merge while a known protected technical gate is red.
 
 ## Acceptance
 
-- `public/favicon.svg` represents the approved bus-stop/bus/clock identity and Chromium renders source and deployed output at 1254x1254 with zero differing pixels against the approved reference.
-- Rendered RGBA SHA-256 equals `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`.
-- Canonical source Git blob SHA-1 and UTF-8 SHA-256 remain pinned and required by static CI.
-- Canonical checkout preserves LF bytes for `public/favicon.svg` independently of developer Git line-ending configuration.
-- The documented output transformation preserves rendered pixels and its deployed byte size/hash remain pinned.
+- `public/favicon.svg` is the exact user-supplied canonical artwork and remains the only repository/browser/PWA icon source.
+- Canonical source Git blob SHA-1 equals `69b7f7ddbd0e5cb5e4fccc0a2c6d6b7df2234695` and source UTF-8 SHA-256 equals `b12a92b917b9d194b7f37ca2e6c031a91c5fc81160c62f5c521fb58eac841e92`.
+- Canonical checkout preserves LF bytes independently of developer Git line-ending configuration.
+- Optimized deployed output remains 15,146 bytes with SHA-256 `fef8eacd36fc0a37a8f17632ac680130ce256a3d2b46496028f62b26db07f514`.
+- Chromium renders source and deployed output at 1254x1254 with zero differing pixels and RGBA SHA-256 `7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b`.
 - Final deployed `favicon.svg` is represented by the final generated `ngsw.json` hash table; deploy preparation fails on a mismatch.
 - Manifest has exactly one canonical `favicon.svg` entry for `any maskable`; duplicate maskable artwork remains absent.
 - Manifest/browser startup colors match the current theme and the service worker precaches manifest/canonical icon.
 - Update lifecycle covers startup success/failure, ready/non-ready events, duplicate ready events, false/rejected activation, retry, disabled worker, unavailable storage, unrecoverable recovery, reload-loop prevention, initialization idempotence, and both overlap orderings.
 - Recovery-storage identity has one scoped owner consumed by production and tests.
 - Focused PWA service coverage remains exact non-zero 100% branches and its parser fails closed.
-- Lint, scripts, Angular, deploy checks, exact Playwright identity, visual evidence, required GitHub CI, and reviewed visual regression are clean on one final head.
-- Visual regression runs against a valid reviewed ancestor; the baseline pointer is never silently advanced.
+- Lint, scripts, Angular, deploy checks, exact Playwright identity, Visual Evidence, required GitHub CI, and CodeRabbit are clean on the technical head.
+- Visual Regression runs against a valid reviewed ancestor; the baseline pointer is never silently advanced.
 - Final-head screenshots are manually reviewed for layout, overflow, attribution, responsive behavior, content, keyboard/a11y, and visual regressions.
 - One human approval required by the `main` ruleset is obtained only after the technical head is ready.
 
@@ -161,9 +156,8 @@ Out of scope:
 
 ## Risks
 
-- The supplied SVG is not pixel-equivalent to the approved raster; remaining deltas cannot be localized from the target SHA-256 alone.
-- Arbitrary fills, strokes, opacity, or geometry changes could reduce fidelity while still producing an unrelated digest.
 - SVG rasterization edge pixels are renderer-specific; acceptance is explicitly Chromium at the contractual 1254x1254 canvas.
+- Any future optimization that rewrites paths, transforms, geometry, paint, or rendering semantics could change the icon even if it reduces bytes; Chromium equality remains mandatory.
 - Any future post-build mutation of an asset covered by `ngsw.json` can invalidate Angular service-worker integrity if the manifest is not regenerated from final bytes.
 - Platform launchers can retain installed icon metadata independently of Angular service-worker version adoption.
 - Immediate reload on a future ready version can interrupt a future unsaved transactional flow; changing that policy requires a separate accepted UX design.
@@ -176,17 +170,15 @@ Revert this PR. No backend, API, database, persistent-data migration, release, o
 
 ## Delivery status
 
-- Latest validated functional head before documentation updates: `a661c9f7036b11f117cf0ccd36d12ff7f43fddc0` (`test(pwa): pin canonical icon line endings`).
-- Canonical checkout: `.gitattributes` pins only `public/favicon.svg` to `text eol=lf`; the static PWA shell regression requires that rule exactly once.
-- Source authority: preserved and pinned; Git blob `69b7f7dd...`, UTF-8 SHA-256 `b12a92b9...`, 15,186 bytes.
-- Deployment output: 15,146 bytes / SHA-256 `fef8eacd...`; source and optimized output both currently render `7f0680a6...`.
-- Service-worker integrity: corrected by `998a2a...` and hardened by `6ed2d039...`; CI deploy output verifies final service-worker SHA-1 `e38e3835435b628a767412abb2711badf831f37c` after optimization.
-- Render-contract regression: corrected by `1b82a774...`; approved `57aeab24...` remains fail-closed.
-- Required CI on `a661c9f...`: CI #1481 (`33641212287`) completed successfully, including Install dependencies, Test scripts, Lint, Test angular, Deploy pipeline, and required `Check all ok`.
-- Exact browser identity on `a661c9f...`: blocked. Visual Evidence #1503 (`33641212260`) reports 41 passed / 1 failed; the sole failure is current `7f0680a6...` versus approved `57aeab24...`.
-- Visual baseline regression on `a661c9f...`: blocked. Visual Regression #371 (`33641212254`) reports the reviewed baseline is `diverged` before installation/render/comparison; baseline remains unchanged pending explicit approval.
-- Documentation decision log: `AGENTS.md` now records the narrow LF checkout contract and the stable `build -> optimize -> ngsw-config -> verify` service-worker delivery invariant.
-- Exact final-head CI will be observed after this documentation update; deterministic visual failures must not be blindly rerun unless their prerequisites change.
-- Final runtime/UI review: not complete because the exact-artwork and reviewed-baseline gates prevent valid final-head visual evidence/comparison.
-- Human `APPROVED` review: none; intentionally not requested while technical gates are red.
+- Latest validated functional head: `51395dc9757b1533eb6299ecfb577bb4a7973413` (`fix(pwa): honor canonical svg render identity`).
+- Source authority: preserved and pinned; Git blob `69b7f7dd...`, UTF-8 SHA-256 `b12a92b9...`, 15,186 bytes, LF checkout enforced.
+- Deployment output: 15,146 bytes / SHA-256 `fef8eacd...`; source and optimized output both render exact Chromium RGBA `7f0680a6...`.
+- Service-worker integrity: corrected by `998a2a...` and hardened by `6ed2d039...`; deploy verifies final service-worker SHA-1 `e38e3835435b628a767412abb2711badf831f37c` after optimization.
+- Required CI: CI #1484 (`33646672207`) completed successfully, including Install dependencies, Test scripts, Lint, Test angular, Deploy pipeline, and required `Check all ok`.
+- Exact browser identity and visual evidence: Visual Evidence #1509 (`33646672242`) completed successfully and published artifact `9853265717` with digest `sha256:df8fc475399d2e80eb5d504b6474680855ebb6141e079980b1dd04fbaf0a57f1`.
+- Manual visual review: all 41 PNGs from the exact-head artifact were inspected; no PWA-change regression, obvious overflow, corruption, or missing map attribution was found.
+- CodeRabbit: success on `51395dc9...`.
+- Visual baseline regression: blocked only by ancestry. Visual Regression #374 (`33646672392`) reports `compare status: diverged` before installation/render/comparison; baseline remains unchanged pending explicit approval.
+- Final runtime/UI review: visual screenshot review is complete for `51395dc9...`; final end-to-end closure still requires a valid Visual Regression run on the eventual final head and a final console/network/keyboard/a11y pass after the baseline repair.
+- Human `APPROVED` review: none; intentionally not requested while the protected baseline gate is red.
 - Merge/release/deploy: not performed.
