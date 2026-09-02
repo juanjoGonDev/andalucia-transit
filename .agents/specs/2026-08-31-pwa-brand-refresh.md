@@ -2,98 +2,139 @@
 
 ## Request
 
-Refresh the installed Andalucia Transit PWA shell so it matches the current product theme, adopts new deployments without requiring reinstall, and uses the user-approved bus-stop identity for both favicon and installed PWA surfaces. The approved reference is the generated 1254×1254 image reviewed in this task: a single-support bus stop, front-facing bus, and clock hanging from the upper stop structure on a dark navy/blue application background.
+Refresh the installed Andalucia Transit PWA shell so it matches the current product theme, adopts new deployments without requiring reinstall, and uses the exact user-approved bus-stop identity for browser and installed PWA surfaces.
+
+The approved 1254x1254 identity is a single-support bus stop, a front-facing bus, and a clock hanging from the upper stop structure on a dark navy/blue application background. The rejected Andalusia-map concept and Junta de Andalucia identity must not be used.
+
+## Scope
+
+- PWA favicon/install identity and manifest metadata.
+- Angular `SwUpdate` adoption lifecycle and unrecoverable-state recovery.
+- Exact static/browser verification of the approved artwork.
+- PWA-specific test and coverage tooling required to make the lifecycle acceptance enforceable.
+- Review and CI evidence needed to deliver this PR safely.
+
+Out of scope:
+
+- Custom service-worker forks, `skipWaiting`, manual cache deletion, polling storms, backend/API/database changes, migrations, release, deploy, or merge.
+- Broad repository formatting cleanup unrelated to this PWA change.
+- Changing the reviewed visual-baseline pointer without explicit approval.
 
 ## Evidence
 
-- The current theme owns `--color-primary: #0061fe`, `--color-primary-strong: #0b54d4`, `--color-secondary: #060f2b`, and `--color-background: #f6f7f8` in `src/styles/theme-rules.css`.
-- The original favicon and manifest used the legacy indigo identity and startup colors.
-- The original document had no explicit mobile `theme-color` metadata.
-- Angular service worker registration existed without an application-owned `SwUpdate` adoption lifecycle.
-- Root `AGENTS.md` forbids committing binary files. The exact approved reference therefore cannot be added as a standalone PNG/WebP file.
-- The user explicitly requires zero pixel difference between the approved reference and the SVG identity. A hand-traced/vector approximation cannot satisfy that acceptance criterion reliably.
-- The current head still contains the rejected 512×512 Andalusia-map vector artwork in `public/favicon.svg`; this is not the approved final identity.
-- The complete PR commit ancestry proves the exact payload was never fully versioned. `73d55b0c297d4be7c4c68237f129d341dbaca650` adds `payload-00.txt`, its direct successor `56db1a1a4aa428872d5f9fc6a9c1babf995318b9` adds `payload-02.txt`, and `49ae5fe8d318a0ecc3f95e27d392fecb4a72bf72` adds `payload-03.txt`. There is no intervening or later commit that adds `payload-01.txt`.
-- Recovery inspection found no alternate complete payload in PR comments, review threads, commit comments, retained Actions artifacts, Actions logs, PR refs, or the temporary `pr-438-visual-evidence` release assets.
-- The PR timeline contains no head force-push that could point to a discarded branch state containing the missing chunk.
-- Public searches for the pinned payload/render digests and the approved 1254×1254 composition did not locate a verifiable copy of the source image.
-- The original update lifecycle accessed `sessionStorage` directly after successful activation and during unrecoverable-state recovery. Browser storage APIs may throw when storage is unavailable or blocked; an exception while clearing the recovery marker could suppress the reload after an already successful activation, while an exception during unrecoverable recovery could escape the subscription path.
-- The reviewed baseline commit `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5` is independently diverged from both current `main` and this PR head; merging current `main` cannot make that commit an ancestor of the PR.
-- The baseline divergence is explained by the squash merge of PR #439. Its final head `f3305fe2cf86be988ab5365534be33c16e42e78c` passed visual-regression run `33530397106` with `0/36` changed screenshots and zero differing pixels against reviewed baseline `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`.
-- Squash merge commit `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` and validated PR #439 head `f3305fe2cf86be988ab5365534be33c16e42e78c` have the exact same Git tree SHA, `7e7651c07c8d9b65faab439dfbdcee1d3e269cbd`. The ancestry failure is therefore caused by squash topology, not by a file-tree difference between the validated final PR head and its merged `main` commit.
-- The static Node gate and Playwright PWA gate previously duplicated the approved icon dimensions, MIME type, both exact digests, and expected shell colors. This created two independently editable copies of the same acceptance contract.
-- The focused Angular PWA run previously configured `coverageReporter.check.global` at 100%, but the CI log still completed successfully while the same run reported only `97.5%` statements and `90%` functions. The configuration therefore did not enforce the threshold it appeared to own.
-- A first attempt to consume a conditional `json-summary` reporter also failed closed in CI because Angular did not emit the requested `coverage-summary.json`; the focused test itself still reported `100% (7/7)` branches. The final gate therefore validates the coverage summary Angular actually emits rather than relying on ignored Karma reporter/check overrides.
-- CI #1446 (`33578144057`) validates the final approach on `eb9f87bbb6cfb966467d45fbf63d9031f888ddb8`: the full Angular suite passes `540/540`, the focused PWA suite passes `15/15`, and its branch summary is exactly `100% (7/7)`. The dedicated parser/gate has eight passing script tests covering success, ANSI output, below-threshold, missing, ambiguous, zero-branch, and invalid-input cases.
+### Product and identity
+
+- The current product theme owns primary `#0061fe`, strong blue `#0b54d4`, dark surface `#060f2b`, and background `#f6f7f8`.
+- The original favicon/manifest used the legacy identity and startup colors, and the original document had no explicit mobile `theme-color` metadata.
+- Root `AGENTS.md` forbids standalone binary/media files in git. Exact approved pixels therefore need to remain inside a text SVG wrapper rather than a committed PNG/WebP file.
+- `public/favicon.svg` is the sole artwork owner. The manifest references that file once with `sizes: "any"`, `type: "image/svg+xml"`, and `purpose: "any maskable"`; `public/app-icon-maskable.svg` is removed.
+- The current favicon is still the rejected interim 512x512 vector and does not contain the approved lossless payload.
+- Exact approved embedded WebP SHA-256: `5fe98391a9eed6de6cc7616a0604978063a270c79e7329cf137f3384ac2107be`.
+- Exact Chromium-rendered RGBA SHA-256 at 1254x1254: `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`.
+
+### Missing payload recovery
+
+- PR ancestry proves the payload was never fully versioned: `73d55b0c297d4be7c4c68237f129d341dbaca650` adds `payload-00.txt`; direct successor `56db1a1a4aa428872d5f9fc6a9c1babf995318b9` adds `payload-02.txt`; `49ae5fe8d318a0ecc3f95e27d392fecb4a72bf72` adds `payload-03.txt`. No `payload-01.txt` commit exists.
+- The available fragments total only a small fraction of the complete WebP implied by its RIFF length; they cannot reconstruct the canonical bytes.
+- Recovery checks covered PR comments/reviews, commit history/comments, PR refs and merge tree, visible branches/tags/forks, retained Actions artifacts/logs, the temporary visual-evidence release, GitHub/public code searches by hash/payload prefix, and available conversation attachments. No verifiable complete source was recovered.
+- The pinned digests cannot be inverted to reconstruct missing image bytes. Regenerating visually similar artwork is not an acceptable substitute.
+
+### Update lifecycle
+
+- Angular service-worker registration already existed with `registrationStrategy: "registerWhenStable:30000"`, but the app had no root-owned `SwUpdate` adoption lifecycle.
+- The lifecycle now initializes once, checks on startup, activates `VERSION_READY`, reloads after successful activation, ignores duplicate activation while one is in progress, allows retry after false/rejected activation, and handles unrecoverable state with a session-scoped reload-loop guard.
+- Browser storage is a fallible boundary. Recovery-marker cleanup failure must not suppress a reload after an already successful activation. Unrecoverable recovery fails closed if its loop-prevention marker cannot be read or persisted.
+- Manual CodeRabbit review identified a real overlap risk between `VERSION_READY` activation and `UNRECOVERABLE_STATE` recovery. Regression commit `a60942bbdaf25a468ba7b3f0b6af4c2b30ee7eb8` demonstrated the bug in CI #1452 (`33580681725`): the new test observed two `reloadCurrentVersion` calls and the recovery marker was cleared unexpectedly.
+- Fix commit `1b6d6fa76b25ff0c0ee9f5b62c3a062ae049a933` adds one `reloadRequested` owner. The first reload cause wins; if unrecoverable recovery wins, its persisted marker remains intact when a concurrent activation completes.
+
+### Verification ownership and coverage
+
+- `scripts/pwa-contract.ts` is the single verification-contract owner for theme values, exact icon dimensions, MIME type, payload digest, and rendered RGBA digest. Static Node and Playwright tests consume that owner rather than duplicating constants.
+- The previous Karma threshold configuration appeared to require 100% but did not enforce it. A first conditional `json-summary` attempt also failed because the Angular builder did not emit the requested file.
+- `scripts/dev/run-angular-tests.mjs` therefore runs the complete Angular suite plus the focused PWA service suite and captures the summary Angular actually emits.
+- `scripts/dev/pwa-coverage-gate.mjs` fails closed unless it receives exactly one non-empty branch summary with `100%` and `covered === total`; its parser has eight dedicated passing script tests.
+- CodeRabbit correctly identified that captured child-process output must wait for `close`, not `exit`, because stdout may remain open after process exit. Commit `10dbcf8e5d960d54f6481495e5e46cb8e61a079e` applies that fix.
+- CodeRabbit also identified the source import-order violation in `scripts/pwa-shell.test.ts`; commit `0cd7ffcb5772a7aca8f7090e88d103d40201fcf6` fixes it instead of relying on ESLint's in-place CI mutation.
+- On executable head `1b6d6fa76b25ff0c0ee9f5b62c3a062ae049a933`, CI #1453 (`33580814710`) reports full Angular `541/541`, focused PWA `16/16`, and exact PWA branch coverage `100% (9/9)`. Lint and deploy-pipeline jobs also pass.
+- `test:scripts` on that head runs 11 suites: 10 pass and only `pwa-shell` fails, specifically `favicon.svg must embed the approved lossless WebP payload`. The other four PWA shell assertions pass.
+
+### Formatting baseline
+
+- Root instructions/spec acceptance mention `pnpm run format:check`, while existing CI does not execute it.
+- A temporary isolated CI probe, `fec71d071b69324474ca569a6e4e8d5d1e1b4246`, added a Format matrix job and demonstrated that repository-wide `prettier --check .` is not currently a usable PR gate: it reports broad pre-existing formatting debt and aborts on an existing parse error in `docs/api.html` around line 18408.
+- That experimental CI change was immediately reverted by `a04aa019171e3495a13d6b1415b75feb227d5e21`, restoring `.github/workflows/ci.yml` byte-for-byte. This PWA PR must not absorb a repository-wide formatting migration merely to satisfy an unrelated baseline defect.
+- Consequently repository-wide `format:check` is recorded as blocked by pre-existing baseline debt, not falsely reported as passing.
+
+### Visual baseline topology
+
+- Reviewed baseline pointer: `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`.
+- PR #439 final validated head `f3305fe2cf86be988ab5365534be33c16e42e78c` passed visual-regression run `33530397106` with `0/36` changed screenshots and zero differing pixels against that reviewed baseline.
+- PR #439 squash merge on `main`: `b6509aaa214dc932588dc6bb0ed068ef097ce8c5`.
+- The validated head and squash merge have the exact same Git tree SHA `7e7651c07c8d9b65faab439dfbdcee1d3e269cbd`.
+- The current ancestry failure is therefore caused by squash topology, not by a file-tree difference. `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is an evidence-backed ancestry-repair candidate, but changing `.github/visual-baseline.json` still requires explicit approval.
 
 ## Decision
 
-1. Keep the current semantic theme as the shell source of truth: primary `#0061fe`, strong blue `#0b54d4`, dark surface `#060f2b`, background `#f6f7f8`.
-2. Use one canonical `public/favicon.svg` for both browser favicon and PWA `any maskable` purposes so there is no second artwork owner that can drift.
-3. Preserve the approved reference pixels losslessly inside the SVG as an embedded WebP payload. The repository still stores an SVG/XML text file and no standalone binary asset. This is intentional because exact zero-pixel fidelity is a stronger user acceptance requirement than a hand-authored vector approximation.
-4. Pin the embedded payload SHA-256, intrinsic dimensions, and browser-rendered RGBA SHA-256 in tests. CI must fail if any approved pixel changes.
-5. Verify the rendered SVG in Chromium at the native 1254×1254 canvas and require the exact reviewed RGBA digest `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`.
-6. Keep the identity independent: no Junta de Andalucia logo, wordmark, or other official-government mark.
-7. Keep manifest/browser startup colors aligned with the current theme and retain the root-owned `SwUpdate` lifecycle already implemented in this PR.
-8. Do not use `skipWaiting`, custom service-worker forks, cache deletion, polling storms, or uninstall/reinstall as the normal update mechanism.
-9. Fail closed while the canonical bytes are unavailable. Do not regenerate, approximate, interpolate, weaken the tests, or replace either pinned digest to make CI pass.
-10. Treat recovery-marker storage as a fallible browser boundary. Failure to clear the marker after a successful activation must not block the required reload. Unrecoverable-state auto-recovery must reload only after the loop-prevention marker has been read and persisted successfully; if storage cannot guarantee the guard, remain on the current page rather than risk an unbounded reload loop.
-11. Treat the visual-baseline ancestry failure as a separate squash-topology defect. Do not weaken the ancestry gate or rewrite `.github/visual-baseline.json` automatically. If the baseline pointer is explicitly approved for repair, `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is the evidence-backed candidate because its tree is byte-for-byte identical to the fully validated PR #439 final head that rendered with zero pixel differences against the currently reviewed baseline.
-12. `scripts/pwa-contract.ts` is the single test-contract owner for approved icon dimensions, MIME type, payload/render digests, and expected PWA shell colors. Static Node tests and Playwright consume that contract rather than maintaining parallel literals. `public/favicon.svg` remains the sole artwork owner; this shared module owns only verification constants.
-13. Do not rely on Karma coverage-threshold or reporter overrides for the PWA branch gate. `scripts/dev/run-angular-tests.mjs` owns the focused-run orchestration and captures the emitted coverage summary; `scripts/dev/pwa-coverage-gate.mjs` owns strict parsing and requires exactly one non-empty branch summary with `100%` and `covered === total`. Missing, ambiguous, zero-branch, or below-threshold output fails closed.
+1. Keep current semantic theme values as the PWA shell source of truth.
+2. Keep one canonical `public/favicon.svg` for favicon and install `any maskable` purposes.
+3. Embed the exact approved WebP losslessly inside the SVG; do not hand-trace, regenerate, interpolate, or change the pinned digests.
+4. Keep static and browser verification on one shared contract in `scripts/pwa-contract.ts`.
+5. Keep the root-owned Angular `SwUpdate` lifecycle; no custom worker, `skipWaiting`, manual cache purge, or polling loop.
+6. Treat recovery storage as fallible and request navigation through one `reloadRequested` owner so overlapping activation/recovery cannot request duplicate reloads.
+7. Keep the exact-icon gate red until the canonical bytes are restored.
+8. Keep the visual-baseline ancestry gate intact. Do not change its pointer unless explicitly approved; if approved, use the proven tree-equivalent `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` candidate after rechecking current repository state.
+9. Do not add a snackbar/update deferral in this PR: the accepted behavior is deterministic adoption immediately after a ready version is successfully activated. A future transactional unsaved-flow requirement may justify a separate safe-boundary design.
+10. Do not add ad-hoc logging or a second frontend telemetry pattern where the repository has no canonical owner.
+11. Do not enable repository-wide `format:check` in this PR while its existing baseline is broadly red; fix that baseline separately.
 
 ## Acceptance
 
-- `public/favicon.svg` renders exactly the approved 1254×1254 reference at native size with zero differing pixels in Chromium.
-- The canonical rendered RGBA SHA-256 is `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`.
-- The embedded lossless payload SHA-256 is `5fe98391a9eed6de6cc7616a0604978063a270c79e7329cf137f3384ac2107be`.
-- The manifest uses the same `favicon.svg` for both `any` and `maskable` install purposes; there is no duplicate maskable artwork owner.
-- The obsolete `public/app-icon-maskable.svg` is removed.
-- The favicon/PWA artwork contains the approved single-support stop, front-facing bus, and upper hanging clock composition and does not use the rejected Andalusia-map concept.
-- No Junta de Andalucia logo, wordmark, or official-government identity is introduced.
-- Manifest `theme_color`, manifest `background_color`, browser `theme-color`, and startup shell use the current theme palette.
-- Production builds include the canonical SVG and Angular service-worker asset matching covers it while the manifest remains precached.
-- PWA update lifecycle edge cases remain covered: startup check success/failure, ready/non-ready events, duplicate ready events, false/rejected activation, retry, disabled service worker, unrecoverable recovery, reload-loop guard, unavailable recovery storage, and idempotent initialization.
-- Successful version activation still reloads when recovery-marker cleanup storage is unavailable.
-- Unrecoverable-state recovery fails closed without reloading when its loop-prevention marker cannot be read or persisted.
-- Relevant changed lifecycle logic retains practical 100% branch coverage and repository coverage gates do not regress.
-- The focused `pwa-update.service.spec.ts` run must report a non-zero exact `100%` branch result, and the explicit gate must reject missing, ambiguous, zero-branch, or below-threshold coverage output.
-- Static and browser PWA verification consume one shared exact-icon/shell contract; changing an approved digest, dimension, MIME type, or expected shell color requires changing one owner rather than synchronized copies.
-- `pnpm run format:check`, `pnpm run lint`, script tests, Angular tests, production/deploy checks, Playwright PWA shell verification, visual evidence, and GitHub CI are green before delivery.
-
-## Risks
-
-- The exact-fidelity SVG embeds a compressed raster payload, so it is materially larger than a hand-authored vector icon. This is a deliberate trade-off for the explicit zero-pixel-diff requirement; the service worker caches the asset after first retrieval.
-- The approved source bytes are currently unavailable. Any generated replacement could look equivalent while violating the exact payload and rendered-pixel contracts.
-- The three retained payload chunks are incomplete and must not be treated as a recoverable full image without the missing canonical bytes.
-- Some launchers retain old installed icon metadata after a manifest change. Platform launcher cache refresh is distinct from Angular service-worker version adoption.
-- Reloading on `VERSION_READY` can interrupt active interaction; if a future transactional unsaved flow is introduced, update activation must defer to a safe boundary.
-- If browser storage is unavailable, unrecoverable-state auto-reload is deliberately suppressed because the reload-loop guard cannot be persisted safely; the user may remain on the currently loaded version until storage becomes available or the page is manually revisited.
-- The reviewed visual-baseline pointer is topologically stale after squash merge #439. Although `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is proven tree-equivalent to the fully validated final PR head, changing the reviewed pointer still requires explicit approval.
-- The Playwright PWA runtime assertion cannot execute while the earlier exact-payload quality gate rejects the interim favicon. Lint and the Node runner validate the shared module/import shape, but final browser execution remains part of post-payload validation.
-- The explicit branch gate parses Angular's stable human-readable `text-summary` because the current builder ignores the attempted Karma threshold/reporter overrides. Its parser is intentionally narrow and fail-closed so an upstream output-format change cannot silently disable the gate.
+- Exact 1254x1254 approved pixels are embedded in `public/favicon.svg` and render with zero pixel differences in Chromium.
+- Embedded payload SHA-256 equals `5fe98391a9eed6de6cc7616a0604978063a270c79e7329cf137f3384ac2107be`.
+- Rendered RGBA SHA-256 equals `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`.
+- Artwork uses the approved bus-stop/bus/clock identity, not the Andalusia-map or Junta identity.
+- Manifest has exactly one canonical `favicon.svg` entry for `any maskable`; duplicate maskable artwork remains absent.
+- Manifest/browser startup colors match the current theme and the service worker precaches the manifest/canonical icon.
+- Update lifecycle covers startup success/failure, ready/non-ready events, duplicate ready events, false/rejected activation, retry, disabled worker, unavailable storage, unrecoverable recovery, reload-loop prevention, initialization idempotence, and overlapping activation/unrecoverable recovery.
+- Overlapping activation and unrecoverable recovery request at most one reload and do not erase the persisted unrecoverable recovery guard after that recovery path wins.
+- Focused PWA service coverage remains non-zero exact 100% branches and the explicit parser fails closed on missing/ambiguous/zero/below-threshold output.
+- Lint, script tests other than the intentionally blocked exact-icon assertion, Angular tests, deploy checks, Playwright PWA shell verification, visual evidence, and GitHub CI are clean before delivery.
+- Repository-wide `pnpm run format:check` is either made green by a separately scoped baseline cleanup or explicitly remains a documented external blocker; this PR must not misreport it as passing.
+- Visual regression runs against a valid reviewed ancestor before delivery; no baseline pointer is silently advanced.
 
 ## Tests
 
-- Static: manifest theme and canonical icon contract, embedded payload MIME/dimensions/SHA, opaque/full-canvas source, absence of duplicate maskable icon owner, mobile browser metadata, and service-worker asset coverage.
-- Browser: load the served SVG into a canvas at 1254×1254, hash the rendered RGBA bytes with Web Crypto, and compare against the approved digest. This is the zero-pixel-diff gate.
-- Shared contract: `scripts/pwa-contract.ts` supplies the same immutable dimensions, MIME, exact digests, and shell colors to both static Node and browser Playwright verification.
-- Unit: `SwUpdate` lifecycle and root initialization coverage, including blocked/unavailable `sessionStorage` behavior for recovery-marker cleanup and reload-loop protection.
-- Coverage enforcement: run `pwa-update.service.spec.ts` in isolation with coverage, capture its emitted summary, and require a single non-zero `100%` branch result. Unit-test the gate against valid, ANSI-decorated, below-threshold, missing, duplicate, zero-branch, and invalid inputs.
-- Visual evidence: exact-head deterministic product screenshots remain required; installed launcher metadata is separately validated by the PWA shell contract.
-- Recovery audit: verify PR commit ancestry, refs, comments, retained workflow artifacts/logs, and temporary release assets before accepting any recovered payload as canonical.
-- Baseline topology: verify that a proposed ancestry repair preserves the validated file tree and previously reviewed pixel contract before requesting approval to update the pointer.
+- Static PWA shell tests for theme, single canonical icon, exact embedded payload, document metadata, and service-worker asset coverage.
+- Browser PWA test rasterizes the served SVG at 1254x1254 and hashes RGBA bytes with Web Crypto.
+- Unit tests for all `SwUpdate` lifecycle states, including the overlap regression.
+- Focused branch-coverage gate plus parser unit tests.
+- Manual CodeRabbit review; valid findings are fixed and resolved, while the exact-payload thread remains open until its prerequisite exists.
+- Exact-head CI, visual evidence, and reviewed-baseline regression before final delivery.
+
+## Risks
+
+- The exact source bytes remain unavailable; a generated replacement can look correct while violating both cryptographic contracts.
+- The three retained payload chunks are incomplete and must not be deleted until the canonical payload is safely restored.
+- The embedded raster makes the SVG materially larger than a hand-authored vector; this is an accepted exact-fidelity trade-off.
+- Platform launchers can retain installed icon metadata independently of Angular service-worker version adoption.
+- Immediate reload on a future ready version can interrupt a future unsaved transactional flow; such a flow requires a separate safe-boundary design.
+- Unavailable browser storage deliberately suppresses automatic unrecoverable-state reload because the loop guard cannot be guaranteed.
+- The reviewed visual-baseline pointer is topologically stale after PR #439's squash merge.
+- Repository-wide Prettier currently has unrelated baseline failures, including a parser error, and cannot be claimed green from this PR.
 
 ## Rollback
 
-Revert this PR. No backend, API, database, or persistent-data migration is involved.
+Revert this PR. No backend, API, database, persistent-data migration, release, or deployment is involved.
 
 ## Delivery status
 
-- Reconnaissance: complete, including a full recovery audit of PR ancestry, refs, comments, workflow data, temporary release assets, baseline topology, update-lifecycle storage boundaries, duplicated PWA verification constants, and the ineffective Karma coverage-threshold configuration.
-- Specification: updated for the final approved exact-fidelity identity, the verified missing-payload blocker, fail-closed recovery-storage behavior, proven squash-merge baseline topology, shared verification-contract ownership, and explicit PWA branch-coverage enforcement.
-- Update lifecycle, shell colors, single manifest icon ownership, unavailable-storage handling, PWA verification-contract SSOT, and explicit focused branch-coverage gate: implemented.
-- Coverage validation on executable head `eb9f87bbb6cfb966467d45fbf63d9031f888ddb8`: CI #1446 (`33578144057`) passes the full Angular suite `540/540`, focused PWA suite `15/15`, and exact branch coverage `100% (7/7)`. The coverage parser/gate passes all eight dedicated script tests.
-- Exact approved identity: blocked because the canonical WebP bytes are incomplete; `payload-01.txt` was never committed and no verifiable alternate source was recovered.
-- Baseline ancestry repair: evidence complete but intentionally not applied. `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is tree-identical to validated PR #439 head `f3305fe2cf86be988ab5365534be33c16e42e78c`, which rendered with zero pixel differences against the reviewed baseline; explicit user approval is still required before changing the baseline pointer.
-- CI/final review: incomplete. On `eb9f87bbb6cfb966467d45fbf63d9031f888ddb8`, install, lint, Angular, and deploy pass; script tests pass 10/11 suites and fail only on the missing exact WebP. Visual evidence stops at that same quality gate before application startup/screenshots, while visual regression stops at the separately documented baseline ancestry check. Playwright PWA execution and final visual review therefore remain blocked until the canonical payload is restored. No baseline or digest may be changed to bypass the blockers.
+- Reconnaissance and specification: complete for current known evidence.
+- Shell colors, single manifest icon ownership, update lifecycle, unavailable-storage hardening, verification-contract SSOT, explicit branch-coverage enforcement, child-process stream completion, source import order, and overlapping-reload race: implemented.
+- Manual CodeRabbit review: valid `close` and import-order threads resolved after CI validation; exact-payload thread intentionally remains unresolved because its prerequisite is absent.
+- Executable validation on `1b6d6fa76b25ff0c0ee9f5b62c3a062ae049a933`: CI #1453 has install, lint, Angular, and deploy green; Angular is `541/541`, focused PWA is `16/16`, PWA branches are `100% (9/9)`; script suites are `10/11` with the exact-icon assertion as the only failure.
+- Publish PR visual evidence #1447 (`33580814735`) resolves/checks out the immutable head and installs tooling, then fails at the same exact-icon quality gate before application startup; no current-head screenshots are produced.
+- Visual regression baseline #343 (`33580814624`) fails at `Resolve reviewed baseline`; rendering and pixel comparison are skipped and no baseline pointer has been changed.
+- Repository-wide `format:check`: independently demonstrated blocked by pre-existing formatting/parser debt; the temporary CI probe was reverted and is not part of the final file tree.
+- Exact approved identity: blocked until the canonical WebP bytes are provided or recovered.
+- Baseline ancestry repair: evidence complete, change not applied; explicit approval is required.
+- Final visual/runtime review: blocked until the exact payload is restored and the baseline ancestry gate can run. No digest, gate, or baseline may be weakened to bypass these blockers.
