@@ -57,6 +57,7 @@ test('canonical icon uses the exact supplied SVG source', async () => {
   const sourceSha256 = createHash('sha256').update(icon).digest('hex');
 
   console.info(`PWA icon source SHA-256: ${sourceSha256}`);
+  assert.equal(sourceSha256, APPROVED_ICON.sourceSha256);
   assert.equal(gitBlobSha1(icon), APPROVED_ICON.sourceGitBlobSha1);
   assert.match(icon, /<svg\b/);
   assert.doesNotMatch(icon, /data:image\/webp;base64/i);
