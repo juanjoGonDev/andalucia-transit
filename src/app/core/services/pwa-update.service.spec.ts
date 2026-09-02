@@ -162,6 +162,35 @@ describe('PwaUpdateService', () => {
     expect(reloadSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('does not request a second reload when unrecoverable recovery overlaps activation', async () => {
+    let resolveActivation: ((value: boolean) => void) | undefined;
+    swUpdate.activateUpdate.and.returnValue(
+      new Promise<boolean>((resolve) => {
+        resolveActivation = resolve;
+      })
+    );
+    service.initialize();
+
+    swUpdate.versionUpdates.next({
+      type: 'VERSION_READY',
+      currentVersion: { hash: 'old', appData: undefined },
+      latestVersion: { hash: 'new', appData: undefined }
+    });
+    swUpdate.unrecoverable.next({
+      type: 'UNRECOVERABLE_STATE',
+      reason: 'cache mismatch'
+    });
+
+    expect(reloadSpy).toHaveBeenCalledTimes(1);
+    expect(sessionStorage.getItem('andalucia-transit:pwa-recovery')).toBe('1');
+
+    resolveActivation?.(true);
+    await Promise.resolve();
+
+    expect(reloadSpy).toHaveBeenCalledTimes(1);
+    expect(sessionStorage.getItem('andalucia-transit:pwa-recovery')).toBe('1');
+  });
+
   it('is a no-op when the service worker is disabled', () => {
     swUpdate.isEnabled = false;
 
