@@ -46,7 +46,7 @@ async function spawnWithOutput(command, args, options = {}) {
       process.stderr.write(chunk);
     });
     child.on('error', reject);
-    child.on('exit', code => {
+    child.on('close', code => {
       if (code === EXIT_SUCCESS) {
         resolve(stdout);
         return;
