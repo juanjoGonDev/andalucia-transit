@@ -62,7 +62,7 @@ export class PwaUpdateService {
   }
 
   private recoverUnrecoverableState(): void {
-    if (!this.claimUnrecoverableRecovery()) {
+    if (this.reloadRequested || !this.claimUnrecoverableRecovery()) {
       return;
     }
 
