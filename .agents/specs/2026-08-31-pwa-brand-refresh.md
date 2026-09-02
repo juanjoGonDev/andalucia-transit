@@ -82,8 +82,9 @@ Out of scope:
 - Both `tests/playwright/pwa-shell.spec.ts` and the deterministic visual suite reuse that helper rather than recalculating identity separately.
 - `scripts/dev/run-angular-tests.mjs` runs the full Angular suite plus the focused PWA suite; `scripts/dev/pwa-coverage-gate.mjs` fails closed unless the focused branch summary is exactly non-zero 100%. Its parser has eight dedicated tests.
 - CodeRabbit findings for child-process `close` ownership and import order were fixed by `10dbcf8e5d960d54f6481495e5e46cb8e61a079e` and `0cd7ffcb5772a7aca8f7090e88d103d40201fcf6`.
-- CI #1470 (`33623320472`) on head `5d2120da02731f4bfddc05b154413a536cb84da6` completed success: install, lint, script tests, Angular, deploy pipeline, and required `Check all ok` were green. `Test scripts` passed 11/11 suites and the PWA shell test asserted source SHA-256 `b12a92b...`.
-- Visual Evidence #1481 (`33623320415`) reached the real browser assertion and failed only on exact icon identity: 41 Playwright tests passed and one PWA identity test failed with received `7f0680a6...` versus expected `57aeab24...`.
+- CI #1471 (`33623865813`) on head `f89ed9b7f3512057fadcf527d72b68037e9772c6` completed success: install, lint, script tests, Angular, deploy pipeline, and required `Check all ok` were green.
+- Visual Evidence #1483 (`33623865943`) on that same head proves the complete pre-browser quality path directly: frozen install, Prettier checks, lint, 11/11 script-test suites, full Angular `542/542`, focused PWA `17/17` with exact branch coverage `100% (11/11)`, and production build all pass. Playwright then reports exactly `41 passed, 1 failed`; the sole failure is `renders the exact approved PWA install artwork`, with received Chromium RGBA `7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b` versus expected `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef` on the initial attempt and retries.
+- Visual Evidence #1483 published no artifact because screenshot capture/publication steps are downstream of the failed populated-state verification gate.
 - The permanent exact render gate remains intentionally fail-closed; CI success alone is not sufficient task acceptance while visual identity fails.
 
 ### Formatting baseline
@@ -96,7 +97,7 @@ Out of scope:
 - Reviewed baseline pointer remains `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`.
 - PR #439 final head `f3305fe2cf86be988ab5365534be33c16e42e78c` passed visual regression against that baseline with 0/36 changed screenshots and zero differing pixels.
 - Its squash merge on `main`, `b6509aaa214dc932588dc6bb0ed068ef097ce8c5`, has the exact same Git tree SHA `7e7651c07c8d9b65faab439dfbdcee1d3e269cbd` as the validated head.
-- Visual Regression #360 (`33623320446`) on head `5d2120da02731f4bfddc05b154413a536cb84da6` still fails at baseline resolution because squash topology made the reviewed pointer diverged, not because the trees differ; no screenshot comparison runs.
+- Visual Regression #361 (`33623865958`) on head `f89ed9b7f3512057fadcf527d72b68037e9772c6` fails in `Resolve reviewed baseline` with exact GitHub compare status `diverged`: baseline `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5` is not an ancestor of the head. Dependency installation, baseline/head rendering, pixel comparison, and artifact retention are all skipped; the run publishes no artifact.
 - `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is the evidence-backed ancestry repair candidate. `.github/visual-baseline.json` must not change without explicit approval; a generic continuation command is not approval.
 
 ## Decision
@@ -154,14 +155,15 @@ Revert this PR. No backend, API, database, persistent-data migration, release, o
 
 ## Delivery status
 
-- Reconnaissance/specification: updated through the supplied-SVG integration, exact Chromium render investigation, and historical payload recovery audit.
+- Reconnaissance/specification: updated through the supplied-SVG integration, exact Chromium render investigation, historical payload recovery audit, and terminal evidence from Visual Evidence #1483 / Visual Regression #361.
 - PWA shell colors, manifest ownership, service-worker lifecycle, unavailable-storage hardening, recovery-key SSOT, branch-coverage enforcement, CodeRabbit fixes, and both overlapping reload races: implemented and covered.
 - Exact supplied SVG: integrated literally as `public/favicon.svg`; source Git blob `69b7f7dd...` and source UTF-8 SHA-256 `b12a92b9...` are both pinned/asserted by the shared static contract after `5d2120da02731f4bfddc05b154413a536cb84da6`.
-- Static required CI: green on head `5d2120da...`; CI #1470 (`33623320472`) is fully successful.
-- Exact browser identity: blocked. Visual Evidence #1481 (`33623320415`) passes 41/42 Playwright tests; current Chromium RGBA is `7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b`, target remains `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`.
+- Static required CI: green on evidence head `f89ed9b7f3512057fadcf527d72b68037e9772c6`; CI #1471 (`33623865813`) is fully successful.
+- Exact browser identity: blocked. Visual Evidence #1483 (`33623865943`) directly reports 41/42 Playwright tests on the same evidence head; current Chromium RGBA is `7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b`, target remains `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`, and no artifact is published because evidence capture is downstream of the failing gate.
 - Known palette adjustment: exhausted with 72/72 distinct candidate hashes and no exact match; diagnostic code was removed afterward.
 - Historical incomplete WebP payload: unrecoverable from repository evidence; about 93.39% of its Base64 payload is absent and no `payload-01` commit or workflow artifact supplies it. The obsolete retained fragments were removed after the user selected the SVG path.
+- Current runtime attachments contain only the three project guidance Markdown files; the approved raster/reference pixels are not available locally.
 - Next evidence required for artwork changes: the exact approved PNG/reference pixels or an equivalent exact source so a per-pixel diff can drive changes.
-- Visual baseline ancestry repair: evidence complete but unapplied; explicit approval is required. Visual Regression #360 (`33623320446`) stops at ancestry resolution before rendering.
+- Visual baseline ancestry repair: evidence complete but unapplied; explicit approval is required. Visual Regression #361 (`33623865958`) stops at ancestry resolution with compare status `diverged`, before any render or pixel comparison, and publishes no artifact.
 - Human approval: intentionally not requested while either visual gate is red.
 - Final visual/runtime review: blocked until the exact artwork can pass and the reviewed baseline can run. No hash, gate, or baseline will be weakened to bypass either blocker.
