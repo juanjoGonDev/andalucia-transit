@@ -17,6 +17,8 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - Recovery inspection found no alternate complete payload in PR comments, review threads, commit comments, retained Actions artifacts, Actions logs, PR refs, or the temporary `pr-438-visual-evidence` release assets.
 - The PR timeline contains no head force-push that could point to a discarded branch state containing the missing chunk.
 - Public searches for the pinned payload/render digests and the approved 1254×1254 composition did not locate a verifiable copy of the source image.
+- The original update lifecycle accessed `sessionStorage` directly after successful activation and during unrecoverable-state recovery. Browser storage APIs may throw when storage is unavailable or blocked; an exception while clearing the recovery marker could suppress the reload after an already successful activation, while an exception during unrecoverable recovery could escape the subscription path.
+- The reviewed baseline commit `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5` is independently diverged from both current `main` and this PR head; merging current `main` cannot make that commit an ancestor of the PR.
 
 ## Decision
 
@@ -29,6 +31,7 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 7. Keep manifest/browser startup colors aligned with the current theme and retain the root-owned `SwUpdate` lifecycle already implemented in this PR.
 8. Do not use `skipWaiting`, custom service-worker forks, cache deletion, polling storms, or uninstall/reinstall as the normal update mechanism.
 9. Fail closed while the canonical bytes are unavailable. Do not regenerate, approximate, interpolate, weaken the tests, or replace either pinned digest to make CI pass.
+10. Treat recovery-marker storage as a fallible browser boundary. Failure to clear the marker after a successful activation must not block the required reload. Unrecoverable-state auto-recovery must reload only after the loop-prevention marker has been read and persisted successfully; if storage cannot guarantee the guard, remain on the current page rather than risk an unbounded reload loop.
 
 ## Acceptance
 
@@ -41,7 +44,9 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - No Junta de Andalucia logo, wordmark, or official-government identity is introduced.
 - Manifest `theme_color`, manifest `background_color`, browser `theme-color`, and startup shell use the current theme palette.
 - Production builds include the canonical SVG and Angular service-worker asset matching covers it while the manifest remains precached.
-- PWA update lifecycle edge cases remain covered: startup check success/failure, ready/non-ready events, duplicate ready events, false/rejected activation, retry, disabled service worker, unrecoverable recovery, reload-loop guard, and idempotent initialization.
+- PWA update lifecycle edge cases remain covered: startup check success/failure, ready/non-ready events, duplicate ready events, false/rejected activation, retry, disabled service worker, unrecoverable recovery, reload-loop guard, unavailable recovery storage, and idempotent initialization.
+- Successful version activation still reloads when recovery-marker cleanup storage is unavailable.
+- Unrecoverable-state recovery fails closed without reloading when its loop-prevention marker cannot be read or persisted.
 - Relevant changed lifecycle logic retains practical 100% branch coverage and repository coverage gates do not regress.
 - `pnpm run format:check`, `pnpm run lint`, script tests, Angular tests, production/deploy checks, Playwright PWA shell verification, visual evidence, and GitHub CI are green before delivery.
 
@@ -52,13 +57,14 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - The three retained payload chunks are incomplete and must not be treated as a recoverable full image without the missing canonical bytes.
 - Some launchers retain old installed icon metadata after a manifest change. Platform launcher cache refresh is distinct from Angular service-worker version adoption.
 - Reloading on `VERSION_READY` can interrupt active interaction; if a future transactional unsaved flow is introduced, update activation must defer to a safe boundary.
+- If browser storage is unavailable, unrecoverable-state auto-reload is deliberately suppressed because the reload-loop guard cannot be persisted safely; the user may remain on the currently loaded version until storage becomes available or the page is manually revisited.
 - The reviewed visual-baseline pointer is independently topologically diverged from current `main`; do not advance it without explicit approval.
 
 ## Tests
 
 - Static: manifest theme and canonical icon contract, embedded payload MIME/dimensions/SHA, opaque/full-canvas source, absence of duplicate maskable icon owner, mobile browser metadata, and service-worker asset coverage.
 - Browser: load the served SVG into a canvas at 1254×1254, hash the rendered RGBA bytes with Web Crypto, and compare against the approved digest. This is the zero-pixel-diff gate.
-- Unit: existing `SwUpdate` lifecycle and root initialization coverage.
+- Unit: `SwUpdate` lifecycle and root initialization coverage, including blocked/unavailable `sessionStorage` behavior for recovery-marker cleanup and reload-loop protection.
 - Visual evidence: exact-head deterministic product screenshots remain required; installed launcher metadata is separately validated by the PWA shell contract.
 - Recovery audit: verify PR commit ancestry, refs, comments, retained workflow artifacts/logs, and temporary release assets before accepting any recovered payload as canonical.
 
@@ -68,8 +74,8 @@ Revert this PR. No backend, API, database, or persistent-data migration is invol
 
 ## Delivery status
 
-- Reconnaissance: complete, including a full recovery audit of PR ancestry, refs, comments, workflow data, and temporary release assets.
-- Specification: updated for the final approved exact-fidelity identity and the verified missing-payload blocker.
-- Update lifecycle, shell colors, and single manifest icon ownership: implemented.
+- Reconnaissance: complete, including a full recovery audit of PR ancestry, refs, comments, workflow data, temporary release assets, baseline topology, and update-lifecycle storage boundaries.
+- Specification: updated for the final approved exact-fidelity identity, the verified missing-payload blocker, and fail-closed recovery-storage behavior.
+- Update lifecycle, shell colors, single manifest icon ownership, and unavailable-storage handling: implemented.
 - Exact approved identity: blocked because the canonical WebP bytes are incomplete; `payload-01.txt` was never committed and no verifiable alternate source was recovered.
-- CI/final review: intentionally incomplete. Exact-icon tests must remain red until the canonical payload is restored; no baseline or digest may be changed to bypass the blocker.
+- CI/final review: incomplete. Exact-icon tests must remain red until the canonical payload is restored; no baseline or digest may be changed to bypass the blocker.
