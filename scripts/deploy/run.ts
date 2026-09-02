@@ -11,7 +11,7 @@ type JsonValue = string | number | boolean | { [key: string]: JsonValue } | Json
 
 const buildCommand = 'npx';
 const buildArguments: readonly string[] = ['ng', 'build', '--configuration', 'production'];
-const serviceWorkerCommand = 'npx';
+const serviceWorkerCommand = 'pnpm';
 const distDirectoryName = 'dist';
 const projectDirectoryName = 'andalucia-transit';
 const browserDirectoryName = 'browser';
@@ -184,7 +184,7 @@ async function regenerateServiceWorkerManifest(distPath: string): Promise<void> 
   const relativeDistPath = path.relative(rootDirectory, distPath) || '.';
   await runCommand(
     serviceWorkerCommand,
-    ['ngsw-config', relativeDistPath, serviceWorkerConfigFileName, baseHref],
+    ['exec', 'ngsw-config', relativeDistPath, serviceWorkerConfigFileName, baseHref],
     serviceWorkerGenerationFailureMessage,
   );
   await verifyServiceWorkerIconHash(distPath);
