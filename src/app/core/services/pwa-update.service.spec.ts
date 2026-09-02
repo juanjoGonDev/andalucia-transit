@@ -192,6 +192,28 @@ describe('PwaUpdateService', () => {
     expect(sessionStorage.getItem(PWA_RECOVERY_SESSION_KEY)).toBe('1');
   });
 
+  it('does not claim unrecoverable recovery after activation already requested reload', async () => {
+    service.initialize();
+
+    swUpdate.versionUpdates.next({
+      type: 'VERSION_READY',
+      currentVersion: { hash: 'old', appData: undefined },
+      latestVersion: { hash: 'new', appData: undefined }
+    });
+    await Promise.resolve();
+
+    expect(reloadSpy).toHaveBeenCalledTimes(1);
+    expect(sessionStorage.getItem(PWA_RECOVERY_SESSION_KEY)).toBeNull();
+
+    swUpdate.unrecoverable.next({
+      type: 'UNRECOVERABLE_STATE',
+      reason: 'late cache mismatch'
+    });
+
+    expect(reloadSpy).toHaveBeenCalledTimes(1);
+    expect(sessionStorage.getItem(PWA_RECOVERY_SESSION_KEY)).toBeNull();
+  });
+
   it('is a no-op when the service worker is disabled', () => {
     swUpdate.isEnabled = false;
 
