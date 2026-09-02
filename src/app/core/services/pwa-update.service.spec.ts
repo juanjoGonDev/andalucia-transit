@@ -57,6 +57,21 @@ describe('PwaUpdateService', () => {
     expect(reloadSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('still reloads an activated version when recovery-marker cleanup is unavailable', async () => {
+    spyOn(Storage.prototype, 'removeItem').and.throwError('storage blocked');
+    service.initialize();
+
+    swUpdate.versionUpdates.next({
+      type: 'VERSION_READY',
+      currentVersion: { hash: 'old', appData: undefined },
+      latestVersion: { hash: 'new', appData: undefined }
+    });
+    await Promise.resolve();
+
+    expect(swUpdate.activateUpdate).toHaveBeenCalledTimes(1);
+    expect(reloadSpy).toHaveBeenCalledTimes(1);
+  });
+
   it('ignores non-ready version events', () => {
     service.initialize();
 
@@ -176,6 +191,30 @@ describe('PwaUpdateService', () => {
 
   it('guards unrecoverable recovery against reload loops', () => {
     sessionStorage.setItem('andalucia-transit:pwa-recovery', '1');
+    service.initialize();
+
+    swUpdate.unrecoverable.next({
+      type: 'UNRECOVERABLE_STATE',
+      reason: 'cache mismatch'
+    });
+
+    expect(reloadSpy).not.toHaveBeenCalled();
+  });
+
+  it('does not auto-reload when the unrecoverable recovery guard cannot be read', () => {
+    spyOn(Storage.prototype, 'getItem').and.throwError('storage blocked');
+    service.initialize();
+
+    swUpdate.unrecoverable.next({
+      type: 'UNRECOVERABLE_STATE',
+      reason: 'cache mismatch'
+    });
+
+    expect(reloadSpy).not.toHaveBeenCalled();
+  });
+
+  it('does not auto-reload when the unrecoverable recovery guard cannot be persisted', () => {
+    spyOn(Storage.prototype, 'setItem').and.throwError('storage blocked');
     service.initialize();
 
     swUpdate.unrecoverable.next({
