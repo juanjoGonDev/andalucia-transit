@@ -1,5 +1,5 @@
-import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { APPROVED_ICON, CURRENT_THEME } from './pwa-contract';
