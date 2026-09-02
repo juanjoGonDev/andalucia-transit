@@ -16,13 +16,6 @@ interface RenderedIconEvidence {
   readonly naturalWidth: number;
 }
 
-interface PaletteProbeEvidence {
-  readonly candidateCount: number;
-  readonly exactMatchName: string | null;
-  readonly served: RenderedIconEvidence;
-  readonly uniqueHashCount: number;
-}
-
 export async function expectExactPwaInstallShell(
   page: Page,
   baseUrl: string,
@@ -56,11 +49,14 @@ export async function expectExactPwaInstallShell(
   const iconUrl = new URL(manifest.icons[0].src, manifestUrl).toString();
   const iconResponse = await page.request.get(iconUrl);
   expect(iconResponse.ok()).toBe(true);
-  const svgSource = await iconResponse.text();
-  expect(svgSource).toContain('<svg');
+  expect(await iconResponse.text()).toContain('<svg');
 
-  const probe = await page.evaluate(
-    async ({ expectedHash, height, source, width }): Promise<PaletteProbeEvidence> => {
+  const rendered = await page.evaluate(
+    async ({ height, iconUrl: source, width }) => {
+      const image = new Image();
+      image.src = source;
+      await image.decode();
+
       const canvas = document.createElement('canvas');
       canvas.width = width;
       canvas.height = height;
@@ -69,87 +65,26 @@ export async function expectExactPwaInstallShell(
         throw new Error('2D canvas context is unavailable');
       }
 
-      const render = async (svg: string): Promise<RenderedIconEvidence> => {
-        const image = new Image();
-        image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-        await image.decode();
-
-        context.clearRect(0, 0, width, height);
-        context.drawImage(image, 0, 0, width, height);
-        const rgba = context.getImageData(0, 0, width, height).data;
-        const digest = await crypto.subtle.digest('SHA-256', rgba);
-        const hash = Array.from(new Uint8Array(digest), (byte) =>
-          byte.toString(16).padStart(2, '0'),
-        ).join('');
-
-        return {
-          hash,
-          naturalHeight: image.naturalHeight,
-          naturalWidth: image.naturalWidth,
-        };
-      };
-
-      const replaceCorners = (svg: string, color: string): string =>
-        svg.replaceAll('fill="#000"', `fill="${color}"`).replaceAll('stroke="#000"', `stroke="${color}"`);
-
-      const served = await render(source);
-      const navyCandidates = ['#02193e', '#060f2b'] as const;
-      const blueCandidates = ['#0162f3', '#0061fe', '#0b54d4'] as const;
-      const whiteCandidates = ['#fdfdfd', '#ffffff', '#f6f7f8'] as const;
-      const cornerCandidates = ['#000', '#02193e', '#060f2b', 'transparent'] as const;
-      const hashes = new Set<string>();
-      let exactMatchName: string | null = null;
-      let candidateCount = 0;
-
-      for (const navy of navyCandidates) {
-        for (const blue of blueCandidates) {
-          for (const white of whiteCandidates) {
-            for (const corners of cornerCandidates) {
-              candidateCount += 1;
-              const candidate = replaceCorners(
-                source
-                  .replaceAll('#02193e', navy)
-                  .replaceAll('#0162f3', blue)
-                  .replaceAll('#fdfdfd', white),
-                corners,
-              );
-              const rendered = await render(candidate);
-              hashes.add(rendered.hash);
-              if (rendered.hash === expectedHash) {
-                exactMatchName = `navy=${navy};blue=${blue};white=${white};corners=${corners}`;
-              }
-            }
-          }
-        }
-      }
+      context.drawImage(image, 0, 0, width, height);
+      const rgba = context.getImageData(0, 0, width, height).data;
+      const digest = await crypto.subtle.digest('SHA-256', rgba);
+      const hash = Array.from(new Uint8Array(digest), (byte) =>
+        byte.toString(16).padStart(2, '0'),
+      ).join('');
 
       return {
-        candidateCount,
-        exactMatchName,
-        served,
-        uniqueHashCount: hashes.size,
+        hash,
+        naturalHeight: image.naturalHeight,
+        naturalWidth: image.naturalWidth,
       };
     },
-    {
-      expectedHash: APPROVED_ICON.renderedRgbaSha256,
-      height: APPROVED_ICON.height,
-      source: svgSource,
-      width: APPROVED_ICON.width,
-    },
+    { height: APPROVED_ICON.height, iconUrl, width: APPROVED_ICON.width },
   );
 
-  console.info(
-    probe.exactMatchName
-      ? `PWA icon palette probe exact match: ${probe.exactMatchName}`
-      : `PWA icon palette probe: no exact match across ${probe.candidateCount} candidates (${probe.uniqueHashCount} unique hashes)`,
-  );
-  console.info(
-    `PWA icon Chromium RGBA SHA-256: ${probe.served.hash} (${probe.served.naturalWidth}x${probe.served.naturalHeight})`,
-  );
+  console.info(`PWA icon Chromium RGBA SHA-256: ${rendered.hash}`);
+  expect(rendered.naturalWidth).toBeGreaterThan(0);
+  expect(rendered.naturalHeight).toBeGreaterThan(0);
+  expect(rendered.hash).toBe(APPROVED_ICON.renderedRgbaSha256);
 
-  expect(probe.served.naturalWidth).toBeGreaterThan(0);
-  expect(probe.served.naturalHeight).toBeGreaterThan(0);
-  expect(probe.served.hash).toBe(APPROVED_ICON.renderedRgbaSha256);
-
-  return probe.served;
+  return rendered;
 }
