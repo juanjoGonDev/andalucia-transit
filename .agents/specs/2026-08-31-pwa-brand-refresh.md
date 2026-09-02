@@ -38,6 +38,7 @@ Out of scope:
 - The available fragments total only a small fraction of the complete WebP implied by its RIFF length; they cannot reconstruct the canonical bytes.
 - Recovery checks covered PR comments/reviews, commit history/comments, PR refs and merge tree, visible branches/tags/forks, retained Actions artifacts/logs, the temporary visual-evidence release, GitHub/public code searches by hash/payload prefix, and available conversation attachments. No verifiable complete source was recovered.
 - The pinned digests cannot be inverted to reconstruct missing image bytes. Regenerating visually similar artwork is not an acceptable substitute.
+- A fresh workspace-attachment check on 2026-09-02 found only the existing project documents in `/mnt/data`; no new image or WebP source was available to verify.
 
 ### Update lifecycle
 
@@ -46,6 +47,7 @@ Out of scope:
 - Browser storage is a fallible boundary. Recovery-marker cleanup failure must not suppress a reload after an already successful activation. Unrecoverable recovery fails closed if its loop-prevention marker cannot be read or persisted.
 - Manual CodeRabbit review identified a real overlap risk between `VERSION_READY` activation and `UNRECOVERABLE_STATE` recovery. Regression commit `a60942bbdaf25a468ba7b3f0b6af4c2b30ee7eb8` demonstrated the bug in CI #1452 (`33580681725`): the new test observed two `reloadCurrentVersion` calls and the recovery marker was cleared unexpectedly.
 - Fix commit `1b6d6fa76b25ff0c0ee9f5b62c3a062ae049a933` adds one `reloadRequested` owner. The first reload cause wins; if unrecoverable recovery wins, its persisted marker remains intact when a concurrent activation completes.
+- `src/app/core/services/pwa-update.config.ts` now owns `PWA_RECOVERY_SESSION_KEY`. Commit `cd637e7510ed810711b9c6078037e24b2d417c8f` removes the duplicated literal from the service and all storage assertions in its spec without changing runtime behavior.
 
 ### Verification ownership and coverage
 
@@ -55,8 +57,8 @@ Out of scope:
 - `scripts/dev/pwa-coverage-gate.mjs` fails closed unless it receives exactly one non-empty branch summary with `100%` and `covered === total`; its parser has eight dedicated passing script tests.
 - CodeRabbit correctly identified that captured child-process output must wait for `close`, not `exit`, because stdout may remain open after process exit. Commit `10dbcf8e5d960d54f6481495e5e46cb8e61a079e` applies that fix.
 - CodeRabbit also identified the source import-order violation in `scripts/pwa-shell.test.ts`; commit `0cd7ffcb5772a7aca8f7090e88d103d40201fcf6` fixes it instead of relying on ESLint's in-place CI mutation.
-- On executable head `1b6d6fa76b25ff0c0ee9f5b62c3a062ae049a933`, CI #1453 (`33580814710`) reports full Angular `541/541`, focused PWA `16/16`, and exact PWA branch coverage `100% (9/9)`. Lint and deploy-pipeline jobs also pass.
-- `test:scripts` on that head runs 11 suites: 10 pass and only `pwa-shell` fails, specifically `favicon.svg must embed the approved lossless WebP payload`. The other four PWA shell assertions pass.
+- On executable head `cd637e7510ed810711b9c6078037e24b2d417c8f`, CI #1455 (`33581861700`) reports full Angular `541/541`, focused PWA `16/16`, exact PWA branch coverage `100% (9/9)`, lint success, and deploy-pipeline success.
+- `test:scripts` on that head runs 11 suites: 10 pass and only `pwa-shell` fails, specifically `favicon.svg must embed the approved lossless WebP payload`. The other four PWA shell assertions pass, and the coverage-gate parser remains 8/8.
 
 ### Formatting baseline
 
@@ -81,11 +83,12 @@ Out of scope:
 4. Keep static and browser verification on one shared contract in `scripts/pwa-contract.ts`.
 5. Keep the root-owned Angular `SwUpdate` lifecycle; no custom worker, `skipWaiting`, manual cache purge, or polling loop.
 6. Treat recovery storage as fallible and request navigation through one `reloadRequested` owner so overlapping activation/recovery cannot request duplicate reloads.
-7. Keep the exact-icon gate red until the canonical bytes are restored.
-8. Keep the visual-baseline ancestry gate intact. Do not change its pointer unless explicitly approved; if approved, use the proven tree-equivalent `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` candidate after rechecking current repository state.
-9. Do not add a snackbar/update deferral in this PR: the accepted behavior is deterministic adoption immediately after a ready version is successfully activated. A future transactional unsaved-flow requirement may justify a separate safe-boundary design.
-10. Do not add ad-hoc logging or a second frontend telemetry pattern where the repository has no canonical owner.
-11. Do not enable repository-wide `format:check` in this PR while its existing baseline is broadly red; fix that baseline separately.
+7. Keep `PWA_RECOVERY_SESSION_KEY` in the scoped `pwa-update.config.ts` owner so production and tests cannot drift on the recovery-storage identity.
+8. Keep the exact-icon gate red until the canonical bytes are restored.
+9. Keep the visual-baseline ancestry gate intact. Do not change its pointer unless explicitly approved; if approved, use the proven tree-equivalent `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` candidate after rechecking current repository state.
+10. Do not add a snackbar/update deferral in this PR: the accepted behavior is deterministic adoption immediately after a ready version is successfully activated. A future transactional unsaved-flow requirement may justify a separate safe-boundary design.
+11. Do not add ad-hoc logging or a second frontend telemetry pattern where the repository has no canonical owner.
+12. Do not enable repository-wide `format:check` in this PR while its existing baseline is broadly red; fix that baseline separately.
 
 ## Acceptance
 
@@ -97,6 +100,7 @@ Out of scope:
 - Manifest/browser startup colors match the current theme and the service worker precaches the manifest/canonical icon.
 - Update lifecycle covers startup success/failure, ready/non-ready events, duplicate ready events, false/rejected activation, retry, disabled worker, unavailable storage, unrecoverable recovery, reload-loop prevention, initialization idempotence, and overlapping activation/unrecoverable recovery.
 - Overlapping activation and unrecoverable recovery request at most one reload and do not erase the persisted unrecoverable recovery guard after that recovery path wins.
+- Recovery-storage identity has one scoped owner consumed by production and tests rather than duplicated string literals.
 - Focused PWA service coverage remains non-zero exact 100% branches and the explicit parser fails closed on missing/ambiguous/zero/below-threshold output.
 - Lint, script tests other than the intentionally blocked exact-icon assertion, Angular tests, deploy checks, Playwright PWA shell verification, visual evidence, and GitHub CI are clean before delivery.
 - Repository-wide `pnpm run format:check` is either made green by a separately scoped baseline cleanup or explicitly remains a documented external blocker; this PR must not misreport it as passing.
@@ -106,7 +110,7 @@ Out of scope:
 
 - Static PWA shell tests for theme, single canonical icon, exact embedded payload, document metadata, and service-worker asset coverage.
 - Browser PWA test rasterizes the served SVG at 1254x1254 and hashes RGBA bytes with Web Crypto.
-- Unit tests for all `SwUpdate` lifecycle states, including the overlap regression.
+- Unit tests for all `SwUpdate` lifecycle states, including the overlap regression and shared recovery-storage key.
 - Focused branch-coverage gate plus parser unit tests.
 - Manual CodeRabbit review; valid findings are fixed and resolved, while the exact-payload thread remains open until its prerequisite exists.
 - Exact-head CI, visual evidence, and reviewed-baseline regression before final delivery.
@@ -129,11 +133,11 @@ Revert this PR. No backend, API, database, persistent-data migration, release, o
 ## Delivery status
 
 - Reconnaissance and specification: complete for current known evidence.
-- Shell colors, single manifest icon ownership, update lifecycle, unavailable-storage hardening, verification-contract SSOT, explicit branch-coverage enforcement, child-process stream completion, source import order, and overlapping-reload race: implemented.
-- Manual CodeRabbit review: valid `close` and import-order threads resolved after CI validation; exact-payload thread intentionally remains unresolved because its prerequisite is absent.
-- Executable validation on `1b6d6fa76b25ff0c0ee9f5b62c3a062ae049a933`: CI #1453 has install, lint, Angular, and deploy green; Angular is `541/541`, focused PWA is `16/16`, PWA branches are `100% (9/9)`; script suites are `10/11` with the exact-icon assertion as the only failure.
-- Publish PR visual evidence #1447 (`33580814735`) resolves/checks out the immutable head and installs tooling, then fails at the same exact-icon quality gate before application startup; no current-head screenshots are produced.
-- Visual regression baseline #343 (`33580814624`) fails at `Resolve reviewed baseline`; rendering and pixel comparison are skipped and no baseline pointer has been changed.
+- Shell colors, single manifest icon ownership, update lifecycle, unavailable-storage hardening, verification-contract SSOT, recovery-key SSOT, explicit branch-coverage enforcement, child-process stream completion, source import order, and overlapping-reload race: implemented.
+- Manual CodeRabbit review: valid `close` and import-order threads resolved after CI validation; exact-payload thread intentionally remains unresolved because its prerequisite is absent. The remaining SSOT nit is addressed by `cd637e7510ed810711b9c6078037e24b2d417c8f`.
+- Executable validation on `cd637e7510ed810711b9c6078037e24b2d417c8f`: CI #1455 (`33581861700`) has install, lint, Angular, and deploy green; Angular is `541/541`, focused PWA is `16/16`, PWA branches are `100% (9/9)`; script suites are `10/11` with the exact-icon assertion as the only failure.
+- Publish PR visual evidence #1451 (`33581861724`) resolves/checks out the immutable head and installs tooling, then fails at the same exact-icon quality gate before application startup; responsive/accessibility verification, screenshots, artifacts, release replacement, and evidence publication are skipped.
+- Visual regression baseline #345 (`33581861787`) fails at `Resolve reviewed baseline`; baseline checkout, rendering, pixel comparison, and enforcement are skipped and no baseline pointer has been changed.
 - Repository-wide `format:check`: independently demonstrated blocked by pre-existing formatting/parser debt; the temporary CI probe was reverted and is not part of the final file tree.
 - Exact approved identity: blocked until the canonical WebP bytes are provided or recovered.
 - Baseline ancestry repair: evidence complete, change not applied; explicit approval is required.
