@@ -9,6 +9,7 @@ export class PwaUpdateService {
   private readonly swUpdate = inject(SwUpdate);
   private initialized = false;
   private activationInProgress = false;
+  private reloadRequested = false;
 
   initialize(): void {
     if (this.initialized || !this.swUpdate.isEnabled) {
@@ -51,8 +52,10 @@ export class PwaUpdateService {
         return;
       }
 
-      this.clearRecoveryMarker();
-      this.reloadCurrentVersion();
+      if (!this.reloadRequested) {
+        this.clearRecoveryMarker();
+      }
+      this.requestReload();
     } catch {
       this.activationInProgress = false;
       // Keep the currently loaded, internally consistent version when activation fails.
@@ -64,6 +67,15 @@ export class PwaUpdateService {
       return;
     }
 
+    this.requestReload();
+  }
+
+  private requestReload(): void {
+    if (this.reloadRequested) {
+      return;
+    }
+
+    this.reloadRequested = true;
     this.reloadCurrentVersion();
   }
 
