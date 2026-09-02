@@ -16,8 +16,11 @@ interface RenderedIconEvidence {
   readonly naturalWidth: number;
 }
 
-interface RenderedIconVariant extends RenderedIconEvidence {
-  readonly name: string;
+interface PaletteProbeEvidence {
+  readonly candidateCount: number;
+  readonly exactMatchName: string | null;
+  readonly served: RenderedIconEvidence;
+  readonly uniqueHashCount: number;
 }
 
 export async function expectExactPwaInstallShell(
@@ -56,21 +59,22 @@ export async function expectExactPwaInstallShell(
   const svgSource = await iconResponse.text();
   expect(svgSource).toContain('<svg');
 
-  const variants = await page.evaluate(
-    async ({ height, source, width }) => {
-      const render = async (name: string, svg: string): Promise<RenderedIconVariant> => {
+  const probe = await page.evaluate(
+    async ({ expectedHash, height, source, width }): Promise<PaletteProbeEvidence> => {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext('2d', { willReadFrequently: true });
+      if (!context) {
+        throw new Error('2D canvas context is unavailable');
+      }
+
+      const render = async (svg: string): Promise<RenderedIconEvidence> => {
         const image = new Image();
         image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
         await image.decode();
 
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const context = canvas.getContext('2d', { willReadFrequently: true });
-        if (!context) {
-          throw new Error('2D canvas context is unavailable');
-        }
-
+        context.clearRect(0, 0, width, height);
         context.drawImage(image, 0, 0, width, height);
         const rgba = context.getImageData(0, 0, width, height).data;
         const digest = await crypto.subtle.digest('SHA-256', rgba);
@@ -80,46 +84,72 @@ export async function expectExactPwaInstallShell(
 
         return {
           hash,
-          name,
           naturalHeight: image.naturalHeight,
           naturalWidth: image.naturalWidth,
         };
       };
 
-      const themePalette = source
-        .replaceAll('#02193e', '#060f2b')
-        .replaceAll('#0162f3', '#0061fe');
-      const themeCorners = themePalette.replaceAll('#000', '#060f2b');
-      const pureWhite = themeCorners.replaceAll('#fdfdfd', '#ffffff');
-      const targetDimensions = (svg: string) =>
-        svg.replace('width="1095" height="1095"', `width="${width}" height="${height}"`);
+      const replaceCorners = (svg: string, color: string): string =>
+        svg.replaceAll('fill="#000"', `fill="${color}"`).replaceAll('stroke="#000"', `stroke="${color}"`);
 
-      const candidates = [
-        ['supplied', source],
-        ['theme-palette', themePalette],
-        ['theme-palette-navy-corners', themeCorners],
-        ['theme-palette-navy-corners-white', pureWhite],
-        ['supplied-1254', targetDimensions(source)],
-        ['theme-palette-1254', targetDimensions(themePalette)],
-        ['theme-palette-navy-corners-1254', targetDimensions(themeCorners)],
-        ['theme-palette-navy-corners-white-1254', targetDimensions(pureWhite)],
-      ] as const;
+      const served = await render(source);
+      const navyCandidates = ['#02193e', '#060f2b'] as const;
+      const blueCandidates = ['#0162f3', '#0061fe', '#0b54d4'] as const;
+      const whiteCandidates = ['#fdfdfd', '#ffffff', '#f6f7f8'] as const;
+      const cornerCandidates = ['#000', '#02193e', '#060f2b', 'transparent'] as const;
+      const hashes = new Set<string>();
+      let exactMatchName: string | null = null;
+      let candidateCount = 0;
 
-      return Promise.all(candidates.map(([name, svg]) => render(name, svg)));
+      for (const navy of navyCandidates) {
+        for (const blue of blueCandidates) {
+          for (const white of whiteCandidates) {
+            for (const corners of cornerCandidates) {
+              candidateCount += 1;
+              const candidate = replaceCorners(
+                source
+                  .replaceAll('#02193e', navy)
+                  .replaceAll('#0162f3', blue)
+                  .replaceAll('#fdfdfd', white),
+                corners,
+              );
+              const rendered = await render(candidate);
+              hashes.add(rendered.hash);
+              if (rendered.hash === expectedHash) {
+                exactMatchName = `navy=${navy};blue=${blue};white=${white};corners=${corners}`;
+              }
+            }
+          }
+        }
+      }
+
+      return {
+        candidateCount,
+        exactMatchName,
+        served,
+        uniqueHashCount: hashes.size,
+      };
     },
-    { height: APPROVED_ICON.height, source: svgSource, width: APPROVED_ICON.width },
+    {
+      expectedHash: APPROVED_ICON.renderedRgbaSha256,
+      height: APPROVED_ICON.height,
+      source: svgSource,
+      width: APPROVED_ICON.width,
+    },
   );
 
-  for (const variant of variants) {
-    console.info(
-      `PWA icon variant ${variant.name}: ${variant.hash} (${variant.naturalWidth}x${variant.naturalHeight})`,
-    );
-  }
+  console.info(
+    probe.exactMatchName
+      ? `PWA icon palette probe exact match: ${probe.exactMatchName}`
+      : `PWA icon palette probe: no exact match across ${probe.candidateCount} candidates (${probe.uniqueHashCount} unique hashes)`,
+  );
+  console.info(
+    `PWA icon Chromium RGBA SHA-256: ${probe.served.hash} (${probe.served.naturalWidth}x${probe.served.naturalHeight})`,
+  );
 
-  const rendered = variants[0];
-  expect(rendered.naturalWidth).toBeGreaterThan(0);
-  expect(rendered.naturalHeight).toBeGreaterThan(0);
-  expect(rendered.hash).toBe(APPROVED_ICON.renderedRgbaSha256);
+  expect(probe.served.naturalWidth).toBeGreaterThan(0);
+  expect(probe.served.naturalHeight).toBeGreaterThan(0);
+  expect(probe.served.hash).toBe(APPROVED_ICON.renderedRgbaSha256);
 
-  return rendered;
+  return probe.served;
 }
