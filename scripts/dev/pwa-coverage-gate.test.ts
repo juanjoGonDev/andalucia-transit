@@ -1,57 +1,75 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
-  assertPwaBranchCoverage,
-  readPwaBranchCoverage,
+  assertFocusedPwaBranchCoverage,
+  readFocusedPwaBranchCoverage,
 } from './pwa-coverage-gate.mjs';
 
-const sourcePath = '/workspace/src/app/core/services/pwa-update.service.ts';
+const completeSummary = `
+=============================== Coverage summary ===============================
+Statements   : 97.5% ( 39/40 )
+Branches     : 100% ( 7/7 )
+Functions    : 90% ( 9/10 )
+Lines        : 97.36% ( 37/38 )
+================================================================================
+`;
 
-function summaryWithBranchCoverage(percentage) {
-  return {
-    total: { branches: { pct: percentage } },
-    [sourcePath]: { branches: { pct: percentage } },
-  };
-}
-
-test('reads branch coverage for the PWA update service', () => {
-  assert.equal(readPwaBranchCoverage(summaryWithBranchCoverage(100)), 100);
+test('reads branch coverage from the focused PWA summary', () => {
+  assert.deepEqual(readFocusedPwaBranchCoverage(completeSummary), {
+    percentage: 100,
+    covered: 7,
+    total: 7,
+  });
 });
 
-test('accepts Windows coverage paths', () => {
-  const summary = {
-    'C:\\workspace\\src\\app\\core\\services\\pwa-update.service.ts': {
-      branches: { pct: 100 },
-    },
-  };
+test('accepts ANSI-decorated focused output', () => {
+  const output = '\u001b[32mBranches     : 100% ( 7/7 )\u001b[39m';
 
-  assert.equal(readPwaBranchCoverage(summary), 100);
+  assert.deepEqual(readFocusedPwaBranchCoverage(output), {
+    percentage: 100,
+    covered: 7,
+    total: 7,
+  });
 });
 
-test('accepts exactly 100 percent PWA branch coverage', () => {
-  assert.doesNotThrow(() => assertPwaBranchCoverage(summaryWithBranchCoverage(100)));
+test('accepts exactly 100 percent focused PWA branch coverage', () => {
+  assert.doesNotThrow(() => assertFocusedPwaBranchCoverage(completeSummary));
 });
 
-test('rejects PWA branch coverage below 100 percent', () => {
+test('rejects focused PWA branch coverage below 100 percent', () => {
   assert.throws(
-    () => assertPwaBranchCoverage(summaryWithBranchCoverage(99.99)),
-    /PWA branch coverage must be 100%; received 99.99%/,
+    () => assertFocusedPwaBranchCoverage('Branches : 99.99% ( 6/7 )'),
+    /PWA branch coverage must be 100%; received 99.99% \(6\/7\)/,
   );
 });
 
-test('rejects coverage summaries without the PWA update source', () => {
+test('rejects output without a branch summary', () => {
   assert.throws(
-    () => assertPwaBranchCoverage({ total: { branches: { pct: 100 } } }),
-    /PWA coverage summary is missing/,
+    () => assertFocusedPwaBranchCoverage('TOTAL: 15 SUCCESS'),
+    /must contain exactly one branch summary; received 0/,
   );
 });
 
-test('rejects invalid PWA branch coverage values', () => {
+test('rejects ambiguous output with multiple branch summaries', () => {
   assert.throws(
     () =>
-      assertPwaBranchCoverage({
-        [sourcePath]: { branches: { pct: '100' } },
-      }),
-    /PWA branch coverage is invalid/,
+      assertFocusedPwaBranchCoverage(
+        'Branches : 100% ( 7/7 )\nBranches : 100% ( 7/7 )',
+      ),
+    /must contain exactly one branch summary; received 2/,
+  );
+});
+
+test('rejects a zero-branch summary', () => {
+  assert.throws(
+    () => assertFocusedPwaBranchCoverage('Branches : 100% ( 0/0 )'),
+    /branch coverage summary is invalid/,
+  );
+});
+
+test('rejects non-string focused output', () => {
+  assert.throws(
+    () => readFocusedPwaBranchCoverage(null),
+    /Focused PWA coverage output must be a string/,
   );
 });

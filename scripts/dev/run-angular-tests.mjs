@@ -1,11 +1,11 @@
 import { spawn } from 'node:child_process';
 import { constants as fsConstants } from 'node:fs';
-import { access, readFile, rm } from 'node:fs/promises';
+import { access } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
-import { assertPwaBranchCoverage } from './pwa-coverage-gate.mjs';
+import { assertFocusedPwaBranchCoverage } from './pwa-coverage-gate.mjs';
 
 const NEWLINE = '\n';
 const EXIT_SUCCESS = 0;
@@ -14,10 +14,6 @@ const PWA_UPDATE_SPEC = 'src/app/core/services/pwa-update.service.spec.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const prepareScript = resolve(__dirname, 'prepare.mjs');
-const pwaCoverageSummary = resolve(
-  __dirname,
-  '../../coverage/andalucia-transit/coverage-summary.json',
-);
 
 async function spawnAsync(command, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -26,6 +22,33 @@ async function spawnAsync(command, args, options = {}) {
     child.on('exit', code => {
       if (code === EXIT_SUCCESS) {
         resolve();
+        return;
+      }
+      reject(new Error(`${command} exited with code ${code}`));
+    });
+  });
+}
+
+async function spawnWithOutput(command, args, options = {}) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, {
+      ...options,
+      stdio: ['inherit', 'pipe', 'pipe'],
+    });
+    let stdout = '';
+
+    child.stdout.setEncoding('utf8');
+    child.stdout.on('data', chunk => {
+      stdout += chunk;
+      process.stdout.write(chunk);
+    });
+    child.stderr.on('data', chunk => {
+      process.stderr.write(chunk);
+    });
+    child.on('error', reject);
+    child.on('exit', code => {
+      if (code === EXIT_SUCCESS) {
+        resolve(stdout);
         return;
       }
       reject(new Error(`${command} exited with code ${code}`));
@@ -47,38 +70,36 @@ async function ensureChromiumBinary() {
   }
 }
 
-async function runNgTest(chromePath, extraArgs = [], extraEnv = {}) {
-  const baseArgs = [
+function createNgTestArgs(extraArgs = []) {
+  return [
+    'ng',
     'test',
     '--browsers=ChromeHeadlessNoSandbox',
     '--watch=false',
     '--code-coverage',
+    ...extraArgs,
   ];
-
-  await spawnAsync('npx', ['ng', ...baseArgs, ...extraArgs], {
-    stdio: 'inherit',
-    env: {
-      ...process.env,
-      ...extraEnv,
-      CHROME_BIN: chromePath,
-    },
-  });
 }
 
-async function verifyPwaBranchCoverage() {
-  const coverageSummary = JSON.parse(await readFile(pwaCoverageSummary, 'utf8'));
-  assertPwaBranchCoverage(coverageSummary);
+function createNgTestEnv(chromePath) {
+  return {
+    ...process.env,
+    CHROME_BIN: chromePath,
+  };
 }
 
 async function runAngularTests(chromePath) {
-  await runNgTest(chromePath, process.argv.slice(2));
-  await rm(pwaCoverageSummary, { force: true });
-  await runNgTest(
-    chromePath,
-    [`--include=${PWA_UPDATE_SPEC}`],
-    { PWA_COVERAGE_ONLY: '1' },
+  await spawnAsync('npx', createNgTestArgs(process.argv.slice(2)), {
+    stdio: 'inherit',
+    env: createNgTestEnv(chromePath),
+  });
+
+  const focusedOutput = await spawnWithOutput(
+    'npx',
+    createNgTestArgs([`--include=${PWA_UPDATE_SPEC}`]),
+    { env: createNgTestEnv(chromePath) },
   );
-  await verifyPwaBranchCoverage();
+  assertFocusedPwaBranchCoverage(focusedOutput);
 }
 
 ensureChromiumBinary()
