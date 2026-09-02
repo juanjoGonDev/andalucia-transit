@@ -6,8 +6,7 @@ export const CURRENT_THEME = {
 
 export const APPROVED_ICON = {
   height: 1254,
-  mimeType: 'image/webp',
-  payloadSha256: '5fe98391a9eed6de6cc7616a0604978063a270c79e7329cf137f3384ac2107be',
   renderedRgbaSha256: '57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef',
+  sourceGitBlobSha1: '69b7f7ddbd0e5cb5e4fccc0a2c6d6b7df2234695',
   width: 1254
 } as const;

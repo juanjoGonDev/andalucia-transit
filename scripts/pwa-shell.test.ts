@@ -22,10 +22,12 @@ async function readManifest(): Promise<WebManifest> {
   return JSON.parse(content) as WebManifest;
 }
 
-function readEmbeddedPayload(svg: string): Buffer {
-  const match = svg.match(/href="data:image\/webp;base64,([^"]+)"/);
-  assert.ok(match?.[1], 'favicon.svg must embed the approved lossless WebP payload');
-  return Buffer.from(match[1], 'base64');
+function gitBlobSha1(content: string): string {
+  const bytes = Buffer.from(content, 'utf8');
+  return createHash('sha1')
+    .update(`blob ${bytes.byteLength}\0`)
+    .update(bytes)
+    .digest('hex');
 }
 
 test('PWA manifest uses the current application theme', async () => {
@@ -50,14 +52,14 @@ test('PWA manifest has one canonical icon for any and maskable purposes', async 
   await assert.rejects(readFile('public/app-icon-maskable.svg', 'utf8'));
 });
 
-test('canonical icon embeds the exact approved lossless payload', async () => {
+test('canonical icon uses the exact supplied SVG source', async () => {
   const icon = await readFile('public/favicon.svg', 'utf8');
-  const payload = readEmbeddedPayload(icon);
+  const sourceSha256 = createHash('sha256').update(icon).digest('hex');
 
-  assert.match(icon, new RegExp(`viewBox="0 0 ${APPROVED_ICON.width} ${APPROVED_ICON.height}"`));
-  assert.match(icon, new RegExp(`width="${APPROVED_ICON.width}"`));
-  assert.match(icon, new RegExp(`height="${APPROVED_ICON.height}"`));
-  assert.equal(createHash('sha256').update(payload).digest('hex'), APPROVED_ICON.payloadSha256);
+  console.info(`PWA icon source SHA-256: ${sourceSha256}`);
+  assert.equal(gitBlobSha1(icon), APPROVED_ICON.sourceGitBlobSha1);
+  assert.match(icon, /<svg\b/);
+  assert.doesNotMatch(icon, /data:image\/webp;base64/i);
   assert.doesNotMatch(icon, /#3f51b5/i);
   assert.doesNotMatch(icon, /junta/i);
 });
