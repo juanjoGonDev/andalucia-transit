@@ -1,8 +1,10 @@
 import { spawn } from 'node:child_process';
 import { constants as fsConstants } from 'node:fs';
-import { access, appendFile, copyFile, readFile } from 'node:fs/promises';
+import { access, appendFile, copyFile, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { APPROVED_ICON } from '../pwa-contract';
+import { optimizePwaIconForDelivery, pwaIconSha256 } from '../pwa-icon-output';
 
 type JsonValue = string | number | boolean | { [key: string]: JsonValue } | JsonValue[] | null;
 
@@ -13,6 +15,7 @@ const projectDirectoryName = 'andalucia-transit';
 const browserDirectoryName = 'browser';
 const indexFileName = 'index.html';
 const fallbackFileName = '404.html';
+const pwaIconFileName = 'favicon.svg';
 const packageFileName = 'package.json';
 const distPathEnvKey = 'DIST_PATH';
 const ngAppVersionKey = 'NG_APP_VERSION';
@@ -21,12 +24,14 @@ const logPrefix = '[deploy]';
 const readingPackageMessage = `${logPrefix} Reading package version`;
 const exportingVersionMessage = `${logPrefix} Exporting application version`;
 const runningBuildMessage = `${logPrefix} Running production build`;
+const optimizingIconMessage = `${logPrefix} Optimizing PWA icon delivery bytes`;
 const creatingFallbackMessage = `${logPrefix} Creating single page fallback`;
 const missingVersionMessage = 'Package version is required to prepare the deploy output';
 const versionTypeErrorMessage = 'Package version must be a string to prepare the deploy output';
 const buildFailureMessage = 'Deploy build command failed';
 const missingIndexMessage = 'Cannot create fallback because index file is missing at';
-const writingEnvMessage = `${logPrefix} Writing environment file`; 
+const invalidOptimizedIconMessage = 'Optimized PWA icon does not match the reviewed delivery contract';
+const writingEnvMessage = `${logPrefix} Writing environment file`;
 
 const currentDirectory = path.dirname(fileURLToPath(new URL(import.meta.url)));
 const rootDirectory = path.resolve(currentDirectory, '..', '..');
@@ -97,6 +102,27 @@ async function runBuild(envWithVersion: NodeJS.ProcessEnv): Promise<void> {
   });
 }
 
+async function optimizePwaIcon(distPath: string): Promise<void> {
+  console.log(optimizingIconMessage);
+  const iconPath = path.join(distPath, pwaIconFileName);
+  const source = await readFile(iconPath, 'utf8');
+  const optimized = optimizePwaIconForDelivery(source);
+  const deployedBytes = Buffer.byteLength(optimized, 'utf8');
+  const deployedSha256 = pwaIconSha256(optimized);
+
+  if (
+    deployedBytes > APPROVED_ICON.deployedMaxBytes ||
+    deployedSha256 !== APPROVED_ICON.deployedSha256
+  ) {
+    throw new Error(
+      `${invalidOptimizedIconMessage}: ${deployedBytes} bytes / ${deployedSha256}`,
+    );
+  }
+
+  await writeFile(iconPath, optimized, 'utf8');
+  console.log(`${logPrefix} PWA icon: ${deployedBytes} bytes / ${deployedSha256}`);
+}
+
 async function ensureIndexExists(indexPath: string): Promise<void> {
   try {
     await access(indexPath, fsConstants.F_OK);
@@ -119,6 +145,7 @@ async function main(): Promise<void> {
   const distPath = resolveDistPath();
   const envWithVersion = createBuildEnvironment(version);
   await runBuild(envWithVersion);
+  await optimizePwaIcon(distPath);
   await createFallback(distPath);
 }
 
