@@ -9,6 +9,7 @@ import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-comp
 import { Observable, of } from 'rxjs';
 import { AppComponent } from '@app/app';
 import { routes } from '@app/app.routes';
+import { PwaUpdateService } from '@core/services/pwa-update.service';
 import {
   StopDirectoryOption,
   StopDirectoryService
@@ -40,6 +41,10 @@ class TranslateTestingLoader implements TranslateLoader {
   }
 }
 
+class PwaUpdateTestingService {
+  readonly initialize = jasmine.createSpy('initialize');
+}
+
 describe('AppComponent', () => {
   beforeAll(() => {
     registerLocaleData(localeEs);
@@ -60,6 +65,7 @@ describe('AppComponent', () => {
       ],
       providers: [
         provideRouter(routes),
+        { provide: PwaUpdateService, useClass: PwaUpdateTestingService },
         { provide: StopDirectoryService, useClass: StopDirectoryTestingService }
       ]
     }).compileComponents();
@@ -69,6 +75,15 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
+  });
+
+  it('initializes the PWA update lifecycle with the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const pwaUpdateService = TestBed.inject(PwaUpdateService) as unknown as PwaUpdateTestingService;
+
+    fixture.detectChanges();
+
+    expect(pwaUpdateService.initialize).toHaveBeenCalledTimes(1);
   });
 
   it('renders the routed content outlet', () => {

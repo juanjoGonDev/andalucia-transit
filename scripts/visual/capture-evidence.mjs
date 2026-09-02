@@ -216,6 +216,7 @@ async function runPopulatedEvidenceHarness(
       E2E_MOCK_MODE: 'data',
       E2E_EVIDENCE_DIR: evidenceRoot,
       E2E_EXACT_VISUAL_REGRESSION: 'true',
+      E2E_VERIFY_PRODUCT_CHECKS: String(verifyProductChecks),
     },
   });
 }
