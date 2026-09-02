@@ -19,6 +19,8 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - Public searches for the pinned payload/render digests and the approved 1254×1254 composition did not locate a verifiable copy of the source image.
 - The original update lifecycle accessed `sessionStorage` directly after successful activation and during unrecoverable-state recovery. Browser storage APIs may throw when storage is unavailable or blocked; an exception while clearing the recovery marker could suppress the reload after an already successful activation, while an exception during unrecoverable recovery could escape the subscription path.
 - The reviewed baseline commit `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5` is independently diverged from both current `main` and this PR head; merging current `main` cannot make that commit an ancestor of the PR.
+- The baseline divergence is explained by the squash merge of PR #439. Its final head `f3305fe2cf86be988ab5365534be33c16e42e78c` passed visual-regression run `33530397106` with `0/36` changed screenshots and zero differing pixels against reviewed baseline `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`.
+- Squash merge commit `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` and validated PR #439 head `f3305fe2cf86be988ab5365534be33c16e42e78c` have the exact same Git tree SHA, `7e7651c07c8d9b65faab439dfbdcee1d3e269cbd`. The ancestry failure is therefore caused by squash topology, not by a file-tree difference between the validated final PR head and its merged `main` commit.
 
 ## Decision
 
@@ -32,6 +34,7 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 8. Do not use `skipWaiting`, custom service-worker forks, cache deletion, polling storms, or uninstall/reinstall as the normal update mechanism.
 9. Fail closed while the canonical bytes are unavailable. Do not regenerate, approximate, interpolate, weaken the tests, or replace either pinned digest to make CI pass.
 10. Treat recovery-marker storage as a fallible browser boundary. Failure to clear the marker after a successful activation must not block the required reload. Unrecoverable-state auto-recovery must reload only after the loop-prevention marker has been read and persisted successfully; if storage cannot guarantee the guard, remain on the current page rather than risk an unbounded reload loop.
+11. Treat the visual-baseline ancestry failure as a separate squash-topology defect. Do not weaken the ancestry gate or rewrite `.github/visual-baseline.json` automatically. If the baseline pointer is explicitly approved for repair, `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is the evidence-backed candidate because its tree is byte-for-byte identical to the fully validated PR #439 final head that rendered with zero pixel differences against the currently reviewed baseline.
 
 ## Acceptance
 
@@ -58,7 +61,7 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - Some launchers retain old installed icon metadata after a manifest change. Platform launcher cache refresh is distinct from Angular service-worker version adoption.
 - Reloading on `VERSION_READY` can interrupt active interaction; if a future transactional unsaved flow is introduced, update activation must defer to a safe boundary.
 - If browser storage is unavailable, unrecoverable-state auto-reload is deliberately suppressed because the reload-loop guard cannot be persisted safely; the user may remain on the currently loaded version until storage becomes available or the page is manually revisited.
-- The reviewed visual-baseline pointer is independently topologically diverged from current `main`; do not advance it without explicit approval.
+- The reviewed visual-baseline pointer is topologically stale after squash merge #439. Although `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is proven tree-equivalent to the fully validated final PR head, changing the reviewed pointer still requires explicit approval.
 
 ## Tests
 
@@ -67,6 +70,7 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - Unit: `SwUpdate` lifecycle and root initialization coverage, including blocked/unavailable `sessionStorage` behavior for recovery-marker cleanup and reload-loop protection.
 - Visual evidence: exact-head deterministic product screenshots remain required; installed launcher metadata is separately validated by the PWA shell contract.
 - Recovery audit: verify PR commit ancestry, refs, comments, retained workflow artifacts/logs, and temporary release assets before accepting any recovered payload as canonical.
+- Baseline topology: verify that a proposed ancestry repair preserves the validated file tree and previously reviewed pixel contract before requesting approval to update the pointer.
 
 ## Rollback
 
@@ -75,7 +79,8 @@ Revert this PR. No backend, API, database, or persistent-data migration is invol
 ## Delivery status
 
 - Reconnaissance: complete, including a full recovery audit of PR ancestry, refs, comments, workflow data, temporary release assets, baseline topology, and update-lifecycle storage boundaries.
-- Specification: updated for the final approved exact-fidelity identity, the verified missing-payload blocker, and fail-closed recovery-storage behavior.
+- Specification: updated for the final approved exact-fidelity identity, the verified missing-payload blocker, fail-closed recovery-storage behavior, and the proven squash-merge baseline topology.
 - Update lifecycle, shell colors, single manifest icon ownership, and unavailable-storage handling: implemented.
 - Exact approved identity: blocked because the canonical WebP bytes are incomplete; `payload-01.txt` was never committed and no verifiable alternate source was recovered.
+- Baseline ancestry repair: evidence complete but intentionally not applied. `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is tree-identical to validated PR #439 head `f3305fe2cf86be988ab5365534be33c16e42e78c`, which rendered with zero pixel differences against the reviewed baseline; explicit user approval is still required before changing the baseline pointer.
 - CI/final review: incomplete. Exact-icon tests must remain red until the canonical payload is restored; no baseline or digest may be changed to bypass the blocker.
