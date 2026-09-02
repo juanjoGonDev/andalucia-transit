@@ -56,19 +56,8 @@ module.exports = function (config) {
       reporters: [
         { type: 'html' },
         { type: 'text-summary' },
+        ...(strictPwaCoverage ? [{ type: 'json-summary' }] : []),
       ],
-      ...(strictPwaCoverage
-        ? {
-            check: {
-              global: {
-                statements: 100,
-                branches: 100,
-                functions: 100,
-                lines: 100,
-              },
-            },
-          }
-        : {}),
     },
     reporters: ['progress', 'kjhtml'],
     port: 9876,

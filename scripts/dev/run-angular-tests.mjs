@@ -1,10 +1,11 @@
 import { spawn } from 'node:child_process';
 import { constants as fsConstants } from 'node:fs';
-import { access } from 'node:fs/promises';
+import { access, readFile, rm } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import { assertPwaBranchCoverage } from './pwa-coverage-gate.mjs';
 
 const NEWLINE = '\n';
 const EXIT_SUCCESS = 0;
@@ -13,6 +14,10 @@ const PWA_UPDATE_SPEC = 'src/app/core/services/pwa-update.service.spec.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const prepareScript = resolve(__dirname, 'prepare.mjs');
+const pwaCoverageSummary = resolve(
+  __dirname,
+  '../../coverage/andalucia-transit/coverage-summary.json',
+);
 
 async function spawnAsync(command, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -60,13 +65,20 @@ async function runNgTest(chromePath, extraArgs = [], extraEnv = {}) {
   });
 }
 
+async function verifyPwaBranchCoverage() {
+  const coverageSummary = JSON.parse(await readFile(pwaCoverageSummary, 'utf8'));
+  assertPwaBranchCoverage(coverageSummary);
+}
+
 async function runAngularTests(chromePath) {
   await runNgTest(chromePath, process.argv.slice(2));
+  await rm(pwaCoverageSummary, { force: true });
   await runNgTest(
     chromePath,
     [`--include=${PWA_UPDATE_SPEC}`],
     { PWA_COVERAGE_ONLY: '1' },
   );
+  await verifyPwaBranchCoverage();
 }
 
 ensureChromiumBinary()
