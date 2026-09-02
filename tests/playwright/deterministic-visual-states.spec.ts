@@ -2,6 +2,7 @@ import {
   selectVisualStopDetailEntry,
   type VisualStopServicesSnapshotEntry,
 } from '../../scripts/visual/exact-visual-data';
+import { expectExactPwaInstallShell } from './pwa-icon.assert';
 import {
   captureVisualEvidence,
   EXACT_VISUAL_REGRESSION,
@@ -91,6 +92,11 @@ test.describe('deterministic visual data states', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize(MOBILE_VIEWPORT);
+  });
+
+  test('renders the exact approved PWA install artwork', async ({ page }) => {
+    test.skip(MOCK_MODE !== 'data', 'PWA install artwork evidence runs once in populated mode.');
+    await expectExactPwaInstallShell(page, BASE_URL as string);
   });
 
   test('renders recent-search history according to the selected mock mode', async ({ page }) => {
