@@ -22,6 +22,9 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - The baseline divergence is explained by the squash merge of PR #439. Its final head `f3305fe2cf86be988ab5365534be33c16e42e78c` passed visual-regression run `33530397106` with `0/36` changed screenshots and zero differing pixels against reviewed baseline `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`.
 - Squash merge commit `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` and validated PR #439 head `f3305fe2cf86be988ab5365534be33c16e42e78c` have the exact same Git tree SHA, `7e7651c07c8d9b65faab439dfbdcee1d3e269cbd`. The ancestry failure is therefore caused by squash topology, not by a file-tree difference between the validated final PR head and its merged `main` commit.
 - The static Node gate and Playwright PWA gate previously duplicated the approved icon dimensions, MIME type, both exact digests, and expected shell colors. This created two independently editable copies of the same acceptance contract.
+- The focused Angular PWA run previously configured `coverageReporter.check.global` at 100%, but the CI log still completed successfully while the same run reported only `97.5%` statements and `90%` functions. The configuration therefore did not enforce the threshold it appeared to own.
+- A first attempt to consume a conditional `json-summary` reporter also failed closed in CI because Angular did not emit the requested `coverage-summary.json`; the focused test itself still reported `100% (7/7)` branches. The final gate therefore validates the coverage summary Angular actually emits rather than relying on ignored Karma reporter/check overrides.
+- CI #1446 (`33578144057`) validates the final approach on `eb9f87bbb6cfb966467d45fbf63d9031f888ddb8`: the full Angular suite passes `540/540`, the focused PWA suite passes `15/15`, and its branch summary is exactly `100% (7/7)`. The dedicated parser/gate has eight passing script tests covering success, ANSI output, below-threshold, missing, ambiguous, zero-branch, and invalid-input cases.
 
 ## Decision
 
@@ -37,6 +40,7 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 10. Treat recovery-marker storage as a fallible browser boundary. Failure to clear the marker after a successful activation must not block the required reload. Unrecoverable-state auto-recovery must reload only after the loop-prevention marker has been read and persisted successfully; if storage cannot guarantee the guard, remain on the current page rather than risk an unbounded reload loop.
 11. Treat the visual-baseline ancestry failure as a separate squash-topology defect. Do not weaken the ancestry gate or rewrite `.github/visual-baseline.json` automatically. If the baseline pointer is explicitly approved for repair, `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is the evidence-backed candidate because its tree is byte-for-byte identical to the fully validated PR #439 final head that rendered with zero pixel differences against the currently reviewed baseline.
 12. `scripts/pwa-contract.ts` is the single test-contract owner for approved icon dimensions, MIME type, payload/render digests, and expected PWA shell colors. Static Node tests and Playwright consume that contract rather than maintaining parallel literals. `public/favicon.svg` remains the sole artwork owner; this shared module owns only verification constants.
+13. Do not rely on Karma coverage-threshold or reporter overrides for the PWA branch gate. `scripts/dev/run-angular-tests.mjs` owns the focused-run orchestration and captures the emitted coverage summary; `scripts/dev/pwa-coverage-gate.mjs` owns strict parsing and requires exactly one non-empty branch summary with `100%` and `covered === total`. Missing, ambiguous, zero-branch, or below-threshold output fails closed.
 
 ## Acceptance
 
@@ -53,6 +57,7 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - Successful version activation still reloads when recovery-marker cleanup storage is unavailable.
 - Unrecoverable-state recovery fails closed without reloading when its loop-prevention marker cannot be read or persisted.
 - Relevant changed lifecycle logic retains practical 100% branch coverage and repository coverage gates do not regress.
+- The focused `pwa-update.service.spec.ts` run must report a non-zero exact `100%` branch result, and the explicit gate must reject missing, ambiguous, zero-branch, or below-threshold coverage output.
 - Static and browser PWA verification consume one shared exact-icon/shell contract; changing an approved digest, dimension, MIME type, or expected shell color requires changing one owner rather than synchronized copies.
 - `pnpm run format:check`, `pnpm run lint`, script tests, Angular tests, production/deploy checks, Playwright PWA shell verification, visual evidence, and GitHub CI are green before delivery.
 
@@ -66,6 +71,7 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - If browser storage is unavailable, unrecoverable-state auto-reload is deliberately suppressed because the reload-loop guard cannot be persisted safely; the user may remain on the currently loaded version until storage becomes available or the page is manually revisited.
 - The reviewed visual-baseline pointer is topologically stale after squash merge #439. Although `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is proven tree-equivalent to the fully validated final PR head, changing the reviewed pointer still requires explicit approval.
 - The Playwright PWA runtime assertion cannot execute while the earlier exact-payload quality gate rejects the interim favicon. Lint and the Node runner validate the shared module/import shape, but final browser execution remains part of post-payload validation.
+- The explicit branch gate parses Angular's stable human-readable `text-summary` because the current builder ignores the attempted Karma threshold/reporter overrides. Its parser is intentionally narrow and fail-closed so an upstream output-format change cannot silently disable the gate.
 
 ## Tests
 
@@ -73,6 +79,7 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - Browser: load the served SVG into a canvas at 1254×1254, hash the rendered RGBA bytes with Web Crypto, and compare against the approved digest. This is the zero-pixel-diff gate.
 - Shared contract: `scripts/pwa-contract.ts` supplies the same immutable dimensions, MIME, exact digests, and shell colors to both static Node and browser Playwright verification.
 - Unit: `SwUpdate` lifecycle and root initialization coverage, including blocked/unavailable `sessionStorage` behavior for recovery-marker cleanup and reload-loop protection.
+- Coverage enforcement: run `pwa-update.service.spec.ts` in isolation with coverage, capture its emitted summary, and require a single non-zero `100%` branch result. Unit-test the gate against valid, ANSI-decorated, below-threshold, missing, duplicate, zero-branch, and invalid inputs.
 - Visual evidence: exact-head deterministic product screenshots remain required; installed launcher metadata is separately validated by the PWA shell contract.
 - Recovery audit: verify PR commit ancestry, refs, comments, retained workflow artifacts/logs, and temporary release assets before accepting any recovered payload as canonical.
 - Baseline topology: verify that a proposed ancestry repair preserves the validated file tree and previously reviewed pixel contract before requesting approval to update the pointer.
@@ -83,9 +90,10 @@ Revert this PR. No backend, API, database, or persistent-data migration is invol
 
 ## Delivery status
 
-- Reconnaissance: complete, including a full recovery audit of PR ancestry, refs, comments, workflow data, temporary release assets, baseline topology, update-lifecycle storage boundaries, and duplicated PWA verification constants.
-- Specification: updated for the final approved exact-fidelity identity, the verified missing-payload blocker, fail-closed recovery-storage behavior, proven squash-merge baseline topology, and shared verification-contract ownership.
-- Update lifecycle, shell colors, single manifest icon ownership, unavailable-storage handling, and PWA verification-contract SSOT: implemented.
+- Reconnaissance: complete, including a full recovery audit of PR ancestry, refs, comments, workflow data, temporary release assets, baseline topology, update-lifecycle storage boundaries, duplicated PWA verification constants, and the ineffective Karma coverage-threshold configuration.
+- Specification: updated for the final approved exact-fidelity identity, the verified missing-payload blocker, fail-closed recovery-storage behavior, proven squash-merge baseline topology, shared verification-contract ownership, and explicit PWA branch-coverage enforcement.
+- Update lifecycle, shell colors, single manifest icon ownership, unavailable-storage handling, PWA verification-contract SSOT, and explicit focused branch-coverage gate: implemented.
+- Coverage validation on executable head `eb9f87bbb6cfb966467d45fbf63d9031f888ddb8`: CI #1446 (`33578144057`) passes the full Angular suite `540/540`, focused PWA suite `15/15`, and exact branch coverage `100% (7/7)`. The coverage parser/gate passes all eight dedicated script tests.
 - Exact approved identity: blocked because the canonical WebP bytes are incomplete; `payload-01.txt` was never committed and no verifiable alternate source was recovered.
 - Baseline ancestry repair: evidence complete but intentionally not applied. `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is tree-identical to validated PR #439 head `f3305fe2cf86be988ab5365534be33c16e42e78c`, which rendered with zero pixel differences against the reviewed baseline; explicit user approval is still required before changing the baseline pointer.
-- CI/final review: incomplete. The shared contract refactor is accepted by lint, the static Node runner reaches the expected exact-payload failure, and Angular remains green; Playwright PWA execution, visual evidence, and final review remain blocked until the canonical payload is restored. No baseline or digest may be changed to bypass the blockers.
+- CI/final review: incomplete. On `eb9f87bbb6cfb966467d45fbf63d9031f888ddb8`, install, lint, Angular, and deploy pass; script tests pass 10/11 suites and fail only on the missing exact WebP. Visual evidence stops at that same quality gate before application startup/screenshots, while visual regression stops at the separately documented baseline ancestry check. Playwright PWA execution and final visual review therefore remain blocked until the canonical payload is restored. No baseline or digest may be changed to bypass the blockers.
