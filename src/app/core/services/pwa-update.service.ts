@@ -51,7 +51,7 @@ export class PwaUpdateService {
         return;
       }
 
-      sessionStorage.removeItem(PWA_RECOVERY_SESSION_KEY);
+      this.clearRecoveryMarker();
       this.reloadCurrentVersion();
     } catch {
       this.activationInProgress = false;
@@ -60,11 +60,32 @@ export class PwaUpdateService {
   }
 
   private recoverUnrecoverableState(): void {
-    if (sessionStorage.getItem(PWA_RECOVERY_SESSION_KEY) === '1') {
+    if (!this.claimUnrecoverableRecovery()) {
       return;
     }
 
-    sessionStorage.setItem(PWA_RECOVERY_SESSION_KEY, '1');
     this.reloadCurrentVersion();
+  }
+
+  private clearRecoveryMarker(): void {
+    try {
+      sessionStorage.removeItem(PWA_RECOVERY_SESSION_KEY);
+    } catch {
+      // Storage availability must not prevent reloading an already activated version.
+    }
+  }
+
+  private claimUnrecoverableRecovery(): boolean {
+    try {
+      if (sessionStorage.getItem(PWA_RECOVERY_SESSION_KEY) === '1') {
+        return false;
+      }
+
+      sessionStorage.setItem(PWA_RECOVERY_SESSION_KEY, '1');
+      return true;
+    } catch {
+      // Without a persisted guard, automatic reload could loop indefinitely.
+      return false;
+    }
   }
 }
