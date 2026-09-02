@@ -5,6 +5,8 @@ import test from 'node:test';
 import { APPROVED_ICON, CURRENT_THEME } from './pwa-contract';
 import { optimizePwaIconForDelivery, pwaIconSha256 } from './pwa-icon-output';
 
+const PWA_ICON_GIT_ATTRIBUTE = 'public/favicon.svg text eol=lf';
+
 interface ManifestIcon {
   readonly purpose: string;
   readonly sizes: string;
@@ -51,6 +53,15 @@ test('PWA manifest has one canonical icon for any and maskable purposes', async 
   ]);
 
   await assert.rejects(readFile('public/app-icon-maskable.svg', 'utf8'));
+});
+
+test('canonical icon checkout preserves the LF byte contract', async () => {
+  const attributes = await readFile('.gitattributes', 'utf8');
+  const matchingRules = attributes
+    .split(/\r?\n/)
+    .filter((line) => line.trim() === PWA_ICON_GIT_ATTRIBUTE);
+
+  assert.equal(matchingRules.length, 1);
 });
 
 test('canonical icon keeps the exact user-supplied SVG source', async () => {
