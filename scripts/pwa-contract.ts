@@ -6,8 +6,9 @@ export const CURRENT_THEME = {
 
 export const APPROVED_ICON = {
   height: 1254,
-  renderedRgbaSha256: '57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef',
-  sourceGitBlobSha1: '69b7f7ddbd0e5cb5e4fccc0a2c6d6b7df2234695',
-  sourceSha256: 'b12a92b917b9d194b7f37ca2e6c031a91c5fc81160c62f5c521fb58eac841e92',
+  maxSourceBytes: 15_000,
+  renderedRgbaSha256: '7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b',
+  sourceGitBlobSha1: '2668037fbca58a78c5003f72bb337d2f067aba44',
+  sourceSha256: '522f30bf40c4c68356275de58cc7144e5e6e9b7e7a61f39699b6f1cee1ce10c0',
   width: 1254
 } as const;

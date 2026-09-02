@@ -52,11 +52,17 @@ test('PWA manifest has one canonical icon for any and maskable purposes', async 
   await assert.rejects(readFile('public/app-icon-maskable.svg', 'utf8'));
 });
 
-test('canonical icon uses the exact supplied SVG source', async () => {
+test('canonical icon uses the optimized supplied SVG source', async () => {
   const icon = await readFile('public/favicon.svg', 'utf8');
+  const sourceBytes = Buffer.byteLength(icon, 'utf8');
   const sourceSha256 = createHash('sha256').update(icon).digest('hex');
 
+  console.info(`PWA icon source bytes: ${sourceBytes}`);
   console.info(`PWA icon source SHA-256: ${sourceSha256}`);
+  assert.ok(
+    sourceBytes <= APPROVED_ICON.maxSourceBytes,
+    `PWA icon source exceeds ${APPROVED_ICON.maxSourceBytes} bytes: ${sourceBytes}`
+  );
   assert.equal(sourceSha256, APPROVED_ICON.sourceSha256);
   assert.equal(gitBlobSha1(icon), APPROVED_ICON.sourceGitBlobSha1);
   assert.match(icon, /<svg\b/);
