@@ -12,10 +12,14 @@ source_of_truth: [public]
 - `manifest.webmanifest` → PWA manifest referencing the canonical `favicon.svg`, current startup background, and browser theme color. There is no separate maskable artwork owner.
 
 # Source and deployment contract
-- The repository source Git blob is `69b7f7ddbd0e5cb5e4fccc0a2c6d6b7df2234695`; its UTF-8 SHA-256 is `b12a92b917b9d194b7f37ca2e6c031a91c5fc81160c62f5c521fb58eac841e92`.
+- The repository source Git blob is `69b7f7ddbd0e5cb5e4fccc0a2c6d6b7df2234695`; its UTF-8 SHA-256 is `b12a92b917b9d194b7f37ca2e6c031a91c5fc81160c62f5c521fb58eac841e92` and its size is 15,186 bytes.
 - `scripts/pwa-icon-output.ts` owns the deterministic build-output transformation. It removes only the exact XML declaration and final newline; it does not change the canonical repository source.
 - The optimized deployed SVG is 15,146 bytes with SHA-256 `fef8eacd36fc0a37a8f17632ac680130ce256a3d2b46496028f62b26db07f514`.
 - Chromium currently renders both the canonical source and optimized deployed output to RGBA SHA-256 `7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b` on the contractual 1254×1254 canvas. The output optimization therefore preserves current rendered pixels.
+- Production `ngsw-config.json` precaches `/favicon.svg`. Because Angular's production build hashes service-worker-managed assets into `ngsw.json`, any post-build favicon transformation must be followed by service-worker manifest regeneration from the final bytes.
+- `scripts/deploy/run.ts` owns the final ordering: production build → deterministic favicon optimization → `pnpm exec ngsw-config` using the built base href → SHA-1 verification of final `favicon.svg` against the generated `ngsw.json` hash table → SPA fallback copy.
+- The verified final service-worker SHA-1 for the current optimized favicon is `e38e3835435b628a767412abb2711badf831f37c`. Deploy preparation fails if there is not exactly one service-worker hash entry for the icon or if that entry differs from the final file bytes.
+- Stable invariant: do not mutate any asset covered by `ngsw.json` after the final service-worker manifest generation unless the manifest is regenerated and re-verified.
 
 # Exact identity contract
 - The approved artwork is a 1254×1254 single-support bus stop with a front-facing bus and an upper hanging clock on a dark navy/blue background.
