@@ -48,6 +48,13 @@ Out of scope:
 - Chromium renders both the canonical source and optimized deployed output to the same current RGBA digest `7f0680a6dd26bdd46ae88ba9d4ccb5fc2bfc7b3313e2fd17eb2e8a1d9e0bb77b`; the optimization changes delivery bytes, not current rendered pixels.
 - The optimization does not redefine the approved visual contract. The required rendered digest remains `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`.
 
+### Canonical checkout line endings
+
+- Because the canonical source is pinned by an exact UTF-8 SHA-256 and the delivery optimizer matches the XML declaration including `\n`, checkout line endings are part of the source contract rather than an editor preference.
+- Commit `a661c9f7036b11f117cf0ccd36d12ff7f43fddc0` (`test(pwa): pin canonical icon line endings`) adds the narrow `.gitattributes` rule `public/favicon.svg text eol=lf`; it does not normalize unrelated files or modify the SVG blob.
+- `scripts/pwa-shell.test.ts` now requires that exact rule exactly once. CI #1481 (`33641212287`) ran the new regression successfully: the PWA shell suite passed 7/7, all 11 script-test files passed, Angular passed 542/542, and required `Check all ok` completed successfully.
+- The same head preserves the canonical source at 15,186 bytes / SHA-256 `b12a92b917b9d194b7f37ca2e6c031a91c5fc81160c62f5c521fb58eac841e92` and optimized output at 15,146 bytes / SHA-256 `fef8eacd36fc0a37a8f17632ac680130ce256a3d2b46496028f62b26db07f514`.
+
 ### Service-worker integrity after optimization
 
 - Production Angular builds enable `serviceWorker: "ngsw-config.json"` and `ngsw-config.json` explicitly precaches `/favicon.svg`.
@@ -82,6 +89,7 @@ Out of scope:
 - Commit `1b82a7744eb3abddecc99a7d29cd53d833cac373` (`test(pwa): restore approved render contract`) restored `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef` as the expected rendered digest.
 - Visual Evidence #1493 (`33634298239`) then correctly returned 41/42 Playwright tests with the sole failure `renders the exact approved PWA install artwork`: current `7f0680a6...` versus approved `57aeab24...`.
 - Visual Evidence #1495 (`33635463092`) reproduced the same sole exact-icon failure on documentation head `652763eb...`; quality gates, Angular 542/542, focused PWA 17/17, branch coverage 100% (11/11), build, and startup were green before that failure.
+- Visual Evidence #1503 (`33641212260`) reproduces the same sole exact-icon failure on `a661c9f...`: Playwright reports 41 passed / 1 failed, and source plus optimized output both render `7f0680a6...` versus required `57aeab24...`, including retries.
 - No current failing visual-evidence run publishes screenshots because capture is downstream of the exact-icon gate. A diagnostic artifact from the temporarily weakened head is not acceptance evidence.
 
 ### Update lifecycle and verification ownership
@@ -97,7 +105,7 @@ Out of scope:
 - Reviewed baseline pointer remains `5ea33fcc4c7befed50cddcf6c588824e19e7ddd5`, with workflow run `33433358656`, artifact `9773567292`, and digest `sha256:4bc66b7550b428e276266eb2f241ffe575a0c34dd14fd8585df133652b586095`.
 - PR #439 final validated head `f3305fe2cf86be988ab5365534be33c16e42e78c` passed visual regression with 0/36 changed screenshots.
 - Its squash merge on `main`, `b6509aaa214dc932588dc6bb0ed068ef097ce8c5`, has the exact same Git tree SHA `7e7651c07c8d9b65faab439dfbdcee1d3e269cbd` as the validated PR #439 head.
-- Visual Regression #369 (`33638733455`) on `6ed2d039284d33de4865587ca6408d92ef061f20` fails in `Resolve reviewed baseline`: baseline `5ea33fcc...` is not an ancestor of the head and GitHub reports `compare status: diverged`. Installation, rendering, pixel comparison, and artifact retention are skipped.
+- Visual Regression #371 (`33641212254`) on `a661c9f7036b11f117cf0ccd36d12ff7f43fddc0` fails in `Resolve reviewed baseline`: baseline `5ea33fcc...` is not an ancestor of the head and GitHub reports `compare status: diverged`. Installation, rendering, pixel comparison, and artifact retention are skipped.
 - The failure is squash topology, not a demonstrated tree difference. `b6509aaa214dc932588dc6bb0ed068ef097ce8c5` is the evidence-backed repair candidate.
 - `.github/visual-baseline.json` remains unchanged. Changing it requires explicit user approval; a generic `continua` is not approval.
 
@@ -112,7 +120,7 @@ Out of scope:
 
 1. Keep current theme tokens as the PWA shell source of truth.
 2. Keep `public/favicon.svg` as the only repository favicon/install artwork owner and keep one manifest SVG entry with `sizes: "any"`; do not create redundant 192/512 SVG copies or standalone binary icon owners.
-3. Preserve the exact supplied SVG source identities; build optimization may alter only the documented non-rendering bytes.
+3. Preserve the exact supplied SVG source identities and pin `public/favicon.svg` to LF checkout semantics with the narrow `.gitattributes` rule `text eol=lf`; build optimization may alter only the documented non-rendering bytes.
 4. After any post-build mutation of a service-worker-managed asset, regenerate `ngsw.json` from final bytes and fail if its hash table does not match those bytes.
 5. Resolve the service-worker generator from the pinned repository toolchain (`pnpm exec`), not a network-capable fallback resolver.
 6. Keep `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef` as the immutable authoritative Chromium RGBA contract.
@@ -128,6 +136,7 @@ Out of scope:
 - `public/favicon.svg` represents the approved bus-stop/bus/clock identity and Chromium renders source and deployed output at 1254x1254 with zero differing pixels against the approved reference.
 - Rendered RGBA SHA-256 equals `57aeab249dc0df0f9cb5a9c9b1f654c4af0b5e1f53e69a73a7f46c61451f18ef`.
 - Canonical source Git blob SHA-1 and UTF-8 SHA-256 remain pinned and required by static CI.
+- Canonical checkout preserves LF bytes for `public/favicon.svg` independently of developer Git line-ending configuration.
 - The documented output transformation preserves rendered pixels and its deployed byte size/hash remain pinned.
 - Final deployed `favicon.svg` is represented by the final generated `ngsw.json` hash table; deploy preparation fails on a mismatch.
 - Manifest has exactly one canonical `favicon.svg` entry for `any maskable`; duplicate maskable artwork remains absent.
@@ -142,7 +151,7 @@ Out of scope:
 
 ## Checks
 
-- Static PWA shell tests for theme, one canonical icon, exact source identities, deployed-output identity, document metadata, and service-worker asset coverage.
+- Static PWA shell tests for theme, one canonical icon, canonical LF checkout semantics, exact source identities, deployed-output identity, document metadata, and service-worker asset coverage.
 - Real `deploy:prepare` integration build verifies optimized output bytes/hash, regenerates `ngsw.json`, and verifies the final icon SHA-1 against the generated service-worker hash table.
 - Browser PWA helper rasterizes both source and served/deployed SVG at 1254x1254 and hashes RGBA bytes with Web Crypto.
 - Deterministic Visual Evidence runs the same exact identity helper before screenshot publication.
@@ -167,14 +176,17 @@ Revert this PR. No backend, API, database, persistent-data migration, release, o
 
 ## Delivery status
 
-- Technical head before this documentation consolidation: `6ed2d039284d33de4865587ca6408d92ef061f20`.
+- Latest validated functional head before documentation updates: `a661c9f7036b11f117cf0ccd36d12ff7f43fddc0` (`test(pwa): pin canonical icon line endings`).
+- Canonical checkout: `.gitattributes` pins only `public/favicon.svg` to `text eol=lf`; the static PWA shell regression requires that rule exactly once.
 - Source authority: preserved and pinned; Git blob `69b7f7dd...`, UTF-8 SHA-256 `b12a92b9...`, 15,186 bytes.
 - Deployment output: 15,146 bytes / SHA-256 `fef8eacd...`; source and optimized output both currently render `7f0680a6...`.
 - Service-worker integrity: corrected by `998a2a...` and hardened by `6ed2d039...`; CI deploy output verifies final service-worker SHA-1 `e38e3835435b628a767412abb2711badf831f37c` after optimization.
 - Render-contract regression: corrected by `1b82a774...`; approved `57aeab24...` remains fail-closed.
-- Exact browser identity: blocked pending exact approved raster/reference pixels or equivalent exact source. No evidence-backed autonomous artwork edit remains.
-- Visual baseline regression: blocked. Visual Regression #369 (`33638733455`) reports `compare status: diverged` before installation/render/comparison; baseline remains unchanged pending explicit approval.
-- Required CI: CI #1479 (`33638733353`) has green install, scripts, lint, and deploy-pipeline jobs at documentation preparation; exact final-head CI will be re-observed after this documentation commit.
+- Required CI on `a661c9f...`: CI #1481 (`33641212287`) completed successfully, including Install dependencies, Test scripts, Lint, Test angular, Deploy pipeline, and required `Check all ok`.
+- Exact browser identity on `a661c9f...`: blocked. Visual Evidence #1503 (`33641212260`) reports 41 passed / 1 failed; the sole failure is current `7f0680a6...` versus approved `57aeab24...`.
+- Visual baseline regression on `a661c9f...`: blocked. Visual Regression #371 (`33641212254`) reports the reviewed baseline is `diverged` before installation/render/comparison; baseline remains unchanged pending explicit approval.
+- Documentation decision log: `AGENTS.md` now records the narrow LF checkout contract and the stable `build -> optimize -> ngsw-config -> verify` service-worker delivery invariant.
+- Exact final-head CI will be observed after this documentation update; deterministic visual failures must not be blindly rerun unless their prerequisites change.
 - Final runtime/UI review: not complete because the exact-artwork and reviewed-baseline gates prevent valid final-head visual evidence/comparison.
 - Human `APPROVED` review: none; intentionally not requested while technical gates are red.
 - Merge/release/deploy: not performed.
