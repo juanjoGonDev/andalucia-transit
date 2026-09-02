@@ -12,6 +12,11 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - Angular service worker registration existed without an application-owned `SwUpdate` adoption lifecycle.
 - Root `AGENTS.md` forbids committing binary files. The exact approved reference therefore cannot be added as a standalone PNG/WebP file.
 - The user explicitly requires zero pixel difference between the approved reference and the SVG identity. A hand-traced/vector approximation cannot satisfy that acceptance criterion reliably.
+- The current head still contains the rejected 512×512 Andalusia-map vector artwork in `public/favicon.svg`; this is not the approved final identity.
+- The complete PR commit ancestry proves the exact payload was never fully versioned. `73d55b0c297d4be7c4c68237f129d341dbaca650` adds `payload-00.txt`, its direct successor `56db1a1a4aa428872d5f9fc6a9c1babf995318b9` adds `payload-02.txt`, and `49ae5fe8d318a0ecc3f95e27d392fecb4a72bf72` adds `payload-03.txt`. There is no intervening or later commit that adds `payload-01.txt`.
+- Recovery inspection found no alternate complete payload in PR comments, review threads, commit comments, retained Actions artifacts, Actions logs, PR refs, or the temporary `pr-438-visual-evidence` release assets.
+- The PR timeline contains no head force-push that could point to a discarded branch state containing the missing chunk.
+- Public searches for the pinned payload/render digests and the approved 1254×1254 composition did not locate a verifiable copy of the source image.
 
 ## Decision
 
@@ -23,6 +28,7 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 6. Keep the identity independent: no Junta de Andalucia logo, wordmark, or other official-government mark.
 7. Keep manifest/browser startup colors aligned with the current theme and retain the root-owned `SwUpdate` lifecycle already implemented in this PR.
 8. Do not use `skipWaiting`, custom service-worker forks, cache deletion, polling storms, or uninstall/reinstall as the normal update mechanism.
+9. Fail closed while the canonical bytes are unavailable. Do not regenerate, approximate, interpolate, weaken the tests, or replace either pinned digest to make CI pass.
 
 ## Acceptance
 
@@ -42,6 +48,8 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 ## Risks
 
 - The exact-fidelity SVG embeds a compressed raster payload, so it is materially larger than a hand-authored vector icon. This is a deliberate trade-off for the explicit zero-pixel-diff requirement; the service worker caches the asset after first retrieval.
+- The approved source bytes are currently unavailable. Any generated replacement could look equivalent while violating the exact payload and rendered-pixel contracts.
+- The three retained payload chunks are incomplete and must not be treated as a recoverable full image without the missing canonical bytes.
 - Some launchers retain old installed icon metadata after a manifest change. Platform launcher cache refresh is distinct from Angular service-worker version adoption.
 - Reloading on `VERSION_READY` can interrupt active interaction; if a future transactional unsaved flow is introduced, update activation must defer to a safe boundary.
 - The reviewed visual-baseline pointer is independently topologically diverged from current `main`; do not advance it without explicit approval.
@@ -52,6 +60,7 @@ Refresh the installed Andalucia Transit PWA shell so it matches the current prod
 - Browser: load the served SVG into a canvas at 1254×1254, hash the rendered RGBA bytes with Web Crypto, and compare against the approved digest. This is the zero-pixel-diff gate.
 - Unit: existing `SwUpdate` lifecycle and root initialization coverage.
 - Visual evidence: exact-head deterministic product screenshots remain required; installed launcher metadata is separately validated by the PWA shell contract.
+- Recovery audit: verify PR commit ancestry, refs, comments, retained workflow artifacts/logs, and temporary release assets before accepting any recovered payload as canonical.
 
 ## Rollback
 
@@ -59,7 +68,8 @@ Revert this PR. No backend, API, database, or persistent-data migration is invol
 
 ## Delivery status
 
-- Reconnaissance: complete.
-- Specification: updated for the final approved exact-fidelity identity.
-- Implementation: pending exact reference application.
-- CI/final review: pending.
+- Reconnaissance: complete, including a full recovery audit of PR ancestry, refs, comments, workflow data, and temporary release assets.
+- Specification: updated for the final approved exact-fidelity identity and the verified missing-payload blocker.
+- Update lifecycle, shell colors, and single manifest icon ownership: implemented.
+- Exact approved identity: blocked because the canonical WebP bytes are incomplete; `payload-01.txt` was never committed and no verifiable alternate source was recovered.
+- CI/final review: intentionally incomplete. Exact-icon tests must remain red until the canonical payload is restored; no baseline or digest may be changed to bypass the blocker.
