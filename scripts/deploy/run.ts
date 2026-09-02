@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { constants as fsConstants } from 'node:fs';
 import { access, appendFile, copyFile, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -10,12 +11,15 @@ type JsonValue = string | number | boolean | { [key: string]: JsonValue } | Json
 
 const buildCommand = 'npx';
 const buildArguments: readonly string[] = ['ng', 'build', '--configuration', 'production'];
+const serviceWorkerCommand = 'npx';
 const distDirectoryName = 'dist';
 const projectDirectoryName = 'andalucia-transit';
 const browserDirectoryName = 'browser';
 const indexFileName = 'index.html';
 const fallbackFileName = '404.html';
 const pwaIconFileName = 'favicon.svg';
+const serviceWorkerConfigFileName = 'ngsw-config.json';
+const serviceWorkerManifestFileName = 'ngsw.json';
 const packageFileName = 'package.json';
 const distPathEnvKey = 'DIST_PATH';
 const ngAppVersionKey = 'NG_APP_VERSION';
@@ -25,12 +29,19 @@ const readingPackageMessage = `${logPrefix} Reading package version`;
 const exportingVersionMessage = `${logPrefix} Exporting application version`;
 const runningBuildMessage = `${logPrefix} Running production build`;
 const optimizingIconMessage = `${logPrefix} Optimizing PWA icon delivery bytes`;
+const regeneratingServiceWorkerMessage = `${logPrefix} Regenerating service worker manifest`;
 const creatingFallbackMessage = `${logPrefix} Creating single page fallback`;
 const missingVersionMessage = 'Package version is required to prepare the deploy output';
 const versionTypeErrorMessage = 'Package version must be a string to prepare the deploy output';
 const buildFailureMessage = 'Deploy build command failed';
+const serviceWorkerGenerationFailureMessage = 'Service worker manifest generation failed';
 const missingIndexMessage = 'Cannot create fallback because index file is missing at';
+const missingBaseHrefMessage = 'Built index does not contain a base href';
 const invalidOptimizedIconMessage = 'Optimized PWA icon does not match the reviewed delivery contract';
+const invalidServiceWorkerManifestMessage =
+  'Generated service worker manifest does not contain exactly one hashed PWA icon';
+const invalidServiceWorkerIconHashMessage =
+  'Generated service worker manifest does not match the deployed PWA icon';
 const writingEnvMessage = `${logPrefix} Writing environment file`;
 
 const currentDirectory = path.dirname(fileURLToPath(new URL(import.meta.url)));
@@ -81,25 +92,34 @@ function createBuildEnvironment(version: string): NodeJS.ProcessEnv {
   return { ...process.env, [ngAppVersionKey]: version };
 }
 
-async function runBuild(envWithVersion: NodeJS.ProcessEnv): Promise<void> {
-  console.log(runningBuildMessage);
+async function runCommand(
+  command: string,
+  args: readonly string[],
+  failureMessage: string,
+  env: NodeJS.ProcessEnv = process.env,
+): Promise<void> {
   await new Promise<void>((resolve, reject) => {
-    const child = spawn(buildCommand, buildArguments, {
+    const child = spawn(command, args, {
       cwd: rootDirectory,
       stdio: 'inherit',
-      env: envWithVersion,
+      env,
     });
     child.on('error', (error) => {
       reject(error);
     });
-    child.on('exit', (code) => {
+    child.on('close', (code) => {
       if (code === 0) {
         resolve();
         return;
       }
-      reject(new Error(`${buildFailureMessage}: ${code ?? 'unknown'}`));
+      reject(new Error(`${failureMessage}: ${code ?? 'unknown'}`));
     });
   });
+}
+
+async function runBuild(envWithVersion: NodeJS.ProcessEnv): Promise<void> {
+  console.log(runningBuildMessage);
+  await runCommand(buildCommand, buildArguments, buildFailureMessage, envWithVersion);
 }
 
 async function optimizePwaIcon(distPath: string): Promise<void> {
@@ -121,6 +141,53 @@ async function optimizePwaIcon(distPath: string): Promise<void> {
 
   await writeFile(iconPath, optimized, 'utf8');
   console.log(`${logPrefix} PWA icon: ${deployedBytes} bytes / ${deployedSha256}`);
+}
+
+async function readBuiltBaseHref(distPath: string): Promise<string> {
+  const index = await readFile(path.join(distPath, indexFileName), 'utf8');
+  const baseHref = index.match(/<base\s+href=["']([^"']+)["'][^>]*>/i)?.[1];
+  if (!baseHref) {
+    throw new Error(missingBaseHrefMessage);
+  }
+  return baseHref;
+}
+
+async function verifyServiceWorkerIconHash(distPath: string): Promise<void> {
+  const manifestContent = await readFile(path.join(distPath, serviceWorkerManifestFileName), 'utf8');
+  const parsedManifest: JsonValue = JSON.parse(manifestContent);
+  if (!isRecord(parsedManifest) || !isRecord(parsedManifest.hashTable)) {
+    throw new Error(invalidServiceWorkerManifestMessage);
+  }
+
+  const iconHashes = Object.entries(parsedManifest.hashTable).filter(
+    ([url, hash]) => url.endsWith(`/${pwaIconFileName}`) && typeof hash === 'string',
+  );
+  if (iconHashes.length !== 1) {
+    throw new Error(invalidServiceWorkerManifestMessage);
+  }
+
+  const iconBytes = await readFile(path.join(distPath, pwaIconFileName));
+  const actualSha1 = createHash('sha1').update(iconBytes).digest('hex');
+  const expectedSha1 = iconHashes[0][1];
+  if (expectedSha1 !== actualSha1) {
+    throw new Error(
+      `${invalidServiceWorkerIconHashMessage}: expected ${expectedSha1}, got ${actualSha1}`,
+    );
+  }
+
+  console.log(`${logPrefix} PWA service-worker SHA-1: ${actualSha1}`);
+}
+
+async function regenerateServiceWorkerManifest(distPath: string): Promise<void> {
+  console.log(regeneratingServiceWorkerMessage);
+  const baseHref = await readBuiltBaseHref(distPath);
+  const relativeDistPath = path.relative(rootDirectory, distPath) || '.';
+  await runCommand(
+    serviceWorkerCommand,
+    ['ngsw-config', relativeDistPath, serviceWorkerConfigFileName, baseHref],
+    serviceWorkerGenerationFailureMessage,
+  );
+  await verifyServiceWorkerIconHash(distPath);
 }
 
 async function ensureIndexExists(indexPath: string): Promise<void> {
@@ -146,6 +213,7 @@ async function main(): Promise<void> {
   const envWithVersion = createBuildEnvironment(version);
   await runBuild(envWithVersion);
   await optimizePwaIcon(distPath);
+  await regenerateServiceWorkerManifest(distPath);
   await createFallback(distPath);
 }
 
