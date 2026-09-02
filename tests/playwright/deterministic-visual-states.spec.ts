@@ -14,6 +14,7 @@ import {
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const MOCK_MODE = process.env.E2E_MOCK_MODE;
+const VERIFY_PRODUCT_CHECKS = process.env.E2E_VERIFY_PRODUCT_CHECKS !== 'false';
 const RECENT_PATH = '/recents';
 const FAVORITES_PATH = '/favorites';
 const STOP_SERVICES_SNAPSHOT_PATH = '/assets/data/snapshots/stop-services/latest.json';
@@ -95,7 +96,10 @@ test.describe('deterministic visual data states', () => {
   });
 
   test('renders the exact approved PWA install artwork', async ({ page }) => {
-    test.skip(MOCK_MODE !== 'data', 'PWA install artwork evidence runs once in populated mode.');
+    test.skip(
+      MOCK_MODE !== 'data' || !VERIFY_PRODUCT_CHECKS,
+      'PWA install artwork evidence runs only for current-head populated product checks.',
+    );
     await expectExactPwaInstallShell(page, BASE_URL as string);
   });
 
