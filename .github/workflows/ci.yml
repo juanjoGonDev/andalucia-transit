@@ -65,6 +65,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - label: Format
+            command: |
+              pnpm run format:check
           - label: Lint
             command: |
               pnpm run lint
