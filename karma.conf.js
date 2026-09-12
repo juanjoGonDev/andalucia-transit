@@ -71,7 +71,6 @@ module.exports = function (config) {
       }
     },
     singleRun: true,
-    autoWatch: false,
     restartOnFileChange: true,
   });
 };

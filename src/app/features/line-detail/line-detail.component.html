@@ -26,6 +26,20 @@
                 }}
               </p>
             </div>
+            <button
+              type="button"
+              class="line-detail__favorite"
+              [attr.aria-pressed]="isFavorite(state.viewModel)"
+              [attr.aria-label]="
+                (isFavorite(state.viewModel) ? removeFavoriteLabelKey : addFavoriteLabelKey)
+                  | translate
+              "
+              (click)="toggleFavorite(state.viewModel)"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">
+                {{ isFavorite(state.viewModel) ? favoriteActiveIcon : favoriteInactiveIcon }}
+              </span>
+            </button>
           </section>
 
           <details class="line-detail__route-panel" open>

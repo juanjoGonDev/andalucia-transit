@@ -1,3 +1,4 @@
+import type { LineFavoriteStoredItem } from '@data/lines/line-favorites.storage';
 import { RouteSearchHistoryStoredEntry } from '@data/route-search/route-search-history.storage';
 import { StopFavoriteStoredItem } from '@data/stops/stop-favorites.storage';
 
@@ -23,6 +24,17 @@ const MOCK_FAVORITES: readonly StopFavoriteStoredItem[] = Object.freeze([
     nucleusId: '0408502',
     consortiumId: 1,
     stopIds: ['04085020002']
+  }
+]);
+
+const MOCK_LINE_FAVORITES: readonly LineFavoriteStoredItem[] = Object.freeze([
+  {
+    id: '6|1',
+    consortiumId: 6,
+    lineId: '1',
+    code: 'M-101',
+    name: 'Almería - Huércal - Viator - Campamento',
+    mode: 'AUTOBUS'
   }
 ]);
 
@@ -70,6 +82,10 @@ export function getMockFavoriteStoredItems(): readonly StopFavoriteStoredItem[] 
     ...favorite,
     stopIds: [...favorite.stopIds]
   }));
+}
+
+export function getMockLineFavoriteStoredItems(): readonly LineFavoriteStoredItem[] {
+  return MOCK_LINE_FAVORITES.map((favorite) => ({ ...favorite }));
 }
 
 export function getMockRouteSearchHistoryEntries(): readonly RouteSearchHistoryStoredEntry[] {

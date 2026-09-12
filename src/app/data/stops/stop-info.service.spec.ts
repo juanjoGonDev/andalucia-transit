@@ -121,4 +121,32 @@ describe('StopInfoService', () => {
       correspondecias: ''
     });
   });
+
+  it('maps the CTAN NN nucleus sentinel to missing metadata', () => {
+    const consortiumId = 8;
+    const stopNumber = '79';
+    const expectedUrl = `${APP_CONFIG.apiBaseUrl}/v1/Consorcios/${consortiumId}/paradas/${stopNumber}`;
+
+    service.loadStopInformation(consortiumId, stopNumber, 'es').subscribe((record) => {
+      expect(record.nucleus).toBeNull();
+    });
+
+    const request = http.expectOne((req) => req.url === expectedUrl);
+    request.flush({
+      idParada: stopNumber,
+      idNucleo: '99',
+      idMunicipio: '12',
+      idZona: null,
+      nombre: 'La Gangosa - Av. Prado',
+      descripcion: null,
+      observaciones: null,
+      principal: '0',
+      inactiva: '0',
+      municipio: 'Vícar',
+      nucleo: ' nN ',
+      latitud: '36.831',
+      longitud: '-2.642',
+      correspondecias: null
+    });
+  });
 });

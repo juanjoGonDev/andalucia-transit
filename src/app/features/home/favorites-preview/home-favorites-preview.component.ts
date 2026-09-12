@@ -1,8 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { LineFavorite } from '@domain/lines/line-favorites.facade';
 import { StopFavorite } from '@domain/stops/favorites.facade';
-import { buildStopDetailNavigation } from '@shared/navigation/navigation.util';
+import {
+  NavigationCommands,
+  buildLineDetailNavigation,
+  buildStopDetailNavigation
+} from '@shared/navigation/navigation.util';
 import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/interactive-card.component';
+
+export type HomeFavoritePreviewItem =
+  | { readonly kind: 'stop'; readonly favorite: StopFavorite }
+  | { readonly kind: 'line'; readonly favorite: LineFavorite };
 
 @Component({
   selector: 'app-home-favorites-preview',
@@ -13,14 +22,22 @@ import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/inte
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeFavoritesPreviewComponent {
-  @Input() favorites: readonly StopFavorite[] = [];
+  @Input() favorites: readonly HomeFavoritePreviewItem[] = [];
   @Input() codeLabel = '';
   @Input() nucleusLabel = '';
 
   protected readonly cardBodyClasses = ['home-favorites-preview__card-body'] as const;
 
-  protected trackByFavoriteId(_: number, favorite: StopFavorite): string {
-    return favorite.id;
+  protected trackByFavoriteId(_: number, item: HomeFavoritePreviewItem): string {
+    return `${item.kind}:${item.favorite.id}`;
+  }
+
+  protected stopFavorite(item: HomeFavoritePreviewItem): StopFavorite | null {
+    return item.kind === 'stop' ? item.favorite : null;
+  }
+
+  protected lineFavorite(item: HomeFavoritePreviewItem): LineFavorite | null {
+    return item.kind === 'line' ? item.favorite : null;
   }
 
   protected stopDetailCommands(favorite: StopFavorite): readonly string[] {
@@ -29,6 +46,10 @@ export class HomeFavoritesPreviewComponent {
 
   protected stopDetailQueryParams(favorite: StopFavorite): Readonly<Record<string, string>> {
     return this.buildStopDetailNavigation(favorite).queryParams;
+  }
+
+  protected lineDetailCommands(favorite: LineFavorite): NavigationCommands {
+    return buildLineDetailNavigation(favorite.consortiumId, favorite.lineId, favorite.name).commands;
   }
 
   private buildStopDetailNavigation(favorite: StopFavorite) {

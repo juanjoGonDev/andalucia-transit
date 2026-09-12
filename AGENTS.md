@@ -56,6 +56,7 @@ AGENTS.md is the canonical decision log. When implementation, tooling, workflows
 - 2025-11-01: Added a regression checklist for contrast token changes in `docs/ui-theme.md` and cross-referenced it in the knowledge map.
 - 2025-11-01: Added a manual GitHub Pages deployment workflow that overwrites the root site from a selected ref.
 - 2026-08-25: Pull requests use `.github/workflows/pr-visual-evidence.yml` to publish temporary mobile and desktop screenshots from the exact PR head SHA; generated media is never committed and is removed when the PR closes.
+- 2026-09-02: `public/favicon.svg` is a byte-stable LF asset (`.gitattributes` owns `text eol=lf`), and any post-build transformation of a service-worker-managed asset must follow `build -> optimize -> regenerate ngsw.json with the pinned pnpm toolchain -> verify final hash` before deployment; see `docs/knowledge-map/repo-index/public.md`.
 
 ## Documentation & Knowledge Base
 - Store extended research, diagrams, and legal templates under `docs/`. Reference relevant assets here instead of duplicating prose.

@@ -24,6 +24,7 @@ const EXACT_LINE_CATALOG_GLOB = '**/assets/data/catalog/consortium-*/lines.json'
 const EXACT_STOP_SERVICES_SNAPSHOT_GLOB = '**/assets/data/snapshots/stop-services/latest.json';
 const CONSORTIUM_LINE_PATH_PATTERN = /\/consortium-(\d+)\/lines\.json$/u;
 const EXACT_LINES_PER_CONSORTIUM = 2;
+const CANONICAL_FAVORITE_LINE_CONSORTIUM_ID = 6;
 
 interface ExactLineCatalogEntry {
   readonly id: string;
@@ -123,6 +124,19 @@ function readConsortiumId(requestUrl: string): number | null {
 }
 
 function buildExactLineCatalog(consortiumId: number): readonly ExactLineCatalogEntry[] {
+  if (consortiumId === CANONICAL_FAVORITE_LINE_CONSORTIUM_ID) {
+    return Object.freeze([
+      {
+        id: '1',
+        code: 'M-101',
+        name: 'Almería - Huércal - Viator - Campamento NN',
+        mode: 'AUTOBUS',
+        operators: Object.freeze(['AUTODISCRECIONAL ALMERIENSE']),
+      },
+      buildExactLine(consortiumId, EXACT_LINES_PER_CONSORTIUM, `V-${consortiumId}02`),
+    ]);
+  }
+
   const firstCode = consortiumId === 1 ? '1011' : `V-${consortiumId}01`;
   const secondCode = consortiumId === 1 ? '1100' : `V-${consortiumId}02`;
   const entries = [

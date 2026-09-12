@@ -1,11 +1,16 @@
 import { APP_CONFIG } from '@core/config';
+import { buildDescriptiveSlug } from '@core/routing/url-slug';
 
 const ROOT_SEGMENT = '/' as const;
+const LINE_SLUG_FALLBACK = 'line' as const;
 export const LINE_DETAIL_BASE_SEGMENT = 'lines' as const;
 export const LINE_DETAIL_CONSORTIUM_PARAM = 'consortiumId' as const;
 export const LINE_DETAIL_LINE_PARAM = 'lineId' as const;
+export const LINE_DETAIL_SLUG_PARAM = 'lineSlug' as const;
 export const LINE_DETAIL_ROUTE_PATTERN =
   `${LINE_DETAIL_BASE_SEGMENT}/:${LINE_DETAIL_CONSORTIUM_PARAM}/:${LINE_DETAIL_LINE_PARAM}` as const;
+export const LINE_DETAIL_DESCRIPTIVE_ROUTE_PATTERN =
+  `${LINE_DETAIL_ROUTE_PATTERN}/:${LINE_DETAIL_SLUG_PARAM}` as const;
 export const NEWS_DETAIL_CONSORTIUM_PARAM = 'consortiumId' as const;
 export const NEWS_DETAIL_ARTICLE_PARAM = 'articleId' as const;
 export const NEWS_DETAIL_ROUTE_PATTERN =
@@ -56,7 +61,8 @@ export const buildStopDetailNavigation = (
 
 export const buildLineDetailNavigation = (
   consortiumId: number,
-  lineId: string
+  lineId: string,
+  lineName?: string
 ): LineDetailNavigation => {
   const normalizedLineId = lineId.trim();
 
@@ -66,9 +72,18 @@ export const buildLineDetailNavigation = (
     throw new Error('lineId must not be empty');
   }
 
-  return {
-    commands: [ROOT_SEGMENT, LINE_DETAIL_BASE_SEGMENT, String(consortiumId), normalizedLineId]
-  };
+  const commands = [
+    ROOT_SEGMENT,
+    LINE_DETAIL_BASE_SEGMENT,
+    String(consortiumId),
+    normalizedLineId
+  ];
+
+  if (lineName !== undefined) {
+    commands.push(buildDescriptiveSlug(lineName, LINE_SLUG_FALLBACK));
+  }
+
+  return { commands };
 };
 
 export const buildNewsDetailNavigation = (

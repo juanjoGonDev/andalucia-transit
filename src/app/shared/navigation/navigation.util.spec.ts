@@ -25,7 +25,19 @@ describe('navigation util', () => {
     });
   });
 
-  it('builds an internal line detail route without duplicating line path ownership', () => {
+  it('builds a descriptive line detail route while retaining canonical identity', () => {
+    expect(buildLineDetailNavigation(7, ' 380 ', 'Circular Huércal de Almería')).toEqual({
+      commands: [
+        '/',
+        LINE_DETAIL_BASE_SEGMENT,
+        '7',
+        '380',
+        'circular-huercal-de-almeria'
+      ]
+    });
+  });
+
+  it('preserves the legacy line detail route when descriptive metadata is unavailable', () => {
     expect(buildLineDetailNavigation(7, ' 380 ')).toEqual({
       commands: ['/', LINE_DETAIL_BASE_SEGMENT, '7', '380']
     });

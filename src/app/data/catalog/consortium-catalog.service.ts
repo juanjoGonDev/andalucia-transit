@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map, of, shareReplay, switchMap } from 'rxjs';
+import { normalizeLineDisplayName } from '@data/lines/line-metadata.util';
 
 export interface ConsortiumCatalogDatasets {
   readonly municipalities: string;
@@ -226,7 +227,8 @@ function readLines(payload: unknown): readonly CatalogLineEntry[] {
       const entry = readObject(value);
       const id = readText(entry?.['id']);
       const code = readText(entry?.['code']);
-      const name = readText(entry?.['name']);
+      const rawName = readText(entry?.['name']);
+      const name = rawName ? normalizeLineDisplayName(rawName) : '';
       const mode = readText(entry?.['mode']) ?? '';
       const operators = readStringArray(entry?.['operators']);
       return id && code && name ? { id, code, name, mode, operators } : null;

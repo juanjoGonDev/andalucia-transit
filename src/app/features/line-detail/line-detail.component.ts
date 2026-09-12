@@ -1,9 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Observable, catchError, map, of, startWith, switchMap } from 'rxjs';
+import { APP_CONFIG } from '@core/config';
 import { LanguageService } from '@core/services/language.service';
+import { buildLineKey } from '@domain/lines/line-directory.service';
+import {
+  LineFavoriteCandidate,
+  LineFavoritesFacade
+} from '@domain/lines/line-favorites.facade';
 import {
   LineRouteWorkspaceService,
   LineRouteWorkspaceViewModel
@@ -40,11 +54,19 @@ export class LineDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly routeWorkspace = inject(LineRouteWorkspaceService);
+  private readonly lineFavorites = inject(LineFavoritesFacade);
   private readonly language = inject(LanguageService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly favoriteLineIds = signal<ReadonlySet<string>>(new Set<string>());
 
   protected readonly layoutNavigationKey = LINE_DETAIL_BASE_SEGMENT;
   protected readonly selectedStopId = signal<string | null>(null);
   protected readonly uiCopy = computed(() => getLineDetailUiCopy(this.language.currentLanguage()));
+  protected readonly addFavoriteLabelKey = APP_CONFIG.translationKeys.home.sections.search.addFavoriteLabel;
+  protected readonly removeFavoriteLabelKey =
+    APP_CONFIG.translationKeys.home.sections.search.removeFavoriteLabel;
+  protected readonly favoriteActiveIcon = APP_CONFIG.homeData.favoriteStops.activeIcon;
+  protected readonly favoriteInactiveIcon = APP_CONFIG.homeData.favoriteStops.inactiveIcon;
   protected readonly state$: Observable<LineDetailState> = this.route.paramMap.pipe(
     map((params) =>
       parseContext(
@@ -66,6 +88,14 @@ export class LineDetailComponent {
     })
   );
 
+  constructor() {
+    this.lineFavorites.favorites$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((favorites) =>
+        this.favoriteLineIds.set(new Set(favorites.map((favorite) => favorite.id)))
+      );
+  }
+
   protected selectStopById(stopId: string): void {
     this.selectedStopId.set(stopId);
   }
@@ -75,15 +105,53 @@ export class LineDetailComponent {
     this.navigateToStop(stopId);
   }
 
-  private navigateToStop(stopId: string): void {
-    const consortiumId = Number(this.route.snapshot.paramMap.get(LINE_DETAIL_CONSORTIUM_PARAM));
+  protected isFavorite(viewModel: LineRouteWorkspaceViewModel): boolean {
+    const consortiumId = this.currentConsortiumId();
+    return consortiumId !== null
+      ? this.favoriteLineIds().has(buildLineKey(consortiumId, viewModel.detail.lineId))
+      : false;
+  }
 
-    if (!Number.isSafeInteger(consortiumId) || consortiumId <= 0) {
+  protected toggleFavorite(viewModel: LineRouteWorkspaceViewModel): void {
+    const candidate = this.toFavoriteCandidate(viewModel);
+    if (!candidate) {
+      return;
+    }
+
+    this.lineFavorites.toggle(candidate);
+  }
+
+  private toFavoriteCandidate(
+    viewModel: LineRouteWorkspaceViewModel
+  ): LineFavoriteCandidate | null {
+    const consortiumId = this.currentConsortiumId();
+    if (consortiumId === null) {
+      return null;
+    }
+
+    return {
+      consortiumId,
+      lineId: viewModel.detail.lineId,
+      code: viewModel.detail.code,
+      name: viewModel.detail.name,
+      mode: viewModel.detail.mode
+    };
+  }
+
+  private navigateToStop(stopId: string): void {
+    const consortiumId = this.currentConsortiumId();
+
+    if (consortiumId === null) {
       return;
     }
 
     const navigation = buildStopDetailNavigation(consortiumId, stopId);
     void this.router.navigate(navigation.commands, { queryParams: navigation.queryParams });
+  }
+
+  private currentConsortiumId(): number | null {
+    const consortiumId = Number(this.route.snapshot.paramMap.get(LINE_DETAIL_CONSORTIUM_PARAM));
+    return Number.isSafeInteger(consortiumId) && consortiumId > 0 ? consortiumId : null;
   }
 }
 

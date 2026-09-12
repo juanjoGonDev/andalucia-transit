@@ -1,5 +1,6 @@
 import type { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { normalizeLineDisplayName } from '@data/lines/line-metadata.util';
 
 export interface RouteLineCoordinate {
   readonly latitude: number;
@@ -17,7 +18,7 @@ export interface RouteLineDetail {
 interface ApiRouteLineDetail {
   readonly idLinea: string | number;
   readonly codigo: string;
-  readonly nombre: string;
+  readonly nombre: unknown;
   readonly modo: string;
   readonly polilinea: unknown;
 }
@@ -59,7 +60,7 @@ function mapLineDetail(
   return {
     lineId: String(detail.idLinea),
     code: detail.codigo,
-    name: detail.nombre,
+    name: normalizeLineDisplayName(detail.nombre),
     mode: detail.modo,
     coordinates: parseRoutePolyline(detail.polilinea)
   };

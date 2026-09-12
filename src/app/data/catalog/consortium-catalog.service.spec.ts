@@ -117,7 +117,7 @@ describe('ConsortiumCatalogService', () => {
     ]);
   });
 
-  it('loads sorted line metadata without creating a second line schema', () => {
+  it('loads sorted line metadata and normalizes only the terminal CTAN NN sentinel', () => {
     let lines: readonly CatalogLineEntry[] = [];
 
     service.loadLines(6).subscribe((entries) => {
@@ -130,18 +130,18 @@ describe('ConsortiumCatalogService', () => {
         {
           id: '380',
           code: 'M-380',
-          name: 'Second line',
+          name: 'Almería - Campamento NN',
           mode: 'Bus',
           operators: ['Operator B']
         },
         {
           id: '370',
           code: 'M-370',
-          name: 'First line',
+          name: 'Annarosa - Centro',
           mode: 'Bus',
           operators: ['Operator A']
         },
-        { id: '', code: 'broken', name: 'Broken line' }
+        { id: '', code: 'broken', name: 'Broken line NN' }
       ]
     });
 
@@ -149,14 +149,14 @@ describe('ConsortiumCatalogService', () => {
       {
         id: '370',
         code: 'M-370',
-        name: 'First line',
+        name: 'Annarosa - Centro',
         mode: 'Bus',
         operators: ['Operator A']
       },
       {
         id: '380',
         code: 'M-380',
-        name: 'Second line',
+        name: 'Almería - Campamento',
         mode: 'Bus',
         operators: ['Operator B']
       }

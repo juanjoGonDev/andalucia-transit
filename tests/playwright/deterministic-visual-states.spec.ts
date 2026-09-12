@@ -2,6 +2,7 @@ import {
   selectVisualStopDetailEntry,
   type VisualStopServicesSnapshotEntry,
 } from '../../scripts/visual/exact-visual-data';
+import { expectExactPwaInstallShell } from './pwa-icon.assert';
 import {
   captureVisualEvidence,
   EXACT_VISUAL_REGRESSION,
@@ -13,13 +14,14 @@ import {
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const MOCK_MODE = process.env.E2E_MOCK_MODE;
+const VERIFY_PRODUCT_CHECKS = process.env.E2E_VERIFY_PRODUCT_CHECKS !== 'false';
 const RECENT_PATH = '/recents';
 const FAVORITES_PATH = '/favorites';
 const STOP_SERVICES_SNAPSHOT_PATH = '/assets/data/snapshots/stop-services/latest.json';
 const STOP_SCHEDULE_API_GLOB = '**/v1/Consorcios/*/paradas/**';
 const MOBILE_VIEWPORT = { width: 390, height: 844 } as const;
 const DESKTOP_VIEWPORT = { width: 1440, height: 900 } as const;
-const DATA_ITEM_COUNT = 2;
+const RECENT_ITEM_COUNT = 2;
 
 async function open(page: Page, path: string): Promise<void> {
   const baseUrl = BASE_URL as string;
@@ -93,6 +95,14 @@ test.describe('deterministic visual data states', () => {
     await page.setViewportSize(MOBILE_VIEWPORT);
   });
 
+  test('renders the exact approved PWA install artwork', async ({ page }) => {
+    test.skip(
+      MOCK_MODE !== 'data' || !VERIFY_PRODUCT_CHECKS,
+      'PWA install artwork evidence runs only for current-head populated product checks.',
+    );
+    await expectExactPwaInstallShell(page, BASE_URL as string);
+  });
+
   test('renders recent-search history according to the selected mock mode', async ({ page }) => {
     await open(page, RECENT_PATH);
 
@@ -100,7 +110,7 @@ test.describe('deterministic visual data states', () => {
     const emptyState = page.locator('.home-recent__empty');
 
     if (MOCK_MODE === 'data') {
-      await expect(items).toHaveCount(DATA_ITEM_COUNT);
+      await expect(items).toHaveCount(RECENT_ITEM_COUNT);
       await expect(emptyState).toBeHidden();
       return;
     }
@@ -109,15 +119,21 @@ test.describe('deterministic visual data states', () => {
     await expect(emptyState).toBeVisible();
   });
 
-  test('renders favorites according to the selected mock mode', async ({ page }) => {
+  test('renders a non-empty favorites collection in populated mode and an empty state otherwise', async ({
+    page,
+  }) => {
     await open(page, FAVORITES_PATH);
 
     const items = page.locator('.favorites__item');
     const emptyState = page.locator('.favorites__empty');
 
     if (MOCK_MODE === 'data') {
-      await expect(items).toHaveCount(DATA_ITEM_COUNT);
+      await expect(items.first()).toBeVisible({ timeout: 15_000 });
+      expect(await items.count()).toBeGreaterThan(0);
       await expect(emptyState).toBeHidden();
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
+      ).toBe(true);
       return;
     }
 

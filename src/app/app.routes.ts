@@ -1,14 +1,17 @@
 import { Routes } from '@angular/router';
 import { APP_CONFIG } from '@core/config';
-import { FavoritesComponent } from '@features/favorites/favorites.component';
 import { HomeComponent } from '@features/home/home.component';
 import { LEGAL_ROUTE_SEGMENTS } from '@features/legal/legal-shell-content';
 import { AppLayoutComponent } from '@shared/layout/app-layout/app-layout.component';
 import {
   LINE_DETAIL_BASE_SEGMENT,
+  LINE_DETAIL_DESCRIPTIVE_ROUTE_PATTERN,
   LINE_DETAIL_ROUTE_PATTERN,
   NEWS_DETAIL_ROUTE_PATTERN
 } from '@shared/navigation/navigation.util';
+
+const loadLineDetailComponent = () =>
+  import('@features/line-detail/line-detail.component').then((module) => module.LineDetailComponent);
 
 export const routes: Routes = [
   {
@@ -32,7 +35,10 @@ export const routes: Routes = [
       },
       {
         path: APP_CONFIG.routes.favorites,
-        component: FavoritesComponent,
+        loadComponent: () =>
+          import('@features/favorites/favorites.component').then(
+            (module) => module.FavoritesComponent
+          ),
         title: APP_CONFIG.translationKeys.navigation.favorites
       },
       {
@@ -68,9 +74,13 @@ export const routes: Routes = [
         title: APP_CONFIG.translationKeys.navigation.lines
       },
       {
+        path: LINE_DETAIL_DESCRIPTIVE_ROUTE_PATTERN,
+        loadComponent: loadLineDetailComponent,
+        title: APP_CONFIG.translationKeys.navigation.lines
+      },
+      {
         path: LINE_DETAIL_ROUTE_PATTERN,
-        loadComponent: () =>
-          import('@features/line-detail/line-detail.component').then((module) => module.LineDetailComponent),
+        loadComponent: loadLineDetailComponent,
         title: APP_CONFIG.translationKeys.navigation.lines
       },
       {
