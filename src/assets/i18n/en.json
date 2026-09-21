@@ -237,6 +237,35 @@
     "source": {
       "live": "This information comes right now from the {provider}.",
       "snapshot": "This information comes from a copy saved on {date} at {time} by the {provider}."
+    },
+    "alarms": {
+      "addLabel": "Add alarm for line {lineCode} at {time}",
+      "activeLabel": "Alarm active for line {lineCode} at {time}. Tap to manage it.",
+      "cancel": "Close",
+      "cancelTitle": "Cancel alarm",
+      "cancelMessage": "The reminder for this departure will be turned off. Cancel it?",
+      "cancelConfirm": "Yes, cancel it",
+      "cancelKeep": "Keep it",
+      "dialogTitle": "Create alarm",
+      "dialogDescription": "We will warn you as far in advance as you choose before the bus arrives.",
+      "offsetLabel": "Remind me before departure",
+      "quickLabel": "Quick reminders",
+      "customLabel": "Custom",
+      "customPlaceholder": "Minutes",
+      "customSuffix": "min before",
+      "repeatLabel": "Repeat every day",
+      "repeatHint": "Rings at the same time every day until you turn it off.",
+      "triggerAt": "The alarm will ring at {time}",
+      "tooLate": "This departure is too close for that reminder.",
+      "save": "Save alarm",
+      "permissionError": "Notifications are not allowed for this app.",
+      "permissionHint": "Enable them from the lock icon or site info in your browser and try again.",
+      "permissionRetry": "Enable notifications",
+      "notificationTitle": "Alarm · line {lineCode}",
+      "notificationBody": "Departs at {time} from {stopName} towards {destination}. Arrives in {minutes} min.",
+      "firedBanner": "Your alarm for line {lineCode} towards {destination} rang. It will repeat tomorrow at {time}.",
+      "firedDeactivate": "Turn off",
+      "limitReached": "You reached the maximum number of alarms for this stop."
     }
   },
   "stopInfo": {

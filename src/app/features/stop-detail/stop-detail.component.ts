@@ -18,20 +18,34 @@ import {
   switchMap
 } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
+import {
+  AlarmSchedulerService,
+  FiredAlarmEvent
+} from '@domain/stop-alarms/alarm-scheduler.service';
+import { StopAlarmsService } from '@domain/stop-alarms/stop-alarms.service';
 import { StopScheduleFacade } from '@domain/stop-schedule/stop-schedule.facade';
 import { StopScheduleResult } from '@domain/stop-schedule/stop-schedule.model';
 import {
   StopScheduleUiModel,
   buildStopScheduleUiModel
 } from '@domain/stop-schedule/stop-schedule.transform';
+import {
+  StopScheduleUpcomingItem
+} from '@domain/stop-schedule/stop-schedule.transform';
 import { FavoritesFacade } from '@domain/stops/favorites.facade';
 import {
   StopDirectoryFacade,
   StopDirectoryOption
 } from '@domain/stops/stop-directory.facade';
+import {
+  StopAlarmDialogComponent,
+  StopAlarmDialogData
+} from '@features/stop-detail/stop-alarm-dialog/stop-alarm-dialog.component';
 import { StopUtilityComponent } from '@features/stop-detail/stop-utility/stop-utility.component';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
+import { ConfirmDialogComponent, ConfirmDialogData } from '@shared/ui/confirm-dialog/confirm-dialog.component';
+import { OverlayDialogService } from '@shared/ui/dialog/overlay-dialog.service';
 
 const ALL_DESTINATIONS_OPTION = 'all';
 const STATUS_ROLE = 'status';
@@ -100,6 +114,13 @@ export class StopDetailComponent {
   private readonly favorites = inject(FavoritesFacade);
   private readonly translate = inject(TranslateService);
   private readonly scheduleRefresh = new Subject<void>();
+  private readonly overlayDialogs = inject(OverlayDialogService);
+  protected readonly alarmsService = inject(StopAlarmsService);
+  private readonly alarmScheduler = inject(AlarmSchedulerService);
+
+  /** Alarm that just rang for this stop, shown as a dismissible in-app banner. */
+  protected readonly firedAlarm = signal<FiredAlarmEvent | null>(null);
+  private lastDismissedFiredEvent: FiredAlarmEvent | null = null;
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.stopDetail;
   protected readonly retryKey = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.retry;
@@ -232,10 +253,96 @@ export class StopDetailComponent {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => this.redirectToHome());
+
+    // combined so a replayed fired event also surfaces once the routed stop is known
+    combineLatest([this.alarmScheduler.latestFired$, this.stopRouteContext$])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([event, context]) => {
+        if (event && event !== this.lastDismissedFiredEvent && event.alarm.stopId === context.stopId) {
+          this.firedAlarm.set(event);
+        }
+      });
   }
 
   protected retrySchedule(): void {
     this.scheduleRefresh.next();
+  }
+
+  protected isServiceAlarmActive(stopId: string | null, item: StopScheduleUpcomingItem): boolean {
+    return stopId !== null && this.alarmsService.hasServiceAlarm(stopId, item.serviceId);
+  }
+
+  protected async toggleServiceAlarm(
+    context: StopRouteContext,
+    item: StopScheduleUpcomingItem,
+    stopName: string
+  ): Promise<void> {
+    const alarmId = this.alarmsService.serviceAlarmId(context.stopId, item.serviceId);
+
+    if (this.alarmsService.has(alarmId)) {
+      this.openCancelAlarmDialog(alarmId);
+      return;
+    }
+
+    this.openCreateAlarmDialog(context, item, stopName);
+  }
+
+  protected dismissAlarmBanner(): void {
+    this.lastDismissedFiredEvent = this.firedAlarm();
+    this.firedAlarm.set(null);
+  }
+
+  protected deactivateFiredAlarm(): void {
+    const event = this.firedAlarm();
+
+    if (event) {
+      this.alarmsService.remove(event.alarm.id);
+    }
+
+    this.dismissAlarmBanner();
+  }
+
+  private openCreateAlarmDialog(
+    context: StopRouteContext,
+    item: StopScheduleUpcomingItem,
+    stopName: string
+  ): void {
+    const data: StopAlarmDialogData = {
+      stopId: context.stopId,
+      serviceId: item.serviceId,
+      consortiumId: context.consortiumId,
+      stopName,
+      lineCode: item.lineCode,
+      destination: item.destination,
+      arrivalTime: item.arrivalTime,
+      minutesUntilArrival: item.minutesUntilArrival
+    };
+
+    this.overlayDialogs.open<StopAlarmDialogComponent, StopAlarmDialogData, boolean>(
+      StopAlarmDialogComponent,
+      { data, role: 'dialog' }
+    );
+  }
+
+  private openCancelAlarmDialog(alarmId: string): void {
+    const dialogRef = this.overlayDialogs.open<
+      ConfirmDialogComponent,
+      ConfirmDialogData,
+      boolean
+    >(ConfirmDialogComponent, {
+      data: {
+        titleKey: APP_CONFIG.translationKeys.stopDetail.alarms.cancelTitle,
+        messageKey: APP_CONFIG.translationKeys.stopDetail.alarms.cancelMessage,
+        confirmKey: APP_CONFIG.translationKeys.stopDetail.alarms.cancelConfirm,
+        cancelKey: APP_CONFIG.translationKeys.stopDetail.alarms.cancelKeep
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.alarmsService.remove(alarmId);
+      }
+    });
   }
 
   protected toggleFavorite(option: StopDirectoryOption): void {

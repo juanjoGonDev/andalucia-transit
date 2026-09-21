@@ -237,6 +237,35 @@
     "source": {
       "live": "Estos datos vienen ahora mismo del {provider}.",
       "snapshot": "Estos datos provienen de una copia guardada el {date} a las {time} del {provider}."
+    },
+    "alarms": {
+      "addLabel": "Añadir alarma para la línea {lineCode} de las {time}",
+      "activeLabel": "Alarma activa para la línea {lineCode} de las {time}. Pulsa para gestionarla.",
+      "cancel": "Cerrar",
+      "cancelTitle": "Cancelar alarma",
+      "cancelMessage": "Se desactivará el aviso de esta salida. ¿Quieres cancelarlo?",
+      "cancelConfirm": "Sí, cancelar",
+      "cancelKeep": "Mantener",
+      "dialogTitle": "Crear alarma",
+      "dialogDescription": "Te avisaremos con la antelación que elijas antes de que llegue el bus.",
+      "offsetLabel": "Avisar antes de la salida",
+      "quickLabel": "Avisos rápidos",
+      "customLabel": "Personalizado",
+      "customPlaceholder": "Minutos",
+      "customSuffix": "min antes",
+      "repeatLabel": "Repetir todos los días",
+      "repeatHint": "Suena cada día a la misma hora hasta que la desactives.",
+      "triggerAt": "La alarma sonará a las {time}",
+      "tooLate": "Esta salida ya no está disponible para avisar con esa antelación.",
+      "save": "Guardar alarma",
+      "permissionError": "No hay permiso para mostrarte notificaciones.",
+      "permissionHint": "Actívalo desde el candado o la información del sitio en tu navegador y vuelve a intentarlo.",
+      "permissionRetry": "Activar notificaciones",
+      "notificationTitle": "Alarma · línea {lineCode}",
+      "notificationBody": "Salida a las {time} desde {stopName} hacia {destination}. Llega en {minutes} min.",
+      "firedBanner": "Tu alarma de la línea {lineCode} hacia {destination} ha sonado. Se repetirá mañana a las {time}.",
+      "firedDeactivate": "Desactivar",
+      "limitReached": "Has alcanzado el máximo de alarmas para esta parada."
     }
   },
   "stopInfo": {

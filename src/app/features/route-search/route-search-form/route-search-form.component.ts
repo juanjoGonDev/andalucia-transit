@@ -1,3 +1,4 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -155,6 +156,7 @@ export class RouteSearchFormComponent implements OnChanges {
   private static readonly SORT_LOCALE = 'es-ES' as const;
 
   private readonly formBuilder = inject(FormBuilder);
+  private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly stopDirectory = inject(StopDirectoryFacade);
   private readonly nearbyStopOptions = inject(NearbyStopOptionsService);
   private readonly stopConnections = inject(StopConnectionsFacade);
@@ -205,6 +207,14 @@ export class RouteSearchFormComponent implements OnChanges {
   readonly destinationIcon: MaterialSymbolName = 'flag';
   readonly dateIcon: MaterialSymbolName = 'calendar_today';
   readonly swapIcon: MaterialSymbolName = 'swap_vert';
+
+  /** Opens the calendar as a bottom sheet on compact screens so it stays above fixed UI. */
+  readonly datepickerTouchUi$ = this.breakpointObserver
+    .observe(['(max-width: 767.98px)'])
+    .pipe(
+      map((result) => result.matches),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
 
   focusOriginField(): void {
     const element = this.originInput?.nativeElement;

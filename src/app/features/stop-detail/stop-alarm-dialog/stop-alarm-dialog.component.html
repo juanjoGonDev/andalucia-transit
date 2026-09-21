@@ -1,0 +1,128 @@
+<app-dialog-layout
+  titleKey="stopDetail.alarms.dialogTitle"
+  descriptionKey="stopDetail.alarms.dialogDescription"
+>
+  <div appDialogBody class="stop-alarm">
+    <div class="stop-alarm__service">
+      <span class="stop-alarm__line">{{ data.lineCode }}</span>
+      <div class="stop-alarm__service-text">
+        <span class="stop-alarm__destination">{{ data.destination }}</span>
+        <span class="stop-alarm__arrival">
+          {{ data.arrivalTime | date: 'HH:mm' }}
+          ·
+          {{ 'stopDetail.status.arrivesIn' | translate: { minutes: data.minutesUntilArrival } }}
+        </span>
+      </div>
+    </div>
+
+    <div class="stop-alarm__block">
+      <p class="stop-alarm__label">{{ 'stopDetail.alarms.offsetLabel' | translate }}</p>
+      <div class="stop-alarm__chips" role="group">
+        <button
+          *ngFor="let choice of quickChoices"
+          type="button"
+          class="stop-alarm__chip"
+          [class.stop-alarm__chip--active]="selectedChoice() === choice"
+          [attr.aria-pressed]="selectedChoice() === choice"
+          (click)="selectChoice(choice)"
+        >
+          {{ formatOffset(choice) }}
+        </button>
+        <button
+          type="button"
+          class="stop-alarm__chip"
+          [class.stop-alarm__chip--active]="isCustom()"
+          [attr.aria-pressed]="isCustom()"
+          (click)="selectCustom()"
+        >
+          {{ 'stopDetail.alarms.customLabel' | translate }}
+        </button>
+      </div>
+
+      <div *ngIf="isCustom()" class="stop-alarm__custom">
+        <label class="stop-alarm__custom-label" [attr.for]="fieldId">
+          {{ 'stopDetail.alarms.customLabel' | translate }}
+        </label>
+        <div class="stop-alarm__custom-field">
+          <input
+            [id]="fieldId"
+            type="number"
+            inputmode="numeric"
+            min="1"
+            [max]="config.alarms.maxCustomMinutes"
+            [(ngModel)]="customMinutes"
+            [placeholder]="config.alarms.defaultOffsetMinutes"
+          />
+          <span>{{ 'stopDetail.alarms.customSuffix' | translate }}</span>
+        </div>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="stop-alarm__repeat"
+      role="switch"
+      [attr.aria-checked]="repeatDaily()"
+      (click)="toggleRepeat()"
+    >
+      <span class="stop-alarm__repeat-icon material-symbols-outlined" aria-hidden="true">
+        {{ repeatDaily() ? 'notifications_active' : 'notifications' }}
+      </span>
+      <span class="stop-alarm__repeat-text">
+        <span class="stop-alarm__repeat-label">
+          {{ 'stopDetail.alarms.repeatLabel' | translate }}
+        </span>
+        <span class="stop-alarm__repeat-hint">
+          {{ 'stopDetail.alarms.repeatHint' | translate }}
+        </span>
+      </span>
+      <span class="stop-alarm__switch" [class.stop-alarm__switch--on]="repeatDaily()" aria-hidden="true">
+        <span class="stop-alarm__switch-thumb"></span>
+      </span>
+    </button>
+
+    <p *ngIf="canSave()" class="stop-alarm__preview">
+      {{ 'stopDetail.alarms.triggerAt' | translate: { time: formatTrigger(triggerAt()) } }}
+    </p>
+    <p *ngIf="!canSave()" class="stop-alarm__warning" role="status">
+      {{ 'stopDetail.alarms.tooLate' | translate }}
+    </p>
+
+    <div
+      *ngIf="permissionError()"
+      #permissionAlert
+      class="stop-alarm__permission"
+      role="alert"
+      tabindex="-1"
+    >
+      <span class="material-symbols-outlined" aria-hidden="true">notifications_off</span>
+      <div class="stop-alarm__permission-body">
+        <p>{{ 'stopDetail.alarms.permissionError' | translate }}</p>
+        <p class="stop-alarm__permission-hint">
+          {{ 'stopDetail.alarms.permissionHint' | translate }}
+        </p>
+        <div
+          appAccessibleButton
+          class="stop-alarm__permission-action"
+          (appAccessibleButtonActivated)="save()"
+        >
+          {{ 'stopDetail.alarms.permissionRetry' | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div appDialogActions class="stop-alarm__actions">
+    <div appAccessibleButton class="app-button" (appAccessibleButtonActivated)="cancel()">
+      {{ 'stopDetail.alarms.cancel' | translate }}
+    </div>
+    <div
+      appAccessibleButton
+      class="app-button app-button--primary"
+      [appAccessibleButtonDisabled]="!canSave()"
+      (appAccessibleButtonActivated)="save()"
+    >
+      {{ 'stopDetail.alarms.save' | translate }}
+    </div>
+  </div>
+</app-dialog-layout>

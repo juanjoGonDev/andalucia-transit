@@ -31,10 +31,10 @@ export interface OverlayDialogRef<TResult> {
   close(value?: TResult): void;
 }
 
-const OVERLAY_DIALOG_REF = new InjectionToken<OverlayDialogRef<unknown>>(
+export const OVERLAY_DIALOG_REF = new InjectionToken<OverlayDialogRef<unknown>>(
   'OVERLAY_DIALOG_REF'
 );
-const OVERLAY_DIALOG_DATA = new InjectionToken<unknown>('OVERLAY_DIALOG_DATA');
+export const OVERLAY_DIALOG_DATA = new InjectionToken<unknown>('OVERLAY_DIALOG_DATA');
 
 const DEFAULT_BACKDROP_CLASS = 'cdk-overlay-dark-backdrop';
 

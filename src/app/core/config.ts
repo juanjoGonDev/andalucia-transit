@@ -27,6 +27,14 @@ const HOLIDAY_REGION_CODES = ['ES-AN'] as const;
 const ROUTE_SEARCH_HISTORY_STORAGE_KEY = 'andalucia-transit.routeSearchHistory' as const;
 const ROUTE_SEARCH_PREFERENCES_STORAGE_KEY = 'andalucia-transit.routeSearchPreferences' as const;
 const STOP_FAVORITES_STORAGE_KEY = 'andalucia-transit.stopFavorites' as const;
+const STOP_ALARMS_STORAGE_KEY = 'andalucia-transit.stopAlarms' as const;
+const ALARM_DEFAULT_OFFSET_MINUTES = 10 as const;
+const ALARM_QUICK_CHOICE_MINUTES = [5, 10, 30, 60, 120] as const;
+const ALARM_MAX_CUSTOM_MINUTES = 720 as const;
+const ALARM_POLL_INTERVAL_MS = 15_000 as const;
+const ALARM_MAX_REPEAT_DAYS = 30 as const;
+const ALARM_MAX_PER_STOP = 5 as const;
+const ALARM_MISSED_TRIGGER_GRACE_MS = 120_000;
 const ROUTE_SEARCH_SCHEDULE_ACCURACY_THRESHOLD_DAYS = 30 as const;
 const HOME_RECENT_ROUTE = 'recents' as const;
 const HOME_FAVORITES_ROUTE = 'favs' as const;
@@ -77,6 +85,16 @@ export const APP_CONFIG = {
     }
   },
   home: {},
+  alarms: {
+    storageKey: STOP_ALARMS_STORAGE_KEY,
+    defaultOffsetMinutes: ALARM_DEFAULT_OFFSET_MINUTES,
+    quickChoiceMinutes: ALARM_QUICK_CHOICE_MINUTES,
+    maxCustomMinutes: ALARM_MAX_CUSTOM_MINUTES,
+    pollIntervalMs: ALARM_POLL_INTERVAL_MS,
+    maxRepeatDays: ALARM_MAX_REPEAT_DAYS,
+    maxPerStop: ALARM_MAX_PER_STOP,
+    missedTriggerGraceMs: ALARM_MISSED_TRIGGER_GRACE_MS
+  },
   routes: {
     home: '' as const,
     homeRecent: HOME_RECENT_ROUTE,
@@ -302,6 +320,35 @@ export const APP_CONFIG = {
       source: {
         live: 'stopDetail.source.live',
         snapshot: 'stopDetail.source.snapshot'
+      },
+      alarms: {
+        addLabel: 'stopDetail.alarms.addLabel',
+        activeLabel: 'stopDetail.alarms.activeLabel',
+        cancel: 'stopDetail.alarms.cancel',
+        cancelTitle: 'stopDetail.alarms.cancelTitle',
+        cancelMessage: 'stopDetail.alarms.cancelMessage',
+        cancelConfirm: 'stopDetail.alarms.cancelConfirm',
+        cancelKeep: 'stopDetail.alarms.cancelKeep',
+        dialogTitle: 'stopDetail.alarms.dialogTitle',
+        dialogDescription: 'stopDetail.alarms.dialogDescription',
+        offsetLabel: 'stopDetail.alarms.offsetLabel',
+        quickLabel: 'stopDetail.alarms.quickLabel',
+        customLabel: 'stopDetail.alarms.customLabel',
+        customPlaceholder: 'stopDetail.alarms.customPlaceholder',
+        customSuffix: 'stopDetail.alarms.customSuffix',
+        repeatLabel: 'stopDetail.alarms.repeatLabel',
+        repeatHint: 'stopDetail.alarms.repeatHint',
+        triggerAt: 'stopDetail.alarms.triggerAt',
+        tooLate: 'stopDetail.alarms.tooLate',
+        save: 'stopDetail.alarms.save',
+        permissionError: 'stopDetail.alarms.permissionError',
+        permissionHint: 'stopDetail.alarms.permissionHint',
+        permissionRetry: 'stopDetail.alarms.permissionRetry',
+        notificationTitle: 'stopDetail.alarms.notificationTitle',
+        notificationBody: 'stopDetail.alarms.notificationBody',
+        firedBanner: 'stopDetail.alarms.firedBanner',
+        firedDeactivate: 'stopDetail.alarms.firedDeactivate',
+        limitReached: 'stopDetail.alarms.limitReached'
       }
     },
     routeSearch: {
