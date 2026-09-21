@@ -176,6 +176,29 @@
                             >
                               {{ translationKeys.holidayBadge | translate }}
                             </span>
+                            <button
+                              *ngIf="item.kind === 'upcoming'"
+                              type="button"
+                              class="route-search__item-alarm"
+                              [class.route-search__item-alarm--active]="isDepartureAlarmActive(item)"
+                              [attr.aria-pressed]="isDepartureAlarmActive(item)"
+                              [attr.aria-label]="
+                                (isDepartureAlarmActive(item)
+                                  ? alarmTranslationKeys.activeLabel
+                                  : alarmTranslationKeys.addLabel)
+                                  | translate
+                                  : { lineCode: item.lineCode, time: item.arrivalTime | date: 'HH:mm' }
+                              "
+                              (click)="toggleDepartureAlarm(item)"
+                            >
+                              <span class="material-symbols-outlined" aria-hidden="true">
+                                {{
+                                  isDepartureAlarmActive(item)
+                                    ? 'notifications_active'
+                                    : 'notifications'
+                                }}
+                              </span>
+                            </button>
                           </div>
                           <div class="route-search__item-time-badges">
                             <span

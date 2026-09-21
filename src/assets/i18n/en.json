@@ -9,7 +9,8 @@
     "lines": "Lines",
     "favorites": "Favorites",
     "news": "News",
-    "stopInfo": "Stop information"
+    "stopInfo": "Stop information",
+    "alarms": "Alarms"
   },
   "languages": {
     "es": "Spanish",
@@ -47,6 +48,7 @@
       "news": "News",
       "nearby": "Nearby stops",
       "settings": "Settings",
+      "alarms": "Alarms",
       "inProgress": "In progress"
     },
     "summary": {
@@ -193,6 +195,53 @@
       }
     }
   },
+  "alarms": {
+    "title": "Arrival alarms",
+    "description": "Every reminder you have scheduled for your lines.",
+    "summary": {
+      "active": "{count, plural, =0 {No active alarms} one {# active alarm} other {# active alarms}}",
+      "disabled": "{count, plural, =0 {none disabled} one {# disabled} other {# disabled}}"
+    },
+    "empty": "You have no alarms yet",
+    "emptyHint": "Schedule a reminder from a stop's detail page or from search results and it will show up here.",
+    "emptyCta": "Search schedules",
+    "ringsAt": "Rings {minutes} min before {time}",
+    "arrivalAt": "arrives {time}",
+    "expired": "Expired",
+    "repeatBadge": "Every day",
+    "disabledBadge": "Disabled",
+    "list": {
+      "stopLabel": "Stop",
+      "lineLabel": "Line"
+    },
+    "actions": {
+      "enable": "Enable",
+      "disable": "Disable",
+      "enableA11y": "Enable alarm for line {line}",
+      "disableA11y": "Disable alarm for line {line}",
+      "remove": "Remove alarm for line {line}",
+      "removeAll": "Remove all alarms"
+    },
+    "dialogs": {
+      "remove": {
+        "title": "Remove this alarm?",
+        "message": "You will stop receiving the reminder for this departure.",
+        "confirm": "Yes, remove it",
+        "cancel": "Cancel"
+      },
+      "removeAll": {
+        "title": "Remove all alarms?",
+        "message": "Every scheduled alarm will be deleted.",
+        "confirm": "Remove all",
+        "cancel": "Cancel"
+      },
+      "details": {
+        "stop": "Stop",
+        "line": "Line",
+        "time": "Time"
+      }
+    }
+  },
   "stopDetail": {
     "title": "Stop overview",
     "subtitle": "Live departures with accessibility and university indicators.",
@@ -237,6 +286,35 @@
     "source": {
       "live": "This information comes right now from the {provider}.",
       "snapshot": "This information comes from a copy saved on {date} at {time} by the {provider}."
+    },
+    "alarms": {
+      "addLabel": "Add alarm for line {lineCode} at {time}",
+      "activeLabel": "Alarm active for line {lineCode} at {time}. Tap to manage it.",
+      "cancel": "Close",
+      "cancelTitle": "Cancel alarm",
+      "cancelMessage": "The reminder for this departure will be turned off. Cancel it?",
+      "cancelConfirm": "Yes, cancel it",
+      "cancelKeep": "Keep it",
+      "dialogTitle": "Create alarm",
+      "dialogDescription": "We will warn you as far in advance as you choose before the bus arrives.",
+      "offsetLabel": "Remind me before departure",
+      "quickLabel": "Quick reminders",
+      "customLabel": "Custom",
+      "customPlaceholder": "Minutes",
+      "customSuffix": "min before",
+      "repeatLabel": "Repeat every day",
+      "repeatHint": "Rings at the same time every day until you turn it off.",
+      "triggerAt": "The alarm will ring at {time}",
+      "tooLate": "This departure is too close for that reminder.",
+      "save": "Save alarm",
+      "permissionError": "Notifications are not allowed for this app.",
+      "permissionHint": "Enable them from the lock icon or site info in your browser and try again.",
+      "permissionRetry": "Enable notifications",
+      "notificationTitle": "Alarm · line {lineCode}",
+      "notificationBody": "Departs at {time} from {stopName} towards {destination}. Arrives in {minutes} min.",
+      "firedBanner": "Your alarm for line {lineCode} towards {destination} rang. It will repeat tomorrow at {time}.",
+      "firedDeactivate": "Turn off",
+      "limitReached": "You reached the maximum number of alarms for this stop."
     }
   },
   "stopInfo": {

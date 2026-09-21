@@ -216,6 +216,40 @@
                 {{ announcement }}
               </div>
 
+              <div
+                *ngIf="firedAlarm() as firedEvent"
+                class="stop-detail__alarm-banner"
+                role="alert"
+              >
+                <span class="material-symbols-outlined" aria-hidden="true">notifications_active</span>
+                <p class="stop-detail__alarm-banner-text">
+                  {{
+                    translationKeys.alarms.firedBanner
+                      | translate
+                        : {
+                            lineCode: firedEvent.alarm.lineCode,
+                            destination: firedEvent.alarm.destination,
+                            time: firedEvent.nextTriggerAt | date: 'HH:mm'
+                          }
+                  }}
+                </p>
+                <button
+                  type="button"
+                  class="stop-detail__alarm-banner-action"
+                  (click)="deactivateFiredAlarm()"
+                >
+                  {{ translationKeys.alarms.firedDeactivate | translate }}
+                </button>
+                <button
+                  type="button"
+                  class="stop-detail__alarm-banner-close"
+                  [attr.aria-label]="translationKeys.alarms.cancel | translate"
+                  (click)="dismissAlarmBanner()"
+                >
+                  <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                </button>
+              </div>
+
               <ng-container *ngIf="viewModel.upcoming.length; else emptyUpcoming">
                 <ul class="stop-detail__list">
                   <li
@@ -242,6 +276,32 @@
                       </div>
                     </div>
                     <div class="stop-detail__badges">
+                      <ng-container *ngIf="stopRouteContext$ | async as alarmContext">
+                        <button
+                          type="button"
+                          class="stop-detail__alarm"
+                          [class.stop-detail__alarm--active]="
+                            isServiceAlarmActive(alarmContext.stopId, item)
+                          "
+                          [attr.aria-pressed]="isServiceAlarmActive(alarmContext.stopId, item)"
+                          [attr.aria-label]="
+                            (isServiceAlarmActive(alarmContext.stopId, item)
+                              ? translationKeys.alarms.activeLabel
+                              : translationKeys.alarms.addLabel)
+                              | translate
+                              : { lineCode: item.lineCode, time: item.arrivalTime | date: 'HH:mm' }
+                          "
+                          (click)="toggleServiceAlarm(alarmContext, item, viewModel.stopName)"
+                        >
+                          <span class="material-symbols-outlined" aria-hidden="true">
+                            {{
+                              isServiceAlarmActive(alarmContext.stopId, item)
+                                ? 'notifications_active'
+                                : 'notifications'
+                            }}
+                          </span>
+                        </button>
+                      </ng-container>
                       <span
                         *ngIf="item.isAccessible"
                         class="stop-detail__badge-icon"

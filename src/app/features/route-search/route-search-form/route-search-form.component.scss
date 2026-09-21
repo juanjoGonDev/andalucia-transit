@@ -9,12 +9,15 @@
 }
 
 .route-search-form__grid {
+  --route-search-field-gap: clamp(0.75rem, 1vw + 0.5rem, 1rem);
+
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   grid-template-areas:
     'origin swap destination'
     'date date date';
-  gap: clamp(0.75rem, 1vw + 0.5rem, 1rem);
+  gap: var(--route-search-field-gap);
   align-items: stretch;
 }
 
@@ -129,12 +132,6 @@
   font-size: 1.25rem;
 }
 
-.route-search-form__option-distance {
-  display: block;
-  font-size: 0.8125rem;
-  color: var(--color-text-muted);
-}
-
 .route-search-form__swap {
   grid-area: swap;
   display: flex;
@@ -161,7 +158,7 @@
 .route-search-form__submit {
   align-self: center;
   min-width: clamp(12rem, 40vw, 18rem);
-  min-height: 2.85rem;
+  min-height: 3.25rem;
 }
 
 .route-search-form__feedback {
@@ -191,19 +188,36 @@
 
 @media (max-width: 768px) {
   .route-search-form__grid {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-      'origin swap'
-      'destination swap'
-      'date date';
-    align-items: center;
+      'origin'
+      'destination'
+      'date';
   }
 
+  /* ALSA-style swap control: a compact floating circle pinned to the seam
+     between the origin and destination fields so neither column loses width. */
   .route-search-form__swap {
-    align-self: stretch;
-    width: 3rem;
-    height: auto;
-    min-height: 3rem;
+    position: absolute;
+    top: calc(3.5rem + (var(--route-search-field-gap) / 2));
+    inset-inline-end: 1.125rem;
+    z-index: 2;
+    width: 2.5rem;
+    height: 2.5rem;
+    transform: translateY(-50%);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-md);
+  }
+
+  .route-search-form__swap:hover,
+  .route-search-form__swap:focus-visible {
+    transform: translateY(-50%);
+    background-color: var(--color-primary-soft);
+  }
+
+  .route-search-form__swap .material-symbols-outlined {
+    font-size: 1.25rem;
   }
 
   .route-search-form__submit {

@@ -344,6 +344,16 @@ button:focus:not(:focus-visible),
   display: none;
 }
 
+/* Pill-shaped fields carry their own border: the filled-field idle underline
+   would peek out as a dark arc under the rounded corners. */
+.app-field .mdc-line-ripple {
+  display: none;
+}
+
+.app-field .mat-mdc-text-field-wrapper {
+  min-height: 3.5rem;
+}
+
 .app-field .mat-mdc-floating-label {
   color: var(--color-text-muted);
 }

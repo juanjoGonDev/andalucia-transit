@@ -1,0 +1,152 @@
+<section
+  class="alarms"
+  appLayoutContent
+  [appLayoutContentNavigationKey]="layoutNavigationKey"
+>
+  <div class="utility-container">
+    <div class="app-layout__body">
+      <header class="alarms__hero app-hero">
+        <div class="app-hero__intro">
+          <h1 class="app-hero__title">{{ translationKeys.title | translate }}</h1>
+          <p class="app-hero__description">{{ translationKeys.description | translate }}</p>
+        </div>
+        <div class="app-hero__actions alarms__actions">
+          <div
+            appAccessibleButton
+            class="app-outline-button app-outline-button--compact alarms__remove-all"
+            [appAccessibleButtonDisabled]="(hasAlarms$ | async) !== true"
+            [class.is-disabled]="(hasAlarms$ | async) !== true"
+            (appAccessibleButtonActivated)="confirmRemoveAll()"
+          >
+            <span class="material-symbols-outlined alarms__remove-all-icon" aria-hidden="true">
+              delete_sweep
+            </span>
+            {{ translationKeys.actions.removeAll | translate }}
+          </div>
+        </div>
+      </header>
+
+      <ng-container *ngIf="items$ | async as items">
+        <section
+          *ngIf="items.length"
+          class="alarms__summary"
+          aria-live="polite"
+        >
+          <p class="alarms__summary-active">
+            {{ translationKeys.summaryActive | translate: { count: countActive(items) } }}
+          </p>
+          <p class="alarms__summary-disabled">
+            {{ translationKeys.summaryDisabled | translate: { count: countDisabled(items) } }}
+          </p>
+        </section>
+
+        <section *ngIf="items.length" class="alarms__panel">
+          <ul class="alarms__list" role="list">
+            <li
+              *ngFor="let alarm of items; trackBy: trackByAlarmId"
+              class="alarms__item"
+              [class.alarms__item--disabled]="!alarm.enabled"
+            >
+              <div class="alarms__item-time">
+                <span class="alarms__item-ring">{{ alarm.ringTime ?? '—' }}</span>
+                <span class="alarms__item-arrival">
+                  {{ translationKeys.arrivalAt | translate: { time: alarm.arrivalTime } }}
+                </span>
+              </div>
+
+              <div class="alarms__item-body">
+                <p class="alarms__item-route">
+                  <span class="alarms__item-line">{{ alarm.lineCode }}</span>
+                  <span class="alarms__item-destination">{{ alarm.destination }}</span>
+                </p>
+                <p class="alarms__item-stop">
+                  <span class="material-symbols-outlined alarms__item-stop-icon" aria-hidden="true">
+                    {{ alarmIcon }}
+                  </span>
+                  <span class="alarms__item-stop-name">{{ alarm.stopName }}</span>
+                </p>
+                <p class="alarms__item-meta">
+                  {{ translationKeys.ringsAt | translate: { minutes: alarm.offsetMinutes, time: alarm.arrivalTime } }}
+                </p>
+                <div class="alarms__item-badges">
+                  <span
+                    *ngIf="alarm.repeatDaily"
+                    class="alarms__item-badge alarms__item-badge--repeat"
+                  >
+                    <span class="material-symbols-outlined" aria-hidden="true">{{ repeatIcon }}</span>
+                    {{ translationKeys.repeatBadge | translate }}
+                  </span>
+                  <span
+                    *ngIf="alarm.isExpired"
+                    class="alarms__item-badge alarms__item-badge--expired"
+                  >
+                    {{ translationKeys.expired | translate }}
+                  </span>
+                  <span
+                    *ngIf="!alarm.enabled"
+                    class="alarms__item-badge alarms__item-badge--off"
+                  >
+                    {{ translationKeys.disabledBadge | translate }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="alarms__item-actions">
+                <button
+                  type="button"
+                  class="alarms__item-switch"
+                  [class.alarms__item-switch--on]="alarm.enabled"
+                  [attr.aria-pressed]="alarm.enabled"
+                  [attr.aria-label]="
+                    (alarm.enabled
+                      ? translationKeys.actions.disableA11y
+                      : translationKeys.actions.enableA11y)
+                      | translate: { line: alarm.lineCode }
+                  "
+                  (click)="toggleEnabled(alarm)"
+                >
+                  <span class="alarms__item-switch-track" aria-hidden="true">
+                    <span class="alarms__item-switch-thumb"></span>
+                  </span>
+                  <span class="alarms__item-switch-text">
+                    {{
+                      (alarm.enabled
+                        ? translationKeys.actions.disable
+                        : translationKeys.actions.enable)
+                        | translate
+                    }}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  class="alarms__item-remove"
+                  [attr.aria-label]="
+                    translationKeys.actions.remove | translate: { line: alarm.lineCode }
+                  "
+                  (click)="confirmRemove(alarm)"
+                >
+                  <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+                </button>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <div *ngIf="!items.length" class="alarms__empty">
+          <span class="material-symbols-outlined alarms__empty-icon" aria-hidden="true">
+            notifications_off
+          </span>
+          <p class="alarms__empty-message">{{ translationKeys.empty | translate }}</p>
+          <p class="alarms__empty-hint">{{ translationKeys.emptyHint | translate }}</p>
+          <div
+            appAccessibleButton
+            class="app-outline-button app-outline-button--compact alarms__empty-cta"
+            (appAccessibleButtonActivated)="goToSearch()"
+          >
+            {{ translationKeys.emptyCta | translate }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</section>

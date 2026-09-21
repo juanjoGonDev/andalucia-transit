@@ -27,6 +27,15 @@ const HOLIDAY_REGION_CODES = ['ES-AN'] as const;
 const ROUTE_SEARCH_HISTORY_STORAGE_KEY = 'andalucia-transit.routeSearchHistory' as const;
 const ROUTE_SEARCH_PREFERENCES_STORAGE_KEY = 'andalucia-transit.routeSearchPreferences' as const;
 const STOP_FAVORITES_STORAGE_KEY = 'andalucia-transit.stopFavorites' as const;
+const STOP_ALARMS_STORAGE_KEY = 'andalucia-transit.stopAlarms' as const;
+const ALARM_DEFAULT_OFFSET_MINUTES = 10 as const;
+const ALARM_QUICK_CHOICE_MINUTES = [5, 10, 30, 60, 120] as const;
+const ALARM_MAX_CUSTOM_MINUTES = 720 as const;
+const ALARM_POLL_INTERVAL_MS = 15_000 as const;
+const ALARM_MAX_REPEAT_DAYS = 30 as const;
+const ALARM_MAX_PER_STOP = 5 as const;
+const ALARM_MISSED_TRIGGER_GRACE_MS = 120_000;
+const ALARMS_ROUTE = 'alarms' as const;
 const ROUTE_SEARCH_SCHEDULE_ACCURACY_THRESHOLD_DAYS = 30 as const;
 const HOME_RECENT_ROUTE = 'recents' as const;
 const HOME_FAVORITES_ROUTE = 'favs' as const;
@@ -77,6 +86,16 @@ export const APP_CONFIG = {
     }
   },
   home: {},
+  alarms: {
+    storageKey: STOP_ALARMS_STORAGE_KEY,
+    defaultOffsetMinutes: ALARM_DEFAULT_OFFSET_MINUTES,
+    quickChoiceMinutes: ALARM_QUICK_CHOICE_MINUTES,
+    maxCustomMinutes: ALARM_MAX_CUSTOM_MINUTES,
+    pollIntervalMs: ALARM_POLL_INTERVAL_MS,
+    maxRepeatDays: ALARM_MAX_REPEAT_DAYS,
+    maxPerStop: ALARM_MAX_PER_STOP,
+    missedTriggerGraceMs: ALARM_MISSED_TRIGGER_GRACE_MS
+  },
   routes: {
     home: '' as const,
     homeRecent: HOME_RECENT_ROUTE,
@@ -91,6 +110,7 @@ export const APP_CONFIG = {
     map: 'map' as const,
     settings: 'settings' as const,
     favorites: 'favorites' as const,
+    alarms: ALARMS_ROUTE,
     news: NEWS_ROUTE_SEGMENT
   },
   routeSegments: {
@@ -124,6 +144,7 @@ export const APP_CONFIG = {
       language: 'navigation.language',
       lines: 'navigation.lines',
       favorites: 'navigation.favorites',
+      alarms: 'navigation.alarms',
       news: 'navigation.news',
       stopInfo: 'navigation.stopInfo'
     },
@@ -160,6 +181,7 @@ export const APP_CONFIG = {
         news: 'home.menu.news',
         nearby: 'home.menu.nearby',
         settings: 'home.menu.settings',
+        alarms: 'home.menu.alarms',
         inProgress: 'home.menu.inProgress'
       },
       summary: {
@@ -302,6 +324,35 @@ export const APP_CONFIG = {
       source: {
         live: 'stopDetail.source.live',
         snapshot: 'stopDetail.source.snapshot'
+      },
+      alarms: {
+        addLabel: 'stopDetail.alarms.addLabel',
+        activeLabel: 'stopDetail.alarms.activeLabel',
+        cancel: 'stopDetail.alarms.cancel',
+        cancelTitle: 'stopDetail.alarms.cancelTitle',
+        cancelMessage: 'stopDetail.alarms.cancelMessage',
+        cancelConfirm: 'stopDetail.alarms.cancelConfirm',
+        cancelKeep: 'stopDetail.alarms.cancelKeep',
+        dialogTitle: 'stopDetail.alarms.dialogTitle',
+        dialogDescription: 'stopDetail.alarms.dialogDescription',
+        offsetLabel: 'stopDetail.alarms.offsetLabel',
+        quickLabel: 'stopDetail.alarms.quickLabel',
+        customLabel: 'stopDetail.alarms.customLabel',
+        customPlaceholder: 'stopDetail.alarms.customPlaceholder',
+        customSuffix: 'stopDetail.alarms.customSuffix',
+        repeatLabel: 'stopDetail.alarms.repeatLabel',
+        repeatHint: 'stopDetail.alarms.repeatHint',
+        triggerAt: 'stopDetail.alarms.triggerAt',
+        tooLate: 'stopDetail.alarms.tooLate',
+        save: 'stopDetail.alarms.save',
+        permissionError: 'stopDetail.alarms.permissionError',
+        permissionHint: 'stopDetail.alarms.permissionHint',
+        permissionRetry: 'stopDetail.alarms.permissionRetry',
+        notificationTitle: 'stopDetail.alarms.notificationTitle',
+        notificationBody: 'stopDetail.alarms.notificationBody',
+        firedBanner: 'stopDetail.alarms.firedBanner',
+        firedDeactivate: 'stopDetail.alarms.firedDeactivate',
+        limitReached: 'stopDetail.alarms.limitReached'
       }
     },
     routeSearch: {
@@ -478,6 +529,51 @@ export const APP_CONFIG = {
           name: 'favorites.dialogs.details.name',
           code: 'favorites.dialogs.details.code',
           count: 'favorites.dialogs.details.count'
+        }
+      }
+    },
+    alarms: {
+      title: 'alarms.title',
+      description: 'alarms.description',
+      summaryActive: 'alarms.summary.active',
+      summaryDisabled: 'alarms.summary.disabled',
+      empty: 'alarms.empty',
+      emptyHint: 'alarms.emptyHint',
+      emptyCta: 'alarms.emptyCta',
+      ringsAt: 'alarms.ringsAt',
+      arrivalAt: 'alarms.arrivalAt',
+      expired: 'alarms.expired',
+      repeatBadge: 'alarms.repeatBadge',
+      disabledBadge: 'alarms.disabledBadge',
+      list: {
+        stopLabel: 'alarms.list.stopLabel',
+        lineLabel: 'alarms.list.lineLabel'
+      },
+      actions: {
+        enable: 'alarms.actions.enable',
+        disable: 'alarms.actions.disable',
+        enableA11y: 'alarms.actions.enableA11y',
+        disableA11y: 'alarms.actions.disableA11y',
+        remove: 'alarms.actions.remove',
+        removeAll: 'alarms.actions.removeAll'
+      },
+      dialogs: {
+        remove: {
+          title: 'alarms.dialogs.remove.title',
+          message: 'alarms.dialogs.remove.message',
+          confirm: 'alarms.dialogs.remove.confirm',
+          cancel: 'alarms.dialogs.remove.cancel'
+        },
+        removeAll: {
+          title: 'alarms.dialogs.removeAll.title',
+          message: 'alarms.dialogs.removeAll.message',
+          confirm: 'alarms.dialogs.removeAll.confirm',
+          cancel: 'alarms.dialogs.removeAll.cancel'
+        },
+        details: {
+          stop: 'alarms.dialogs.details.stop',
+          line: 'alarms.dialogs.details.line',
+          time: 'alarms.dialogs.details.time'
         }
       }
     }

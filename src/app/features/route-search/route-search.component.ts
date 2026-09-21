@@ -31,12 +31,19 @@ import {
   buildStopSlug,
   parseStopSlug
 } from '@domain/route-search/route-search-url.util';
+import { StopAlarmsService } from '@domain/stop-alarms/stop-alarms.service';
 import { StopDirectoryFacade, StopDirectoryOption } from '@domain/stops/stop-directory.facade';
 import { RouteSearchDepartureRoutePreviewComponent } from '@features/route-search/departure-route-preview/route-search-departure-route-preview.component';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
+import {
+  StopAlarmDialogComponent,
+  StopAlarmDialogData
+} from '@features/stop-detail/stop-alarm-dialog/stop-alarm-dialog.component';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import { buildNavigationCommands } from '@shared/navigation/navigation.util';
+import { ConfirmDialogComponent, ConfirmDialogData } from '@shared/ui/confirm-dialog/confirm-dialog.component';
+import { OverlayDialogService } from '@shared/ui/dialog/overlay-dialog.service';
 import { SectionComponent } from '@shared/ui/section/section.component';
 
 const BACK_ICON_NAME = 'arrow_back' as const;
@@ -89,6 +96,8 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly selectionResolver = inject(RouteSearchSelectionResolverService);
   private readonly execution = inject(RouteSearchExecutionService);
   private readonly stopDirectory = inject(StopDirectoryFacade);
+  protected readonly alarmsService = inject(StopAlarmsService);
+  private readonly overlayDialogs = inject(OverlayDialogService);
   private readonly timezone = APP_CONFIG.data.timezone;
   private readonly scheduleAccuracyThresholdDays =
     APP_CONFIG.routeSearchData.scheduleAccuracy.warningThresholdDays;
@@ -97,6 +106,7 @@ export class RouteSearchComponent implements AfterViewInit {
 
   protected readonly translationKeys = APP_CONFIG.translationKeys.routeSearch;
   protected readonly badgeTranslationKeys = APP_CONFIG.translationKeys.stopDetail.badges;
+  protected readonly alarmTranslationKeys = APP_CONFIG.translationKeys.stopDetail.alarms;
   protected readonly loadingKey = APP_CONFIG.translationKeys.home.sections.recentStops.previewLoading;
   protected readonly loadErrorKey = APP_CONFIG.translationKeys.home.sections.recentStops.previewError;
   protected readonly retryKey = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.retry;
@@ -264,6 +274,68 @@ export class RouteSearchComponent implements AfterViewInit {
 
   protected trackDeparture(_: number, item: RouteSearchDepartureView): string {
     return item.id;
+  }
+
+  /** Route-search departures namespace their alarm service ids to avoid collisions. */
+  protected departureAlarmServiceId(item: RouteSearchDepartureView): string {
+    return `rs-${item.id}`;
+  }
+
+  protected isDepartureAlarmActive(item: RouteSearchDepartureView): boolean {
+    return this.alarmsService.hasServiceAlarm(item.originStopId, this.departureAlarmServiceId(item));
+  }
+
+  protected toggleDepartureAlarm(item: RouteSearchDepartureView): void {
+    const current = this.selection();
+
+    if (!current) {
+      return;
+    }
+
+    const serviceId = this.departureAlarmServiceId(item);
+    const alarmId = this.alarmsService.serviceAlarmId(item.originStopId, serviceId);
+
+    if (this.alarmsService.has(alarmId)) {
+      this.openCancelDepartureAlarmDialog(alarmId);
+      return;
+    }
+
+    const data: StopAlarmDialogData = {
+      stopId: item.originStopId,
+      serviceId,
+      consortiumId: current.origin.consortiumId,
+      stopName: current.origin.name,
+      lineCode: item.lineCode,
+      destination: item.destination,
+      arrivalTime: item.arrivalTime,
+      minutesUntilArrival: Math.max(0, Math.round((item.arrivalTime.getTime() - Date.now()) / 60_000))
+    };
+
+    this.overlayDialogs.open<StopAlarmDialogComponent, StopAlarmDialogData, boolean>(
+      StopAlarmDialogComponent,
+      { data, role: 'dialog' }
+    );
+  }
+
+  private openCancelDepartureAlarmDialog(alarmId: string): void {
+    const dialogRef = this.overlayDialogs.open<
+      ConfirmDialogComponent,
+      ConfirmDialogData,
+      boolean
+    >(ConfirmDialogComponent, {
+      data: {
+        titleKey: this.alarmTranslationKeys.cancelTitle,
+        messageKey: this.alarmTranslationKeys.cancelMessage,
+        confirmKey: this.alarmTranslationKeys.cancelConfirm,
+        cancelKey: this.alarmTranslationKeys.cancelKeep
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.alarmsService.remove(alarmId);
+      }
+    });
   }
 
   protected navigateBack(): void {

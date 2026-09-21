@@ -15,10 +15,17 @@ import {
 import { RouteSearchSelectionResolverService } from '@domain/route-search/route-search-selection-resolver.service';
 import { RouteSearchSelection, RouteSearchStateService } from '@domain/route-search/route-search-state.service';
 import { buildDateSlug, buildStopSlug } from '@domain/route-search/route-search-url.util';
+import { StopAlarmsService } from '@domain/stop-alarms/stop-alarms.service';
 import { StopDirectoryFacade, StopDirectoryOption } from '@domain/stops/stop-directory.facade';
 import { RouteSearchDepartureRoutePreviewComponent } from '@features/route-search/departure-route-preview/route-search-departure-route-preview.component';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 import { RouteSearchComponent } from '@features/route-search/route-search.component';
+import { StopAlarmDialogComponent, StopAlarmDialogData } from '@features/stop-detail/stop-alarm-dialog/stop-alarm-dialog.component';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData
+} from '@shared/ui/confirm-dialog/confirm-dialog.component';
+import { OverlayDialogService } from '@shared/ui/dialog/overlay-dialog.service';
 
 class TranslateTestingLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
@@ -138,6 +145,11 @@ function ensureValidDateTime(dateTime: DateTime): DateTime<true> {
 }
 
 describe('RouteSearchComponent', () => {
+  const overlayDialogs = {
+    open: jasmine
+      .createSpy('open')
+      .and.returnValue({ afterClosed: () => of(true), close: () => undefined })
+  };
   let fixture: ComponentFixture<RouteSearchComponent>;
   let state: RouteSearchStateService;
   let resultsService: RouteSearchResultsServiceStub;
@@ -170,6 +182,7 @@ describe('RouteSearchComponent', () => {
   };
 
   beforeEach(async () => {
+    overlayDialogs.open.calls.reset();
     activatedRoute = new ActivatedRouteStub();
     directoryFacade = new StopDirectoryFacadeStub();
     directoryFacade.setOptions(origin, destination);
@@ -185,6 +198,7 @@ describe('RouteSearchComponent', () => {
       ],
       providers: [
         provideRouter([]),
+        { provide: OverlayDialogService, useValue: overlayDialogs },
         { provide: RouteSearchResultsService, useClass: RouteSearchResultsServiceStub },
         { provide: LineRouteWorkspaceService, useClass: LineRouteWorkspaceServiceStub },
         {
@@ -546,5 +560,96 @@ describe('RouteSearchComponent', () => {
     expect(form.initialSelection?.origin.name).toBe('Alpha Station');
     expect(form.initialSelection?.destination.name).toBe('Beta Terminal');
     expect(fixture.debugElement.query(By.css('.route-search__summary'))).toBeNull();
+  });
+
+  function setUpResultsWithUpcomingDeparture(): void {
+    const departure: RouteSearchDepartureView = {
+      id: 'service-1',
+      lineId: 'L1',
+      lineCode: '001',
+      direction: 0,
+      destination: 'Beta Terminal',
+      originStopId: 'alpha',
+      arrivalTime: new Date(Date.now() + 30 * 60_000),
+      relativeLabel: '5m',
+      waitTimeSeconds: 300,
+      kind: 'upcoming',
+      isNext: true,
+      isMostRecentPast: false,
+      isAccessible: true,
+      isUniversityOnly: false,
+      isHolidayService: false,
+      showUpcomingProgress: false,
+      progressPercentage: 0,
+      pastProgressPercentage: 0,
+      destinationArrivalTime: null,
+      travelDurationLabel: null
+    } satisfies RouteSearchDepartureView;
+
+    resultsService.viewModel = {
+      departures: [departure],
+      hasUpcoming: true,
+      nextDepartureId: 'service-1'
+    } satisfies RouteSearchResultsViewModel;
+
+    state.setSelection({
+      origin,
+      destination,
+      queryDate: new Date(),
+      lineMatches: []
+    });
+    fixture.detectChanges();
+  }
+
+  it('offers a departure alarm toggle that opens the alarm dialog with the route-search service id', () => {
+    setUpResultsWithUpcomingDeparture();
+
+    const bell = fixture.debugElement.query(By.css('.route-search__item-alarm'));
+    expect(bell).not.toBeNull();
+    expect(bell?.nativeElement.getAttribute('aria-pressed')).toBe('false');
+
+    bell?.nativeElement.click();
+
+    expect(overlayDialogs.open).toHaveBeenCalledTimes(1);
+    const [component, config] = overlayDialogs.open.calls.mostRecent().args as [
+      typeof StopAlarmDialogComponent,
+      { data: StopAlarmDialogData }
+    ];
+    expect(component).toBe(StopAlarmDialogComponent);
+    expect(config.data.serviceId).toBe('rs-service-1');
+    expect(config.data.stopId).toBe('alpha');
+    expect(config.data.stopName).toBe('Alpha Station');
+    expect(config.data.consortiumId).toBe(origin.consortiumId);
+  });
+
+  it('marks existing departure alarms as active and opens the cancel dialog instead', () => {
+    const alarms = TestBed.inject(StopAlarmsService);
+    alarms.add({
+      stopId: 'alpha',
+      serviceId: 'rs-service-1',
+      consortiumId: origin.consortiumId,
+      stopName: 'Alpha Station',
+      lineCode: '001',
+      destination: 'Beta Terminal',
+      scheduledArrival: new Date(Date.now() + 40 * 60_000),
+      offsetMinutes: 10,
+      repeatDaily: false
+    });
+
+    setUpResultsWithUpcomingDeparture();
+
+    const bell = fixture.debugElement.query(By.css('.route-search__item-alarm'));
+    expect(bell?.nativeElement.getAttribute('aria-pressed')).toBe('true');
+    expect(bell?.nativeElement.classList.contains('route-search__item-alarm--active')).toBeTrue();
+
+    bell?.nativeElement.click();
+
+    expect(overlayDialogs.open).toHaveBeenCalledTimes(1);
+    const [component, config] = overlayDialogs.open.calls.mostRecent().args as [
+      typeof ConfirmDialogComponent,
+      { data: ConfirmDialogData }
+    ];
+    expect(component).toBe(ConfirmDialogComponent);
+    expect(config.data.titleKey).toBe('stopDetail.alarms.cancelTitle');
   });
 });
