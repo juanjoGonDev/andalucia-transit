@@ -123,4 +123,18 @@ describe('AlarmSchedulerService', () => {
     expect(service.snapshot.length).toBe(1);
     expect(service.snapshot[0].nextTriggerAt).toBeGreaterThan(Date.now());
   });
+
+  it('skips disabled alarms without notifying or advancing them', async () => {
+    const scheduler = TestBed.inject(AlarmSchedulerService);
+    const service = createAlarmWithTriggerAt(200, false);
+    const alarmId = service.snapshot[0].id;
+
+    expect(service.setEnabled(alarmId, false)).toBeTrue();
+
+    scheduler.processDueAlarms(Date.now() + 60 * MINUTES);
+
+    expect(permissions.show).not.toHaveBeenCalled();
+    expect(service.snapshot.length).toBe(1);
+    expect(service.snapshot[0].enabled).toBeFalse();
+  });
 });

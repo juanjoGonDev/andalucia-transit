@@ -123,7 +123,7 @@ describe('StopAlarmsService', () => {
     service.add(candidate({ repeatDaily: true }));
     const repeating = service.snapshot[0];
 
-    service.rescheduleAfterFiring(repeating, repeating.nextTriggerAt + 24 * 60 * MINUTES);
+    service.rescheduleAfterFiring(repeating, (repeating.nextTriggerAt ?? Date.now()) + 24 * 60 * MINUTES);
     expect(service.snapshot.length).toBe(1);
 
     const oneShot = service.snapshot.find((alarm) => !alarm.repeatDaily) ?? null;
@@ -142,6 +142,7 @@ describe('StopAlarmsService', () => {
         scheduledArrival: new Date(Date.now() + 3 * 60 * MINUTES).toISOString(),
         offsetMinutes: 30,
         repeatDaily: false,
+        enabled: true,
         createdAt: new Date().toISOString()
       },
       {
@@ -154,6 +155,7 @@ describe('StopAlarmsService', () => {
         scheduledArrival: new Date(Date.now() - 48 * 60 * MINUTES).toISOString(),
         offsetMinutes: 30,
         repeatDaily: false,
+        enabled: true,
         createdAt: new Date().toISOString()
       }
     ]);
@@ -162,5 +164,137 @@ describe('StopAlarmsService', () => {
 
     expect(service.snapshot.length).toBe(1);
     expect(service.snapshot[0].id).toContain('service-live');
+  });
+
+  it('keeps disabled alarms listed during hydration even when unreachable', () => {
+    storage.load.and.returnValue([
+      {
+        id: 'stop-1::service-disabled',
+        stopId: 'stop-1',
+        consortiumId: 4,
+        stopName: 'Calle Principal',
+        lineCode: 'M-101',
+        destination: 'Centro',
+        scheduledArrival: new Date(Date.now() - 48 * 60 * MINUTES).toISOString(),
+        offsetMinutes: 10,
+        repeatDaily: false,
+        enabled: false,
+        createdAt: new Date().toISOString()
+      }
+    ]);
+
+    const service = TestBed.inject(StopAlarmsService);
+
+    expect(service.snapshot.length).toBe(1);
+    expect(service.snapshot[0].enabled).toBeFalse();
+    expect(service.snapshot[0].nextTriggerAt).toBeNull();
+  });
+
+  it('disabling keeps the alarm listed and persists it as disabled', () => {
+    const service = TestBed.inject(StopAlarmsService);
+
+    service.add(candidate({ serviceId: 'service-a' }));
+    service.add(candidate({ serviceId: 'service-b', offsetMinutes: 20 }));
+    const alarmId = service.serviceAlarmId('stop-1', 'service-a');
+
+    expect(service.setEnabled(alarmId, false)).toBeTrue();
+
+    const alarms = service.snapshot;
+    expect(alarms.length).toBe(2);
+    const disabled = alarms.find((alarm) => alarm.id === alarmId) ?? null;
+    expect(disabled).not.toBeNull();
+    expect(disabled?.enabled).toBeFalse();
+
+    const persisted = storage.save.calls.mostRecent().args[0];
+    const persistedDisabled = persisted.find((alarm) => alarm.id === alarmId) ?? null;
+    expect(persistedDisabled?.enabled).toBeFalse();
+  });
+
+  it('re-enabling a future one-shot alarm re-arms it at arrival minus offset', () => {
+    const service = TestBed.inject(StopAlarmsService);
+
+    const created = service.add(candidate({ serviceId: 'service-future' }));
+    expect(created).not.toBeNull();
+    const alarmId = service.serviceAlarmId('stop-1', 'service-future');
+    service.setEnabled(alarmId, false);
+
+    expect(service.setEnabled(alarmId, true)).toBeTrue();
+
+    const alarm = service.snapshot.find((entry) => entry.id === alarmId) ?? null;
+    expect(alarm?.enabled).toBeTrue();
+    expect(alarm?.nextTriggerAt).toBe(
+      Date.parse(alarm?.scheduledArrival ?? '') - 10 * MINUTES
+    );
+  });
+
+  it('re-enabling an elapsed one-shot alarm drops it and reports failure', () => {
+    jasmine.clock().install();
+    try {
+      const base = new Date('2026-09-21T09:00:00');
+      jasmine.clock().mockDate(base);
+
+      const service = TestBed.inject(StopAlarmsService);
+      const created = service.add(candidate({ serviceId: 'service-gone' }));
+      expect(created).not.toBeNull();
+      const alarmId = service.serviceAlarmId('stop-1', 'service-gone');
+      service.setEnabled(alarmId, false);
+
+      jasmine.clock().mockDate(new Date(base.getTime() + 2 * 60 * MINUTES));
+
+      expect(service.setEnabled(alarmId, true)).toBeFalse();
+      expect(service.snapshot.length).toBe(0);
+    } finally {
+      jasmine.clock().uninstall();
+    }
+  });
+
+  it('re-enabling a repeating alarm rolls it to the next daily slot', () => {
+    jasmine.clock().install();
+    try {
+      const base = new Date('2026-09-21T09:00:00');
+      jasmine.clock().mockDate(base);
+
+      const service = TestBed.inject(StopAlarmsService);
+      const created = service.add(
+        candidate({ serviceId: 'service-repeat', repeatDaily: true })
+      );
+      expect(created).not.toBeNull();
+      const alarmId = service.serviceAlarmId('stop-1', 'service-repeat');
+      service.setEnabled(alarmId, false);
+
+      jasmine.clock().mockDate(new Date(base.getTime() + 24 * 60 * MINUTES));
+
+      expect(service.setEnabled(alarmId, true)).toBeTrue();
+
+      const alarm = service.snapshot.find((entry) => entry.id === alarmId) ?? null;
+      expect(alarm?.enabled).toBeTrue();
+      expect(alarm?.nextTriggerAt).toBe(
+        Date.parse(alarm?.scheduledArrival ?? '') - 10 * MINUTES + 24 * 60 * MINUTES
+      );
+    } finally {
+      jasmine.clock().uninstall();
+    }
+  });
+
+  it('setEnabled on a missing alarm reports failure without persisting', () => {
+    const service = TestBed.inject(StopAlarmsService);
+
+    service.add(candidate());
+    const savesBefore = storage.save.calls.count();
+
+    expect(service.setEnabled('stop-1::missing', false)).toBeFalse();
+    expect(storage.save.calls.count()).toBe(savesBefore);
+  });
+
+  it('removeAll clears every alarm and persists the empty list', () => {
+    const service = TestBed.inject(StopAlarmsService);
+
+    service.add(candidate({ serviceId: 'service-a' }));
+    service.add(candidate({ serviceId: 'service-b' }));
+
+    service.removeAll();
+
+    expect(service.snapshot.length).toBe(0);
+    expect(storage.save.calls.mostRecent().args[0]).toEqual([]);
   });
 });

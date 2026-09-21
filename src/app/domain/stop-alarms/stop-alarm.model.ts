@@ -14,12 +14,15 @@ export interface StopAlarm {
   readonly offsetMinutes: number;
   /** When true the alarm re-arms every day at the same time until deactivated. */
   readonly repeatDaily: boolean;
+  /** Disabled alarms stay listed but never ring or advance until re-enabled. */
+  readonly enabled: boolean;
   readonly createdAt: string;
 }
 
 /** Alarm enriched with the derived scheduling state used while the app runs. */
 export interface StopAlarmRuntime extends StopAlarm {
-  readonly nextTriggerAt: number;
+  /** Epoch ms of the next pending ring; null when the alarm is disabled and unreachable. */
+  readonly nextTriggerAt: number | null;
 }
 
 export interface AlarmTriggerOptions {

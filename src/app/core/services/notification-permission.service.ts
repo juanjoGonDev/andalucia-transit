@@ -5,6 +5,8 @@ export type NotificationPermissionState = 'granted' | 'denied' | 'default' | 'un
 
 const SUPPORTED_PERMISSION: NotificationPermissionState = 'granted';
 
+export type NotificationClickOptions = NotificationOptions & { onClick?: () => void };
+
 /**
  * Thin, SSR-safe wrapper around the Notifications permission API so features
  * can react to the current state and (re-)request access from user gestures.
@@ -56,7 +58,7 @@ export class NotificationPermissionService {
   }
 
   /** Displays a notification when (and only when) permission was granted. */
-  show(title: string, options?: NotificationOptions): boolean {
+  show(title: string, options?: NotificationClickOptions): boolean {
     if (this.snapshot !== SUPPORTED_PERMISSION) {
       return false;
     }
@@ -65,10 +67,13 @@ export class NotificationPermissionService {
       return false;
     }
 
+    const { onClick, ...notificationOptions } = options ?? {};
+
     try {
-      const notification = new Notification(title, options);
+      const notification = new Notification(title, notificationOptions);
       notification.onclick = () => {
         window.focus();
+        onClick?.();
         notification.close();
       };
       return true;

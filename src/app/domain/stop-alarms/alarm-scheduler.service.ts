@@ -1,5 +1,6 @@
 import { DestroyRef, Injectable, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subject, interval } from 'rxjs';
 import { AppConfig } from '@core/config';
@@ -34,6 +35,7 @@ export class AlarmSchedulerService {
   private readonly alarms = inject(StopAlarmsService);
   private readonly permissions = inject(NotificationPermissionService);
   private readonly translate = inject(TranslateService);
+  private readonly router = inject(Router);
   private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
 
   private readonly firedSubject = new Subject<FiredAlarmEvent>();
@@ -63,7 +65,7 @@ export class AlarmSchedulerService {
 
   processDueAlarms(now: number = Date.now()): void {
     for (const alarm of this.alarms.snapshot) {
-      if (alarm.nextTriggerAt > now) {
+      if (!alarm.enabled || alarm.nextTriggerAt === null || alarm.nextTriggerAt > now) {
         continue;
       }
 
@@ -89,12 +91,13 @@ export class AlarmSchedulerService {
   }
 
   private notify(alarm: StopAlarmRuntime, now: number): void {
-    const minutes = minutesUntilTrigger(alarm.nextTriggerAt, now);
+    const triggerAt = alarm.nextTriggerAt as number;
+    const minutes = minutesUntilTrigger(triggerAt, now);
     const title = this.translate.instant(this.config.translationKeys.stopDetail.alarms.notificationTitle, {
       lineCode: alarm.lineCode
     });
     const body = this.translate.instant(this.config.translationKeys.stopDetail.alarms.notificationBody, {
-      time: formatTime(new Date(alarm.nextTriggerAt + alarm.offsetMinutes * 60_000)),
+      time: formatTime(new Date(triggerAt + alarm.offsetMinutes * 60_000)),
       stopName: alarm.stopName,
       destination: alarm.destination,
       minutes
@@ -103,7 +106,15 @@ export class AlarmSchedulerService {
     this.permissions.show(title, {
       body,
       tag: alarm.id,
-      icon: 'favicon.svg'
+      icon: 'favicon.svg',
+      onClick: () => {
+        void this.router.navigate([this.config.routes.stopDetailBase, alarm.stopId], {
+          queryParams:
+            alarm.consortiumId === null
+              ? undefined
+              : { [this.config.routeParams.stopInfo.consortiumId]: alarm.consortiumId }
+        });
+      }
     });
   }
 }

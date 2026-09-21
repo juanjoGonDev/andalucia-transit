@@ -35,6 +35,7 @@ const ALARM_POLL_INTERVAL_MS = 15_000 as const;
 const ALARM_MAX_REPEAT_DAYS = 30 as const;
 const ALARM_MAX_PER_STOP = 5 as const;
 const ALARM_MISSED_TRIGGER_GRACE_MS = 120_000;
+const ALARMS_ROUTE = 'alarms' as const;
 const ROUTE_SEARCH_SCHEDULE_ACCURACY_THRESHOLD_DAYS = 30 as const;
 const HOME_RECENT_ROUTE = 'recents' as const;
 const HOME_FAVORITES_ROUTE = 'favs' as const;
@@ -109,6 +110,7 @@ export const APP_CONFIG = {
     map: 'map' as const,
     settings: 'settings' as const,
     favorites: 'favorites' as const,
+    alarms: ALARMS_ROUTE,
     news: NEWS_ROUTE_SEGMENT
   },
   routeSegments: {
@@ -142,6 +144,7 @@ export const APP_CONFIG = {
       language: 'navigation.language',
       lines: 'navigation.lines',
       favorites: 'navigation.favorites',
+      alarms: 'navigation.alarms',
       news: 'navigation.news',
       stopInfo: 'navigation.stopInfo'
     },
@@ -178,6 +181,7 @@ export const APP_CONFIG = {
         news: 'home.menu.news',
         nearby: 'home.menu.nearby',
         settings: 'home.menu.settings',
+        alarms: 'home.menu.alarms',
         inProgress: 'home.menu.inProgress'
       },
       summary: {
@@ -525,6 +529,51 @@ export const APP_CONFIG = {
           name: 'favorites.dialogs.details.name',
           code: 'favorites.dialogs.details.code',
           count: 'favorites.dialogs.details.count'
+        }
+      }
+    },
+    alarms: {
+      title: 'alarms.title',
+      description: 'alarms.description',
+      summaryActive: 'alarms.summary.active',
+      summaryDisabled: 'alarms.summary.disabled',
+      empty: 'alarms.empty',
+      emptyHint: 'alarms.emptyHint',
+      emptyCta: 'alarms.emptyCta',
+      ringsAt: 'alarms.ringsAt',
+      arrivalAt: 'alarms.arrivalAt',
+      expired: 'alarms.expired',
+      repeatBadge: 'alarms.repeatBadge',
+      disabledBadge: 'alarms.disabledBadge',
+      list: {
+        stopLabel: 'alarms.list.stopLabel',
+        lineLabel: 'alarms.list.lineLabel'
+      },
+      actions: {
+        enable: 'alarms.actions.enable',
+        disable: 'alarms.actions.disable',
+        enableA11y: 'alarms.actions.enableA11y',
+        disableA11y: 'alarms.actions.disableA11y',
+        remove: 'alarms.actions.remove',
+        removeAll: 'alarms.actions.removeAll'
+      },
+      dialogs: {
+        remove: {
+          title: 'alarms.dialogs.remove.title',
+          message: 'alarms.dialogs.remove.message',
+          confirm: 'alarms.dialogs.remove.confirm',
+          cancel: 'alarms.dialogs.remove.cancel'
+        },
+        removeAll: {
+          title: 'alarms.dialogs.removeAll.title',
+          message: 'alarms.dialogs.removeAll.message',
+          confirm: 'alarms.dialogs.removeAll.confirm',
+          cancel: 'alarms.dialogs.removeAll.cancel'
+        },
+        details: {
+          stop: 'alarms.dialogs.details.stop',
+          line: 'alarms.dialogs.details.line',
+          time: 'alarms.dialogs.details.time'
         }
       }
     }

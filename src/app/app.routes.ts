@@ -42,6 +42,14 @@ export const routes: Routes = [
         title: APP_CONFIG.translationKeys.navigation.favorites
       },
       {
+        path: APP_CONFIG.routes.alarms,
+        loadComponent: () =>
+          import('@features/alarms/alarms.component').then(
+            (module) => module.AlarmsComponent
+          ),
+        title: APP_CONFIG.translationKeys.navigation.alarms
+      },
+      {
         path: NEWS_DETAIL_ROUTE_PATTERN,
         loadComponent: () =>
           import('@features/news/news-detail.component').then((module) => module.NewsDetailComponent),

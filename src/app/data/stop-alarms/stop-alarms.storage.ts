@@ -140,6 +140,7 @@ function normalizeAlarm(value: unknown): StopAlarm | null {
     scheduledArrival: candidate.scheduledArrival,
     offsetMinutes: Math.round(candidate.offsetMinutes),
     repeatDaily: candidate.repeatDaily,
+    enabled: candidate.enabled !== false,
     createdAt: candidate.createdAt
   } satisfies StopAlarm;
 }

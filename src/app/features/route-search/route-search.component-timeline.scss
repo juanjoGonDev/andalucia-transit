@@ -211,6 +211,46 @@
   color: var(--color-icon-muted);
 }
 
+.route-search__item-alarm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-icon-muted);
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.route-search__item-alarm .material-symbols-outlined {
+  font-size: 1.125rem;
+}
+
+.route-search__item-alarm:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary-light);
+  background: var(--color-surface-hover);
+}
+
+.route-search__item-alarm:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.route-search__item-alarm--active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
+
+.route-search__item-alarm--active .material-symbols-outlined {
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+
 .route-search__item-progress-group {
   display: flex;
   flex-direction: column;

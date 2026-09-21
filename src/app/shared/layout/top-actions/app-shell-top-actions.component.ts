@@ -67,6 +67,12 @@ export class AppShellTopActionsComponent {
       icon: 'settings',
       navigationKey: APP_CONFIG.routes.settings,
       commands: buildNavigationCommands(APP_CONFIG.routes.settings)
+    },
+    {
+      labelKey: this.translation.menu.alarms,
+      icon: 'notifications',
+      navigationKey: APP_CONFIG.routes.alarms,
+      commands: buildNavigationCommands(APP_CONFIG.routes.alarms)
     }
   ]);
 

@@ -13,10 +13,34 @@ const VALID_ALARM = {
   scheduledArrival: '2026-09-22T08:10:00.000Z',
   offsetMinutes: 10,
   repeatDaily: true,
+  enabled: true,
   createdAt: '2026-09-21T08:00:00.000Z'
 };
 
 describe('StopAlarmsStorage', () => {
+  it('defaults the enabled flag to true for legacy rows persisted without it', () => {
+    const legacyRow = {
+      id: 'stop-1::service-legacy',
+      stopId: 'stop-1',
+      consortiumId: 4,
+      stopName: 'Calle Principal',
+      lineCode: 'M-101',
+      destination: 'Centro',
+      scheduledArrival: '2026-09-22T08:10:00.000Z',
+      offsetMinutes: 10,
+      repeatDaily: true,
+      createdAt: '2026-09-21T08:00:00.000Z'
+    };
+    spyOn(window.localStorage, 'getItem').and.returnValue(JSON.stringify([legacyRow]));
+
+    expect(storage.load()).toEqual([
+      {
+        ...legacyRow,
+        enabled: true
+      }
+    ]);
+  });
+
   let storage: StopAlarmsStorage;
 
   beforeEach(() => {

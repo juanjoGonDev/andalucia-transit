@@ -9,7 +9,8 @@
     "lines": "Líneas",
     "favorites": "Favoritas",
     "news": "Noticias",
-    "stopInfo": "Información de parada"
+    "stopInfo": "Información de parada",
+    "alarms": "Alarmas"
   },
   "languages": {
     "es": "Español",
@@ -47,6 +48,7 @@
       "news": "Noticias",
       "nearby": "Paradas cercanas",
       "settings": "Configuración",
+      "alarms": "Alarmas",
       "inProgress": "En progreso"
     },
     "summary": {
@@ -190,6 +192,53 @@
         "name": "Nombre",
         "code": "Código",
         "count": "Favoritos a eliminar"
+      }
+    }
+  },
+  "alarms": {
+    "title": "Alarmas de llegada",
+    "description": "Todos los avisos que has programado para tus líneas.",
+    "summary": {
+      "active": "{count, plural, =0 {Sin alarmas activas} one {# alarma activa} other {# alarmas activas}}",
+      "disabled": "{count, plural, =0 {ninguna desactivada} one {# desactivada} other {# desactivadas}}"
+    },
+    "empty": "Aún no tienes alarmas",
+    "emptyHint": "Programa un aviso desde la detalle de una parada o desde los resultados de una búsqueda y aparecerá aquí.",
+    "emptyCta": "Buscar horarios",
+    "ringsAt": "Suena {minutes} min antes de las {time}",
+    "arrivalAt": "llega {time}",
+    "expired": "Caducada",
+    "repeatBadge": "Cada día",
+    "disabledBadge": "Desactivada",
+    "list": {
+      "stopLabel": "Parada",
+      "lineLabel": "Línea"
+    },
+    "actions": {
+      "enable": "Activar",
+      "disable": "Desactivar",
+      "enableA11y": "Activar alarma de la línea {line}",
+      "disableA11y": "Desactivar alarma de la línea {line}",
+      "remove": "Eliminar alarma de la línea {line}",
+      "removeAll": "Eliminar todas las alarmas"
+    },
+    "dialogs": {
+      "remove": {
+        "title": "¿Eliminar esta alarma?",
+        "message": "Dejarás de recibir el aviso de esta salida.",
+        "confirm": "Sí, eliminar",
+        "cancel": "Cancelar"
+      },
+      "removeAll": {
+        "title": "¿Eliminar todas las alarmas?",
+        "message": "Se borrarán todas las alarmas programadas.",
+        "confirm": "Eliminar todas",
+        "cancel": "Cancelar"
+      },
+      "details": {
+        "stop": "Parada",
+        "line": "Línea",
+        "time": "Hora"
       }
     }
   },

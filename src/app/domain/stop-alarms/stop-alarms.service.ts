@@ -83,6 +83,7 @@ export class StopAlarmsService {
       scheduledArrival: candidate.scheduledArrival.toISOString(),
       offsetMinutes: candidate.offsetMinutes,
       repeatDaily: candidate.repeatDaily,
+      enabled: true,
       createdAt: existing?.createdAt ?? new Date().toISOString()
     };
     const nextTriggerAt = computeNextTriggerAt(alarm, {
@@ -100,6 +101,42 @@ export class StopAlarmsService {
 
   remove(alarmId: string): void {
     this.replace(this.snapshot.filter((alarm) => alarm.id !== alarmId));
+  }
+
+  /**
+   * Enables or disables an alarm. Disabled alarms stay listed but never ring
+   * or advance. Re-enabling reschedules from scratch: one-shot alarms whose
+   * target already elapsed are dropped (returns false), repeating alarms roll
+   * to their next daily slot.
+   */
+  setEnabled(alarmId: string, enabled: boolean): boolean {
+    const alarm = this.get(alarmId);
+
+    if (!alarm || alarm.enabled === enabled) {
+      return alarm !== null;
+    }
+
+    if (!enabled) {
+      this.upsert({ ...alarm, enabled: false });
+      return true;
+    }
+
+    const nextTriggerAt = computeNextTriggerAt(alarm, {
+      now: Date.now(),
+      maxRepeatDays: this.config.alarms.maxRepeatDays
+    });
+
+    if (nextTriggerAt === null) {
+      this.remove(alarmId);
+      return false;
+    }
+
+    this.upsert({ ...alarm, enabled: true, nextTriggerAt });
+    return true;
+  }
+
+  removeAll(): void {
+    this.replace([]);
   }
 
   removeServiceAlarm(stopId: string, serviceId: string): void {
@@ -144,10 +181,12 @@ export class StopAlarmsService {
       const nextTriggerAt = computeNextTriggerAt(entry, {
         now,
         maxRepeatDays: this.config.alarms.maxRepeatDays,
-        graceMs: this.config.alarms.missedTriggerGraceMs
+        graceMs: entry.enabled ? this.config.alarms.missedTriggerGraceMs : undefined
       });
 
-      if (nextTriggerAt !== null) {
+      // Disabled alarms are kept listed even when unreachable; the scheduler
+      // skips them until the user re-enables (and reschedules) or deletes them.
+      if (nextTriggerAt !== null || !entry.enabled) {
         hydrated.push({ ...entry, nextTriggerAt });
       }
     }
@@ -156,8 +195,14 @@ export class StopAlarmsService {
   }
 }
 
-function compareByTrigger(first: StopAlarmRuntime, second: StopAlarmRuntime): number {
-  return first.nextTriggerAt - second.nextTriggerAt;
+function compareByTrigger(
+  first: StopAlarmRuntime,
+  second: StopAlarmRuntime
+): number {
+  const firstTrigger = first.nextTriggerAt ?? Number.MAX_SAFE_INTEGER;
+  const secondTrigger = second.nextTriggerAt ?? Number.MAX_SAFE_INTEGER;
+
+  return firstTrigger - secondTrigger;
 }
 
 function toPersistentAlarm(alarm: StopAlarmRuntime): StopAlarm {

@@ -122,7 +122,8 @@ describe('AppShellTopActionsComponent', () => {
     expect(entries.map((entry) => entry.getAttribute('href'))).toEqual([
       '/recents',
       '/news',
-      '/settings'
+      '/settings',
+      '/alarms'
     ]);
   });
 

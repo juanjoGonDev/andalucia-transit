@@ -20,6 +20,7 @@ const BASE_ALARM: StopAlarm = {
   scheduledArrival: new Date(10 * DAYS + 60 * MINUTES).toISOString(),
   offsetMinutes: 10,
   repeatDaily: false,
+  enabled: true,
   createdAt: new Date(0).toISOString()
 };
 

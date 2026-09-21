@@ -9,7 +9,8 @@
     "lines": "Lines",
     "favorites": "Favorites",
     "news": "News",
-    "stopInfo": "Stop information"
+    "stopInfo": "Stop information",
+    "alarms": "Alarms"
   },
   "languages": {
     "es": "Spanish",
@@ -47,6 +48,7 @@
       "news": "News",
       "nearby": "Nearby stops",
       "settings": "Settings",
+      "alarms": "Alarms",
       "inProgress": "In progress"
     },
     "summary": {
@@ -190,6 +192,53 @@
         "name": "Name",
         "code": "Code",
         "count": "Favorites to remove"
+      }
+    }
+  },
+  "alarms": {
+    "title": "Arrival alarms",
+    "description": "Every reminder you have scheduled for your lines.",
+    "summary": {
+      "active": "{count, plural, =0 {No active alarms} one {# active alarm} other {# active alarms}}",
+      "disabled": "{count, plural, =0 {none disabled} one {# disabled} other {# disabled}}"
+    },
+    "empty": "You have no alarms yet",
+    "emptyHint": "Schedule a reminder from a stop's detail page or from search results and it will show up here.",
+    "emptyCta": "Search schedules",
+    "ringsAt": "Rings {minutes} min before {time}",
+    "arrivalAt": "arrives {time}",
+    "expired": "Expired",
+    "repeatBadge": "Every day",
+    "disabledBadge": "Disabled",
+    "list": {
+      "stopLabel": "Stop",
+      "lineLabel": "Line"
+    },
+    "actions": {
+      "enable": "Enable",
+      "disable": "Disable",
+      "enableA11y": "Enable alarm for line {line}",
+      "disableA11y": "Disable alarm for line {line}",
+      "remove": "Remove alarm for line {line}",
+      "removeAll": "Remove all alarms"
+    },
+    "dialogs": {
+      "remove": {
+        "title": "Remove this alarm?",
+        "message": "You will stop receiving the reminder for this departure.",
+        "confirm": "Yes, remove it",
+        "cancel": "Cancel"
+      },
+      "removeAll": {
+        "title": "Remove all alarms?",
+        "message": "Every scheduled alarm will be deleted.",
+        "confirm": "Remove all",
+        "cancel": "Cancel"
+      },
+      "details": {
+        "stop": "Stop",
+        "line": "Line",
+        "time": "Time"
       }
     }
   },
