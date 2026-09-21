@@ -215,8 +215,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 1.75rem;
+  height: 1.75rem;
   padding: 0;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
@@ -227,7 +227,7 @@
 }
 
 .route-search__item-alarm .material-symbols-outlined {
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
 }
 
 .route-search__item-alarm:hover {
