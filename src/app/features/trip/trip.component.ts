@@ -156,7 +156,7 @@ export class TripComponent implements OnInit, OnDestroy {
     this.autoScrollActive.set(anchorDistance <= RECENTER_SCROLL_PX);
   }
 
-  protected trackStop(stop: TripStopView): string {
+  protected trackStop(_index: number, stop: TripStopView): string {
     return stop.stopId;
   }
 
