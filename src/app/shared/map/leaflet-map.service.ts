@@ -60,6 +60,7 @@ export interface MapHandle {
   fitToCoordinates(points: readonly GeoCoordinate[], animate?: boolean): void;
   restrictToCoordinates(points: readonly GeoCoordinate[]): void;
   highlightStop(stopId: string | null): void;
+  centerStop(stopId: string, animate?: boolean): boolean;
   focusStop(stopId: string, zoom: number, animate?: boolean): boolean;
   renderRoutes(routes: readonly MapRoutePolyline[], activeRouteId: string | null): void;
   onViewportSettled(handler: MapViewportSettledHandler): () => void;
@@ -297,6 +298,10 @@ export class LeafletMapService {
               const previousSelected = selectedStopId;
               selectedStopId = stop.id;
               updateStopStyle(previousSelected);
+              map.panTo(stopMarker.getLatLng(), {
+                animate: true,
+                duration: CAMERA_ANIMATION_DURATION_SECONDS
+              });
               updateStopStyle(selectedStopId);
               interactions.onSelect?.(stop.id);
             });
@@ -342,6 +347,19 @@ export class LeafletMapService {
         highlightedStopId = stopId;
         updateStopStyle(previous);
         updateStopStyle(highlightedStopId);
+      },
+      centerStop: (stopId, animate = false) => {
+        const stopMarker = stopMarkers.get(stopId);
+
+        if (!stopMarker) {
+          return false;
+        }
+
+        map.panTo(stopMarker.getLatLng(), {
+          animate,
+          duration: CAMERA_ANIMATION_DURATION_SECONDS
+        });
+        return true;
       },
       focusStop: (stopId, zoom, animate = false) => {
         const stopMarker = stopMarkers.get(stopId);

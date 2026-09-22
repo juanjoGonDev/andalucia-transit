@@ -1,6 +1,7 @@
 <div class="transit-route-workspace">
   <div class="transit-route-workspace__map-column">
     <app-route-map
+      #routeMap
       *ngIf="coordinates.length >= 2; else mapUnavailable"
       [routeId]="routeId"
       [coordinates]="coordinates"

@@ -48,6 +48,11 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   private readonly maps = inject(LeafletMapService);
   private handle: MapHandle | null = null;
+
+  /** Smoothly pans the camera so the given stop is centered on the map. */
+  centerStop(stopId: string): void {
+    this.handle?.centerStop(stopId, true);
+  }
   private lastDataSignature = '';
 
   ngAfterViewInit(): void {

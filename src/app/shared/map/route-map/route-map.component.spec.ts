@@ -14,6 +14,7 @@ import { RouteMapComponent } from '@shared/map/route-map/route-map.component';
 class MapHandleStub implements MapHandle {
   readonly highlightStop = jasmine.createSpy('highlightStop');
   readonly fitToCoordinates = jasmine.createSpy('fitToCoordinates');
+  readonly centerStop = jasmine.createSpy('centerStop').and.returnValue(true);
   readonly renderRoutes = jasmine.createSpy('renderRoutes');
   readonly invalidateSize = jasmine.createSpy('invalidateSize');
   readonly destroy = jasmine.createSpy('destroy');
@@ -102,6 +103,14 @@ describe('RouteMapComponent', () => {
       'line-1'
     );
     expect(maps.handle.fitToCoordinates).toHaveBeenCalledWith(coordinates);
+  });
+
+  it('centers a stop with a smooth camera animation on demand', () => {
+    fixture.detectChanges();
+
+    fixture.componentInstance.centerStop('stop-b');
+
+    expect(maps.handle.centerStop).toHaveBeenCalledWith('stop-b', true);
   });
 
   it('emits marker selection without forcing stop-detail navigation', () => {

@@ -90,6 +90,9 @@ class MapHandleStub implements MapHandle {
     this.highlightedStopIds.push(stopId);
   }
 
+  centerStop(): boolean {
+    return true;
+  }
   focusStop(_stopId: string, _zoom: number, _animate = false): boolean {
     return true;
   }

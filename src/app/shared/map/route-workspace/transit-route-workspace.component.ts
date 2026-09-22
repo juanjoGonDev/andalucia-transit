@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from '@angular/core';
 import type {
   RouteLineCoordinate,
   RouteLineStop
@@ -38,9 +45,13 @@ export class TransitRouteWorkspaceComponent {
   @Output() readonly stopSelected = new EventEmitter<string>();
   @Output() readonly stopDetails = new EventEmitter<string>();
 
+  @ViewChild('routeMap')
+  private readonly mapRef?: RouteMapComponent;
+
   protected readonly trackStop = (_: number, stop: RouteLineStop): string => stop.stopId;
 
   protected selectStop(stopId: string): void {
+    this.mapRef?.centerStop(stopId);
     this.stopSelected.emit(stopId);
   }
 

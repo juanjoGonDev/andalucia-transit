@@ -25,6 +25,7 @@ class RouteMapStubComponent {
   @Input() stopDetailsLabel = '';
   @Output() readonly stopSelected = new EventEmitter<string>();
   @Output() readonly stopDetails = new EventEmitter<string>();
+  readonly centerStop = jasmine.createSpy('centerStop');
 }
 
 describe('TransitRouteWorkspaceComponent', () => {
@@ -55,6 +56,18 @@ describe('TransitRouteWorkspaceComponent', () => {
     fixture.componentInstance.stopsTitle = 'Stops';
     fixture.componentInstance.stopDetailsLabel = 'More information';
     fixture.componentInstance.mapUnavailableLabel = 'Map unavailable';
+  });
+
+  it('centers the map smoothly on the stop tapped in the panel', () => {
+    fixture.detectChanges();
+
+    fixture.debugElement
+      .queryAll(By.css('.transit-route-workspace__stop-select'))[1]
+      ?.triggerEventHandler('click');
+
+    const map = fixture.debugElement.query(By.directive(RouteMapStubComponent))
+      .componentInstance as RouteMapStubComponent;
+    expect(map.centerStop).toHaveBeenCalledWith('stop-b');
   });
 
   it('keeps map and stop selection on one shared component contract', () => {
