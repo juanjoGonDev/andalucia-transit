@@ -90,9 +90,9 @@ not perceivable, especially in bright sunlight on mobile.
   tracking is available). Storage, expiry and cleanup covered with tests.
 
 ### Docs / hygiene
-- [ ] **D1** i18n (es/en) for all new strings; no hardcoded UI copy.
-- [ ] **D2** `docs/feature-checklist.md` + `AGENTS.md` decision log updated.
-- [ ] **D3** Final report with mobile-first improvement recommendations (visual + new
+- [x] **D1** i18n (es/en) for all new strings; no hardcoded UI copy.
+- [x] **D2** `docs/feature-checklist.md` + `AGENTS.md` decision log updated.
+- [x] **D3** Final report with mobile-first improvement recommendations (visual + new
   features) delivered for user validation.
 
 ## 3. Non-goals (this PR)
