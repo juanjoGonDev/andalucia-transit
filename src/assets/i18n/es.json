@@ -500,5 +500,10 @@
     "geolocation": {
       "notSupported": "La geolocalización no es compatible con este dispositivo."
     }
+  },
+  "countdown": {
+    "hour": "{value, plural, one {# hora} other {# horas}}",
+    "minute": "{value, plural, one {# minuto} other {# minutos}}",
+    "second": "{value, plural, one {# segundo} other {# segundos}}"
   }
 }

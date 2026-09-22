@@ -59,17 +59,6 @@
   font-style: italic;
 }
 
-.recent-search-card__today {
-  margin-left: auto;
-  margin-top: auto;
-  color: color-mix(in srgb, var(--color-text-inverse) 92%, transparent);
-  font-weight: 600;
-  font-size: 0.85rem;
-  align-self: end;
-  display: flex;
-  align-items: flex-end;
-}
-
 .recent-search-card__loading {
   display: flex;
   flex-direction: column;

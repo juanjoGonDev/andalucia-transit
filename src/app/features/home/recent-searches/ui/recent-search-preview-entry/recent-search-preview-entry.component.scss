@@ -6,6 +6,9 @@
   --recent-preview-time-color: var(--color-text-strong);
   --recent-preview-time-previous-color: var(--color-error);
   --recent-preview-time-next-color: var(--color-primary);
+  --recent-preview-arrow-previous-color: var(--color-error);
+  --recent-preview-arrow-next-background: var(--color-primary);
+  --recent-preview-arrow-next-color: var(--color-surface-light);
 }
 
 .recent-preview-entry {
@@ -18,7 +21,7 @@
 .recent-preview-entry__header {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  align-items: baseline;
+  align-items: center;
   column-gap: var(--space-sm);
 }
 
@@ -35,23 +38,52 @@
   letter-spacing: 0.01em;
 }
 
+.recent-preview-entry__moment {
+  justify-self: end;
+  min-width: 0;
+}
+
+.recent-preview-entry__content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2xs);
+  white-space: nowrap;
+}
+
+.recent-preview-entry__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 1.4rem;
+  block-size: 1.4rem;
+  inline-size: 1.4rem;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.recent-preview-entry__arrow--previous {
+  color: var(--recent-preview-arrow-previous-color);
+}
+
+.recent-preview-entry__arrow--next {
+  background-color: var(--recent-preview-arrow-next-background);
+  color: var(--recent-preview-arrow-next-color);
+}
+
 .recent-preview-entry__relative {
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--recent-preview-relative-color);
-  white-space: normal;
-  word-break: break-word;
+  white-space: nowrap;
 }
 
 .recent-preview-entry__time {
-  display: flex;
-  justify-content: flex-end;
-  align-items: baseline;
-  min-inline-size: clamp(var(--space-3xl), 16vw, var(--space-5xl));
   font-weight: 700;
   font-size: clamp(1rem, 4vw, 1.15rem);
   color: var(--recent-preview-time-color);
-  justify-self: end;
   white-space: nowrap;
   text-align: right;
   font-variant-numeric: tabular-nums;
@@ -63,6 +95,18 @@
 
 .recent-preview-entry__time--next {
   color: var(--recent-preview-time-next-color);
+}
+
+.recent-preview-entry__visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @media (min-width: 48rem) {

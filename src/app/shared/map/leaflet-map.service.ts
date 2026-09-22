@@ -19,6 +19,11 @@ import {
 } from 'leaflet';
 import { buildRouteDirectionIndicators } from '@domain/map/route-overlay-geometry';
 import { GeoCoordinate } from '@domain/utils/geo-distance.util';
+import {
+  MapStopMarkerRole,
+  MapStopRolePalette,
+  resolveStopMarkerStyle
+} from '@shared/map/map-marker-style';
 
 export interface MapCreateOptions {
   readonly center: GeoCoordinate;
@@ -32,6 +37,7 @@ export interface MapStopMarker {
   readonly name: string;
   readonly code: string;
   readonly municipality: string;
+  readonly role?: MapStopMarkerRole;
   readonly coordinate: GeoCoordinate;
 }
 
@@ -78,6 +84,10 @@ interface MapPalette {
   readonly userStroke: string;
   readonly route: string;
   readonly routeActive: string;
+  readonly stopOrigin: string;
+  readonly stopDestination: string;
+  readonly stopHighlight: string;
+  readonly stopHighlightStroke: string;
 }
 
 const TILE_LAYER_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' as const;
@@ -88,12 +98,6 @@ const DEFAULT_MAX_ZOOM = 17;
 const MAP_PADDING: [number, number] = [32, 32];
 const NETWORK_BOUNDS_PADDING_RATIO = 0.08;
 const CAMERA_ANIMATION_DURATION_SECONDS = 0.65;
-const STOP_MARKER_RADIUS = 7;
-const STOP_MARKER_ACTIVE_RADIUS = 11;
-const STOP_MARKER_FILL_OPACITY = 0.9;
-const STOP_MARKER_ACTIVE_FILL_OPACITY = 1;
-const STOP_MARKER_WEIGHT = 2;
-const STOP_MARKER_ACTIVE_WEIGHT = 4;
 const USER_MARKER_RADIUS = 10;
 const USER_MARKER_FILL_OPACITY = 0.9;
 const USER_MARKER_WEIGHT = 3;
@@ -127,12 +131,28 @@ const CSS_USER_COLOR = '--color-warning' as const;
 const CSS_USER_STROKE_COLOR = '--color-secondary' as const;
 const CSS_ROUTE_COLOR = '--color-primary-midnight' as const;
 const CSS_ROUTE_ACTIVE_COLOR = '--color-primary' as const;
+const CSS_STOP_ORIGIN_COLOR = '--color-primary' as const;
+const CSS_STOP_DESTINATION_COLOR = '--color-error' as const;
+const CSS_STOP_HIGHLIGHT_COLOR = '--color-secondary' as const;
+const CSS_STOP_HIGHLIGHT_STROKE_COLOR = '--color-warning' as const;
 const FALLBACK_STOP_COLOR = '#0f9d58' as const;
 const FALLBACK_STOP_STROKE_COLOR = '#ffffff' as const;
 const FALLBACK_USER_COLOR = '#f59e0b' as const;
 const FALLBACK_USER_STROKE_COLOR = '#060f2b' as const;
 const FALLBACK_ROUTE_COLOR = '#0d3a9e' as const;
 const FALLBACK_ROUTE_ACTIVE_COLOR = '#0061fe' as const;
+const FALLBACK_STOP_ORIGIN_COLOR = '#0061fe' as const;
+const FALLBACK_STOP_DESTINATION_COLOR = '#d93025' as const;
+const FALLBACK_STOP_HIGHLIGHT_COLOR = '#060f2b' as const;
+const FALLBACK_STOP_HIGHLIGHT_STROKE_COLOR = '#f59e0b' as const;
+const STOP_HIGHLIGHT_HALO_EXTRA_RADIUS = 6;
+const STOP_HIGHLIGHT_HALO_WEIGHT = 3;
+const STOP_HIGHLIGHT_HALO_OPACITY = 0.9;
+const STOP_ROLE_ICONS: Readonly<Record<MapStopMarkerRole, string>> = {
+  regular: 'directions_bus',
+  origin: 'trip_origin',
+  destination: 'flag'
+} as const;
 
 @Injectable({ providedIn: 'root' })
 export class LeafletMapService {
@@ -141,15 +161,55 @@ export class LeafletMapService {
     const palette = this.resolvePalette(container);
     const stopsLayer = layerGroup().addTo(map);
     const stopMarkers = new globalThis.Map<string, CircleMarker>();
+    const stopRoles = new globalThis.Map<string, MapStopMarkerRole>();
+    const stopPalette = this.buildStopPalette(palette);
     let userMarker: CircleMarker | null = null;
+    let haloMarker: CircleMarker | null = null;
     let highlightedStopId: string | null = null;
     let selectedStopId: string | null = null;
     const routeLayer = layerGroup().addTo(map);
     const routeDirectionLayer = layerGroup().addTo(map);
     const routePolylines = new globalThis.Map<string, Polyline>();
 
+    const updateHalo = (): void => {
+      const activeId = highlightedStopId ?? selectedStopId;
+
+      if (!activeId) {
+        haloMarker?.remove();
+        haloMarker = null;
+        return;
+      }
+
+      const stopMarker = stopMarkers.get(activeId);
+
+      if (!stopMarker) {
+        haloMarker?.remove();
+        haloMarker = null;
+        return;
+      }
+
+      if (!haloMarker) {
+        haloMarker = circleMarker(stopMarker.getLatLng(), {
+          radius: resolveStopMarkerStyle('regular', false, stopPalette).radius,
+          interactive: false
+        }).addTo(map);
+      }
+
+      haloMarker.setLatLng(stopMarker.getLatLng());
+      haloMarker.setRadius(stopMarker.getRadius() + STOP_HIGHLIGHT_HALO_EXTRA_RADIUS);
+      haloMarker.setStyle({
+        color: palette.stopHighlightStroke,
+        weight: STOP_HIGHLIGHT_HALO_WEIGHT,
+        opacity: STOP_HIGHLIGHT_HALO_OPACITY,
+        fillOpacity: 0
+      });
+      haloMarker.bringToFront();
+      stopMarker.bringToFront();
+    };
+
     const updateStopStyle = (stopId: string | null): void => {
       if (!stopId) {
+        updateHalo();
         return;
       }
 
@@ -160,17 +220,18 @@ export class LeafletMapService {
       }
 
       const isActive = stopId === highlightedStopId || stopId === selectedStopId;
-      stopMarker.setRadius(isActive ? STOP_MARKER_ACTIVE_RADIUS : STOP_MARKER_RADIUS);
+      const role = stopRoles.get(stopId) ?? 'regular';
+      const style = resolveStopMarkerStyle(role, isActive, stopPalette);
+
+      stopMarker.setRadius(style.radius);
       stopMarker.setStyle({
-        color: palette.stopStroke,
-        weight: isActive ? STOP_MARKER_ACTIVE_WEIGHT : STOP_MARKER_WEIGHT,
-        fillColor: palette.stop,
-        fillOpacity: isActive ? STOP_MARKER_ACTIVE_FILL_OPACITY : STOP_MARKER_FILL_OPACITY
+        color: style.color,
+        weight: style.weight,
+        fillColor: style.fillColor,
+        fillOpacity: style.fillOpacity
       });
 
-      if (isActive) {
-        stopMarker.bringToFront();
-      }
+      updateHalo();
     };
 
     return {
@@ -203,20 +264,26 @@ export class LeafletMapService {
       renderStops: (stops, interactions) => {
         stopsLayer.clearLayers();
         stopMarkers.clear();
+        stopRoles.clear();
         highlightedStopId = null;
         selectedStopId = null;
+        haloMarker?.remove();
+        haloMarker = null;
 
         for (const stop of stops) {
           const latLng = this.toLatLng(stop.coordinate);
+          const role = stop.role ?? 'regular';
+          const style = resolveStopMarkerStyle(role, false, stopPalette);
           const stopMarker = circleMarker(latLng, {
-            radius: STOP_MARKER_RADIUS,
-            color: palette.stopStroke,
-            weight: STOP_MARKER_WEIGHT,
-            fillColor: palette.stop,
-            fillOpacity: STOP_MARKER_FILL_OPACITY
+            radius: style.radius,
+            color: style.color,
+            weight: style.weight,
+            fillColor: style.fillColor,
+            fillOpacity: style.fillOpacity
           }).addTo(stopsLayer);
 
           stopMarkers.set(stop.id, stopMarker);
+          stopRoles.set(stop.id, role);
 
           if (interactions) {
             const popupContent = this.buildStopPopup(stop, interactions);
@@ -376,7 +443,7 @@ export class LeafletMapService {
     const icon = document.createElement('span');
     icon.className = STOP_POPUP_ICON_CLASS;
     icon.setAttribute('aria-hidden', 'true');
-    icon.textContent = 'directions_bus';
+    icon.textContent = STOP_ROLE_ICONS[stop.role ?? 'regular'];
 
     const identity = document.createElement('div');
     identity.className = STOP_POPUP_IDENTITY_CLASS;
@@ -418,7 +485,34 @@ export class LeafletMapService {
       user: this.resolveCssColor(style, CSS_USER_COLOR, FALLBACK_USER_COLOR),
       userStroke: this.resolveCssColor(style, CSS_USER_STROKE_COLOR, FALLBACK_USER_STROKE_COLOR),
       route: this.resolveCssColor(style, CSS_ROUTE_COLOR, FALLBACK_ROUTE_COLOR),
-      routeActive: this.resolveCssColor(style, CSS_ROUTE_ACTIVE_COLOR, FALLBACK_ROUTE_ACTIVE_COLOR)
+      routeActive: this.resolveCssColor(style, CSS_ROUTE_ACTIVE_COLOR, FALLBACK_ROUTE_ACTIVE_COLOR),
+      stopOrigin: this.resolveCssColor(style, CSS_STOP_ORIGIN_COLOR, FALLBACK_STOP_ORIGIN_COLOR),
+      stopDestination: this.resolveCssColor(
+        style,
+        CSS_STOP_DESTINATION_COLOR,
+        FALLBACK_STOP_DESTINATION_COLOR
+      ),
+      stopHighlight: this.resolveCssColor(
+        style,
+        CSS_STOP_HIGHLIGHT_COLOR,
+        FALLBACK_STOP_HIGHLIGHT_COLOR
+      ),
+      stopHighlightStroke: this.resolveCssColor(
+        style,
+        CSS_STOP_HIGHLIGHT_STROKE_COLOR,
+        FALLBACK_STOP_HIGHLIGHT_STROKE_COLOR
+      )
+    };
+  }
+
+  private buildStopPalette(palette: MapPalette): MapStopRolePalette {
+    return {
+      regular: palette.stop,
+      origin: palette.stopOrigin,
+      destination: palette.stopDestination,
+      highlight: palette.stopHighlight,
+      stroke: palette.stopStroke,
+      highlightStroke: palette.stopHighlightStroke
     };
   }
 

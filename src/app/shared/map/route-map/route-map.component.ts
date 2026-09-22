@@ -18,6 +18,7 @@ import {
   MapHandle,
   MapStopMarker
 } from '@shared/map/leaflet-map.service';
+import { MapStopMarkerRole } from '@shared/map/map-marker-style';
 
 const DEFAULT_CENTER = { latitude: 37.3891, longitude: -4.7794 } as const;
 const DEFAULT_ZOOM = 7;
@@ -36,6 +37,8 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() routeId = 'route';
   @Input() coordinates: readonly RouteLineCoordinate[] = [];
   @Input() stops: readonly RouteLineStop[] = [];
+  @Input() originStopIds: readonly string[] = [];
+  @Input() destinationStopIds: readonly string[] = [];
   @Input() selectedStopId: string | null = null;
   @Input() accessibleLabel = 'Route map';
   @Input() stopDetailsLabel = 'More information';
@@ -57,7 +60,13 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       return;
     }
 
-    if (changes['coordinates'] || changes['stops'] || changes['routeId']) {
+    if (
+      changes['coordinates'] ||
+      changes['stops'] ||
+      changes['routeId'] ||
+      changes['originStopIds'] ||
+      changes['destinationStopIds']
+    ) {
       this.renderData();
     }
 
@@ -88,14 +97,22 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       return;
     }
 
-    const signature = buildDataSignature(this.routeId, this.coordinates, this.stops);
+    const signature = buildDataSignature(
+      this.routeId,
+      this.coordinates,
+      this.stops,
+      this.originStopIds,
+      this.destinationStopIds
+    );
     if (signature === this.lastDataSignature) {
       this.handle.highlightStop(this.selectedStopId);
       return;
     }
     this.lastDataSignature = signature;
 
-    const markers = this.stops.map(toMapStopMarker);
+    const markers = this.stops.map((stop) =>
+      toMapStopMarker(stop, resolveMarkerRole(stop, this.originStopIds, this.destinationStopIds))
+    );
     this.handle.renderStops(markers, {
       getDetailsLabel: () => this.stopDetailsLabel,
       onSelect: (stopId) => this.stopSelected.emit(stopId),
@@ -128,12 +145,13 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   }
 }
 
-function toMapStopMarker(stop: RouteLineStop): MapStopMarker {
+function toMapStopMarker(stop: RouteLineStop, role: MapStopMarkerRole): MapStopMarker {
   return {
     id: stop.stopId,
     name: stop.name,
     code: '',
     municipality: '',
+    role,
     coordinate: {
       latitude: stop.latitude,
       longitude: stop.longitude
@@ -141,10 +159,28 @@ function toMapStopMarker(stop: RouteLineStop): MapStopMarker {
   };
 }
 
+function resolveMarkerRole(
+  stop: RouteLineStop,
+  originStopIds: readonly string[],
+  destinationStopIds: readonly string[]
+): MapStopMarkerRole {
+  if (originStopIds.includes(stop.stopId)) {
+    return 'origin';
+  }
+
+  if (destinationStopIds.includes(stop.stopId)) {
+    return 'destination';
+  }
+
+  return 'regular';
+}
+
 function buildDataSignature(
   routeId: string,
   coordinates: readonly RouteLineCoordinate[],
-  stops: readonly RouteLineStop[]
+  stops: readonly RouteLineStop[],
+  originStopIds: readonly string[],
+  destinationStopIds: readonly string[]
 ): string {
   const firstCoordinate = coordinates[0];
   const lastCoordinate = coordinates[coordinates.length - 1];
@@ -159,6 +195,8 @@ function buildDataSignature(
     lastCoordinate?.longitude ?? '',
     stops.length,
     firstStop?.stopId ?? '',
-    lastStop?.stopId ?? ''
+    lastStop?.stopId ?? '',
+    originStopIds.join(','),
+    destinationStopIds.join(',')
   ].join('|');
 }

@@ -2,13 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject, Subscription, map } from 'rxjs';
 import { RouteSearchDepartureView, RouteSearchResultsService } from '@domain/route-search/route-search-results.service';
 import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
+import { CountdownDuration } from '@domain/utils/countdown-labels.util';
 
 export interface RouteSearchPreviewDeparture {
   readonly id: string;
   readonly lineCode: string;
   readonly destination: string;
   readonly arrivalTime: Date;
-  readonly relativeLabel: string | null;
+  readonly relativeLabel: CountdownDuration | null;
   readonly kind: 'past' | 'upcoming';
 }
 

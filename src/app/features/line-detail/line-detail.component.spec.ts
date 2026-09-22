@@ -37,6 +37,7 @@ class TransitRouteWorkspaceStubComponent {
   @Input() mapUnavailableLabel = '';
   @Output() readonly stopSelected = new EventEmitter<string>();
   @Output() readonly stopDetails = new EventEmitter<string>();
+  @Input() stopNucleusOrdinalLabel: ((ordinal: number, nucleus: string) => string) | null = null;
 }
 
 class LineRouteWorkspaceServiceStub {
@@ -59,7 +60,9 @@ class LineRouteWorkspaceServiceStub {
       createStop('stop-a', 1, 'Stop A'),
       createStop('stop-b', 2, 'Stop B')
     ],
-    resolvedDirection: 0
+    resolvedDirection: 0,
+    originStopIds: [],
+    destinationStopIds: []
   };
 
   load() {

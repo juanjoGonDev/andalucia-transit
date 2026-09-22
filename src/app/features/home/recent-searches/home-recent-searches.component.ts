@@ -23,7 +23,8 @@ import {
   startWith,
   switchMap
 } from 'rxjs';
-import { AppConfig } from '@core/config';
+import { AppConfig, SupportedLanguage } from '@core/config';
+import { LanguageService } from '@core/services/language.service';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 import { RecentSearchesFacade } from '@domain/route-search/recent-searches.facade';
 import type { RouteSearchHistoryEntry } from '@domain/route-search/route-search-history.service';
@@ -33,6 +34,8 @@ import type {
 } from '@domain/route-search/route-search-preview.service';
 import { createRouteSearchSelection } from '@domain/route-search/route-search-selection.util';
 import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
+import { CountdownDuration } from '@domain/utils/countdown-labels.util';
+import { formatShortNumericDate } from '@domain/utils/date-format.util';
 import {
   PreviewEntryKind,
   PreviewRelativeLabel,
@@ -61,6 +64,7 @@ export class HomeRecentSearchesComponent implements OnInit {
   private readonly dialog = inject(OverlayDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
+  private readonly languageService = inject(LanguageService);
   private readonly timezone = this.config.data.timezone;
   private readonly translations = this.config.translationKeys.home.sections.recentStops;
   private readonly dialogTranslations = this.config.translationKeys.home.dialogs.recentStops;
@@ -69,8 +73,6 @@ export class HomeRecentSearchesComponent implements OnInit {
   readonly items = signal<readonly RecentSearchItem[]>([]);
   readonly hasItems = computed(() => this.items().length > 0);
   protected readonly emptyKey = this.translations.empty;
-  protected readonly searchDateKey = this.translations.searchDate;
-  protected readonly searchDateTodayKey = this.translations.searchDateToday;
   protected readonly loadingKey = this.translations.previewLoading;
   protected readonly errorKey = this.translations.previewError;
   protected readonly noPreviewKey = this.translations.noPreview;
@@ -93,6 +95,11 @@ export class HomeRecentSearchesComponent implements OnInit {
 
   protected trackById(_: number, item: RecentSearchItem): string {
     return item.id;
+  }
+
+  protected searchDateLabel(item: RecentSearchItem): string {
+    const language: SupportedLanguage = this.languageService.currentLanguage();
+    return formatShortNumericDate(item.effectiveQueryDate, language);
   }
 
   protected async open(item: RecentSearchItem): Promise<void> {
@@ -186,12 +193,12 @@ export class HomeRecentSearchesComponent implements OnInit {
   }
 
   private mapEntry(entry: RouteSearchHistoryEntry): RecentSearchItem {
-    const resolved = this.resolveQueryDate(entry.selection.queryDate);
+    const effectiveQueryDate = this.resolveQueryDate(entry.selection.queryDate);
     const effectiveSelection = createRouteSearchSelection(
       entry.selection.origin,
       entry.selection.destination,
       entry.selection.lineMatches,
-      resolved.date
+      effectiveQueryDate
     );
 
     return {
@@ -199,23 +206,22 @@ export class HomeRecentSearchesComponent implements OnInit {
       originName: entry.selection.origin.name,
       destinationName: entry.selection.destination.name,
       effectiveSelection,
-      effectiveQueryDate: resolved.date,
-      showTodayNotice: resolved.adjusted,
+      effectiveQueryDate,
       preview: this.facade.previewEnabled()
         ? { status: 'loading' }
         : { status: 'disabled' }
     } satisfies RecentSearchItem;
   }
 
-  private resolveQueryDate(original: Date): { readonly date: Date; readonly adjusted: boolean } {
+  private resolveQueryDate(original: Date): Date {
     const today = DateTime.now().setZone(this.timezone).startOf('day');
     const query = DateTime.fromJSDate(original).setZone(this.timezone).startOf('day');
 
     if (query < today) {
-      return { date: today.toJSDate(), adjusted: true };
+      return today.toJSDate();
     }
 
-    return { date: new Date(original.getTime()), adjusted: false };
+    return new Date(original.getTime());
   }
 
   private loadPreview(item: RecentSearchItem): void {
@@ -294,9 +300,13 @@ export class HomeRecentSearchesComponent implements OnInit {
     } satisfies RecentSearchPreviewEntry;
   }
 
-  private mapRelativeLabel(kind: PreviewEntryKind, value: string): PreviewRelativeLabel {
+  private mapRelativeLabel(kind: PreviewEntryKind, duration: CountdownDuration): PreviewRelativeLabel {
     const key = kind === 'next' ? this.upcomingTranslation : this.pastTranslation;
-    return { key, params: { time: value } } satisfies PreviewRelativeLabel;
+    return {
+      key,
+      text: duration.text,
+      spoken: { value: duration.value, unit: duration.unit }
+    } satisfies PreviewRelativeLabel;
   }
 
   private async confirm(data: ConfirmDialogData): Promise<boolean> {

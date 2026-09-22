@@ -5,6 +5,8 @@
       [routeId]="routeId"
       [coordinates]="coordinates"
       [stops]="stops"
+      [originStopIds]="originStopIds"
+      [destinationStopIds]="destinationStopIds"
       [selectedStopId]="selectedStopId"
       [accessibleLabel]="accessibleLabel"
       [stopDetailsLabel]="stopDetailsLabel"
@@ -29,15 +31,45 @@
         *ngFor="let stop of stops; trackBy: trackStop"
         class="transit-route-workspace__stop-row"
         [class.transit-route-workspace__stop-row--selected]="selectedStopId === stop.stopId"
+        [class.transit-route-workspace__stop-row--origin]="isOriginStop(stop.stopId)"
+        [class.transit-route-workspace__stop-row--destination]="isDestinationStop(stop.stopId)"
       >
         <button
           type="button"
           class="transit-route-workspace__stop-select"
           [attr.aria-pressed]="selectedStopId === stop.stopId"
+          [attr.aria-label]="stopSelectAriaLabel(stop)"
           (click)="selectStop(stop.stopId)"
         >
-          <span class="transit-route-workspace__marker" aria-hidden="true"></span>
-          <span class="transit-route-workspace__stop-name">{{ stop.name }}</span>
+          <span
+            class="transit-route-workspace__marker"
+            [class.transit-route-workspace__marker--origin]="isOriginStop(stop.stopId)"
+            [class.transit-route-workspace__marker--destination]="isDestinationStop(stop.stopId)"
+            aria-hidden="true"
+          ></span>
+          <span class="transit-route-workspace__stop-identity">
+            <span class="transit-route-workspace__stop-name">{{ stop.name }}</span>
+            <span
+              *ngIf="stopNucleusBadge(stop) as nucleusBadge"
+              class="transit-route-workspace__stop-nucleus"
+            >
+              {{ nucleusBadge }}
+            </span>
+            <span
+              *ngIf="isOriginStop(stop.stopId)"
+              class="transit-route-workspace__stop-tag transit-route-workspace__stop-tag--origin"
+              aria-hidden="true"
+            >
+              {{ originMarkerLabel }}
+            </span>
+            <span
+              *ngIf="isDestinationStop(stop.stopId)"
+              class="transit-route-workspace__stop-tag transit-route-workspace__stop-tag--destination"
+              aria-hidden="true"
+            >
+              {{ destinationMarkerLabel }}
+            </span>
+          </span>
         </button>
         <button
           type="button"

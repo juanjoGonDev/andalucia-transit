@@ -137,6 +137,27 @@ describe('RouteMapComponent', () => {
     expect(maps.handle.fitToCoordinates).not.toHaveBeenCalled();
   });
 
+  it('flags searched origin and destination markers with their roles', () => {
+    fixture.componentRef.setInput('originStopIds', ['stop-a']);
+    fixture.componentRef.setInput('destinationStopIds', ['stop-b']);
+    fixture.detectChanges();
+
+    expect(maps.handle.renderedStops.map((stop) => stop.role ?? 'regular')).toEqual([
+      'origin',
+      'destination'
+    ]);
+  });
+
+  it('re-renders markers when only the role inputs change', () => {
+    fixture.componentRef.setInput('originStopIds', ['stop-b']);
+    fixture.detectChanges();
+
+    expect(maps.handle.renderedStops.map((stop) => stop.role ?? 'regular')).toEqual([
+      'regular',
+      'origin'
+    ]);
+  });
+
   it('keeps the stop list usable when route geometry is unavailable', () => {
     maps.handle.renderRoutes.calls.reset();
     maps.handle.fitToCoordinates.calls.reset();

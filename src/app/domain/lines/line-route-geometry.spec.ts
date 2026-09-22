@@ -1,8 +1,11 @@
-import type { RouteLineStop } from '@data/route-search/route-lines-api.service';
+import type { RouteLineCoordinate, RouteLineStop } from '@data/route-search/route-lines-api.service';
 import {
   buildLineStopCoordinates,
+  buildStopNucleusOrdinals,
+  orientCoordinatesTowards,
   selectLineDirectionStops,
-  selectPrimaryLineDirectionStops
+  selectPrimaryLineDirectionStops,
+  selectSegmentStopIds
 } from '@domain/lines/line-route-geometry';
 
 function stop(
@@ -104,5 +107,111 @@ describe('line route geometry', () => {
         stop('b', 1, 2, 37.1, -2.1)
       ])
     ).toEqual([]);
+  });
+
+  describe('orientCoordinatesTowards', () => {
+    const reference: RouteLineCoordinate = { latitude: 38.2, longitude: -3.2 };
+    const route: readonly RouteLineCoordinate[] = [
+      { latitude: 37.1, longitude: -2.1 },
+      { latitude: 37.5, longitude: -2.5 },
+      { latitude: 38.1, longitude: -3.1 }
+    ];
+
+    it('keeps the original order when the start is already the closest point', () => {
+      const result = orientCoordinatesTowards(route, { latitude: 37.2, longitude: -2.2 });
+
+      expect(result).toEqual(route);
+    });
+
+    it('reverses the route when its end is closer to the reference stop', () => {
+      const result = orientCoordinatesTowards(route, reference);
+
+      expect(result[0]).toEqual({ latitude: 38.1, longitude: -3.1 });
+      expect(result[result.length - 1]).toEqual({ latitude: 37.1, longitude: -2.1 });
+    });
+
+    it('does not mutate the input when reversing', () => {
+      orientCoordinatesTowards(route, reference);
+
+      expect(route[0]).toEqual({ latitude: 37.1, longitude: -2.1 });
+    });
+
+    it('returns the coordinates untouched when no reference is provided', () => {
+      expect(orientCoordinatesTowards(route, null)).toEqual(route);
+    });
+
+    it('returns the coordinates untouched when fewer than two points exist', () => {
+      const single = [{ latitude: 37.1, longitude: -2.1 }];
+
+      expect(orientCoordinatesTowards(single, reference)).toEqual(single);
+    });
+  });
+
+  describe('selectSegmentStopIds', () => {
+    it('returns candidate ids intersected with the displayed stops ordered by stop order', () => {
+      const stops = [
+        stop('c', 1, 3, 37.3, -2.3),
+        stop('a', 1, 1, 37.1, -2.1),
+        stop('b', 1, 2, 37.2, -2.2)
+      ];
+
+      expect(selectSegmentStopIds(stops, ['b', 'a', 'missing'])).toEqual(['a', 'b']);
+      expect(selectSegmentStopIds(stops, ['c'])).toEqual(['c']);
+    });
+
+    it('returns an empty list when nothing matches', () => {
+      expect(selectSegmentStopIds([stop('a', 1, 1, 37.1, -2.1)], ['x'])).toEqual([]);
+      expect(selectSegmentStopIds([], ['x'])).toEqual([]);
+    });
+  });
+});
+
+describe('buildStopNucleusOrdinals', () => {
+  const withNucleus = (base: RouteLineStop, nucleusId: string): RouteLineStop => ({
+    ...base,
+    nucleusId
+  });
+
+  it('numbers stops per nucleus in travel order, closest to the origin first', () => {
+    const stops = [
+      withNucleus(stop('gangosa-1', 0, 1, 37.1, -2.1), 'n-gangosa'),
+      withNucleus(stop('vicar-1', 0, 2, 37.2, -2.2), 'n-vicar'),
+      withNucleus(stop('gangosa-2', 0, 3, 37.3, -2.3), 'n-gangosa'),
+      withNucleus(stop('gangosa-3', 0, 4, 37.4, -2.4), 'n-gangosa'),
+      withNucleus(stop('vicar-2', 0, 5, 37.5, -2.5), 'n-vicar')
+    ];
+
+    const ordinals = buildStopNucleusOrdinals(stops);
+
+    expect(ordinals.get('gangosa-1')).toBe(1);
+    expect(ordinals.get('gangosa-2')).toBe(2);
+    expect(ordinals.get('gangosa-3')).toBe(3);
+    expect(ordinals.get('vicar-1')).toBe(1);
+    expect(ordinals.get('vicar-2')).toBe(2);
+  });
+
+  it('reverses the numbering when the travel order is reversed', () => {
+    const stops = [
+      withNucleus(stop('gangosa-3', 1, 1, 37.4, -2.4), 'n-gangosa'),
+      withNucleus(stop('gangosa-2', 1, 2, 37.3, -2.3), 'n-gangosa'),
+      withNucleus(stop('gangosa-1', 1, 3, 37.1, -2.1), 'n-gangosa')
+    ];
+
+    const ordinals = buildStopNucleusOrdinals(stops);
+
+    expect(ordinals.get('gangosa-3')).toBe(1);
+    expect(ordinals.get('gangosa-1')).toBe(3);
+  });
+
+  it('omits stops without a nucleus identifier', () => {
+    const stops = [
+      withNucleus(stop('known', 0, 1, 37.1, -2.1), 'n-gangosa'),
+      withNucleus(stop('unknown', 0, 2, 37.2, -2.2), '')
+    ];
+
+    const ordinals = buildStopNucleusOrdinals(stops);
+
+    expect(ordinals.get('known')).toBe(1);
+    expect(ordinals.has('unknown')).toBeFalse();
   });
 });

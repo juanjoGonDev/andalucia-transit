@@ -10,7 +10,7 @@
       <span class="recent-search-card__destination">{{ destinationName }}</span>
     </div>
     <div class="recent-search-card__date">
-      {{ searchDateKey | translate: { date: (searchDate | date: 'longDate') } }}
+      {{ searchDateLabel }}
     </div>
     <div class="recent-search-card__preview" [ngSwitch]="preview.status">
       <div
@@ -45,9 +45,6 @@
           {{ noPreviewKey | translate }}
         </div>
       </ng-template>
-    </div>
-    <div *ngIf="showTodayNotice" class="recent-search-card__today">
-      {{ searchDateTodayKey | translate }}
     </div>
   </div>
 </app-interactive-card>

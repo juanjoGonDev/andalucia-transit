@@ -19,10 +19,7 @@ import { InteractiveCardComponent } from '@shared/ui/cards/interactive-card/inte
 export class RecentSearchCardComponent {
   @Input({ required: true }) originName!: string;
   @Input({ required: true }) destinationName!: string;
-  @Input({ required: true }) searchDate!: Date;
-  @Input({ required: true }) showTodayNotice!: boolean;
-  @Input({ required: true }) searchDateKey!: string;
-  @Input({ required: true }) searchDateTodayKey!: string;
+  @Input({ required: true }) searchDateLabel!: string;
   @Input({ required: true }) loadingKey!: string;
   @Input({ required: true }) errorKey!: string;
   @Input({ required: true }) noPreviewKey!: string;
