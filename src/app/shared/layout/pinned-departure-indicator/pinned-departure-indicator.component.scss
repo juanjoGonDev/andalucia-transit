@@ -69,8 +69,10 @@
 .pinned-departure__panel {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-2xs) var(--space-s);
+  gap: var(--space-s);
+  padding: var(--space-xs) var(--space-m);
+  min-height: 2.75rem;
+  box-sizing: border-box;
   border-radius: var(--radius-full);
   background: var(--color-surface-light);
   box-shadow: var(--shadow-card);
