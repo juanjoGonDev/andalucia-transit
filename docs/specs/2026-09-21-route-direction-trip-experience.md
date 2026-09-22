@@ -127,3 +127,15 @@ not perceivable, especially in bright sunlight on mobile.
 - `pnpm run test:angular` (Jasmine/Karma) green incl. new specs per item — TDD.
 - `pnpm run test:scripts`, `pnpm run lint`, `pnpm run build` green locally; CI must pass.
 - No visual regressions beyond intended changes (CI visual-evidence workflow output reviewed).
+
+## 7. Follow-up round — visual QA fixes (screenshot-driven)
+- [x] **E1 Smooth map re-centering.** Selecting a stop from the workspace panel (or tapping a
+  marker) pans the map smoothly to it preserving zoom, via `MapHandle.centerStop(stopId)`.
+- [x] **E2 Nucleus ordinal resolution fix.** Prefix-named lines (e.g. `M-301`) resolve the
+  correct nucleus so the per-stop ordinal numbering (I1) no longer shows 0-bulk entries.
+- [x] **E3 Pinned departure chip spacing.** Indicator panel gets balanced padding/gap and a
+  minimum height so the countdown block no longer touches its edges.
+- [x] **E4 Recent-search card preview redesign.** Per-departure row is a fixed-column grid
+  (line badge → wait label → right-aligned time), direction arrows removed, past departures
+  rendered in a muted tone and upcoming ones highlighted; the search date shares the title
+  line when space allows (responsive flex wrap). Contrast raised to WCAG 2.2 AA.
