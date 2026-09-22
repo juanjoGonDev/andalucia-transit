@@ -42,6 +42,12 @@ export const routes: Routes = [
         title: APP_CONFIG.translationKeys.navigation.favorites
       },
       {
+        path: APP_CONFIG.routes.trip,
+        loadComponent: () =>
+          import('@features/trip/trip.component').then((module) => module.TripComponent),
+        title: APP_CONFIG.translationKeys.navigation.trip
+      },
+      {
         path: APP_CONFIG.routes.alarms,
         loadComponent: () =>
           import('@features/alarms/alarms.component').then(

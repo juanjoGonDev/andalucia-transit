@@ -10,14 +10,21 @@
     "favorites": "Favorites",
     "news": "News",
     "stopInfo": "Stop information",
-    "alarms": "Alarms"
+    "alarms": "Alarms",
+    "trip": "Live trip"
   },
   "languages": {
     "es": "Spanish",
     "en": "English"
   },
   "layout": {
-    "skipToContent": "Skip to main content"
+    "skipToContent": "Skip to main content",
+    "pinnedDeparture": {
+      "ariaLabel": "Pinned departure: line {lineCode} to {destination}. Departs in {time}.",
+      "details": "Pinned departure details",
+      "open": "Open the pinned search",
+      "unpin": "Stop following the pinned departure"
+    }
   },
   "home": {
     "header": {
@@ -78,8 +85,6 @@
       "recentStops": {
         "title": "Recent searches",
         "empty": "Start a search to see it here.",
-        "searchDate": "We will search for {date}",
-        "searchDateToday": "Updated to today",
         "next": "Next",
         "previous": "Previous",
         "previewLoading": "Loading schedule...",
@@ -383,7 +388,10 @@
     "estimateNotice": "Times are estimates based on Junta de Andalucía schedule data.",
     "pastSearchNotice": "You are viewing schedules for a past date. Refresh to see the current services.",
     "searchToday": "View today's schedules",
-    "scheduleAccuracyWarning": "Schedules for past or distant dates may change without notice."
+    "scheduleAccuracyWarning": "Schedules for past or distant dates may change without notice.",
+    "pinAddLabel": "Pin the {time} departure of line {lineCode}",
+    "pinActiveLabel": "{time} departure of line {lineCode} pinned. Press to unpin.",
+    "liveTripLabel": "Follow live the {time} departure of line {lineCode}"
   },
   "map": {
     "title": "Network map",
@@ -505,5 +513,17 @@
     "hour": "{value, plural, one {# hour} other {# hours}}",
     "minute": "{value, plural, one {# minute} other {# minutes}}",
     "second": "{value, plural, one {# second} other {# seconds}}"
+  },
+  "trip": {
+    "headline": "Line {lineCode} · towards {destination}",
+    "eta": "Arriving in {time}",
+    "locating": "Locating your GPS position…",
+    "unavailable": "We could not get your position. Showing estimated schedules only.",
+    "completed": "You have arrived at {destination}",
+    "endTracking": "End tracking",
+    "recenter": "Move the timeline back to the current stop",
+    "announcementNextStop": "Next stop: {stop}. Arriving in {time}.",
+    "announcementPassed": "You passed {stop}.",
+    "backLabel": "Back"
   }
 }

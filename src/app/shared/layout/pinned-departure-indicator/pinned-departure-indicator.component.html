@@ -1,0 +1,62 @@
+@if (pin(); as view) {
+  <div class="pinned-departure" [class.pinned-departure--expanded]="expanded()">
+    @if (expanded()) {
+      <div class="pinned-departure__panel" id="pinned-departure-panel">
+        <span class="pinned-departure__line">{{ view.lineCode }}</span>
+        <div class="pinned-departure__info">
+          <span class="pinned-departure__eta">
+            <span aria-hidden="true">{{ upcomingKey | translate: { time: view.countdown.text } }}</span>
+            <span class="app-visually-hidden">{{ spokenUpcoming(view) }}</span>
+          </span>
+          <span class="pinned-departure__destination">{{ view.destination }}</span>
+        </div>
+        <div class="pinned-departure__actions">
+          <button
+            type="button"
+            class="pinned-departure__action"
+            (click)="openSearch()"
+            [attr.aria-label]="pinnedKeys.open | translate"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span>
+          </button>
+          <button
+            type="button"
+            class="pinned-departure__action"
+            (click)="unpin()"
+            [attr.aria-label]="pinnedKeys.unpin | translate"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+          </button>
+        </div>
+      </div>
+    }
+    <button
+      type="button"
+      class="pinned-departure__trigger"
+      [attr.aria-expanded]="expanded()"
+      [attr.aria-controls]="expanded() ? 'pinned-departure-panel' : null"
+      [attr.aria-label]="ariaLabel(view)"
+      (click)="toggle()"
+    >
+      <svg
+        class="pinned-departure__ring"
+        viewBox="0 0 40 40"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <circle class="pinned-departure__ring-track" cx="20" cy="20" [attr.r]="ringGeometry.radius" />
+        <circle
+          class="pinned-departure__ring-progress"
+          cx="20"
+          cy="20"
+          [attr.r]="ringGeometry.radius"
+          [attr.stroke-dasharray]="ringGeometry.circumference"
+          [attr.stroke-dashoffset]="ringOffset()"
+        />
+      </svg>
+      <span class="material-symbols-outlined pinned-departure__icon" aria-hidden="true"
+        >directions_bus</span
+      >
+    </button>
+  </div>
+}

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, ParamMap, Router, convertToParamMap, provideRouter } from '@angular/router';
@@ -7,6 +7,8 @@ import { DateTime } from 'luxon';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, of } from 'rxjs';
 import { LineRouteWorkspaceService } from '@domain/lines/line-route-workspace.service';
+import { PinnedDepartureService } from '@domain/route-search/pinned-departure.service';
+import { PinnedDepartureView } from '@domain/route-search/pinned-departure.service';
 import {
   RouteSearchDepartureView,
   RouteSearchResultsService,
@@ -17,6 +19,7 @@ import { RouteSearchSelection, RouteSearchStateService } from '@domain/route-sea
 import { buildDateSlug, buildStopSlug } from '@domain/route-search/route-search-url.util';
 import { StopAlarmsService } from '@domain/stop-alarms/stop-alarms.service';
 import { StopDirectoryFacade, StopDirectoryOption } from '@domain/stops/stop-directory.facade';
+import { TripSessionStorage } from '@domain/trip/trip-session.storage';
 import { RouteSearchDepartureRoutePreviewComponent } from '@features/route-search/departure-route-preview/route-search-departure-route-preview.component';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 import { RouteSearchComponent } from '@features/route-search/route-search.component';
@@ -37,6 +40,13 @@ class TranslateTestingLoader implements TranslateLoader {
       'routeSearch.arrivalAt': 'Arrives at {time}'
     });
   }
+}
+
+class PinnedDepartureServiceStub {
+  readonly pin = signal<PinnedDepartureView | null>(null);
+  pinDeparture = jasmine.createSpy('pinDeparture');
+  unpin = jasmine.createSpy('unpin');
+  open = jasmine.createSpy('open').and.resolveTo(undefined);
 }
 
 class RouteSearchResultsServiceStub {
@@ -63,7 +73,9 @@ class LineRouteWorkspaceServiceStub {
       },
       stops: [],
       coordinates: [],
-      resolvedDirection: 0
+      resolvedDirection: 0,
+      originStopIds: [],
+      destinationStopIds: []
     });
   }
 }
@@ -206,7 +218,8 @@ describe('RouteSearchComponent', () => {
           useClass: RouteSearchSelectionResolverServiceStub
         },
         { provide: ActivatedRoute, useValue: activatedRoute },
-        { provide: StopDirectoryFacade, useValue: directoryFacade }
+        { provide: StopDirectoryFacade, useValue: directoryFacade },
+        { provide: PinnedDepartureService, useClass: PinnedDepartureServiceStub }
       ]
     })
       .overrideComponent(RouteSearchComponent, {
@@ -236,8 +249,10 @@ describe('RouteSearchComponent', () => {
       direction: 0,
       destination: 'Beta Terminal',
       originStopId: 'alpha',
-      arrivalTime: new Date('2025-02-02T08:05:00Z'),
-      relativeLabel: '5m',
+      originStopIds: ['alpha'],
+      destinationStopIds: ['beta'],
+arrivalTime: new Date('2025-02-02T08:05:00Z'),
+      relativeLabel: { text: '5m', unit: 'minute', value: 5 },
       waitTimeSeconds: 300,
       kind: 'upcoming',
       isNext: true,
@@ -321,8 +336,10 @@ describe('RouteSearchComponent', () => {
       direction: 0,
       destination: 'Beta Terminal',
       originStopId: 'alpha',
-      arrivalTime: new Date('2025-02-02T08:05:00Z'),
-      relativeLabel: '5m',
+      originStopIds: ['alpha'],
+      destinationStopIds: ['beta'],
+arrivalTime: new Date('2025-02-02T08:05:00Z'),
+      relativeLabel: { text: '5m', unit: 'minute', value: 5 },
       waitTimeSeconds: 300,
       kind: 'upcoming',
       isNext: true,
@@ -433,8 +450,10 @@ describe('RouteSearchComponent', () => {
           direction: 1,
           destination: 'Beta Terminal',
           originStopId: 'alpha',
-          arrivalTime: new Date('2025-02-02T07:30:00Z'),
-          relativeLabel: '10m',
+          originStopIds: ['alpha'],
+          destinationStopIds: ['beta'],
+arrivalTime: new Date('2025-02-02T07:30:00Z'),
+          relativeLabel: { text: '10m', unit: 'minute', value: 10 },
           waitTimeSeconds: 600,
           kind: 'past',
           isNext: false,
@@ -508,8 +527,10 @@ describe('RouteSearchComponent', () => {
       direction: 1,
       destination: 'Beta Terminal',
       originStopId: 'alpha',
+      originStopIds: ['alpha'],
+      destinationStopIds: ['beta'],
       arrivalTime: new Date('2025-02-02T08:20:00Z'),
-      relativeLabel: '15m',
+      relativeLabel: { text: '15m', unit: 'minute', value: 15 },
       waitTimeSeconds: 900,
       kind: 'upcoming',
       isNext: true,
@@ -570,8 +591,10 @@ describe('RouteSearchComponent', () => {
       direction: 0,
       destination: 'Beta Terminal',
       originStopId: 'alpha',
+      originStopIds: ['alpha'],
+      destinationStopIds: ['beta'],
       arrivalTime: new Date(Date.now() + 30 * 60_000),
-      relativeLabel: '5m',
+      relativeLabel: { text: '5m', unit: 'minute', value: 5 },
       waitTimeSeconds: 300,
       kind: 'upcoming',
       isNext: true,
@@ -600,6 +623,64 @@ describe('RouteSearchComponent', () => {
     });
     fixture.detectChanges();
   }
+
+  it('starts a live trip session from an upcoming departure', () => {
+    setUpResultsWithUpcomingDeparture();
+    const router = TestBed.inject(Router);
+    const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
+    const storage = TestBed.inject(TripSessionStorage);
+
+    fixture.debugElement.query(By.css('.route-search__item-live')).nativeElement.click();
+
+    const session = storage.load();
+    expect(session).not.toBeNull();
+    expect(session?.departureId).toBe('service-1');
+    expect(session?.lineId).toBe('L1');
+    expect(session?.originStopId).toBe('alpha');
+    expect(session?.destinationStopId).toBe('beta');
+    expect(session?.departTime).toBeTruthy();
+    expect(session?.arriveTime).toBeTruthy();
+    expect(navigateSpy).toHaveBeenCalledWith(['/', jasmine.any(String)]);
+    storage.clear();
+  });
+
+  it('pins an upcoming departure and reflects the active pin', () => {
+    const pins = TestBed.inject(PinnedDepartureService) as unknown as PinnedDepartureServiceStub;
+    setUpResultsWithUpcomingDeparture();
+
+    const pinButton = fixture.debugElement.query(By.css('.route-search__item-pin'));
+    expect(pinButton).not.toBeNull();
+    expect(pinButton.nativeElement.getAttribute('aria-pressed')).toBe('false');
+
+    pinButton.nativeElement.click();
+
+    expect(pins.pinDeparture).toHaveBeenCalledTimes(1);
+    const [departure, selection] = pins.pinDeparture.calls.mostRecent().args;
+    expect((departure as RouteSearchDepartureView).id).toBe('service-1');
+    expect((selection as RouteSearchSelection).origin.name).toBe('Alpha Station');
+
+    pins.pin.set({
+      departureId: 'service-1',
+      consortiumId: origin.consortiumId,
+      lineId: 'L1',
+      lineCode: '001',
+      direction: 0,
+      destination: 'Beta Terminal',
+      originName: 'Alpha Station',
+      destinationName: 'Beta Terminal',
+      arrivalTime: new Date(Date.now() + 30 * 60_000),
+      remainingMs: 30 * 60_000,
+      progress: 0.2,
+      countdown: { text: '30m', unit: 'minute', value: 30 }
+    });
+    fixture.detectChanges();
+
+    const activeButton = fixture.debugElement.query(By.css('.route-search__item-pin'));
+    expect(activeButton.nativeElement.getAttribute('aria-pressed')).toBe('true');
+
+    activeButton.nativeElement.click();
+    expect(pins.unpin).toHaveBeenCalledTimes(1);
+  });
 
   it('offers a departure alarm toggle that opens the alarm dialog with the route-search service id', () => {
     setUpResultsWithUpcomingDeparture();

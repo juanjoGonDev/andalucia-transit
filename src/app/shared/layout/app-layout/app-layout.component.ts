@@ -12,6 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContextStore } from '@shared/layout/app-layout-context.store';
 import { APP_LAYOUT_CONTEXT } from '@shared/layout/app-layout-context.token';
+import { PinnedDepartureIndicatorComponent } from '@shared/layout/pinned-departure-indicator/pinned-departure-indicator.component';
 import { AppShellTopActionsComponent } from '@shared/layout/top-actions/app-shell-top-actions.component';
 import { LegalFooterComponent } from '@shared/privacy/legal-footer.component';
 import { StorageNoticeComponent } from '@shared/privacy/storage-notice.component';
@@ -36,6 +37,7 @@ const ZERO_HEIGHT = '0px';
     TranslateModule,
     AccessibleButtonDirective,
     LegalFooterComponent,
+    PinnedDepartureIndicatorComponent,
     StorageNoticeComponent
   ],
   templateUrl: './app-layout.component.html',

@@ -18,6 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DateTime } from 'luxon';
 import { Subject, catchError, distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
+import { PinnedDepartureService } from '@domain/route-search/pinned-departure.service';
 import { RouteSearchExecutionService } from '@domain/route-search/route-search-execution.service';
 import {
   RouteSearchDepartureView,
@@ -33,6 +34,7 @@ import {
 } from '@domain/route-search/route-search-url.util';
 import { StopAlarmsService } from '@domain/stop-alarms/stop-alarms.service';
 import { StopDirectoryFacade, StopDirectoryOption } from '@domain/stops/stop-directory.facade';
+import { TripSessionRecord, TripSessionStorage } from '@domain/trip/trip-session.storage';
 import { RouteSearchDepartureRoutePreviewComponent } from '@features/route-search/departure-route-preview/route-search-departure-route-preview.component';
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 import {
@@ -98,6 +100,8 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly stopDirectory = inject(StopDirectoryFacade);
   protected readonly alarmsService = inject(StopAlarmsService);
   private readonly overlayDialogs = inject(OverlayDialogService);
+  private readonly pins = inject(PinnedDepartureService);
+  private readonly tripSessions = inject(TripSessionStorage);
   private readonly timezone = APP_CONFIG.data.timezone;
   private readonly scheduleAccuracyThresholdDays =
     APP_CONFIG.routeSearchData.scheduleAccuracy.warningThresholdDays;
@@ -107,6 +111,11 @@ export class RouteSearchComponent implements AfterViewInit {
   protected readonly translationKeys = APP_CONFIG.translationKeys.routeSearch;
   protected readonly badgeTranslationKeys = APP_CONFIG.translationKeys.stopDetail.badges;
   protected readonly alarmTranslationKeys = APP_CONFIG.translationKeys.stopDetail.alarms;
+  protected readonly pinKeys = {
+    addLabel: 'routeSearch.pinAddLabel',
+    activeLabel: 'routeSearch.pinActiveLabel'
+  } as const;
+  protected readonly liveTripKey = 'routeSearch.liveTripLabel';
   protected readonly loadingKey = APP_CONFIG.translationKeys.home.sections.recentStops.previewLoading;
   protected readonly loadErrorKey = APP_CONFIG.translationKeys.home.sections.recentStops.previewError;
   protected readonly retryKey = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.retry;
@@ -283,6 +292,58 @@ export class RouteSearchComponent implements AfterViewInit {
 
   protected isDepartureAlarmActive(item: RouteSearchDepartureView): boolean {
     return this.alarmsService.hasServiceAlarm(item.originStopId, this.departureAlarmServiceId(item));
+  }
+
+  protected isDeparturePinned(item: RouteSearchDepartureView): boolean {
+    return this.pins.pin()?.departureId === item.id;
+  }
+
+  protected startLiveTrip(item: RouteSearchDepartureView): void {
+    const selection = this.selection();
+
+    if (!selection) {
+      return;
+    }
+
+    const arriveTime = item.destinationArrivalTime ?? item.arrivalTime;
+    const originStopId = item.originStopId ?? item.originStopIds[0] ?? null;
+
+    if (!originStopId || item.destinationStopIds.length === 0) {
+      return;
+    }
+
+    const session: TripSessionRecord = {
+      departureId: item.id,
+      consortiumId: selection.origin.consortiumId,
+      lineId: item.lineId,
+      lineCode: item.lineCode,
+      direction: item.direction,
+      destination: item.destination,
+      originStopId,
+      destinationStopId: item.destinationStopIds[item.destinationStopIds.length - 1],
+      originName: selection.origin.name,
+      destinationName: selection.destination.name,
+      departTime: item.arrivalTime.toISOString(),
+      arriveTime: arriveTime.toISOString()
+    };
+
+    this.tripSessions.save(session);
+    void this.router.navigate(['/', APP_CONFIG.routes.trip]);
+  }
+
+  protected togglePin(item: RouteSearchDepartureView): void {
+    if (this.isDeparturePinned(item)) {
+      this.pins.unpin();
+      return;
+    }
+
+    const selection = this.selection();
+
+    if (!selection) {
+      return;
+    }
+
+    this.pins.pinDeparture(item, selection);
   }
 
   protected toggleDepartureAlarm(item: RouteSearchDepartureView): void {

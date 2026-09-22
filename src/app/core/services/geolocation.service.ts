@@ -12,4 +12,21 @@ export class GeolocationService {
       navigator.geolocation.getCurrentPosition(resolve, reject, options);
     });
   }
+
+  /**
+   * Watches the device position and reports every movement. Returns a stop function that
+   * clears the watch; designed for high-accuracy live tracking sessions.
+   */
+  watchPosition(
+    onPosition: (position: GeolocationPosition) => void,
+    onError?: (error: GeolocationPositionError) => void,
+    options?: PositionOptions
+  ): () => void {
+    if (!navigator.geolocation) {
+      throw new Error(APP_CONFIG.errors.geolocationNotSupported);
+    }
+
+    const watchId = navigator.geolocation.watchPosition(onPosition, onError, options);
+    return () => navigator.geolocation.clearWatch(watchId);
+  }
 }

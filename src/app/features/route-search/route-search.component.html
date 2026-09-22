@@ -139,10 +139,30 @@
                               [attr.data-kind]="item.kind"
                             >
                               <ng-container *ngIf="item.kind === 'upcoming'; else pastLabel">
-                                {{ translationKeys.upcomingLabel | translate: { time: label } }}
+                                <span aria-hidden="true">{{
+                                  translationKeys.upcomingLabel | translate: { time: label.text }
+                                }}</span>
+                                <span class="app-visually-hidden">{{
+                                  translationKeys.upcomingLabel
+                                    | translate
+                                      : {
+                                          time: ('countdown.' + label.unit)
+                                            | translate: { value: label.value }
+                                        }
+                                }}</span>
                               </ng-container>
                               <ng-template #pastLabel>
-                                {{ translationKeys.pastLabel | translate: { time: label } }}
+                                <span aria-hidden="true">{{
+                                  translationKeys.pastLabel | translate: { time: label.text }
+                                }}</span>
+                                <span class="app-visually-hidden">{{
+                                  translationKeys.pastLabel
+                                    | translate
+                                      : {
+                                          time: ('countdown.' + label.unit)
+                                            | translate: { value: label.value }
+                                        }
+                                }}</span>
                               </ng-template>
                             </span>
                           </div>
@@ -197,6 +217,36 @@
                                     ? 'notifications_active'
                                     : 'notifications'
                                 }}
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              class="route-search__item-pin"
+                              [class.route-search__item-pin--active]="isDeparturePinned(item)"
+                              [attr.aria-pressed]="isDeparturePinned(item)"
+                              [attr.aria-label]="
+                                (isDeparturePinned(item) ? pinKeys.activeLabel : pinKeys.addLabel)
+                                  | translate
+                                  : { lineCode: item.lineCode, time: item.arrivalTime | date: 'HH:mm' }
+                              "
+                              (click)="togglePin(item)"
+                            >
+                              <span class="material-symbols-outlined" aria-hidden="true">
+                                push_pin
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              class="route-search__item-live"
+                              [attr.aria-label]="
+                                liveTripKey
+                                  | translate
+                                  : { lineCode: item.lineCode, time: item.arrivalTime | date: 'HH:mm' }
+                              "
+                              (click)="startLiveTrip(item)"
+                            >
+                              <span class="material-symbols-outlined" aria-hidden="true">
+                                share_location
                               </span>
                             </button>
                           </div>
