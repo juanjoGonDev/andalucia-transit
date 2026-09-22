@@ -4,13 +4,15 @@
   (removeActivated)="onRemove()"
 >
   <div class="recent-search-card__content">
-    <div class="recent-search-card__route">
-      <span class="recent-search-card__origin">{{ originName }}</span>
-      <span class="recent-search-card__arrow" aria-hidden="true">→</span>
-      <span class="recent-search-card__destination">{{ destinationName }}</span>
-    </div>
-    <div class="recent-search-card__date">
-      {{ searchDateLabel }}
+    <div class="recent-search-card__header">
+      <div class="recent-search-card__route">
+        <span class="recent-search-card__origin">{{ originName }}</span>
+        <span class="recent-search-card__arrow" aria-hidden="true">→</span>
+        <span class="recent-search-card__destination">{{ destinationName }}</span>
+      </div>
+      <div class="recent-search-card__date">
+        {{ searchDateLabel }}
+      </div>
     </div>
     <div class="recent-search-card__preview" [ngSwitch]="preview.status">
       <div

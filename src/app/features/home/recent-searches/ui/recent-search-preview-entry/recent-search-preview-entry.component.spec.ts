@@ -22,7 +22,7 @@ function buildEntry(overrides: Partial<RecentSearchPreviewEntry> = {}): RecentSe
   return {
     id: 'entry-1',
     kind: 'next',
-    lineCode: '001',
+    lineCode: 'M-301',
     departureTime: new Date('2026-09-21T14:26:00'),
     relativeLabel: {
       key: 'routeSearch.upcomingLabel',
@@ -63,17 +63,30 @@ describe('RecentSearchPreviewEntryComponent', () => {
     return node?.nativeElement.textContent.trim() ?? '';
   };
 
-  it('renders an aria-hidden down arrow chip and time for the next departure', async () => {
+  it('lays out line badge, wait label and time without arrows, in reading order', async () => {
     await create(buildEntry());
 
-    const arrow = fixture.debugElement.query(By.css('.recent-preview-entry__arrow'));
-    expect(arrow.nativeElement.textContent.trim()).toBe('↓');
-    expect(arrow.nativeElement.getAttribute('aria-hidden')).toBe('true');
-    expect(arrow.nativeElement.classList).toContain('recent-preview-entry__arrow--next');
+    expect(fixture.debugElement.query(By.css('.recent-preview-entry__arrow'))).toBeNull();
+
+    const root: HTMLElement = fixture.debugElement.query(By.css('.recent-preview-entry'))
+      .nativeElement;
+    const classes = Array.from(root.children).map((child) =>
+      Array.from(child.classList).find((token) => token.startsWith('recent-preview-entry__'))
+    );
+    const order = classes.filter(Boolean);
+    expect(order.indexOf('recent-preview-entry__line')).toBeLessThan(
+      order.indexOf('recent-preview-entry__wait')
+    );
+    expect(order.indexOf('recent-preview-entry__wait')).toBeLessThan(
+      order.indexOf('recent-preview-entry__time')
+    );
+
+    expect(text('.recent-preview-entry__line')).toBe('M-301');
+    expect(text('.recent-preview-entry__wait')).toBe('En 1h');
     expect(text('.recent-preview-entry__time')).toBe('14:26');
   });
 
-  it('renders a red aria-hidden up arrow for previous departures', async () => {
+  it('marks previous departures with the wait label only, keeping the grid structure', async () => {
     await create(
       buildEntry({
         kind: 'previous',
@@ -85,27 +98,26 @@ describe('RecentSearchPreviewEntryComponent', () => {
       })
     );
 
-    const arrow = fixture.debugElement.query(By.css('.recent-preview-entry__arrow'));
-    expect(arrow.nativeElement.textContent.trim()).toBe('↑');
-    expect(arrow.nativeElement.classList).toContain('recent-preview-entry__arrow--previous');
+    const wait = fixture.debugElement.query(By.css('.recent-preview-entry__wait'));
+    expect(wait.nativeElement.textContent.trim()).toBe('Hace 5m');
+    expect(wait.nativeElement.classList).toContain('recent-preview-entry__wait--previous');
+    expect(wait.nativeElement.getAttribute('aria-hidden')).toBe('true');
+    expect(fixture.debugElement.query(By.css('.recent-preview-entry__arrow'))).toBeNull();
     expect(text('.recent-preview-entry__time')).toBe('14:26');
   });
 
-  it('shows the compact countdown and a spoken full-unit equivalent', async () => {
+  it('keeps the spoken full-unit equivalent in a visually hidden node', async () => {
     await create(buildEntry());
-
-    const visual = fixture.debugElement.query(By.css('.recent-preview-entry__relative'));
-    expect(visual.nativeElement.textContent.trim()).toBe('En 1h');
-    expect(visual.nativeElement.getAttribute('aria-hidden')).toBe('true');
 
     const hidden = fixture.debugElement.query(By.css('.recent-preview-entry__spoken'));
     expect(hidden.nativeElement.textContent.trim()).toBe('En 1 hora');
   });
 
-  it('omits the countdown row when no relative label is available', async () => {
+  it('omits the wait row when no relative label is available', async () => {
     await create(buildEntry({ relativeLabel: null }));
 
-    expect(fixture.debugElement.query(By.css('.recent-preview-entry__relative'))).toBeNull();
+    expect(fixture.debugElement.query(By.css('.recent-preview-entry__wait'))).toBeNull();
     expect(fixture.debugElement.query(By.css('.recent-preview-entry__spoken'))).toBeNull();
+    expect(text('.recent-preview-entry__time')).toBe('14:26');
   });
 });

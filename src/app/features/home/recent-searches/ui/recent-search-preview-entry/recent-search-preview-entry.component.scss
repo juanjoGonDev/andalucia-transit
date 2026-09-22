@@ -2,90 +2,63 @@
   display: block;
   --recent-preview-line-background: var(--color-primary);
   --recent-preview-line-foreground: var(--color-surface-light);
-  --recent-preview-relative-color: var(--color-text-muted);
+  --recent-preview-wait-color: var(--color-text-muted);
+  --recent-preview-wait-next-color: var(--color-primary);
   --recent-preview-time-color: var(--color-text-strong);
-  --recent-preview-time-previous-color: var(--color-error);
+  --recent-preview-time-previous-color: var(--color-text-muted);
   --recent-preview-time-next-color: var(--color-primary);
-  --recent-preview-arrow-previous-color: var(--color-error);
-  --recent-preview-arrow-next-background: var(--color-primary);
-  --recent-preview-arrow-next-color: var(--color-surface-light);
 }
 
+/**
+ * Fixed-column grid: badge | wait label | time. Columns stay aligned across rows no
+ * matter how long each text is (tabular numerals + min widths), so every departure row
+ * reads as one straight table instead of a shifting stack.
+ */
 .recent-preview-entry {
   display: grid;
-  row-gap: var(--space-3xs);
-  align-content: start;
-  padding: 0.35rem 0;
-}
-
-.recent-preview-entry__header {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: auto minmax(4.5rem, auto) 1fr;
   align-items: center;
   column-gap: var(--space-sm);
+  padding: 0.35rem 0;
 }
 
 .recent-preview-entry__line {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.125rem 0.75rem;
+  min-inline-size: 3.25rem;
+  padding: 0.125rem 0.6rem;
   border-radius: var(--radius-full);
   background-color: var(--recent-preview-line-background);
   color: var(--recent-preview-line-foreground);
   font-weight: 700;
   font-size: 0.85rem;
   letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
 }
 
-.recent-preview-entry__moment {
-  justify-self: end;
-  min-width: 0;
-}
-
-.recent-preview-entry__content {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-2xs);
-  white-space: nowrap;
-}
-
-.recent-preview-entry__arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-inline-size: 1.4rem;
-  block-size: 1.4rem;
-  inline-size: 1.4rem;
-  border-radius: var(--radius-full);
-  font-weight: 700;
-  font-size: 0.95rem;
-  line-height: 1;
-}
-
-.recent-preview-entry__arrow--previous {
-  color: var(--recent-preview-arrow-previous-color);
-}
-
-.recent-preview-entry__arrow--next {
-  background-color: var(--recent-preview-arrow-next-background);
-  color: var(--recent-preview-arrow-next-color);
-}
-
-.recent-preview-entry__relative {
+.recent-preview-entry__wait {
   font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--recent-preview-relative-color);
+  font-weight: 600;
+  color: var(--recent-preview-wait-color);
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.recent-preview-entry__wait--previous {
+  color: var(--recent-preview-wait-color);
+}
+
+.recent-preview-entry__wait--next {
+  color: var(--recent-preview-wait-next-color);
 }
 
 .recent-preview-entry__time {
+  justify-self: end;
   font-weight: 700;
   font-size: clamp(1rem, 4vw, 1.15rem);
   color: var(--recent-preview-time-color);
   white-space: nowrap;
-  text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
