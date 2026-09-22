@@ -155,6 +155,45 @@ This backlog records only outstanding work discovered during the latest in-app r
   - **Docs to Update:** As listed above.
   - _Done on 2025-11-01 – added the contrast token regression checklist to `docs/ui-theme.md`, linked it in the cross-reference, and logged the update in AGENTS._
 
+- [x] **Smooth map re-centering on stop selection (E1)** [P1] [visual] [functional]
+  - **Rationale:** Selecting a stop from the route workspace panel or tapping a marker left the viewport centered elsewhere, forcing manual navigation and harming orientation.
+  - **Acceptance Criteria (measurable):**
+    1) Selecting a stop updates the map so the target marker pans into the current center without changing zoom.
+    2) The pan animates using the shared camera animation duration (no jump cut).
+    3) Unit coverage guards workspace-to-map delegation and MapHandle behavior.
+  - **Tests:** `route-map.component.spec.ts` and `transit-route-workspace.component.spec.ts` (15 specs).
+  - **Affected Areas:** `src/app/shared/map/leaflet-map.service.ts`, `src/app/shared/map/route-map/*`, `src/app/shared/map/route-workspace/*`, `src/app/features/map/map*.spec.ts`.
+  - _Done on 2026-09-22 – added `MapHandle.centerStop(stopId, animate?)` and wired panel/marker selections through it; suite green (678 specs)._
+
+- [x] **Nucleus ordinal resolution for prefix-named lines (E2)** [P1] [functional]
+  - **Rationale:** Line codes stored with consortium prefixes (e.g. `M-301`) failed nucleus lookups, collapsing the per-stop ordinal numbering added for departure preview rows.
+  - **Acceptance Criteria (measurable):**
+    1) Prefix-named lines resolve the same nucleus as their unprefixed canonical code.
+    2) Preview stop lists show consecutive ordinals instead of bulk zeros.
+  - **Tests:** `line-route-workspace.service.spec.ts` (11 specs).
+  - **Affected Areas:** `src/app/domain/lines/line-route-workspace.service.ts`.
+  - _Done on 2026-09-22 – nucleus lookup now normalizes prefixed codes before resolving ordinals; specs green._
+
+- [x] **Pinned departure indicator spacing (E3)** [P2] [visual]
+  - **Rationale:** The pinned chip content touched the panel edges on mobile, reducing legibility of the countdown and tap target comfort.
+  - **Acceptance Criteria (measurable):**
+    1) Panel uses balanced horizontal padding (`--space-m`) and internal gap (`--space-s`).
+    2) Panel meets a stable 2.75rem minimum height so the countdown block clears the edges.
+  - **Tests:** Visual review via PR screenshot workflow; styles covered by existing layout specs.
+  - **Affected Areas:** `src/app/shared/layout/pinned-departure-indicator/pinned-departure-indicator.component.scss`.
+  - _Done on 2026-09-22 – spacing tokens applied; suite green._
+
+- [x] **Recent search preview rows redesigned for readability (E4)** [P0] [visual] [accessibility]
+  - **Rationale:** Previous/next departures on history cards used low-contrast arrows and shifting inline text; columns misaligned across rows and error-red reads as aggressive for past departures.
+  - **Acceptance Criteria (measurable):**
+    1) Each departure row aligns badge, wait label, and time on fixed columns that never shift with text length (CSS grid + tabular numerals).
+    2) Direction arrows are removed; past departures render in a muted tone and the upcoming one is highlighted (WCAG 2.2 AA contrast on the card surface).
+    3) The search date shares the card title line when space allows and wraps below it otherwise.
+    4) Screen readers hear a single spoken clause per row; visual-only columns are aria-hidden.
+  - **Tests:** `recent-search-preview-entry.component.spec.ts` + `recent-search-card.component.spec.ts`; full suite (678 specs) green.
+  - **Affected Areas:** `src/app/features/home/recent-searches/ui/recent-search-preview-entry/*`, `src/app/features/home/recent-searches/ui/recent-search-card/*`.
+  - _Done on 2026-09-22 – grid rows with centralized alignment, muted/next color tokens, and responsive header; verified against PR screenshot evidence._
+
 This checklist is regenerated after each in-app audit.
 Tasks are considered done only when acceptance criteria are met, tests pass, and the behavior matches AGENTS.md and documented patterns.
 
