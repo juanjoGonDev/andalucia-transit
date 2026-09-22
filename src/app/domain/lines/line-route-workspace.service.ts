@@ -12,7 +12,6 @@ import {
 } from '@data/route-search/route-lines-api.service';
 import {
   buildLineStopCoordinates,
-  buildStopNucleusOrdinals,
   orientCoordinatesTowards,
   selectLineDirectionStops,
   selectSegmentStopIds
@@ -97,22 +96,63 @@ function buildWorkspaceViewModel(
   };
 }
 
+/**
+ * CTAN line stop tables occasionally carry a stale `idNucleo` (e.g. the M-301 La Gangosa
+ * stops classified under Las Salinas). The catalog follows the "Núcleo - Lugar" stop-name
+ * convention, so when the name prefix matches a real nucleus name we trust it over the
+ * reported id. Ordinals restart every time the resolved nucleus name changes counters.
+ */
 function enrichStopsWithNuclei(
   stops: readonly RouteLineStop[],
   nuclei: readonly CatalogNucleusEntry[]
 ): readonly LineRouteWorkspaceStop[] {
   const nameById = new Map(nuclei.map((entry) => [entry.id, entry.name]));
-  const ordinals = buildStopNucleusOrdinals(stops);
+  const nameByKey = new Map(nuclei.map((entry) => [normalizeNucleusKey(entry.name), entry.name]));
+  const counters = new Map<string, number>();
 
   return stops.map((stop) => {
-    const nucleusName = nameById.get(stop.nucleusId) ?? null;
+    const detected = detectNucleusNameFromStopName(stop.name, nameByKey);
+    const nucleusName = detected ?? nameById.get(stop.nucleusId) ?? null;
 
     if (!nucleusName) {
       return { ...stop, nucleusName: null, nucleusOrdinal: null };
     }
 
-    return { ...stop, nucleusName, nucleusOrdinal: ordinals.get(stop.stopId) ?? null };
+    const key = normalizeNucleusKey(nucleusName);
+    const ordinal = (counters.get(key) ?? 0) + 1;
+    counters.set(key, ordinal);
+    return { ...stop, nucleusName, nucleusOrdinal: ordinal };
   });
+}
+
+const STOP_NAME_SEPARATOR = ' - ';
+
+function detectNucleusNameFromStopName(
+  stopName: string,
+  nameByKey: ReadonlyMap<string, string>
+): string | null {
+  const separatorIndex = stopName.indexOf(STOP_NAME_SEPARATOR);
+
+  if (separatorIndex <= 0) {
+    return null;
+  }
+
+  const prefix = stopName.slice(0, separatorIndex).trim();
+
+  if (!prefix) {
+    return null;
+  }
+
+  return nameByKey.get(normalizeNucleusKey(prefix)) ?? null;
+}
+
+function normalizeNucleusKey(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 /**

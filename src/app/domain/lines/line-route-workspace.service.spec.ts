@@ -216,6 +216,34 @@ describe('nucleus ordinals', () => {
     });
   });
 
+  it('corrects a stale line nucleus using the stop name prefix when it matches a catalog nucleus', (done) => {
+    routeLines.stops = [
+      { ...stop('las-salinas-1', 0, 1, 36.9, -2.0), nucleusId: 'n-salinas', name: 'Las Salinas - Mercado' },
+      { ...stop('gangosa-mercado', 0, 2, 36.95, -2.05), nucleusId: 'n-salinas', name: 'La Gangosa - Mercado' },
+      { ...stop('gangosa-prado', 0, 3, 36.96, -2.06), nucleusId: 'n-salinas', name: 'La Gangosa - Av. Prado' },
+      { ...stop('vicar-centro', 0, 4, 37.0, -2.1), nucleusId: 'n-salinas', name: 'Vícar - Centro' },
+      { ...stop('el-parador', 0, 5, 37.05, -2.15), nucleusId: 'n-ruescas', name: 'El Parador' }
+    ];
+    catalog.nuclei = [
+      { id: 'n-salinas', municipalityId: 'm-1', zone: null, name: 'LAS SALINAS' },
+      { id: 'n-gangosa', municipalityId: 'm-2', zone: null, name: 'LA GANGOSA' },
+      { id: 'n-ruescas', municipalityId: 'm-3', zone: null, name: 'RUESCAS' },
+      { id: 'n-vicar', municipalityId: 'm-2', zone: null, name: 'VÍCAR' }
+    ];
+
+    service.load({ consortiumId: 7, lineId: 'line-1' }).subscribe((view) => {
+      expect(view.stops.map((entry) => entry.nucleusName)).toEqual([
+        'LAS SALINAS',
+        'LA GANGOSA',
+        'LA GANGOSA',
+        'VÍCAR',
+        'RUESCAS'
+      ]);
+      expect(view.stops.map((entry) => entry.nucleusOrdinal)).toEqual([1, 1, 2, 1, 1]);
+      done();
+    });
+  });
+
   it('marks stops without a resolvable nucleus as unknown', (done) => {
     catalog.nuclei = [{ id: 'nucleus-outbound-b', municipalityId: 'm-1', zone: null, name: 'La Gangosa' }];
 
