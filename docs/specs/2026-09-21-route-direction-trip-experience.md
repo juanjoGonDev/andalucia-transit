@@ -160,3 +160,25 @@ not perceivable, especially in bright sunlight on mobile.
   weekdays the reminder should ring (L M X J V S D chips). Alarms roll to the next selected
   weekday; weekday selection UI follows spacing/padding conventions and remains keyboard
   and screen-reader friendly.
+
+## 9. Follow-up round 4 — live polish & smart extras (screenshot-driven)
+- [ ] **E11 Ring progress parity.** The pinned bubble ring mirrors the exact same elapsed
+  percentage as the progress bar shown in the search results; it starts from the current
+  percentage and never jumps 0→100 in one transition.
+- [ ] **E12 Pinned bubble breathing room.** The countdown moves below the line name, the
+  bubble grows taller/wider and gains inner padding so content no longer hugs the edges.
+- [ ] **E13 Trip view surface.** The live trip timeline renders on the app surface
+  background (readable typography, no raw gradient behind the content).
+- [ ] **E14 Alarms on past departures.** Previous departures also expose the alarm bell so
+  reminders can be scheduled for other days (paired with weekday recurrence).
+- [ ] **E15 Departure actions in an overflow menu.** Pin, live-tracking and alarm actions
+  collapse into a kebab/overflow menu on the search departure rows (mobile-friendly,
+  keyboard and screen-reader navigable).
+- [ ] **E16 Toast notification system.** In-app toasts slide from the top (positioned so
+  they never cover the fixed pinned bubble) and can deep-link to the relevant view when
+  tapped. Alarm rings feed the toast channel through the existing `FiredAlarmEvent` stream.
+- [ ] **E17 Ride detection.** While the GPS reports sustained fast movement, a floating
+  bubble estimates which line the user may be riding by correlating position, heading,
+  nearby stops and scheduled times (direction-aware). With a single confident candidate it
+  shows the inference directly; with several plausible ones it opens a modal to choose.
+  Detection waits until enough evidence accumulates (1–3 candidates at most).
