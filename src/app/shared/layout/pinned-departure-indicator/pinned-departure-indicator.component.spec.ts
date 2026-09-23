@@ -148,6 +148,25 @@ describe('PinnedDepartureIndicatorComponent', () => {
     expect(pins.openSpy).toHaveBeenCalled();
   });
 
+  it('stacks the countdown below the line name inside an airier bubble', async () => {
+    await create();
+    pins.pin.set(buildView(0.25));
+    fixture.detectChanges();
+
+    fixture.debugElement
+      .query(By.css('.pinned-departure__trigger'))
+      .nativeElement.click();
+    fixture.detectChanges();
+
+    const bubble = fixture.debugElement.query(By.css('.pinned-departure__bubble'))
+      .nativeElement as HTMLElement;
+    const order = Array.from(bubble.children).map((node) => (node as HTMLElement).className);
+    const lineIndex = order.findIndex((name) => name.includes('pinned-departure__line'));
+    const infoIndex = order.findIndex((name) => name.includes('pinned-departure__info'));
+    expect(lineIndex).toBeGreaterThanOrEqual(0);
+    expect(infoIndex).toBeGreaterThan(lineIndex);
+  });
+
   it('dismisses the pin from a trash action', async () => {
     await create();
     pins.pin.set(buildView(0.25));
