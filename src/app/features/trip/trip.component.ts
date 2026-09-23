@@ -15,11 +15,14 @@ import {
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { catchError, of } from 'rxjs';
+import { AppConfig } from '@core/config';
+import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 import { LineRouteWorkspaceService } from '@domain/lines/line-route-workspace.service';
 import { LiveTripService, LiveTripState } from '@domain/trip/live-trip.service';
 import { TripSessionRecord, TripSessionStorage } from '@domain/trip/trip-session.storage';
 import { buildCountdownDuration } from '@domain/utils/countdown-labels.util';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 
 const RECENTER_SCROLL_PX = 140;
 
@@ -51,7 +54,7 @@ interface TripStopView {
 @Component({
   selector: 'app-trip',
   standalone: true,
-  imports: [CommonModule, TranslateModule, AccessibleButtonDirective],
+  imports: [CommonModule, TranslateModule, AccessibleButtonDirective, AppLayoutContentDirective],
   templateUrl: './trip.component.html',
   styleUrls: ['./trip.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -62,8 +65,10 @@ export class TripComponent implements OnInit, OnDestroy {
   private readonly workspace = inject(LineRouteWorkspaceService);
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
+  private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
 
   protected readonly keys = TRIP_KEYS;
+  protected readonly layoutNavigationKey = this.config.routes.trip;
   protected readonly state = this.liveTrip.state;
   protected readonly stopsView = signal<readonly TripStopView[]>([]);
   protected readonly announcement = signal('');

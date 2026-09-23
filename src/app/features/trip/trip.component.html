@@ -1,4 +1,11 @@
-<section class="trip" *ngIf="state() as state">
+<section
+  class="trip"
+  *ngIf="state() as state"
+  appLayoutContent
+  [appLayoutContentNavigationKey]="layoutNavigationKey"
+>
+  <div class="utility-container">
+    <div class="app-layout__body">
   <header class="trip__header">
     <button
       type="button"
@@ -78,4 +85,6 @@
   </button>
 
   <p class="app-visually-hidden" aria-live="polite">{{ announcement() }}</p>
+    </div>
+  </div>
 </section>

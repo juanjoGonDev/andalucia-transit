@@ -221,6 +221,14 @@ describe('TripComponent', () => {
     expect(live.nativeElement.textContent).toContain('Has llegado');
   });
 
+  it('registers as layout content so the timeline keeps layout gutters and bottom clearance (E7)', async () => {
+    await create();
+
+    const section = fixture.debugElement.query(By.css('section.trip'));
+    expect(section.nativeElement.classList.contains('app-layout__surface')).toBeTrue();
+    expect(section.query(By.css('.utility-container .app-layout__body'))).not.toBeNull();
+  });
+
   it('ends tracking and returns home from the footer action', async () => {
     await create();
     spyOn(router, 'navigate').and.resolveTo(true);
