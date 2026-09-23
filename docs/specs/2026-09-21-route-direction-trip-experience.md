@@ -149,14 +149,14 @@ not perceivable, especially in bright sunlight on mobile.
   close, keeping the current level when it is already inside the comfort band.
 - [x] **E7 Trip timeline padding.** The trip view gets horizontal breathing room and bottom
   clearance so its last stops never sit under the persistent bottom navigation.
-- [ ] **E8 Pinned departure chip redesign.** The external-link action goes away: tapping the
+- [x] **E8 Pinned departure chip redesign.** The external-link action goes away: tapping the
   bubble itself opens the search; the dismiss action uses a trash icon (not a close X); the
   countdown drops the "En" prefix and gains a small clock icon; the line badge keeps spaced
   left padding.
-- [ ] **E9 Recurring alarms skip the lead-time check.** Setting a repeating reminder must not
+- [x] **E9 Recurring alarms skip the lead-time check.** Setting a repeating reminder must not
   be blocked when the remaining time today is shorter than the reminder offset; the
   one-shot check applies only to one-shot alarms.
-- [ ] **E10 Weekday recurrence.** "Todos los días" becomes "Recurrente": the user picks the
+- [x] **E10 Weekday recurrence.** "Todos los días" becomes "Recurrente": the user picks the
   weekdays the reminder should ring (L M X J V S D chips). Alarms roll to the next selected
   weekday; weekday selection UI follows spacing/padding conventions and remains keyboard
   and screen-reader friendly.
