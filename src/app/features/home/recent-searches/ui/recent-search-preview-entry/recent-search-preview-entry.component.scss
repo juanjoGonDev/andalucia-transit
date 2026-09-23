@@ -26,7 +26,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-inline-size: 3.25rem;
+  min-inline-size: 4rem;
   padding: 0.125rem 0.6rem;
   border-radius: var(--radius-full);
   background-color: var(--recent-preview-line-background);
@@ -35,6 +35,7 @@
   font-size: 0.85rem;
   letter-spacing: 0.01em;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .recent-preview-entry__wait {
