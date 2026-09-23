@@ -122,7 +122,7 @@ export class StopAlarmDialogComponent {
     () =>
       this.offsetMinutes() >= 1 &&
       this.offsetMinutes() <= this.config.alarms.maxCustomMinutes &&
-      this.triggerAt() > Date.now() + SAVE_GUARD_MS
+      (this.repeatDaily() || this.triggerAt() > Date.now() + SAVE_GUARD_MS)
   );
 
   protected selectChoice(minutes: number): void {
