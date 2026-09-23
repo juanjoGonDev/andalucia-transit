@@ -1,8 +1,8 @@
 import {
-  filterStopsWithinMeters,
-  rankRideCandidates,
   RideCandidateStop,
-  RideLineDirectionCandidate
+  RideLineDirectionCandidate,
+  filterStopsWithinMeters,
+  rankRideCandidates
 } from './ride-candidates.util';
 
 const USER = { latitude: 36.719472, longitude: -4.363551 }; // Almería-ish corridor

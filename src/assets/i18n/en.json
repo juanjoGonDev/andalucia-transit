@@ -19,6 +19,13 @@
   },
   "layout": {
     "skipToContent": "Skip to main content",
+    "rideProposal": {
+      "regionLabel": "Trip suggestion",
+      "title": "On the move?",
+      "subtitle": "You seem to be riding. Start tracking your trip?",
+      "dismiss": "Dismiss suggestion",
+      "lineLabel": "Line {lineCode} · {destination}"
+    },
     "toast": {
       "regionLabel": "Alerts",
       "dismiss": "Dismiss alert",

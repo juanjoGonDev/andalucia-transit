@@ -1,0 +1,35 @@
+@if (visible()) {
+  <aside
+    class="ride-proposal"
+    role="status"
+    aria-live="polite"
+    [attr.aria-label]="i18n.regionLabel | translate"
+  >
+    <button
+      type="button"
+      class="ride-proposal__dismiss"
+      (click)="onDismiss()"
+      [attr.aria-label]="i18n.dismiss | translate"
+    >
+      <span class="material-symbols-outlined" aria-hidden="true">close</span>
+    </button>
+
+    <p class="ride-proposal__title">{{ i18n.title | translate }}</p>
+    <p class="ride-proposal__subtitle">{{ i18n.subtitle | translate }}</p>
+
+    <ul class="ride-proposal__list">
+      @for (proposal of proposals(); track trackByStop($index, proposal)) {
+        <li>
+          <button
+            type="button"
+            class="ride-proposal__candidate"
+            (click)="onOpen(proposal)"
+          >
+            <span class="material-symbols-outlined ride-proposal__icon" aria-hidden="true">directions_bus</span>
+            <span class="ride-proposal__label">{{ candidateLabel(proposal) }}</span>
+          </button>
+        </li>
+      }
+    </ul>
+  </aside>
+}

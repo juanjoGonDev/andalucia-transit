@@ -19,6 +19,13 @@
   },
   "layout": {
     "skipToContent": "Saltar al contenido principal",
+    "rideProposal": {
+      "regionLabel": "Sugerencia de trayecto",
+      "title": "¿Estás en ruta?",
+      "subtitle": "Parece que viajas en vehículo. ¿Comenzamos el trayecto?",
+      "dismiss": "Descartar sugerencia",
+      "lineLabel": "Línea {lineCode} · {destination}"
+    },
     "toast": {
       "regionLabel": "Avisos",
       "dismiss": "Descartar aviso",

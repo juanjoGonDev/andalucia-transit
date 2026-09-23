@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
 import { AlarmSchedulerService, FiredAlarmEvent } from '@domain/stop-alarms/alarm-scheduler.service';
-import { AlarmToastBridgeService } from './alarm-toast-bridge.service';
 import { ToastRequest, ToastService } from '@shared/ui/toast/toast.service';
+import { AlarmToastBridgeService } from './alarm-toast-bridge.service';
 
 function buildEvent(): FiredAlarmEvent {
   return {

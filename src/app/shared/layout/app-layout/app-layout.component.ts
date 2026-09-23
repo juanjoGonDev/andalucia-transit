@@ -9,15 +9,17 @@ import {
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { RideDetectionBootstrapService } from '@data/ride-detection/ride-detection-bootstrap.service';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
+import { AlarmToastBridgeService } from '@shared/layout/alarm-toast-bridge.service';
 import { AppLayoutContextStore } from '@shared/layout/app-layout-context.store';
 import { APP_LAYOUT_CONTEXT } from '@shared/layout/app-layout-context.token';
 import { PinnedDepartureIndicatorComponent } from '@shared/layout/pinned-departure-indicator/pinned-departure-indicator.component';
-import { AlarmToastBridgeService } from '@shared/layout/alarm-toast-bridge.service';
-import { ToastHostComponent } from '@shared/ui/toast/toast-host.component';
+import { RideProposalBubbleComponent } from '@shared/layout/ride-proposal-bubble/ride-proposal-bubble.component';
 import { AppShellTopActionsComponent } from '@shared/layout/top-actions/app-shell-top-actions.component';
 import { LegalFooterComponent } from '@shared/privacy/legal-footer.component';
 import { StorageNoticeComponent } from '@shared/privacy/storage-notice.component';
+import { ToastHostComponent } from '@shared/ui/toast/toast-host.component';
 
 const MAIN_CONTENT_ID = 'app-main-content';
 const SKIP_LINK_LABEL_KEY = 'layout.skipToContent';
@@ -41,6 +43,7 @@ const ZERO_HEIGHT = '0px';
     LegalFooterComponent,
     PinnedDepartureIndicatorComponent,
     ToastHostComponent,
+    RideProposalBubbleComponent,
     StorageNoticeComponent
   ],
   templateUrl: './app-layout.component.html',
@@ -61,6 +64,7 @@ export class AppLayoutComponent implements AfterViewInit, OnDestroy {
   private readonly contextStore = inject(AppLayoutContextStore);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef<HTMLElement>);
   private readonly alarmToastBridge = inject(AlarmToastBridgeService);
+  private readonly rideDetectionBootstrap = inject(RideDetectionBootstrapService);
   private footerElement: HTMLElement | null = null;
   private storageNoticeElement: HTMLElement | null = null;
   private footerIsVisible = false;
@@ -74,6 +78,7 @@ export class AppLayoutComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.alarmToastBridge.start();
+    this.rideDetectionBootstrap.start();
     this.observeShellGeometry();
   }
 

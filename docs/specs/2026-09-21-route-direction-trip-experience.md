@@ -171,14 +171,29 @@ not perceivable, especially in bright sunlight on mobile.
   background (readable typography, no raw gradient behind the content).
 - [ ] **E14 Alarms on past departures.** Previous departures also expose the alarm bell so
   reminders can be scheduled for other days (paired with weekday recurrence).
-- [ ] **E15 Departure actions in an overflow menu.** Pin, live-tracking and alarm actions
+- [x] **E15 Departure actions in an overflow menu.** Pin, live-tracking and alarm actions
   collapse into a kebab/overflow menu on the search departure rows (mobile-friendly,
-  keyboard and screen-reader navigable).
-- [ ] **E16 Toast notification system.** In-app toasts slide from the top (positioned so
+  keyboard and screen-reader navigable). _Done: rows keep quick actions on ≥48rem and swap
+  to a `role=menu` kebab overflow (`toggleActionsMenu`/`runMenuAction`, Escape/click-out
+  close) below that breakpoint._
+- [x] **E16 Toast notification system.** In-app toasts slide from the top (positioned so
   they never cover the fixed pinned bubble) and can deep-link to the relevant view when
   tapped. Alarm rings feed the toast channel through the existing `FiredAlarmEvent` stream.
-- [ ] **E17 Ride detection.** While the GPS reports sustained fast movement, a floating
+  _Done: `ToastService` + `ToastHostComponent` (safe-area top stack, cap 3, auto-dismiss,
+  action deep-links) and `AlarmToastBridgeService` converting `scheduler.fired$` into
+  stop-detail navigation; host mounted from the app layout._
+- [x] **E17 Ride detection.** While the GPS reports sustained fast movement, a floating
   bubble estimates which line the user may be riding by correlating position, heading,
   nearby stops and scheduled times (direction-aware). With a single confident candidate it
   shows the inference directly; with several plausible ones it opens a modal to choose.
   Detection waits until enough evidence accumulates (1–3 candidates at most).
+  _Done (v1): sliding-window classifier (`ride-detection.util`, sustained ≥30 km/h,
+  agreeing-ratio gate), corridor scan over the stop-directory snapshot chunks
+  (`RideStopsIndexService`, 650m radius), live direction source from the timetable API
+  (45min upcoming window), proposal ranker with opposite-direction filtering
+  (`rankRideCandidates`, 1-3 max), and a floating bubble
+  (`RideProposalBubbleComponent`, above bottom chrome, ESL-safe) that deep-links into the
+  stop feeding the top candidate. The watcher never prompts: it only starts when
+  geolocation is already granted, and dismissal enforces a 3-minute cooldown. All data
+  stays on-device besides the public timetable API already used elsewhere. Follow-up:
+  polyline-based direction checks and a dedicated chooser modal when more candidates fit._

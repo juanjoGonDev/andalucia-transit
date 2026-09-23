@@ -40,6 +40,8 @@ export interface RideLineProposal {
   readonly directionAgrees: boolean;
   /** Aggregated 0..1 confidence used to rank proposals. */
   readonly score: number;
+  /** Stops contributing to the proposal, ordered by proximity to the user. */
+  readonly stopIds: readonly string[];
 }
 
 export interface RideCandidateOptions {
@@ -104,7 +106,8 @@ export function rankRideCandidates(
           matches: 1,
           closestStopMeters: stop.distanceMeters,
           directionAgrees,
-          score: 0
+          score: 0,
+          stopIds: [stop.stopId]
         });
         continue;
       }
@@ -112,7 +115,8 @@ export function rankRideCandidates(
       proposals.set(key, {
         ...existing,
         matches: existing.matches + 1,
-        closestStopMeters: Math.min(existing.closestStopMeters, stop.distanceMeters)
+        closestStopMeters: Math.min(existing.closestStopMeters, stop.distanceMeters),
+        stopIds: [...existing.stopIds, stop.stopId]
       });
     }
   }
