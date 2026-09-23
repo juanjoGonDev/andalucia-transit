@@ -14,8 +14,8 @@ class FakeTranslateLoader implements TranslateLoader {
       'countdown.minute': '{value, plural, one {# minuto} other {# minutos}}',
       'layout.pinnedDeparture.ariaLabel':
         'Salida fijada: línea {lineCode} hacia {destination}. Sale en {time}.',
-      'layout.pinnedDeparture.open': 'Abrir búsqueda',
-      'layout.pinnedDeparture.unpin': 'Quitar fijación'
+      'layout.pinnedDeparture.open': 'Abrir la búsqueda de {lineCode} hacia {destination}',
+      'layout.pinnedDeparture.unpin': 'Quitar la salida fijada'
     });
   }
 }
@@ -106,7 +106,7 @@ describe('PinnedDepartureIndicatorComponent', () => {
     expect(parseFloat(progress.nativeElement.getAttribute('stroke-dashoffset'))).toBeCloseTo(0, 3);
   });
 
-  it('expands the panel to the left with the remaining time and actions', async () => {
+  it('expands the panel to the left with a compact countdown and no En prefix', async () => {
     await create();
     pins.pin.set(buildView(0.25));
     fixture.detectChanges();
@@ -119,16 +119,53 @@ describe('PinnedDepartureIndicatorComponent', () => {
     const panel = fixture.debugElement.query(By.css('.pinned-departure__panel'));
     expect(panel).not.toBeNull();
     const eta = panel.nativeElement.querySelector('.pinned-departure__eta');
-    expect(eta.textContent).toContain('En 20m');
-    expect(eta.textContent).toContain('En 20 minutos');
+    expect(eta.textContent).not.toContain('En 20m');
+    expect(eta.textContent).toContain('20m');
+    expect(eta.textContent).toContain('20 minutos');
 
-    const actions = panel.nativeElement.querySelectorAll('.pinned-departure__action');
-    const openButton = actions[0] as HTMLButtonElement;
-    openButton.click();
+    const clock = panel.nativeElement.querySelector('.pinned-departure__eta-icon');
+    expect(clock).not.toBeNull();
+    expect(clock.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('opens the search from the bubble itself with no external-link action', async () => {
+    await create();
+    pins.pin.set(buildView(0.25));
+    fixture.detectChanges();
+
+    fixture.debugElement
+      .query(By.css('.pinned-departure__trigger'))
+      .nativeElement.click();
+    fixture.detectChanges();
+
+    const panel = fixture.debugElement.query(By.css('.pinned-departure__panel'));
+    expect(panel.nativeElement.querySelector('.pinned-departure__action--open')).toBeNull();
+    expect(panel.nativeElement.textContent).not.toContain('open_in_new');
+
+    const bubble = panel.nativeElement.querySelector('.pinned-departure__bubble') as HTMLButtonElement;
+    expect(bubble).not.toBeNull();
+    bubble.click();
     expect(pins.openSpy).toHaveBeenCalled();
+  });
 
-    const unpinButton = actions[1] as HTMLButtonElement;
-    unpinButton.click();
+  it('dismisses the pin from a trash action', async () => {
+    await create();
+    pins.pin.set(buildView(0.25));
+    fixture.detectChanges();
+
+    fixture.debugElement
+      .query(By.css('.pinned-departure__trigger'))
+      .nativeElement.click();
+    fixture.detectChanges();
+
+    const panel = fixture.debugElement.query(By.css('.pinned-departure__panel'));
+    expect(panel.nativeElement.textContent).not.toContain('close');
+
+    const trash = panel.nativeElement.querySelector('.pinned-departure__action--dismiss') as HTMLButtonElement;
+    expect(trash).not.toBeNull();
+    expect(trash.textContent).toContain('delete');
+    expect(trash.getAttribute('aria-label')).not.toBeNull();
+    trash.click();
     expect(pins.unpinSpy).toHaveBeenCalled();
   });
 });

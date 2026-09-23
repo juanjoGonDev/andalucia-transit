@@ -22,8 +22,8 @@
     "pinnedDeparture": {
       "ariaLabel": "Pinned departure: line {lineCode} to {destination}. Departs in {time}.",
       "details": "Pinned departure details",
-      "open": "Open the pinned search",
-      "unpin": "Stop following the pinned departure"
+      "open": "Open the search for {lineCode} to {destination}",
+      "unpin": "Remove the pinned departure"
     }
   },
   "home": {

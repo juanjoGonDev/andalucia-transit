@@ -2,30 +2,34 @@
   <div class="pinned-departure" [class.pinned-departure--expanded]="expanded()">
     @if (expanded()) {
       <div class="pinned-departure__panel" id="pinned-departure-panel">
-        <span class="pinned-departure__line">{{ view.lineCode }}</span>
-        <div class="pinned-departure__info">
-          <span class="pinned-departure__eta">
-            <span aria-hidden="true">{{ upcomingKey | translate: { time: view.countdown.text } }}</span>
-            <span class="app-visually-hidden">{{ spokenUpcoming(view) }}</span>
-          </span>
-          <span class="pinned-departure__destination">{{ view.destination }}</span>
-        </div>
+        <button
+          type="button"
+          class="pinned-departure__bubble"
+          (click)="openSearch()"
+          [attr.aria-label]="
+            pinnedKeys.open | translate: { lineCode: view.lineCode, destination: view.destination }
+          "
+        >
+          <span class="pinned-departure__line">{{ view.lineCode }}</span>
+          <div class="pinned-departure__info">
+            <span class="pinned-departure__eta">
+              <span class="pinned-departure__eta-icon material-symbols-outlined" aria-hidden="true"
+                >schedule</span
+              >
+              <span aria-hidden="true">{{ view.countdown.text }}</span>
+              <span class="app-visually-hidden">{{ spokenUpcoming(view) }}</span>
+            </span>
+            <span class="pinned-departure__destination">{{ view.destination }}</span>
+          </div>
+        </button>
         <div class="pinned-departure__actions">
           <button
             type="button"
-            class="pinned-departure__action"
-            (click)="openSearch()"
-            [attr.aria-label]="pinnedKeys.open | translate"
-          >
-            <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span>
-          </button>
-          <button
-            type="button"
-            class="pinned-departure__action"
+            class="pinned-departure__action pinned-departure__action--dismiss"
             (click)="unpin()"
             [attr.aria-label]="pinnedKeys.unpin | translate"
           >
-            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+            <span class="material-symbols-outlined" aria-hidden="true">delete</span>
           </button>
         </div>
       </div>
