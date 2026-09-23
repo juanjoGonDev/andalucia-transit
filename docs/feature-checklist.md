@@ -194,6 +194,35 @@ This backlog records only outstanding work discovered during the latest in-app r
   - **Affected Areas:** `src/app/features/home/recent-searches/ui/recent-search-preview-entry/*`, `src/app/features/home/recent-searches/ui/recent-search-card/*`.
   - _Done on 2026-09-22 – grid rows with centralized alignment, muted/next color tokens, and responsive header; verified against PR screenshot evidence._
 
+- [x] **Pinned departure bubble redesigned (E8)** [P1] [visual]
+  - **Rationale:** the external-link icon duplicated the bubble's primary intent and the X action read as close-instead-of-remove; the «En» prefix wasted horizontal room.
+  - **Acceptance Criteria (measurable):**
+    1) Tapping the bubble itself opens the pinned search; no external-link action remains in the panel.
+    2) Dismiss uses a trash icon with its own aria label; no `close` glyph remains.
+    3) The countdown renders without the textual «En» prefix and shows a small clock icon instead.
+  - **Tests:** `pinned-departure-indicator.component.spec.ts` (6 specs).
+  - **Affected Areas:** `src/app/shared/layout/pinned-departure-indicator/*`, `src/assets/i18n/{es,en}.json`.
+  - _Done on 2026-09-23 – bubble action + trash dismiss + clock ETA shipped; suite green._
+
+- [x] **Recurring reminders bypass the lead-time guard (E9)** [P1] [functional]
+  - **Rationale:** users could not set a repeated reminder when today's remaining time was shorter than the reminder offset, even though tomorrow's recurrence is perfectly reachable.
+  - **Acceptance Criteria (measurable):**
+    1) With recurrence on, an arrival closer than the offset still offers a valid save path.
+    2) One-shot alarms keep the temporal guard and the warning copy.
+  - **Tests:** `stop-alarm-dialog.component.spec.ts` (blocked vs recurring scenarios).
+  - **Affected Areas:** `src/app/features/stop-detail/stop-alarm-dialog/*`.
+  - _Done on 2026-09-23 – guard scoped to one-shot saves._
+
+- [x] **Weekday recurrence picker (E10)** [P1] [functional] [accessibility]
+  - **Rationale:** «Todos los días» over-notifies; users need to choose which weekdays each reminder rings on.
+  - **Acceptance Criteria (measurable):**
+    1) «Repetir todos los días» becomes «Recurrente» with a Monday-first chip row (L M X J V S D, aria-pressed, full-name aria labels).
+    2) At least one day must be selected while the switch is on; the arrival weekday is preselected.
+    3) Roll-forward and re-arm landing days honor the mask; storage normalizes deduped, sorted masks.
+  - **Tests:** `stop-alarm.model.spec.ts`, `stop-alarm-storage.spec.ts`, dialog specs; full suite (696 specs) green.
+  - **Affected Areas:** `src/app/domain/stop-alarms/*`, `src/app/data/stop-alarms/*`, `src/app/features/stop-detail/stop-alarm-dialog/*`, `src/app/features/alarms/*`.
+  - _Done on 2026-09-23 – mask-based recurrence validated end to end._
+
 This checklist is regenerated after each in-app audit.
 Tasks are considered done only when acceptance criteria are met, tests pass, and the behavior matches AGENTS.md and documented patterns.
 
