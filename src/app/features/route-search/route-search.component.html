@@ -196,6 +196,7 @@
                             >
                               {{ translationKeys.holidayBadge | translate }}
                             </span>
+                            <div class="route-search__item-quick-actions">
                             <button
                               type="button"
                               class="route-search__item-alarm"
@@ -248,6 +249,74 @@
                                 share_location
                               </span>
                             </button>
+                            </div>
+                            <div class="route-search__item-actions">
+                              <button
+                                type="button"
+                                class="route-search__item-overflow"
+                                aria-haspopup="menu"
+                                [attr.aria-expanded]="isMenuOpen(item)"
+                                [attr.aria-label]="
+                                  actionsMenuKey
+                                    | translate
+                                    : { lineCode: item.lineCode, time: item.arrivalTime | date: 'HH:mm' }
+                                "
+                                (click)="toggleActionsMenu(item, $event)"
+                              >
+                                <span class="material-symbols-outlined" aria-hidden="true"
+                                  >more_vert</span
+                                >
+                              </button>
+                              <div
+                                *ngIf="isMenuOpen(item)"
+                                class="route-search__item-menu"
+                                role="menu"
+                              >
+                                <button
+                                  type="button"
+                                  role="menuitem"
+                                  class="route-search__item-menu-option route-search__item-menu-option--alarm"
+                                  (click)="runMenuAction($event, 'alarm', item)"
+                                >
+                                  <span class="material-symbols-outlined" aria-hidden="true">{{
+                                    isDepartureAlarmActive(item)
+                                      ? 'notifications_active'
+                                      : 'notifications'
+                                  }}</span>
+                                  <span>{{
+                                    isDepartureAlarmActive(item)
+                                      ? ('routeSearch.menuAlarmActive' | translate)
+                                      : ('routeSearch.menuAlarmAdd' | translate)
+                                  }}</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  role="menuitem"
+                                  class="route-search__item-menu-option route-search__item-menu-option--pin"
+                                  (click)="runMenuAction($event, 'pin', item)"
+                                >
+                                  <span class="material-symbols-outlined" aria-hidden="true"
+                                    >push_pin</span
+                                  >
+                                  <span>{{
+                                    isDeparturePinned(item)
+                                      ? ('routeSearch.menuPinActive' | translate)
+                                      : ('routeSearch.menuPinAdd' | translate)
+                                  }}</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  role="menuitem"
+                                  class="route-search__item-menu-option route-search__item-menu-option--live"
+                                  (click)="runMenuAction($event, 'live', item)"
+                                >
+                                  <span class="material-symbols-outlined" aria-hidden="true"
+                                    >share_location</span
+                                  >
+                                  <span>{{ 'routeSearch.menuLiveTrip' | translate }}</span>
+                                </button>
+                              </div>
+                            </div>
                           </div>
                           <div class="route-search__item-time-badges">
                             <span

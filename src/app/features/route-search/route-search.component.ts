@@ -5,6 +5,7 @@ import {
   Component,
   DestroyRef,
   ElementRef,
+  HostListener,
   QueryList,
   ViewChild,
   ViewChildren,
@@ -116,6 +117,8 @@ export class RouteSearchComponent implements AfterViewInit {
     activeLabel: 'routeSearch.pinActiveLabel'
   } as const;
   protected readonly liveTripKey = 'routeSearch.liveTripLabel';
+  protected readonly actionsMenuKey = 'routeSearch.menuTriggerLabel';
+  protected readonly openMenuDepartureId = signal<string | null>(null);
   protected readonly loadingKey = APP_CONFIG.translationKeys.home.sections.recentStops.previewLoading;
   protected readonly loadErrorKey = APP_CONFIG.translationKeys.home.sections.recentStops.previewError;
   protected readonly retryKey = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.retry;
@@ -329,6 +332,42 @@ export class RouteSearchComponent implements AfterViewInit {
 
     this.tripSessions.save(session);
     void this.router.navigate(['/', APP_CONFIG.routes.trip]);
+  }
+
+  protected isMenuOpen(item: RouteSearchDepartureView): boolean {
+    return this.openMenuDepartureId() === item.id;
+  }
+
+  protected toggleActionsMenu(item: RouteSearchDepartureView, event: MouseEvent): void {
+    event.stopPropagation();
+    this.openMenuDepartureId.update((openId) => (openId === item.id ? null : item.id));
+  }
+
+  protected runMenuAction(
+    event: MouseEvent,
+    action: 'alarm' | 'pin' | 'live',
+    item: RouteSearchDepartureView
+  ): void {
+    event.stopPropagation();
+    this.openMenuDepartureId.set(null);
+
+    if (action === 'alarm') {
+      this.toggleDepartureAlarm(item);
+    } else if (action === 'pin') {
+      this.togglePin(item);
+    } else {
+      this.startLiveTrip(item);
+    }
+  }
+
+  @HostListener('document:click')
+  protected closeMenuOnOutsideClick(): void {
+    this.openMenuDepartureId.set(null);
+  }
+
+  @HostListener('document:keydown.escape')
+  protected closeMenuOnEscape(): void {
+    this.openMenuDepartureId.set(null);
   }
 
   protected togglePin(item: RouteSearchDepartureView): void {

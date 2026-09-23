@@ -644,6 +644,63 @@ arrivalTime: new Date('2025-02-02T07:30:00Z'),
     storage.clear();
   });
 
+  it('collapses pin, live and alarm actions behind an overflow menu on mobile rows', () => {
+    setUpResultsWithUpcomingDeparture();
+    fixture.detectChanges();
+
+    const trigger = fixture.debugElement.query(By.css('.route-search__item-overflow'));
+    expect(trigger).not.toBeNull();
+    expect(trigger.nativeElement.getAttribute('aria-haspopup')).toBe('menu');
+    expect(trigger.nativeElement.getAttribute('aria-expanded')).toBe('false');
+
+    trigger.nativeElement.click();
+    fixture.detectChanges();
+
+    const menu = fixture.debugElement.query(By.css('.route-search__item-menu'));
+    expect(menu).not.toBeNull();
+    expect(trigger.nativeElement.getAttribute('aria-expanded')).toBe('true');
+
+    const items = menu.nativeElement.querySelectorAll('[role="menuitem"]');
+    expect(items.length).toBe(3);
+    for (const item of Array.from(items) as HTMLElement[]) {
+      expect(item.textContent?.trim().length).toBeGreaterThan(3);
+    }
+  });
+
+  it('closes the overflow menu after choosing the alarm action', () => {
+    setUpResultsWithUpcomingDeparture();
+    fixture.detectChanges();
+
+    fixture.debugElement.query(By.css('.route-search__item-overflow')).nativeElement.click();
+    fixture.detectChanges();
+
+    const alarmItem = fixture.debugElement.query(
+      By.css('.route-search__item-menu .route-search__item-menu-option--alarm')
+    );
+    expect(alarmItem).not.toBeNull();
+    alarmItem.nativeElement.click();
+    fixture.detectChanges();
+
+    expect(overlayDialogs.open).toHaveBeenCalled();
+    expect(fixture.debugElement.query(By.css('.route-search__item-menu'))).toBeNull();
+  });
+
+  it('closes the overflow menu with Escape keeping the row intact', () => {
+    setUpResultsWithUpcomingDeparture();
+    fixture.detectChanges();
+
+    const trigger = fixture.debugElement.query(By.css('.route-search__item-overflow'));
+    trigger.nativeElement.click();
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.css('.route-search__item-menu'))).not.toBeNull();
+
+    fixture.nativeElement.ownerDocument.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('.route-search__item-menu'))).toBeNull();
+    expect(trigger.nativeElement.getAttribute('aria-expanded')).toBe('false');
+  });
+
   it('pins an upcoming departure and reflects the active pin', () => {
     const pins = TestBed.inject(PinnedDepartureService) as unknown as PinnedDepartureServiceStub;
     setUpResultsWithUpcomingDeparture();
