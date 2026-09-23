@@ -19,6 +19,13 @@
   },
   "layout": {
     "skipToContent": "Skip to main content",
+    "toast": {
+      "regionLabel": "Alerts",
+      "dismiss": "Dismiss alert",
+      "alarmTitle": "Alarm · line {lineCode}",
+      "alarmBody": "{stopName} - bound for {destination}",
+      "open": "Open"
+    },
     "pinnedDeparture": {
       "ariaLabel": "Pinned departure: line {lineCode} to {destination}. Departs in {time}.",
       "details": "Pinned departure details",

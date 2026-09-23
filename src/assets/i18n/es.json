@@ -19,6 +19,13 @@
   },
   "layout": {
     "skipToContent": "Saltar al contenido principal",
+    "toast": {
+      "regionLabel": "Avisos",
+      "dismiss": "Descartar aviso",
+      "alarmTitle": "Alarma · línea {lineCode}",
+      "alarmBody": "{stopName} — llega hacia {destination}",
+      "open": "Ver"
+    },
     "pinnedDeparture": {
       "ariaLabel": "Salida fijada: línea {lineCode} hacia {destination}. Sale en {time}.",
       "details": "Detalles de la salida fijada",

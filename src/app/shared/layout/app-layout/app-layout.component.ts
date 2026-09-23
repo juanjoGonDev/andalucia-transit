@@ -13,6 +13,8 @@ import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.direct
 import { AppLayoutContextStore } from '@shared/layout/app-layout-context.store';
 import { APP_LAYOUT_CONTEXT } from '@shared/layout/app-layout-context.token';
 import { PinnedDepartureIndicatorComponent } from '@shared/layout/pinned-departure-indicator/pinned-departure-indicator.component';
+import { AlarmToastBridgeService } from '@shared/layout/alarm-toast-bridge.service';
+import { ToastHostComponent } from '@shared/ui/toast/toast-host.component';
 import { AppShellTopActionsComponent } from '@shared/layout/top-actions/app-shell-top-actions.component';
 import { LegalFooterComponent } from '@shared/privacy/legal-footer.component';
 import { StorageNoticeComponent } from '@shared/privacy/storage-notice.component';
@@ -38,6 +40,7 @@ const ZERO_HEIGHT = '0px';
     AccessibleButtonDirective,
     LegalFooterComponent,
     PinnedDepartureIndicatorComponent,
+    ToastHostComponent,
     StorageNoticeComponent
   ],
   templateUrl: './app-layout.component.html',
@@ -57,6 +60,7 @@ const ZERO_HEIGHT = '0px';
 export class AppLayoutComponent implements AfterViewInit, OnDestroy {
   private readonly contextStore = inject(AppLayoutContextStore);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef<HTMLElement>);
+  private readonly alarmToastBridge = inject(AlarmToastBridgeService);
   private footerElement: HTMLElement | null = null;
   private storageNoticeElement: HTMLElement | null = null;
   private footerIsVisible = false;
@@ -69,6 +73,7 @@ export class AppLayoutComponent implements AfterViewInit, OnDestroy {
   protected readonly mainContentRole = MAIN_ROLE;
 
   ngAfterViewInit(): void {
+    this.alarmToastBridge.start();
     this.observeShellGeometry();
   }
 
