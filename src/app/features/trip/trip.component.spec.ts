@@ -226,6 +226,10 @@ describe('TripComponent', () => {
 
     const section = fixture.debugElement.query(By.css('section.trip'));
     expect(section.nativeElement.classList.contains('app-layout__surface')).toBeTrue();
+    expect(section.nativeElement.classList.contains('app-layout__surface--plain')).toBeTrue();
+    expect(
+      section.nativeElement.classList.contains('app-layout__surface--hero')
+    ).toBeFalse();
     expect(section.query(By.css('.utility-container .app-layout__body'))).not.toBeNull();
   });
 
