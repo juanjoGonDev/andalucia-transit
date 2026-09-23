@@ -19,12 +19,12 @@ import {
 } from 'leaflet';
 import { buildRouteDirectionIndicators } from '@domain/map/route-overlay-geometry';
 import { GeoCoordinate } from '@domain/utils/geo-distance.util';
-import { resolveStopFocusZoom, stopFocusZoomKeepsCurrent } from '@shared/map/map-stop-focus.util';
 import {
   MapStopMarkerRole,
   MapStopRolePalette,
   resolveStopMarkerStyle
 } from '@shared/map/map-marker-style';
+import { resolveStopFocusZoom, stopFocusZoomKeepsCurrent } from '@shared/map/map-stop-focus.util';
 
 export interface MapCreateOptions {
   readonly center: GeoCoordinate;

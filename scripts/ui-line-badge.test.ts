@@ -23,7 +23,7 @@ const MAX_BADGE_CHARS_ALLOWED = 6;
 const LINE_NAME_TOKEN = /^[A-Z]{1,2}-\S+/;
 
 interface CatalogLinesFile {
-  readonly lines: ReadonlyArray<{ readonly name: string }>;
+  readonly lines: readonly { readonly name: string }[];
 }
 
 async function collectBadgeCandidates(): Promise<readonly string[]> {

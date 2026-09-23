@@ -4,11 +4,11 @@ import { AppConfig } from '@core/config';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 import { StopAlarmsStorage } from '@data/stop-alarms/stop-alarms.storage';
 import {
-  normalizeRepeatWeekdays,
   StopAlarm,
   StopAlarmRuntime,
   buildStopAlarmId,
-  computeNextTriggerAt
+  computeNextTriggerAt,
+  normalizeRepeatWeekdays
 } from '@domain/stop-alarms/stop-alarm.model';
 
 export interface StopAlarmCandidate {
