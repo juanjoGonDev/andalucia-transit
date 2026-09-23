@@ -12,6 +12,7 @@ import {
   CountdownDuration,
   buildCountdownDuration
 } from '@domain/utils/countdown-labels.util';
+import { ARRIVAL_PROGRESS_WINDOW_MINUTES } from '@domain/utils/progress.util';
 
 export interface PinnedDepartureView {
   readonly departureId: string;
@@ -109,8 +110,11 @@ export function resolvePinnedDepartureView(
     return null;
   }
 
-  const windowMs = Math.max(arrivalTime.getTime() - new Date(record.pinnedAt).getTime(), 1);
-  const progress = Math.min(1, Math.max(0, 1 - remainingMs / windowMs));
+  // The ring mirrors the same fixed 30-minute window the search results bar uses
+  // (ARRIVAL_PROGRESS_WINDOW_MINUTES): outside the window the value stays at 0,
+  // and it fills continuously as the departure approaches, reaching 1 at arrival.
+  const windowRangeMs = ARRIVAL_PROGRESS_WINDOW_MINUTES * MILLISECONDS_PER_SECOND * 60;
+  const progress = Math.min(1, Math.max(0, (windowRangeMs - Math.max(0, remainingMs)) / windowRangeMs));
   const remainingSeconds = Math.max(0, Math.round(remainingMs / MILLISECONDS_PER_SECOND));
 
   return {

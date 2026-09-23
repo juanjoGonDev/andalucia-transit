@@ -114,7 +114,15 @@ describe('PinnedDepartureService', () => {
     expect(view?.destination).toBe('Almería');
     expect(view?.remainingMs).toBe(20 * 60_000);
     expect(view?.countdown).toEqual({ text: '20m', unit: 'minute', value: 20 });
-    expect(view?.progress).toBeCloseTo(0, 2);
+    expect(view?.progress).toBeCloseTo((30 - 20) / 30, 2);
+  });
+
+  it('mirrors the search bar progress window (30 fixed minutes) instead of the pin age', () => {
+    service.pinDeparture(buildDeparture(45), buildSelection());
+    expect(service.pin()?.progress).toBe(0);
+
+    service.pinDeparture(buildDeparture(15), buildSelection());
+    expect(service.pin()?.progress).toBeCloseTo(0.5, 2);
   });
 
   it('replaces an older pin when a new departure is pinned', () => {
@@ -204,7 +212,7 @@ describe('PinnedDepartureService', () => {
 
     tick(10 * 60_000);
     expect(service.pin()?.remainingMs).toBe(10 * 60_000);
-    expect(service.pin()?.progress).toBeCloseTo(0.5, 1);
+    expect(service.pin()?.progress).toBeCloseTo((30 - 10) / 30, 2);
 
     tick(10 * 60_000);
     expect(service.pin()?.progress).toBe(1);
