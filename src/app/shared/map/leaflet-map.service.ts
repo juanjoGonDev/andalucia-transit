@@ -19,6 +19,7 @@ import {
 } from 'leaflet';
 import { buildRouteDirectionIndicators } from '@domain/map/route-overlay-geometry';
 import { GeoCoordinate } from '@domain/utils/geo-distance.util';
+import { resolveStopFocusZoom, stopFocusZoomKeepsCurrent } from '@shared/map/map-stop-focus.util';
 import {
   MapStopMarkerRole,
   MapStopRolePalette,
@@ -355,7 +356,18 @@ export class LeafletMapService {
           return false;
         }
 
-        map.panTo(stopMarker.getLatLng(), {
+        const target = stopMarker.getLatLng();
+        const currentZoom = map.getZoom();
+
+        if (stopFocusZoomKeepsCurrent(currentZoom)) {
+          map.panTo(target, {
+            animate,
+            duration: CAMERA_ANIMATION_DURATION_SECONDS
+          });
+          return true;
+        }
+
+        map.flyTo(target, resolveStopFocusZoom(currentZoom), {
           animate,
           duration: CAMERA_ANIMATION_DURATION_SECONDS
         });
