@@ -682,6 +682,52 @@ arrivalTime: new Date('2025-02-02T07:30:00Z'),
     expect(pins.unpin).toHaveBeenCalledTimes(1);
   });
 
+  it('also exposes the departure alarm on past departures for recurring reminders (E14)', () => {
+    resultsService.viewModel = {
+      departures: [
+        {
+          id: 'past-1',
+          lineId: 'L9',
+          lineCode: '009',
+          direction: 1,
+          destination: 'Beta Terminal',
+          originStopId: 'alpha',
+          originStopIds: ['alpha'],
+          destinationStopIds: ['beta'],
+          arrivalTime: new Date('2025-02-02T07:30:00Z'),
+          relativeLabel: { text: '10m', unit: 'minute', value: 10 },
+          waitTimeSeconds: 600,
+          kind: 'past',
+          isNext: false,
+          isMostRecentPast: true,
+          isAccessible: false,
+          isUniversityOnly: false,
+          isHolidayService: false,
+          showUpcomingProgress: false,
+          progressPercentage: 0,
+          pastProgressPercentage: 33,
+          destinationArrivalTime: new Date('2025-02-02T07:45:00Z'),
+          travelDurationLabel: '15m'
+        }
+      ],
+      hasUpcoming: false,
+      nextDepartureId: null
+    } satisfies RouteSearchResultsViewModel;
+    state.setSelection({ origin, destination, queryDate: new Date(), lineMatches: [] });
+    fixture.detectChanges();
+
+    const bell = fixture.debugElement.query(By.css('.route-search__item-alarm'));
+    expect(bell).not.toBeNull();
+
+    bell?.nativeElement.click();
+
+    expect(overlayDialogs.open).toHaveBeenCalledTimes(1);
+    const [component] = overlayDialogs.open.calls.mostRecent().args as [
+      typeof StopAlarmDialogComponent
+    ];
+    expect(component).toBe(StopAlarmDialogComponent);
+  });
+
   it('offers a departure alarm toggle that opens the alarm dialog with the route-search service id', () => {
     setUpResultsWithUpcomingDeparture();
 

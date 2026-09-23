@@ -197,7 +197,6 @@
                               {{ translationKeys.holidayBadge | translate }}
                             </span>
                             <button
-                              *ngIf="item.kind === 'upcoming'"
                               type="button"
                               class="route-search__item-alarm"
                               [class.route-search__item-alarm--active]="isDepartureAlarmActive(item)"
