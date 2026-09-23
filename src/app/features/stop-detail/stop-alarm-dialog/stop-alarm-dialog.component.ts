@@ -95,7 +95,12 @@ export class StopAlarmDialogComponent {
     )
   );
   protected readonly customMinutes = signal<number>(APP_CONFIG.alarms.defaultOffsetMinutes);
-  protected readonly repeatDaily = signal(false);
+  protected readonly recurring = signal(false);
+  protected readonly selectedWeekdays = signal<number[]>([
+    this.data.arrivalTime.getDay()
+  ]);
+  /** Display order: Monday first, Sunday last (ES locale convention). */
+  protected readonly weekdays: readonly number[] = [1, 2, 3, 4, 5, 6, 0];
   protected readonly permissionError = signal(false);
 
   @ViewChild('permissionAlert')
@@ -118,12 +123,17 @@ export class StopAlarmDialogComponent {
     const trigger = this.arrivalTime.getTime() - this.offsetMinutes() * 60_000;
     return Number.isFinite(trigger) ? trigger : Number.NaN;
   });
-  protected readonly canSave = computed(
-    () =>
-      this.offsetMinutes() >= 1 &&
-      this.offsetMinutes() <= this.config.alarms.maxCustomMinutes &&
-      (this.repeatDaily() || this.triggerAt() > Date.now() + SAVE_GUARD_MS)
-  );
+  protected readonly canSave = computed(() => {
+    if (this.offsetMinutes() < 1 || this.offsetMinutes() > this.config.alarms.maxCustomMinutes) {
+      return false;
+    }
+
+    if (this.recurring()) {
+      return this.selectedWeekdays().length > 0;
+    }
+
+    return this.triggerAt() > Date.now() + SAVE_GUARD_MS;
+  });
 
   protected selectChoice(minutes: number): void {
     this.selectedChoice.set(minutes);
@@ -134,7 +144,27 @@ export class StopAlarmDialogComponent {
   }
 
   protected toggleRepeat(): void {
-    this.repeatDaily.update((value) => !value);
+    this.recurring.update((value) => !value);
+
+    if (this.recurring() && this.selectedWeekdays().length === 0) {
+      this.selectedWeekdays.set([this.data.arrivalTime.getDay()]);
+    }
+  }
+
+  protected isWeekdaySelected(day: number): boolean {
+    return this.selectedWeekdays().includes(day);
+  }
+
+  protected toggleWeekday(day: number): void {
+    if (!this.recurring()) {
+      return;
+    }
+
+    const updated = this.isWeekdaySelected(day)
+      ? this.selectedWeekdays().filter((candidate) => candidate !== day)
+      : [...this.selectedWeekdays(), day];
+
+    this.selectedWeekdays.set([...updated].sort((a, b) => a - b));
   }
 
   protected formatOffset(minutes: number): string {
@@ -194,7 +224,7 @@ export class StopAlarmDialogComponent {
       destination: this.data.destination,
       scheduledArrival: this.arrivalTime,
       offsetMinutes: this.offsetMinutes(),
-      repeatDaily: this.repeatDaily()
+      repeatWeekdays: this.recurring() ? this.selectedWeekdays() : []
     };
   }
 }

@@ -17,7 +17,7 @@ function candidate(overrides: Partial<StopAlarmCandidate> = {}): StopAlarmCandid
     destination: 'Centro',
     scheduledArrival: new Date(Date.now() + 60 * MINUTES),
     offsetMinutes: 10,
-    repeatDaily: false,
+    repeatWeekdays: [],
     ...overrides
   };
 }
@@ -120,13 +120,13 @@ describe('StopAlarmsService', () => {
   it('reschedules repeating alarms and drops finished one-shot alarms after firing', () => {
     const service = TestBed.inject(StopAlarmsService);
 
-    service.add(candidate({ repeatDaily: true }));
+    service.add(candidate({ repeatWeekdays: [1, 2, 3] }));
     const repeating = service.snapshot[0];
 
     service.rescheduleAfterFiring(repeating, (repeating.nextTriggerAt ?? Date.now()) + 24 * 60 * MINUTES);
     expect(service.snapshot.length).toBe(1);
 
-    const oneShot = service.snapshot.find((alarm) => !alarm.repeatDaily) ?? null;
+    const oneShot = service.snapshot.find((alarm) => alarm.repeatWeekdays.length === 0) ?? null;
     expect(oneShot).toBeNull();
   });
 
@@ -141,7 +141,7 @@ describe('StopAlarmsService', () => {
         destination: 'Centro',
         scheduledArrival: new Date(Date.now() + 3 * 60 * MINUTES).toISOString(),
         offsetMinutes: 30,
-        repeatDaily: false,
+        repeatWeekdays: [],
         enabled: true,
         createdAt: new Date().toISOString()
       },
@@ -154,7 +154,7 @@ describe('StopAlarmsService', () => {
         destination: 'Centro',
         scheduledArrival: new Date(Date.now() - 48 * 60 * MINUTES).toISOString(),
         offsetMinutes: 30,
-        repeatDaily: false,
+        repeatWeekdays: [],
         enabled: true,
         createdAt: new Date().toISOString()
       }
@@ -177,7 +177,7 @@ describe('StopAlarmsService', () => {
         destination: 'Centro',
         scheduledArrival: new Date(Date.now() - 48 * 60 * MINUTES).toISOString(),
         offsetMinutes: 10,
-        repeatDaily: false,
+        repeatWeekdays: [],
         enabled: false,
         createdAt: new Date().toISOString()
       }
@@ -256,7 +256,7 @@ describe('StopAlarmsService', () => {
 
       const service = TestBed.inject(StopAlarmsService);
       const created = service.add(
-        candidate({ serviceId: 'service-repeat', repeatDaily: true })
+        candidate({ serviceId: 'service-repeat', repeatWeekdays: [1, 2, 3] })
       );
       expect(created).not.toBeNull();
       const alarmId = service.serviceAlarmId('stop-1', 'service-repeat');

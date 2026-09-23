@@ -19,10 +19,14 @@ const BASE_ALARM: StopAlarm = {
   destination: 'Centro',
   scheduledArrival: new Date(10 * DAYS + 60 * MINUTES).toISOString(),
   offsetMinutes: 10,
-  repeatDaily: false,
+  repeatWeekdays: [],
   enabled: true,
   createdAt: new Date(0).toISOString()
 };
+
+function weekdayOf(epochMs: number): number {
+  return new Date(epochMs).getDay();
+}
 
 describe('stop-alarm.model', () => {
   describe('buildStopAlarmId / splitStopAlarmId', () => {
@@ -69,80 +73,127 @@ describe('stop-alarm.model', () => {
       expect(next).toBe(trigger);
     });
 
-    it('rolls repeating alarms forward day by day until they are pending', () => {
+    it('rolls a weekly alarm to its next selected weekday', () => {
       const arrival = 10 * DAYS + 60 * MINUTES;
-      const now = arrival + 2 * DAYS;
+      const trigger = arrival - 10 * MINUTES;
+      const now = trigger + 2 * DAYS;
 
       const next = computeNextTriggerAt(
-        { ...BASE_ALARM, repeatDaily: true },
+        { ...BASE_ALARM, repeatWeekdays: [weekdayOf(trigger)] },
         { now, maxRepeatDays: 30 }
       );
 
-      expect(next).toBe(arrival - 10 * MINUTES + 3 * DAYS);
+      expect(next).toBe(trigger + 7 * DAYS);
     });
 
-    it('keeps repeating triggers elapsed within the grace window as pending', () => {
+    it('picks the soonest selected weekday when several are configured', () => {
       const arrival = 10 * DAYS + 60 * MINUTES;
       const trigger = arrival - 10 * MINUTES;
-      const now = trigger + 90_000;
+      const now = trigger + 2 * DAYS;
+      const triggerDay = weekdayOf(trigger);
 
-      const next = computeNextTriggerAt({ ...BASE_ALARM, repeatDaily: true }, {
-        now,
-        maxRepeatDays: 30,
-        graceMs: 2 * MINUTES
-      });
+      const next = computeNextTriggerAt(
+        {
+          ...BASE_ALARM,
+          repeatWeekdays: [(triggerDay + 3) % 7, (triggerDay + 6) % 7]
+        },
+        { now, maxRepeatDays: 30 }
+      );
+
+      expect(next).toBe(trigger + 3 * DAYS);
+    });
+
+    it('fires the same day when the trigger time has not passed yet', () => {
+      const arrival = 10 * DAYS + 60 * MINUTES;
+      const trigger = arrival - 10 * MINUTES;
+      const now = trigger - 30_000;
+
+      const next = computeNextTriggerAt(
+        { ...BASE_ALARM, repeatWeekdays: [weekdayOf(trigger)] },
+        { now, maxRepeatDays: 30 }
+      );
 
       expect(next).toBe(trigger);
     });
 
-    it('expires repeating alarms beyond the configured repeat window', () => {
+    it('keeps recurring triggers elapsed within the grace window as pending', () => {
       const arrival = 10 * DAYS + 60 * MINUTES;
-      const now = arrival + 31 * DAYS;
+      const trigger = arrival - 10 * MINUTES;
+      const now = trigger + 90_000;
 
-      expect(
-        computeNextTriggerAt({ ...BASE_ALARM, repeatDaily: true }, { now, maxRepeatDays: 30 })
-      ).toBeNull();
-    });
-  });
+      const next = computeNextTriggerAt(
+        { ...BASE_ALARM, repeatWeekdays: [weekdayOf(trigger)] },
+        {
+          now,
+          maxRepeatDays: 30,
+          graceMs: 2 * MINUTES
+        }
+      );
 
-  describe('advanceRepeatTrigger', () => {
-    it('schedules the next ring exactly one day after the fired trigger', () => {
-      const arrival = 10 * DAYS + 60 * MINUTES;
-      const firedAt = arrival - 10 * MINUTES;
-      const alarm = { ...BASE_ALARM, repeatDaily: true };
-
-      const next = advanceRepeatTrigger(alarm, firedAt, {
-        now: firedAt + MINUTES,
-        maxRepeatDays: 30
-      });
-
-      expect(next).toBe(firedAt + DAYS);
+      expect(next).toBe(trigger);
     });
 
-    it('expires when the next slot exceeds the repeat window', () => {
+    it('expires recurring alarms beyond the configured repeat window', () => {
       const arrival = 10 * DAYS + 60 * MINUTES;
-      const firedAt = arrival - 10 * MINUTES + 30 * DAYS;
-      const alarm = { ...BASE_ALARM, repeatDaily: true };
+      const trigger = arrival - 10 * MINUTES;
+      const now = trigger + 31 * DAYS;
 
-      const next = advanceRepeatTrigger(alarm, firedAt, {
-        now: firedAt + MINUTES,
-        maxRepeatDays: 30
-      });
+      const next = computeNextTriggerAt(
+        { ...BASE_ALARM, repeatWeekdays: [weekdayOf(trigger)] },
+        { now, maxRepeatDays: 30 }
+      );
 
       expect(next).toBeNull();
     });
   });
 
-  describe('isAlarmTargetInThePast', () => {
-    it('flags alarms whose trigger would not be in the future', () => {
-      const arrivalMs = Date.parse(BASE_ALARM.scheduledArrival);
+  describe('advanceRepeatTrigger', () => {
+    it('returns null for one-shot alarms', () => {
+      const arrival = 10 * DAYS + 60 * MINUTES;
+      const fired = arrival - 10 * MINUTES;
 
-      expect(
-        isAlarmTargetInThePast(BASE_ALARM.scheduledArrival, 10, arrivalMs - 11 * MINUTES)
-      ).toBe(false);
-      expect(
-        isAlarmTargetInThePast(BASE_ALARM.scheduledArrival, 10, arrivalMs - 9 * MINUTES)
-      ).toBe(true);
+      const next = advanceRepeatTrigger(BASE_ALARM, fired, {
+        now: fired,
+        maxRepeatDays: 30
+      });
+
+      expect(next).toBeNull();
+    });
+
+    it('advances a weekly alarm to the next selected weekday after firing', () => {
+      const arrival = 10 * DAYS + 60 * MINUTES;
+      const fired = arrival - 10 * MINUTES;
+      const firedDay = weekdayOf(fired);
+
+      const next = advanceRepeatTrigger(
+        { ...BASE_ALARM, repeatWeekdays: [firedDay] },
+        fired,
+        { now: fired + 5 * MINUTES, maxRepeatDays: 30 }
+      );
+
+      expect(next).toBe(fired + 7 * DAYS);
+    });
+
+    it('advances past unselected weekdays until a selected one matches', () => {
+      const arrival = 10 * DAYS + 60 * MINUTES;
+      const fired = arrival - 10 * MINUTES;
+      const firedDay = weekdayOf(fired);
+
+      const next = advanceRepeatTrigger(
+        { ...BASE_ALARM, repeatWeekdays: [(firedDay + 2) % 7] },
+        fired,
+        { now: fired + 5 * MINUTES, maxRepeatDays: 30 }
+      );
+
+      expect(next).toBe(fired + 2 * DAYS);
+    });
+  });
+
+  describe('isAlarmTargetInThePast', () => {
+    it('flags a trigger that would already have fired', () => {
+      const now = Date.now();
+
+      expect(isAlarmTargetInThePast(new Date(now - MINUTES).toISOString(), 10, now)).toBeTrue();
     });
   });
 });

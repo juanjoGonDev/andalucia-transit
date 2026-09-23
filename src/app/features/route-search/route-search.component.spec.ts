@@ -714,7 +714,7 @@ arrivalTime: new Date('2025-02-02T07:30:00Z'),
       destination: 'Beta Terminal',
       scheduledArrival: new Date(Date.now() + 40 * 60_000),
       offsetMinutes: 10,
-      repeatDaily: false
+      repeatWeekdays: []
     });
 
     setUpResultsWithUpcomingDeparture();

@@ -12,7 +12,7 @@ const VALID_ALARM = {
   destination: 'Centro',
   scheduledArrival: '2026-09-22T08:10:00.000Z',
   offsetMinutes: 10,
-  repeatDaily: true,
+  repeatWeekdays: [1, 2, 3],
   enabled: true,
   createdAt: '2026-09-21T08:00:00.000Z'
 };
@@ -28,7 +28,7 @@ describe('StopAlarmsStorage', () => {
       destination: 'Centro',
       scheduledArrival: '2026-09-22T08:10:00.000Z',
       offsetMinutes: 10,
-      repeatDaily: true,
+      repeatWeekdays: [1, 2, 3],
       createdAt: '2026-09-21T08:00:00.000Z'
     };
     spyOn(window.localStorage, 'getItem').and.returnValue(JSON.stringify([legacyRow]));
@@ -53,6 +53,20 @@ describe('StopAlarmsStorage', () => {
 
   it('returns an empty list when nothing is stored', () => {
     expect(storage.load()).toEqual([]);
+  });
+
+  it('rejects rows with invalid weekday masks', () => {
+    const invalidMask = { ...VALID_ALARM, repeatWeekdays: [8] };
+    spyOn(window.localStorage, 'getItem').and.returnValue(JSON.stringify([invalidMask]));
+
+    expect(storage.load()).toEqual([]);
+  });
+
+  it('normalizes duplicate and unsorted weekday masks on load', () => {
+    const unsorted = { ...VALID_ALARM, repeatWeekdays: [3, 1, 3] };
+    spyOn(window.localStorage, 'getItem').and.returnValue(JSON.stringify([unsorted]));
+
+    expect(storage.load()).toEqual([{ ...VALID_ALARM, repeatWeekdays: [1, 3] }]);
   });
 
   it('persists and reloads alarms', () => {

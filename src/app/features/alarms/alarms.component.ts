@@ -21,7 +21,7 @@ export interface AlarmsListItem {
   /** HH:mm of the next ring, or null when the alarm is disabled and unreachable. */
   readonly ringTime: string | null;
   readonly offsetMinutes: number;
-  readonly repeatDaily: boolean;
+  readonly repeatWeekdays: readonly number[];
   readonly enabled: boolean;
   /** Disabled alarms whose target already elapsed: kept listed but unrecoverable. */
   readonly isExpired: boolean;
@@ -141,7 +141,7 @@ export class AlarmsComponent {
       arrivalTime: formatTime(new Date(arrivalMs ?? Date.parse(alarm.scheduledArrival))),
       ringTime: alarm.nextTriggerAt === null ? null : formatTime(new Date(alarm.nextTriggerAt)),
       offsetMinutes: alarm.offsetMinutes,
-      repeatDaily: alarm.repeatDaily,
+      repeatWeekdays: alarm.repeatWeekdays,
       enabled: alarm.enabled,
       isExpired: !alarm.enabled && alarm.nextTriggerAt === null
     };

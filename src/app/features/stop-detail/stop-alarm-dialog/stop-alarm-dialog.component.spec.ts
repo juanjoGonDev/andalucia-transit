@@ -178,6 +178,69 @@ describe('StopAlarmDialogComponent', () => {
     expect(repeat.getAttribute('aria-checked')).toBe('false');
   });
 
+  it('keeps weekday chips hidden until recurrence is on', () => {
+    expect(fixture.nativeElement.querySelector('.stop-alarm__days')).toBeNull();
+  });
+
+  it('shows seven weekday chips with the arrival weekday preselected when recurring', () => {
+    const repeat = fixture.nativeElement.querySelector('.stop-alarm__repeat');
+    repeat.click();
+    fixture.detectChanges();
+
+    const days = [...fixture.nativeElement.querySelectorAll('.stop-alarm__day')] as HTMLButtonElement[];
+    expect(days.length).toBe(7);
+
+    const expectedIndex = [1, 2, 3, 4, 5, 6, 0].indexOf(data.arrivalTime.getDay());
+    expect(days[expectedIndex]?.getAttribute('aria-pressed')).toBe('true');
+    days.forEach((day: HTMLButtonElement, index: number) => {
+      if (index !== expectedIndex) {
+        expect(day.getAttribute('aria-pressed')).toBe('false');
+      }
+    });
+  });
+
+  it('toggles weekday selections and requires at least one day to save', () => {
+    const repeat = fixture.nativeElement.querySelector('.stop-alarm__repeat');
+    repeat.click();
+    fixture.detectChanges();
+
+    const days = [...fixture.nativeElement.querySelectorAll('.stop-alarm__day')] as HTMLButtonElement[];
+    const comp = fixture.componentInstance as unknown as { canSave(): boolean };
+
+    const arrivalIndex = [1, 2, 3, 4, 5, 6, 0].indexOf(data.arrivalTime.getDay());
+    days[arrivalIndex].click();
+    fixture.detectChanges();
+
+    expect(comp.canSave()).toBeFalse();
+
+    days[(arrivalIndex + 1) % 7].click();
+    fixture.detectChanges();
+
+    expect(comp.canSave()).toBeTrue();
+  });
+
+  it('saves recurring alarms with the selected weekday mask', async () => {
+    const repeat = fixture.nativeElement.querySelector('.stop-alarm__repeat');
+    repeat.click();
+    fixture.detectChanges();
+
+    const days = [...fixture.nativeElement.querySelectorAll('.stop-alarm__day')] as HTMLButtonElement[];
+    days[0]?.click();
+    fixture.detectChanges();
+
+    permissions.request.and.resolveTo('granted');
+    const save = fixture.nativeElement.querySelector('.app-button--primary');
+    (save as HTMLElement).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(alarms.snapshot.length).toBe(1);
+    const created = alarms.snapshot[0];
+    const expected = [...new Set([data.arrivalTime.getDay(), 1])].sort((a, b) => a - b);
+    expect(created.repeatWeekdays).toEqual(expected);
+    expect(closeSpy).toHaveBeenCalledWith(true);
+  });
+
   it('blocks one-shot saves when the remaining time is shorter than the offset', async () => {
     await recreate({
       arrivalTime: new Date(Date.now() + 3 * MINUTES),
