@@ -141,13 +141,13 @@ not perceivable, especially in bright sunlight on mobile.
   line when space allows (responsive flex wrap). Contrast raised to WCAG 2.2 AA.
 
 ## 8. Follow-up round 2 — polish + recurring alarms (screenshot-driven)
-- [ ] **E5 Line badge never truncates.** The recent-preview line badge keeps every catalog
+- [x] **E5 Line badge never truncates.** The recent-preview line badge keeps every catalog
   line code on one line (no wrapping) with a minimum inline size sized for the longest
   code in the catalog (6 chars, verified against all consortium datasets).
-- [ ] **E6 Smooth medium zoom on re-centering.** When the map focuses a stop it also adapts
+- [x] **E6 Smooth medium zoom on re-centering.** When the map focuses a stop it also adapts
   zoom smoothly toward a medium target: zoom in when the view is too far, zoom out when too
   close, keeping the current level when it is already inside the comfort band.
-- [ ] **E7 Trip timeline padding.** The trip view gets horizontal breathing room and bottom
+- [x] **E7 Trip timeline padding.** The trip view gets horizontal breathing room and bottom
   clearance so its last stops never sit under the persistent bottom navigation.
 - [ ] **E8 Pinned departure chip redesign.** The external-link action goes away: tapping the
   bubble itself opens the search; the dismiss action uses a trash icon (not a close X); the
