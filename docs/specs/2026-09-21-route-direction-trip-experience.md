@@ -175,7 +175,8 @@ not perceivable, especially in bright sunlight on mobile.
   collapse into a kebab/overflow menu on the search departure rows (mobile-friendly,
   keyboard and screen-reader navigable). _Done: rows keep quick actions on ≥48rem and swap
   to a `role=menu` kebab overflow (`toggleActionsMenu`/`runMenuAction`, Escape/click-out
-  close) below that breakpoint._
+  close) below that breakpoint. Superseded by E20: the overflow menu is now the only
+  action surface at every viewport size._
 - [x] **E16 Toast notification system.** In-app toasts slide from the top (positioned so
   they never cover the fixed pinned bubble) and can deep-link to the relevant view when
   tapped. Alarm rings feed the toast channel through the existing `FiredAlarmEvent` stream.
@@ -197,3 +198,21 @@ not perceivable, especially in bright sunlight on mobile.
   geolocation is already granted, and dismissal enforces a 3-minute cooldown. All data
   stays on-device besides the public timetable API already used elsewhere. Follow-up:
   polyline-based direction checks and a dedicated chooser modal when more candidates fit._
+
+## 10. Follow-up round 5 — screenshot feedback fixes
+- [ ] **E18 Pinned bubble padding and destination nucleus.** The expanded pinned bubble
+  must render with real inner padding (today the `--space-m` token does not exist so the
+  whole padding declaration drops and content hugs the edges) and the destination line
+  shows only the destination nucleus ("Aguadulce") instead of the full stop name in the
+  "Núcleo - Lugar" convention ("Aguadulce - La Gloria"). Screen-reader labels keep the
+  full destination. A `test:scripts` guard ensures every spacing token referenced from
+  component styles is defined in the theme tokens.
+- [ ] **E19 Searched trip orientation in the preview.** The departure route preview map
+  and its stop list follow the searched travel order (origin first) even when the line
+  stop table's `orden` runs against the travel direction — searching "La Gangosa →
+  Estación de Almería" must never render the stops or the polyline reversed.
+- [ ] **E20 Departure actions menu at every size.** Alarm bell, pin and live trip live
+  behind a single overflow icon on EVERY departure hour row at ALL viewport sizes; the
+  three direct quick-action buttons disappear entirely (supersedes the E15 two-mode
+  layout). Follow-up: fall back to the other travel orientation of a line when picking
+  between `sentido` candidates sharing both segment stops.
