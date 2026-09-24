@@ -18,11 +18,14 @@ import { StopAlarm } from '@domain/stop-alarms/stop-alarm.model';
 import { StopAlarmsService } from '@domain/stop-alarms/stop-alarms.service';
 import { AlarmsComponent } from '@features/alarms/alarms.component';
 import {
+  StopAlarmDialogComponent,
+  StopAlarmDialogData
+} from '@features/stop-detail/stop-alarm-dialog/stop-alarm-dialog.component';
+import {
   ConfirmDialogComponent,
   ConfirmDialogData
 } from '@shared/ui/confirm-dialog/confirm-dialog.component';
 import {
-  OverlayDialogConfig,
   OverlayDialogRef,
   OverlayDialogService
 } from '@shared/ui/dialog/overlay-dialog.service';
@@ -78,25 +81,35 @@ class FakeTranslateLoader implements TranslateLoader {
 
 class OverlayDialogServiceStub {
   private response$: Observable<boolean | undefined> = of(true);
-  private lastConfig: OverlayDialogConfig<ConfirmDialogData> | undefined;
+  private lastComponentRef: unknown;
+  private lastConfig: { data?: unknown; role?: 'dialog' | 'alertdialog' } | undefined;
 
-  readonly open = jasmine
-    .createSpy('open')
-    .and.callFake((_: typeof ConfirmDialogComponent, config?: OverlayDialogConfig<ConfirmDialogData>) => {
+  readonly open = jasmine.createSpy('open').and.callFake(
+    (component: unknown, config?: { data?: unknown; role?: 'dialog' | 'alertdialog' }) => {
+      this.lastComponentRef = component;
       this.lastConfig = config;
       const ref: OverlayDialogRef<boolean> = {
         afterClosed: () => this.response$,
         close: () => undefined
       };
       return ref;
-    });
+    }
+  );
 
   setResponse(value: boolean): void {
     this.response$ = of(value);
   }
 
-  lastData(): ConfirmDialogData | undefined {
+  lastComponent(): unknown {
+    return this.lastComponentRef;
+  }
+
+  lastData(): unknown {
     return this.lastConfig?.data;
+  }
+
+  lastConfirmData(): ConfirmDialogData | undefined {
+    return this.lastConfig?.data as ConfirmDialogData | undefined;
   }
 }
 
@@ -251,7 +264,8 @@ describe('AlarmsComponent', () => {
     (fixture.nativeElement.querySelector('.alarms__item-remove') as HTMLButtonElement).click();
     fixture.detectChanges();
 
-    const dialogData = dialog.lastData();
+    expect(dialog.lastComponent()).toBe(ConfirmDialogComponent);
+    const dialogData = dialog.lastConfirmData();
     expect(dialogData?.titleKey).toBe('alarms.dialogs.remove.title');
     expect(dialogData?.details?.length).toBe(3);
 
@@ -270,6 +284,38 @@ describe('AlarmsComponent', () => {
     expect(service.snapshot.length).toBe(1);
   });
 
+  it('opens the alarm dialog prefilled with the current values when editing', () => {
+    hydrate([
+      persistentAlarm({ offsetMinutes: 20, repeatWeekdays: [1, 3] })
+    ]);
+    fixture.detectChanges();
+
+    (fixture.nativeElement.querySelector('.alarms__item-edit') as HTMLButtonElement).click();
+
+    expect(dialog.lastComponent()).toBe(StopAlarmDialogComponent);
+    const data = dialog.lastData() as StopAlarmDialogData;
+    expect(data.stopId).toBe('stop-1');
+    expect(data.serviceId).toBe('service-1');
+    expect(data.consortiumId).toBe(4);
+    expect(data.lineCode).toBe('M-101');
+    expect(data.minutesUntilArrival).toBeUndefined();
+    expect(data.arrivalTime).toBeInstanceOf(Date);
+    expect(data.initial).toEqual({ offsetMinutes: 20, repeatWeekdays: [1, 3] });
+  });
+
+  it('hides the edit action for expired alarms but keeps the remove action', () => {
+    hydrate([
+      persistentAlarm({
+        enabled: false,
+        scheduledArrival: new Date(Date.now() - 48 * 60 * MINUTES).toISOString()
+      })
+    ]);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.alarms__item-edit')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.alarms__item-remove')).not.toBeNull();
+  });
+
   it('removes every alarm after the remove-all dialog is accepted', () => {
     const service = hydrate([persistentAlarm(), persistentAlarm({ id: 'stop-1::service-2' })]);
     fixture.detectChanges();
@@ -280,7 +326,7 @@ describe('AlarmsComponent', () => {
     removeAll.click();
     fixture.detectChanges();
 
-    expect(dialog.lastData()?.titleKey).toBe('alarms.dialogs.removeAll.title');
+    expect(dialog.lastConfirmData()?.titleKey).toBe('alarms.dialogs.removeAll.title');
     expect(service.snapshot.length).toBe(0);
   });
 

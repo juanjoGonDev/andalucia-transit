@@ -1,5 +1,5 @@
 <app-dialog-layout
-  titleKey="stopDetail.alarms.dialogTitle"
+  [titleKey]="dialogTitleKey"
   descriptionKey="stopDetail.alarms.dialogDescription"
 >
   <div appDialogBody class="stop-alarm">
@@ -9,8 +9,10 @@
         <span class="stop-alarm__destination">{{ data.destination }}</span>
         <span class="stop-alarm__arrival">
           {{ data.arrivalTime | date: 'HH:mm' }}
-          ·
-          {{ 'stopDetail.status.arrivesIn' | translate: { minutes: data.minutesUntilArrival } }}
+          <ng-container *ngIf="data.minutesUntilArrival !== undefined">
+            ·
+            {{ 'stopDetail.status.arrivesIn' | translate: { minutes: data.minutesUntilArrival } }}
+          </ng-container>
         </span>
       </div>
     </div>

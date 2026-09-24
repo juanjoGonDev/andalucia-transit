@@ -118,6 +118,18 @@
                   </span>
                 </button>
                 <button
+                  *ngIf="!alarm.isExpired"
+                  type="button"
+                  class="alarms__item-edit"
+                  [attr.aria-label]="
+                    translationKeys.actions.editA11y
+                      | translate: { line: alarm.lineCode, destination: alarm.destination }
+                  "
+                  (click)="editAlarm(alarm)"
+                >
+                  <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                </button>
+                <button
                   type="button"
                   class="alarms__item-remove"
                   [attr.aria-label]="

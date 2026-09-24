@@ -105,6 +105,44 @@ export class StopAlarmsService {
   }
 
   /**
+   * Re-saves an existing alarm's offset and recurrence, preserving identity and enabled
+   * state. Returns false when the alarm is unknown or the new schedule can never ring
+   * again (the alarm is dropped in that case, mirroring `add()` semantics).
+   */
+  update(
+    alarmId: string,
+    changes: {
+      readonly offsetMinutes: number;
+      readonly repeatWeekdays: readonly number[]
+    }
+  ): boolean {
+    const alarm = this.get(alarmId);
+
+    if (!alarm) {
+      return false;
+    }
+
+    const { nextTriggerAt: _previousTrigger, ...persistent } = alarm;
+    const updated: StopAlarm = {
+      ...persistent,
+      offsetMinutes: changes.offsetMinutes,
+      repeatWeekdays: normalizeRepeatWeekdays(changes.repeatWeekdays)
+    };
+    const nextTriggerAt = computeNextTriggerAt(updated, {
+      now: Date.now(),
+      maxRepeatDays: this.config.alarms.maxRepeatDays
+    });
+
+    if (nextTriggerAt === null) {
+      this.remove(alarmId);
+      return false;
+    }
+
+    this.upsert({ ...updated, nextTriggerAt });
+    return true;
+  }
+
+  /**
    * Enables or disables an alarm. Disabled alarms stay listed but never ring
    * or advance. Re-enabling reschedules from scratch: one-shot alarms whose
    * target already elapsed are dropped (returns false), repeating alarms roll

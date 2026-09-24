@@ -336,6 +336,7 @@ export const APP_CONFIG = {
         cancelKeep: 'stopDetail.alarms.cancelKeep',
         dialogTitle: 'stopDetail.alarms.dialogTitle',
         dialogDescription: 'stopDetail.alarms.dialogDescription',
+        editTitle: 'stopDetail.alarms.editTitle',
         offsetLabel: 'stopDetail.alarms.offsetLabel',
         quickLabel: 'stopDetail.alarms.quickLabel',
         customLabel: 'stopDetail.alarms.customLabel',
@@ -555,6 +556,7 @@ export const APP_CONFIG = {
         disable: 'alarms.actions.disable',
         enableA11y: 'alarms.actions.enableA11y',
         disableA11y: 'alarms.actions.disableA11y',
+        editA11y: 'alarms.actions.editA11y',
         remove: 'alarms.actions.remove',
         removeAll: 'alarms.actions.removeAll'
       },
@@ -603,27 +605,7 @@ export const APP_CONFIG = {
     },
     nearbyStops: {
       maxDistanceInMeters: 3_000,
-      maxResults: 3,
-      stops: [
-        {
-          id: 'main-street',
-          titleKey: 'home.sections.recentStops.items.mainStreet',
-          latitude: 37.389092,
-          longitude: -5.984459
-        },
-        {
-          id: 'oakwood-plaza',
-          titleKey: 'home.sections.recentStops.items.oakwoodPlaza',
-          latitude: 37.394932,
-          longitude: -5.973099
-        },
-        {
-          id: 'city-library',
-          titleKey: 'home.sections.recentStops.items.cityLibrary',
-          latitude: 37.39244,
-          longitude: -5.992552
-        }
-      ] as const
+      maxResults: 3
     },
     favoriteStops: {
       storageKey: STOP_FAVORITES_STORAGE_KEY,
