@@ -287,25 +287,39 @@ describe('StopAlarmsService', () => {
   });
 
   it('update resaves offset and recurrence while preserving identity and enabled state', () => {
-    const service = TestBed.inject(StopAlarmsService);
+    jasmine.clock().install();
+    try {
+      // Monday: the base trigger (arrival - offset) keeps the mask weekday, so the
+      // reschedule assertion below is deterministic instead of day-of-week dependent.
+      const base = new Date('2026-09-21T09:00:00');
+      jasmine.clock().mockDate(base);
 
-    service.add(candidate({ serviceId: 'service-edit' }));
-    const alarmId = service.serviceAlarmId('stop-1', 'service-edit');
-    service.setEnabled(alarmId, false);
+      const service = TestBed.inject(StopAlarmsService);
+      service.add(
+        candidate({
+          serviceId: 'service-edit',
+          scheduledArrival: new Date(base.getTime() + 60 * MINUTES)
+        })
+      );
+      const alarmId = service.serviceAlarmId('stop-1', 'service-edit');
+      service.setEnabled(alarmId, false);
 
-    const updated = service.update(alarmId, { offsetMinutes: 25, repeatWeekdays: [3, 1] });
+      const updated = service.update(alarmId, { offsetMinutes: 25, repeatWeekdays: [3, 1] });
 
-    expect(updated).toBeTrue();
-    const alarm = service.snapshot.find((entry) => entry.id === alarmId) ?? null;
-    expect(alarm).not.toBeNull();
-    expect(alarm?.enabled).toBeFalse();
-    expect(alarm?.offsetMinutes).toBe(25);
-    expect(alarm?.repeatWeekdays).toEqual([1, 3]);
-    expect(alarm?.stopId).toBe('stop-1');
-    expect(alarm?.lineCode).toBe('M-101');
-    expect(alarm?.nextTriggerAt).toBe(
-      Date.parse(alarm?.scheduledArrival ?? '') - 25 * MINUTES
-    );
+      expect(updated).toBeTrue();
+      const alarm = service.snapshot.find((entry) => entry.id === alarmId) ?? null;
+      expect(alarm).not.toBeNull();
+      expect(alarm?.enabled).toBeFalse();
+      expect(alarm?.offsetMinutes).toBe(25);
+      expect(alarm?.repeatWeekdays).toEqual([1, 3]);
+      expect(alarm?.stopId).toBe('stop-1');
+      expect(alarm?.lineCode).toBe('M-101');
+      expect(alarm?.nextTriggerAt).toBe(
+        Date.parse(alarm?.scheduledArrival ?? '') - 25 * MINUTES
+      );
+    } finally {
+      jasmine.clock().uninstall();
+    }
   });
 
   it('update drops one-shot alarms whose new schedule can never ring again', () => {
