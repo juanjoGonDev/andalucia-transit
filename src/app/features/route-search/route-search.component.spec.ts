@@ -648,6 +648,17 @@ arrivalTime: new Date('2025-02-02T07:30:00Z'),
     storage.clear();
   });
 
+  it('paints the overflow menu above embedded map chrome', () => {
+    setUpResultsWithUpcomingDeparture();
+    fixture.detectChanges();
+
+    fixture.debugElement.query(By.css('.route-search__item-overflow')).nativeElement.click();
+    fixture.detectChanges();
+
+    const menu = fixture.debugElement.query(By.css('.route-search__item-menu'));
+    expect(getComputedStyle(menu.nativeElement).zIndex).toBe('1000');
+  });
+
   it('collapses pin, live and alarm actions behind an overflow menu on every row at all sizes', () => {
     setUpResultsWithUpcomingDeparture();
     fixture.detectChanges();

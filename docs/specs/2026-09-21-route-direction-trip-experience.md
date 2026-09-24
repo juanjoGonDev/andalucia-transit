@@ -229,11 +229,13 @@ not perceivable, especially in bright sunlight on mobile.
   `sentido` candidates sharing both segment stops._
 
 ## 11. Follow-up round 6 — map stacking & road-following geometry
-- [ ] **E21 Overflow menu above map chrome.** The departure actions menu must paint
+- [x] **E21 Overflow menu above map chrome.** The departure actions menu must paint
   above the Leaflet zoom controls of the embedded preview map (today both sit at the
   chrome layer and the map wins by DOM order). The map traps Leaflet's internal
   z-indexes in its own stacking context and the menu keeps the dropdown layer with a
-  real fallback value.
+  real fallback value. _Done: `isolation: isolate` on `.route-map` plus a `1000`
+  fallback on the menu's `--z-index-dropdown` (equal to the Leaflet control layer), with
+  computed-style regression tests on both sides._
 - [ ] **E22 Preview lines follow roads.** The preview polyline uses the line's official
   `polilinea` (road-following geometry from the transit authority) oriented to the
   searched trip instead of joining stop coordinates with straight segments; stop

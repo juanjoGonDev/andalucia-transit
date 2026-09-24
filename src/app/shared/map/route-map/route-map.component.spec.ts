@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import type { RouteLineCoordinate, RouteLineStop } from '@data/route-search/route-lines-api.service';
 import {
   LeafletMapService,
@@ -93,6 +94,13 @@ describe('RouteMapComponent', () => {
     fixture.componentRef.setInput('coordinates', coordinates);
     fixture.componentRef.setInput('stops', stops);
     fixture.detectChanges();
+  });
+
+  it('traps leaflet chrome in its own stacking context so page UI can layer above it', () => {
+    const mapSurface = fixture.debugElement.query(By.css('.route-map'))
+      .nativeElement as HTMLElement;
+
+    expect(getComputedStyle(mapSurface).isolation).toBe('isolate');
   });
 
   it('renders one canonical route and its stop markers', () => {
