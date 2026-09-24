@@ -134,7 +134,7 @@
 .alarms__item-destination {
   overflow: hidden;
   color: var(--color-text-strong);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -150,7 +150,7 @@
 }
 
 .alarms__item-stop-icon {
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   color: var(--color-icon-muted);
 }
 

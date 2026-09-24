@@ -200,13 +200,18 @@ not perceivable, especially in bright sunlight on mobile.
   polyline-based direction checks and a dedicated chooser modal when more candidates fit._
 
 ## 10. Follow-up round 5 — screenshot feedback fixes
-- [ ] **E18 Pinned bubble padding and destination nucleus.** The expanded pinned bubble
+- [x] **E18 Pinned bubble padding and destination nucleus.** The expanded pinned bubble
   must render with real inner padding (today the `--space-m` token does not exist so the
   whole padding declaration drops and content hugs the edges) and the destination line
   shows only the destination nucleus ("Aguadulce") instead of the full stop name in the
   "Núcleo - Lugar" convention ("Aguadulce - La Gloria"). Screen-reader labels keep the
-  full destination. A `test:scripts` guard ensures every spacing token referenced from
-  component styles is defined in the theme tokens.
+  full destination. A `test:scripts` guard fails on any `var(--…)` without fallback that
+  references an undefined design token. _Done: `destinationNucleusLabel`
+  (`destination-nucleus.util`) feeds the bubble's visible destination line while
+  `aria-label`s keep `view.destination`; bubble padding uses `--space-sm`/`--space-md`;
+  `scripts/style-tokens.test.ts` (learned from stylesheets and TS `setProperty`/property
+  literals) also surfaced `--font-size-md` and `--shadow-card-hover` without definitions —
+  renamed to `--font-size-base` and added to the shadow scale._
 - [ ] **E19 Searched trip orientation in the preview.** The departure route preview map
   and its stop list follow the searched travel order (origin first) even when the line
   stop table's `orden` runs against the travel direction — searching "La Gangosa →

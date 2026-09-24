@@ -5,6 +5,7 @@ import { AppConfig } from '@core/config';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 import { PinnedDepartureService, PinnedDepartureView } from '@domain/route-search/pinned-departure.service';
 import { CountdownDuration } from '@domain/utils/countdown-labels.util';
+import { destinationNucleusLabel } from '@domain/utils/destination-nucleus.util';
 
 const RING_RADIUS = 16;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
@@ -43,6 +44,10 @@ export class PinnedDepartureIndicatorComponent {
     radius: RING_RADIUS,
     circumference: RING_CIRCUMFERENCE
   };
+
+  protected destinationNucleus(view: PinnedDepartureView): string {
+    return destinationNucleusLabel(view.destination);
+  }
 
   protected ariaLabel(view: PinnedDepartureView): string {
     return this.translate.instant(this.pinnedKeys.ariaLabel, {

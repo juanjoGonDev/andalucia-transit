@@ -167,6 +167,24 @@ describe('PinnedDepartureIndicatorComponent', () => {
     expect(infoIndex).toBeGreaterThan(lineIndex);
   });
 
+  it('shows only the destination nucleus while labels keep the full destination', async () => {
+    await create();
+    pins.pin.set({ ...buildView(0.25), destination: 'Aguadulce - La Gloria' });
+    fixture.detectChanges();
+
+    fixture.debugElement
+      .query(By.css('.pinned-departure__trigger'))
+      .nativeElement.click();
+    fixture.detectChanges();
+
+    const destination = fixture.debugElement.query(By.css('.pinned-departure__destination'));
+    expect(destination.nativeElement.textContent.trim()).toBe('Aguadulce');
+    expect(destination.nativeElement.textContent).not.toContain('La Gloria');
+
+    const bubble = fixture.debugElement.query(By.css('.pinned-departure__bubble'));
+    expect(bubble.nativeElement.getAttribute('aria-label')).toContain('Aguadulce - La Gloria');
+  });
+
   it('dismisses the pin from a trash action', async () => {
     await create();
     pins.pin.set(buildView(0.25));
