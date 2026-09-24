@@ -1,0 +1,91 @@
+<section
+  class="trip"
+  *ngIf="state() as state"
+  appLayoutContent
+  appLayoutContentSurface="plain"
+  [appLayoutContentNavigationKey]="layoutNavigationKey"
+>
+  <div class="utility-container">
+    <div class="app-layout__body">
+  <header class="trip__header">
+    <button
+      type="button"
+      class="trip__back"
+      [attr.aria-label]="keys.backLabel | translate"
+      (click)="goBack()"
+      appAccessibleButton
+    >
+      <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+    </button>
+    <h1 class="trip__title">
+      {{ keys.headline | translate: { lineCode: state.session?.lineCode, destination: state.session?.destinationName } }}
+    </h1>
+  </header>
+
+  <div class="trip__sticky" [class.trip__sticky--complete]="travelComplete()">
+    <span class="material-symbols-outlined" aria-hidden="true">flag</span>
+    <div class="trip__sticky-text">
+      <span class="trip__sticky-destination">{{ state.session?.destinationName }}</span>
+      <span *ngIf="!travelComplete()" class="trip__sticky-eta">
+        {{ keys.eta | translate: { time: etaLabel() } }}
+      </span>
+      <span *ngIf="travelComplete()" class="trip__sticky-eta">
+        {{ keys.completed | translate: { destination: state.session?.destinationName } }}
+      </span>
+    </div>
+  </div>
+
+  <p *ngIf="state.status === 'locating'" class="trip__notice" role="status">
+    <span class="material-symbols-outlined" aria-hidden="true">satellite_alt</span>
+    {{ keys.locating | translate }}
+  </p>
+
+  <p *ngIf="state.status === 'unavailable'" class="trip__notice trip__notice--warning" role="status">
+    <span class="material-symbols-outlined" aria-hidden="true">location_off</span>
+    {{ keys.unavailable | translate }}
+  </p>
+
+  <ol class="trip__timeline" #timeline>
+    <li
+      *ngFor="let stop of stopsView(); trackBy: trackStop; let last = last"
+      class="trip__stop"
+      [class.trip__stop--passed]="stop.state === 'passed'"
+      [class.trip__stop--current]="stop.state === 'current'"
+      [class.trip__stop--next]="stop.state === 'next'"
+      [class.trip__stop--pending]="stop.state === 'pending'"
+    >
+      <div class="trip__rail" aria-hidden="true">
+        <span class="trip__node"></span>
+        <span *ngIf="!last" class="trip__segment">
+          <span class="trip__segment-fill" [style.height.%]="stop.segmentFill * 100"></span>
+        </span>
+      </div>
+      <div class="trip__stop-content">
+        <span class="trip__stop-name">{{ stop.name }}</span>
+        <time class="trip__stop-time" [attr.datetime]="stop.estimatedTime | date: 'HH:mm'">
+          {{ stop.estimatedTime | date: 'HH:mm' }}
+        </time>
+      </div>
+    </li>
+  </ol>
+
+  <footer class="trip__footer">
+    <button type="button" class="trip__end" (click)="endTracking()" appAccessibleButton>
+      {{ keys.endTracking | translate }}
+    </button>
+  </footer>
+
+  <button
+    *ngIf="!autoScrollActive()"
+    type="button"
+    class="trip__recenter"
+    [attr.aria-label]="keys.recenter | translate"
+    (click)="recenter()"
+  >
+    <span class="material-symbols-outlined" aria-hidden="true">my_location</span>
+  </button>
+
+  <p class="app-visually-hidden" aria-live="polite">{{ announcement() }}</p>
+    </div>
+  </div>
+</section>

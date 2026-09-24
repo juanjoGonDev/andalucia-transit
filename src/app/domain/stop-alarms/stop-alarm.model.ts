@@ -12,8 +12,11 @@ export interface StopAlarm {
   readonly scheduledArrival: string;
   /** Minutes before the scheduled arrival at which the notification fires. */
   readonly offsetMinutes: number;
-  /** When true the alarm re-arms every day at the same time until deactivated. */
-  readonly repeatDaily: boolean;
+  /**
+   * Weekdays (0 = Sunday ... 6 = Saturday) on which the alarm re-arms at the same
+   * time-of-day. An empty list marks the alarm as one-shot.
+   */
+  readonly repeatWeekdays: readonly number[];
   /** Disabled alarms stay listed but never ring or advance until re-enabled. */
   readonly enabled: boolean;
   readonly createdAt: string;
@@ -38,6 +41,10 @@ export interface AlarmTriggerOptions {
 
 const MILLISECONDS_PER_MINUTE = 60_000;
 const MILLISECONDS_PER_DAY = 24 * 60 * MILLISECONDS_PER_MINUTE;
+const WEEKDAY_COUNT = 7;
+const WEEKDAY_MIN = 0;
+const WEEKDAY_MAX = 6;
+const WEEKDAY_ROLL_LIMIT = WEEKDAY_COUNT + 1;
 
 export function buildStopAlarmId(stopId: string, serviceId: string): string {
   return `${stopId}::${serviceId}`;
@@ -67,11 +74,56 @@ export function computeTriggerAt(scheduledArrival: string, offsetMinutes: number
   return arrival - offsetMinutes * MILLISECONDS_PER_MINUTE;
 }
 
+/** True when the alarm re-arms on a weekly schedule instead of firing once. */
+export function isRecurringAlarm(alarm: StopAlarm): boolean {
+  return alarm.repeatWeekdays.length > 0;
+}
+
+function isSelectedWeekday(weekdays: readonly number[], epochMs: number): boolean {
+  return weekdays.includes(new Date(epochMs).getDay());
+}
+
+function findRecurringTrigger(
+  base: number,
+  alarm: StopAlarm,
+  options: AlarmTriggerOptions,
+  expiration: number
+): number | null {
+  const maxTriggerAt = expiration + options.maxRepeatDays * MILLISECONDS_PER_DAY;
+  const searchLimit = options.maxRepeatDays + WEEKDAY_ROLL_LIMIT;
+
+  for (let dayOffset = 0; dayOffset <= searchLimit; dayOffset++) {
+    const candidate = base + dayOffset * MILLISECONDS_PER_DAY;
+
+    if (candidate > maxTriggerAt) {
+      return null;
+    }
+
+    if (!isSelectedWeekday(alarm.repeatWeekdays, candidate)) {
+      continue;
+    }
+
+    if (candidate > options.now) {
+      return candidate;
+    }
+
+    if (
+      dayOffset === 0 &&
+      options.graceMs !== undefined &&
+      options.now - candidate <= options.graceMs
+    ) {
+      return candidate;
+    }
+  }
+
+  return null;
+}
+
 /**
  * Resolves the next pending trigger for an alarm.
  * - One-shot alarms in the past return null (expired).
- * - Repeating alarms roll forward day by day until they are in the future, and
- *   expire once they would ring beyond `maxRepeatDays` after the scheduled arrival.
+ * - Recurring alarms roll forward to the soonest selected weekday within the
+ *   repeat window; otherwise they expire.
  */
 export function computeNextTriggerAt(
   alarm: StopAlarm,
@@ -89,7 +141,7 @@ export function computeNextTriggerAt(
     return null;
   }
 
-  if (!alarm.repeatDaily) {
+  if (!isRecurringAlarm(alarm)) {
     if (base > options.now) {
       return base;
     }
@@ -97,28 +149,19 @@ export function computeNextTriggerAt(
     return options.graceMs !== undefined && options.now - base <= options.graceMs ? base : null;
   }
 
-  const maxTriggerAt = expiration + options.maxRepeatDays * MILLISECONDS_PER_DAY;
-  let candidate = base;
-
-  if (candidate <= options.now) {
-    if (options.graceMs !== undefined && options.now - candidate <= options.graceMs) {
-      return candidate <= maxTriggerAt ? candidate : null;
-    }
-
-    do {
-      candidate += MILLISECONDS_PER_DAY;
-    } while (candidate <= options.now);
-  }
-
-  return candidate <= maxTriggerAt ? candidate : null;
+  return findRecurringTrigger(base, alarm, options, expiration);
 }
 
-/** Advances a repeating alarm that just fired to its next day slot, or null when it expires. */
+/** Advances a recurring alarm that just fired to its next selected weekday, or null when it expires. */
 export function advanceRepeatTrigger(
   alarm: StopAlarm,
   firedTriggerAt: number,
   options: AlarmTriggerOptions
 ): number | null {
+  if (!isRecurringAlarm(alarm)) {
+    return null;
+  }
+
   const arrivalMs = Date.parse(alarm.scheduledArrival);
 
   if (Number.isNaN(arrivalMs)) {
@@ -126,18 +169,33 @@ export function advanceRepeatTrigger(
   }
 
   const maxTriggerAt =
-    arrivalMs - alarm.offsetMinutes * MILLISECONDS_PER_MINUTE + options.maxRepeatDays * MILLISECONDS_PER_DAY;
-  let candidate = firedTriggerAt + MILLISECONDS_PER_DAY;
+    arrivalMs -
+    alarm.offsetMinutes * MILLISECONDS_PER_MINUTE +
+    options.maxRepeatDays * MILLISECONDS_PER_DAY;
 
-  while (candidate <= options.now) {
-    candidate += MILLISECONDS_PER_DAY;
+  for (let dayOffset = 1; dayOffset <= WEEKDAY_ROLL_LIMIT; dayOffset++) {
+    const candidate = firedTriggerAt + dayOffset * MILLISECONDS_PER_DAY;
+
+    if (!isSelectedWeekday(alarm.repeatWeekdays, candidate)) {
+      continue;
+    }
+
+    if (candidate <= options.now) {
+      continue;
+    }
+
+    return candidate <= maxTriggerAt ? candidate : null;
   }
 
-  return candidate <= maxTriggerAt ? candidate : null;
+  return null;
 }
 
 /** True when the alarm would fire for a departure that already happened (or is too close). */
-export function isAlarmTargetInThePast(scheduledArrival: string, offsetMinutes: number, now: number): boolean {
+export function isAlarmTargetInThePast(
+  scheduledArrival: string,
+  offsetMinutes: number,
+  now: number
+): boolean {
   const triggerAt = computeTriggerAt(scheduledArrival, offsetMinutes);
 
   return triggerAt === null || triggerAt <= now;
@@ -145,4 +203,17 @@ export function isAlarmTargetInThePast(scheduledArrival: string, offsetMinutes: 
 
 export function minutesUntilTrigger(triggerAt: number, now: number): number {
   return Math.max(0, differenceInMinutes(new Date(triggerAt), new Date(now)));
+}
+
+/** Sanitizes raw weekday selections into a deterministic ascending list. */
+export function normalizeRepeatWeekdays(raw: readonly number[]): number[] {
+  return [...new Set(raw)]
+    .filter(
+      (day): day is number =>
+        typeof day === 'number' &&
+        Number.isInteger(day) &&
+        day >= WEEKDAY_MIN &&
+        day <= WEEKDAY_MAX
+    )
+    .sort((a, b) => a - b);
 }

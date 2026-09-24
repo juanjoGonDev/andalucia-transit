@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-
 import {
   FIXED_VISUAL_TIME_ISO,
   buildExactNewsList,

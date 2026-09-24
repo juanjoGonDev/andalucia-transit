@@ -1,15 +1,15 @@
 import {
-  selectVisualStopDetailEntry,
   type VisualStopServicesSnapshotEntry,
+  selectVisualStopDetailEntry,
 } from '../../scripts/visual/exact-visual-data';
 import { expectExactPwaInstallShell } from './pwa-icon.assert';
 import {
-  captureVisualEvidence,
   EXACT_VISUAL_REGRESSION,
+  type Page,
+  captureVisualEvidence,
   expect,
   installExactStopDetailVisualData,
   test,
-  type Page,
 } from './visual-evidence.fixture';
 
 const BASE_URL = process.env.E2E_BASE_URL;

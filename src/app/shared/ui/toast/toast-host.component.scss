@@ -1,0 +1,113 @@
+:host {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + var(--space-lg));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-index-toast, 60);
+  width: min(24rem, calc(100vw - 2 * var(--space-md)));
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-2xs);
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md, var(--radius-sm));
+  background: var(--color-surface-light, var(--color-surface));
+  box-shadow: var(--shadow-card);
+  pointer-events: auto;
+  animation: toast-in 180ms ease-out;
+}
+
+.toast__icon {
+  color: var(--color-primary);
+  font-size: 1.3rem;
+}
+
+.toast__content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toast__title {
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-strong);
+}
+
+.toast__body {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+.toast__action {
+  border: none;
+  padding: var(--space-2xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.toast__action:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.toast__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-icon-muted);
+  cursor: pointer;
+}
+
+.toast__close .material-symbols-outlined {
+  font-size: 1rem;
+}
+
+.toast__close:hover {
+  background: var(--color-primary-soft);
+}
+
+.toast__close:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}

@@ -177,16 +177,20 @@ describe('RouteSearchResultsService', () => {
     const first = viewModel.departures[0];
     const second = viewModel.departures[1];
     expect(first.kind).toBe('past');
-    expect(first.relativeLabel).toBe('20m');
+    expect(first.relativeLabel).toEqual({ text: '20m', unit: 'minute', value: 20 });
     expect(first.isMostRecentPast).toBeTrue();
     expect(first.pastProgressPercentage).toBeGreaterThan(0);
     expect(second.kind).toBe('upcoming');
-    expect(second.relativeLabel).toBe('5m');
+    expect(second.relativeLabel).toEqual({ text: '5m', unit: 'minute', value: 5 });
     expect(second.travelDurationLabel).toBe('15m');
     expect(second.showUpcomingProgress).toBeTrue();
     expect(viewModel.departures[3].showUpcomingProgress).toBeFalse();
     expect(viewModel.departures[3].isHolidayService).toBeTrue();
     expect(viewModel.departures[4].destination).toContain('Servicio especial');
+    expect(first.originStopIds).toEqual(['origin-a', 'origin-b']);
+    expect(first.destinationStopIds).toEqual(['destination-a']);
+    expect(second.originStopIds).toEqual(['origin-a', 'origin-b']);
+    expect(second.destinationStopIds).toEqual(['destination-a']);
   }));
 
   it('passes the selection details to the timetable service', fakeAsync(() => {
@@ -267,7 +271,7 @@ describe('RouteSearchResultsService', () => {
 
     const resolved = ensureResults(viewModel);
     expect(resolved.departures.length).toBe(1);
-    expect(resolved.departures[0].relativeLabel).toBe('10m');
+    expect(resolved.departures[0].relativeLabel).toEqual({ text: '10m', unit: 'minute', value: 10 });
     expect(resolved.departures[0].isMostRecentPast).toBeTrue();
     expect(resolved.hasUpcoming).toBeFalse();
     expect(resolved.nextDepartureId).toBeNull();

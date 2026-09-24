@@ -62,6 +62,9 @@ class MapHandleStub implements MapHandle {
     return;
   }
 
+  centerStop(): boolean {
+    return true;
+  }
   focusStop(): boolean {
     return true;
   }

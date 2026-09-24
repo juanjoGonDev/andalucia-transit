@@ -1,5 +1,5 @@
-import { captureVisualEvidence, expect, test, type Page } from './visual-evidence.fixture';
 import { captureViewportVisualEvidence } from './viewport-visual-evidence';
+import { type Page, captureVisualEvidence, expect, test } from './visual-evidence.fixture';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const HOME_PATH = '/';

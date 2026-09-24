@@ -3,17 +3,28 @@
   [class.recent-preview-entry--previous]="isPrevious(entry)"
   [class.recent-preview-entry--next]="isNext(entry)"
 >
-  <div class="recent-preview-entry__header">
-    <span class="recent-preview-entry__line">{{ entry.lineCode }}</span>
-    <span
-      class="recent-preview-entry__time"
-      [class.recent-preview-entry__time--previous]="isPrevious(entry)"
-      [class.recent-preview-entry__time--next]="isNext(entry)"
-    >
-      {{ entry.departureTime | date: 'HH:mm' }}
-    </span>
-  </div>
-  <span *ngIf="entry.relativeLabel" class="recent-preview-entry__relative">
-    {{ entry.relativeLabel.key | translate: entry.relativeLabel.params }}
-  </span>
+  <span class="recent-preview-entry__line">{{ entry.lineCode }}</span>
+  <span
+    *ngIf="entry.relativeLabel as label"
+    class="recent-preview-entry__wait"
+    [class.recent-preview-entry__wait--previous]="isPrevious(entry)"
+    [class.recent-preview-entry__wait--next]="isNext(entry)"
+    aria-hidden="true"
+    >{{ label.key | translate: { time: label.text } }}</span
+  >
+  <span
+    *ngIf="entry.relativeLabel as spoken"
+    class="recent-preview-entry__spoken recent-preview-entry__visually-hidden"
+    >{{
+      spoken.key
+        | translate
+          : { time: ('countdown.' + spoken.spoken.unit) | translate: { value: spoken.spoken.value } }
+    }}</span
+  >
+  <span
+    class="recent-preview-entry__time"
+    [class.recent-preview-entry__time--previous]="isPrevious(entry)"
+    [class.recent-preview-entry__time--next]="isNext(entry)"
+    >{{ entry.departureTime | date: 'HH:mm' }}</span
+  >
 </div>

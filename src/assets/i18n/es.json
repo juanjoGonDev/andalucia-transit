@@ -10,14 +10,35 @@
     "favorites": "Favoritas",
     "news": "Noticias",
     "stopInfo": "Información de parada",
-    "alarms": "Alarmas"
+    "alarms": "Alarmas",
+    "trip": "Viaje en directo"
   },
   "languages": {
     "es": "Español",
     "en": "Inglés"
   },
   "layout": {
-    "skipToContent": "Saltar al contenido principal"
+    "skipToContent": "Saltar al contenido principal",
+    "rideProposal": {
+      "regionLabel": "Sugerencia de trayecto",
+      "title": "¿Estás en ruta?",
+      "subtitle": "Parece que viajas en vehículo. ¿Comenzamos el trayecto?",
+      "dismiss": "Descartar sugerencia",
+      "lineLabel": "Línea {lineCode} · {destination}"
+    },
+    "toast": {
+      "regionLabel": "Avisos",
+      "dismiss": "Descartar aviso",
+      "alarmTitle": "Alarma · línea {lineCode}",
+      "alarmBody": "{stopName} — llega hacia {destination}",
+      "open": "Ver"
+    },
+    "pinnedDeparture": {
+      "ariaLabel": "Salida fijada: línea {lineCode} hacia {destination}. Sale en {time}.",
+      "details": "Detalles de la salida fijada",
+      "open": "Abrir la búsqueda de {lineCode} hacia {destination}",
+      "unpin": "Quitar la salida fijada"
+    }
   },
   "home": {
     "header": {
@@ -78,8 +99,6 @@
       "recentStops": {
         "title": "Paradas recientes",
         "empty": "Empieza una búsqueda para verla aquí.",
-        "searchDate": "Buscaremos para {date}",
-        "searchDateToday": "Actualizado a hoy",
         "next": "Próximo",
         "previous": "Último",
         "previewLoading": "Cargando horarios...",
@@ -302,8 +321,27 @@
       "customLabel": "Personalizado",
       "customPlaceholder": "Minutos",
       "customSuffix": "min antes",
-      "repeatLabel": "Repetir todos los días",
-      "repeatHint": "Suena cada día a la misma hora hasta que la desactives.",
+      "repeatLabel": "Recurrente",
+      "repeatHint": "Suena los días que elijas a la misma hora.",
+      "daysLabel": "Días de la semana",
+      "daysShort": {
+        "0": "D",
+        "1": "L",
+        "2": "M",
+        "3": "X",
+        "4": "J",
+        "5": "V",
+        "6": "S"
+      },
+      "daysFull": {
+        "0": "domingo",
+        "1": "lunes",
+        "2": "martes",
+        "3": "miércoles",
+        "4": "jueves",
+        "5": "viernes",
+        "6": "sábado"
+      },
       "triggerAt": "La alarma sonará a las {time}",
       "tooLate": "Esta salida ya no está disponible para avisar con esa antelación.",
       "save": "Guardar alarma",
@@ -383,7 +421,16 @@
     "estimateNotice": "Horarios estimados con los datos oficiales de la Junta de Andalucía.",
     "pastSearchNotice": "Estás consultando horarios de una fecha pasada. Actualiza la búsqueda para ver los servicios vigentes.",
     "searchToday": "Ver horarios de hoy",
-    "scheduleAccuracyWarning": "Los horarios para fechas pasadas o con mucha antelación pueden variar sin previo aviso."
+    "scheduleAccuracyWarning": "Los horarios para fechas pasadas o con mucha antelación pueden variar sin previo aviso.",
+    "pinAddLabel": "Fijar la salida de las {time} de la línea {lineCode}",
+    "pinActiveLabel": "Salida de las {time} de la línea {lineCode} fijada. Pulsa para quitarla.",
+    "liveTripLabel": "Seguir en directo la salida de las {time} de la línea {lineCode}",
+    "menuTriggerLabel": "Acciones para la salida de las {time} de la línea {lineCode}",
+    "menuAlarmAdd": "Poner aviso",
+    "menuAlarmActive": "Gestionar aviso",
+    "menuPinAdd": "Fijar salida",
+    "menuPinActive": "Quitar fijación",
+    "menuLiveTrip": "Seguir en directo"
   },
   "map": {
     "title": "Mapa de la red",
@@ -500,5 +547,22 @@
     "geolocation": {
       "notSupported": "La geolocalización no es compatible con este dispositivo."
     }
+  },
+  "countdown": {
+    "hour": "{value, plural, one {# hora} other {# horas}}",
+    "minute": "{value, plural, one {# minuto} other {# minutos}}",
+    "second": "{value, plural, one {# segundo} other {# segundos}}"
+  },
+  "trip": {
+    "headline": "Línea {lineCode} · hacia {destination}",
+    "eta": "Llegada en {time}",
+    "locating": "Buscando tu ubicación GPS…",
+    "unavailable": "No se pudo obtener tu posición. Mostrando solo los horarios estimados.",
+    "completed": "Has llegado a {destination}",
+    "endTracking": "Finalizar seguimiento",
+    "recenter": "Centrar la línea temporal en la parada actual",
+    "announcementNextStop": "Siguiente parada: {stop}. Llegada en {time}.",
+    "announcementPassed": "Has pasado {stop}.",
+    "backLabel": "Volver"
   }
 }

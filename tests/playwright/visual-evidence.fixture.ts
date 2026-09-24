@@ -1,12 +1,11 @@
 import { mkdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import {
-  expect,
-  test as base,
   type Locator,
   type Page,
+  test as base,
+  expect,
 } from '@playwright/test';
-
 import {
   FIXED_VISUAL_TIME_ISO,
   buildExactStopServicesSnapshot,

@@ -1,4 +1,4 @@
-import { expect, test, type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page, expect, test } from '@playwright/test';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const STORAGE_NOTICE_KEY = 'andalucia-transit.privacyNotice.v1';

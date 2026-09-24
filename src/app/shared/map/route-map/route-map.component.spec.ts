@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import type { RouteLineCoordinate, RouteLineStop } from '@data/route-search/route-lines-api.service';
 import {
   LeafletMapService,
@@ -14,6 +15,7 @@ import { RouteMapComponent } from '@shared/map/route-map/route-map.component';
 class MapHandleStub implements MapHandle {
   readonly highlightStop = jasmine.createSpy('highlightStop');
   readonly fitToCoordinates = jasmine.createSpy('fitToCoordinates');
+  readonly centerStop = jasmine.createSpy('centerStop').and.returnValue(true);
   readonly renderRoutes = jasmine.createSpy('renderRoutes');
   readonly invalidateSize = jasmine.createSpy('invalidateSize');
   readonly destroy = jasmine.createSpy('destroy');
@@ -94,6 +96,13 @@ describe('RouteMapComponent', () => {
     fixture.detectChanges();
   });
 
+  it('traps leaflet chrome in its own stacking context so page UI can layer above it', () => {
+    const mapSurface = fixture.debugElement.query(By.css('.route-map'))
+      .nativeElement as HTMLElement;
+
+    expect(getComputedStyle(mapSurface).isolation).toBe('isolate');
+  });
+
   it('renders one canonical route and its stop markers', () => {
     expect(maps.create).toHaveBeenCalledTimes(1);
     expect(maps.handle.renderedStops.map((stop) => stop.id)).toEqual(['stop-a', 'stop-b']);
@@ -102,6 +111,14 @@ describe('RouteMapComponent', () => {
       'line-1'
     );
     expect(maps.handle.fitToCoordinates).toHaveBeenCalledWith(coordinates);
+  });
+
+  it('centers a stop with a smooth camera animation on demand', () => {
+    fixture.detectChanges();
+
+    fixture.componentInstance.centerStop('stop-b');
+
+    expect(maps.handle.centerStop).toHaveBeenCalledWith('stop-b', true);
   });
 
   it('emits marker selection without forcing stop-detail navigation', () => {
@@ -135,6 +152,27 @@ describe('RouteMapComponent', () => {
 
     expect(maps.handle.highlightStop).toHaveBeenCalledOnceWith('stop-b');
     expect(maps.handle.fitToCoordinates).not.toHaveBeenCalled();
+  });
+
+  it('flags searched origin and destination markers with their roles', () => {
+    fixture.componentRef.setInput('originStopIds', ['stop-a']);
+    fixture.componentRef.setInput('destinationStopIds', ['stop-b']);
+    fixture.detectChanges();
+
+    expect(maps.handle.renderedStops.map((stop) => stop.role ?? 'regular')).toEqual([
+      'origin',
+      'destination'
+    ]);
+  });
+
+  it('re-renders markers when only the role inputs change', () => {
+    fixture.componentRef.setInput('originStopIds', ['stop-b']);
+    fixture.detectChanges();
+
+    expect(maps.handle.renderedStops.map((stop) => stop.role ?? 'regular')).toEqual([
+      'regular',
+      'origin'
+    ]);
   });
 
   it('keeps the stop list usable when route geometry is unavailable', () => {

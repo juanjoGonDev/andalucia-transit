@@ -9,6 +9,7 @@ import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 import {
   StopAlarmRuntime,
   advanceRepeatTrigger,
+  isRecurringAlarm,
   minutesUntilTrigger
 } from '@domain/stop-alarms/stop-alarm.model';
 import { StopAlarmsService } from '@domain/stop-alarms/stop-alarms.service';
@@ -76,7 +77,7 @@ export class AlarmSchedulerService {
         this.notify(alarm, now);
       }
 
-      const nextTriggerAt = alarm.repeatDaily
+      const nextTriggerAt = isRecurringAlarm(alarm)
         ? advanceRepeatTrigger(alarm, alarm.nextTriggerAt, {
             now,
             maxRepeatDays: this.config.alarms.maxRepeatDays

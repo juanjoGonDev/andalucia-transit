@@ -114,7 +114,7 @@ function persistentAlarm(overrides: Partial<StopAlarm> = {}): StopAlarm {
     destination: 'Centro',
     scheduledArrival: new Date(Date.now() + 60 * MINUTES).toISOString(),
     offsetMinutes: 10,
-    repeatDaily: false,
+    repeatWeekdays: [],
     enabled: true,
     createdAt: new Date().toISOString(),
     ...overrides
@@ -128,7 +128,7 @@ describe('AlarmsComponent', () => {
       persistentAlarm({
         id: 'stop-1::service-repeat',
         lineCode: 'M-202',
-        repeatDaily: true,
+        repeatWeekdays: [1, 2, 3],
         enabled: false,
         scheduledArrival: new Date(Date.now() - 48 * 60 * MINUTES).toISOString()
       }),

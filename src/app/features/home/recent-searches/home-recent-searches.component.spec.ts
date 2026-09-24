@@ -30,8 +30,6 @@ class FakeTranslateLoader implements TranslateLoader {
   getTranslation(): ReturnType<TranslateLoader['getTranslation']> {
     return of({
       'home.sections.recentStops.empty': 'Empty',
-      'home.sections.recentStops.searchDate': 'Search for {{date}}',
-      'home.sections.recentStops.searchDateToday': 'Today',
       'home.sections.recentStops.next': 'Next',
       'home.sections.recentStops.previous': 'Previous',
       'home.sections.recentStops.previewLoading': 'Loading',
@@ -152,7 +150,7 @@ describe('HomeRecentSearchesComponent', () => {
         lineCode: 'L1',
         destination: 'Destination',
         arrivalTime: new Date('2025-01-01T10:00:00Z'),
-        relativeLabel: '5 min',
+        relativeLabel: { text: '5m', unit: 'minute', value: 5 } as const,
         kind: 'upcoming'
       },
       previous: null
@@ -196,7 +194,7 @@ describe('HomeRecentSearchesComponent', () => {
           lineCode: 'L2',
           destination: 'Destination next',
           arrivalTime: new Date('2025-01-01T11:30:00Z'),
-          relativeLabel: 'in 2 min',
+          relativeLabel: { text: '2m', unit: 'minute', value: 2 } as const,
           kind: 'upcoming'
         },
         previous: {
@@ -204,7 +202,7 @@ describe('HomeRecentSearchesComponent', () => {
           lineCode: 'L1',
           destination: 'Destination previous',
           arrivalTime: new Date('2025-01-01T11:00:00Z'),
-          relativeLabel: '3 min ago',
+          relativeLabel: { text: '3m', unit: 'minute', value: 3 } as const,
           kind: 'past'
         }
       })
@@ -260,7 +258,7 @@ describe('HomeRecentSearchesComponent', () => {
         lineCode: 'L1',
         destination: 'Destination 1',
         arrivalTime: new Date('2025-01-01T11:00:00Z'),
-        relativeLabel: '5 min',
+        relativeLabel: { text: '5m', unit: 'minute', value: 5 } as const,
         kind: 'upcoming'
       },
       previous: null
@@ -284,7 +282,7 @@ describe('HomeRecentSearchesComponent', () => {
         lineCode: 'L2',
         destination: 'Destination 2',
         arrivalTime: new Date('2025-01-01T11:30:00Z'),
-        relativeLabel: '2 min',
+        relativeLabel: { text: '2m', unit: 'minute', value: 2 } as const,
         kind: 'upcoming'
       },
       previous: null

@@ -189,7 +189,11 @@ export class RouteSearchDepartureRoutePreviewComponent implements OnChanges {
     return {
       consortiumId: this.consortiumId,
       lineId: departure.lineId,
-      direction: departure.direction
+      direction: departure.direction,
+      segment: {
+        originStopIds: departure.originStopIds,
+        destinationStopIds: departure.destinationStopIds
+      }
     };
   }
 }

@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import { type Page, expect } from '@playwright/test';
 import { APPROVED_ICON, CURRENT_THEME } from '../../scripts/pwa-contract';
 import { optimizePwaIconForDelivery } from '../../scripts/pwa-icon-output';
 

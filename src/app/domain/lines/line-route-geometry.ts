@@ -32,19 +32,84 @@ export function selectLineDirectionStops(
   return matching.length ? sortStops(matching) : selectPrimaryLineDirectionStops(stops);
 }
 
-export function buildLineStopCoordinates(
-  stops: readonly RouteLineStop[],
-  direction?: number | null
+/**
+ * Orients a polyline so it starts close to the reference stop: the official line
+ * polyline is direction-blind, so drawing it as-is for the opposite direction makes
+ * the route look reversed. When the last point is nearer the reference than the
+ * first, a reversed copy is returned; otherwise the input order is preserved.
+ */
+export function orientCoordinatesTowards(
+  coordinates: readonly RouteLineCoordinate[],
+  reference: RouteLineCoordinate | null
 ): readonly RouteLineCoordinate[] {
-  const selected = selectLineDirectionStops(stops, direction);
-  if (selected.length < MIN_ROUTE_COORDINATES) {
+  if (!reference || coordinates.length < MIN_ROUTE_COORDINATES) {
+    return coordinates;
+  }
+
+  const first = coordinates[0];
+  const last = coordinates[coordinates.length - 1];
+  const startDistance = squaredDistance(reference, first);
+  const endDistance = squaredDistance(reference, last);
+
+  return endDistance < startDistance
+    ? Object.freeze([...coordinates].reverse())
+    : coordinates;
+}
+
+/**
+ * Keeps the searched segment stop ids that are actually displayed, preserving the
+ * travel order of the stops list instead of the candidate order.
+ */
+export function selectSegmentStopIds(
+  stops: readonly RouteLineStop[],
+  candidateIds: readonly string[]
+): readonly string[] {
+  if (!stops.length || !candidateIds.length) {
+    return Object.freeze([]);
+  }
+
+  const candidates = new Set(candidateIds);
+  return Object.freeze(
+    stops.flatMap((entry) => (candidates.has(entry.stopId) ? [entry.stopId] : []))
+  );
+}
+
+/**
+ * Line stop tables number `orden` per sentido, but not every sentido counts along the
+ * travel direction. When the searched destination precedes the searched origin in the
+ * given list, the trip runs against that numbering, so the list is reversed to keep the
+ * searched travel order (origin first) for displays.
+ */
+export function orientStopsTowardsSegment(
+  stops: readonly RouteLineStop[],
+  originStopIds: readonly string[],
+  destinationStopIds: readonly string[]
+): readonly RouteLineStop[] {
+  if (!stops.length || !originStopIds.length || !destinationStopIds.length) {
+    return stops;
+  }
+
+  const originIndex = stops.findIndex((stop) => originStopIds.includes(stop.stopId));
+  const destinationIndex = stops.findIndex((stop) =>
+    destinationStopIds.includes(stop.stopId)
+  );
+
+  if (originIndex === -1 || destinationIndex === -1) {
+    return stops;
+  }
+
+  return originIndex > destinationIndex ? Object.freeze([...stops].reverse()) : stops;
+}
+
+export function stopsToCoordinates(stops: readonly RouteLineStop[]): readonly RouteLineCoordinate[] {
+  if (stops.length < MIN_ROUTE_COORDINATES) {
     return EMPTY_COORDINATES;
   }
 
   const coordinates: RouteLineCoordinate[] = [];
   let previousKey: string | null = null;
 
-  for (const stop of selected) {
+  for (const stop of stops) {
     if (!Number.isFinite(stop.latitude) || !Number.isFinite(stop.longitude)) {
       continue;
     }
@@ -61,6 +126,13 @@ export function buildLineStopCoordinates(
   return coordinates.length >= MIN_ROUTE_COORDINATES
     ? Object.freeze(coordinates)
     : EMPTY_COORDINATES;
+}
+
+export function buildLineStopCoordinates(
+  stops: readonly RouteLineStop[],
+  direction?: number | null
+): readonly RouteLineCoordinate[] {
+  return stopsToCoordinates(selectLineDirectionStops(stops, direction));
 }
 
 function groupStopsByDirection(
@@ -89,4 +161,36 @@ function compareDirectionGroups(left: readonly RouteLineStop[], right: readonly 
   const leftDirection = left[0]?.direction ?? Number.MAX_SAFE_INTEGER;
   const rightDirection = right[0]?.direction ?? Number.MAX_SAFE_INTEGER;
   return leftDirection - rightDirection;
+}
+
+function squaredDistance(first: RouteLineCoordinate, second: RouteLineCoordinate): number {
+  const latitudeDelta = first.latitude - second.latitude;
+  const longitudeDelta = first.longitude - second.longitude;
+  return latitudeDelta * latitudeDelta + longitudeDelta * longitudeDelta;
+}
+
+/**
+ * Numbers the stops of a direction within each nucleus following the travel order, so
+ * the first stop of a nucleus towards the destination is "1.ª", mirroring how drivers
+ * answer "bájate en la primera de ...". Stops without a nucleus are omitted.
+ */
+export function buildStopNucleusOrdinals(
+  stops: readonly RouteLineStop[]
+): ReadonlyMap<string, number> {
+  const seenByNucleus = new Map<string, number>();
+  const ordinals = new Map<string, number>();
+
+  for (const stop of stops) {
+    const nucleusId = stop.nucleusId.trim();
+
+    if (!nucleusId) {
+      continue;
+    }
+
+    const ordinal = (seenByNucleus.get(nucleusId) ?? 0) + 1;
+    seenByNucleus.set(nucleusId, ordinal);
+    ordinals.set(stop.stopId, ordinal);
+  }
+
+  return ordinals;
 }

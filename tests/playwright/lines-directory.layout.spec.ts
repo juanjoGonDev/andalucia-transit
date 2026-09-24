@@ -1,9 +1,9 @@
 import {
+  type Locator,
+  type Page,
   captureVisualEvidence,
   expect,
   test,
-  type Locator,
-  type Page,
 } from './visual-evidence.fixture';
 
 const BASE_URL = process.env.E2E_BASE_URL;

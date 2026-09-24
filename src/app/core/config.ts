@@ -37,6 +37,7 @@ const ALARM_MAX_PER_STOP = 5 as const;
 const ALARM_MISSED_TRIGGER_GRACE_MS = 120_000;
 const ALARMS_ROUTE = 'alarms' as const;
 const ROUTE_SEARCH_SCHEDULE_ACCURACY_THRESHOLD_DAYS = 30 as const;
+const TRIP_ROUTE = 'viaje' as const;
 const HOME_RECENT_ROUTE = 'recents' as const;
 const HOME_FAVORITES_ROUTE = 'favs' as const;
 const HOME_TAB_QUERY_PARAM = 'tab' as const;
@@ -111,6 +112,7 @@ export const APP_CONFIG = {
     settings: 'settings' as const,
     favorites: 'favorites' as const,
     alarms: ALARMS_ROUTE,
+    trip: TRIP_ROUTE,
     news: NEWS_ROUTE_SEGMENT
   },
   routeSegments: {
@@ -146,6 +148,7 @@ export const APP_CONFIG = {
       favorites: 'navigation.favorites',
       alarms: 'navigation.alarms',
       news: 'navigation.news',
+      trip: 'navigation.trip',
       stopInfo: 'navigation.stopInfo'
     },
     languages: {
@@ -210,8 +213,6 @@ export const APP_CONFIG = {
         recentStops: {
           title: 'home.sections.recentStops.title',
           empty: 'home.sections.recentStops.empty',
-          searchDate: 'home.sections.recentStops.searchDate',
-          searchDateToday: 'home.sections.recentStops.searchDateToday',
           next: 'home.sections.recentStops.next',
           previous: 'home.sections.recentStops.previous',
           previewLoading: 'home.sections.recentStops.previewLoading',

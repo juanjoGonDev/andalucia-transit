@@ -69,6 +69,52 @@ describe('StopAlarmDialogComponent', () => {
     fixture.detectChanges();
   });
 
+  function buildData(): StopAlarmDialogData {
+    return {
+      stopId: 'stop-1',
+      serviceId: 'service-1',
+      consortiumId: 4,
+      stopName: 'Calle Principal',
+      lineCode: 'M-101',
+      destination: 'Centro',
+      arrivalTime: new Date(Date.now() + 45 * MINUTES),
+      minutesUntilArrival: 45
+    };
+  }
+
+  /** Rebuilds the dialog fixture with an adjusted service (e.g. an imminent arrival). */
+  async function recreate(override: Partial<StopAlarmDialogData>): Promise<void> {
+    TestBed.resetTestingModule();
+    data = { ...buildData(), ...override };
+
+    await TestBed.configureTestingModule({
+      imports: [StopAlarmDialogComponent, TranslateModule.forRoot()],
+      providers: [
+        StopAlarmsService,
+        {
+          provide: StopAlarmsStorage,
+          useValue: (() => {
+            const spy = jasmine.createSpyObj<StopAlarmsStorage>('StopAlarmsStorage', [
+              'load',
+              'save',
+              'clear'
+            ]);
+            spy.load.and.returnValue([]);
+            return spy;
+          })()
+        },
+        { provide: NotificationPermissionService, useValue: permissions },
+        { provide: APP_CONFIG_TOKEN, useValue: APP_CONFIG },
+        { provide: OVERLAY_DIALOG_DATA, useValue: data },
+        { provide: OVERLAY_DIALOG_REF, useValue: { close: closeSpy } }
+      ]
+    }).compileComponents();
+
+    alarms = TestBed.inject(StopAlarmsService);
+    fixture = TestBed.createComponent(StopAlarmDialogComponent);
+    fixture.detectChanges();
+  }
+
   function chips(): HTMLButtonElement[] {
     return Array.from(
       fixture.nativeElement.querySelectorAll('.stop-alarm__chip')
@@ -130,5 +176,109 @@ describe('StopAlarmDialogComponent', () => {
 
     expect(repeat.getAttribute('role')).toBe('switch');
     expect(repeat.getAttribute('aria-checked')).toBe('false');
+  });
+
+  it('keeps weekday chips hidden until recurrence is on', () => {
+    expect(fixture.nativeElement.querySelector('.stop-alarm__days')).toBeNull();
+  });
+
+  it('shows seven weekday chips with the arrival weekday preselected when recurring', () => {
+    const repeat = fixture.nativeElement.querySelector('.stop-alarm__repeat');
+    repeat.click();
+    fixture.detectChanges();
+
+    const days = [...fixture.nativeElement.querySelectorAll('.stop-alarm__day')] as HTMLButtonElement[];
+    expect(days.length).toBe(7);
+
+    const expectedIndex = [1, 2, 3, 4, 5, 6, 0].indexOf(data.arrivalTime.getDay());
+    expect(days[expectedIndex]?.getAttribute('aria-pressed')).toBe('true');
+    days.forEach((day: HTMLButtonElement, index: number) => {
+      if (index !== expectedIndex) {
+        expect(day.getAttribute('aria-pressed')).toBe('false');
+      }
+    });
+  });
+
+  it('toggles weekday selections and requires at least one day to save', () => {
+    const repeat = fixture.nativeElement.querySelector('.stop-alarm__repeat');
+    repeat.click();
+    fixture.detectChanges();
+
+    const days = [...fixture.nativeElement.querySelectorAll('.stop-alarm__day')] as HTMLButtonElement[];
+    const comp = fixture.componentInstance as unknown as { canSave(): boolean };
+
+    const arrivalIndex = [1, 2, 3, 4, 5, 6, 0].indexOf(data.arrivalTime.getDay());
+    days[arrivalIndex].click();
+    fixture.detectChanges();
+
+    expect(comp.canSave()).toBeFalse();
+
+    days[(arrivalIndex + 1) % 7].click();
+    fixture.detectChanges();
+
+    expect(comp.canSave()).toBeTrue();
+  });
+
+  it('saves recurring alarms with the selected weekday mask', async () => {
+    const repeat = fixture.nativeElement.querySelector('.stop-alarm__repeat');
+    repeat.click();
+    fixture.detectChanges();
+
+    const days = [...fixture.nativeElement.querySelectorAll('.stop-alarm__day')] as HTMLButtonElement[];
+    days[0]?.click();
+    fixture.detectChanges();
+
+    permissions.request.and.resolveTo('granted');
+    const save = fixture.nativeElement.querySelector('.app-button--primary');
+    (save as HTMLElement).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(alarms.snapshot.length).toBe(1);
+    const created = alarms.snapshot[0];
+    const expected = [...new Set([data.arrivalTime.getDay(), 1])].sort((a, b) => a - b);
+    expect(created.repeatWeekdays).toEqual(expected);
+    expect(closeSpy).toHaveBeenCalledWith(true);
+  });
+
+  it('blocks one-shot saves when the remaining time is shorter than the offset', async () => {
+    await recreate({
+      arrivalTime: new Date(Date.now() + 3 * MINUTES),
+      minutesUntilArrival: 3
+    });
+
+    const save = fixture.nativeElement.querySelector('.app-button--primary');
+    (save as HTMLElement).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const comp = fixture.componentInstance as unknown as { canSave(): boolean };
+    expect(comp.canSave()).toBeFalse();
+    expect(alarms.snapshot.length).toBe(0);
+    expect(fixture.nativeElement.querySelector('.stop-alarm__warning')).not.toBeNull();
+  });
+
+  it('skips the too-late guard when recurrence is on and saves right away', async () => {
+    await recreate({
+      arrivalTime: new Date(Date.now() + 3 * MINUTES),
+      minutesUntilArrival: 3
+    });
+
+    const repeat = fixture.nativeElement.querySelector('.stop-alarm__repeat');
+    repeat.click();
+    fixture.detectChanges();
+
+    const comp = fixture.componentInstance as unknown as { canSave(): boolean };
+    expect(comp.canSave()).toBeTrue();
+    expect(fixture.nativeElement.querySelector('.stop-alarm__warning')).toBeNull();
+
+    permissions.request.and.resolveTo('granted');
+    const save = fixture.nativeElement.querySelector('.app-button--primary');
+    (save as HTMLElement).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(alarms.snapshot.length).toBe(1);
+    expect(closeSpy).toHaveBeenCalledWith(true);
   });
 });

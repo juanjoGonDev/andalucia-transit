@@ -5,14 +5,14 @@ import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 import { getMockRouteSearchHistoryEntries } from '@data/mock/home-mock-data';
 import { RouteSearchLineMatch } from '@domain/route-search/route-search-state.service';
 
-interface RouteSearchHistoryStoredSelection {
+export interface RouteSearchHistoryStoredSelection {
   readonly origin: RouteSearchStoredStopOption;
   readonly destination: RouteSearchStoredStopOption;
   readonly queryDate: string;
   readonly lineMatches: readonly RouteSearchLineMatch[];
 }
 
-interface RouteSearchStoredStopOption {
+export interface RouteSearchStoredStopOption {
   readonly id: string;
   readonly code: string;
   readonly name: string;
@@ -123,7 +123,7 @@ export class RouteSearchHistoryStorage {
     } satisfies RouteSearchHistoryStoredEntry;
   }
 
-  private normalizeSelection(value: unknown): RouteSearchHistoryStoredSelection | null {
+  normalizeSelection(value: unknown): RouteSearchHistoryStoredSelection | null {
     if (!value || typeof value !== 'object') {
       return null;
     }

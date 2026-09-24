@@ -44,20 +44,20 @@ describe('AlarmSchedulerService', () => {
    * Creates an alarm whose trigger sits `leadMs` ahead of the creation instant,
    * so the service accepts it (triggers must be reachable when created).
    */
-  function createAlarmWithTriggerAt(leadMs: number, repeatDaily: boolean): StopAlarmsService {
+  function createAlarmWithTriggerAt(leadMs: number, weekdayMask: readonly number[]): StopAlarmsService {
     const service = TestBed.inject(StopAlarmsService);
     const offset = 10;
 
     const created = service.add({
       stopId: 'stop-1',
-      serviceId: `service-${leadMs}-${repeatDaily}`,
+      serviceId: `service-${leadMs}-${weekdayMask.join('')}`,
       consortiumId: 4,
       stopName: 'Calle Principal',
       lineCode: 'M-101',
       destination: 'Centro',
       scheduledArrival: new Date(Date.now() + leadMs + offset * MINUTES),
       offsetMinutes: offset,
-      repeatDaily
+      repeatWeekdays: weekdayMask
     });
 
     expect(created).not.toBeNull();
@@ -66,7 +66,7 @@ describe('AlarmSchedulerService', () => {
 
   it('notifies and removes one-shot alarms when their trigger elapses', async () => {
     const scheduler = TestBed.inject(AlarmSchedulerService);
-    const service = createAlarmWithTriggerAt(200, false);
+    const service = createAlarmWithTriggerAt(200, []);
     const firedPromise = firstValueFrom(scheduler.fired$);
 
     scheduler.processDueAlarms(Date.now() + 1_000);
@@ -80,7 +80,7 @@ describe('AlarmSchedulerService', () => {
 
   it('re-arms repeating alarms for the next day instead of removing them', async () => {
     const scheduler = TestBed.inject(AlarmSchedulerService);
-    const service = createAlarmWithTriggerAt(200, true);
+    const service = createAlarmWithTriggerAt(200, [0, 1, 2, 3, 4, 5, 6]);
     const firedPromise = firstValueFrom(scheduler.fired$);
 
     scheduler.processDueAlarms(Date.now() + 1_000);
@@ -88,14 +88,14 @@ describe('AlarmSchedulerService', () => {
     expect(permissions.show).toHaveBeenCalledTimes(1);
     expect(service.snapshot.length).toBe(1);
     expect(service.snapshot[0].nextTriggerAt).toBeGreaterThan(Date.now());
-    expect(service.snapshot[0].repeatDaily).toBeTrue();
+    expect(service.snapshot[0].repeatWeekdays.length).toBeGreaterThan(0);
     const event: FiredAlarmEvent = await firedPromise;
     expect(event.nextTriggerAt).toBe(service.snapshot[0].nextTriggerAt);
   });
 
   it('ignores alarms whose trigger is still pending', () => {
     const scheduler = TestBed.inject(AlarmSchedulerService);
-    const service = createAlarmWithTriggerAt(30 * MINUTES, false);
+    const service = createAlarmWithTriggerAt(30 * MINUTES, []);
 
     scheduler.processDueAlarms(Date.now());
 
@@ -105,7 +105,7 @@ describe('AlarmSchedulerService', () => {
 
   it('expires long-missed one-shot alarms silently', () => {
     const scheduler = TestBed.inject(AlarmSchedulerService);
-    const service = createAlarmWithTriggerAt(200, false);
+    const service = createAlarmWithTriggerAt(200, []);
 
     scheduler.processDueAlarms(Date.now() + 60 * MINUTES);
 
@@ -115,7 +115,7 @@ describe('AlarmSchedulerService', () => {
 
   it('keeps long-missed repeating alarms without a spurious notification', () => {
     const scheduler = TestBed.inject(AlarmSchedulerService);
-    const service = createAlarmWithTriggerAt(200, true);
+    const service = createAlarmWithTriggerAt(200, [0, 1, 2, 3, 4, 5, 6]);
 
     scheduler.processDueAlarms(Date.now() + 9 * MINUTES);
 
@@ -126,7 +126,7 @@ describe('AlarmSchedulerService', () => {
 
   it('skips disabled alarms without notifying or advancing them', async () => {
     const scheduler = TestBed.inject(AlarmSchedulerService);
-    const service = createAlarmWithTriggerAt(200, false);
+    const service = createAlarmWithTriggerAt(200, []);
     const alarmId = service.snapshot[0].id;
 
     expect(service.setEnabled(alarmId, false)).toBeTrue();

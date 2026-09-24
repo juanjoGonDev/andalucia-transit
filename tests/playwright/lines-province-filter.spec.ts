@@ -1,4 +1,4 @@
-import { expect, test, type Locator, type Page } from './visual-evidence.fixture';
+import { type Locator, type Page, expect, test } from './visual-evidence.fixture';
 
 const BASE_URL = process.env.E2E_BASE_URL;
 const LINES_PATH = '/lines';

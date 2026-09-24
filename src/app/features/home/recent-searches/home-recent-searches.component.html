@@ -7,10 +7,7 @@
       <app-recent-search-card
         [originName]="item.originName"
         [destinationName]="item.destinationName"
-        [searchDate]="item.effectiveQueryDate"
-        [showTodayNotice]="item.showTodayNotice"
-        [searchDateKey]="searchDateKey"
-        [searchDateTodayKey]="searchDateTodayKey"
+        [searchDateLabel]="searchDateLabel(item)"
         [loadingKey]="loadingKey"
         [errorKey]="errorKey"
         [noPreviewKey]="noPreviewKey"

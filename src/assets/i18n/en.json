@@ -10,14 +10,35 @@
     "favorites": "Favorites",
     "news": "News",
     "stopInfo": "Stop information",
-    "alarms": "Alarms"
+    "alarms": "Alarms",
+    "trip": "Live trip"
   },
   "languages": {
     "es": "Spanish",
     "en": "English"
   },
   "layout": {
-    "skipToContent": "Skip to main content"
+    "skipToContent": "Skip to main content",
+    "rideProposal": {
+      "regionLabel": "Trip suggestion",
+      "title": "On the move?",
+      "subtitle": "You seem to be riding. Start tracking your trip?",
+      "dismiss": "Dismiss suggestion",
+      "lineLabel": "Line {lineCode} · {destination}"
+    },
+    "toast": {
+      "regionLabel": "Alerts",
+      "dismiss": "Dismiss alert",
+      "alarmTitle": "Alarm · line {lineCode}",
+      "alarmBody": "{stopName} - bound for {destination}",
+      "open": "Open"
+    },
+    "pinnedDeparture": {
+      "ariaLabel": "Pinned departure: line {lineCode} to {destination}. Departs in {time}.",
+      "details": "Pinned departure details",
+      "open": "Open the search for {lineCode} to {destination}",
+      "unpin": "Remove the pinned departure"
+    }
   },
   "home": {
     "header": {
@@ -78,8 +99,6 @@
       "recentStops": {
         "title": "Recent searches",
         "empty": "Start a search to see it here.",
-        "searchDate": "We will search for {date}",
-        "searchDateToday": "Updated to today",
         "next": "Next",
         "previous": "Previous",
         "previewLoading": "Loading schedule...",
@@ -302,8 +321,27 @@
       "customLabel": "Custom",
       "customPlaceholder": "Minutes",
       "customSuffix": "min before",
-      "repeatLabel": "Repeat every day",
-      "repeatHint": "Rings at the same time every day until you turn it off.",
+      "repeatLabel": "Recurrent",
+      "repeatHint": "Rings on the weekdays you choose at the same time.",
+      "daysLabel": "Weekdays",
+      "daysShort": {
+        "0": "S",
+        "1": "M",
+        "2": "T",
+        "3": "W",
+        "4": "T",
+        "5": "F",
+        "6": "S"
+      },
+      "daysFull": {
+        "0": "Sunday",
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday"
+      },
       "triggerAt": "The alarm will ring at {time}",
       "tooLate": "This departure is too close for that reminder.",
       "save": "Save alarm",
@@ -383,7 +421,16 @@
     "estimateNotice": "Times are estimates based on Junta de Andalucía schedule data.",
     "pastSearchNotice": "You are viewing schedules for a past date. Refresh to see the current services.",
     "searchToday": "View today's schedules",
-    "scheduleAccuracyWarning": "Schedules for past or distant dates may change without notice."
+    "scheduleAccuracyWarning": "Schedules for past or distant dates may change without notice.",
+    "pinAddLabel": "Pin the {time} departure of line {lineCode}",
+    "pinActiveLabel": "{time} departure of line {lineCode} pinned. Press to unpin.",
+    "liveTripLabel": "Follow live the {time} departure of line {lineCode}",
+    "menuTriggerLabel": "Actions for the {time} departure of line {lineCode}",
+    "menuAlarmAdd": "Set a reminder",
+    "menuAlarmActive": "Manage reminder",
+    "menuPinAdd": "Pin departure",
+    "menuPinActive": "Unpin departure",
+    "menuLiveTrip": "Follow live"
   },
   "map": {
     "title": "Network map",
@@ -500,5 +547,22 @@
     "geolocation": {
       "notSupported": "Geolocation is not supported on this device."
     }
+  },
+  "countdown": {
+    "hour": "{value, plural, one {# hour} other {# hours}}",
+    "minute": "{value, plural, one {# minute} other {# minutes}}",
+    "second": "{value, plural, one {# second} other {# seconds}}"
+  },
+  "trip": {
+    "headline": "Line {lineCode} · towards {destination}",
+    "eta": "Arriving in {time}",
+    "locating": "Locating your GPS position…",
+    "unavailable": "We could not get your position. Showing estimated schedules only.",
+    "completed": "You have arrived at {destination}",
+    "endTracking": "End tracking",
+    "recenter": "Move the timeline back to the current stop",
+    "announcementNextStop": "Next stop: {stop}. Arriving in {time}.",
+    "announcementPassed": "You passed {stop}.",
+    "backLabel": "Back"
   }
 }

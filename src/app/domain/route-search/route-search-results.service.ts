@@ -9,6 +9,10 @@ import { RouteTimetableEntry } from '@data/route-search/route-timetable.mapper';
 import { RouteTimetableRequest, RouteTimetableService } from '@data/route-search/route-timetable.service';
 import { RouteSearchLineMatch, RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 import {
+  CountdownDuration,
+  buildCountdownDuration
+} from '@domain/utils/countdown-labels.util';
+import {
   ARRIVAL_PROGRESS_WINDOW_MINUTES,
   calculatePastProgress,
   calculateUpcomingProgress
@@ -35,8 +39,10 @@ export interface RouteSearchDepartureView {
   readonly direction: number;
   readonly destination: string;
   readonly originStopId: string;
+  readonly originStopIds: readonly string[];
+  readonly destinationStopIds: readonly string[];
   readonly arrivalTime: Date;
-  readonly relativeLabel: string | null;
+  readonly relativeLabel: CountdownDuration | null;
   readonly waitTimeSeconds: number;
   readonly kind: 'past' | 'upcoming';
   readonly isNext: boolean;
@@ -273,6 +279,8 @@ function buildResults(
     direction: item.direction,
     destination: item.destination,
     originStopId: item.originStopId,
+    originStopIds: item.originStopIds,
+    destinationStopIds: item.destinationStopIds,
     arrivalTime: item.arrivalTime,
     relativeLabel: item.relativeLabel,
     waitTimeSeconds: item.waitTimeSeconds,
@@ -324,9 +332,11 @@ interface RouteSearchDepartureCandidate {
   readonly direction: number;
   readonly destination: string;
   readonly originStopId: string;
+  readonly originStopIds: readonly string[];
+  readonly destinationStopIds: readonly string[];
   readonly originPriority: number;
   readonly arrivalTime: Date;
-  readonly relativeLabel: string | null;
+  readonly relativeLabel: CountdownDuration | null;
   readonly waitTimeSeconds: number;
   readonly kind: 'past' | 'upcoming';
   readonly isAccessible: boolean;
@@ -376,7 +386,7 @@ function createCandidate(
   );
   const relativeLabel = Math.abs(actualDifferenceMs) > MILLISECONDS_PER_DAY
     ? null
-    : formatDurationLabel(decomposeSeconds(actualWaitSeconds));
+    : buildCountdownDuration(actualWaitSeconds);
   const destinationArrivalTime = entry.arrivalTime;
   const travelSeconds = Math.max(
     0,
@@ -399,6 +409,8 @@ function createCandidate(
     direction: match.direction,
     destination: buildDestinationLabel(destinationName, entry.notes),
     originStopId,
+    originStopIds: match.originStopIds,
+    destinationStopIds: match.destinationStopIds,
     originPriority,
     arrivalTime: entry.departureTime,
     relativeLabel,

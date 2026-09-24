@@ -5,6 +5,7 @@ import type {
   RouteLineCoordinate,
   RouteLineStop
 } from '@data/route-search/route-lines-api.service';
+import type { LineRouteWorkspaceStop } from '@domain/lines/line-route-workspace.service';
 import { RouteMapComponent } from '@shared/map/route-map/route-map.component';
 import { TransitRouteWorkspaceComponent } from '@shared/map/route-workspace/transit-route-workspace.component';
 
@@ -17,11 +18,14 @@ class RouteMapStubComponent {
   @Input() routeId = '';
   @Input() coordinates: readonly RouteLineCoordinate[] = [];
   @Input() stops: readonly RouteLineStop[] = [];
+  @Input() originStopIds: readonly string[] = [];
+  @Input() destinationStopIds: readonly string[] = [];
   @Input() selectedStopId: string | null = null;
   @Input() accessibleLabel = '';
   @Input() stopDetailsLabel = '';
   @Output() readonly stopSelected = new EventEmitter<string>();
   @Output() readonly stopDetails = new EventEmitter<string>();
+  readonly centerStop = jasmine.createSpy('centerStop');
 }
 
 describe('TransitRouteWorkspaceComponent', () => {
@@ -52,6 +56,18 @@ describe('TransitRouteWorkspaceComponent', () => {
     fixture.componentInstance.stopsTitle = 'Stops';
     fixture.componentInstance.stopDetailsLabel = 'More information';
     fixture.componentInstance.mapUnavailableLabel = 'Map unavailable';
+  });
+
+  it('centers the map smoothly on the stop tapped in the panel', () => {
+    fixture.detectChanges();
+
+    fixture.debugElement
+      .queryAll(By.css('.transit-route-workspace__stop-select'))[1]
+      ?.triggerEventHandler('click');
+
+    const map = fixture.debugElement.query(By.directive(RouteMapStubComponent))
+      .componentInstance as RouteMapStubComponent;
+    expect(map.centerStop).toHaveBeenCalledWith('stop-b');
   });
 
   it('keeps map and stop selection on one shared component contract', () => {
@@ -92,6 +108,73 @@ describe('TransitRouteWorkspaceComponent', () => {
     expect(fixture.debugElement.query(By.directive(RouteMapStubComponent))).toBeNull();
     expect(fixture.debugElement.query(By.css('.transit-route-workspace__map-unavailable'))).not.toBeNull();
     expect(fixture.debugElement.queryAll(By.css('.transit-route-workspace__stop-row')).length).toBe(2);
+  });
+
+  it('differentiates the searched origin and destination in the list and forwards roles to the map', () => {
+    fixture.componentInstance.originStopIds = ['stop-a'];
+    fixture.componentInstance.destinationStopIds = ['stop-b'];
+    fixture.componentInstance.originMarkerLabel = 'Origen';
+    fixture.componentInstance.destinationMarkerLabel = 'Destino';
+    fixture.componentInstance.stopOriginLabel = (name) => `Origen de la búsqueda: ${name}`;
+    fixture.componentInstance.stopDestinationLabel = (name) => `Destino de la búsqueda: ${name}`;
+    fixture.detectChanges();
+
+    const map = fixture.debugElement.query(By.directive(RouteMapStubComponent))
+      .componentInstance as RouteMapStubComponent;
+    expect(map.originStopIds).toEqual(['stop-a']);
+    expect(map.destinationStopIds).toEqual(['stop-b']);
+
+    const rows = fixture.debugElement.queryAll(By.css('.transit-route-workspace__stop-row'));
+    expect(rows[0]?.nativeElement.classList).toContain('transit-route-workspace__stop-row--origin');
+    expect(rows[1]?.nativeElement.classList).toContain(
+      'transit-route-workspace__stop-row--destination'
+    );
+
+    const selectButtons = fixture.debugElement.queryAll(
+      By.css('.transit-route-workspace__stop-select')
+    );
+    expect((selectButtons[0]?.nativeElement as HTMLButtonElement).getAttribute('aria-label')).toBe(
+      'Origen de la búsqueda: Stop A'
+    );
+    expect((selectButtons[1]?.nativeElement as HTMLButtonElement).getAttribute('aria-label')).toBe(
+      'Destino de la búsqueda: Stop B'
+    );
+
+    const tags = fixture.debugElement.queryAll(By.css('.transit-route-workspace__stop-tag'));
+    expect(tags.length).toBe(2);
+  });
+
+  it('shows the nucleus ordinal per stop and omits stops without nucleus data', () => {
+    fixture.componentInstance.stops = [
+      { ...stops[0], nucleusName: 'La Gangosa', nucleusOrdinal: 1 } as LineRouteWorkspaceStop,
+      { ...stops[1], nucleusName: 'La Gangosa', nucleusOrdinal: 2 } as LineRouteWorkspaceStop
+    ];
+    fixture.componentInstance.stopNucleusOrdinalLabel = (ordinal, nucleus) =>
+      `${ordinal}.ª parada de ${nucleus}`;
+    fixture.detectChanges();
+
+    const badges = fixture.debugElement.queryAll(
+      By.css('.transit-route-workspace__stop-nucleus')
+    );
+    expect(badges.map((badge) => (badge.nativeElement as HTMLElement).textContent.trim())).toEqual([
+      '1.ª parada de La Gangosa',
+      '2.ª parada de La Gangosa'
+    ]);
+  });
+
+  it('does not render the ordinal badge when the builder or nucleus data is missing', () => {
+    fixture.componentInstance.stops = [
+      { ...stops[0], nucleusName: 'La Gangosa', nucleusOrdinal: 1 } as LineRouteWorkspaceStop,
+      { ...stops[1] }
+    ];
+    fixture.componentInstance.stopNucleusOrdinalLabel = (ordinal, nucleus) =>
+      `${ordinal}.ª parada de ${nucleus}`;
+    fixture.detectChanges();
+
+    const badges = fixture.debugElement.queryAll(
+      By.css('.transit-route-workspace__stop-nucleus')
+    );
+    expect(badges.length).toBe(1);
   });
 });
 

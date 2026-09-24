@@ -62,11 +62,11 @@
       type="button"
       class="stop-alarm__repeat"
       role="switch"
-      [attr.aria-checked]="repeatDaily()"
+      [attr.aria-checked]="recurring()"
       (click)="toggleRepeat()"
     >
       <span class="stop-alarm__repeat-icon material-symbols-outlined" aria-hidden="true">
-        {{ repeatDaily() ? 'notifications_active' : 'notifications' }}
+        {{ recurring() ? 'notifications_active' : 'notifications' }}
       </span>
       <span class="stop-alarm__repeat-text">
         <span class="stop-alarm__repeat-label">
@@ -76,10 +76,29 @@
           {{ 'stopDetail.alarms.repeatHint' | translate }}
         </span>
       </span>
-      <span class="stop-alarm__switch" [class.stop-alarm__switch--on]="repeatDaily()" aria-hidden="true">
+      <span class="stop-alarm__switch" [class.stop-alarm__switch--on]="recurring()" aria-hidden="true">
         <span class="stop-alarm__switch-thumb"></span>
       </span>
     </button>
+
+    <div
+      *ngIf="recurring()"
+      class="stop-alarm__days"
+      role="group"
+      [attr.aria-label]="'stopDetail.alarms.daysLabel' | translate"
+    >
+      <button
+        *ngFor="let day of weekdays"
+        type="button"
+        class="stop-alarm__day"
+        [class.stop-alarm__day--active]="isWeekdaySelected(day)"
+        [attr.aria-pressed]="isWeekdaySelected(day)"
+        [attr.aria-label]="('stopDetail.alarms.daysFull.' + day) | translate"
+        (click)="toggleWeekday(day)"
+      >
+        {{ ('stopDetail.alarms.daysShort.' + day) | translate }}
+      </button>
+    </div>
 
     <p *ngIf="canSave()" class="stop-alarm__preview">
       {{ 'stopDetail.alarms.triggerAt' | translate: { time: formatTrigger(triggerAt()) } }}

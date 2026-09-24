@@ -9,6 +9,10 @@
   height: 100%;
   min-width: 0;
   overflow: hidden;
+  /* Trap Leaflet's internal z-index layers (up to the 1000 control layer) inside the
+     map so page UI like the departure overflow menu can always layer above the map
+     chrome regardless of DOM order. */
+  isolation: isolate;
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-lg);
   background: var(--color-surface-muted);

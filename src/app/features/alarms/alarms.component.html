@@ -70,7 +70,7 @@
                 </p>
                 <div class="alarms__item-badges">
                   <span
-                    *ngIf="alarm.repeatDaily"
+                    *ngIf="alarm.repeatWeekdays.length > 0"
                     class="alarms__item-badge alarms__item-badge--repeat"
                   >
                     <span class="material-symbols-outlined" aria-hidden="true">{{ repeatIcon }}</span>

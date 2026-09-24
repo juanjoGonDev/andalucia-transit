@@ -1,10 +1,12 @@
 import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
+import { CountdownUnit } from '@domain/utils/countdown-labels.util';
 
 export type PreviewEntryKind = 'previous' | 'next';
 
 export interface PreviewRelativeLabel {
   readonly key: string;
-  readonly params: { readonly time: string };
+  readonly text: string;
+  readonly spoken: { readonly value: number; readonly unit: CountdownUnit };
 }
 
 export interface RecentSearchPreviewEntry {
@@ -27,6 +29,5 @@ export interface RecentSearchItem {
   readonly destinationName: string;
   readonly effectiveSelection: RouteSearchSelection;
   readonly effectiveQueryDate: Date;
-  readonly showTodayNotice: boolean;
   readonly preview: RecentSearchPreviewState;
 }

@@ -7,7 +7,8 @@ import {
   StopAlarm,
   StopAlarmRuntime,
   buildStopAlarmId,
-  computeNextTriggerAt
+  computeNextTriggerAt,
+  normalizeRepeatWeekdays
 } from '@domain/stop-alarms/stop-alarm.model';
 
 export interface StopAlarmCandidate {
@@ -19,7 +20,7 @@ export interface StopAlarmCandidate {
   readonly destination: string;
   readonly scheduledArrival: Date;
   readonly offsetMinutes: number;
-  readonly repeatDaily: boolean;
+  readonly repeatWeekdays: readonly number[];
 }
 
 /**
@@ -82,7 +83,7 @@ export class StopAlarmsService {
       destination: candidate.destination,
       scheduledArrival: candidate.scheduledArrival.toISOString(),
       offsetMinutes: candidate.offsetMinutes,
-      repeatDaily: candidate.repeatDaily,
+      repeatWeekdays: normalizeRepeatWeekdays(candidate.repeatWeekdays),
       enabled: true,
       createdAt: existing?.createdAt ?? new Date().toISOString()
     };

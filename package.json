@@ -51,7 +51,7 @@
   "private": true,
   "packageManager": "pnpm@9.12.3",
   "engines": {
-    "node": ">=20.19.0 <21"
+    "node": ">=20.19.0"
   },
   "dependencies": {
     "@angular/animations": "^20.3.6",
@@ -112,6 +112,6 @@
     "typescript-eslint": "8.46.2"
   },
   "volta": {
-    "node": "22.13.0"
+    "node": "22.19.0"
   }
 }

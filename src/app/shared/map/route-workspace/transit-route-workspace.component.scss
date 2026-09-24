@@ -148,6 +148,53 @@
   background: var(--color-surface);
 }
 
+.transit-route-workspace__marker--origin {
+  background: var(--color-primary);
+  border-color: var(--color-primary-contrast);
+  outline: 2px solid var(--color-primary);
+}
+
+.transit-route-workspace__marker--destination {
+  background: var(--color-error);
+  border-color: var(--color-primary-contrast);
+  outline: 2px solid var(--color-error);
+}
+
+.transit-route-workspace__stop-identity {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  min-width: 0;
+  align-items: flex-start;
+}
+
+.transit-route-workspace__stop-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.05rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.transit-route-workspace__stop-tag--origin {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
+
+.transit-route-workspace__stop-tag--destination {
+  background: var(--color-error);
+  color: var(--color-primary-contrast);
+}
+
+.transit-route-workspace__stop-row--origin .transit-route-workspace__stop-name,
+.transit-route-workspace__stop-row--destination .transit-route-workspace__stop-name {
+  font-weight: var(--font-weight-bold);
+}
+
 .transit-route-workspace__stop-name {
   color: var(--color-text-strong);
   font-weight: var(--font-weight-semibold);
@@ -202,4 +249,12 @@
   .transit-route-workspace__stop-select {
     gap: var(--space-sm);
   }
+}
+
+.transit-route-workspace__stop-nucleus {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

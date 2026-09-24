@@ -23,11 +23,18 @@ class TransitRouteWorkspaceStubComponent {
   @Input() routeId = '';
   @Input() coordinates: readonly RouteLineCoordinate[] = [];
   @Input() stops: readonly RouteLineStop[] = [];
+  @Input() originStopIds: readonly string[] = [];
+  @Input() destinationStopIds: readonly string[] = [];
   @Input() selectedStopId: string | null = null;
   @Input() accessibleLabel = '';
   @Input() stopsTitle = '';
   @Input() stopDetailsLabel = '';
   @Input() mapUnavailableLabel = '';
+  @Input() originMarkerLabel = '';
+  @Input() destinationMarkerLabel = '';
+  @Input() stopOriginLabel: ((name: string) => string) | null = null;
+  @Input() stopDestinationLabel: ((name: string) => string) | null = null;
+  @Input() stopNucleusOrdinalLabel: ((ordinal: number, nucleus: string) => string) | null = null;
   @Output() readonly stopSelected = new EventEmitter<string>();
   @Output() readonly stopDetails = new EventEmitter<string>();
 }
@@ -71,7 +78,7 @@ describe('RouteSearchDepartureRoutePreviewComponent', () => {
     fixture.detectChanges();
   });
 
-  it('loads the exact line and direction only after the disclosure opens', () => {
+  it('loads the exact line, direction and search segment only after the disclosure opens', () => {
     expect(workspaceService.load).not.toHaveBeenCalled();
 
     toggleDisclosure(true);
@@ -79,9 +86,25 @@ describe('RouteSearchDepartureRoutePreviewComponent', () => {
     expect(workspaceService.load).toHaveBeenCalledOnceWith({
       consortiumId: 7,
       lineId: 'line-1',
-      direction: 0
+      direction: 0,
+      segment: {
+        originStopIds: ['stop-a'],
+        destinationStopIds: ['stop-b']
+      }
     });
     expect(fixture.debugElement.query(By.css('app-transit-route-workspace'))).not.toBeNull();
+  });
+
+  it('forwards the searched origin and destination stops to the workspace', () => {
+    toggleDisclosure(true);
+
+    const workspace = fixture.debugElement.query(By.css('app-transit-route-workspace'))
+      .componentInstance as TransitRouteWorkspaceStubComponent;
+
+    expect(workspace.originStopIds).toEqual(['stop-a']);
+    expect(workspace.destinationStopIds).toEqual(['stop-b']);
+    expect(workspace.originMarkerLabel).toBe('Origin');
+    expect(workspace.destinationMarkerLabel).toBe('Destination');
   });
 
   it('keeps the loaded route cached across close and reopen', () => {
@@ -107,7 +130,11 @@ describe('RouteSearchDepartureRoutePreviewComponent', () => {
     expect(workspaceService.load).toHaveBeenCalledOnceWith({
       consortiumId: 7,
       lineId: 'line-1',
-      direction: 1
+      direction: 1,
+      segment: {
+        originStopIds: ['stop-a'],
+        destinationStopIds: ['stop-b']
+      }
     });
   });
 
@@ -140,8 +167,10 @@ function createDeparture(direction: number): RouteSearchDepartureView {
     direction,
     destination: direction === 0 ? 'Beta Terminal' : 'Alpha Station',
     originStopId: 'stop-a',
+    originStopIds: ['stop-a'],
+    destinationStopIds: ['stop-b'],
     arrivalTime: new Date('2026-08-28T18:30:00Z'),
-    relativeLabel: '5m',
+    relativeLabel: { text: '5m', unit: 'minute', value: 5 },
     waitTimeSeconds: 300,
     kind: 'upcoming',
     isNext: true,
@@ -176,7 +205,9 @@ function createViewModel(direction: number): LineRouteWorkspaceViewModel {
       latitude: stop.latitude,
       longitude: stop.longitude
     })),
-    resolvedDirection: direction
+    resolvedDirection: direction,
+    originStopIds: ['stop-a'],
+    destinationStopIds: ['stop-b']
   };
 }
 
