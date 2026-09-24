@@ -227,3 +227,19 @@ not perceivable, especially in bright sunlight on mobile.
   action surface on every row; the quick-action buttons and their ≥48rem flip are gone.
   Follow-up: fall back to the other travel orientation of a line when picking between
   `sentido` candidates sharing both segment stops._
+
+## 11. Follow-up round 6 — map stacking & road-following geometry
+- [ ] **E21 Overflow menu above map chrome.** The departure actions menu must paint
+  above the Leaflet zoom controls of the embedded preview map (today both sit at the
+  chrome layer and the map wins by DOM order). The map traps Leaflet's internal
+  z-indexes in its own stacking context and the menu keeps the dropdown layer with a
+  real fallback value.
+- [ ] **E22 Preview lines follow roads.** The preview polyline uses the line's official
+  `polilinea` (road-following geometry from the transit authority) oriented to the
+  searched trip instead of joining stop coordinates with straight segments; stop
+  geometry remains the fallback when the line ships no polyline. _Research: when a line
+  has no `polilinea` at all, road-following shapes can be precomputed from OSM with a
+  self-hosted or free-tier routing engine (OSRM `router.project-osrm.org`, Valhalla,
+  GraphHopper) during snapshot generation (`scripts/snapshot`) so the PWA stays
+  offline-first; runtime-only routing APIs are a last resort (rate limits + offline
+  breakage)._
