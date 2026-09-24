@@ -624,13 +624,17 @@ arrivalTime: new Date('2025-02-02T07:30:00Z'),
     fixture.detectChanges();
   }
 
-  it('starts a live trip session from an upcoming departure', () => {
+  it('starts a live trip session from the overflow menu of an upcoming departure', () => {
     setUpResultsWithUpcomingDeparture();
     const router = TestBed.inject(Router);
     const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
     const storage = TestBed.inject(TripSessionStorage);
 
-    fixture.debugElement.query(By.css('.route-search__item-live')).nativeElement.click();
+    fixture.debugElement.query(By.css('.route-search__item-overflow')).nativeElement.click();
+    fixture.detectChanges();
+    fixture.debugElement
+      .query(By.css('.route-search__item-menu-option--live'))
+      .nativeElement.click();
 
     const session = storage.load();
     expect(session).not.toBeNull();
@@ -644,9 +648,14 @@ arrivalTime: new Date('2025-02-02T07:30:00Z'),
     storage.clear();
   });
 
-  it('collapses pin, live and alarm actions behind an overflow menu on mobile rows', () => {
+  it('collapses pin, live and alarm actions behind an overflow menu on every row at all sizes', () => {
     setUpResultsWithUpcomingDeparture();
     fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('.route-search__item-quick-actions'))).toBeNull();
+    expect(fixture.debugElement.query(By.css('.route-search__item-alarm'))).toBeNull();
+    expect(fixture.debugElement.query(By.css('.route-search__item-pin'))).toBeNull();
+    expect(fixture.debugElement.query(By.css('.route-search__item-live'))).toBeNull();
 
     const trigger = fixture.debugElement.query(By.css('.route-search__item-overflow'));
     expect(trigger).not.toBeNull();
@@ -705,11 +714,13 @@ arrivalTime: new Date('2025-02-02T07:30:00Z'),
     const pins = TestBed.inject(PinnedDepartureService) as unknown as PinnedDepartureServiceStub;
     setUpResultsWithUpcomingDeparture();
 
-    const pinButton = fixture.debugElement.query(By.css('.route-search__item-pin'));
-    expect(pinButton).not.toBeNull();
-    expect(pinButton.nativeElement.getAttribute('aria-pressed')).toBe('false');
+    fixture.debugElement.query(By.css('.route-search__item-overflow')).nativeElement.click();
+    fixture.detectChanges();
+    let pinOption = fixture.debugElement.query(By.css('.route-search__item-menu-option--pin'));
+    expect(pinOption.nativeElement.textContent).toContain('routeSearch.menuPinAdd');
 
-    pinButton.nativeElement.click();
+    pinOption.nativeElement.click();
+    fixture.detectChanges();
 
     expect(pins.pinDeparture).toHaveBeenCalledTimes(1);
     const [departure, selection] = pins.pinDeparture.calls.mostRecent().args;
@@ -732,10 +743,12 @@ arrivalTime: new Date('2025-02-02T07:30:00Z'),
     });
     fixture.detectChanges();
 
-    const activeButton = fixture.debugElement.query(By.css('.route-search__item-pin'));
-    expect(activeButton.nativeElement.getAttribute('aria-pressed')).toBe('true');
+    fixture.debugElement.query(By.css('.route-search__item-overflow')).nativeElement.click();
+    fixture.detectChanges();
+    pinOption = fixture.debugElement.query(By.css('.route-search__item-menu-option--pin'));
+    expect(pinOption.nativeElement.textContent).toContain('routeSearch.menuPinActive');
 
-    activeButton.nativeElement.click();
+    pinOption.nativeElement.click();
     expect(pins.unpin).toHaveBeenCalledTimes(1);
   });
 
@@ -774,9 +787,13 @@ arrivalTime: new Date('2025-02-02T07:30:00Z'),
     fixture.detectChanges();
 
     const bell = fixture.debugElement.query(By.css('.route-search__item-alarm'));
-    expect(bell).not.toBeNull();
+    expect(bell).toBeNull();
 
-    bell?.nativeElement.click();
+    fixture.debugElement.query(By.css('.route-search__item-overflow')).nativeElement.click();
+    fixture.detectChanges();
+    fixture.debugElement
+      .query(By.css('.route-search__item-menu-option--alarm'))
+      .nativeElement.click();
 
     expect(overlayDialogs.open).toHaveBeenCalledTimes(1);
     const [component] = overlayDialogs.open.calls.mostRecent().args as [
@@ -788,11 +805,15 @@ arrivalTime: new Date('2025-02-02T07:30:00Z'),
   it('offers a departure alarm toggle that opens the alarm dialog with the route-search service id', () => {
     setUpResultsWithUpcomingDeparture();
 
-    const bell = fixture.debugElement.query(By.css('.route-search__item-alarm'));
-    expect(bell).not.toBeNull();
-    expect(bell?.nativeElement.getAttribute('aria-pressed')).toBe('false');
+    fixture.debugElement.query(By.css('.route-search__item-overflow')).nativeElement.click();
+    fixture.detectChanges();
+    const alarmOption = fixture.debugElement.query(
+      By.css('.route-search__item-menu-option--alarm')
+    );
+    expect(alarmOption).not.toBeNull();
+    expect(alarmOption.nativeElement.textContent).toContain('routeSearch.menuAlarmAdd');
 
-    bell?.nativeElement.click();
+    alarmOption.nativeElement.click();
 
     expect(overlayDialogs.open).toHaveBeenCalledTimes(1);
     const [component, config] = overlayDialogs.open.calls.mostRecent().args as [
@@ -822,11 +843,17 @@ arrivalTime: new Date('2025-02-02T07:30:00Z'),
 
     setUpResultsWithUpcomingDeparture();
 
-    const bell = fixture.debugElement.query(By.css('.route-search__item-alarm'));
-    expect(bell?.nativeElement.getAttribute('aria-pressed')).toBe('true');
-    expect(bell?.nativeElement.classList.contains('route-search__item-alarm--active')).toBeTrue();
+    fixture.debugElement.query(By.css('.route-search__item-overflow')).nativeElement.click();
+    fixture.detectChanges();
+    const alarmOption = fixture.debugElement.query(
+      By.css('.route-search__item-menu-option--alarm')
+    );
+    expect(alarmOption.nativeElement.textContent).toContain('routeSearch.menuAlarmActive');
+    expect(
+      alarmOption.nativeElement.querySelector('.material-symbols-outlined')?.textContent
+    ).toContain('notifications_active');
 
-    bell?.nativeElement.click();
+    alarmOption.nativeElement.click();
 
     expect(overlayDialogs.open).toHaveBeenCalledTimes(1);
     const [component, config] = overlayDialogs.open.calls.mostRecent().args as [

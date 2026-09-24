@@ -112,11 +112,6 @@ export class RouteSearchComponent implements AfterViewInit {
   protected readonly translationKeys = APP_CONFIG.translationKeys.routeSearch;
   protected readonly badgeTranslationKeys = APP_CONFIG.translationKeys.stopDetail.badges;
   protected readonly alarmTranslationKeys = APP_CONFIG.translationKeys.stopDetail.alarms;
-  protected readonly pinKeys = {
-    addLabel: 'routeSearch.pinAddLabel',
-    activeLabel: 'routeSearch.pinActiveLabel'
-  } as const;
-  protected readonly liveTripKey = 'routeSearch.liveTripLabel';
   protected readonly actionsMenuKey = 'routeSearch.menuTriggerLabel';
   protected readonly openMenuDepartureId = signal<string | null>(null);
   protected readonly loadingKey = APP_CONFIG.translationKeys.home.sections.recentStops.previewLoading;

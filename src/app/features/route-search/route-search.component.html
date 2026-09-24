@@ -196,60 +196,6 @@
                             >
                               {{ translationKeys.holidayBadge | translate }}
                             </span>
-                            <div class="route-search__item-quick-actions">
-                            <button
-                              type="button"
-                              class="route-search__item-alarm"
-                              [class.route-search__item-alarm--active]="isDepartureAlarmActive(item)"
-                              [attr.aria-pressed]="isDepartureAlarmActive(item)"
-                              [attr.aria-label]="
-                                (isDepartureAlarmActive(item)
-                                  ? alarmTranslationKeys.activeLabel
-                                  : alarmTranslationKeys.addLabel)
-                                  | translate
-                                  : { lineCode: item.lineCode, time: item.arrivalTime | date: 'HH:mm' }
-                              "
-                              (click)="toggleDepartureAlarm(item)"
-                            >
-                              <span class="material-symbols-outlined" aria-hidden="true">
-                                {{
-                                  isDepartureAlarmActive(item)
-                                    ? 'notifications_active'
-                                    : 'notifications'
-                                }}
-                              </span>
-                            </button>
-                            <button
-                              type="button"
-                              class="route-search__item-pin"
-                              [class.route-search__item-pin--active]="isDeparturePinned(item)"
-                              [attr.aria-pressed]="isDeparturePinned(item)"
-                              [attr.aria-label]="
-                                (isDeparturePinned(item) ? pinKeys.activeLabel : pinKeys.addLabel)
-                                  | translate
-                                  : { lineCode: item.lineCode, time: item.arrivalTime | date: 'HH:mm' }
-                              "
-                              (click)="togglePin(item)"
-                            >
-                              <span class="material-symbols-outlined" aria-hidden="true">
-                                push_pin
-                              </span>
-                            </button>
-                            <button
-                              type="button"
-                              class="route-search__item-live"
-                              [attr.aria-label]="
-                                liveTripKey
-                                  | translate
-                                  : { lineCode: item.lineCode, time: item.arrivalTime | date: 'HH:mm' }
-                              "
-                              (click)="startLiveTrip(item)"
-                            >
-                              <span class="material-symbols-outlined" aria-hidden="true">
-                                share_location
-                              </span>
-                            </button>
-                            </div>
                             <div class="route-search__item-actions">
                               <button
                                 type="button"

@@ -220,8 +220,10 @@ not perceivable, especially in bright sunlight on mobile.
   when the searched destination precedes the origin in `orden`, `selectSegmentStopIds`
   now preserves that travel order, and the workspace orients the official polyline
   towards the searched origin side._
-- [ ] **E20 Departure actions menu at every size.** Alarm bell, pin and live trip live
+- [x] **E20 Departure actions menu at every size.** Alarm bell, pin and live trip live
   behind a single overflow icon on EVERY departure hour row at ALL viewport sizes; the
   three direct quick-action buttons disappear entirely (supersedes the E15 two-mode
-  layout). Follow-up: fall back to the other travel orientation of a line when picking
-  between `sentido` candidates sharing both segment stops.
+  layout). _Done: the `role=menu` kebab (`toggleActionsMenu`/`runMenuAction`) is the only
+  action surface on every row; the quick-action buttons and their ≥48rem flip are gone.
+  Follow-up: fall back to the other travel orientation of a line when picking between
+  `sentido` candidates sharing both segment stops._
