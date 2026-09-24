@@ -163,26 +163,24 @@ function normalizeNucleusKey(value: string): string {
 }
 
 /**
- * Direction-filtered stop geometry always wins because it follows the searched travel
- * order. The official polyline is direction-blind, so it is only drawn once oriented
- * towards the searched direction; drawing it as-is for the opposite direction is what
- * made routes look reversed on the map.
+ * The official line polyline (`polilinea`) follows the roads the buses actually drive,
+ * so it is preferred over straight stop-to-stop geometry. It is direction-blind though:
+ * it is only drawn once oriented towards the searched travel order (anchored on the
+ * first stop of the oriented list). Stop geometry remains the fallback when the line
+ * ships no polyline.
  */
 function resolveDirectedCoordinates(
   stopCoordinates: readonly RouteLineCoordinate[],
   officialCoordinates: readonly RouteLineCoordinate[],
   selectedStops: readonly RouteLineStop[]
 ): readonly RouteLineCoordinate[] {
-  if (stopCoordinates.length >= MIN_ROUTE_COORDINATES) {
-    return stopCoordinates;
-  }
-
   const firstStop = selectedStops[0];
   const reference: RouteLineCoordinate | null = firstStop
     ? { latitude: firstStop.latitude, longitude: firstStop.longitude }
     : null;
+  const orientedOfficial = orientCoordinatesTowards(officialCoordinates, reference);
 
-  return orientCoordinatesTowards(officialCoordinates, reference);
+  return orientedOfficial.length >= MIN_ROUTE_COORDINATES ? orientedOfficial : stopCoordinates;
 }
 
 function preferCoordinates(

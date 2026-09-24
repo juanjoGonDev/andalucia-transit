@@ -74,14 +74,50 @@ describe('LineRouteWorkspaceService', () => {
     service = TestBed.inject(LineRouteWorkspaceService);
   });
 
-  it('prefers direction-specific stop geometry for schedule disclosures', (done) => {
+  it('draws the official road-following polyline oriented to the searched trip', (done) => {
+    routeLines.detail = {
+      ...routeLines.detail,
+      coordinates: [
+        { latitude: 38.05, longitude: -3.05 },
+        { latitude: 38.1, longitude: -3.1 },
+        { latitude: 38.15, longitude: -3.15 },
+        { latitude: 38.2, longitude: -3.2 }
+      ]
+    };
+
     service.load({ consortiumId: 7, lineId: 'line-1', direction: 1 }).subscribe((view) => {
       expect(view.stops.map((entry) => entry.stopId)).toEqual(['return-a', 'return-b']);
+      expect(view.coordinates).toEqual(routeLines.detail.coordinates);
+      expect(view.resolvedDirection).toBe(1);
+      done();
+    });
+  });
+
+  it('flips a direction-blind official polyline towards the searched trip', (done) => {
+    routeLines.detail = {
+      ...routeLines.detail,
+      coordinates: [
+        { latitude: 38.2, longitude: -3.2 },
+        { latitude: 38.15, longitude: -3.15 },
+        { latitude: 38.1, longitude: -3.1 },
+        { latitude: 38.05, longitude: -3.05 }
+      ]
+    };
+
+    service.load({ consortiumId: 7, lineId: 'line-1', direction: 1 }).subscribe((view) => {
+      expect(view.coordinates).toEqual([...routeLines.detail.coordinates].reverse());
+      done();
+    });
+  });
+
+  it('falls back to stop geometry when the line has no polyline', (done) => {
+    routeLines.detail = { ...routeLines.detail, coordinates: [] };
+
+    service.load({ consortiumId: 7, lineId: 'line-1', direction: 1 }).subscribe((view) => {
       expect(view.coordinates).toEqual([
         { latitude: 38.1, longitude: -3.1 },
         { latitude: 38.2, longitude: -3.2 }
       ]);
-      expect(view.resolvedDirection).toBe(1);
       done();
     });
   });
@@ -131,21 +167,6 @@ describe('LineRouteWorkspaceService', () => {
     });
   });
 
-  it('always orients stop-based geometry towards the searched direction first stop', (done) => {
-    routeLines.stops = [
-      stop('outbound-a', 0, 1, 37.1, -2.1),
-      stop('outbound-b', 0, 2, 37.2, -2.2),
-      stop('return-a', 1, 1, 38.1, -3.1),
-      stop('return-b', 1, 2, 38.2, -3.2)
-    ];
-
-    service.load({ consortiumId: 7, lineId: 'line-1', direction: 1 }).subscribe((view) => {
-      expect(view.coordinates[0]).toEqual({ latitude: 38.1, longitude: -3.1 });
-      expect(view.coordinates[view.coordinates.length - 1]).toEqual({ latitude: 38.2, longitude: -3.2 });
-      done();
-    });
-  });
-
   it('exposes the searched origin and destination stops that are displayed', (done) => {
     service
       .load({
@@ -165,6 +186,7 @@ describe('LineRouteWorkspaceService', () => {
   });
 
   it('renders the preview in the searched travel order when orden runs against it', (done) => {
+    routeLines.detail = { ...routeLines.detail, coordinates: [] };
     routeLines.stops = [
       stop('estacion', 1, 1, 36.84, -2.46),
       stop('middle', 1, 5, 36.78, -2.6),

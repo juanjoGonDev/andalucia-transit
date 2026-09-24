@@ -236,10 +236,12 @@ not perceivable, especially in bright sunlight on mobile.
   real fallback value. _Done: `isolation: isolate` on `.route-map` plus a `1000`
   fallback on the menu's `--z-index-dropdown` (equal to the Leaflet control layer), with
   computed-style regression tests on both sides._
-- [ ] **E22 Preview lines follow roads.** The preview polyline uses the line's official
+- [x] **E22 Preview lines follow roads.** The preview polyline uses the line's official
   `polilinea` (road-following geometry from the transit authority) oriented to the
   searched trip instead of joining stop coordinates with straight segments; stop
-  geometry remains the fallback when the line ships no polyline. _Research: when a line
+  geometry remains the fallback when the line ships no polyline. _Done:
+  `resolveDirectedCoordinates` prefers `orientCoordinatesTowards(polilinea, travel
+  start)` and only falls back to `stopsToCoordinates`. Research: when a line
   has no `polilinea` at all, road-following shapes can be precomputed from OSM with a
   self-hosted or free-tier routing engine (OSRM `router.project-osrm.org`, Valhalla,
   GraphHopper) during snapshot generation (`scripts/snapshot`) so the PWA stays
