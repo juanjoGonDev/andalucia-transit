@@ -164,6 +164,41 @@ describe('LineRouteWorkspaceService', () => {
       });
   });
 
+  it('renders the preview in the searched travel order when orden runs against it', (done) => {
+    routeLines.stops = [
+      stop('estacion', 1, 1, 36.84, -2.46),
+      stop('middle', 1, 5, 36.78, -2.6),
+      stop('gangosa', 1, 10, 36.72, -2.8)
+    ];
+
+    service
+      .load({
+        consortiumId: 7,
+        lineId: 'line-1',
+        direction: 1,
+        segment: {
+          originStopIds: ['gangosa'],
+          destinationStopIds: ['estacion']
+        }
+      })
+      .subscribe((view) => {
+        expect(view.stops.map((entry) => entry.stopId)).toEqual([
+          'gangosa',
+          'middle',
+          'estacion'
+        ]);
+        expect(view.originStopIds).toEqual(['gangosa']);
+        expect(view.destinationStopIds).toEqual(['estacion']);
+        expect(view.coordinates[0]).toEqual({ latitude: 36.72, longitude: -2.8 });
+        expect(view.coordinates[view.coordinates.length - 1]).toEqual({
+          latitude: 36.84,
+          longitude: -2.46
+        });
+        expect(view.resolvedDirection).toBe(1);
+        done();
+      });
+  });
+
   it('keeps empty segment ids when the workspace is not search-scoped', (done) => {
     service.load({ consortiumId: 7, lineId: 'line-1' }).subscribe((view) => {
       expect(view.originStopIds).toEqual([]);

@@ -3,6 +3,7 @@ import {
   buildLineStopCoordinates,
   buildStopNucleusOrdinals,
   orientCoordinatesTowards,
+  orientStopsTowardsSegment,
   selectLineDirectionStops,
   selectPrimaryLineDirectionStops,
   selectSegmentStopIds
@@ -148,7 +149,7 @@ describe('line route geometry', () => {
   });
 
   describe('selectSegmentStopIds', () => {
-    it('returns candidate ids intersected with the displayed stops ordered by stop order', () => {
+    it('returns candidate ids intersected with the displayed stops keeping travel order', () => {
       const stops = [
         stop('c', 1, 3, 37.3, -2.3),
         stop('a', 1, 1, 37.1, -2.1),
@@ -159,9 +160,75 @@ describe('line route geometry', () => {
       expect(selectSegmentStopIds(stops, ['c'])).toEqual(['c']);
     });
 
+    it('keeps the input travel order even when stop order runs against it', () => {
+      const stops = [
+        stop('a', 1, 3, 37.1, -2.1),
+        stop('b', 1, 2, 37.2, -2.2),
+        stop('c', 1, 1, 37.3, -2.3)
+      ];
+
+      expect(selectSegmentStopIds(stops, ['c', 'a'])).toEqual(['a', 'c']);
+    });
+
     it('returns an empty list when nothing matches', () => {
       expect(selectSegmentStopIds([stop('a', 1, 1, 37.1, -2.1)], ['x'])).toEqual([]);
       expect(selectSegmentStopIds([], ['x'])).toEqual([]);
+    });
+  });
+
+  describe('orientStopsTowardsSegment', () => {
+    it('keeps the canonical order when the origin precedes the destination', () => {
+      const stops = [
+        stop('origin', 1, 1, 37.1, -2.1),
+        stop('middle', 1, 2, 37.2, -2.2),
+        stop('destination', 1, 3, 37.3, -2.3)
+      ];
+
+      const oriented = orientStopsTowardsSegment(stops, ['origin'], ['destination']);
+
+      expect(oriented.map((entry) => entry.stopId)).toEqual(['origin', 'middle', 'destination']);
+    });
+
+    it('reverses the order when the stop table runs against the searched trip', () => {
+      const stops = [
+        stop('destination', 1, 1, 37.3, -2.3),
+        stop('middle', 1, 2, 37.2, -2.2),
+        stop('origin', 1, 3, 37.1, -2.1)
+      ];
+
+      const oriented = orientStopsTowardsSegment(stops, ['origin'], ['destination']);
+
+      expect(oriented.map((entry) => entry.stopId)).toEqual(['origin', 'middle', 'destination']);
+    });
+
+    it('uses the earliest matching ids when the segment holds several stops', () => {
+      const stops = [
+        stop('destination-b', 1, 1, 37.4, -2.4),
+        stop('origin-b', 1, 2, 37.2, -2.2),
+        stop('destination-a', 1, 3, 37.3, -2.3),
+        stop('origin-a', 1, 4, 37.1, -2.1)
+      ];
+
+      const oriented = orientStopsTowardsSegment(
+        stops,
+        ['origin-a', 'origin-b'],
+        ['destination-a', 'destination-b']
+      );
+
+      expect(oriented.map((entry) => entry.stopId)).toEqual([
+        'origin-a',
+        'destination-a',
+        'origin-b',
+        'destination-b'
+      ]);
+    });
+
+    it('keeps the input untouched when the segment is missing or incomplete', () => {
+      const stops = [stop('a', 1, 1, 37.1, -2.1), stop('b', 1, 2, 37.2, -2.2)];
+
+      expect(orientStopsTowardsSegment(stops, [], ['b'])).toBe(stops);
+      expect(orientStopsTowardsSegment(stops, ['a'], [])).toBe(stops);
+      expect(orientStopsTowardsSegment(stops, ['a'], ['missing'])).toBe(stops);
     });
   });
 });

@@ -11,10 +11,11 @@ import {
   RouteLinesApiService
 } from '@data/route-search/route-lines-api.service';
 import {
-  buildLineStopCoordinates,
   orientCoordinatesTowards,
+  orientStopsTowardsSegment,
   selectLineDirectionStops,
-  selectSegmentStopIds
+  selectSegmentStopIds,
+  stopsToCoordinates
 } from '@domain/lines/line-route-geometry';
 
 const MIN_ROUTE_COORDINATES = 2;
@@ -73,8 +74,14 @@ function buildWorkspaceViewModel(
   segment?: LineRouteWorkspaceSegment,
   nuclei: readonly CatalogNucleusEntry[] = []
 ): LineRouteWorkspaceViewModel {
-  const selectedStops = selectLineDirectionStops(stops, direction);
-  const stopCoordinates = buildLineStopCoordinates(stops, direction);
+  const selectedStops = segment
+    ? orientStopsTowardsSegment(
+        selectLineDirectionStops(stops, direction),
+        segment.originStopIds,
+        segment.destinationStopIds
+      )
+    : selectLineDirectionStops(stops, direction);
+  const stopCoordinates = stopsToCoordinates(selectedStops);
   const directionSpecific = direction !== null && direction !== undefined;
   const coordinates = directionSpecific
     ? resolveDirectedCoordinates(stopCoordinates, detail.coordinates, selectedStops)

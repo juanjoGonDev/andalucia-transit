@@ -212,10 +212,14 @@ not perceivable, especially in bright sunlight on mobile.
   `scripts/style-tokens.test.ts` (learned from stylesheets and TS `setProperty`/property
   literals) also surfaced `--font-size-md` and `--shadow-card-hover` without definitions —
   renamed to `--font-size-base` and added to the shadow scale._
-- [ ] **E19 Searched trip orientation in the preview.** The departure route preview map
+- [x] **E19 Searched trip orientation in the preview.** The departure route preview map
   and its stop list follow the searched travel order (origin first) even when the line
   stop table's `orden` runs against the travel direction — searching "La Gangosa →
-  Estación de Almería" must never render the stops or the polyline reversed.
+  Estación de Almería" must never render the stops or the polyline reversed. _Done:
+  `orientStopsTowardsSegment` reverses the direction-selected stops (and their geometry)
+  when the searched destination precedes the origin in `orden`, `selectSegmentStopIds`
+  now preserves that travel order, and the workspace orients the official polyline
+  towards the searched origin side._
 - [ ] **E20 Departure actions menu at every size.** Alarm bell, pin and live trip live
   behind a single overflow icon on EVERY departure hour row at ALL viewport sizes; the
   three direct quick-action buttons disappear entirely (supersedes the E15 two-mode
