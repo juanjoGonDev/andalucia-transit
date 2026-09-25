@@ -281,4 +281,87 @@ describe('StopAlarmDialogComponent', () => {
     expect(alarms.snapshot.length).toBe(1);
     expect(closeSpy).toHaveBeenCalledWith(true);
   });
+
+  it('prefills offset, recurrence and weekdays when editing an existing alarm', async () => {
+    await recreate({
+      minutesUntilArrival: undefined,
+      initial: { offsetMinutes: 30, repeatWeekdays: [1, 4] }
+    });
+
+    const active = chips().find((chip) => chip.textContent?.trim() === '30 min');
+    expect(active?.getAttribute('aria-pressed')).toBe('true');
+
+    const repeat = fixture.nativeElement.querySelector('.stop-alarm__repeat');
+    expect(repeat.getAttribute('aria-checked')).toBe('true');
+
+    const days = [...fixture.nativeElement.querySelectorAll('.stop-alarm__day')] as HTMLButtonElement[];
+    expect(days.length).toBe(7);
+    const pressedLabels = days
+      .filter((day) => day.getAttribute('aria-pressed') === 'true')
+      .map((day) => day.textContent?.trim());
+    expect(pressedLabels).toEqual([
+      'stopDetail.alarms.daysShort.1',
+      'stopDetail.alarms.daysShort.4'
+    ]);
+
+    const title = fixture.nativeElement.querySelector('.app-dialog__title');
+    expect(title?.textContent).toContain('stopDetail.alarms.editTitle');
+
+    const arrival = fixture.nativeElement.querySelector('.stop-alarm__arrival');
+    expect(arrival?.textContent).not.toContain('arrivesIn');
+  });
+
+  it('prefills offsets outside the quick choices as custom values', async () => {
+    await recreate({
+      minutesUntilArrival: undefined,
+      initial: { offsetMinutes: 45, repeatWeekdays: [] }
+    });
+
+    expect(fixture.nativeElement.querySelector('.stop-alarm__custom')).not.toBeNull();
+    const input = fixture.nativeElement.querySelector(
+      '.stop-alarm__custom input'
+    ) as HTMLInputElement;
+    expect(input.value).toBe('45');
+
+    const repeat = fixture.nativeElement.querySelector('.stop-alarm__repeat');
+    expect(repeat.getAttribute('aria-checked')).toBe('false');
+  });
+
+  it('saves edits through the update path, preserving the enabled state', async () => {
+    await recreate({
+      arrivalTime: new Date(Date.now() + 45 * MINUTES),
+      minutesUntilArrival: undefined,
+      initial: { offsetMinutes: 30, repeatWeekdays: [] }
+    });
+
+    const seeded = alarms.add({
+      stopId: data.stopId,
+      serviceId: data.serviceId,
+      consortiumId: data.consortiumId,
+      stopName: data.stopName,
+      lineCode: data.lineCode,
+      destination: data.destination,
+      scheduledArrival: data.arrivalTime,
+      offsetMinutes: 30,
+      repeatWeekdays: []
+    });
+    expect(seeded).not.toBeNull();
+    const alarmId = alarms.serviceAlarmId(data.stopId, data.serviceId);
+    alarms.setEnabled(alarmId, false);
+
+    permissions.request.and.resolveTo('granted');
+    chips()[0].click();
+    fixture.detectChanges();
+
+    const save = fixture.nativeElement.querySelector('.app-button--primary');
+    (save as HTMLElement).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(alarms.snapshot.length).toBe(1);
+    const updated = alarms.snapshot[0];
+    expect(updated.offsetMinutes).toBe(5);
+    expect(updated.enabled).toBeFalse();
+    expect(closeSpy).toHaveBeenCalledWith(true);
+  });
 });

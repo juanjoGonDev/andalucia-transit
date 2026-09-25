@@ -286,6 +286,79 @@ describe('StopAlarmsService', () => {
     expect(storage.save.calls.count()).toBe(savesBefore);
   });
 
+  it('update resaves offset and recurrence while preserving identity and enabled state', () => {
+    jasmine.clock().install();
+    try {
+      // Monday: the base trigger (arrival - offset) keeps the mask weekday, so the
+      // reschedule assertion below is deterministic instead of day-of-week dependent.
+      const base = new Date('2026-09-21T09:00:00');
+      jasmine.clock().mockDate(base);
+
+      const service = TestBed.inject(StopAlarmsService);
+      service.add(
+        candidate({
+          serviceId: 'service-edit',
+          scheduledArrival: new Date(base.getTime() + 60 * MINUTES)
+        })
+      );
+      const alarmId = service.serviceAlarmId('stop-1', 'service-edit');
+      service.setEnabled(alarmId, false);
+
+      const updated = service.update(alarmId, { offsetMinutes: 25, repeatWeekdays: [3, 1] });
+
+      expect(updated).toBeTrue();
+      const alarm = service.snapshot.find((entry) => entry.id === alarmId) ?? null;
+      expect(alarm).not.toBeNull();
+      expect(alarm?.enabled).toBeFalse();
+      expect(alarm?.offsetMinutes).toBe(25);
+      expect(alarm?.repeatWeekdays).toEqual([1, 3]);
+      expect(alarm?.stopId).toBe('stop-1');
+      expect(alarm?.lineCode).toBe('M-101');
+      expect(alarm?.nextTriggerAt).toBe(
+        Date.parse(alarm?.scheduledArrival ?? '') - 25 * MINUTES
+      );
+    } finally {
+      jasmine.clock().uninstall();
+    }
+  });
+
+  it('update drops one-shot alarms whose new schedule can never ring again', () => {
+    jasmine.clock().install();
+    try {
+      const base = new Date('2026-09-21T09:00:00');
+      jasmine.clock().mockDate(base);
+
+      const service = TestBed.inject(StopAlarmsService);
+      service.add(
+        candidate({
+          serviceId: 'service-past',
+          scheduledArrival: new Date(base.getTime() + 90 * MINUTES),
+          offsetMinutes: 10,
+          repeatWeekdays: [base.getDay()]
+        })
+      );
+      const alarmId = service.serviceAlarmId('stop-1', 'service-past');
+
+      jasmine.clock().mockDate(new Date(base.getTime() + 2 * 60 * MINUTES));
+
+      expect(service.update(alarmId, { offsetMinutes: 10, repeatWeekdays: [] })).toBeFalse();
+      expect(service.snapshot.length).toBe(0);
+    } finally {
+      jasmine.clock().uninstall();
+    }
+  });
+
+  it('update on a missing alarm reports failure without persisting', () => {
+    const service = TestBed.inject(StopAlarmsService);
+
+    service.add(candidate());
+    const savesBefore = storage.save.calls.count();
+
+    expect(service.update('stop-1::missing', { offsetMinutes: 20, repeatWeekdays: [] })).toBeFalse();
+    expect(service.snapshot.length).toBe(1);
+    expect(storage.save.calls.count()).toBe(savesBefore);
+  });
+
   it('removeAll clears every alarm and persists the empty list', () => {
     const service = TestBed.inject(StopAlarmsService);
 

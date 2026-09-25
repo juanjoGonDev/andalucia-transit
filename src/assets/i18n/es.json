@@ -239,7 +239,8 @@
       "enableA11y": "Activar alarma de la línea {line}",
       "disableA11y": "Desactivar alarma de la línea {line}",
       "remove": "Eliminar alarma de la línea {line}",
-      "removeAll": "Eliminar todas las alarmas"
+      "removeAll": "Eliminar todas las alarmas",
+      "editA11y": "Editar la alarma de la línea {line} hacia {destination}"
     },
     "dialogs": {
       "remove": {
@@ -352,7 +353,8 @@
       "notificationBody": "Salida a las {time} desde {stopName} hacia {destination}. Llega en {minutes} min.",
       "firedBanner": "Tu alarma de la línea {lineCode} hacia {destination} ha sonado. Se repetirá mañana a las {time}.",
       "firedDeactivate": "Desactivar",
-      "limitReached": "Has alcanzado el máximo de alarmas para esta parada."
+      "limitReached": "Has alcanzado el máximo de alarmas para esta parada.",
+      "editTitle": "Editar alarma"
     }
   },
   "stopInfo": {

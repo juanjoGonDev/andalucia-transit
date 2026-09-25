@@ -28,6 +28,11 @@ const CUSTOM_SELECTION = -1;
 const SAVE_GUARD_MS = 1_500;
 const MINUTES_MS = 60_000;
 
+/** Restores an edited offset: the matching chip when available, otherwise custom. */
+function resolveInitialChoice(quickChoices: readonly number[], offsetMinutes: number): number {
+  return quickChoices.includes(offsetMinutes) ? offsetMinutes : CUSTOM_SELECTION;
+}
+
 /**
  * Picks the initial offset: the configured default when it still rings before
  * the arrival, otherwise the quickest choice that is still valid. The dialog
@@ -58,7 +63,13 @@ export interface StopAlarmDialogData {
   readonly lineCode: string;
   readonly destination: string;
   readonly arrivalTime: Date;
-  readonly minutesUntilArrival: number;
+  /** Undefined when editing an existing alarm (the arrival is not "upcoming" anymore). */
+  readonly minutesUntilArrival?: number;
+  /** Present when editing an existing alarm: prefills offset and recurrence. */
+  readonly initial?: {
+    readonly offsetMinutes: number;
+    readonly repeatWeekdays: readonly number[]
+  };
 }
 
 @Component({
@@ -87,18 +98,29 @@ export class StopAlarmDialogComponent {
   protected readonly quickChoices = APP_CONFIG.alarms.quickChoiceMinutes;
   protected readonly fieldId = `stop-alarm-offset-${StopAlarmDialogComponent.nextId++}`;
 
+  private readonly initial: StopAlarmDialogData['initial'] = this.data.initial;
+  protected readonly dialogTitleKey = this.initial
+    ? 'stopDetail.alarms.editTitle'
+    : 'stopDetail.alarms.dialogTitle';
+
   protected readonly selectedChoice = signal<number>(
-    resolveDefaultChoice(
-      APP_CONFIG.alarms.quickChoiceMinutes,
-      APP_CONFIG.alarms.defaultOffsetMinutes,
-      this.data.arrivalTime.getTime()
-    )
+    this.initial
+      ? resolveInitialChoice(APP_CONFIG.alarms.quickChoiceMinutes, this.initial.offsetMinutes)
+      : resolveDefaultChoice(
+          APP_CONFIG.alarms.quickChoiceMinutes,
+          APP_CONFIG.alarms.defaultOffsetMinutes,
+          this.data.arrivalTime.getTime()
+        )
   );
-  protected readonly customMinutes = signal<number>(APP_CONFIG.alarms.defaultOffsetMinutes);
-  protected readonly recurring = signal(false);
-  protected readonly selectedWeekdays = signal<number[]>([
-    this.data.arrivalTime.getDay()
-  ]);
+  protected readonly customMinutes = signal<number>(
+    this.initial?.offsetMinutes ?? APP_CONFIG.alarms.defaultOffsetMinutes
+  );
+  protected readonly recurring = signal(
+    this.initial ? this.initial.repeatWeekdays.length > 0 : false
+  );
+  protected readonly selectedWeekdays = signal<number[]>(
+    this.initial ? [...this.initial.repeatWeekdays] : [this.data.arrivalTime.getDay()]
+  );
   /** Display order: Monday first, Sunday last (ES locale convention). */
   protected readonly weekdays: readonly number[] = [1, 2, 3, 4, 5, 6, 0];
   protected readonly permissionError = signal(false);
@@ -204,9 +226,14 @@ export class StopAlarmDialogComponent {
       return;
     }
 
-    const created = this.alarms.add(this.toCandidate());
+    const saved = this.initial
+      ? this.alarms.update(this.alarms.serviceAlarmId(this.data.stopId, this.data.serviceId), {
+          offsetMinutes: this.offsetMinutes(),
+          repeatWeekdays: this.recurring() ? this.selectedWeekdays() : []
+        })
+      : this.alarms.add(this.toCandidate()) !== null;
 
-    if (!created) {
+    if (!saved) {
       this.dialogRef.close(false);
       return;
     }

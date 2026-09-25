@@ -4,8 +4,16 @@ import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { combineLatest, map, shareReplay, startWith } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
-import { StopAlarmRuntime, computeTriggerAt } from '@domain/stop-alarms/stop-alarm.model';
+import {
+  StopAlarmRuntime,
+  computeTriggerAt,
+  splitStopAlarmId
+} from '@domain/stop-alarms/stop-alarm.model';
 import { StopAlarmsService } from '@domain/stop-alarms/stop-alarms.service';
+import {
+  StopAlarmDialogComponent,
+  StopAlarmDialogData
+} from '@features/stop-detail/stop-alarm-dialog/stop-alarm-dialog.component';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import { ConfirmDialogComponent, ConfirmDialogData } from '@shared/ui/confirm-dialog/confirm-dialog.component';
@@ -25,6 +33,9 @@ export interface AlarmsListItem {
   readonly enabled: boolean;
   /** Disabled alarms whose target already elapsed: kept listed but unrecoverable. */
   readonly isExpired: boolean;
+  readonly consortiumId: number | null;
+  /** ISO timestamp of the scheduled arrival the alarm targets. */
+  readonly scheduledArrival: string;
 }
 
 @Component({
@@ -74,6 +85,39 @@ export class AlarmsComponent {
 
   protected toggleEnabled(alarm: AlarmsListItem): void {
     this.alarmsService.setEnabled(alarm.id, !alarm.enabled);
+  }
+
+  protected editAlarm(alarm: AlarmsListItem): void {
+    const parts = splitStopAlarmId(alarm.id);
+
+    if (!parts) {
+      return;
+    }
+
+    const arrivalTime = new Date(alarm.scheduledArrival);
+
+    if (Number.isNaN(arrivalTime.getTime())) {
+      return;
+    }
+
+    const data: StopAlarmDialogData = {
+      stopId: parts.stopId,
+      serviceId: parts.serviceId,
+      consortiumId: alarm.consortiumId,
+      stopName: alarm.stopName,
+      lineCode: alarm.lineCode,
+      destination: alarm.destination,
+      arrivalTime,
+      initial: {
+        offsetMinutes: alarm.offsetMinutes,
+        repeatWeekdays: alarm.repeatWeekdays
+      }
+    };
+
+    this.overlayDialogs.open<StopAlarmDialogComponent, StopAlarmDialogData, boolean>(
+      StopAlarmDialogComponent,
+      { data, role: 'dialog' }
+    );
   }
 
   protected confirmRemove(alarm: AlarmsListItem): void {
@@ -143,7 +187,9 @@ export class AlarmsComponent {
       offsetMinutes: alarm.offsetMinutes,
       repeatWeekdays: alarm.repeatWeekdays,
       enabled: alarm.enabled,
-      isExpired: !alarm.enabled && alarm.nextTriggerAt === null
+      isExpired: !alarm.enabled && alarm.nextTriggerAt === null,
+      consortiumId: alarm.consortiumId,
+      scheduledArrival: alarm.scheduledArrival
     };
   }
 }

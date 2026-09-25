@@ -239,7 +239,8 @@
       "enableA11y": "Enable alarm for line {line}",
       "disableA11y": "Disable alarm for line {line}",
       "remove": "Remove alarm for line {line}",
-      "removeAll": "Remove all alarms"
+      "removeAll": "Remove all alarms",
+      "editA11y": "Edit the {line} alarm towards {destination}"
     },
     "dialogs": {
       "remove": {
@@ -352,7 +353,8 @@
       "notificationBody": "Departs at {time} from {stopName} towards {destination}. Arrives in {minutes} min.",
       "firedBanner": "Your alarm for line {lineCode} towards {destination} rang. It will repeat tomorrow at {time}.",
       "firedDeactivate": "Turn off",
-      "limitReached": "You reached the maximum number of alarms for this stop."
+      "limitReached": "You reached the maximum number of alarms for this stop.",
+      "editTitle": "Edit alarm"
     }
   },
   "stopInfo": {
