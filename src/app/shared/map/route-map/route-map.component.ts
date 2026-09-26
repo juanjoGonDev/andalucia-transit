@@ -169,11 +169,16 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 }
 
 function toMapStopMarker(stop: RouteLineStop, role: MapStopMarkerRole): MapStopMarker {
+  const enriched = stop as RouteLineStop & {
+    readonly nucleusName?: string | null;
+    readonly nucleusOrdinal?: number | null;
+  };
+
   return {
     id: stop.stopId,
     name: stop.name,
     code: '',
-    municipality: '',
+    municipality: enriched.nucleusName ?? '',
     role,
     coordinate: {
       latitude: stop.latitude,

@@ -15,14 +15,14 @@ import {
   layerGroup,
   marker,
   polyline,
-  tileLayer
+  tileLayer,
 } from 'leaflet';
 import { buildRouteDirectionIndicators } from '@domain/map/route-overlay-geometry';
 import { GeoCoordinate } from '@domain/utils/geo-distance.util';
 import {
   MapStopMarkerRole,
   MapStopRolePalette,
-  resolveStopMarkerStyle
+  resolveStopMarkerStyle,
 } from '@shared/map/map-marker-style';
 import { resolveStopFocusZoom, stopFocusZoomKeepsCurrent } from '@shared/map/map-stop-focus.util';
 
@@ -54,10 +54,7 @@ export interface MapStopInteractionOptions {
 export interface MapHandle {
   setView(center: GeoCoordinate, zoom: number, animate?: boolean): void;
   renderUserLocation(coordinate: GeoCoordinate): void;
-  renderStops(
-    stops: readonly MapStopMarker[],
-    interactions?: MapStopInteractionOptions
-  ): void;
+  renderStops(stops: readonly MapStopMarker[], interactions?: MapStopInteractionOptions): void;
   fitToCoordinates(points: readonly GeoCoordinate[], animate?: boolean): void;
   restrictToCoordinates(points: readonly GeoCoordinate[]): void;
   highlightStop(stopId: string | null): void;
@@ -153,7 +150,7 @@ const STOP_HIGHLIGHT_HALO_OPACITY = 0.9;
 const STOP_ROLE_ICONS: Readonly<Record<MapStopMarkerRole, string>> = {
   regular: 'directions_bus',
   origin: 'trip_origin',
-  destination: 'flag'
+  destination: 'flag',
 } as const;
 
 @Injectable({ providedIn: 'root' })
@@ -193,7 +190,7 @@ export class LeafletMapService {
       if (!haloMarker) {
         haloMarker = circleMarker(stopMarker.getLatLng(), {
           radius: resolveStopMarkerStyle('regular', false, stopPalette).radius,
-          interactive: false
+          interactive: false,
         }).addTo(map);
       }
 
@@ -203,7 +200,7 @@ export class LeafletMapService {
         color: palette.stopHighlightStroke,
         weight: STOP_HIGHLIGHT_HALO_WEIGHT,
         opacity: STOP_HIGHLIGHT_HALO_OPACITY,
-        fillOpacity: 0
+        fillOpacity: 0,
       });
       haloMarker.bringToFront();
       stopMarker.bringToFront();
@@ -230,7 +227,7 @@ export class LeafletMapService {
         color: style.color,
         weight: style.weight,
         fillColor: style.fillColor,
-        fillOpacity: style.fillOpacity
+        fillOpacity: style.fillOpacity,
       });
 
       updateHalo();
@@ -260,7 +257,7 @@ export class LeafletMapService {
           color: palette.userStroke,
           weight: USER_MARKER_WEIGHT,
           fillColor: palette.user,
-          fillOpacity: USER_MARKER_FILL_OPACITY
+          fillOpacity: USER_MARKER_FILL_OPACITY,
         }).addTo(map);
       },
       renderStops: (stops, interactions) => {
@@ -281,7 +278,7 @@ export class LeafletMapService {
             color: style.color,
             weight: style.weight,
             fillColor: style.fillColor,
-            fillOpacity: style.fillOpacity
+            fillOpacity: style.fillOpacity,
           }).addTo(stopsLayer);
 
           stopMarkers.set(stop.id, stopMarker);
@@ -292,7 +289,7 @@ export class LeafletMapService {
             stopMarker.bindPopup(popupContent.element, {
               className: STOP_POPUP_CLASS,
               maxWidth: 320,
-              minWidth: 240
+              minWidth: 240,
             });
             stopMarker.on('popupopen', () => {
               popupContent.action.textContent = interactions.getDetailsLabel();
@@ -301,7 +298,7 @@ export class LeafletMapService {
               updateStopStyle(previousSelected);
               map.panTo(stopMarker.getLatLng(), {
                 animate: true,
-                duration: CAMERA_ANIMATION_DURATION_SECONDS
+                duration: CAMERA_ANIMATION_DURATION_SECONDS,
               });
               updateStopStyle(selectedStopId);
               interactions.onSelect?.(stop.id);
@@ -327,7 +324,7 @@ export class LeafletMapService {
         if (animate) {
           map.flyToBounds(bounds, {
             padding: MAP_PADDING,
-            duration: CAMERA_ANIMATION_DURATION_SECONDS
+            duration: CAMERA_ANIMATION_DURATION_SECONDS,
           });
           return;
         }
@@ -362,14 +359,14 @@ export class LeafletMapService {
         if (stopFocusZoomKeepsCurrent(currentZoom)) {
           map.panTo(target, {
             animate,
-            duration: CAMERA_ANIMATION_DURATION_SECONDS
+            duration: CAMERA_ANIMATION_DURATION_SECONDS,
           });
           return true;
         }
 
         map.flyTo(target, resolveStopFocusZoom(currentZoom), {
           animate,
-          duration: CAMERA_ANIMATION_DURATION_SECONDS
+          duration: CAMERA_ANIMATION_DURATION_SECONDS,
         });
         return true;
       },
@@ -436,7 +433,7 @@ export class LeafletMapService {
       },
       destroy: () => {
         map.remove();
-      }
+      },
     } satisfies MapHandle;
   }
 
@@ -448,13 +445,13 @@ export class LeafletMapService {
       maxZoom: options.maxZoom ?? DEFAULT_MAX_ZOOM,
       zoomControl: true,
       attributionControl: true,
-      preferCanvas: true
+      preferCanvas: true,
     });
 
     tileLayer(TILE_LAYER_URL, {
       attribution: TILE_LAYER_ATTRIBUTION,
       minZoom: options.minZoom ?? DEFAULT_MIN_ZOOM,
-      maxZoom: options.maxZoom ?? DEFAULT_MAX_ZOOM
+      maxZoom: options.maxZoom ?? DEFAULT_MAX_ZOOM,
     }).addTo(map);
 
     return map;
@@ -462,7 +459,7 @@ export class LeafletMapService {
 
   private buildStopPopup(
     stop: MapStopMarker,
-    interactions: MapStopInteractionOptions
+    interactions: MapStopInteractionOptions,
   ): StopPopupContent {
     const content = document.createElement('div');
     content.className = STOP_POPUP_CONTENT_CLASS;
@@ -482,19 +479,34 @@ export class LeafletMapService {
     title.className = STOP_POPUP_TITLE_CLASS;
     title.textContent = stop.name;
 
-    const meta = document.createElement('span');
-    meta.className = STOP_POPUP_META_CLASS;
+    identity.append(title);
 
-    const code = document.createElement('span');
-    code.className = STOP_POPUP_CODE_CLASS;
-    code.textContent = stop.code;
+    // Empty fields render as stray chips/gaps inside the popup, so only present
+    // metadata creates nodes (e.g. route previews provide no stop code).
+    const codeText = stop.code.trim();
+    const municipalityText = stop.municipality.trim();
 
-    const municipality = document.createElement('span');
-    municipality.className = STOP_POPUP_MUNICIPALITY_CLASS;
-    municipality.textContent = stop.municipality;
+    if (codeText || municipalityText) {
+      const meta = document.createElement('span');
+      meta.className = STOP_POPUP_META_CLASS;
 
-    meta.append(code, municipality);
-    identity.append(title, meta);
+      if (codeText) {
+        const code = document.createElement('span');
+        code.className = STOP_POPUP_CODE_CLASS;
+        code.textContent = codeText;
+        meta.append(code);
+      }
+
+      if (municipalityText) {
+        const municipality = document.createElement('span');
+        municipality.className = STOP_POPUP_MUNICIPALITY_CLASS;
+        municipality.textContent = municipalityText;
+        meta.append(municipality);
+      }
+
+      identity.append(meta);
+    }
+
     header.append(icon, identity);
 
     const action = document.createElement('button');
@@ -520,18 +532,18 @@ export class LeafletMapService {
       stopDestination: this.resolveCssColor(
         style,
         CSS_STOP_DESTINATION_COLOR,
-        FALLBACK_STOP_DESTINATION_COLOR
+        FALLBACK_STOP_DESTINATION_COLOR,
       ),
       stopHighlight: this.resolveCssColor(
         style,
         CSS_STOP_HIGHLIGHT_COLOR,
-        FALLBACK_STOP_HIGHLIGHT_COLOR
+        FALLBACK_STOP_HIGHLIGHT_COLOR,
       ),
       stopHighlightStroke: this.resolveCssColor(
         style,
         CSS_STOP_HIGHLIGHT_STROKE_COLOR,
-        FALLBACK_STOP_HIGHLIGHT_STROKE_COLOR
-      )
+        FALLBACK_STOP_HIGHLIGHT_STROKE_COLOR,
+      ),
     };
   }
 
@@ -542,7 +554,7 @@ export class LeafletMapService {
       destination: palette.stopDestination,
       highlight: palette.stopHighlight,
       stroke: palette.stopStroke,
-      highlightStroke: palette.stopHighlightStroke
+      highlightStroke: palette.stopHighlightStroke,
     };
   }
 
@@ -565,18 +577,18 @@ export class LeafletMapService {
       weight: active ? ROUTE_POLYLINE_HIGHLIGHT_WEIGHT : ROUTE_POLYLINE_WEIGHT,
       opacity: active ? ROUTE_POLYLINE_HIGHLIGHT_OPACITY : ROUTE_POLYLINE_OPACITY,
       lineJoin: ROUTE_POLYLINE_LINE_JOIN,
-      lineCap: ROUTE_POLYLINE_LINE_CAP
+      lineCap: ROUTE_POLYLINE_LINE_CAP,
     };
   }
 
   private renderRouteDirections(
     routeDirectionLayer: ReturnType<typeof layerGroup>,
     route: MapRoutePolyline,
-    active: boolean
+    active: boolean,
   ): void {
     const indicators = buildRouteDirectionIndicators(
       route.coordinates,
-      active ? ROUTE_DIRECTION_INDICATORS_ACTIVE : ROUTE_DIRECTION_INDICATORS
+      active ? ROUTE_DIRECTION_INDICATORS_ACTIVE : ROUTE_DIRECTION_INDICATORS,
     );
 
     for (const indicator of indicators) {
@@ -592,13 +604,13 @@ export class LeafletMapService {
           : ROUTE_DIRECTION_CLASS,
         html: glyph,
         iconSize: [ROUTE_DIRECTION_ICON_SIZE, ROUTE_DIRECTION_ICON_SIZE],
-        iconAnchor: [ROUTE_DIRECTION_ICON_ANCHOR, ROUTE_DIRECTION_ICON_ANCHOR]
+        iconAnchor: [ROUTE_DIRECTION_ICON_ANCHOR, ROUTE_DIRECTION_ICON_ANCHOR],
       });
 
       marker(this.toLatLng(indicator.coordinate), {
         icon: directionIcon,
         interactive: false,
-        keyboard: false
+        keyboard: false,
       }).addTo(routeDirectionLayer);
     }
   }
