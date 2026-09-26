@@ -4,11 +4,10 @@ import { StopScheduleService } from '@data/services/stop-schedule.service';
 import { RideDirectionSourceService } from './ride-direction-source.service';
 
 class StopScheduleStub {
-  getStopSchedule = jasmine
-    .createSpy('getStopSchedule')
-    .and.returnValue(
-      of({
-        schedule: { services: [
+  getStopSchedule = jasmine.createSpy('getStopSchedule').and.returnValue(
+    of({
+      schedule: {
+        services: [
           {
             lineId: 'L1',
             lineCode: 'M-101',
@@ -17,7 +16,7 @@ class StopScheduleStub {
             arrivalTime: new Date(Date.now() + 10 * 60_000),
             isAccessible: true,
             isUniversityOnly: false,
-            serviceId: 'a'
+            serviceId: 'a',
           },
           {
             lineId: 'L2',
@@ -27,11 +26,32 @@ class StopScheduleStub {
             arrivalTime: new Date(Date.now() + 90 * 60_000),
             isAccessible: true,
             isUniversityOnly: false,
-            serviceId: 'b'
-          }
-        ] }
-      })
-    );
+            serviceId: 'b',
+          },
+          {
+            lineId: 'L3',
+            lineCode: 'M-303',
+            direction: 1,
+            destination: 'Sur',
+            arrivalTime: new Date(Date.now() - 20 * 60_000),
+            isAccessible: true,
+            isUniversityOnly: false,
+            serviceId: 'c',
+          },
+          {
+            lineId: 'L4',
+            lineCode: 'M-404',
+            direction: 1,
+            destination: 'Oeste',
+            arrivalTime: new Date(Date.now() - 40 * 60_000),
+            isAccessible: true,
+            isUniversityOnly: false,
+            serviceId: 'd',
+          },
+        ],
+      },
+    }),
+  );
 }
 
 describe('RideDirectionSourceService', () => {
@@ -41,23 +61,24 @@ describe('RideDirectionSourceService', () => {
   beforeEach(() => {
     schedule = new StopScheduleStub();
     TestBed.configureTestingModule({
-      providers: [{ provide: StopScheduleService, useValue: schedule }]
+      providers: [{ provide: StopScheduleService, useValue: schedule }],
     });
     service = TestBed.inject(RideDirectionSourceService);
   });
 
-  it('maps upcoming services into direction candidates', async () => {
+  it('maps upcoming and recently departed services into direction candidates', async () => {
     const candidates = await service.fetchDirections({
       consortiumId: 3,
       stopId: '10',
       stopName: 'Parada',
       location: { latitude: 36.7, longitude: -4.36 },
-      distanceMeters: 12
+      distanceMeters: 12,
     });
 
     expect(schedule.getStopSchedule).toHaveBeenCalledWith('10', { consortiumId: 3 });
-    expect(candidates.length).toBe(1);
-    expect(candidates[0]?.lineCode).toBe('M-101');
+    // A service that departed 20 minutes ago still counts (late buses), one from 40
+    // minutes ago or 90 minutes ahead does not.
+    expect(candidates.map((candidate) => candidate.lineCode)).toEqual(['M-101', 'M-303']);
   });
 
   it('returns an empty list when the API fails', async () => {
@@ -68,7 +89,7 @@ describe('RideDirectionSourceService', () => {
       stopId: '10',
       stopName: 'Parada',
       location: { latitude: 36.7, longitude: -4.36 },
-      distanceMeters: 12
+      distanceMeters: 12,
     });
 
     expect(candidates.length).toBe(0);

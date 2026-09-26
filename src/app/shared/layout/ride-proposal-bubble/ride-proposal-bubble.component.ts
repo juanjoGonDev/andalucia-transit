@@ -4,9 +4,10 @@ import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RideLineProposal } from '@domain/ride-detection/ride-candidates.util';
 import { RideDetectionService } from '@domain/ride-detection/ride-detection.service';
+import { LiveTripService } from '@domain/trip/live-trip.service';
 import {
   StopDetailNavigation,
-  buildStopDetailNavigation
+  buildStopDetailNavigation,
 } from '@shared/navigation/navigation.util';
 
 const RIDE_PROPOSAL_I18N = {
@@ -14,7 +15,7 @@ const RIDE_PROPOSAL_I18N = {
   title: 'layout.rideProposal.title',
   subtitle: 'layout.rideProposal.subtitle',
   dismiss: 'layout.rideProposal.dismiss',
-  lineLabel: 'layout.rideProposal.lineLabel'
+  lineLabel: 'layout.rideProposal.lineLabel',
 } as const;
 
 /**
@@ -31,25 +32,30 @@ const RIDE_PROPOSAL_I18N = {
   styleUrl: './ride-proposal-bubble.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'ride-proposal-host'
-  }
+    class: 'ride-proposal-host',
+  },
 })
 export class RideProposalBubbleComponent {
   protected readonly i18n = RIDE_PROPOSAL_I18N;
   readonly detection = inject(RideDetectionService);
+  private readonly liveTrip = inject(LiveTripService);
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
 
   protected readonly visible = computed(() => {
-    return this.detection.phase() === 'proposing' && this.detection.proposals().length > 0;
+    return (
+      this.detection.phase() === 'proposing' &&
+      this.detection.visibleProposals().length > 0 &&
+      this.liveTrip.state().status === 'idle'
+    );
   });
 
-  protected readonly proposals = computed(() => this.detection.proposals());
+  protected readonly proposals = computed(() => this.detection.visibleProposals());
 
   protected candidateLabel(proposal: RideLineProposal): string {
     return this.translate.instant(this.i18n.lineLabel, {
       lineCode: proposal.lineCode,
-      destination: proposal.destinationName
+      destination: proposal.destinationName,
     });
   }
 
@@ -67,7 +73,7 @@ export class RideProposalBubbleComponent {
 
     const navigation: StopDetailNavigation = buildStopDetailNavigation(
       proposal.consortiumId,
-      stopId
+      stopId,
     );
 
     if (navigation.commands.length === 0) {

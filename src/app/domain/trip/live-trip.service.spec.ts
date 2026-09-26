@@ -18,19 +18,19 @@ const SESSION: TripSessionRecord = {
   originName: 'La Gangosa',
   destinationName: 'Almería Estación',
   departTime: '2026-09-21T14:05:00.000Z',
-  arriveTime: '2026-09-21T14:40:00.000Z'
+  arriveTime: '2026-09-21T14:40:00.000Z',
 };
 
 const STOPS: readonly (GeoCoordinate & { stopId: string })[] = [
   { stopId: 'par-001', latitude: 36.9, longitude: -2.0 },
   { stopId: 'par-050', latitude: 37.0, longitude: -2.1 },
-  { stopId: 'par-999', latitude: 37.1, longitude: -2.2 }
+  { stopId: 'par-999', latitude: 37.1, longitude: -2.2 },
 ];
 
 const POLYLINE: readonly GeoCoordinate[] = [
   { latitude: 36.9, longitude: -2.0 },
   { latitude: 37.0, longitude: -2.1 },
-  { latitude: 37.1, longitude: -2.2 }
+  { latitude: 37.1, longitude: -2.2 },
 ];
 
 class GeolocationServiceStub {
@@ -42,7 +42,7 @@ class GeolocationServiceStub {
   watchPosition(
     onPosition: (position: GeolocationPosition) => void,
     onError?: (error: GeolocationPositionError) => void,
-    options?: PositionOptions
+    options?: PositionOptions,
   ): () => void {
     this.positionHandler = onPosition;
     this.errorHandler = onError ?? null;
@@ -61,9 +61,9 @@ class GeolocationServiceStub {
         altitude: null,
         altitudeAccuracy: null,
         heading: null,
-        speed: null
+        speed: null,
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     } as GeolocationPosition);
   }
 }
@@ -75,7 +75,7 @@ describe('LiveTripService', () => {
     gps = new GeolocationServiceStub();
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
-      providers: [{ provide: GeolocationService, useValue: gps }]
+      providers: [{ provide: GeolocationService, useValue: gps }],
     });
     return TestBed.inject(LiveTripService);
   }
@@ -94,7 +94,7 @@ describe('LiveTripService', () => {
     expect(state.progress).toBeNull();
   });
 
-  it('tracks progress between stops with an ETA derived from the schedule', () => {
+  it('tracks progress between stops with an ETA anchored to the GPS position', () => {
     spyOn(Date, 'now').and.callFake(() => NOW.getTime());
     const service = configure();
     service.startTracking(SESSION, STOPS, POLYLINE);
@@ -102,13 +102,33 @@ describe('LiveTripService', () => {
     gps.emit(37.0, -2.1003);
 
     const state = service.state();
+    const planSpanMs =
+      new Date(SESSION.arriveTime).getTime() - new Date(SESSION.departTime).getTime();
     expect(state.status).toBe('tracking');
     expect(state.progress?.fraction).toBeGreaterThan(0.45);
     expect(state.progress?.fraction).toBeLessThan(0.55);
     expect(state.progress?.nextStop?.stopId).toBe('par-999');
-    expect(state.etaMs).toBe(new Date(SESSION.arriveTime).getTime() - NOW.getTime());
+    // The countdown follows the projected position, not the raw timetable: about half
+    // of the planned span remains when the fix sits halfway along the polyline.
+    expect(state.planSpanMs).toBe(planSpanMs);
+    expect(state.progressAt).toBe(NOW.getTime());
+    expect(state.etaMs).toBeGreaterThan(0.4 * planSpanMs);
+    expect(state.etaMs).toBeLessThan(0.6 * planSpanMs);
     expect(state.accuracyMeters).toBe(12);
     service.stopTracking();
+  });
+
+  it('completes the trip when a fix lands within the arrival radius of the destination', () => {
+    const service = configure();
+    service.startTracking(SESSION, STOPS, POLYLINE);
+
+    gps.emit(37.10005, -2.20005);
+
+    const state = service.state();
+    expect(state.status).toBe('completed');
+    expect(state.progress?.completed).toBeTrue();
+    expect(state.etaMs).toBe(0);
+    expect(window.localStorage.getItem(TRIP_SESSION_STORAGE_KEY)).toBeNull();
   });
 
   it('marks the trip completed at the destination and clears the stored session', () => {
@@ -140,7 +160,7 @@ describe('LiveTripService', () => {
     const tickingSession: TripSessionRecord = {
       ...SESSION,
       departTime: virtualStart.toISOString(),
-      arriveTime: new Date(virtualStart.getTime() + 30 * 60_000).toISOString()
+      arriveTime: new Date(virtualStart.getTime() + 30 * 60_000).toISOString(),
     };
     service.startTracking(tickingSession, STOPS, POLYLINE);
     const initial = service.state().etaMs;

@@ -10,19 +10,26 @@ import {
   effect,
   inject,
   signal,
-  viewChild
+  viewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { catchError, of } from 'rxjs';
 import { AppConfig } from '@core/config';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
-import { LineRouteWorkspaceService } from '@domain/lines/line-route-workspace.service';
+import {
+  LineRouteWorkspaceService,
+  LineRouteWorkspaceStop,
+} from '@domain/lines/line-route-workspace.service';
 import { LiveTripService, LiveTripState } from '@domain/trip/live-trip.service';
+import { estimateEtaMs } from '@domain/trip/trip-progress.util';
 import { TripSessionRecord, TripSessionStorage } from '@domain/trip/trip-session.storage';
 import { buildCountdownDuration } from '@domain/utils/countdown-labels.util';
+import { GeoCoordinate } from '@domain/utils/geo-distance.util';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
+import { RouteMapComponent } from '@shared/map/route-map/route-map.component';
+import { buildStopDetailNavigation } from '@shared/navigation/navigation.util';
 
 const RECENTER_SCROLL_PX = 140;
 
@@ -36,28 +43,66 @@ const TRIP_KEYS = {
   recenter: 'trip.recenter',
   nextStopAnnouncement: 'trip.announcementNextStop',
   passedAnnouncement: 'trip.announcementPassed',
-  backLabel: 'trip.backLabel'
+  backLabel: 'trip.backLabel',
+  viewToggle: 'trip.viewToggle',
+  viewList: 'trip.viewList',
+  viewMap: 'trip.viewMap',
+  mapLabel: 'trip.mapLabel',
+  groupStops: 'trip.groupStops',
+  stopNumber: 'trip.stopNumber',
+  stopEta: 'trip.stopEta',
+  stopPassed: 'trip.stopPassed',
+  stopCurrent: 'trip.stopCurrent',
+  stopInfoClose: 'trip.stopInfoClose',
+  viewStop: 'trip.viewStop',
 } as const;
+
+type TripViewMode = 'list' | 'map';
 
 interface TripStopView {
   readonly stopId: string;
   readonly name: string;
+  readonly nucleusName: string | null;
+  readonly nucleusOrdinal: number | null;
   readonly estimatedTime: Date;
+  readonly projectedTime: Date;
+  readonly etaMs: number;
+  readonly countdownText: string | null;
   readonly segmentFill: number;
   readonly state: 'passed' | 'current' | 'next' | 'pending';
+  readonly isLast: boolean;
+}
+
+interface TripStopGroupView {
+  readonly key: string;
+  readonly nucleusName: string | null;
+  readonly stops: readonly TripStopView[];
+}
+
+interface TripStopMeta {
+  readonly name: string;
+  readonly nucleusName: string | null;
+  readonly nucleusOrdinal: number | null;
 }
 
 /**
- * Full-screen live trip experience: the complete direction timeline, schedule-based ETA,
- * progressive fill driven by GPS position and a sticky destination + ETA header.
+ * Full-screen live trip experience: the direction timeline grouped by nucleus, GPS-anchored
+ * arrival countdowns, per-stop info popovers and a live map mode with the route, the user
+ * position and the upcoming stop highlighted.
  */
 @Component({
   selector: 'app-trip',
   standalone: true,
-  imports: [CommonModule, TranslateModule, AccessibleButtonDirective, AppLayoutContentDirective],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    AccessibleButtonDirective,
+    AppLayoutContentDirective,
+    RouteMapComponent,
+  ],
   templateUrl: './trip.component.html',
   styleUrls: ['./trip.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TripComponent implements OnInit, OnDestroy {
   private readonly liveTrip = inject(LiveTripService);
@@ -71,19 +116,74 @@ export class TripComponent implements OnInit, OnDestroy {
   protected readonly layoutNavigationKey = this.config.routes.trip;
   protected readonly state = this.liveTrip.state;
   protected readonly stopsView = signal<readonly TripStopView[]>([]);
+  protected readonly stopGroups = signal<readonly TripStopGroupView[]>([]);
   protected readonly announcement = signal('');
   protected readonly autoScrollActive = signal(true);
-  protected readonly travelComplete = computed(() => this.state().status === 'completed');
+  protected readonly viewMode = signal<TripViewMode>('list');
+  protected readonly selectedStopId = signal<string | null>(null);
+  protected readonly mapStops = signal<readonly LineRouteWorkspaceStop[]>([]);
+  protected readonly mapCoordinates = signal<readonly GeoCoordinate[]>([]);
+
+  protected readonly travelComplete = computed(() => {
+    const state = this.state();
+    return (
+      state.status === 'completed' ||
+      (state.status === 'tracking' && state.progress !== null && state.etaMs <= 0)
+    );
+  });
+
   protected readonly etaLabel = computed(() => {
     const seconds = Math.ceil(this.state().etaMs / 1000);
     const duration = buildCountdownDuration(seconds);
     return this.translate.instant(`countdown.${duration.unit}`, { value: duration.value });
   });
 
+  protected readonly nextStopId = computed(() => this.state().progress?.nextStop?.stopId ?? null);
+
+  /** Stop info shown in the list popover: only after an explicit tap. */
+  protected readonly selectedStopInfo = computed(() => {
+    const stopId = this.selectedStopId();
+    return stopId === null
+      ? null
+      : (this.stopsView().find((stop) => stop.stopId === stopId) ?? null);
+  });
+
+  /** Stop highlighted on the map: manual pick first, otherwise it follows the next stop. */
+  protected readonly mapActiveStopId = computed(() => this.selectedStopId() ?? this.nextStopId());
+
+  /** Next-stop popovers can be dismissed until the upcoming stop changes again. */
+  private readonly mapAutoDismissedFor = signal<string | null>(null);
+
+  protected readonly mapStopInfo = computed(() => {
+    const manual = this.selectedStopId();
+    const stops = this.stopsView();
+
+    if (manual !== null) {
+      return stops.find((stop) => stop.stopId === manual) ?? null;
+    }
+
+    const next = this.nextStopId();
+
+    if (next === null || this.mapAutoDismissedFor() === next) {
+      return null;
+    }
+
+    return stops.find((stop) => stop.stopId === next) ?? null;
+  });
+
+  protected readonly mapOriginIds = computed(() =>
+    this.session ? [this.session.originStopId] : [],
+  );
+  protected readonly mapDestinationIds = computed(() =>
+    this.session ? [this.session.destinationStopId] : [],
+  );
+
   private readonly timelineRef = viewChild<ElementRef<HTMLOListElement>>('timeline');
+  private readonly routeMapRef = viewChild<RouteMapComponent>('routeMap');
   private session: TripSessionRecord | null = null;
   private lastAnnouncedStopId: string | null = null;
-  private stopNames: readonly string[] = [];
+  private arrivalAnnounced = false;
+  private stopsMeta: readonly TripStopMeta[] = [];
 
   constructor() {
     effect(() => {
@@ -109,8 +209,8 @@ export class TripComponent implements OnInit, OnDestroy {
         direction: session.direction,
         segment: {
           originStopIds: [session.originStopId],
-          destinationStopIds: [session.destinationStopId]
-        }
+          destinationStopIds: [session.destinationStopId],
+        },
       })
       .pipe(catchError(() => of(null)))
       .subscribe((view) => {
@@ -123,13 +223,19 @@ export class TripComponent implements OnInit, OnDestroy {
         const geoStops = view.stops.map((stop) => ({
           stopId: stop.stopId,
           latitude: stop.latitude,
-          longitude: stop.longitude
+          longitude: stop.longitude,
         }));
-        this.stopNames = view.stops.map((stop) => stop.name);
+        this.stopsMeta = view.stops.map((stop) => ({
+          name: stop.name,
+          nucleusName: stop.nucleusName ?? null,
+          nucleusOrdinal: stop.nucleusOrdinal ?? null,
+        }));
+        this.mapStops.set(view.stops);
         const coordinates = view.coordinates.map((point) => ({
           latitude: point.latitude,
-          longitude: point.longitude
+          longitude: point.longitude,
         }));
+        this.mapCoordinates.set(coordinates);
 
         this.liveTrip.startTracking(this.session, geoStops, coordinates);
         this.scrollToCurrentStop();
@@ -142,6 +248,10 @@ export class TripComponent implements OnInit, OnDestroy {
 
   @HostListener('window:scroll')
   protected onUserScroll(): void {
+    if (this.viewMode() !== 'list') {
+      return;
+    }
+
     const timeline = this.timelineRef()?.nativeElement;
 
     if (!timeline) {
@@ -155,19 +265,79 @@ export class TripComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const anchorDistance = Math.abs(
-      anchor.getBoundingClientRect().top - window.innerHeight / 2
-    );
+    const anchorDistance = Math.abs(anchor.getBoundingClientRect().top - window.innerHeight / 2);
     this.autoScrollActive.set(anchorDistance <= RECENTER_SCROLL_PX);
+  }
+
+  protected trackGroup(_index: number, group: TripStopGroupView): string {
+    return group.key;
   }
 
   protected trackStop(_index: number, stop: TripStopView): string {
     return stop.stopId;
   }
 
+  protected setViewMode(mode: TripViewMode): void {
+    if (this.viewMode() === mode) {
+      return;
+    }
+
+    this.viewMode.set(mode);
+
+    if (mode === 'list') {
+      this.autoScrollActive.set(true);
+      queueMicrotask(() => this.scrollToCurrentStop());
+    }
+  }
+
   protected recenter(): void {
+    if (this.viewMode() === 'map') {
+      const map = this.routeMapRef();
+      const activeStopId = this.mapActiveStopId();
+
+      if (map && !map.centerOnUser() && activeStopId) {
+        map.centerStop(activeStopId);
+      }
+      return;
+    }
+
     this.autoScrollActive.set(true);
     this.scrollToCurrentStop();
+  }
+
+  protected toggleStopInfo(stopId: string): void {
+    this.selectedStopId.update((current) => (current === stopId ? null : stopId));
+  }
+
+  protected closeStopInfo(): void {
+    if (this.viewMode() === 'map' && this.selectedStopId() === null) {
+      this.mapAutoDismissedFor.set(this.nextStopId());
+    }
+
+    this.selectedStopId.set(null);
+  }
+
+  protected onMapStopSelected(stopId: string): void {
+    this.selectedStopId.set(stopId);
+  }
+
+  protected infoEtaLabel(info: TripStopView): string {
+    const duration = buildCountdownDuration(Math.ceil(info.etaMs / 1000));
+    return this.translate.instant(`countdown.${duration.unit}`, { value: duration.value });
+  }
+
+  protected openStopDetail(stopId: string): void {
+    if (!this.session) {
+      return;
+    }
+
+    const navigation = buildStopDetailNavigation(this.session.consortiumId, stopId);
+
+    if (navigation.commands.length === 0) {
+      return;
+    }
+
+    void this.router.navigate(navigation.commands, { queryParams: navigation.queryParams });
   }
 
   protected endTracking(): void {
@@ -180,14 +350,15 @@ export class TripComponent implements OnInit, OnDestroy {
   }
 
   private renderStops(state: LiveTripState): void {
-    if (!this.session || state.stopTimes.length === 0 || this.stopNames.length === 0) {
+    if (!this.session || state.stopTimes.length === 0 || this.stopsMeta.length === 0) {
       return;
     }
 
     const fraction = state.progress?.fraction ?? 0;
     const currentIndex = state.progress?.currentStopIndex ?? -1;
     const nextIndex = state.progress?.nextStopIndex ?? 0;
-    const completed = state.status === 'completed';
+    const completed = this.travelComplete();
+    const now = Date.now();
 
     const total = state.stopTimes.length;
 
@@ -211,20 +382,55 @@ export class TripComponent implements OnInit, OnDestroy {
         stopState = 'pending';
       }
 
+      const reached = stopState === 'passed' || stopState === 'current';
+      const etaMs = reached ? 0 : this.stopEtaMs(timing.fraction, timing.estimatedTime, state, now);
+      const countdownText = reached ? null : buildCountdownDuration(Math.ceil(etaMs / 1000)).text;
+      const meta = this.stopsMeta[index];
+
       return {
         stopId: timing.stopId,
-        name: this.stopNames[index] ?? timing.stopId,
+        name: meta?.name ?? timing.stopId,
+        nucleusName: meta?.nucleusName ?? null,
+        nucleusOrdinal: meta?.nucleusOrdinal ?? null,
         estimatedTime: timing.estimatedTime,
+        projectedTime: reached ? timing.estimatedTime : new Date(now + etaMs),
+        etaMs,
+        countdownText,
         segmentFill,
-        state: stopState
+        state: stopState,
+        isLast: index === total - 1,
       };
     });
 
     this.stopsView.set(views);
+    this.stopGroups.set(buildStopGroups(views));
 
-    if (this.autoScrollActive()) {
+    if (this.autoScrollActive() && this.viewMode() === 'list') {
       this.scrollToCurrentStop();
     }
+  }
+
+  /**
+   * GPS-anchored countdown for a stop: plan pace re-anchored to the latest fix, decaying
+   * between fixes. Before the first fix it falls back to the timetable estimate.
+   */
+  private stopEtaMs(
+    stopFraction: number,
+    estimatedTime: Date,
+    state: LiveTripState,
+    now: number,
+  ): number {
+    if (state.progress !== null && state.progressAt !== null) {
+      return estimateEtaMs(
+        stopFraction,
+        state.progress.fraction,
+        state.progressAt,
+        state.planSpanMs,
+        now,
+      );
+    }
+
+    return Math.max(0, estimatedTime.getTime() - now);
   }
 
   private announceProgress(state: LiveTripState): void {
@@ -232,10 +438,15 @@ export class TripComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (state.status === 'completed') {
-      this.announcement.set(
-        this.translate.instant(this.keys.completed, { destination: this.session.destinationName })
-      );
+    if (this.travelComplete()) {
+      if (!this.arrivalAnnounced) {
+        this.arrivalAnnounced = true;
+        this.announcement.set(
+          this.translate.instant(this.keys.completed, {
+            destination: this.session.destinationName,
+          }),
+        );
+      }
       return;
     }
 
@@ -246,12 +457,12 @@ export class TripComponent implements OnInit, OnDestroy {
     }
 
     if (this.lastAnnouncedStopId !== null) {
-      const name = this.stopNames[state.progress?.nextStopIndex ?? 0] ?? nextStop.stopId;
+      const name = this.stopsMeta[state.progress?.nextStopIndex ?? 0]?.name ?? nextStop.stopId;
       this.announcement.set(
         this.translate.instant(this.keys.nextStopAnnouncement, {
           stop: name,
-          time: this.etaLabel()
-        })
+          time: this.etaLabel(),
+        }),
       );
     }
 
@@ -266,10 +477,46 @@ export class TripComponent implements OnInit, OnDestroy {
     }
 
     const anchor =
-      (timeline.querySelector<HTMLElement>('.trip__stop--current') ??
-        timeline.querySelector<HTMLElement>('.trip__stop--next')) ??
-      timeline.firstElementChild as HTMLElement | null;
+      timeline.querySelector<HTMLElement>('.trip__stop--current') ??
+      timeline.querySelector<HTMLElement>('.trip__stop--next') ??
+      (timeline.firstElementChild as HTMLElement | null);
 
     anchor?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+}
+
+/** Groups consecutive stops sharing a nucleus so the town name renders only once. */
+function buildStopGroups(stops: readonly TripStopView[]): readonly TripStopGroupView[] {
+  const groups: TripStopGroupView[] = [];
+  let currentKey: string | null = null;
+  let currentName: string | null = null;
+  let bucket: TripStopView[] = [];
+
+  const flush = (): void => {
+    if (bucket.length === 0) {
+      return;
+    }
+
+    groups.push({
+      key: `${currentName ?? 'no-nucleus'}:${bucket[0].stopId}`,
+      nucleusName: currentName,
+      stops: bucket,
+    });
+    bucket = [];
+  };
+
+  for (const stop of stops) {
+    const name = stop.nucleusName;
+
+    if (currentKey === null || name !== currentName) {
+      flush();
+      currentName = name;
+      currentKey = name ?? 'no-nucleus';
+    }
+
+    bucket.push(stop);
+  }
+
+  flush();
+  return groups;
 }

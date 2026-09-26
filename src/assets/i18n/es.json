@@ -562,9 +562,20 @@
     "unavailable": "No se pudo obtener tu posición. Mostrando solo los horarios estimados.",
     "completed": "Has llegado a {destination}",
     "endTracking": "Finalizar seguimiento",
-    "recenter": "Centrar la línea temporal en la parada actual",
+    "recenter": "Centrar la vista en tu posición actual",
     "announcementNextStop": "Siguiente parada: {stop}. Llegada en {time}.",
     "announcementPassed": "Has pasado {stop}.",
-    "backLabel": "Volver"
+    "backLabel": "Volver",
+    "viewToggle": "Cambiar entre listado y mapa",
+    "viewList": "Ver listado de paradas",
+    "viewMap": "Ver mapa en tiempo real",
+    "mapLabel": "Mapa del trayecto en tiempo real",
+    "groupStops": "{count, plural, one {# parada} other {# paradas}}",
+    "stopNumber": "Parada {number}",
+    "stopEta": "Llegada en {time}",
+    "stopPassed": "Parada ya recorrida",
+    "stopCurrent": "Estás en esta parada",
+    "stopInfoClose": "Cerrar la información de la parada",
+    "viewStop": "Ver parada"
   }
 }

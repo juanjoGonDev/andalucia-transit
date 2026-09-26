@@ -1,21 +1,24 @@
 import {
   RideCandidateStop,
   RideLineDirectionCandidate,
+  RideLineProposal,
   filterStopsWithinMeters,
-  rankRideCandidates
+  rankRideCandidates,
+  rideProposalMatchesOpenSchedule,
 } from './ride-candidates.util';
 
 const USER = { latitude: 36.719472, longitude: -4.363551 }; // Almería-ish corridor
 function shifted(
   from: { latitude: number; longitude: number },
   bearingDeg: number,
-  meters: number
+  meters: number,
 ): { latitude: number; longitude: number } {
   const radians = (bearingDeg * Math.PI) / 180;
   const factor = meters / 111_320;
   return {
     latitude: from.latitude + Math.cos(radians) * factor,
-    longitude: from.longitude + (Math.sin(radians) * factor) / Math.cos((from.latitude * Math.PI) / 180)
+    longitude:
+      from.longitude + (Math.sin(radians) * factor) / Math.cos((from.latitude * Math.PI) / 180),
   };
 }
 
@@ -24,7 +27,7 @@ const STOP_A: RideCandidateStop = {
   stopId: '10',
   stopName: 'Almería - Pescadería',
   location: shifted(USER, 90, 120),
-  distanceMeters: 0
+  distanceMeters: 0,
 };
 
 const STOP_B: RideCandidateStop = {
@@ -32,7 +35,7 @@ const STOP_B: RideCandidateStop = {
   stopId: '20',
   stopName: 'El Parador',
   location: shifted(USER, 90, 350),
-  distanceMeters: 0
+  distanceMeters: 0,
 };
 
 describe('ride-candidates.util', () => {
@@ -45,22 +48,18 @@ describe('ride-candidates.util', () => {
         lineCode: 'M-370',
         direction: 1,
         destinationName: 'Este',
-        upcomingStops: eastLeg
+        upcomingStops: eastLeg,
       },
       {
         lineId: 'line-w',
         lineCode: 'M-380',
         direction: 0,
         destinationName: 'Oeste',
-        upcomingStops: westLeg
-      }
+        upcomingStops: westLeg,
+      },
     ];
 
-    const proposals = rankRideCandidates(
-      [STOP_A],
-      { '3:10': directions },
-      90 /* heading east */
-    );
+    const proposals = rankRideCandidates([STOP_A], { '3:10': directions }, 90 /* heading east */);
 
     expect(proposals.length).toBe(1);
     expect(proposals[0]?.lineId).toBe('line-e');
@@ -76,8 +75,8 @@ describe('ride-candidates.util', () => {
           lineCode: 'M-370',
           direction: 1,
           destinationName: 'Este',
-          upcomingStops: eastLegA
-        }
+          upcomingStops: eastLegA,
+        },
       ],
       '3:20': [
         {
@@ -85,9 +84,9 @@ describe('ride-candidates.util', () => {
           lineCode: 'M-370',
           direction: 1,
           destinationName: 'Este',
-          upcomingStops: eastLegB
-        }
-      ]
+          upcomingStops: eastLegB,
+        },
+      ],
     };
 
     const proposals = rankRideCandidates([STOP_A, STOP_B], spec, 90);
@@ -103,8 +102,8 @@ describe('ride-candidates.util', () => {
         lineCode: 'M-301',
         direction: 1,
         destinationName: 'Final',
-        upcomingStops: []
-      }
+        upcomingStops: [],
+      },
     ];
 
     const proposals = rankRideCandidates([STOP_A], { '3:10': directions }, 90);
@@ -118,7 +117,7 @@ describe('ride-candidates.util', () => {
       lineCode: `M-3${index}0`,
       direction: 1,
       destinationName: `Final ${index}`,
-      upcomingStops: []
+      upcomingStops: [],
     }));
 
     const proposals = rankRideCandidates([STOP_A], { '3:10': directions }, 90);
@@ -135,5 +134,45 @@ describe('ride-candidates.util', () => {
     expect(filtered.length).toBe(1);
     expect(filtered[0]?.stopId).toBe('near');
     expect(filtered[0]?.distanceMeters).toBeGreaterThan(0);
+  });
+
+  describe('rideProposalMatchesOpenSchedule', () => {
+    const proposal: RideLineProposal = {
+      consortiumId: 3,
+      lineId: 'line-e',
+      lineCode: 'M-370',
+      direction: 1,
+      destinationName: 'Este',
+      matches: 2,
+      closestStopMeters: 50,
+      directionAgrees: true,
+      score: 0.8,
+      stopIds: ['10', '11'],
+    };
+
+    it('matches when the open view lists the proposal line', () => {
+      expect(
+        rideProposalMatchesOpenSchedule(proposal, { consortiumId: 3, lineIds: ['line-e'] }),
+      ).toBeTrue();
+    });
+
+    it('matches when the open view shows one of the proposal stops', () => {
+      expect(
+        rideProposalMatchesOpenSchedule(proposal, { consortiumId: null, stopIds: ['11'] }),
+      ).toBeTrue();
+    });
+
+    it('rejects contexts from another consortium or unrelated content', () => {
+      expect(
+        rideProposalMatchesOpenSchedule(proposal, { consortiumId: 5, lineIds: ['line-e'] }),
+      ).toBeFalse();
+      expect(
+        rideProposalMatchesOpenSchedule(proposal, {
+          consortiumId: 3,
+          lineIds: ['line-x'],
+          stopIds: ['99'],
+        }),
+      ).toBeFalse();
+    });
   });
 });

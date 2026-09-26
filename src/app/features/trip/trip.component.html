@@ -7,85 +7,245 @@
 >
   <div class="utility-container">
     <div class="app-layout__body">
-  <header class="trip__header">
-    <button
-      type="button"
-      class="trip__back"
-      [attr.aria-label]="keys.backLabel | translate"
-      (click)="goBack()"
-      appAccessibleButton
-    >
-      <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
-    </button>
-    <h1 class="trip__title">
-      {{ keys.headline | translate: { lineCode: state.session?.lineCode, destination: state.session?.destinationName } }}
-    </h1>
-  </header>
+      <header class="trip__header">
+        <button
+          type="button"
+          class="trip__back"
+          [attr.aria-label]="keys.backLabel | translate"
+          (click)="goBack()"
+          appAccessibleButton
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+        </button>
+        <h1 class="trip__title">
+          {{
+            keys.headline
+              | translate
+                : { lineCode: state.session?.lineCode, destination: state.session?.destinationName }
+          }}
+        </h1>
+        <div class="trip__view-toggle" role="group" [attr.aria-label]="keys.viewToggle | translate">
+          <button
+            type="button"
+            class="trip__view-button"
+            [class.trip__view-button--active]="viewMode() === 'list'"
+            [attr.aria-pressed]="viewMode() === 'list'"
+            [attr.aria-label]="keys.viewList | translate"
+            (click)="setViewMode('list')"
+            appAccessibleButton
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">format_list_bulleted</span>
+          </button>
+          <button
+            type="button"
+            class="trip__view-button"
+            [class.trip__view-button--active]="viewMode() === 'map'"
+            [attr.aria-pressed]="viewMode() === 'map'"
+            [attr.aria-label]="keys.viewMap | translate"
+            (click)="setViewMode('map')"
+            appAccessibleButton
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">map</span>
+          </button>
+        </div>
+      </header>
 
-  <div class="trip__sticky" [class.trip__sticky--complete]="travelComplete()">
-    <span class="material-symbols-outlined" aria-hidden="true">flag</span>
-    <div class="trip__sticky-text">
-      <span class="trip__sticky-destination">{{ state.session?.destinationName }}</span>
-      <span *ngIf="!travelComplete()" class="trip__sticky-eta">
-        {{ keys.eta | translate: { time: etaLabel() } }}
-      </span>
-      <span *ngIf="travelComplete()" class="trip__sticky-eta">
-        {{ keys.completed | translate: { destination: state.session?.destinationName } }}
-      </span>
-    </div>
-  </div>
-
-  <p *ngIf="state.status === 'locating'" class="trip__notice" role="status">
-    <span class="material-symbols-outlined" aria-hidden="true">satellite_alt</span>
-    {{ keys.locating | translate }}
-  </p>
-
-  <p *ngIf="state.status === 'unavailable'" class="trip__notice trip__notice--warning" role="status">
-    <span class="material-symbols-outlined" aria-hidden="true">location_off</span>
-    {{ keys.unavailable | translate }}
-  </p>
-
-  <ol class="trip__timeline" #timeline>
-    <li
-      *ngFor="let stop of stopsView(); trackBy: trackStop; let last = last"
-      class="trip__stop"
-      [class.trip__stop--passed]="stop.state === 'passed'"
-      [class.trip__stop--current]="stop.state === 'current'"
-      [class.trip__stop--next]="stop.state === 'next'"
-      [class.trip__stop--pending]="stop.state === 'pending'"
-    >
-      <div class="trip__rail" aria-hidden="true">
-        <span class="trip__node"></span>
-        <span *ngIf="!last" class="trip__segment">
-          <span class="trip__segment-fill" [style.height.%]="stop.segmentFill * 100"></span>
-        </span>
+      <div class="trip__sticky" [class.trip__sticky--complete]="travelComplete()">
+        <span class="material-symbols-outlined" aria-hidden="true">{{
+          travelComplete() ? 'celebration' : 'flag'
+        }}</span>
+        <div class="trip__sticky-text">
+          <span class="trip__sticky-destination">{{ state.session?.destinationName }}</span>
+          <span *ngIf="!travelComplete()" class="trip__sticky-eta">
+            {{ keys.eta | translate: { time: etaLabel() } }}
+          </span>
+          <span *ngIf="travelComplete()" class="trip__sticky-eta">
+            {{ keys.completed | translate: { destination: state.session?.destinationName } }}
+          </span>
+        </div>
+        <button
+          type="button"
+          class="trip__recenter"
+          [attr.aria-label]="keys.recenter | translate"
+          (click)="recenter()"
+          appAccessibleButton
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">my_location</span>
+        </button>
       </div>
-      <div class="trip__stop-content">
-        <span class="trip__stop-name">{{ stop.name }}</span>
-        <time class="trip__stop-time" [attr.datetime]="stop.estimatedTime | date: 'HH:mm'">
-          {{ stop.estimatedTime | date: 'HH:mm' }}
-        </time>
+
+      <p *ngIf="state.status === 'locating'" class="trip__notice" role="status">
+        <span class="material-symbols-outlined" aria-hidden="true">satellite_alt</span>
+        {{ keys.locating | translate }}
+      </p>
+
+      <p
+        *ngIf="state.status === 'unavailable'"
+        class="trip__notice trip__notice--warning"
+        role="status"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">location_off</span>
+        {{ keys.unavailable | translate }}
+      </p>
+
+      <ng-template #stopInfoCard let-info>
+        <div class="trip__info" role="region" [attr.aria-label]="info.name">
+          <div class="trip__info-header">
+            <div class="trip__info-identity">
+              <span class="trip__info-name">{{ info.name }}</span>
+              <span *ngIf="info.nucleusName" class="trip__info-meta">
+                {{ info.nucleusName }}
+                <ng-container *ngIf="info.nucleusOrdinal !== null">
+                  · {{ keys.stopNumber | translate: { number: info.nucleusOrdinal } }}
+                </ng-container>
+              </span>
+            </div>
+            <button
+              type="button"
+              class="trip__info-close"
+              [attr.aria-label]="keys.stopInfoClose | translate"
+              (click)="closeStopInfo()"
+              appAccessibleButton
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">close</span>
+            </button>
+          </div>
+          <div class="trip__info-body">
+            <span class="trip__info-eta" [ngSwitch]="info.state">
+              <ng-container *ngSwitchCase="'passed'">{{
+                keys.stopPassed | translate
+              }}</ng-container>
+              <ng-container *ngSwitchCase="'current'">{{
+                keys.stopCurrent | translate
+              }}</ng-container>
+              <ng-container *ngSwitchDefault>
+                {{ keys.stopEta | translate: { time: infoEtaLabel(info) } }}
+              </ng-container>
+            </span>
+            <time class="trip__info-time" [attr.datetime]="info.projectedTime | date: 'HH:mm'">
+              {{ info.projectedTime | date: 'HH:mm' }}
+            </time>
+          </div>
+          <button
+            type="button"
+            class="trip__info-link"
+            (click)="openStopDetail(info.stopId)"
+            appAccessibleButton
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">info</span>
+            {{ keys.viewStop | translate }}
+          </button>
+        </div>
+      </ng-template>
+
+      <ng-container *ngIf="viewMode() === 'list'">
+        <div *ngIf="selectedStopInfo() as info" class="trip__info-panel">
+          <ng-container
+            *ngTemplateOutlet="stopInfoCard; context: { $implicit: info }"
+          ></ng-container>
+        </div>
+
+        <ol class="trip__timeline" #timeline>
+          <li
+            *ngFor="let group of stopGroups(); trackBy: trackGroup"
+            class="trip__group"
+            [class.trip__group--named]="group.nucleusName && group.stops.length > 1"
+          >
+            <div *ngIf="group.nucleusName && group.stops.length > 1" class="trip__group-header">
+              <span class="trip__group-name">{{ group.nucleusName }}</span>
+              <span class="trip__group-count">{{
+                keys.groupStops | translate: { count: group.stops.length }
+              }}</span>
+            </div>
+            <ol class="trip__group-stops">
+              <li
+                *ngFor="let stop of group.stops; trackBy: trackStop"
+                class="trip__stop"
+                [class.trip__stop--passed]="stop.state === 'passed'"
+                [class.trip__stop--current]="stop.state === 'current'"
+                [class.trip__stop--next]="stop.state === 'next'"
+                [class.trip__stop--pending]="stop.state === 'pending'"
+                [class.trip__stop--selected]="selectedStopId() === stop.stopId"
+              >
+                <div class="trip__rail" aria-hidden="true">
+                  <span class="trip__node"></span>
+                  <span *ngIf="!stop.isLast" class="trip__segment">
+                    <span
+                      class="trip__segment-fill"
+                      [style.height.%]="stop.segmentFill * 100"
+                    ></span>
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  class="trip__stop-content"
+                  [attr.aria-expanded]="selectedStopId() === stop.stopId"
+                  (click)="toggleStopInfo(stop.stopId)"
+                  appAccessibleButton
+                >
+                  <span class="trip__stop-main">
+                    <span
+                      *ngIf="group.stops.length > 1 && stop.nucleusOrdinal !== null"
+                      class="trip__stop-ordinal"
+                      aria-hidden="true"
+                      >{{ stop.nucleusOrdinal }}</span
+                    >
+                    <span class="trip__stop-name">{{ stop.name }}</span>
+                  </span>
+                  <span class="trip__stop-timing">
+                    <span
+                      *ngIf="stop.state === 'passed'"
+                      class="material-symbols-outlined trip__stop-check"
+                      aria-hidden="true"
+                      >check</span
+                    >
+                    <span
+                      *ngIf="stop.state === 'current'"
+                      class="material-symbols-outlined trip__stop-here"
+                      aria-hidden="true"
+                      >near_me</span
+                    >
+                    <span *ngIf="stop.countdownText" class="trip__stop-countdown">{{
+                      stop.countdownText
+                    }}</span>
+                  </span>
+                </button>
+              </li>
+            </ol>
+          </li>
+        </ol>
+      </ng-container>
+
+      <div *ngIf="viewMode() === 'map'" class="trip__map">
+        <app-route-map
+          #routeMap
+          class="trip__map-canvas"
+          routeId="live-trip"
+          [coordinates]="mapCoordinates()"
+          [stops]="mapStops()"
+          [originStopIds]="mapOriginIds()"
+          [destinationStopIds]="mapDestinationIds()"
+          [selectedStopId]="mapActiveStopId()"
+          [userPosition]="state.userPosition"
+          [accessibleLabel]="keys.mapLabel | translate"
+          [stopDetailsLabel]="keys.viewStop | translate"
+          (stopSelected)="onMapStopSelected($event)"
+          (stopDetails)="openStopDetail($event)"
+        ></app-route-map>
+        <div *ngIf="mapStopInfo() as info" class="trip__map-info">
+          <ng-container
+            *ngTemplateOutlet="stopInfoCard; context: { $implicit: info }"
+          ></ng-container>
+        </div>
       </div>
-    </li>
-  </ol>
 
-  <footer class="trip__footer">
-    <button type="button" class="trip__end" (click)="endTracking()" appAccessibleButton>
-      {{ keys.endTracking | translate }}
-    </button>
-  </footer>
+      <footer class="trip__footer">
+        <button type="button" class="trip__end" (click)="endTracking()" appAccessibleButton>
+          {{ keys.endTracking | translate }}
+        </button>
+      </footer>
 
-  <button
-    *ngIf="!autoScrollActive()"
-    type="button"
-    class="trip__recenter"
-    [attr.aria-label]="keys.recenter | translate"
-    (click)="recenter()"
-  >
-    <span class="material-symbols-outlined" aria-hidden="true">my_location</span>
-  </button>
-
-  <p class="app-visually-hidden" aria-live="polite">{{ announcement() }}</p>
+      <p class="app-visually-hidden" aria-live="polite">{{ announcement() }}</p>
     </div>
   </div>
 </section>

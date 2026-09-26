@@ -17,7 +17,7 @@ const sampleProposal: RideLineProposal = {
   closestStopMeters: 90,
   directionAgrees: true,
   score: 0.9,
-  stopIds: ['10', '11']
+  stopIds: ['10', '11'],
 };
 
 class RideDetectionStub {
@@ -29,6 +29,7 @@ class RideDetectionStub {
 
   readonly phase = this.phaseSignal.asReadonly();
   readonly proposals = this.proposalsSignal.asReadonly();
+  readonly visibleProposals = this.proposalsSignal.asReadonly();
 
   readonly accept = jasmine.createSpy('accept');
   readonly dismiss = jasmine.createSpy('dismiss');
@@ -54,13 +55,13 @@ describe('RideProposalBubbleComponent', () => {
         RideProposalBubbleComponent,
         TranslateModule.forRoot({
           defaultLanguage: 'en',
-          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
-        })
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler },
+        }),
       ],
       providers: [
         { provide: RideDetectionService, useValue: detection },
-        { provide: Router, useValue: router }
-      ]
+        { provide: Router, useValue: router },
+      ],
     }).compileComponents();
 
     translate = TestBed.inject(TranslateService);
@@ -71,9 +72,9 @@ describe('RideProposalBubbleComponent', () => {
           title: 'On the move?',
           subtitle: 'Start tracking',
           dismiss: 'Dismiss suggestion',
-          lineLabel: 'Line {lineCode} · {destination}'
-        }
-      }
+          lineLabel: 'Line {lineCode} · {destination}',
+        },
+      },
     });
     translate.use('en');
 
@@ -103,7 +104,9 @@ describe('RideProposalBubbleComponent', () => {
     detection.setProposing([sampleProposal]);
     fixture.detectChanges();
 
-    const dismiss = fixture.nativeElement.querySelector('.ride-proposal__dismiss') as HTMLButtonElement;
+    const dismiss = fixture.nativeElement.querySelector(
+      '.ride-proposal__dismiss',
+    ) as HTMLButtonElement;
     dismiss.click();
 
     expect(detection.dismiss).toHaveBeenCalledTimes(1);
@@ -113,13 +116,15 @@ describe('RideProposalBubbleComponent', () => {
     detection.setProposing([sampleProposal]);
     fixture.detectChanges();
 
-    const candidate = fixture.nativeElement.querySelector('.ride-proposal__candidate') as HTMLButtonElement;
+    const candidate = fixture.nativeElement.querySelector(
+      '.ride-proposal__candidate',
+    ) as HTMLButtonElement;
     candidate.click();
 
     expect(detection.accept).toHaveBeenCalledTimes(1);
     expect(router.navigate).toHaveBeenCalledWith(
       jasmine.arrayContaining([jasmine.any(String)]),
-      jasmine.objectContaining({ queryParams: { consortiumId: '3' } })
+      jasmine.objectContaining({ queryParams: { consortiumId: '3' } }),
     );
   });
 });
