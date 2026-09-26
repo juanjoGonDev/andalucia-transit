@@ -35,7 +35,7 @@ export function buildPolylineLengths(polyline: readonly GeoCoordinate[]): readon
 
 export function projectPointOnPolyline(
   point: GeoCoordinate,
-  polyline: readonly GeoCoordinate[]
+  polyline: readonly GeoCoordinate[],
 ): { readonly fraction: number; readonly distanceMeters: number } {
   if (polyline.length === 0) {
     return { fraction: 0, distanceMeters: Number.POSITIVE_INFINITY };
@@ -67,9 +67,8 @@ export function projectPointOnPolyline(
             0,
             Math.min(
               1,
-              ((target.x - start.x) * segmentX + (target.y - start.y) * segmentY) /
-                segmentLengthSq
-            )
+              ((target.x - start.x) * segmentX + (target.y - start.y) * segmentY) / segmentLengthSq,
+            ),
           );
 
     const projectedX = start.x + t * segmentX;
@@ -96,7 +95,7 @@ export function buildTripStopTimes(
   stops: readonly TripStopGeoPoint[],
   polyline: readonly GeoCoordinate[],
   departTime: Date,
-  arriveTime: Date
+  arriveTime: Date,
 ): readonly TripStopTiming[] {
   const span = arriveTime.getTime() - departTime.getTime();
   let previousFraction = 0;
@@ -110,28 +109,57 @@ export function buildTripStopTimes(
     return {
       stopId: stop.stopId,
       fraction,
-      estimatedTime: new Date(departTime.getTime() + span * fraction)
+      estimatedTime: new Date(departTime.getTime() + span * fraction),
     };
   });
+}
+
+/**
+ * GPS-anchored countdown to a stop: takes the remaining plan time between the anchor
+ * fraction (last GPS projection) and the target stop fraction, then decays it with the
+ * wall-clock time elapsed since that fix so the value keeps ticking between GPS updates.
+ */
+export function estimateEtaMs(
+  targetFraction: number,
+  anchorFraction: number,
+  anchorAt: number,
+  planSpanMs: number,
+  now: number,
+): number {
+  const remainingAtAnchor = Math.max(0, targetFraction - anchorFraction) * planSpanMs;
+  const elapsedSinceAnchor = Math.max(0, now - anchorAt);
+  return Math.max(0, Math.round(remainingAtAnchor - elapsedSinceAnchor));
 }
 
 export function resolveTripProgress(
   point: GeoCoordinate,
   polyline: readonly GeoCoordinate[],
-  stopTimes: readonly TripStopTiming[]
+  stopTimes: readonly TripStopTiming[],
 ): TripProgressState {
   if (stopTimes.length === 0) {
-    return { fraction: 0, currentStopIndex: -1, nextStopIndex: -1, nextStop: null, completed: false };
+    return {
+      fraction: 0,
+      currentStopIndex: -1,
+      nextStopIndex: -1,
+      nextStop: null,
+      completed: false,
+    };
   }
 
   const { fraction } = projectPointOnPolyline(point, polyline);
 
   if (fraction <= STOP_EPSILON_FRACTION) {
-    return { fraction: 0, currentStopIndex: -1, nextStopIndex: 0, nextStop: stopTimes[0], completed: false };
+    return {
+      fraction: 0,
+      currentStopIndex: -1,
+      nextStopIndex: 0,
+      nextStop: stopTimes[0],
+      completed: false,
+    };
   }
 
   const nextStopIndex = stopTimes.findIndex(
-    (stop) => stop.fraction > fraction + STOP_EPSILON_FRACTION
+    (stop) => stop.fraction > fraction + STOP_EPSILON_FRACTION,
   );
 
   if (nextStopIndex === -1) {
@@ -140,7 +168,7 @@ export function resolveTripProgress(
       currentStopIndex: stopTimes.length - 1,
       nextStopIndex: -1,
       nextStop: null,
-      completed: true
+      completed: true,
     };
   }
 
@@ -149,14 +177,14 @@ export function resolveTripProgress(
     currentStopIndex: nextStopIndex - 1,
     nextStopIndex,
     nextStop: stopTimes[nextStopIndex],
-    completed: false
+    completed: false,
   };
 }
 
 function toMeters(point: GeoCoordinate, referenceLatitude: number): { x: number; y: number } {
   return {
     x: EARTH_RADIUS_METERS * toRadians(point.longitude) * Math.cos(referenceLatitude),
-    y: EARTH_RADIUS_METERS * toRadians(point.latitude)
+    y: EARTH_RADIUS_METERS * toRadians(point.latitude),
   };
 }
 

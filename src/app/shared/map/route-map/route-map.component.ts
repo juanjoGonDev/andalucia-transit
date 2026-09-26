@@ -10,25 +10,26 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
-  inject
+  inject,
 } from '@angular/core';
-import type { RouteLineCoordinate, RouteLineStop } from '@data/route-search/route-lines-api.service';
-import {
-  LeafletMapService,
-  MapHandle,
-  MapStopMarker
-} from '@shared/map/leaflet-map.service';
+import type {
+  RouteLineCoordinate,
+  RouteLineStop,
+} from '@data/route-search/route-lines-api.service';
+import { GeoCoordinate } from '@domain/utils/geo-distance.util';
+import { LeafletMapService, MapHandle, MapStopMarker } from '@shared/map/leaflet-map.service';
 import { MapStopMarkerRole } from '@shared/map/map-marker-style';
 
 const DEFAULT_CENTER = { latitude: 37.3891, longitude: -4.7794 } as const;
 const DEFAULT_ZOOM = 7;
+const USER_FOCUS_ZOOM = 16;
 
 @Component({
   selector: 'app-route-map',
   standalone: true,
   templateUrl: './route-map.component.html',
   styleUrl: './route-map.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('mapContainer', { static: true })
@@ -40,6 +41,7 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() originStopIds: readonly string[] = [];
   @Input() destinationStopIds: readonly string[] = [];
   @Input() selectedStopId: string | null = null;
+  @Input() userPosition: GeoCoordinate | null = null;
   @Input() accessibleLabel = 'Route map';
   @Input() stopDetailsLabel = 'More information';
 
@@ -52,6 +54,16 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   /** Smoothly pans the camera so the given stop is centered on the map. */
   centerStop(stopId: string): void {
     this.handle?.centerStop(stopId, true);
+  }
+
+  /** Flies to the live user position when one is being rendered. */
+  centerOnUser(): boolean {
+    if (!this.handle || !this.userPosition) {
+      return false;
+    }
+
+    this.handle.setView(this.userPosition, USER_FOCUS_ZOOM, true);
+    return true;
   }
   private lastDataSignature = '';
 
@@ -78,6 +90,10 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     if (changes['selectedStopId']) {
       this.handle.highlightStop(this.selectedStopId);
     }
+
+    if (changes['userPosition'] && this.userPosition) {
+      this.handle.renderUserLocation(this.userPosition);
+    }
   }
 
   ngOnDestroy(): void {
@@ -92,7 +108,7 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
     this.handle = this.maps.create(this.mapContainer.nativeElement, {
       center: this.resolveCenter(),
-      zoom: DEFAULT_ZOOM
+      zoom: DEFAULT_ZOOM,
     });
   }
 
@@ -107,7 +123,7 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       this.coordinates,
       this.stops,
       this.originStopIds,
-      this.destinationStopIds
+      this.destinationStopIds,
     );
     if (signature === this.lastDataSignature) {
       this.handle.highlightStop(this.selectedStopId);
@@ -116,19 +132,16 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.lastDataSignature = signature;
 
     const markers = this.stops.map((stop) =>
-      toMapStopMarker(stop, resolveMarkerRole(stop, this.originStopIds, this.destinationStopIds))
+      toMapStopMarker(stop, resolveMarkerRole(stop, this.originStopIds, this.destinationStopIds)),
     );
     this.handle.renderStops(markers, {
       getDetailsLabel: () => this.stopDetailsLabel,
       onSelect: (stopId) => this.stopSelected.emit(stopId),
-      onDetails: (stopId) => this.stopDetails.emit(stopId)
+      onDetails: (stopId) => this.stopDetails.emit(stopId),
     });
 
     if (this.coordinates.length >= 2) {
-      this.handle.renderRoutes(
-        [{ id: this.routeId, coordinates: this.coordinates }],
-        this.routeId
-      );
+      this.handle.renderRoutes([{ id: this.routeId, coordinates: this.coordinates }], this.routeId);
     } else {
       this.handle.renderRoutes([], null);
     }
@@ -137,6 +150,11 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       this.coordinates.length >= 2 ? this.coordinates : markers.map((marker) => marker.coordinate);
     this.handle.fitToCoordinates(fitPoints);
     this.handle.highlightStop(this.selectedStopId);
+
+    if (this.userPosition) {
+      this.handle.renderUserLocation(this.userPosition);
+    }
+
     queueMicrotask(() => this.handle?.invalidateSize());
   }
 
@@ -159,15 +177,15 @@ function toMapStopMarker(stop: RouteLineStop, role: MapStopMarkerRole): MapStopM
     role,
     coordinate: {
       latitude: stop.latitude,
-      longitude: stop.longitude
-    }
+      longitude: stop.longitude,
+    },
   };
 }
 
 function resolveMarkerRole(
   stop: RouteLineStop,
   originStopIds: readonly string[],
-  destinationStopIds: readonly string[]
+  destinationStopIds: readonly string[],
 ): MapStopMarkerRole {
   if (originStopIds.includes(stop.stopId)) {
     return 'origin';
@@ -185,7 +203,7 @@ function buildDataSignature(
   coordinates: readonly RouteLineCoordinate[],
   stops: readonly RouteLineStop[],
   originStopIds: readonly string[],
-  destinationStopIds: readonly string[]
+  destinationStopIds: readonly string[],
 ): string {
   const firstCoordinate = coordinates[0];
   const lastCoordinate = coordinates[coordinates.length - 1];
@@ -202,6 +220,6 @@ function buildDataSignature(
     firstStop?.stopId ?? '',
     lastStop?.stopId ?? '',
     originStopIds.join(','),
-    destinationStopIds.join(',')
+    destinationStopIds.join(','),
   ].join('|');
 }

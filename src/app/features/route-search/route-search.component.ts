@@ -10,8 +10,9 @@ import {
   ViewChild,
   ViewChildren,
   computed,
+  effect,
   inject,
-  signal
+  signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -19,19 +20,23 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DateTime } from 'luxon';
 import { Subject, catchError, distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
+import { RideDetectionService } from '@domain/ride-detection/ride-detection.service';
 import { PinnedDepartureService } from '@domain/route-search/pinned-departure.service';
 import { RouteSearchExecutionService } from '@domain/route-search/route-search-execution.service';
 import {
   RouteSearchDepartureView,
   RouteSearchResultsService,
-  RouteSearchResultsViewModel
+  RouteSearchResultsViewModel,
 } from '@domain/route-search/route-search-results.service';
 import { RouteSearchSelectionResolverService } from '@domain/route-search/route-search-selection-resolver.service';
-import { RouteSearchSelection, RouteSearchStateService } from '@domain/route-search/route-search-state.service';
+import {
+  RouteSearchSelection,
+  RouteSearchStateService,
+} from '@domain/route-search/route-search-state.service';
 import {
   buildDateSlug,
   buildStopSlug,
-  parseStopSlug
+  parseStopSlug,
 } from '@domain/route-search/route-search-url.util';
 import { StopAlarmsService } from '@domain/stop-alarms/stop-alarms.service';
 import { StopDirectoryFacade, StopDirectoryOption } from '@domain/stops/stop-directory.facade';
@@ -40,20 +45,24 @@ import { RouteSearchDepartureRoutePreviewComponent } from '@features/route-searc
 import { RouteSearchFormComponent } from '@features/route-search/route-search-form/route-search-form.component';
 import {
   StopAlarmDialogComponent,
-  StopAlarmDialogData
+  StopAlarmDialogData,
 } from '@features/stop-detail/stop-alarm-dialog/stop-alarm-dialog.component';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import { buildNavigationCommands } from '@shared/navigation/navigation.util';
-import { ConfirmDialogComponent, ConfirmDialogData } from '@shared/ui/confirm-dialog/confirm-dialog.component';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData,
+} from '@shared/ui/confirm-dialog/confirm-dialog.component';
 import { OverlayDialogService } from '@shared/ui/dialog/overlay-dialog.service';
 import { SectionComponent } from '@shared/ui/section/section.component';
 
 const BACK_ICON_NAME = 'arrow_back' as const;
+const RIDE_OPEN_SCHEDULE_KEY = 'route-search';
 const EMPTY_RESULTS: RouteSearchResultsViewModel = Object.freeze({
   departures: [],
   hasUpcoming: false,
-  nextDepartureId: null
+  nextDepartureId: null,
 });
 
 type RouteSearchResultsState =
@@ -72,16 +81,16 @@ type RouteSearchResultsState =
     RouteSearchFormComponent,
     RouteSearchDepartureRoutePreviewComponent,
     AccessibleButtonDirective,
-    AppLayoutContentDirective
+    AppLayoutContentDirective,
   ],
   templateUrl: './route-search.component.html',
   styleUrls: [
     './route-search.component.scss',
     './route-search.component-summary.scss',
     './route-search.component-timeline.scss',
-    './route-search.component-states.scss'
+    './route-search.component-states.scss',
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouteSearchComponent implements AfterViewInit {
   @ViewChildren('itemElement', { read: ElementRef })
@@ -103,6 +112,7 @@ export class RouteSearchComponent implements AfterViewInit {
   private readonly overlayDialogs = inject(OverlayDialogService);
   private readonly pins = inject(PinnedDepartureService);
   private readonly tripSessions = inject(TripSessionStorage);
+  private readonly rideDetection = inject(RideDetectionService);
   private readonly timezone = APP_CONFIG.data.timezone;
   private readonly scheduleAccuracyThresholdDays =
     APP_CONFIG.routeSearchData.scheduleAccuracy.warningThresholdDays;
@@ -114,8 +124,10 @@ export class RouteSearchComponent implements AfterViewInit {
   protected readonly alarmTranslationKeys = APP_CONFIG.translationKeys.stopDetail.alarms;
   protected readonly actionsMenuKey = 'routeSearch.menuTriggerLabel';
   protected readonly openMenuDepartureId = signal<string | null>(null);
-  protected readonly loadingKey = APP_CONFIG.translationKeys.home.sections.recentStops.previewLoading;
-  protected readonly loadErrorKey = APP_CONFIG.translationKeys.home.sections.recentStops.previewError;
+  protected readonly loadingKey =
+    APP_CONFIG.translationKeys.home.sections.recentStops.previewLoading;
+  protected readonly loadErrorKey =
+    APP_CONFIG.translationKeys.home.sections.recentStops.previewError;
   protected readonly retryKey = APP_CONFIG.translationKeys.home.dialogs.nearbyStops.retry;
   private readonly routeSegments = APP_CONFIG.routeSegments.routeSearch;
   protected readonly formTitleKey = this.translationKeys.action;
@@ -134,7 +146,7 @@ export class RouteSearchComponent implements AfterViewInit {
   protected readonly isResultsError = computed(() => this.resultsStatus() === 'error');
   protected readonly areResultsReady = computed(() => this.resultsStatus() === 'ready');
   protected readonly showNoUpcoming = computed(
-    () => this.areResultsReady() && this.hasResults() && !this.results().hasUpcoming
+    () => this.areResultsReady() && this.hasResults() && !this.results().hasUpcoming,
   );
   protected readonly showPastSearchNotice = computed(() => {
     const current = this.selection();
@@ -167,17 +179,50 @@ export class RouteSearchComponent implements AfterViewInit {
   });
 
   constructor() {
+    // While route results are on screen the ride detector already has its answer:
+    // suppress the floating "on the move?" dialog for the lines/stops listed here.
+    effect(() => {
+      const selection = this.selection();
+      const departures = this.departures();
+
+      if (!selection || departures.length === 0) {
+        this.rideDetection.unregisterOpenSchedule(RIDE_OPEN_SCHEDULE_KEY);
+        return;
+      }
+
+      const lineIds = Array.from(new Set(departures.map((departure) => departure.lineId)));
+      const stopIds = Array.from(
+        new Set([
+          ...selection.origin.stopIds,
+          ...selection.destination.stopIds,
+          ...departures.flatMap((departure) => [
+            ...departure.originStopIds,
+            ...departure.destinationStopIds,
+          ]),
+        ]),
+      );
+
+      this.rideDetection.registerOpenSchedule(RIDE_OPEN_SCHEDULE_KEY, {
+        consortiumId: selection.origin.consortiumId,
+        lineIds,
+        stopIds,
+      });
+    });
+    this.destroyRef.onDestroy(() =>
+      this.rideDetection.unregisterOpenSchedule(RIDE_OPEN_SCHEDULE_KEY),
+    );
+
     const initialSelection = this.state.getSelection();
     const selectionStream$ = this.state.selection$.pipe(startWith(initialSelection));
     const params$ = this.route.paramMap.pipe(
       startWith(this.route.snapshot.paramMap),
       map((paramMap) => this.extractParams(paramMap)),
-      distinctUntilChanged((first, second) => this.paramsEqual(first, second))
+      distinctUntilChanged((first, second) => this.paramsEqual(first, second)),
     );
     const queryParams$ = this.route.queryParamMap.pipe(
       startWith(this.route.snapshot.queryParamMap),
       map((paramMap) => paramMap.get(this.originQueryParamKey)),
-      distinctUntilChanged()
+      distinctUntilChanged(),
     );
 
     queryParams$
@@ -194,7 +239,7 @@ export class RouteSearchComponent implements AfterViewInit {
             if (parsed.consortiumId !== null) {
               return this.stopDirectory.getOptionByStopSignature(
                 parsed.consortiumId,
-                parsed.stopId
+                parsed.stopId,
               );
             }
 
@@ -202,7 +247,7 @@ export class RouteSearchComponent implements AfterViewInit {
           }
 
           return this.stopDirectory.getOptionByStopId(value);
-        })
+        }),
       )
       .subscribe((option) => {
         this.originDraft.set(option);
@@ -221,9 +266,9 @@ export class RouteSearchComponent implements AfterViewInit {
           return this.selectionResolver.resolveFromSlugs(
             params.originSlug,
             params.destinationSlug,
-            params.dateSlug
+            params.dateSlug,
           );
-        })
+        }),
       )
       .subscribe((resolved) => {
         if (!resolved) {
@@ -233,18 +278,16 @@ export class RouteSearchComponent implements AfterViewInit {
         this.state.setSelection(resolved);
       });
 
-    selectionStream$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => {
-        this.selection.set(value);
+    selectionStream$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
+      this.selection.set(value);
 
-        if (!value) {
-          return;
-        }
+      if (!value) {
+        return;
+      }
 
-        this.lastScrollTargetId = null;
-        this.pendingScroll = false;
-      });
+      this.lastScrollTargetId = null;
+      this.pendingScroll = false;
+    });
 
     selectionStream$
       .pipe(
@@ -260,23 +303,21 @@ export class RouteSearchComponent implements AfterViewInit {
               this.resultsService.loadResults(value).pipe(
                 map((result) => ({ status: 'ready', result }) as const),
                 startWith<RouteSearchResultsState>({ status: 'loading' }),
-                catchError(() => of<RouteSearchResultsState>({ status: 'error' }))
-              )
-            )
+                catchError(() => of<RouteSearchResultsState>({ status: 'error' })),
+              ),
+            ),
           );
-        })
+        }),
       )
       .subscribe((resultState) => this.applyResultsState(resultState));
   }
 
   ngAfterViewInit(): void {
-    this.itemElements.changes
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        if (this.pendingScroll) {
-          this.scrollToNext();
-        }
-      });
+    this.itemElements.changes.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      if (this.pendingScroll) {
+        this.scrollToNext();
+      }
+    });
   }
 
   protected trackDeparture(_: number, item: RouteSearchDepartureView): string {
@@ -289,7 +330,10 @@ export class RouteSearchComponent implements AfterViewInit {
   }
 
   protected isDepartureAlarmActive(item: RouteSearchDepartureView): boolean {
-    return this.alarmsService.hasServiceAlarm(item.originStopId, this.departureAlarmServiceId(item));
+    return this.alarmsService.hasServiceAlarm(
+      item.originStopId,
+      this.departureAlarmServiceId(item),
+    );
   }
 
   protected isDeparturePinned(item: RouteSearchDepartureView): boolean {
@@ -322,7 +366,7 @@ export class RouteSearchComponent implements AfterViewInit {
       originName: selection.origin.name,
       destinationName: selection.destination.name,
       departTime: item.arrivalTime.toISOString(),
-      arriveTime: arriveTime.toISOString()
+      arriveTime: arriveTime.toISOString(),
     };
 
     this.tripSessions.save(session);
@@ -341,7 +385,7 @@ export class RouteSearchComponent implements AfterViewInit {
   protected runMenuAction(
     event: MouseEvent,
     action: 'alarm' | 'pin' | 'live',
-    item: RouteSearchDepartureView
+    item: RouteSearchDepartureView,
   ): void {
     event.stopPropagation();
     this.openMenuDepartureId.set(null);
@@ -403,28 +447,30 @@ export class RouteSearchComponent implements AfterViewInit {
       lineCode: item.lineCode,
       destination: item.destination,
       arrivalTime: item.arrivalTime,
-      minutesUntilArrival: Math.max(0, Math.round((item.arrivalTime.getTime() - Date.now()) / 60_000))
+      minutesUntilArrival: Math.max(
+        0,
+        Math.round((item.arrivalTime.getTime() - Date.now()) / 60_000),
+      ),
     };
 
     this.overlayDialogs.open<StopAlarmDialogComponent, StopAlarmDialogData, boolean>(
       StopAlarmDialogComponent,
-      { data, role: 'dialog' }
+      { data, role: 'dialog' },
     );
   }
 
   private openCancelDepartureAlarmDialog(alarmId: string): void {
-    const dialogRef = this.overlayDialogs.open<
+    const dialogRef = this.overlayDialogs.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
       ConfirmDialogComponent,
-      ConfirmDialogData,
-      boolean
-    >(ConfirmDialogComponent, {
-      data: {
-        titleKey: this.alarmTranslationKeys.cancelTitle,
-        messageKey: this.alarmTranslationKeys.cancelMessage,
-        confirmKey: this.alarmTranslationKeys.cancelConfirm,
-        cancelKey: this.alarmTranslationKeys.cancelKeep
-      }
-    });
+      {
+        data: {
+          titleKey: this.alarmTranslationKeys.cancelTitle,
+          messageKey: this.alarmTranslationKeys.cancelMessage,
+          confirmKey: this.alarmTranslationKeys.cancelConfirm,
+          cancelKey: this.alarmTranslationKeys.cancelKeep,
+        },
+      },
+    );
 
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
@@ -461,7 +507,7 @@ export class RouteSearchComponent implements AfterViewInit {
 
     void this.onSelectionConfirmed({
       ...current,
-      queryDate: today
+      queryDate: today,
     });
   }
 
@@ -528,14 +574,11 @@ export class RouteSearchComponent implements AfterViewInit {
     return {
       originSlug: paramMap.get(APP_CONFIG.routeParams.routeSearch.origin),
       destinationSlug: paramMap.get(APP_CONFIG.routeParams.routeSearch.destination),
-      dateSlug: paramMap.get(APP_CONFIG.routeParams.routeSearch.date)
+      dateSlug: paramMap.get(APP_CONFIG.routeParams.routeSearch.date),
     } satisfies RouteSearchRouteParams;
   }
 
-  private paramsEqual(
-    first: RouteSearchRouteParams,
-    second: RouteSearchRouteParams
-  ): boolean {
+  private paramsEqual(first: RouteSearchRouteParams, second: RouteSearchRouteParams): boolean {
     return (
       first.originSlug === second.originSlug &&
       first.destinationSlug === second.destinationSlug &&
@@ -545,7 +588,7 @@ export class RouteSearchComponent implements AfterViewInit {
 
   private selectionMatchesParams(
     selection: RouteSearchSelection,
-    params: RouteSearchRouteParams
+    params: RouteSearchRouteParams,
   ): boolean {
     if (!params.originSlug || !params.destinationSlug || !params.dateSlug) {
       return false;

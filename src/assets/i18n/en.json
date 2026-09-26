@@ -562,9 +562,20 @@
     "unavailable": "We could not get your position. Showing estimated schedules only.",
     "completed": "You have arrived at {destination}",
     "endTracking": "End tracking",
-    "recenter": "Move the timeline back to the current stop",
+    "recenter": "Center the view on your current position",
     "announcementNextStop": "Next stop: {stop}. Arriving in {time}.",
     "announcementPassed": "You passed {stop}.",
-    "backLabel": "Back"
+    "backLabel": "Back",
+    "viewToggle": "Switch between list and map",
+    "viewList": "Show the stop list",
+    "viewMap": "Show the live map",
+    "mapLabel": "Live trip map",
+    "groupStops": "{count, plural, one {# stop} other {# stops}}",
+    "stopNumber": "Stop {number}",
+    "stopEta": "Arriving in {time}",
+    "stopPassed": "Stop already passed",
+    "stopCurrent": "You are at this stop",
+    "stopInfoClose": "Close stop information",
+    "viewStop": "View stop"
   }
 }

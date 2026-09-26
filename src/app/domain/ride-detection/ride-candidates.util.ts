@@ -1,11 +1,5 @@
-import {
-  GeoCoordinate,
-  calculateDistanceInMeters
-} from '@domain/utils/geo-distance.util';
-import {
-  angularGapDeg,
-  initialBearingDeg
-} from './ride-detection.util';
+import { GeoCoordinate, calculateDistanceInMeters } from '@domain/utils/geo-distance.util';
+import { angularGapDeg, initialBearingDeg } from './ride-detection.util';
 
 /** A stop reached by the ride radius scan (directory snapshot). */
 export interface RideCandidateStop {
@@ -44,6 +38,32 @@ export interface RideLineProposal {
   readonly stopIds: readonly string[];
 }
 
+/**
+ * Timetable view the user currently has on screen (a stop schedule, a route search
+ * result, ...). While an open view matches a ride proposal the floating suggestion is
+ * redundant and must stay hidden.
+ */
+export interface RideOpenScheduleContext {
+  readonly consortiumId: number | null;
+  readonly stopIds?: readonly string[];
+  readonly lineIds?: readonly string[];
+}
+
+/** True when the proposal points at a line or stop the open schedule already shows. */
+export function rideProposalMatchesOpenSchedule(
+  proposal: RideLineProposal,
+  context: RideOpenScheduleContext,
+): boolean {
+  if (context.consortiumId !== null && context.consortiumId !== proposal.consortiumId) {
+    return false;
+  }
+
+  const lineMatch = context.lineIds?.includes(proposal.lineId) ?? false;
+  const stopMatch = context.stopIds?.some((stopId) => proposal.stopIds.includes(stopId)) ?? false;
+
+  return lineMatch || stopMatch;
+}
+
 export interface RideCandidateOptions {
   /** Angular tolerance accepted between travel heading and line itinerary. */
   readonly maxBearingGapDeg: number;
@@ -52,7 +72,7 @@ export interface RideCandidateOptions {
 
 export const RIDE_CANDIDATE_DEFAULTS: RideCandidateOptions = {
   maxBearingGapDeg: 75,
-  maxProposals: 3
+  maxProposals: 3,
 };
 
 /**
@@ -70,7 +90,7 @@ export function rankRideCandidates(
   stops: readonly RideCandidateStop[],
   directionsByStop: Readonly<Record<string, readonly RideLineDirectionCandidate[]>>,
   userBearingDeg: number,
-  options: RideCandidateOptions = RIDE_CANDIDATE_DEFAULTS
+  options: RideCandidateOptions = RIDE_CANDIDATE_DEFAULTS,
 ): RideLineProposal[] {
   const proposals = new Map<string, RideLineProposal>();
 
@@ -86,7 +106,7 @@ export function rankRideCandidates(
         stop.location,
         direction.upcomingStops,
         userBearingDeg,
-        options.maxBearingGapDeg
+        options.maxBearingGapDeg,
       );
 
       if (!directionAgrees) {
@@ -107,7 +127,7 @@ export function rankRideCandidates(
           closestStopMeters: stop.distanceMeters,
           directionAgrees,
           score: 0,
-          stopIds: [stop.stopId]
+          stopIds: [stop.stopId],
         });
         continue;
       }
@@ -116,7 +136,7 @@ export function rankRideCandidates(
         ...existing,
         matches: existing.matches + 1,
         closestStopMeters: Math.min(existing.closestStopMeters, stop.distanceMeters),
-        stopIds: [...existing.stopIds, stop.stopId]
+        stopIds: [...existing.stopIds, stop.stopId],
       });
     }
   }
@@ -124,7 +144,7 @@ export function rankRideCandidates(
   return [...proposals.values()]
     .map((proposal) => ({
       ...proposal,
-      score: scoreProposal(proposal)
+      score: scoreProposal(proposal),
     }))
     .sort((a, b) => {
       if (b.matches !== a.matches) {
@@ -145,7 +165,7 @@ function itineraryAgreesWithHeading(
   stopLocation: GeoCoordinate,
   upcomingStops: readonly GeoCoordinate[],
   userBearingDeg: number,
-  maxGapDeg: number
+  maxGapDeg: number,
 ): boolean {
   if (upcomingStops.length === 0) {
     // Direction unknown (tail of itinerary): accept, proximity rules the rank.
@@ -172,7 +192,7 @@ function scoreProposal(proposal: Omit<RideLineProposal, 'score'>): number {
 export function selectCorridorStops(
   allStops: readonly (RideCandidateStop & { readonly distanceMeters: number })[],
   maxMeters: number,
-  maxStops: number
+  maxStops: number,
 ): readonly RideCandidateStop[] {
   return allStops
     .filter((stop) => stop.distanceMeters <= maxMeters)
@@ -182,14 +202,14 @@ export function selectCorridorStops(
 
 /** Radius filter with precomputed distances. */
 export function filterStopsWithinMeters(
-  stops: readonly (Omit<RideCandidateStop, 'distanceMeters'>)[],
+  stops: readonly Omit<RideCandidateStop, 'distanceMeters'>[],
   center: GeoCoordinate,
-  radiusMeters: number
+  radiusMeters: number,
 ): RideCandidateStop[] {
   return stops
     .map((stop) => ({
       ...stop,
-      distanceMeters: calculateDistanceInMeters(center, stop.location)
+      distanceMeters: calculateDistanceInMeters(center, stop.location),
     }))
     .filter((stop) => stop.distanceMeters <= radiusMeters);
 }

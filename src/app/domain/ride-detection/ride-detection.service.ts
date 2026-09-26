@@ -1,10 +1,17 @@
 import { Injectable, OnDestroy, computed, signal } from '@angular/core';
 import { GeolocationService } from '@core/services/geolocation.service';
-import { RideCandidateStop, RideLineDirectionCandidate, RideLineProposal, rankRideCandidates } from '@domain/ride-detection/ride-candidates.util';
+import {
+  RideCandidateStop,
+  RideLineDirectionCandidate,
+  RideLineProposal,
+  RideOpenScheduleContext,
+  rankRideCandidates,
+  rideProposalMatchesOpenSchedule,
+} from '@domain/ride-detection/ride-candidates.util';
 import {
   RidePositionSample,
   computeOverallHeadingDeg,
-  isRidingVehicle
+  isRidingVehicle,
 } from '@domain/ride-detection/ride-detection.util';
 
 const SAMPLE_RETENTION_MS = 120_000;
@@ -28,12 +35,16 @@ export type RideDetectionPhase = 'idle' | 'collecting' | 'proposing';
 export class RideDetectionService implements OnDestroy {
   private readonly geolocation = new GeolocationService();
   private directionSource: RideDirectionSource | null = null;
-  private stopsIndexLoader: ((center: { latitude: number; longitude: number }) => Promise<RideCandidateStop[]>) | null =
-    null;
+  private stopsIndexLoader:
+    | ((center: { latitude: number; longitude: number }) => Promise<RideCandidateStop[]>)
+    | null = null;
 
   private readonly samplesSignal = signal<readonly RidePositionSample[]>([]);
   private readonly phaseSignal = signal<RideDetectionPhase>('idle');
   private readonly proposalsSignal = signal<readonly RideLineProposal[]>([]);
+  private readonly openSchedulesSignal = signal<ReadonlyMap<string, RideOpenScheduleContext>>(
+    new Map(),
+  );
   private watchStop: (() => void) | null = null;
   private dismissedAt: number | null = null;
   private proposedAt: number | null = null;
@@ -41,6 +52,43 @@ export class RideDetectionService implements OnDestroy {
   readonly phase = this.phaseSignal.asReadonly();
   readonly proposals = this.proposalsSignal.asReadonly();
   readonly isActive = computed(() => this.phaseSignal() !== 'idle');
+
+  /**
+   * Proposals the UI may surface: empty while any open schedule view already covers one
+   * of the candidates, so the floating dialog never repeats what the user is reading.
+   */
+  readonly visibleProposals = computed<readonly RideLineProposal[]>(() => {
+    const proposals = this.proposalsSignal();
+
+    if (proposals.length === 0) {
+      return proposals;
+    }
+
+    return this.matchesOpenSchedule(proposals, [...this.openSchedulesSignal().values()])
+      ? []
+      : proposals;
+  });
+
+  /** Pages showing a timetable register their context to mute redundant proposals. */
+  registerOpenSchedule(key: string, context: RideOpenScheduleContext): void {
+    this.openSchedulesSignal.update((previous) => {
+      const next = new Map(previous);
+      next.set(key, context);
+      return next;
+    });
+  }
+
+  unregisterOpenSchedule(key: string): void {
+    this.openSchedulesSignal.update((previous) => {
+      if (!previous.has(key)) {
+        return previous;
+      }
+
+      const next = new Map(previous);
+      next.delete(key);
+      return next;
+    });
+  }
 
   /** Runtime injects the stops index adapter (data layer) on bootstrap. */
   configure(adapters: {
@@ -52,11 +100,7 @@ export class RideDetectionService implements OnDestroy {
   }
 
   async start(): Promise<void> {
-    if (
-      this.watchStop ||
-      typeof navigator === 'undefined' ||
-      !navigator.geolocation
-    ) {
+    if (this.watchStop || typeof navigator === 'undefined' || !navigator.geolocation) {
       return;
     }
 
@@ -68,7 +112,7 @@ export class RideDetectionService implements OnDestroy {
     ) {
       try {
         const status = await navigator.permissions.query({
-          name: 'geolocation' as PermissionName
+          name: 'geolocation' as PermissionName,
         });
 
         if (status.state !== 'granted') {
@@ -86,7 +130,7 @@ export class RideDetectionService implements OnDestroy {
     this.watchStop = this.geolocation.watchPosition(
       (position) => this.onPosition(position),
       () => undefined,
-      { enableHighAccuracy: false, maximumAge: 15_000, timeout: 20_000 }
+      { enableHighAccuracy: false, maximumAge: 15_000, timeout: 20_000 },
     );
   }
 
@@ -118,16 +162,16 @@ export class RideDetectionService implements OnDestroy {
     const sample: RidePositionSample = {
       coordinate: {
         latitude: position.coords.latitude,
-        longitude: position.coords.longitude
+        longitude: position.coords.longitude,
       },
       speedMps: position.coords.speed ?? null,
       bearingDeg: position.coords.heading ?? null,
-      at: position.timestamp
+      at: position.timestamp,
     };
 
     const now = Date.now();
     const retained = [...this.samplesSignal(), sample].filter(
-      (entry) => now - entry.at <= SAMPLE_RETENTION_MS
+      (entry) => now - entry.at <= SAMPLE_RETENTION_MS,
     );
     this.samplesSignal.set(retained);
 
@@ -178,25 +222,39 @@ export class RideDetectionService implements OnDestroy {
         nearest.map(async (stop) => {
           try {
             directionsMap[`${stop.consortiumId}:${stop.stopId}`] =
-              await this.directionSource?.fetchDirections(stop) ?? [];
+              (await this.directionSource?.fetchDirections(stop)) ?? [];
           } catch {
             directionsMap[`${stop.consortiumId}:${stop.stopId}`] = [];
           }
-        })
+        }),
       );
     }
 
-    const proposals = rankRideCandidates(nearest, directionsMap, heading).slice(
-      0,
-      MAX_PROPOSALS
-    );
+    const proposals = rankRideCandidates(nearest, directionsMap, heading).slice(0, MAX_PROPOSALS);
 
     if (proposals.length === 0) {
+      return;
+    }
+
+    if (this.matchesOpenSchedule(proposals, [...this.openSchedulesSignal().values()])) {
       return;
     }
 
     this.proposalsSignal.set(proposals);
     this.phaseSignal.set('proposing');
     void now;
+  }
+
+  private matchesOpenSchedule(
+    proposals: readonly RideLineProposal[],
+    contexts: readonly RideOpenScheduleContext[],
+  ): boolean {
+    if (contexts.length === 0) {
+      return false;
+    }
+
+    return proposals.some((proposal) =>
+      contexts.some((context) => rideProposalMatchesOpenSchedule(proposal, context)),
+    );
   }
 }

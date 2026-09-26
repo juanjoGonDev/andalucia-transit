@@ -3,13 +3,17 @@ import { firstValueFrom } from 'rxjs';
 import { StopScheduleService } from '@data/services/stop-schedule.service';
 import {
   RideCandidateStop,
-  RideLineDirectionCandidate
+  RideLineDirectionCandidate,
 } from '@domain/ride-detection/ride-candidates.util';
 import { RideDirectionSource } from '@domain/ride-detection/ride-detection.service';
 
 /** How far ahead a service must arrive to count as a live candidate. */
 const UPCOMING_WINDOW_MS = 45 * 60_000;
-const RECENT_PAST_WINDOW_MS = 5 * 60_000;
+/**
+ * Services that departed up to 30 minutes ago still count: buses run late and the rider
+ * may already be on board a service whose timetable row is in the recent past.
+ */
+const RECENT_PAST_WINDOW_MS = 30 * 60_000;
 
 /**
  * Live line candidates fetched from the consortium schedule API: every
@@ -24,7 +28,7 @@ export class RideDirectionSourceService implements RideDirectionSource {
   async fetchDirections(stop: RideCandidateStop): Promise<readonly RideLineDirectionCandidate[]> {
     try {
       const result = await firstValueFrom(
-        this.scheduleService.getStopSchedule(stop.stopId, { consortiumId: stop.consortiumId })
+        this.scheduleService.getStopSchedule(stop.stopId, { consortiumId: stop.consortiumId }),
       );
 
       const now = Date.now();
@@ -40,8 +44,8 @@ export class RideDirectionSourceService implements RideDirectionSource {
             lineCode: service.lineCode,
             direction: service.direction,
             destinationName: service.destination,
-            upcomingStops: []
-          })
+            upcomingStops: [],
+          }),
         );
     } catch {
       return [];

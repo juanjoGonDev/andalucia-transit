@@ -4,7 +4,12 @@ import { RideDetectionService } from './ride-detection.service';
 
 const USER = { latitude: 36.719472, longitude: -4.363551 };
 
-function fixturePosition(speed: number, bearing: number, t: number, offset = 0): GeolocationPosition {
+function fixturePosition(
+  speed: number,
+  bearing: number,
+  t: number,
+  offset = 0,
+): GeolocationPosition {
   return {
     coords: {
       speed,
@@ -14,9 +19,9 @@ function fixturePosition(speed: number, bearing: number, t: number, offset = 0):
       accuracy: 15,
       altitude: null,
       altitudeAccuracy: null,
-      toJSON: () => ({})
+      toJSON: () => ({}),
     } as GeolocationCoordinates,
-    timestamp: t
+    timestamp: t,
   } as GeolocationPosition;
 }
 
@@ -37,7 +42,7 @@ describe('RideDetectionService', () => {
 
     // Karma Chromium exposes navigator.permissions; grant geolocation so start() proceeds.
     spyOn(navigator.permissions, 'query').and.resolveTo({
-      state: 'granted'
+      state: 'granted',
     } as PermissionStatus);
 
     TestBed.configureTestingModule({});
@@ -58,7 +63,7 @@ describe('RideDetectionService', () => {
 
   it('stays idle for slow movement', async () => {
     service.configure({
-      stopsIndex: jasmine.createSpy('stopsIndex').and.resolveTo([])
+      stopsIndex: jasmine.createSpy('stopsIndex').and.resolveTo([]),
     });
     await service.start();
 
@@ -68,7 +73,7 @@ describe('RideDetectionService', () => {
       fixturePosition(1.4, 90, now - 6_000),
       fixturePosition(0.8, 90, now - 4_000),
       fixturePosition(1.1, 90, now - 2_000),
-      fixturePosition(1, 90, now)
+      fixturePosition(1, 90, now),
     ]);
 
     expect(service.phase()).toBe('idle');
@@ -81,8 +86,8 @@ describe('RideDetectionService', () => {
         stopId: '10',
         stopName: 'Cercanía',
         location: USER,
-        distanceMeters: 30
-      }
+        distanceMeters: 30,
+      },
     ]);
 
     service.configure({
@@ -94,17 +99,17 @@ describe('RideDetectionService', () => {
             lineCode: 'M-370',
             direction: 1,
             destinationName: 'Este',
-            upcomingStops: []
-          }
-        ]
-      }
+            upcomingStops: [],
+          },
+        ],
+      },
     });
 
     await service.start();
 
     const now = Date.now();
     const samples = [0, 1, 2, 4, 7, 10].map((index, i) =>
-      fixturePosition(12, 90, now - (6 - i) * 5_000, 0.0001 * index)
+      fixturePosition(12, 90, now - (6 - i) * 5_000, 0.0001 * index),
     );
     emit(samples);
 
@@ -116,6 +121,87 @@ describe('RideDetectionService', () => {
     expect(service.proposals()[0]?.lineCode).toBe('M-370');
   });
 
+  it('stays silent when an open schedule already covers a candidate line', async () => {
+    service.configure({
+      stopsIndex: jasmine.createSpy('stopsIndex').and.resolveTo([
+        {
+          consortiumId: 3,
+          stopId: '10',
+          stopName: 'Cercanía',
+          location: USER,
+          distanceMeters: 30,
+        },
+      ]),
+      directions: {
+        fetchDirections: async (): Promise<readonly RideLineDirectionCandidate[]> => [
+          {
+            lineId: 'line-e',
+            lineCode: 'M-370',
+            direction: 1,
+            destinationName: 'Este',
+            upcomingStops: [],
+          },
+        ],
+      },
+    });
+    service.registerOpenSchedule('route-search', { consortiumId: 3, lineIds: ['line-e'] });
+    await service.start();
+
+    const now = Date.now();
+    emit(
+      [0, 1, 2, 4, 7].map((index, i) =>
+        fixturePosition(12, 90, now - (5 - i) * 5_000, 0.0001 * index),
+      ),
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 30));
+
+    expect(service.phase()).not.toBe('proposing');
+    expect(service.visibleProposals().length).toBe(0);
+  });
+
+  it('hides visible proposals once a matching schedule view opens', async () => {
+    service.configure({
+      stopsIndex: jasmine.createSpy('stopsIndex').and.resolveTo([
+        {
+          consortiumId: 3,
+          stopId: '10',
+          stopName: 'Cercanía',
+          location: USER,
+          distanceMeters: 30,
+        },
+      ]),
+      directions: {
+        fetchDirections: async (): Promise<readonly RideLineDirectionCandidate[]> => [
+          {
+            lineId: 'line-e',
+            lineCode: 'M-370',
+            direction: 1,
+            destinationName: 'Este',
+            upcomingStops: [],
+          },
+        ],
+      },
+    });
+    await service.start();
+
+    const now = Date.now();
+    emit(
+      [0, 1, 2, 4, 7].map((index, i) =>
+        fixturePosition(12, 90, now - (5 - i) * 5_000, 0.0001 * index),
+      ),
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 30));
+    expect(service.visibleProposals().length).toBeGreaterThan(0);
+
+    service.registerOpenSchedule('stop-detail', { consortiumId: 3, stopIds: ['10'] });
+    expect(service.visibleProposals().length).toBe(0);
+
+    service.unregisterOpenSchedule('stop-detail');
+    expect(service.visibleProposals().length).toBeGreaterThan(0);
+  });
+
   it('clears proposals on dismiss and keeps the watcher alive', async () => {
     service.configure({
       stopsIndex: jasmine.createSpy('stopsIndex').and.resolveTo([
@@ -124,27 +210,29 @@ describe('RideDetectionService', () => {
           stopId: '10',
           stopName: 'Cercanía',
           location: USER,
-          distanceMeters: 30
-        }
+          distanceMeters: 30,
+        },
       ]),
       directions: {
-        fetchDirections: jasmine
-          .createSpy('fetchDirections')
-          .and.resolveTo([
-            {
-              lineId: 'line-e',
-              lineCode: 'M-370',
-              direction: 1,
-              destinationName: 'Este',
-              upcomingStops: []
-            }
-          ])
-      }
+        fetchDirections: jasmine.createSpy('fetchDirections').and.resolveTo([
+          {
+            lineId: 'line-e',
+            lineCode: 'M-370',
+            direction: 1,
+            destinationName: 'Este',
+            upcomingStops: [],
+          },
+        ]),
+      },
     });
     await service.start();
 
     const now = Date.now();
-    emit([0, 1, 2, 4, 7].map((index, i) => fixturePosition(12, 90, now - (5 - i) * 5_000, 0.0001 * index)));
+    emit(
+      [0, 1, 2, 4, 7].map((index, i) =>
+        fixturePosition(12, 90, now - (5 - i) * 5_000, 0.0001 * index),
+      ),
+    );
 
     await new Promise((resolve) => setTimeout(resolve, 30));
     expect(service.phase()).toBe('proposing');

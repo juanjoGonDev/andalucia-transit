@@ -15,36 +15,35 @@ import {
   of,
   shareReplay,
   startWith,
-  switchMap
+  switchMap,
 } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
+import { RideDetectionService } from '@domain/ride-detection/ride-detection.service';
 import {
   AlarmSchedulerService,
-  FiredAlarmEvent
+  FiredAlarmEvent,
 } from '@domain/stop-alarms/alarm-scheduler.service';
 import { StopAlarmsService } from '@domain/stop-alarms/stop-alarms.service';
 import { StopScheduleFacade } from '@domain/stop-schedule/stop-schedule.facade';
 import { StopScheduleResult } from '@domain/stop-schedule/stop-schedule.model';
 import {
   StopScheduleUiModel,
-  buildStopScheduleUiModel
+  buildStopScheduleUiModel,
 } from '@domain/stop-schedule/stop-schedule.transform';
-import {
-  StopScheduleUpcomingItem
-} from '@domain/stop-schedule/stop-schedule.transform';
+import { StopScheduleUpcomingItem } from '@domain/stop-schedule/stop-schedule.transform';
 import { FavoritesFacade } from '@domain/stops/favorites.facade';
-import {
-  StopDirectoryFacade,
-  StopDirectoryOption
-} from '@domain/stops/stop-directory.facade';
+import { StopDirectoryFacade, StopDirectoryOption } from '@domain/stops/stop-directory.facade';
 import {
   StopAlarmDialogComponent,
-  StopAlarmDialogData
+  StopAlarmDialogData,
 } from '@features/stop-detail/stop-alarm-dialog/stop-alarm-dialog.component';
 import { StopUtilityComponent } from '@features/stop-detail/stop-utility/stop-utility.component';
 import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
-import { ConfirmDialogComponent, ConfirmDialogData } from '@shared/ui/confirm-dialog/confirm-dialog.component';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData,
+} from '@shared/ui/confirm-dialog/confirm-dialog.component';
 import { OverlayDialogService } from '@shared/ui/dialog/overlay-dialog.service';
 
 const ALL_DESTINATIONS_OPTION = 'all';
@@ -52,6 +51,7 @@ const STATUS_ROLE = 'status';
 const POLITE_LIVE = 'polite';
 const ASSERTIVE_LIVE = 'assertive';
 const CONSORTIUM_QUERY_PARAM = APP_CONFIG.routeParams.stopInfo.consortiumId;
+const RIDE_OPEN_SCHEDULE_KEY = 'stop-detail';
 const UNSIGNED_INTEGER_PATTERN = /^\d+$/;
 const ARROW_LEFT_KEY = 'ArrowLeft';
 const ARROW_RIGHT_KEY = 'ArrowRight';
@@ -65,7 +65,7 @@ export type StopDetailSection = 'departures' | 'lines' | 'directions';
 const STOP_DETAIL_SECTIONS: readonly StopDetailSection[] = Object.freeze([
   'departures',
   'lines',
-  'directions'
+  'directions',
 ]);
 
 export interface StopRouteContext {
@@ -97,11 +97,11 @@ type ScheduleState =
     TranslateModule,
     AppLayoutContentDirective,
     AccessibleButtonDirective,
-    StopUtilityComponent
+    StopUtilityComponent,
   ],
   templateUrl: './stop-detail.component.html',
   styleUrls: ['./stop-detail.component.scss', './stop-detail.component-list.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StopDetailComponent {
   private static readonly ROOT_COMMAND = '/' as const;
@@ -117,6 +117,7 @@ export class StopDetailComponent {
   private readonly overlayDialogs = inject(OverlayDialogService);
   protected readonly alarmsService = inject(StopAlarmsService);
   private readonly alarmScheduler = inject(AlarmSchedulerService);
+  private readonly rideDetection = inject(RideDetectionService);
 
   /** Alarm that just rang for this stop, shown as a dismissible in-app banner. */
   protected readonly firedAlarm = signal<FiredAlarmEvent | null>(null);
@@ -134,7 +135,7 @@ export class StopDetailComponent {
   protected readonly favoriteInactiveIcon = APP_CONFIG.homeData.favoriteStops.inactiveIcon;
   protected readonly layoutNavigationKey = APP_CONFIG.routes.stopDetailBase;
   protected readonly destinationControl = new FormControl<string>(ALL_DESTINATIONS_OPTION, {
-    nonNullable: true
+    nonNullable: true,
   });
   protected readonly activeSection = signal<StopDetailSection>('departures');
   protected readonly statusRole = STATUS_ROLE;
@@ -146,44 +147,44 @@ export class StopDetailComponent {
     map((stopId) => stopId?.trim() ?? ''),
     map((stopId) => (stopId.length > 0 ? stopId : null)),
     distinctUntilChanged(),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   private readonly stopId$: Observable<string> = this.stopIdParam$.pipe(
-    filter((stopId): stopId is string => stopId !== null)
+    filter((stopId): stopId is string => stopId !== null),
   );
 
   private readonly consortiumId$: Observable<number | null> = this.route.queryParamMap.pipe(
     map((params) => parseConsortiumId(params.get(CONSORTIUM_QUERY_PARAM))),
-    distinctUntilChanged()
+    distinctUntilChanged(),
   );
 
   protected readonly stopRouteContext$: Observable<StopRouteContext> = combineLatest([
     this.stopId$,
-    this.consortiumId$
+    this.consortiumId$,
   ]).pipe(
     map(([stopId, consortiumId]) => ({ stopId, consortiumId }) satisfies StopRouteContext),
     distinctUntilChanged(areStopRouteContextsEqual),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   private readonly favoriteOption$: Observable<StopDirectoryOption | null> =
     this.stopRouteContext$.pipe(
       switchMap(({ stopId, consortiumId }) =>
-        this.loadFavoriteOption(stopId, consortiumId).pipe(catchError(() => of(null)))
+        this.loadFavoriteOption(stopId, consortiumId).pipe(catchError(() => of(null))),
       ),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay({ bufferSize: 1, refCount: true }),
     );
 
   protected readonly favoriteState$: Observable<StopFavoriteState> = combineLatest([
     this.favoriteOption$,
-    this.favorites.favorites$
+    this.favorites.favorites$,
   ]).pipe(
     map(([option, favorites]) => ({
       option,
-      isFavorite: option !== null && favorites.some((favorite) => favorite.id === option.id)
+      isFavorite: option !== null && favorites.some((favorite) => favorite.id === option.id),
     })),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   private readonly scheduleState$: Observable<ScheduleState> = this.stopRouteContext$.pipe(
@@ -194,44 +195,44 @@ export class StopDetailComponent {
           this.loadStopSchedule(stopId, consortiumId).pipe(
             map((result) => ({ status: 'success', result }) as const),
             startWith({ status: 'loading' } as const),
-            catchError(() => of({ status: 'error' } as const))
-          )
-        )
-      )
+            catchError(() => of({ status: 'error' } as const)),
+          ),
+        ),
+      ),
     ),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   private readonly scheduleResult$: Observable<StopScheduleResult> = this.scheduleState$.pipe(
     filter(
-      (state): state is Extract<ScheduleState, { status: 'success' }> => state.status === 'success'
+      (state): state is Extract<ScheduleState, { status: 'success' }> => state.status === 'success',
     ),
     map((state) => state.result),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   protected readonly isLoading$ = this.scheduleState$.pipe(
     map((state) => state.status === 'loading'),
-    distinctUntilChanged()
+    distinctUntilChanged(),
   );
 
   protected readonly loadError$ = this.scheduleState$.pipe(
     map((state) => state.status === 'error'),
-    distinctUntilChanged()
+    distinctUntilChanged(),
   );
 
   protected readonly viewModel$: Observable<StopScheduleUiModel> = combineLatest([
     this.scheduleResult$,
-    this.destinationControl.valueChanges.pipe(startWith(this.destinationControl.value))
+    this.destinationControl.valueChanges.pipe(startWith(this.destinationControl.value)),
   ]).pipe(
     map(([result, destination]) =>
       buildStopScheduleUiModel(
         result,
         new Date(),
-        destination === ALL_DESTINATIONS_OPTION ? null : destination
-      )
+        destination === ALL_DESTINATIONS_OPTION ? null : destination,
+      ),
     ),
-    shareReplay({ bufferSize: 1, refCount: false })
+    shareReplay({ bufferSize: 1, refCount: false }),
   );
 
   protected readonly allDestinationsOption = ALL_DESTINATIONS_OPTION;
@@ -239,18 +240,18 @@ export class StopDetailComponent {
 
   protected readonly timelineAnnouncement$ = combineLatest([
     this.viewModel$,
-    this.translate.onLangChange.pipe(startWith(null))
+    this.translate.onLangChange.pipe(startWith(null)),
   ]).pipe(
     map(([viewModel]) => this.buildTimelineAnnouncement(viewModel)),
     distinctUntilChanged(),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   constructor() {
     this.stopIdParam$
       .pipe(
         filter((stopId): stopId is null => stopId === null),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => this.redirectToHome());
 
@@ -258,10 +259,32 @@ export class StopDetailComponent {
     combineLatest([this.alarmScheduler.latestFired$, this.stopRouteContext$])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([event, context]) => {
-        if (event && event !== this.lastDismissedFiredEvent && event.alarm.stopId === context.stopId) {
+        if (
+          event &&
+          event !== this.lastDismissedFiredEvent &&
+          event.alarm.stopId === context.stopId
+        ) {
           this.firedAlarm.set(event);
         }
       });
+
+    // An open stop timetable already answers "are you riding this line?": mute the
+    // floating ride proposal while it covers this stop or any line listed here.
+    combineLatest([this.stopRouteContext$, this.scheduleResult$.pipe(startWith(null))])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([context, result]) => {
+        const lineIds = result
+          ? Array.from(new Set(result.schedule.services.map((service) => service.lineId)))
+          : [];
+        this.rideDetection.registerOpenSchedule(RIDE_OPEN_SCHEDULE_KEY, {
+          consortiumId: context.consortiumId,
+          stopIds: [context.stopId],
+          lineIds,
+        });
+      });
+    this.destroyRef.onDestroy(() =>
+      this.rideDetection.unregisterOpenSchedule(RIDE_OPEN_SCHEDULE_KEY),
+    );
   }
 
   protected retrySchedule(): void {
@@ -275,7 +298,7 @@ export class StopDetailComponent {
   protected async toggleServiceAlarm(
     context: StopRouteContext,
     item: StopScheduleUpcomingItem,
-    stopName: string
+    stopName: string,
   ): Promise<void> {
     const alarmId = this.alarmsService.serviceAlarmId(context.stopId, item.serviceId);
 
@@ -305,7 +328,7 @@ export class StopDetailComponent {
   private openCreateAlarmDialog(
     context: StopRouteContext,
     item: StopScheduleUpcomingItem,
-    stopName: string
+    stopName: string,
   ): void {
     const data: StopAlarmDialogData = {
       stopId: context.stopId,
@@ -315,28 +338,27 @@ export class StopDetailComponent {
       lineCode: item.lineCode,
       destination: item.destination,
       arrivalTime: item.arrivalTime,
-      minutesUntilArrival: item.minutesUntilArrival
+      minutesUntilArrival: item.minutesUntilArrival,
     };
 
     this.overlayDialogs.open<StopAlarmDialogComponent, StopAlarmDialogData, boolean>(
       StopAlarmDialogComponent,
-      { data, role: 'dialog' }
+      { data, role: 'dialog' },
     );
   }
 
   private openCancelAlarmDialog(alarmId: string): void {
-    const dialogRef = this.overlayDialogs.open<
+    const dialogRef = this.overlayDialogs.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
       ConfirmDialogComponent,
-      ConfirmDialogData,
-      boolean
-    >(ConfirmDialogComponent, {
-      data: {
-        titleKey: APP_CONFIG.translationKeys.stopDetail.alarms.cancelTitle,
-        messageKey: APP_CONFIG.translationKeys.stopDetail.alarms.cancelMessage,
-        confirmKey: APP_CONFIG.translationKeys.stopDetail.alarms.cancelConfirm,
-        cancelKey: APP_CONFIG.translationKeys.stopDetail.alarms.cancelKeep
-      }
-    });
+      {
+        data: {
+          titleKey: APP_CONFIG.translationKeys.stopDetail.alarms.cancelTitle,
+          messageKey: APP_CONFIG.translationKeys.stopDetail.alarms.cancelMessage,
+          confirmKey: APP_CONFIG.translationKeys.stopDetail.alarms.cancelConfirm,
+          cancelKey: APP_CONFIG.translationKeys.stopDetail.alarms.cancelKeep,
+        },
+      },
+    );
 
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
@@ -366,7 +388,8 @@ export class StopDetailComponent {
     let nextIndex = currentIndex;
 
     if (event.key === ARROW_LEFT_KEY) {
-      nextIndex = (currentIndex + STEP_PREVIOUS + STOP_DETAIL_SECTIONS.length) % STOP_DETAIL_SECTIONS.length;
+      nextIndex =
+        (currentIndex + STEP_PREVIOUS + STOP_DETAIL_SECTIONS.length) % STOP_DETAIL_SECTIONS.length;
     } else if (event.key === ARROW_RIGHT_KEY) {
       nextIndex = (currentIndex + STEP_NEXT) % STOP_DETAIL_SECTIONS.length;
     } else if (event.key === HOME_KEY) {
@@ -387,14 +410,14 @@ export class StopDetailComponent {
     this.selectSection(nextSection);
     const tabList = (event.currentTarget as HTMLElement | null)?.parentElement;
     const nextTab = tabList?.querySelector<HTMLButtonElement>(
-      `[data-stop-section="${nextSection}"]`
+      `[data-stop-section="${nextSection}"]`,
     );
     nextTab?.focus();
   }
 
   private loadFavoriteOption(
     stopId: string,
-    consortiumId: number | null
+    consortiumId: number | null,
   ): Observable<StopDirectoryOption | null> {
     if (consortiumId === null) {
       return this.stopDirectory.getOptionByStopId(stopId);
@@ -405,7 +428,7 @@ export class StopDetailComponent {
 
   private loadStopSchedule(
     stopId: string,
-    consortiumId: number | null
+    consortiumId: number | null,
   ): Observable<StopScheduleResult> {
     if (consortiumId === null) {
       return this.stopScheduleFacade.loadStopSchedule(stopId);
@@ -423,7 +446,8 @@ export class StopDetailComponent {
       return null;
     }
 
-    const nextService = viewModel.upcoming.find((service) => service.isNext) ?? viewModel.upcoming[0];
+    const nextService =
+      viewModel.upcoming.find((service) => service.isNext) ?? viewModel.upcoming[0];
 
     if (!nextService) {
       return null;
@@ -445,7 +469,7 @@ export class StopDetailComponent {
       lineCode: nextService.lineCode,
       destination: nextService.destination,
       statusText,
-      percentage: boundedProgress
+      percentage: boundedProgress,
     });
     const normalized = message.trim();
 
