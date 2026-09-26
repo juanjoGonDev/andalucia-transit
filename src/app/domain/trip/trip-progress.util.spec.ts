@@ -2,7 +2,8 @@ import {
   buildPolylineLengths,
   buildTripStopTimes,
   projectPointOnPolyline,
-  resolveTripProgress
+  resolveTripProgress,
+  slicePolylineBetweenPoints
 } from './trip-progress.util';
 
 const REVERSE_START = { latitude: 36.9, longitude: -2.0 };
@@ -119,5 +120,41 @@ describe('resolveTripProgress', () => {
     expect(progress.fraction).toBe(0);
     expect(progress.currentStopIndex).toBe(-1);
     expect(progress.nextStopIndex).toBe(0);
+  });
+});
+
+describe('slicePolylineBetweenPoints', () => {
+  it('trims the polyline to the projections of both segment endpoints', () => {
+    const beyondStart = { latitude: 36.8, longitude: -1.9 };
+    const beyondEnd = { latitude: 37.2, longitude: -2.3 };
+    const polyline = [beyondStart, REVERSE_START, MIDPOINT, REVERSE_END, beyondEnd];
+
+    const sliced = slicePolylineBetweenPoints(polyline, REVERSE_START, REVERSE_END);
+
+    // Both endpoints are vertices of the polyline: the cut keeps the stretch
+    // between them (endpoints interpolated onto their own positions).
+    expect(sliced.length).toBe(3);
+    expect(sliced[0].latitude).toBeCloseTo(REVERSE_START.latitude, 4);
+    expect(sliced[0].longitude).toBeCloseTo(REVERSE_START.longitude, 4);
+    expect(sliced[1]).toEqual(MIDPOINT);
+    expect(sliced[sliced.length - 1].latitude).toBeCloseTo(REVERSE_END.latitude, 4);
+    expect(sliced[sliced.length - 1].longitude).toBeCloseTo(REVERSE_END.longitude, 4);
+  });
+
+  it('interpolates the cut points when endpoints fall between vertices', () => {
+    const sliced = slicePolylineBetweenPoints(POLYLINE, MIDPOINT, REVERSE_END);
+
+    // Cut starts exactly at the middle vertex and ends at the last one.
+    expect(sliced.length).toBe(2);
+    expect(sliced[0].latitude).toBeCloseTo(MIDPOINT.latitude, 4);
+    expect(sliced[1].latitude).toBeCloseTo(REVERSE_END.latitude, 4);
+  });
+
+  it('falls back to the whole polyline when the stretch cannot be resolved', () => {
+    expect(slicePolylineBetweenPoints([], REVERSE_START, REVERSE_END)).toEqual([]);
+    expect(slicePolylineBetweenPoints([MIDPOINT], MIDPOINT, REVERSE_END)).toEqual([MIDPOINT]);
+    // Destination projecting before the origin means the geometry runs against
+    // the travel order: keep the full polyline instead of cutting nonsense.
+    expect(slicePolylineBetweenPoints(POLYLINE, REVERSE_END, REVERSE_START)).toBe(POLYLINE);
   });
 });

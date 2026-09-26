@@ -67,7 +67,7 @@ const SESSION: TripSessionRecord = {
   arriveTime: '2026-09-21T14:40:00.000Z',
 };
 
-const WORKSPACE_STOPS = [
+const SEGMENT_STOPS = [
   {
     stopId: 'par-001',
     name: 'La Gangosa',
@@ -94,22 +94,38 @@ const WORKSPACE_STOPS = [
   },
 ];
 
+// The workspace returns the whole direction: one stop beyond the destination.
+const LINE_STOPS = [
+  ...SEGMENT_STOPS,
+  {
+    stopId: 'par-1000',
+    name: 'Roquetas Centro',
+    latitude: 37.2,
+    longitude: -2.3,
+    nucleusName: 'Roquetas',
+    nucleusOrdinal: 1,
+  },
+];
+
 const POLYLINE = [
   { latitude: 36.9, longitude: -2.0 },
   { latitude: 37.0, longitude: -2.1 },
   { latitude: 37.1, longitude: -2.2 },
+  { latitude: 37.2, longitude: -2.3 },
 ];
 
 const PLAN_SPAN_MS =
   new Date(SESSION.arriveTime).getTime() - new Date(SESSION.departTime).getTime();
 
+const SEGMENT_POLYLINE = POLYLINE.slice(0, 3);
+
 const STOP_TIMES = buildTripStopTimes(
-  WORKSPACE_STOPS.map((stop) => ({
+  SEGMENT_STOPS.map((stop) => ({
     stopId: stop.stopId,
     latitude: stop.latitude,
     longitude: stop.longitude,
   })),
-  POLYLINE,
+  SEGMENT_POLYLINE,
   new Date(SESSION.departTime),
   new Date(SESSION.arriveTime),
 );
@@ -124,7 +140,7 @@ class LineRouteWorkspaceServiceStub {
         mode: 'Bus',
         coordinates: POLYLINE,
       },
-      stops: WORKSPACE_STOPS.map((stop) => ({
+      stops: LINE_STOPS.map((stop) => ({
         stopId: stop.stopId,
         name: stop.name,
         latitude: stop.latitude,
@@ -156,8 +172,12 @@ class LiveTripServiceStub {
   readonly startSpy = jasmine.createSpy('startTracking');
   readonly stopSpy = jasmine.createSpy('stopTracking');
 
-  startTracking(session: TripSessionRecord): void {
-    this.startSpy(session);
+  startTracking(
+    session: TripSessionRecord,
+    stops?: readonly { stopId: string; latitude: number; longitude: number }[],
+    polyline?: readonly { latitude: number; longitude: number }[],
+  ): void {
+    this.startSpy(session, stops, polyline);
   }
 
   stopTracking(): void {
@@ -280,6 +300,33 @@ describe('TripComponent', () => {
     // the sticky header and the destination timeline row never disagree.
     expect(stickyEta).toContain('16 minutos');
     expect(destinationCountdown).toBe('16m');
+  });
+
+  it('tracks only the traveled segment when the destination is mid-line', async () => {
+    await create();
+
+    const call = trips.startSpy.calls.mostRecent();
+    expect(call.args[1]?.map((stop: { stopId: string }) => stop.stopId)).toEqual([
+      'par-001',
+      'par-050',
+      'par-999',
+    ]);
+
+    // The polyline stops at the destination projection instead of the line end.
+    const polyline = call.args[2] ?? [];
+    expect(polyline.length).toBe(3);
+    expect(polyline[polyline.length - 1].latitude).toBeLessThan(37.15);
+
+    // Timeline and map only know the segment: nothing beyond the destination.
+    expect(fixture.debugElement.queryAll(By.css('.trip__stop')).length).toBe(3);
+
+    const viewButtons = fixture.debugElement.queryAll(By.css('.trip__view-button'));
+    viewButtons[1].nativeElement.click();
+    fixture.detectChanges();
+
+    const map = fixture.debugElement.query(By.directive(RouteMapComponent));
+    const mapStops = (map.componentInstance as RouteMapComponent).stops;
+    expect(mapStops.map((stop) => stop.stopId)).toEqual(['par-001', 'par-050', 'par-999']);
   });
 
   it('announces the next stop with its own countdown, not the destination ETA', async () => {

@@ -36,13 +36,17 @@ export function buildPolylineLengths(polyline: readonly GeoCoordinate[]): readon
 export function projectPointOnPolyline(
   point: GeoCoordinate,
   polyline: readonly GeoCoordinate[],
-): { readonly fraction: number; readonly distanceMeters: number } {
+): { readonly fraction: number; readonly distanceMeters: number; readonly lengthAlongMeters: number } {
   if (polyline.length === 0) {
-    return { fraction: 0, distanceMeters: Number.POSITIVE_INFINITY };
+    return { fraction: 0, distanceMeters: Number.POSITIVE_INFINITY, lengthAlongMeters: 0 };
   }
 
   if (polyline.length === 1) {
-    return { fraction: 0, distanceMeters: calculateDistanceInMeters(point, polyline[0]) };
+    return {
+      fraction: 0,
+      distanceMeters: calculateDistanceInMeters(point, polyline[0]),
+      lengthAlongMeters: 0,
+    };
   }
 
   const lengths = buildPolylineLengths(polyline);
@@ -83,7 +87,77 @@ export function projectPointOnPolyline(
   }
 
   const fraction = totalLength === 0 ? 0 : bestLengthAlong / totalLength;
-  return { fraction, distanceMeters: bestDistance };
+  return { fraction, distanceMeters: bestDistance, lengthAlongMeters: bestLengthAlong };
+}
+
+/**
+ * Trims a polyline to the stretch the traveler actually rides: the projections of
+ * the segment's first and last stop become the new endpoints (interpolated on the
+ * line), keeping the original vertices in between. When the stretch cannot be
+ * resolved (degenerate geometry or projections running against the polyline), the
+ * original polyline is returned so callers can fall back to the full line.
+ */
+export function slicePolylineBetweenPoints(
+  polyline: readonly GeoCoordinate[],
+  start: GeoCoordinate,
+  end: GeoCoordinate,
+): readonly GeoCoordinate[] {
+  if (polyline.length < 2) {
+    return polyline;
+  }
+
+  const lengths = buildPolylineLengths(polyline);
+  const totalLength = lengths[lengths.length - 1];
+
+  if (totalLength <= 0) {
+    return polyline;
+  }
+
+  const startLength = projectPointOnPolyline(start, polyline).lengthAlongMeters;
+  const endLength = projectPointOnPolyline(end, polyline).lengthAlongMeters;
+  const EPSILON_METERS = 0.5;
+
+  if (endLength - startLength < EPSILON_METERS) {
+    return polyline;
+  }
+
+  const sliced: GeoCoordinate[] = [interpolateLength(polyline, lengths, startLength)];
+
+  for (let index = 1; index < polyline.length - 1; index += 1) {
+    const lengthAlong = lengths[index];
+
+    if (lengthAlong > startLength + EPSILON_METERS && lengthAlong < endLength - EPSILON_METERS) {
+      sliced.push(polyline[index]);
+    }
+  }
+
+  sliced.push(interpolateLength(polyline, lengths, endLength));
+  return Object.freeze(sliced);
+}
+
+function interpolateLength(
+  polyline: readonly GeoCoordinate[],
+  lengths: readonly number[],
+  targetLength: number,
+): GeoCoordinate {
+  const clamped = Math.max(0, Math.min(lengths[lengths.length - 1], targetLength));
+
+  for (let index = 1; index < polyline.length; index += 1) {
+    const segmentLength = lengths[index] - lengths[index - 1];
+
+    if (clamped <= lengths[index] || index === polyline.length - 1) {
+      const ratio = segmentLength === 0 ? 0 : (clamped - lengths[index - 1]) / segmentLength;
+      const previous = polyline[index - 1];
+      const current = polyline[index];
+
+      return {
+        latitude: previous.latitude + (current.latitude - previous.latitude) * ratio,
+        longitude: previous.longitude + (current.longitude - previous.longitude) * ratio,
+      };
+    }
+  }
+
+  return polyline[polyline.length - 1];
 }
 
 /**

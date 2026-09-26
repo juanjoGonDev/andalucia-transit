@@ -17,12 +17,13 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { catchError, of } from 'rxjs';
 import { AppConfig } from '@core/config';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
+import { sliceStopsToSegment } from '@domain/lines/line-route-geometry';
 import {
   LineRouteWorkspaceService,
   LineRouteWorkspaceStop,
 } from '@domain/lines/line-route-workspace.service';
 import { LiveTripService, LiveTripState } from '@domain/trip/live-trip.service';
-import { estimateEtaMs } from '@domain/trip/trip-progress.util';
+import { estimateEtaMs, slicePolylineBetweenPoints } from '@domain/trip/trip-progress.util';
 import { TripSessionRecord, TripSessionStorage } from '@domain/trip/trip-session.storage';
 import { buildCountdownDuration } from '@domain/utils/countdown-labels.util';
 import { GeoCoordinate } from '@domain/utils/geo-distance.util';
@@ -229,23 +230,35 @@ export class TripComponent implements OnInit, OnDestroy {
           return;
         }
 
-        const geoStops = view.stops.map((stop) => ({
+        // The workspace returns the whole direction (oriented origin-first); the
+        // live trip only tracks the traveled segment, so both the stop list and
+        // the polyline are cut down to origin→destination. Everything downstream
+        // (timeline, map, GPS progress, arrival radius, sticky ETA) is then
+        // anchored on the traveler's destination instead of the line's end.
+        const segmentStops = sliceStopsToSegment(
+          view.stops,
+          [session.originStopId],
+          [session.destinationStopId],
+        );
+        const segmentFirst = segmentStops[0];
+        const segmentLast = segmentStops[segmentStops.length - 1];
+        const coordinates =
+          segmentStops.length >= 2 && segmentFirst && segmentLast
+            ? slicePolylineBetweenPoints(view.coordinates, segmentFirst, segmentLast)
+            : view.coordinates;
+
+        const geoStops = segmentStops.map((stop) => ({
           stopId: stop.stopId,
           latitude: stop.latitude,
           longitude: stop.longitude,
         }));
-        this.stopsMeta = view.stops.map((stop) => ({
+        this.stopsMeta = segmentStops.map((stop) => ({
           name: stop.name,
           nucleusName: stop.nucleusName ?? null,
           nucleusOrdinal: stop.nucleusOrdinal ?? null,
         }));
-        this.mapStops.set(view.stops);
-        const coordinates = view.coordinates.map((point) => ({
-          latitude: point.latitude,
-          longitude: point.longitude,
-        }));
+        this.mapStops.set(segmentStops);
         this.mapCoordinates.set(coordinates);
-
         this.liveTrip.startTracking(this.session, geoStops, coordinates);
         this.scrollToCurrentStop();
       });
