@@ -132,10 +132,19 @@ export class TripComponent implements OnInit, OnDestroy {
     );
   });
 
-  protected readonly etaLabel = computed(() => {
-    const seconds = Math.ceil(this.state().etaMs / 1000);
-    const duration = buildCountdownDuration(seconds);
-    return this.translate.instant(`countdown.${duration.unit}`, { value: duration.value });
+  protected readonly etaLabel = computed(() =>
+    this.formatCountdown(this.destinationEtaMs()),
+  );
+
+  /**
+   * Destination countdown taken from the same stop view the timeline renders, so
+   * the sticky header always shows exactly what the destination row (and its map
+   * popup) shows — one GPS-anchored number everywhere.
+   */
+  protected readonly destinationEtaMs = computed(() => {
+    const stops = this.stopsView();
+    const destination = stops.length > 0 ? stops[stops.length - 1] : null;
+    return destination ? destination.etaMs : this.state().etaMs;
   });
 
   protected readonly nextStopId = computed(() => this.state().progress?.nextStop?.stopId ?? null);
@@ -322,7 +331,11 @@ export class TripComponent implements OnInit, OnDestroy {
   }
 
   protected infoEtaLabel(info: TripStopView): string {
-    const duration = buildCountdownDuration(Math.ceil(info.etaMs / 1000));
+    return this.formatCountdown(info.etaMs);
+  }
+
+  private formatCountdown(etaMs: number): string {
+    const duration = buildCountdownDuration(Math.ceil(etaMs / 1000));
     return this.translate.instant(`countdown.${duration.unit}`, { value: duration.value });
   }
 
@@ -457,11 +470,18 @@ export class TripComponent implements OnInit, OnDestroy {
     }
 
     if (this.lastAnnouncedStopId !== null) {
-      const name = this.stopsMeta[state.progress?.nextStopIndex ?? 0]?.name ?? nextStop.stopId;
+      const nextIndex = state.progress?.nextStopIndex ?? 0;
+      const timing = state.stopTimes[nextIndex];
+      const name = this.stopsMeta[nextIndex]?.name ?? nextStop.stopId;
+      // Announce the next stop's own countdown, matching what its timeline row
+      // and map popup show — never the destination-wide ETA.
+      const etaMs = timing
+        ? this.stopEtaMs(timing.fraction, timing.estimatedTime, state, Date.now())
+        : this.state().etaMs;
       this.announcement.set(
         this.translate.instant(this.keys.nextStopAnnouncement, {
           stop: name,
-          time: this.etaLabel(),
+          time: this.formatCountdown(etaMs),
         }),
       );
     }

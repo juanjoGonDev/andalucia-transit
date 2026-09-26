@@ -263,7 +263,49 @@ describe('TripComponent', () => {
 
     const sticky = fixture.debugElement.query(By.css('.trip__sticky'));
     expect(sticky.nativeElement.textContent).toContain('Almería Estación');
-    expect(sticky.nativeElement.textContent).toContain('Llegada en 14 minutos');
+    expect(sticky.nativeElement.textContent).toContain('Llegada en 16 minutos');
+  });
+
+  it('shows the same GPS-anchored countdown in the sticky and the destination row', async () => {
+    await create();
+
+    const stickyEta = fixture.debugElement.query(By.css('.trip__sticky-eta')).nativeElement
+      .textContent;
+    const rows = fixture.debugElement.queryAll(By.css('.trip__stop'));
+    const destinationCountdown = rows[rows.length - 1]
+      .query(By.css('.trip__stop-countdown'))
+      .nativeElement.textContent.trim();
+
+    // Both numbers derive from the same GPS projection of the trip progress:
+    // the sticky header and the destination timeline row never disagree.
+    expect(stickyEta).toContain('16 minutos');
+    expect(destinationCountdown).toBe('16m');
+  });
+
+  it('announces the next stop with its own countdown, not the destination ETA', async () => {
+    await create();
+
+    // A first transition primes the announcer without speaking.
+    trips.state.set(
+      trackingState({
+        progress: {
+          fraction: 0.4,
+          currentStopIndex: 0,
+          nextStopIndex: 1,
+          nextStop: STOP_TIMES[1],
+          completed: false,
+        },
+      }),
+    );
+    fixture.detectChanges();
+
+    // Reaching the next stop announces it with the countdown its row shows.
+    trips.state.set(trackingState());
+    fixture.detectChanges();
+
+    const live = fixture.debugElement.query(By.css('[aria-live="polite"]'));
+    expect(live.nativeElement.textContent).toContain('Siguiente parada: Almería Estación');
+    expect(live.nativeElement.textContent).toContain('Llegada en 16 minutos');
   });
 
   it('places the recenter GPS button inside the sticky destination block', async () => {
