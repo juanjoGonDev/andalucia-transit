@@ -44,6 +44,7 @@ export interface MapStopMarker {
 
 export type MapStopSelectHandler = (stopId: string) => void;
 export type MapViewportSettledHandler = (center: GeoCoordinate) => void;
+export type MapUserPanStartedHandler = () => void;
 
 export interface MapStopInteractionOptions {
   readonly getDetailsLabel: () => string;
@@ -53,6 +54,8 @@ export interface MapStopInteractionOptions {
 
 export interface MapHandle {
   setView(center: GeoCoordinate, zoom: number, animate?: boolean): void;
+  /** Pans the camera to a coordinate keeping the current zoom level. */
+  panTo(center: GeoCoordinate, animate?: boolean): void;
   renderUserLocation(coordinate: GeoCoordinate): void;
   renderStops(stops: readonly MapStopMarker[], interactions?: MapStopInteractionOptions): void;
   fitToCoordinates(points: readonly GeoCoordinate[], animate?: boolean): void;
@@ -62,6 +65,8 @@ export interface MapHandle {
   focusStop(stopId: string, zoom: number, animate?: boolean): boolean;
   renderRoutes(routes: readonly MapRoutePolyline[], activeRouteId: string | null): void;
   onViewportSettled(handler: MapViewportSettledHandler): () => void;
+  /** Notifies when the user starts dragging the map (never on programmatic moves). */
+  onUserPanStarted(handler: MapUserPanStartedHandler): () => void;
   invalidateSize(): void;
   destroy(): void;
 }
@@ -243,6 +248,12 @@ export class LeafletMapService {
         }
 
         map.setView(latLng, zoom);
+      },
+      panTo: (center, animate = false) => {
+        map.panTo(this.toLatLng(center), {
+          animate,
+          duration: CAMERA_ANIMATION_DURATION_SECONDS,
+        });
       },
       renderUserLocation: (coordinate) => {
         const latLng = this.toLatLng(coordinate);
@@ -426,6 +437,15 @@ export class LeafletMapService {
 
         return () => {
           map.off('moveend', notify);
+        };
+      },
+      onUserPanStarted: (handler) => {
+        // `dragstart` only fires for user-initiated drags: programmatic pans
+        // (setView, panTo, flyTo) emit `movestart` instead.
+        map.on('dragstart', handler);
+
+        return () => {
+          map.off('dragstart', handler);
         };
       },
       invalidateSize: () => {

@@ -20,12 +20,14 @@ class MapHandleStub implements MapHandle {
   readonly invalidateSize = jasmine.createSpy('invalidateSize');
   readonly destroy = jasmine.createSpy('destroy');
   readonly setView = jasmine.createSpy('setView');
+  readonly panTo = jasmine.createSpy('panTo');
   readonly renderUserLocation = jasmine.createSpy('renderUserLocation');
   readonly restrictToCoordinates = jasmine.createSpy('restrictToCoordinates');
   readonly focusStop = jasmine.createSpy('focusStop').and.returnValue(true);
 
   renderedStops: readonly MapStopMarker[] = [];
   interactions: MapStopInteractionOptions | undefined;
+  userPanStartedHandler: (() => void) | null = null;
 
   renderStops(
     stops: readonly MapStopMarker[],
@@ -37,6 +39,14 @@ class MapHandleStub implements MapHandle {
 
   onViewportSettled(_handler: MapViewportSettledHandler): () => void {
     return () => undefined;
+  }
+
+  onUserPanStarted(handler: () => void): () => void {
+    this.userPanStartedHandler = handler;
+
+    return () => {
+      this.userPanStartedHandler = null;
+    };
   }
 }
 
@@ -187,5 +197,105 @@ describe('RouteMapComponent', () => {
       { latitude: 37.1, longitude: -5.9 },
       { latitude: 37.2, longitude: -5.8 }
     ]);
+  });
+
+  it('only moves the user marker when following is disabled', () => {
+    fixture.componentRef.setInput('userPosition', { latitude: 37.15, longitude: -5.85 });
+    fixture.detectChanges();
+
+    expect(maps.handle.renderUserLocation).toHaveBeenCalledWith({
+      latitude: 37.15,
+      longitude: -5.85
+    });
+    expect(maps.handle.setView).not.toHaveBeenCalled();
+    expect(maps.handle.panTo).not.toHaveBeenCalled();
+  });
+
+  it('follows the user: first fix flies in at focus zoom, later fixes pan along', () => {
+    fixture.componentRef.setInput('followUser', true);
+    fixture.detectChanges();
+
+    fixture.componentRef.setInput('userPosition', { latitude: 37.15, longitude: -5.85 });
+    fixture.detectChanges();
+
+    expect(maps.handle.setView).toHaveBeenCalledWith(
+      { latitude: 37.15, longitude: -5.85 },
+      16,
+      true
+    );
+
+    fixture.componentRef.setInput('userPosition', { latitude: 37.16, longitude: -5.84 });
+    fixture.detectChanges();
+
+    expect(maps.handle.panTo).toHaveBeenCalledWith({ latitude: 37.16, longitude: -5.84 }, true);
+    expect(maps.handle.setView).toHaveBeenCalledTimes(1);
+    expect(maps.handle.renderUserLocation).toHaveBeenCalledWith({
+      latitude: 37.16,
+      longitude: -5.84
+    });
+  });
+
+  it('anchors the initial camera on the user instead of fitting the whole route', () => {
+    fixture.componentRef.setInput('followUser', true);
+    fixture.componentRef.setInput('userPosition', { latitude: 37.15, longitude: -5.85 });
+    fixture.detectChanges();
+    maps.handle.setView.calls.reset();
+    maps.handle.fitToCoordinates.calls.reset();
+
+    fixture.componentRef.setInput('routeId', 'line-2');
+    fixture.detectChanges();
+
+    expect(maps.handle.setView).toHaveBeenCalledWith(
+      { latitude: 37.15, longitude: -5.85 },
+      16,
+      false
+    );
+    expect(maps.handle.fitToCoordinates).not.toHaveBeenCalled();
+  });
+
+  it('pauses following while the user drags the map and resumes it on recenter', () => {
+    fixture.componentRef.setInput('followUser', true);
+    fixture.detectChanges();
+
+    fixture.componentRef.setInput('userPosition', { latitude: 37.15, longitude: -5.85 });
+    fixture.detectChanges();
+    expect(maps.handle.setView).toHaveBeenCalledTimes(1);
+
+    maps.handle.userPanStartedHandler?.();
+    fixture.componentRef.setInput('userPosition', { latitude: 37.16, longitude: -5.84 });
+    fixture.detectChanges();
+
+    // The marker keeps updating, but the camera stays where the user left it.
+    expect(maps.handle.panTo).not.toHaveBeenCalled();
+    expect(maps.handle.renderUserLocation).toHaveBeenCalledWith({
+      latitude: 37.16,
+      longitude: -5.84
+    });
+
+    fixture.componentInstance.centerOnUser();
+    fixture.componentRef.setInput('userPosition', { latitude: 37.17, longitude: -5.83 });
+    fixture.detectChanges();
+
+    expect(maps.handle.setView).toHaveBeenCalledWith(
+      { latitude: 37.16, longitude: -5.84 },
+      16,
+      true
+    );
+    expect(maps.handle.panTo).toHaveBeenCalledWith({ latitude: 37.17, longitude: -5.83 }, true);
+  });
+
+  it('pauses following while a stop popup is open so it does not fight the camera', () => {
+    fixture.componentRef.setInput('followUser', true);
+    fixture.detectChanges();
+
+    fixture.componentRef.setInput('userPosition', { latitude: 37.15, longitude: -5.85 });
+    fixture.detectChanges();
+    expect(maps.handle.setView).toHaveBeenCalledTimes(1);
+
+    maps.handle.interactions?.onSelect?.('stop-b');
+    fixture.componentRef.setInput('userPosition', { latitude: 37.16, longitude: -5.84 });
+    fixture.detectChanges();
+
+    expect(maps.handle.panTo).not.toHaveBeenCalled();
   });
 });

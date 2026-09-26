@@ -66,6 +66,22 @@ class MapHandleStub implements MapHandle {
     this.viewZoomLevels.push(zoom);
   }
 
+  readonly panTargets: GeoCoordinateStub[] = [];
+
+  panTo(center: GeoCoordinateStub): void {
+    this.panTargets.push(center);
+  }
+
+  userPanStartedHandler: (() => void) | null = null;
+
+  onUserPanStarted(handler: () => void): () => void {
+    this.userPanStartedHandler = handler;
+
+    return () => {
+      this.userPanStartedHandler = null;
+    };
+  }
+
   renderUserLocation(coordinate: GeoCoordinateStub): void {
     this.userLocations.push(coordinate);
   }

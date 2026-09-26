@@ -559,7 +559,7 @@
     "headline": "Línea {lineCode} · hacia {destination}",
     "eta": "Llegada en {time}",
     "locating": "Buscando tu ubicación GPS…",
-    "unavailable": "No se pudo obtener tu posición. Mostrando solo los horarios estimados.",
+    "unavailable": "No se pudo obtener tu posición. Se mantiene la última ubicación conocida.",
     "completed": "Has llegado a {destination}",
     "endTracking": "Finalizar seguimiento",
     "recenter": "Centrar la vista en tu posición actual",
