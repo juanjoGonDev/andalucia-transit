@@ -17,6 +17,8 @@ import {
 import { LiveTripService, LiveTripState } from '@domain/trip/live-trip.service';
 import { buildTripStopTimes } from '@domain/trip/trip-progress.util';
 import { TRIP_SESSION_STORAGE_KEY, TripSessionRecord } from '@domain/trip/trip-session.storage';
+import { LeafletMapService, MapCreateOptions, MapHandle } from '@shared/map/leaflet-map.service';
+import { RouteMapComponent } from '@shared/map/route-map/route-map.component';
 import { TripComponent } from './trip.component';
 
 class TranslateTestingLoader implements TranslateLoader {
@@ -163,10 +165,41 @@ class LiveTripServiceStub {
   }
 }
 
+class TripMapHandleStub implements MapHandle {
+  readonly setView = jasmine.createSpy('setView');
+  readonly panTo = jasmine.createSpy('panTo');
+  readonly renderUserLocation = jasmine.createSpy('renderUserLocation');
+  readonly renderStops = jasmine.createSpy('renderStops');
+  readonly fitToCoordinates = jasmine.createSpy('fitToCoordinates');
+  readonly restrictToCoordinates = jasmine.createSpy('restrictToCoordinates');
+  readonly highlightStop = jasmine.createSpy('highlightStop');
+  readonly centerStop = jasmine.createSpy('centerStop').and.returnValue(true);
+  readonly focusStop = jasmine.createSpy('focusStop').and.returnValue(true);
+  readonly renderRoutes = jasmine.createSpy('renderRoutes');
+  readonly invalidateSize = jasmine.createSpy('invalidateSize');
+  readonly destroy = jasmine.createSpy('destroy');
+
+  onViewportSettled(): () => void {
+    return () => undefined;
+  }
+
+  onUserPanStarted(): () => void {
+    return () => undefined;
+  }
+}
+
+class LeafletMapServiceStub {
+  readonly handle = new TripMapHandleStub();
+  readonly create = jasmine
+    .createSpy<(container: HTMLElement, options: MapCreateOptions) => MapHandle>('create')
+    .and.callFake(() => this.handle);
+}
+
 describe('TripComponent', () => {
   let fixture: ComponentFixture<TripComponent>;
   let trips: LiveTripServiceStub;
   let router: Router;
+  let maps: LeafletMapServiceStub;
 
   function trackingState(overrides: Partial<LiveTripState> = {}): LiveTripState {
     return {
@@ -191,6 +224,7 @@ describe('TripComponent', () => {
 
   async function create(): Promise<void> {
     trips = new LiveTripServiceStub();
+    maps = new LeafletMapServiceStub();
     window.localStorage.setItem(TRIP_SESSION_STORAGE_KEY, JSON.stringify(SESSION));
 
     await TestBed.configureTestingModule({
@@ -205,6 +239,7 @@ describe('TripComponent', () => {
         provideRouter([]),
         { provide: LiveTripService, useValue: trips },
         { provide: LineRouteWorkspaceService, useClass: LineRouteWorkspaceServiceStub },
+        { provide: LeafletMapService, useValue: maps },
       ],
     }).compileComponents();
 
@@ -347,5 +382,38 @@ describe('TripComponent', () => {
 
     expect(trips.stopSpy).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/']);
+  });
+
+  it('renders the live map with camera following enabled for the user position', async () => {
+    await create();
+
+    const viewButtons = fixture.debugElement.queryAll(By.css('.trip__view-button'));
+    viewButtons[1].nativeElement.click();
+    fixture.detectChanges();
+
+    const map = fixture.debugElement.query(By.directive(RouteMapComponent));
+    expect(map).not.toBeNull();
+    expect((map.componentInstance as RouteMapComponent).followUser).toBeTrue();
+    expect((map.componentInstance as RouteMapComponent).userPosition).toEqual({
+      latitude: 37.0,
+      longitude: -2.0998
+    });
+  });
+
+  it('recenters the live map on the user position from the sticky action', async () => {
+    await create();
+
+    const viewButtons = fixture.debugElement.queryAll(By.css('.trip__view-button'));
+    viewButtons[1].nativeElement.click();
+    fixture.detectChanges();
+    maps.handle.setView.calls.reset();
+
+    fixture.debugElement.query(By.css('.trip__sticky .trip__recenter')).nativeElement.click();
+
+    expect(maps.handle.setView).toHaveBeenCalledWith(
+      { latitude: 37.0, longitude: -2.0998 },
+      16,
+      true
+    );
   });
 });
