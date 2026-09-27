@@ -14,6 +14,8 @@ import { TripSessionRecord, TripSessionStorage } from './trip-session.storage';
 
 export const TRIP_ETA_TICK_MS = 1_000;
 export const TRIP_ARRIVAL_RADIUS_METERS = 45;
+/** How long the last GPS fix stays authoritative once fixes stop arriving. */
+export const TRIP_GPS_STALE_MS = 60_000;
 
 export type LiveTripStatus = 'idle' | 'locating' | 'tracking' | 'completed' | 'unavailable';
 
@@ -107,9 +109,10 @@ export class LiveTripService {
       { enableHighAccuracy: true, maximumAge: 0, timeout: 15_000 },
     );
 
-    this.etaTimer = interval(TRIP_ETA_TICK_MS).subscribe(() =>
-      this.patch({ etaMs: this.remainingMs() }),
-    );
+    this.etaTimer = interval(TRIP_ETA_TICK_MS).subscribe(() => {
+      this.expireStaleFix();
+      this.patch({ etaMs: this.remainingMs() });
+    });
   }
 
   stopTracking(): void {
@@ -186,7 +189,38 @@ export class LiveTripService {
   }
 
   private handleError(): void {
-    this.patch({ status: 'unavailable', progress: null, progressAt: null });
+    // Transient GPS errors are routine (indoors, tunnels, device throttling):
+    // the last fix stays authoritative so the timeline, the sticky destination
+    // countdown and the map keep telling one consistent GPS-anchored story.
+    // `expireStaleFix` degrades everything to the timetable once it goes stale.
+    this.patch({ status: 'unavailable' });
+  }
+
+  /**
+   * Drops the GPS anchor once no fresh fix has arrived for a while, so every
+   * countdown (sticky ETA included) falls back to the timetable together
+   * instead of drifting on a stale projection.
+   */
+  private expireStaleFix(): void {
+    const status = this.stateSignal().status;
+
+    if (status === 'idle' || status === 'completed' || this.anchorFraction === null) {
+      return;
+    }
+
+    if (Date.now() - this.anchorAt <= TRIP_GPS_STALE_MS) {
+      return;
+    }
+
+    this.anchorFraction = null;
+    this.anchorAt = 0;
+    this.patch({
+      status: 'unavailable',
+      progress: null,
+      progressAt: null,
+      userPosition: null,
+      accuracyMeters: null,
+    });
   }
 
   private remainingMs(): number {

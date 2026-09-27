@@ -59,29 +59,15 @@ textarea {
 }
 
 /* CDK overlays default to z-index 1000, which sits below the app's fixed
-   bottom navigation (1100) and let the calendar render behind it. Raise the
-   datepicker layers above the navigation stack (sticky) but below toasts. */
-.cdk-overlay-pane.mat-datepicker-popup,
-.cdk-overlay-pane.mat-datepicker-dialog {
-  z-index: var(--z-index-modal);
-}
-
-/* Raise the whole overlay container while the touch dialog is open: the pane's
-   own z-index is scoped to the container's stacking context (1000), so it could
-   never clear the fixed bottom navigation (sticky=1100) on its own. */
-.cdk-overlay-container:has(.cdk-overlay-pane.mat-datepicker-dialog) {
-  z-index: var(--z-index-modal);
-}
-
-/* Same treatment for the app's custom overlay dialogs (alarm, confirmations):
-   their action buttons sit in the lower part of the screen, exactly where the
-   fixed bottom navigation floats. */
+   bottom navigation (1100) and lets the calendar render behind it. Lift the
+   whole overlay container instead of its children: inside the container CDK
+   keeps the backdrop and the pane wrapper at the same z-index (1000) and
+   resolves them by DOM order, so the calendar paints above its backdrop.
+   Raising only the backdrop (previous approach) inverted that order on the
+   touch dialog, making the backdrop swallow every calendar tap on mobile. */
+.cdk-overlay-container:has(.cdk-overlay-pane.mat-datepicker-popup),
+.cdk-overlay-container:has(.cdk-overlay-pane.mat-datepicker-dialog),
 .cdk-overlay-container:has(.cdk-overlay-pane app-overlay-dialog-container) {
-  z-index: var(--z-index-modal);
-}
-
-.cdk-overlay-container:has(.cdk-overlay-pane.mat-datepicker-dialog)
-  .cdk-overlay-backdrop {
   z-index: var(--z-index-modal);
 }
 

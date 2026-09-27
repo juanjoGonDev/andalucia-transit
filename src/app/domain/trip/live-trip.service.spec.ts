@@ -1,7 +1,7 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { GeolocationService } from '@core/services/geolocation.service';
 import { GeoCoordinate } from '@domain/utils/geo-distance.util';
-import { LiveTripService, TRIP_ETA_TICK_MS } from './live-trip.service';
+import { LiveTripService, TRIP_ETA_TICK_MS, TRIP_GPS_STALE_MS } from './live-trip.service';
 import { TRIP_SESSION_STORAGE_KEY, TripSessionRecord } from './trip-session.storage';
 
 const NOW = new Date('2026-09-21T14:10:00.000Z');
@@ -142,17 +142,47 @@ describe('LiveTripService', () => {
     expect(window.localStorage.getItem(TRIP_SESSION_STORAGE_KEY)).toBeNull();
   });
 
-  it('degrades gracefully when the device cannot deliver GPS', () => {
+  it('keeps the last GPS fix when fixes fail so every countdown stays anchored', () => {
     const service = configure();
     service.startTracking(SESSION, STOPS, POLYLINE);
+    gps.emit(37.0, -2.1003);
+    const before = service.state();
 
     gps.errorHandler?.({ code: 1, message: 'denied' } as GeolocationPositionError);
 
-    expect(service.state().status).toBe('unavailable');
-    expect(service.state().progress).toBeNull();
-    expect(service.state().etaMs).toBeGreaterThanOrEqual(0);
+    const state = service.state();
+    expect(state.status).toBe('unavailable');
+    expect(state.progress).toEqual(before.progress);
+    expect(state.progressAt).toBe(before.progressAt);
+    expect(state.userPosition).toEqual(before.userPosition);
+    expect(state.etaMs).toBe(before.etaMs);
     service.stopTracking();
   });
+
+  it('degrades to the timetable together once the last fix goes stale', fakeAsync(() => {
+    const virtualStart = new Date(Date.now());
+    const futureSession: TripSessionRecord = {
+      ...SESSION,
+      departTime: virtualStart.toISOString(),
+      arriveTime: new Date(virtualStart.getTime() + 30 * 60_000).toISOString(),
+    };
+    const service = configure();
+    service.startTracking(futureSession, STOPS, POLYLINE);
+    gps.emit(37.0, -2.1003);
+    expect(service.state().progress).not.toBeNull();
+
+    gps.errorHandler?.({ code: 1, message: 'denied' } as GeolocationPositionError);
+    tick(TRIP_GPS_STALE_MS + TRIP_ETA_TICK_MS);
+
+    const state = service.state();
+    expect(state.status).toBe('unavailable');
+    expect(state.progress).toBeNull();
+    expect(state.userPosition).toBeNull();
+    // No GPS anchor remains: the countdown falls back to the scheduled arrival.
+    const scheduledRemaining = 30 * 60_000 - (TRIP_GPS_STALE_MS + TRIP_ETA_TICK_MS);
+    expect(state.etaMs).toBe(scheduledRemaining);
+    service.stopTracking();
+  }));
 
   it('updates the ETA on a regular tick so the countdown keeps moving', fakeAsync(() => {
     const service = configure();

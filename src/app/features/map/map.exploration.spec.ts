@@ -58,6 +58,14 @@ class MapHandleStub implements MapHandle {
     this.setViewCount += 1;
   }
 
+  panTo(): void {
+    return;
+  }
+
+  onUserPanStarted(): () => void {
+    return () => undefined;
+  }
+
   renderUserLocation(): void {
     this.userLocationRenderCount += 1;
   }

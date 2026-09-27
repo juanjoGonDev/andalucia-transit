@@ -17,12 +17,13 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { catchError, of } from 'rxjs';
 import { AppConfig } from '@core/config';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
+import { sliceStopsToSegment } from '@domain/lines/line-route-geometry';
 import {
   LineRouteWorkspaceService,
   LineRouteWorkspaceStop,
 } from '@domain/lines/line-route-workspace.service';
 import { LiveTripService, LiveTripState } from '@domain/trip/live-trip.service';
-import { estimateEtaMs } from '@domain/trip/trip-progress.util';
+import { estimateEtaMs, slicePolylineBetweenPoints } from '@domain/trip/trip-progress.util';
 import { TripSessionRecord, TripSessionStorage } from '@domain/trip/trip-session.storage';
 import { buildCountdownDuration } from '@domain/utils/countdown-labels.util';
 import { GeoCoordinate } from '@domain/utils/geo-distance.util';
@@ -132,10 +133,19 @@ export class TripComponent implements OnInit, OnDestroy {
     );
   });
 
-  protected readonly etaLabel = computed(() => {
-    const seconds = Math.ceil(this.state().etaMs / 1000);
-    const duration = buildCountdownDuration(seconds);
-    return this.translate.instant(`countdown.${duration.unit}`, { value: duration.value });
+  protected readonly etaLabel = computed(() =>
+    this.formatCountdown(this.destinationEtaMs()),
+  );
+
+  /**
+   * Destination countdown taken from the same stop view the timeline renders, so
+   * the sticky header always shows exactly what the destination row (and its map
+   * popup) shows — one GPS-anchored number everywhere.
+   */
+  protected readonly destinationEtaMs = computed(() => {
+    const stops = this.stopsView();
+    const destination = stops.length > 0 ? stops[stops.length - 1] : null;
+    return destination ? destination.etaMs : this.state().etaMs;
   });
 
   protected readonly nextStopId = computed(() => this.state().progress?.nextStop?.stopId ?? null);
@@ -220,23 +230,35 @@ export class TripComponent implements OnInit, OnDestroy {
           return;
         }
 
-        const geoStops = view.stops.map((stop) => ({
+        // The workspace returns the whole direction (oriented origin-first); the
+        // live trip only tracks the traveled segment, so both the stop list and
+        // the polyline are cut down to origin→destination. Everything downstream
+        // (timeline, map, GPS progress, arrival radius, sticky ETA) is then
+        // anchored on the traveler's destination instead of the line's end.
+        const segmentStops = sliceStopsToSegment(
+          view.stops,
+          [session.originStopId],
+          [session.destinationStopId],
+        );
+        const segmentFirst = segmentStops[0];
+        const segmentLast = segmentStops[segmentStops.length - 1];
+        const coordinates =
+          segmentStops.length >= 2 && segmentFirst && segmentLast
+            ? slicePolylineBetweenPoints(view.coordinates, segmentFirst, segmentLast)
+            : view.coordinates;
+
+        const geoStops = segmentStops.map((stop) => ({
           stopId: stop.stopId,
           latitude: stop.latitude,
           longitude: stop.longitude,
         }));
-        this.stopsMeta = view.stops.map((stop) => ({
+        this.stopsMeta = segmentStops.map((stop) => ({
           name: stop.name,
           nucleusName: stop.nucleusName ?? null,
           nucleusOrdinal: stop.nucleusOrdinal ?? null,
         }));
-        this.mapStops.set(view.stops);
-        const coordinates = view.coordinates.map((point) => ({
-          latitude: point.latitude,
-          longitude: point.longitude,
-        }));
+        this.mapStops.set(segmentStops);
         this.mapCoordinates.set(coordinates);
-
         this.liveTrip.startTracking(this.session, geoStops, coordinates);
         this.scrollToCurrentStop();
       });
@@ -322,7 +344,11 @@ export class TripComponent implements OnInit, OnDestroy {
   }
 
   protected infoEtaLabel(info: TripStopView): string {
-    const duration = buildCountdownDuration(Math.ceil(info.etaMs / 1000));
+    return this.formatCountdown(info.etaMs);
+  }
+
+  private formatCountdown(etaMs: number): string {
+    const duration = buildCountdownDuration(Math.ceil(etaMs / 1000));
     return this.translate.instant(`countdown.${duration.unit}`, { value: duration.value });
   }
 
@@ -457,11 +483,18 @@ export class TripComponent implements OnInit, OnDestroy {
     }
 
     if (this.lastAnnouncedStopId !== null) {
-      const name = this.stopsMeta[state.progress?.nextStopIndex ?? 0]?.name ?? nextStop.stopId;
+      const nextIndex = state.progress?.nextStopIndex ?? 0;
+      const timing = state.stopTimes[nextIndex];
+      const name = this.stopsMeta[nextIndex]?.name ?? nextStop.stopId;
+      // Announce the next stop's own countdown, matching what its timeline row
+      // and map popup show — never the destination-wide ETA.
+      const etaMs = timing
+        ? this.stopEtaMs(timing.fraction, timing.estimatedTime, state, Date.now())
+        : this.state().etaMs;
       this.announcement.set(
         this.translate.instant(this.keys.nextStopAnnouncement, {
           stop: name,
-          time: this.etaLabel(),
+          time: this.formatCountdown(etaMs),
         }),
       );
     }

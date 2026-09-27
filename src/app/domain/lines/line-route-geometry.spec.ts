@@ -6,7 +6,8 @@ import {
   orientStopsTowardsSegment,
   selectLineDirectionStops,
   selectPrimaryLineDirectionStops,
-  selectSegmentStopIds
+  selectSegmentStopIds,
+  sliceStopsToSegment
 } from '@domain/lines/line-route-geometry';
 
 function stop(
@@ -281,4 +282,53 @@ describe('buildStopNucleusOrdinals', () => {
     expect(ordinals.get('known')).toBe(1);
     expect(ordinals.has('unknown')).toBeFalse();
   });
+
+  describe('sliceStopsToSegment', () => {
+    it('keeps only the traveled segment when the destination is mid-line', () => {
+      const stops = [
+        stop('line-start', 1, 1, 37.0, -2.0),
+        stop('origin', 1, 2, 37.1, -2.1),
+        stop('middle', 1, 3, 37.2, -2.2),
+        stop('destination', 1, 4, 37.3, -2.3),
+        stop('line-end', 1, 5, 37.4, -2.4)
+      ];
+
+      const sliced = sliceStopsToSegment(stops, ['origin'], ['destination']);
+
+      expect(sliced.map((entry) => entry.stopId)).toEqual(['origin', 'middle', 'destination']);
+    });
+
+    it('keeps the last occurrence of the destination so repeated ids cannot cut the ride short', () => {
+      const stops = [
+        stop('origin', 1, 1, 37.0, -2.0),
+        stop('destination', 1, 2, 37.1, -2.1),
+        stop('middle', 1, 3, 37.2, -2.2),
+        stop('destination', 1, 4, 37.3, -2.3)
+      ];
+
+      const sliced = sliceStopsToSegment(stops, ['origin'], ['destination']);
+
+      expect(sliced.map((entry) => entry.stopId)).toEqual([
+        'origin',
+        'destination',
+        'middle',
+        'destination'
+      ]);
+    });
+
+    it('falls back to the whole list when the segment cannot be resolved', () => {
+      const stops = [
+        stop('a', 1, 1, 37.1, -2.1),
+        stop('b', 1, 2, 37.2, -2.2),
+        stop('c', 1, 3, 37.3, -2.3)
+      ];
+
+      expect(sliceStopsToSegment(stops, [], ['c'])).toBe(stops);
+      expect(sliceStopsToSegment(stops, ['a'], [])).toBe(stops);
+      expect(sliceStopsToSegment(stops, ['a'], ['missing'])).toBe(stops);
+      // A destination before the origin leaves the travel order unresolved.
+      expect(sliceStopsToSegment(stops, ['c'], ['a'])).toBe(stops);
+    });
+  });
 });
+

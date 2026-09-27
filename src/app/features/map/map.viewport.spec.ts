@@ -43,6 +43,14 @@ class MapHandleStub implements MapHandle {
     return;
   }
 
+  panTo(): void {
+    return;
+  }
+
+  onUserPanStarted(): () => void {
+    return () => undefined;
+  }
+
   renderStops(
     _stops: readonly MapStopMarker[],
     _interactions?: MapStopInteractionOptions

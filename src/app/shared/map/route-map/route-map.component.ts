@@ -42,6 +42,8 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() destinationStopIds: readonly string[] = [];
   @Input() selectedStopId: string | null = null;
   @Input() userPosition: GeoCoordinate | null = null;
+  /** Keeps the camera tracking the user position marker while it moves. */
+  @Input() followUser = false;
   @Input() accessibleLabel = 'Route map';
   @Input() stopDetailsLabel = 'More information';
 
@@ -50,6 +52,11 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   private readonly maps = inject(LeafletMapService);
   private handle: MapHandle | null = null;
+  /** Whether the camera should keep tracking the user marker. */
+  private followArmed = false;
+  /** Whether the camera is already centered on the user in the current follow session. */
+  private followCenteredOnUser = false;
+  private userPanListener: (() => void) | null = null;
 
   /** Smoothly pans the camera so the given stop is centered on the map. */
   centerStop(stopId: string): void {
@@ -62,6 +69,10 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       return false;
     }
 
+    // Recentering resumes a follow session suspended by a user pan; the camera
+    // is on the user now, so later fixes only need to pan along.
+    this.followArmed = this.followUser;
+    this.followCenteredOnUser = true;
     this.handle.setView(this.userPosition, USER_FOCUS_ZOOM, true);
     return true;
   }
@@ -91,12 +102,18 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       this.handle.highlightStop(this.selectedStopId);
     }
 
+    if (changes['followUser']) {
+      this.followArmed = this.followUser;
+    }
+
     if (changes['userPosition'] && this.userPosition) {
       this.handle.renderUserLocation(this.userPosition);
+      this.followUserPosition();
     }
   }
 
   ngOnDestroy(): void {
+    this.stopUserPanListener();
     this.handle?.destroy();
     this.handle = null;
   }
@@ -110,6 +127,9 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       center: this.resolveCenter(),
       zoom: DEFAULT_ZOOM,
     });
+    this.followArmed = this.followUser;
+    this.stopUserPanListener();
+    this.userPanListener = this.handle.onUserPanStarted(() => this.pauseUserFollow());
   }
 
   private renderData(): void {
@@ -136,7 +156,12 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     );
     this.handle.renderStops(markers, {
       getDetailsLabel: () => this.stopDetailsLabel,
-      onSelect: (stopId) => this.stopSelected.emit(stopId),
+      onSelect: (stopId) => {
+        // Inspecting a stop pans the camera away from the user; following
+        // would snap it back on the next fix and fight the open popup.
+        this.pauseUserFollow();
+        this.stopSelected.emit(stopId);
+      },
       onDetails: (stopId) => this.stopDetails.emit(stopId),
     });
 
@@ -146,9 +171,18 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       this.handle.renderRoutes([], null);
     }
 
-    const fitPoints =
-      this.coordinates.length >= 2 ? this.coordinates : markers.map((marker) => marker.coordinate);
-    this.handle.fitToCoordinates(fitPoints);
+    if (this.followUser && this.userPosition) {
+      // Follow mode starts anchored to the user instead of the full route so
+      // the very first frame already shows where they are.
+      this.followCenteredOnUser = true;
+      this.handle.setView(this.userPosition, USER_FOCUS_ZOOM, false);
+    } else {
+      const fitPoints =
+        this.coordinates.length >= 2
+          ? this.coordinates
+          : markers.map((marker) => marker.coordinate);
+      this.handle.fitToCoordinates(fitPoints);
+    }
     this.handle.highlightStop(this.selectedStopId);
 
     if (this.userPosition) {
@@ -165,6 +199,30 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
         ? { latitude: this.stops[0].latitude, longitude: this.stops[0].longitude }
         : DEFAULT_CENTER)
     );
+  }
+
+  /** Suspends camera following after an explicit user pan or stop inspection. */
+  private pauseUserFollow(): void {
+    this.followArmed = false;
+  }
+
+  private followUserPosition(): void {
+    if (!this.followUser || !this.followArmed || !this.handle || !this.userPosition) {
+      return;
+    }
+
+    if (this.followCenteredOnUser) {
+      this.handle.panTo(this.userPosition, true);
+      return;
+    }
+
+    this.followCenteredOnUser = true;
+    this.handle.setView(this.userPosition, USER_FOCUS_ZOOM, true);
+  }
+
+  private stopUserPanListener(): void {
+    this.userPanListener?.();
+    this.userPanListener = null;
   }
 }
 

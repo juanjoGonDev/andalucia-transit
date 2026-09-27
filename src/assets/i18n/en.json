@@ -559,7 +559,7 @@
     "headline": "Line {lineCode} · towards {destination}",
     "eta": "Arriving in {time}",
     "locating": "Locating your GPS position…",
-    "unavailable": "We could not get your position. Showing estimated schedules only.",
+    "unavailable": "We could not get your position. Keeping the last known location.",
     "completed": "You have arrived at {destination}",
     "endTracking": "End tracking",
     "recenter": "Center the view on your current position",

@@ -101,6 +101,45 @@ export function orientStopsTowardsSegment(
   return originIndex > destinationIndex ? Object.freeze([...stops].reverse()) : stops;
 }
 
+/**
+ * Cuts an oriented stop list down to the traveled segment (origin through
+ * destination, both included). The origin matches its first occurrence (boarding)
+ * and the destination its last one (final alighting), so repeated ids on circular
+ * lines cannot cut the ride short. When either endpoint cannot be resolved the
+ * full list is returned, preserving the whole-line display as the fallback.
+ */
+export function sliceStopsToSegment<T extends RouteLineStop>(
+  stops: readonly T[],
+  originStopIds: readonly string[],
+  destinationStopIds: readonly string[]
+): readonly T[] {
+  if (!stops.length || !originStopIds.length || !destinationStopIds.length) {
+    return stops;
+  }
+
+  const originIndex = stops.findIndex((stop) => originStopIds.includes(stop.stopId));
+  const destinationIndex = findLastStopIndex(stops, destinationStopIds);
+
+  if (originIndex === -1 || destinationIndex === -1 || originIndex >= destinationIndex) {
+    return stops;
+  }
+
+  return Object.freeze(stops.slice(originIndex, destinationIndex + 1));
+}
+
+function findLastStopIndex<T extends RouteLineStop>(
+  stops: readonly T[],
+  stopIds: readonly string[]
+): number {
+  for (let index = stops.length - 1; index >= 0; index -= 1) {
+    if (stopIds.includes(stops[index].stopId)) {
+      return index;
+    }
+  }
+
+  return -1;
+}
+
 export function stopsToCoordinates(stops: readonly RouteLineStop[]): readonly RouteLineCoordinate[] {
   if (stops.length < MIN_ROUTE_COORDINATES) {
     return EMPTY_COORDINATES;
