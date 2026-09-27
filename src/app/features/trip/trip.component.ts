@@ -32,7 +32,7 @@ import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.dir
 import { RouteMapComponent } from '@shared/map/route-map/route-map.component';
 import { buildStopDetailNavigation } from '@shared/navigation/navigation.util';
 
-const RECENTER_SCROLL_PX = 140;
+const MANUAL_SCROLL_KEYS = new Set(['ArrowDown', 'ArrowUp', 'End', 'Home', 'PageDown', 'PageUp', ' ']);
 
 const TRIP_KEYS = {
   headline: 'trip.headline',
@@ -194,6 +194,12 @@ export class TripComponent implements OnInit, OnDestroy {
   private lastAnnouncedStopId: string | null = null;
   private arrivalAnnounced = false;
   private stopsMeta: readonly TripStopMeta[] = [];
+  /**
+   * Prevents the first scroll events from immediately re-enabling follow mode while the
+   * focused stop is still leaving the viewport. Follow resumes only after it has first
+   * disappeared and the traveler deliberately scrolls it back into view.
+   */
+  private waitingForFocusedStopToLeave = false;
 
   constructor() {
     effect(() => {
@@ -268,27 +274,52 @@ export class TripComponent implements OnInit, OnDestroy {
     this.liveTrip.stopTracking();
   }
 
+  @HostListener('window:wheel')
+  @HostListener('window:touchmove')
+  protected beginManualScroll(): void {
+    if (this.viewMode() !== 'list' || !this.autoScrollActive()) {
+      return;
+    }
+
+    // A user's first scroll must win over the periodic live-state renders. Otherwise a
+    // render can smoothly pull the timeline back before the focused row has left screen.
+    this.autoScrollActive.set(false);
+    this.waitingForFocusedStopToLeave = true;
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  protected beginManualKeyboardScroll(event: KeyboardEvent): void {
+    if (MANUAL_SCROLL_KEYS.has(event.key)) {
+      this.beginManualScroll();
+    }
+  }
+
   @HostListener('window:scroll')
   protected onUserScroll(): void {
-    if (this.viewMode() !== 'list') {
+    if (this.viewMode() !== 'list' || this.autoScrollActive()) {
       return;
     }
 
-    const timeline = this.timelineRef()?.nativeElement;
-
-    if (!timeline) {
-      return;
-    }
-
-    const current = timeline.querySelector<HTMLElement>('.trip__stop--current');
-    const anchor = current ?? timeline.querySelector<HTMLElement>('.trip__stop--next');
+    const anchor = this.focusedStopElement();
 
     if (!anchor) {
       return;
     }
 
-    const anchorDistance = Math.abs(anchor.getBoundingClientRect().top - window.innerHeight / 2);
-    this.autoScrollActive.set(anchorDistance <= RECENTER_SCROLL_PX);
+    const bounds = anchor.getBoundingClientRect();
+    const isVisible = bounds.bottom > 0 && bounds.top < window.innerHeight;
+
+    if (this.waitingForFocusedStopToLeave) {
+      if (!isVisible) {
+        this.waitingForFocusedStopToLeave = false;
+      }
+      return;
+    }
+
+    // Once the traveler scrolls the live stop back onto the screen, resume following.
+    if (isVisible) {
+      this.autoScrollActive.set(true);
+    }
   }
 
   protected trackGroup(_index: number, group: TripStopGroupView): string {
@@ -308,6 +339,7 @@ export class TripComponent implements OnInit, OnDestroy {
 
     if (mode === 'list') {
       this.autoScrollActive.set(true);
+      this.waitingForFocusedStopToLeave = false;
       queueMicrotask(() => this.scrollToCurrentStop());
     }
   }
@@ -324,6 +356,7 @@ export class TripComponent implements OnInit, OnDestroy {
     }
 
     this.autoScrollActive.set(true);
+    this.waitingForFocusedStopToLeave = false;
     this.scrollToCurrentStop();
   }
 
@@ -502,19 +535,22 @@ export class TripComponent implements OnInit, OnDestroy {
     this.lastAnnouncedStopId = nextStop.stopId;
   }
 
-  private scrollToCurrentStop(): void {
+  private focusedStopElement(): HTMLElement | null {
     const timeline = this.timelineRef()?.nativeElement;
 
     if (!timeline) {
-      return;
+      return null;
     }
 
-    const anchor =
+    return (
       timeline.querySelector<HTMLElement>('.trip__stop--current') ??
       timeline.querySelector<HTMLElement>('.trip__stop--next') ??
-      (timeline.firstElementChild as HTMLElement | null);
+      (timeline.firstElementChild as HTMLElement | null)
+    );
+  }
 
-    anchor?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  private scrollToCurrentStop(): void {
+    this.focusedStopElement()?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }
 
