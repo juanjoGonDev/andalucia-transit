@@ -3,9 +3,7 @@ import { of } from 'rxjs';
 import { RouteSearchSelectionResolverService } from '@domain/route-search/route-search-selection-resolver.service';
 import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 import {
-  STOP_CONNECTION_DIRECTION,
   StopConnection,
-  StopConnectionDirection,
   StopConnectionsFacade,
   buildStopConnectionKey
 } from '@domain/route-search/stop-connections.facade';
@@ -28,27 +26,15 @@ class StopDirectoryFacadeStub {
 }
 
 class StopConnectionsFacadeStub {
+  readonly signatureBatches: StopDirectoryStopSignature[][] = [];
+
   constructor(
-    private readonly responses: Partial<Record<StopConnectionDirection, ReadonlyMap<string, StopConnection>>>
+    private readonly response: ReadonlyMap<string, StopConnection> = new Map<string, StopConnection>()
   ) {}
 
-  getConnections(
-    _: readonly StopDirectoryStopSignature[],
-    direction: StopConnectionDirection
-  ) {
-    return of(this.responses[direction] ?? new Map<string, StopConnection>());
-  }
-
-  mergeConnections(
-    maps: readonly ReadonlyMap<string, StopConnection>[]
-  ): ReadonlyMap<string, StopConnection> {
-    return maps.reduce<ReadonlyMap<string, StopConnection>>((result, current) => {
-      const merged = new Map(result);
-      current.forEach((value, key) => {
-        merged.set(key, value);
-      });
-      return merged;
-    }, new Map<string, StopConnection>());
+  getConnections(signatures: readonly StopDirectoryStopSignature[]) {
+    this.signatureBatches.push([...signatures]);
+    return of(this.response);
   }
 }
 
@@ -77,34 +63,25 @@ describe('RouteSearchSelectionResolverService', () => {
     stopIds: ['100']
   };
 
-  function setup(
-    connections: Partial<Record<StopConnectionDirection, ReadonlyMap<string, StopConnection>>>
-  ) {
+  function setup(connections: ReadonlyMap<string, StopConnection>) {
+    const connectionsFacade = new StopConnectionsFacadeStub(connections);
+
     TestBed.configureTestingModule({
       providers: [
         RouteSearchSelectionResolverService,
         { provide: StopDirectoryFacade, useValue: new StopDirectoryFacadeStub({ '74': originOption, '75': originOption, '100': destinationOption }) },
-        { provide: StopConnectionsFacade, useValue: new StopConnectionsFacadeStub(connections) }
+        { provide: StopConnectionsFacade, useValue: connectionsFacade }
       ]
     });
 
-    return TestBed.inject(RouteSearchSelectionResolverService);
+    return {
+      service: TestBed.inject(RouteSearchSelectionResolverService),
+      connectionsFacade
+    };
   }
 
   it('resolves a selection from valid slugs and connections', (done) => {
-    const forwardConnections = new Map<string, StopConnection>([
-      [
-        buildStopConnectionKey(7, '100'),
-        {
-          consortiumId: 7,
-          stopId: '100',
-          originStopIds: ['74'],
-          lineSignatures: [{ lineId: 'L1', lineCode: '040', direction: 0 }]
-        }
-      ]
-    ]);
-
-    const service = setup({ [STOP_CONNECTION_DIRECTION.Forward]: forwardConnections });
+    const { service } = setup(forwardConnectionsForOrigin());
 
     service
       .resolveFromSlugs('origin-stop--c7s74', 'destination-stop--c7s100', '2025-10-08')
@@ -119,7 +96,7 @@ describe('RouteSearchSelectionResolverService', () => {
   });
 
   it('returns null when slugs are invalid', (done) => {
-    const service = setup({});
+    const { service } = setup(new Map<string, StopConnection>());
 
     service
       .resolveFromSlugs('invalid', 'destination-stop--c7s100', '2025-10-08')
@@ -130,7 +107,7 @@ describe('RouteSearchSelectionResolverService', () => {
   });
 
   it('returns a selection with no matches when connections are empty', (done) => {
-    const service = setup({ [STOP_CONNECTION_DIRECTION.Forward]: new Map() });
+    const { service } = setup(new Map<string, StopConnection>());
 
     service
       .resolveFromSlugs('origin-stop--c7s74', 'destination-stop--c7s100', '2025-10-08')
@@ -142,30 +119,37 @@ describe('RouteSearchSelectionResolverService', () => {
       });
   });
 
-  it('resolves a selection when only backward connections are available', (done) => {
-    const backwardConnections = new Map<string, StopConnection>([
-      [
-        buildStopConnectionKey(7, '100'),
-        {
-          consortiumId: 7,
-          stopId: '100',
-          originStopIds: ['75'],
-          lineSignatures: [{ lineId: 'L2', lineCode: '041', direction: 1 }]
-        }
-      ]
-    ]);
-
-    const service = setup({ [STOP_CONNECTION_DIRECTION.Backward]: backwardConnections });
+  it('requests forward reachability once, using only the origin signatures', (done) => {
+    // Stop connections are forward-only now: CTAN numbers each sentido's
+    // `orden` along its own travel, so backward lookups produced matches of the
+    // opposite direction whose stops sit on the other carriageway.
+    const { service, connectionsFacade } = setup(forwardConnectionsForOrigin());
 
     service
-      .resolveFromSlugs('origin-stop--c7s75', 'destination-stop--c7s100', '2025-10-08')
+      .resolveFromSlugs('origin-stop--c7s74', 'destination-stop--c7s100', '2025-10-08')
       .subscribe((selection) => {
         expect(selection).not.toBeNull();
-        const resolved = selection as RouteSearchSelection;
-        expect(resolved.lineMatches.length).toBe(1);
-        expect(resolved.lineMatches[0].originStopIds).toEqual(['75']);
-        expect(resolved.lineMatches[0].lineCode).toBe('041');
+        expect(connectionsFacade.signatureBatches).toEqual([
+          [
+            { consortiumId: 7, stopId: '74' },
+            { consortiumId: 7, stopId: '75' }
+          ]
+        ]);
         done();
       });
   });
 });
+
+function forwardConnectionsForOrigin(): ReadonlyMap<string, StopConnection> {
+  return new Map<string, StopConnection>([
+    [
+      buildStopConnectionKey(7, '100'),
+      {
+        consortiumId: 7,
+        stopId: '100',
+        originStopIds: ['74'],
+        lineSignatures: [{ lineId: 'L1', lineCode: '040', direction: 0 }]
+      }
+    ]
+  ]);
+}

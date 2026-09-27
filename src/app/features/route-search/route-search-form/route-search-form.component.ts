@@ -35,7 +35,6 @@ import {
   Observable,
   combineLatest,
   firstValueFrom,
-  forkJoin,
   of,
   timer
 } from 'rxjs';
@@ -64,7 +63,6 @@ import {
 } from '@domain/route-search/route-search-selection.util';
 import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 import {
-  STOP_CONNECTION_DIRECTION,
   StopConnection,
   StopConnectionsFacade,
   buildStopConnectionKey
@@ -284,12 +282,12 @@ export class RouteSearchFormComponent implements OnChanges {
   );
 
   private readonly originConnections$ = this.originSignatures$.pipe(
-    switchMap((signatures) => this.loadBidirectionalConnections(signatures)),
+    switchMap((signatures) => this.loadReachableConnections(signatures)),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
   private readonly destinationConnections$ = this.destinationSignatures$.pipe(
-    switchMap((signatures) => this.loadBidirectionalConnections(signatures)),
+    switchMap((signatures) => this.loadReachableConnections(signatures)),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
@@ -513,7 +511,7 @@ export class RouteSearchFormComponent implements OnChanges {
   ): Promise<RouteSearchSelection | null> {
     this.hideNoRoutes();
     const connections = await firstValueFrom(
-      this.loadBidirectionalConnections(this.toStopSignatures(origin))
+      this.loadReachableConnections(this.toStopSignatures(origin))
     );
     const matches = collectRouteLineMatches(origin, destination, connections);
 
@@ -1109,17 +1107,17 @@ export class RouteSearchFormComponent implements OnChanges {
     }
   }
 
-  private loadBidirectionalConnections(
+  private loadReachableConnections(
     signatures: readonly StopDirectoryStopSignature[]
   ): Observable<ReadonlyMap<string, StopConnection>> {
     if (!signatures.length) {
       return of(new Map<string, StopConnection>());
     }
 
-    return forkJoin([
-      this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Forward),
-      this.stopConnections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Backward)
-    ]).pipe(map((connections) => this.stopConnections.mergeConnections(connections)));
+    // Forward-only: CTAN numbers each sentido's `orden` along its own travel, so
+    // stops sorting before the origin are the opposite carriageway's stops, not
+    // destinations this direction can reach (see StopConnectionsService).
+    return this.stopConnections.getConnections(signatures);
   }
 }
 

@@ -6,7 +6,6 @@ import {
   RouteLinesApiService
 } from '@data/route-search/route-lines-api.service';
 import {
-  STOP_CONNECTION_DIRECTION,
   StopConnection,
   StopConnectionsService,
   buildStopConnectionKey
@@ -125,7 +124,7 @@ describe('StopConnectionsService', () => {
 
   it('returns destinations that appear after each origin in the same line direction', (done) => {
     service
-      .getConnections([buildSignature(7, 'O1'), buildSignature(7, 'O2')], STOP_CONNECTION_DIRECTION.Forward)
+      .getConnections([buildSignature(7, 'O1'), buildSignature(7, 'O2')])
       .subscribe((connections) => {
         const destinationIds = Array.from(connections.keys()).sort();
         expect(destinationIds).toEqual([
@@ -150,7 +149,7 @@ describe('StopConnectionsService', () => {
 
   it('merges matching origins across shared lines while preserving the original order', (done) => {
     service
-      .getConnections([buildSignature(7, 'O2'), buildSignature(7, 'O1')], STOP_CONNECTION_DIRECTION.Forward)
+      .getConnections([buildSignature(7, 'O2'), buildSignature(7, 'O1')])
       .subscribe((connections) => {
         const d2 = connections.get(buildStopConnectionKey(7, 'D2')) as StopConnection;
         expect(d2.originStopIds).toEqual(['O2', 'O1']);
@@ -160,17 +159,18 @@ describe('StopConnectionsService', () => {
       });
   });
 
-  it('returns upstream origins when requesting backward connections', (done) => {
+  it('never matches stops before the origin: they belong to the opposite direction', (done) => {
     service
-      .getConnections([buildSignature(7, 'D2')], STOP_CONNECTION_DIRECTION.Backward)
+      .getConnections([buildSignature(7, 'O1')])
       .subscribe((connections) => {
-        expect(connections.has(buildStopConnectionKey(7, 'O1'))).toBeTrue();
-        expect(connections.has(buildStopConnectionKey(7, 'O2'))).toBeTrue();
-
-        const origin = connections.get(buildStopConnectionKey(7, 'O2')) as StopConnection;
-        expect(origin.consortiumId).toBe(7);
-        expect(origin.originStopIds).toEqual(['D2']);
-        expect(origin.lineSignatures).toEqual([{ lineId: 'L1', lineCode: '001', direction: 0 }]);
+        // CTAN numbers each sentido's `orden` along its own travel. O1 closes
+        // direction 1 (D3, D2, O2, O1), so nothing can follow it there: the D2
+        // connection must only carry the direction-0 signature. The former
+        // backward connections added the direction-1 signature here, producing
+        // opposite-direction line matches whose stops sit on the other
+        // carriageway.
+        const d2 = connections.get(buildStopConnectionKey(7, 'D2')) as StopConnection;
+        expect(d2.lineSignatures).toEqual([{ lineId: 'L1', lineCode: '001', direction: 0 }]);
 
         done();
       });
@@ -178,7 +178,7 @@ describe('StopConnectionsService', () => {
 
   it('returns an empty map when none of the stops resolve to directory entries', (done) => {
     service
-      .getConnections([buildSignature(7, 'UNKNOWN')], STOP_CONNECTION_DIRECTION.Forward)
+      .getConnections([buildSignature(7, 'UNKNOWN')])
       .subscribe((connections) => {
         expect(connections.size).toBe(0);
         done();

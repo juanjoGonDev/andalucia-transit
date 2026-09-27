@@ -20,22 +20,13 @@ export interface StopConnection {
   readonly lineSignatures: readonly StopLineSignature[];
 }
 
-export const STOP_CONNECTION_DIRECTION = {
-  Forward: 'forward',
-  Backward: 'backward'
-} as const;
-
-export type StopConnectionDirection =
-  (typeof STOP_CONNECTION_DIRECTION)[keyof typeof STOP_CONNECTION_DIRECTION];
-
 @Injectable({ providedIn: 'root' })
 export class StopConnectionsService {
   private readonly directory = inject(StopDirectoryService);
   private readonly api = inject(RouteLinesApiService);
 
   getConnections(
-    signatures: readonly StopDirectoryStopSignature[],
-    direction: StopConnectionDirection = STOP_CONNECTION_DIRECTION.Forward
+    signatures: readonly StopDirectoryStopSignature[]
   ): Observable<ReadonlyMap<string, StopConnection>> {
     if (!signatures.length) {
       return of(EMPTY_CONNECTIONS);
@@ -51,9 +42,7 @@ export class StopConnectionsService {
         }
 
         const groups = groupByConsortium(records);
-        const observables = groups.map((group) =>
-          this.resolveGroupConnections(group, direction)
-        );
+        const observables = groups.map((group) => this.resolveGroupConnections(group));
 
         if (!observables.length) {
           return of(EMPTY_CONNECTIONS);
@@ -81,8 +70,7 @@ export class StopConnectionsService {
   }
 
   private resolveGroupConnections(
-    group: ConsortiumGroup,
-    direction: StopConnectionDirection
+    group: ConsortiumGroup
   ): Observable<ConsortiumConnectionGroup> {
     return this.api.getLinesForStops(group.consortiumId, group.stopIds).pipe(
       switchMap((summaries) => {
@@ -95,7 +83,7 @@ export class StopConnectionsService {
             .getLineStops(group.consortiumId, summary.lineId)
             .pipe(
               map((stops) =>
-                buildLineAccumulator(summary, stops, group.stopIdSet, direction)
+                buildLineAccumulator(summary, stops, group.stopIdSet)
               )
             )
         );
@@ -109,60 +97,6 @@ export class StopConnectionsService {
       })
     );
   }
-}
-
-export function mergeStopConnectionMaps(
-  maps: readonly ReadonlyMap<string, StopConnection>[]
-): ReadonlyMap<string, StopConnection> {
-  if (!maps.length) {
-    return new Map<string, StopConnection>();
-  }
-
-  const aggregates = new Map<
-    string,
-    {
-      consortiumId: number;
-      stopId: string;
-      originIds: Set<string>;
-      signatures: Map<string, StopConnection['lineSignatures'][number]>;
-    }
-  >();
-
-  for (const mapEntry of maps) {
-    mapEntry.forEach((connection, key) => {
-      const aggregate =
-        aggregates.get(key) ??
-        {
-          consortiumId: connection.consortiumId,
-          stopId: connection.stopId,
-          originIds: new Set<string>(),
-          signatures: new Map<string, StopConnection['lineSignatures'][number]>()
-        };
-
-      connection.originStopIds.forEach((originId) => aggregate.originIds.add(originId));
-      connection.lineSignatures.forEach((signature) =>
-        aggregate.signatures.set(
-          buildSignatureKey(signature.lineId, signature.lineCode, signature.direction),
-          signature
-        )
-      );
-
-      aggregates.set(key, aggregate);
-    });
-  }
-
-  const merged = new Map<string, StopConnection>();
-
-  aggregates.forEach((aggregate, key) => {
-    merged.set(key, {
-      consortiumId: aggregate.consortiumId,
-      stopId: aggregate.stopId,
-      originStopIds: Array.from(aggregate.originIds),
-      lineSignatures: Array.from(aggregate.signatures.values())
-    });
-  });
-
-  return merged;
 }
 
 interface ConsortiumGroup {
@@ -235,11 +169,24 @@ function dedupeSignatures(
   return Array.from(unique.values());
 }
 
+/**
+ * Collects the stops reachable from the given origins on this line.
+ *
+ * CTAN line stop tables carry both sentidos, and each sentido numbers its
+ * `orden` along its own travel direction (verified against consorcios 1, 3, 5
+ * and 6): a vehicle of sentido S visits its stops in ascending `orden`, and a
+ * repeated stop id can only mean the line loops past it again. Riding from an
+ * origin to a destination on sentido S is therefore possible exactly when the
+ * destination's S-stop sorts after the origin's S-stop — never before. The
+ * former "backward" connections produced exactly those before-origin matches,
+ * pairing correct timetables (matched by stop names) with the opposite
+ * sentido, whose stops sit on the other carriageway — meters away from the
+ * searched direction.
+ */
 function buildLineAccumulator(
   summary: RouteLineSummary,
   stops: readonly RouteLineStop[],
-  originIds: ReadonlySet<string>,
-  connectionDirection: StopConnectionDirection
+  originIds: ReadonlySet<string>
 ): ReadonlyMap<string, ConnectionAccumulator> {
   if (!stops.length) {
     return EMPTY_ACCUMULATORS;
@@ -258,17 +205,7 @@ function buildLineAccumulator(
 
     for (const originStop of originPositions) {
       for (const candidate of orderedStops) {
-        if (
-          connectionDirection === STOP_CONNECTION_DIRECTION.Forward &&
-          candidate.order <= originStop.order
-        ) {
-          continue;
-        }
-
-        if (
-          connectionDirection === STOP_CONNECTION_DIRECTION.Backward &&
-          candidate.order >= originStop.order
-        ) {
+        if (candidate.order <= originStop.order) {
           continue;
         }
 

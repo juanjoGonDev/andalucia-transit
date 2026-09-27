@@ -4,7 +4,6 @@ import { collectRouteLineMatches, createRouteSearchSelection } from '@domain/rou
 import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 import { parseDateSlug, parseStopSlug } from '@domain/route-search/route-search-url.util';
 import {
-  STOP_CONNECTION_DIRECTION,
   StopConnection,
   StopConnectionsFacade
 } from '@domain/route-search/stop-connections.facade';
@@ -72,10 +71,10 @@ export class RouteSearchSelectionResolverService {
       stopId
     }));
 
-    return forkJoin([
-      this.connections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Forward),
-      this.connections.getConnections(signatures, STOP_CONNECTION_DIRECTION.Backward)
-    ]).pipe(map((connections) => this.connections.mergeConnections(connections)));
+    // Forward-only: CTAN numbers each sentido's `orden` along its own travel, so
+    // only after-origin stops are real destinations of the searched direction
+    // (see StopConnectionsService).
+    return this.connections.getConnections(signatures);
   }
 }
 

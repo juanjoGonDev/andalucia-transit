@@ -12,12 +12,9 @@ import {
 import { NearbyStopResult, NearbyStopsService } from '@core/services/nearby-stops.service';
 import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 import {
-  STOP_CONNECTION_DIRECTION,
   StopConnection,
-  StopConnectionDirection,
   StopConnectionsFacade,
-  buildStopConnectionKey,
-  mergeStopConnectionMaps
+  buildStopConnectionKey
 } from '@domain/route-search/stop-connections.facade';
 import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
 import {
@@ -53,7 +50,6 @@ const DESTINATION_OPTION: StopDirectoryOption = {
 };
 
 const ORIGIN_SIGNATURES: readonly StopDirectoryStopSignature[] = buildSignatures(ORIGIN_OPTION);
-const DESTINATION_SIGNATURES: readonly StopDirectoryStopSignature[] = buildSignatures(DESTINATION_OPTION);
 
 class DirectoryStub {
   lastRequest: StopSearchRequest | null = null;
@@ -99,34 +95,21 @@ class ConnectionsStub {
 
   setResponse(
     signatures: readonly StopDirectoryStopSignature[],
-    direction: StopConnectionDirection,
     connections: ReadonlyMap<string, StopConnection>
   ): void {
-    this.responses.set(this.buildKey(signatures, direction), connections);
+    this.responses.set(this.buildKey(signatures), connections);
   }
 
-  getConnections(
-    signatures: readonly StopDirectoryStopSignature[],
-    direction: StopConnectionDirection
-  ) {
-    const key = this.buildKey(signatures, direction);
+  getConnections(signatures: readonly StopDirectoryStopSignature[]) {
+    const key = this.buildKey(signatures);
     return of(this.responses.get(key) ?? new Map());
   }
 
-  mergeConnections(
-    maps: readonly ReadonlyMap<string, StopConnection>[]
-  ): ReadonlyMap<string, StopConnection> {
-    return mergeStopConnectionMaps(maps);
-  }
-
-  private buildKey(
-    signatures: readonly StopDirectoryStopSignature[],
-    direction: StopConnectionDirection
-  ): string {
+  private buildKey(signatures: readonly StopDirectoryStopSignature[]): string {
     const sorted = [...signatures]
       .map((signature) => buildStopConnectionKey(signature.consortiumId, signature.stopId))
       .sort();
-    return `${direction}|${sorted.join('|')}`;
+    return sorted.join('|');
   }
 }
 
@@ -286,28 +269,13 @@ describe('RouteSearchFormComponent', () => {
   });
 
   it('emits a selection when a compatible route exists', async () => {
-    const forwardConnections = new Map<string, StopConnection>([
+    const reachableConnections = new Map<string, StopConnection>([
       [
         buildStopConnectionKey(DESTINATION_OPTION.consortiumId, DESTINATION_OPTION.stopIds[0]),
         buildConnection(DESTINATION_OPTION.stopIds[0], DESTINATION_OPTION.consortiumId)
       ]
     ]);
-    const backwardConnections = new Map<string, StopConnection>([
-      [
-        buildStopConnectionKey(ORIGIN_OPTION.consortiumId, ORIGIN_OPTION.stopIds[0]),
-        buildConnection(ORIGIN_OPTION.stopIds[0], ORIGIN_OPTION.consortiumId)
-      ]
-    ]);
-    connections.setResponse(
-      ORIGIN_SIGNATURES,
-      STOP_CONNECTION_DIRECTION.Forward,
-      forwardConnections
-    );
-    connections.setResponse(
-      DESTINATION_SIGNATURES,
-      STOP_CONNECTION_DIRECTION.Backward,
-      backwardConnections
-    );
+    connections.setResponse(ORIGIN_SIGNATURES, reachableConnections);
 
     component.initialSelection = null;
     component.searchForm.controls.origin.setValue(ORIGIN_OPTION);
