@@ -62,7 +62,7 @@
     "@angular/forms": "^20.3.6",
     "@angular/material": "^20.2.9",
     "@angular/platform-browser": "^20.3.6",
-    "@angular/router": "^20.3.6",
+    "@angular/router": "^22.1.7",
     "@angular/service-worker": "^20.3.6",
     "@messageformat/core": "^3.4.0",
     "@ngx-translate/core": "^17.0.0",
