@@ -1,8 +1,21 @@
 import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute, DefaultUrlSerializer, NavigationEnd, NavigationExtras, Router, UrlTree, convertToParamMap } from '@angular/router';
-import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import {
+  ActivatedRoute,
+  DefaultUrlSerializer,
+  NavigationEnd,
+  NavigationExtras,
+  Router,
+  UrlTree,
+  convertToParamMap,
+} from '@angular/router';
+import {
+  TranslateCompiler,
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
 import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 import { BehaviorSubject, Subject, of } from 'rxjs';
 import { APP_CONFIG } from '@core/config';
@@ -10,11 +23,14 @@ import { LanguageService } from '@core/services/language.service';
 import { HomeTabStorage } from '@data/home/home-tab.storage';
 import {
   FavoriteCollectionFacade,
-  FavoriteCollectionSnapshot
+  FavoriteCollectionSnapshot,
 } from '@domain/favorites/favorite-collection.facade';
 import { LineFavorite } from '@domain/lines/line-favorites.facade';
 import { RouteSearchExecutionService } from '@domain/route-search/route-search-execution.service';
-import { RouteSearchSelection, RouteSearchStateService } from '@domain/route-search/route-search-state.service';
+import {
+  RouteSearchSelection,
+  RouteSearchStateService,
+} from '@domain/route-search/route-search-state.service';
 import { StopFavorite } from '@domain/stops/favorites.facade';
 import { StopDirectoryOption } from '@domain/stops/stop-directory.facade';
 import { HomeComponent } from '@features/home/home.component';
@@ -42,7 +58,7 @@ class ImmediateIntersectionObserver implements IntersectionObserver {
         intersectionRatio: 1,
         boundingClientRect: rect,
         rootBounds: null,
-        intersectionRect: rect
+        intersectionRect: rect,
       };
 
       this.callback([entry], this);
@@ -69,8 +85,8 @@ class FakeTranslateLoader implements TranslateLoader {
         title: 'Favoritos',
         empty: 'Todavía no has añadido ninguna parada o línea favorita.',
         actions: { open: 'Abrir favoritos' },
-        list: { code: 'Código', nucleus: 'Núcleo' }
-      }
+        list: { code: 'Código', nucleus: 'Núcleo' },
+      },
     });
   }
 }
@@ -92,7 +108,7 @@ class FavoriteCollectionFacadeStub {
   private readonly subject = new BehaviorSubject<FavoriteCollectionSnapshot>({
     stops: [],
     lines: [],
-    total: 0
+    total: 0,
   });
   readonly favorites$ = this.subject.asObservable();
 
@@ -154,7 +170,7 @@ class ActivatedRouteStub {
     const entries = Object.fromEntries(this.params);
     return {
       routeConfig: { path: this.currentPath },
-      queryParamMap: convertToParamMap(entries)
+      queryParamMap: convertToParamMap(entries),
     } as ActivatedRoute['snapshot'];
   }
 }
@@ -162,7 +178,7 @@ class ActivatedRouteStub {
 @Component({
   selector: 'app-route-search-form',
   standalone: true,
-  template: ''
+  template: '',
 })
 class RouteSearchFormStubComponent {
   @Input() initialSelection: RouteSearchSelection | null = null;
@@ -173,12 +189,12 @@ class RouteSearchFormStubComponent {
 @Component({
   selector: 'app-home-recent-searches',
   standalone: true,
-  template: ''
+  template: '',
 })
 class HomeRecentSearchesStubComponent {}
 
 const languageService = {
-  currentLanguage: signal<'es' | 'en'>('es').asReadonly()
+  currentLanguage: signal<'es' | 'en'>('es').asReadonly(),
 };
 
 describe('HomeComponent', () => {
@@ -198,7 +214,7 @@ describe('HomeComponent', () => {
     nucleus: 'Origin',
     nucleusId: 'origin-nuc',
     consortiumId: 7,
-    stopIds: ['origin-stop']
+    stopIds: ['origin-stop'],
   };
   const destinationOption: StopDirectoryOption = {
     id: 'destination',
@@ -209,7 +225,7 @@ describe('HomeComponent', () => {
     nucleus: 'Destination',
     nucleusId: 'destination-nuc',
     consortiumId: 7,
-    stopIds: ['destination-stop']
+    stopIds: ['destination-stop'],
   };
 
   beforeEach(async () => {
@@ -219,8 +235,8 @@ describe('HomeComponent', () => {
         RouteSearchFormStubComponent,
         TranslateModule.forRoot({
           loader: { provide: TranslateLoader, useClass: FakeTranslateLoader },
-          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
-        })
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler },
+        }),
       ],
       providers: [
         { provide: Router, useClass: RouterStub },
@@ -229,12 +245,12 @@ describe('HomeComponent', () => {
         { provide: RouteSearchExecutionService, useClass: RouteSearchExecutionStub },
         { provide: FavoriteCollectionFacade, useClass: FavoriteCollectionFacadeStub },
         { provide: LanguageService, useValue: languageService },
-        { provide: HomeTabStorage, useClass: HomeTabStorageStub }
-      ]
+        { provide: HomeTabStorage, useClass: HomeTabStorageStub },
+      ],
     })
       .overrideComponent(HomeComponent, {
         remove: { imports: [RouteSearchFormComponent, HomeRecentSearchesComponent] },
-        add: { imports: [RouteSearchFormStubComponent, HomeRecentSearchesStubComponent] }
+        add: { imports: [RouteSearchFormStubComponent, HomeRecentSearchesStubComponent] },
       })
       .compileComponents();
 
@@ -243,15 +259,18 @@ describe('HomeComponent', () => {
     translate.use('es');
 
     originalIntersectionObserver = window.IntersectionObserver;
-    (window as unknown as { IntersectionObserver: typeof IntersectionObserver }).IntersectionObserver =
-      ImmediateIntersectionObserver;
+    (
+      window as unknown as { IntersectionObserver: typeof IntersectionObserver }
+    ).IntersectionObserver = ImmediateIntersectionObserver;
 
     fixture = TestBed.createComponent(HomeComponent);
     router = TestBed.inject(Router) as unknown as RouterStub;
     execution = TestBed.inject(RouteSearchExecutionService) as unknown as RouteSearchExecutionStub;
     routeStub = TestBed.inject(ActivatedRoute) as unknown as ActivatedRouteStub;
     tabStorage = TestBed.inject(HomeTabStorage) as unknown as HomeTabStorageStub;
-    favoriteCollection = TestBed.inject(FavoriteCollectionFacade) as unknown as FavoriteCollectionFacadeStub;
+    favoriteCollection = TestBed.inject(
+      FavoriteCollectionFacade,
+    ) as unknown as FavoriteCollectionFacadeStub;
     tabStorage.value = null;
     tabStorage.read.calls.reset();
     tabStorage.write.calls.reset();
@@ -259,10 +278,12 @@ describe('HomeComponent', () => {
 
   afterEach(() => {
     if (originalIntersectionObserver) {
-      (window as unknown as { IntersectionObserver: typeof IntersectionObserver }).IntersectionObserver =
-        originalIntersectionObserver;
+      (
+        window as unknown as { IntersectionObserver: typeof IntersectionObserver }
+      ).IntersectionObserver = originalIntersectionObserver;
     } else {
-      delete (window as unknown as { IntersectionObserver?: typeof IntersectionObserver }).IntersectionObserver;
+      delete (window as unknown as { IntersectionObserver?: typeof IntersectionObserver })
+        .IntersectionObserver;
     }
   });
 
@@ -274,10 +295,12 @@ describe('HomeComponent', () => {
       origin: originOption,
       destination: destinationOption,
       queryDate: new Date('2025-10-07T00:00:00Z'),
-      lineMatches: []
+      lineMatches: [],
     };
 
-    (fixture.componentInstance as unknown as HomeComponentTestingApi).onSelectionConfirmed(selection);
+    (fixture.componentInstance as unknown as HomeComponentTestingApi).onSelectionConfirmed(
+      selection,
+    );
     tick();
 
     expect(execution.prepare).toHaveBeenCalledWith(selection);
@@ -293,6 +316,21 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
     const recent = fixture.debugElement.queryAll(By.directive(HomeRecentSearchesStubComponent));
     expect(recent.length).toBeGreaterThan(0);
+  });
+
+  it('connects the tablist and active panel with accessible relationships', () => {
+    fixture.detectChanges();
+
+    const tabList = fixture.nativeElement.querySelector('[role="tablist"]') as HTMLElement;
+    const activeTab = tabList.querySelector('[role="tab"][aria-selected="true"]') as HTMLElement;
+    const activePanel = fixture.nativeElement.querySelector('[role="tabpanel"]') as HTMLElement;
+
+    expect(tabList).not.toBeNull();
+    expect(activeTab).not.toBeNull();
+    expect(activePanel).not.toBeNull();
+    expect(activeTab.getAttribute('aria-controls')).toBe(activePanel.id);
+    expect(activePanel.getAttribute('aria-labelledby')).toBe(activeTab.id);
+    expect(fixture.nativeElement.querySelector('main')).toBeNull();
   });
 
   it('activates the requested tab when the route path changes', () => {
@@ -312,7 +350,10 @@ describe('HomeComponent', () => {
 
     component.selectTab('recent');
 
-    const [commands, extras] = router.navigate.calls.mostRecent().args as [readonly string[], NavigationExtras | undefined];
+    const [commands, extras] = router.navigate.calls.mostRecent().args as [
+      readonly string[],
+      NavigationExtras | undefined,
+    ];
     expect(commands).toEqual(['/', APP_CONFIG.routes.homeRecent]);
     expect(extras?.queryParams).toEqual({ [APP_CONFIG.homeData.tabs.queryParam]: 'recent' });
     expect(extras?.queryParamsHandling).toBe('merge');
@@ -328,7 +369,10 @@ describe('HomeComponent', () => {
 
     component.selectTab('favorites');
 
-    const [commands, extras] = router.navigate.calls.mostRecent().args as [readonly string[], NavigationExtras | undefined];
+    const [commands, extras] = router.navigate.calls.mostRecent().args as [
+      readonly string[],
+      NavigationExtras | undefined,
+    ];
     expect(commands).toEqual(['/', APP_CONFIG.routes.homeFavorites]);
     expect(extras?.queryParams).toEqual({ [APP_CONFIG.homeData.tabs.queryParam]: 'favorites' });
     expect(extras?.queryParamsHandling).toBe('merge');
@@ -368,13 +412,16 @@ describe('HomeComponent', () => {
     const arrowRightEvent = new KeyboardEvent('keydown', {
       key: 'ArrowRight',
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     });
     firstTab.dispatchEvent(arrowRightEvent);
     fixture.detectChanges();
     flushMicrotasks();
 
-    const [commands, extras] = router.navigate.calls.mostRecent().args as [readonly string[], NavigationExtras | undefined];
+    const [commands, extras] = router.navigate.calls.mostRecent().args as [
+      readonly string[],
+      NavigationExtras | undefined,
+    ];
     expect(commands).toEqual(['/', APP_CONFIG.routes.homeRecent]);
     expect(extras?.queryParams).toEqual({ [APP_CONFIG.homeData.tabs.queryParam]: 'recent' });
     expect(extras?.queryParamsHandling).toBe('merge');
@@ -399,13 +446,16 @@ describe('HomeComponent', () => {
     const endEvent = new KeyboardEvent('keydown', {
       key: 'End',
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     });
     firstTab.dispatchEvent(endEvent);
     fixture.detectChanges();
     flushMicrotasks();
 
-    let [commands, extras] = router.navigate.calls.mostRecent().args as [readonly string[], NavigationExtras | undefined];
+    let [commands, extras] = router.navigate.calls.mostRecent().args as [
+      readonly string[],
+      NavigationExtras | undefined,
+    ];
     expect(commands).toEqual(['/', APP_CONFIG.routes.homeFavorites]);
     expect(extras?.queryParams).toEqual({ [APP_CONFIG.homeData.tabs.queryParam]: 'favorites' });
     expect(extras?.queryParamsHandling).toBe('merge');
@@ -421,19 +471,24 @@ describe('HomeComponent', () => {
     const homeEvent = new KeyboardEvent('keydown', {
       key: 'Home',
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     });
     lastTab.dispatchEvent(homeEvent);
     fixture.detectChanges();
     flushMicrotasks();
 
-    [commands, extras] = router.navigate.calls.mostRecent().args as [readonly string[], NavigationExtras | undefined];
+    [commands, extras] = router.navigate.calls.mostRecent().args as [
+      readonly string[],
+      NavigationExtras | undefined,
+    ];
     expect(commands).toEqual(['/']);
     expect(extras?.queryParams).toEqual({ [APP_CONFIG.homeData.tabs.queryParam]: 'search' });
     expect(extras?.queryParamsHandling).toBe('merge');
     expect(extras?.replaceUrl ?? false).toBeFalse();
     expect(tabStorage.write.calls.mostRecent().args[0]).toBe('search');
-    expect(document.activeElement).toBe(fixture.debugElement.queryAll(By.css('.home__tab'))[0].nativeElement);
+    expect(document.activeElement).toBe(
+      fixture.debugElement.queryAll(By.css('.home__tab'))[0].nativeElement,
+    );
   }));
 
   it('selects the tab defined in query params on initial load', fakeAsync(() => {
@@ -451,7 +506,10 @@ describe('HomeComponent', () => {
     flushMicrotasks();
 
     const component = localFixture.componentInstance as unknown as HomeComponentTestingApi;
-    const [commands, extras] = router.navigate.calls.mostRecent().args as [readonly string[], NavigationExtras | undefined];
+    const [commands, extras] = router.navigate.calls.mostRecent().args as [
+      readonly string[],
+      NavigationExtras | undefined,
+    ];
     expect(component.isTabActive('favorites')).toBeTrue();
     expect(commands).toEqual(['/', APP_CONFIG.routes.homeFavorites]);
     expect(extras?.queryParams).toEqual({ [APP_CONFIG.homeData.tabs.queryParam]: 'favorites' });
@@ -482,7 +540,10 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
     flushMicrotasks();
 
-    const [commands, extras] = router.navigate.calls.mostRecent().args as [readonly string[], NavigationExtras | undefined];
+    const [commands, extras] = router.navigate.calls.mostRecent().args as [
+      readonly string[],
+      NavigationExtras | undefined,
+    ];
     expect(commands).toEqual(['/', APP_CONFIG.routes.homeFavorites]);
     expect(extras?.queryParams).toEqual({ [APP_CONFIG.homeData.tabs.queryParam]: 'favorites' });
     expect(extras?.queryParamsHandling).toBe('merge');
@@ -497,7 +558,7 @@ describe('HomeComponent', () => {
       lineId: '100',
       code: 'M-100',
       name: 'Circular Huércal de Almería',
-      mode: 'Autobús'
+      mode: 'Autobús',
     };
     favoriteCollection.emit([], [line]);
     fixture.detectChanges();
@@ -532,7 +593,8 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
     flushMicrotasks();
 
-    const favoritesTab = fixture.debugElement.queryAll(By.css('.home__tab'))[2].nativeElement as HTMLElement;
+    const favoritesTab = fixture.debugElement.queryAll(By.css('.home__tab'))[2]
+      .nativeElement as HTMLElement;
 
     expect(favoritesTab.getAttribute('tabindex')).toBe('0');
     expect(document.activeElement).toBe(favoritesTab);

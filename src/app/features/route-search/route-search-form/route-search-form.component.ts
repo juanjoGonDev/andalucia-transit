@@ -11,7 +11,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
-  inject
+  inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -22,7 +22,7 @@ import {
   ReactiveFormsModule,
   ValidationErrors,
   ValidatorFn,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
@@ -30,53 +30,36 @@ import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  BehaviorSubject,
-  Observable,
-  combineLatest,
-  firstValueFrom,
-  of,
-  timer
-} from 'rxjs';
-import {
-  distinctUntilChanged,
-  map,
-  shareReplay,
-  startWith,
-  switchMap
-} from 'rxjs/operators';
+import { BehaviorSubject, Observable, combineLatest, firstValueFrom, of, timer } from 'rxjs';
+import { distinctUntilChanged, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { APP_CONFIG } from '@core/config';
 import { classifyGeolocationError } from '@core/services/geolocation-error.util';
 import { GEOLOCATION_REQUEST_OPTIONS } from '@core/services/geolocation-request.options';
 import { GeolocationService } from '@core/services/geolocation.service';
 import {
   NearbyStopOption,
-  NearbyStopOptionsService
+  NearbyStopOptionsService,
 } from '@core/services/nearby-stop-options.service';
-import {
-  NearbyStopResult,
-  NearbyStopsService
-} from '@core/services/nearby-stops.service';
+import { NearbyStopResult, NearbyStopsService } from '@core/services/nearby-stops.service';
 import {
   collectRouteLineMatches,
-  createRouteSearchSelection
+  createRouteSearchSelection,
 } from '@domain/route-search/route-search-selection.util';
 import { RouteSearchSelection } from '@domain/route-search/route-search-state.service';
 import {
   StopConnection,
   StopConnectionsFacade,
-  buildStopConnectionKey
+  buildStopConnectionKey,
 } from '@domain/route-search/stop-connections.facade';
 import { FavoritesFacade, StopFavorite } from '@domain/stops/favorites.facade';
 import {
   StopDirectoryFacade,
   StopDirectoryOption,
   StopDirectoryStopSignature,
-  StopSearchRequest
+  StopSearchRequest,
 } from '@domain/stops/stop-directory.facade';
 import { buildDistanceDisplay } from '@domain/utils/distance-display.util';
 import { GeoCoordinate } from '@domain/utils/geo-distance.util';
-import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 import { MaterialSymbolName } from '@shared/ui/types/material-symbol-name';
 
 interface StopOptionDistanceLabel {
@@ -111,18 +94,18 @@ const EMPTY_GROUPS: readonly StopAutocompleteGroup[] = Object.freeze([]);
 const STOP_REQUIRED_ERROR = 'stopRequired' as const;
 const MIN_DATE_ERROR = 'minDate' as const;
 const EMPTY_STOP_SIGNATURES: readonly StopDirectoryStopSignature[] = Object.freeze(
-  [] as StopDirectoryStopSignature[]
+  [] as StopDirectoryStopSignature[],
 );
 const EMPTY_OPTIONS: readonly StopAutocompleteOption[] = Object.freeze(
-  [] as StopAutocompleteOption[]
+  [] as StopAutocompleteOption[],
 );
 const EMPTY_VIEW_OPTIONS: readonly StopAutocompleteViewOption[] = Object.freeze(
-  [] as StopAutocompleteViewOption[]
+  [] as StopAutocompleteViewOption[],
 );
 const EMPTY_ORIGIN_OPTIONS: CategorizedOriginOptions = Object.freeze({
   recommended: EMPTY_OPTIONS,
   favorites: EMPTY_OPTIONS,
-  others: EMPTY_OPTIONS
+  others: EMPTY_OPTIONS,
 });
 
 @Component({
@@ -138,18 +121,17 @@ const EMPTY_ORIGIN_OPTIONS: CategorizedOriginOptions = Object.freeze({
     MatOptionModule,
     MatNativeDateModule,
     MatDatepickerModule,
-    AccessibleButtonDirective
   ],
   templateUrl: './route-search-form.component.html',
   styleUrl: './route-search-form.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RouteSearchFormComponent implements OnChanges {
   private static readonly START_OF_DAY = {
     hour: 0,
     minute: 0,
     second: 0,
-    millisecond: 0
+    millisecond: 0,
   } as const;
   private static readonly SORT_LOCALE = 'es-ES' as const;
 
@@ -177,8 +159,10 @@ export class RouteSearchFormComponent implements OnChanges {
   private readonly searchDebounceMs = APP_CONFIG.homeData.search.debounceMs;
   private readonly nearbyGroupId = APP_CONFIG.homeData.search.nearbyGroupId;
   private readonly favoritesGroupId = 'favorites' as const;
-  private readonly favoriteActiveIcon: MaterialSymbolName = APP_CONFIG.homeData.favoriteStops.activeIcon;
-  private readonly favoriteInactiveIcon: MaterialSymbolName = APP_CONFIG.homeData.favoriteStops.inactiveIcon;
+  private readonly favoriteActiveIcon: MaterialSymbolName =
+    APP_CONFIG.homeData.favoriteStops.activeIcon;
+  private readonly favoriteInactiveIcon: MaterialSymbolName =
+    APP_CONFIG.homeData.favoriteStops.inactiveIcon;
 
   private readonly minimumDate = this.buildDefaultDate();
   private readonly minimumDateValidator = this.createMinimumDateValidator(this.minimumDate);
@@ -207,12 +191,10 @@ export class RouteSearchFormComponent implements OnChanges {
   readonly swapIcon: MaterialSymbolName = 'swap_vert';
 
   /** Opens the calendar as a bottom sheet on compact screens so it stays above fixed UI. */
-  readonly datepickerTouchUi$ = this.breakpointObserver
-    .observe(['(max-width: 767.98px)'])
-    .pipe(
-      map((result) => result.matches),
-      shareReplay({ bufferSize: 1, refCount: true })
-    );
+  readonly datepickerTouchUi$ = this.breakpointObserver.observe(['(max-width: 767.98px)']).pipe(
+    map((result) => result.matches),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
 
   focusOriginField(): void {
     const element = this.originInput?.nativeElement;
@@ -226,86 +208,108 @@ export class RouteSearchFormComponent implements OnChanges {
 
   readonly searchForm: FormGroup<RouteSearchFormGroup> = this.formBuilder.group({
     origin: this.formBuilder.control<StopAutocompleteValue>(null, {
-      validators: [this.stopValidator]
+      validators: [this.stopValidator],
     }),
     destination: this.formBuilder.control<StopAutocompleteValue>(null, {
-      validators: [this.stopValidator]
+      validators: [this.stopValidator],
     }),
     date: this.formBuilder.nonNullable.control<Date>(this.minimumDate, {
-      validators: [Validators.required, this.minimumDateValidator]
-    })
+      validators: [Validators.required, this.minimumDateValidator],
+    }),
   });
 
-  private readonly originControl = this.searchForm.controls.origin as FormControl<StopAutocompleteValue>;
-  private readonly destinationControl = this.searchForm.controls.destination as FormControl<StopAutocompleteValue>;
+  private readonly originControl = this.searchForm.controls
+    .origin as FormControl<StopAutocompleteValue>;
+  private readonly destinationControl = this.searchForm.controls
+    .destination as FormControl<StopAutocompleteValue>;
   private readonly dateControl = this.searchForm.controls.date;
 
   private readonly originValue$ = this.originControl.valueChanges.pipe(
-    startWith(this.originControl.value)
+    startWith(this.originControl.value),
   );
   private readonly destinationValue$ = this.destinationControl.valueChanges.pipe(
-    startWith(this.destinationControl.value)
+    startWith(this.destinationControl.value),
   );
 
   private readonly selectedOrigin$ = this.originValue$.pipe(
     map((value) => this.toStopOption(value)),
     distinctUntilChanged((previous, current) => this.areSameStop(previous, current)),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   private readonly selectedDestination$ = this.destinationValue$.pipe(
     map((value) => this.toStopOption(value)),
     distinctUntilChanged((previous, current) => this.areSameStop(previous, current)),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   private readonly originQuery$ = this.originValue$.pipe(
     switchMap((value) => this.buildQueryStream(value)),
     distinctUntilChanged(),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   private readonly destinationQuery$ = this.destinationValue$.pipe(
     switchMap((value) => this.buildQueryStream(value)),
     distinctUntilChanged(),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   private readonly originSignatures$ = this.selectedOrigin$.pipe(
     map((option) => this.toStopSignatures(option)),
-    distinctUntilChanged((first, second) => this.areSameStopSignatureList(first, second))
+    distinctUntilChanged((first, second) => this.areSameStopSignatureList(first, second)),
   );
 
   private readonly destinationSignatures$ = this.selectedDestination$.pipe(
     map((option) => this.toStopSignatures(option)),
-    distinctUntilChanged((first, second) => this.areSameStopSignatureList(first, second))
+    distinctUntilChanged((first, second) => this.areSameStopSignatureList(first, second)),
   );
 
   private readonly originConnections$ = this.originSignatures$.pipe(
     switchMap((signatures) => this.loadReachableConnections(signatures)),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   private readonly destinationConnections$ = this.destinationSignatures$.pipe(
     switchMap((signatures) => this.loadReachableConnections(signatures)),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   private readonly favoriteOptions$ = this.favorites.favorites$.pipe(
     map((favorites) => favorites.map((favorite) => this.fromFavorite(favorite))),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   private readonly favoriteIds$ = this.favorites.favorites$.pipe(
     map((favorites) => new Set(favorites.map((favorite) => favorite.id))),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
+
+  readonly selectedOriginView$: Observable<StopAutocompleteViewOption | null> = combineLatest([
+    this.selectedOrigin$,
+    this.favoriteIds$,
+  ]).pipe(
+    map(([option, favoriteIds]) =>
+      option ? { ...option, isFavorite: favoriteIds.has(option.id) } : null,
+    ),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
+
+  readonly selectedDestinationView$: Observable<StopAutocompleteViewOption | null> = combineLatest([
+    this.selectedDestination$,
+    this.favoriteIds$,
+  ]).pipe(
+    map(([option, favoriteIds]) =>
+      option ? { ...option, isFavorite: favoriteIds.has(option.id) } : null,
+    ),
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   readonly destinationOptions$: Observable<readonly StopAutocompleteOption[]> = combineLatest([
     this.destinationQuery$,
     this.selectedOrigin$,
     this.originConnections$,
-    this.favoriteOptions$
+    this.favoriteOptions$,
   ]).pipe(
     switchMap(([query, origin, connections, favorites]) =>
       this.stopDirectory
@@ -314,24 +318,24 @@ export class RouteSearchFormComponent implements OnChanges {
             query,
             origin,
             connections,
-            this.toStopSignaturesFromOptions(favorites)
-          )
+            this.toStopSignaturesFromOptions(favorites),
+          ),
         )
-        .pipe(map((options) => this.filterOptionsByConnections(options, connections)))
+        .pipe(map((options) => this.filterOptionsByConnections(options, connections))),
     ),
-    shareReplay({ bufferSize: 1, refCount: false })
+    shareReplay({ bufferSize: 1, refCount: false }),
   );
 
-  private readonly recommendedOriginOptions = new BehaviorSubject<readonly StopAutocompleteOption[]>(
-    EMPTY_OPTIONS
-  );
+  private readonly recommendedOriginOptions = new BehaviorSubject<
+    readonly StopAutocompleteOption[]
+  >(EMPTY_OPTIONS);
 
   private readonly originOptionsState$: Observable<CategorizedOriginOptions> = combineLatest([
     this.recommendedOriginOptions.asObservable(),
     this.favoriteOptions$,
     this.originQuery$,
     this.selectedDestination$,
-    this.destinationConnections$
+    this.destinationConnections$,
   ]).pipe(
     switchMap(([recommended, favorites, query, destination, connections]) =>
       this.stopDirectory
@@ -341,33 +345,33 @@ export class RouteSearchFormComponent implements OnChanges {
             destination,
             connections,
             this.toStopSignaturesFromOptions(recommended),
-            this.toStopSignaturesFromOptions(favorites)
-          )
+            this.toStopSignaturesFromOptions(favorites),
+          ),
         )
         .pipe(
           map((options) => this.filterOptionsByConnections(options, connections)),
-          map((options) => this.categorizeOriginOptions(recommended, favorites, options))
-        )
+          map((options) => this.categorizeOriginOptions(recommended, favorites, options)),
+        ),
     ),
-    shareReplay({ bufferSize: 1, refCount: false })
+    shareReplay({ bufferSize: 1, refCount: false }),
   );
 
   readonly originGroups$: Observable<readonly StopAutocompleteGroup[]> = combineLatest([
     this.originOptionsState$,
-    this.favoriteIds$
+    this.favoriteIds$,
   ]).pipe(
     map(([options, favoriteIds]) =>
-      this.buildOriginGroups(options.recommended, options.favorites, options.others, favoriteIds)
-    )
+      this.buildOriginGroups(options.recommended, options.favorites, options.others, favoriteIds),
+    ),
   );
   readonly destinationGroups$: Observable<readonly StopAutocompleteGroup[]> = combineLatest([
     this.destinationOptions$,
     this.favoriteOptions$,
-    this.favoriteIds$
+    this.favoriteIds$,
   ]).pipe(
     map(([options, favorites, favoriteIds]) =>
-      this.buildDestinationGroups(options, favorites, favoriteIds)
-    )
+      this.buildDestinationGroups(options, favorites, favoriteIds),
+    ),
   );
 
   readonly displayStop = (value: StopAutocompleteValue): string => {
@@ -427,14 +431,6 @@ export class RouteSearchFormComponent implements OnChanges {
     datepicker.open();
   }
 
-  protected onSubmitTrigger(): void {
-    if (this.searchForm.invalid || this.submitLoading$.getValue()) {
-      return;
-    }
-
-    void this.submit();
-  }
-
   async submit(): Promise<void> {
     if (this.submitLoading$.getValue()) {
       return;
@@ -492,7 +488,7 @@ export class RouteSearchFormComponent implements OnChanges {
       const position = await this.geolocation.getCurrentPosition(GEOLOCATION_REQUEST_OPTIONS);
       const coordinates: GeoCoordinate = {
         latitude: position.coords.latitude,
-        longitude: position.coords.longitude
+        longitude: position.coords.longitude,
       };
       const nearbyStops = await this.nearbyStops.findClosestStops(coordinates);
       const options = await firstValueFrom(this.loadRecommendedOptions(nearbyStops));
@@ -507,11 +503,11 @@ export class RouteSearchFormComponent implements OnChanges {
 
   private async buildSelection(
     origin: StopAutocompleteOption,
-    destination: StopAutocompleteOption
+    destination: StopAutocompleteOption,
   ): Promise<RouteSearchSelection | null> {
     this.hideNoRoutes();
     const connections = await firstValueFrom(
-      this.loadReachableConnections(this.toStopSignatures(origin))
+      this.loadReachableConnections(this.toStopSignatures(origin)),
     );
     const matches = collectRouteLineMatches(origin, destination, connections);
 
@@ -535,15 +531,18 @@ export class RouteSearchFormComponent implements OnChanges {
     destination: StopAutocompleteOption | null,
     connections: ReadonlyMap<string, StopConnection>,
     recommended: readonly StopDirectoryStopSignature[],
-    favorites: readonly StopDirectoryStopSignature[]
+    favorites: readonly StopDirectoryStopSignature[],
   ): StopSearchRequest {
-    const additional = recommended.length || favorites.length ? [...recommended, ...favorites] : EMPTY_STOP_SIGNATURES;
+    const additional =
+      recommended.length || favorites.length
+        ? [...recommended, ...favorites]
+        : EMPTY_STOP_SIGNATURES;
 
     return {
       query,
       excludeStopSignature: this.getPrimaryStopSignature(destination) ?? undefined,
       includeStopSignatures: this.buildIncludeSignatures(connections, additional),
-      limit: this.maxAutocompleteOptions
+      limit: this.maxAutocompleteOptions,
     } satisfies StopSearchRequest;
   }
 
@@ -551,19 +550,19 @@ export class RouteSearchFormComponent implements OnChanges {
     query: string,
     origin: StopAutocompleteOption | null,
     connections: ReadonlyMap<string, StopConnection>,
-    favorites: readonly StopDirectoryStopSignature[]
+    favorites: readonly StopDirectoryStopSignature[],
   ): StopSearchRequest {
     return {
       query,
       excludeStopSignature: this.getPrimaryStopSignature(origin) ?? undefined,
       includeStopSignatures: this.buildIncludeSignatures(connections, favorites),
-      limit: this.maxAutocompleteOptions
+      limit: this.maxAutocompleteOptions,
     } satisfies StopSearchRequest;
   }
 
   private buildIncludeSignatures(
     connections: ReadonlyMap<string, StopConnection>,
-    additional: readonly StopDirectoryStopSignature[] = EMPTY_STOP_SIGNATURES
+    additional: readonly StopDirectoryStopSignature[] = EMPTY_STOP_SIGNATURES,
   ): readonly StopDirectoryStopSignature[] | undefined {
     if (!connections.size && !additional.length) {
       return undefined;
@@ -582,7 +581,7 @@ export class RouteSearchFormComponent implements OnChanges {
     connections.forEach((connection) => {
       const signature: StopDirectoryStopSignature = {
         consortiumId: connection.consortiumId,
-        stopId: connection.stopId
+        stopId: connection.stopId,
       };
       const key = buildStopConnectionKey(signature.consortiumId, signature.stopId);
 
@@ -596,7 +595,7 @@ export class RouteSearchFormComponent implements OnChanges {
 
   private groupByNucleus(
     options: readonly StopAutocompleteOption[],
-    favoriteIds: ReadonlySet<string>
+    favoriteIds: ReadonlySet<string>,
   ): readonly StopAutocompleteGroup[] {
     if (!options.length) {
       return EMPTY_GROUPS;
@@ -619,11 +618,11 @@ export class RouteSearchFormComponent implements OnChanges {
       label: members[0]?.nucleus ?? '',
       municipality: members[0]?.municipality ?? '',
       translateLabel: false,
-      options: members
+      options: members,
     }));
 
     mapped.sort((first, second) =>
-      first.label.localeCompare(second.label, RouteSearchFormComponent.SORT_LOCALE)
+      first.label.localeCompare(second.label, RouteSearchFormComponent.SORT_LOCALE),
     );
 
     return Object.freeze(
@@ -632,8 +631,8 @@ export class RouteSearchFormComponent implements OnChanges {
         label: group.label,
         municipality: group.municipality,
         translateLabel: group.translateLabel,
-        options: this.toViewOptions(group.options, favoriteIds)
-      }))
+        options: this.toViewOptions(group.options, favoriteIds),
+      })),
     );
   }
 
@@ -641,7 +640,7 @@ export class RouteSearchFormComponent implements OnChanges {
     recommended: readonly StopAutocompleteOption[],
     favorites: readonly StopAutocompleteOption[],
     others: readonly StopAutocompleteOption[],
-    favoriteIds: ReadonlySet<string>
+    favoriteIds: ReadonlySet<string>,
   ): readonly StopAutocompleteGroup[] {
     const uniqueRecommended = this.deduplicateOptions(recommended);
     const uniqueFavorites = this.deduplicateOptions(favorites);
@@ -655,8 +654,8 @@ export class RouteSearchFormComponent implements OnChanges {
           label: this.translation.nearbyGroupLabel,
           municipality: this.translation.nearbyGroupLabel,
           translateLabel: true,
-          options: this.toViewOptions(uniqueRecommended, favoriteIds)
-        })
+          options: this.toViewOptions(uniqueRecommended, favoriteIds),
+        }),
       );
     }
 
@@ -667,8 +666,8 @@ export class RouteSearchFormComponent implements OnChanges {
           label: this.favoritesGroupLabelKey,
           municipality: this.favoritesGroupLabelKey,
           translateLabel: true,
-          options: this.toViewOptions(uniqueFavorites, favoriteIds)
-        })
+          options: this.toViewOptions(uniqueFavorites, favoriteIds),
+        }),
       );
     }
 
@@ -682,11 +681,11 @@ export class RouteSearchFormComponent implements OnChanges {
   private buildDestinationGroups(
     options: readonly StopAutocompleteOption[],
     favorites: readonly StopAutocompleteOption[],
-    favoriteIds: ReadonlySet<string>
+    favoriteIds: ReadonlySet<string>,
   ): readonly StopAutocompleteGroup[] {
     const uniqueFavorites = this.deduplicateOptions(favorites);
     const filteredFavorites = uniqueFavorites.filter((favorite) =>
-      options.some((option) => option.id === favorite.id)
+      options.some((option) => option.id === favorite.id),
     );
     const remaining = this.excludeOptions(options, filteredFavorites);
     const baseGroups = this.groupByNucleus(remaining, favoriteIds);
@@ -700,7 +699,7 @@ export class RouteSearchFormComponent implements OnChanges {
       label: this.favoritesGroupLabelKey,
       municipality: this.favoritesGroupLabelKey,
       translateLabel: true,
-      options: this.toViewOptions(filteredFavorites, favoriteIds)
+      options: this.toViewOptions(filteredFavorites, favoriteIds),
     });
 
     return Object.freeze([favoritesGroup, ...baseGroups]);
@@ -708,14 +707,14 @@ export class RouteSearchFormComponent implements OnChanges {
 
   private filterOptionsByConnections(
     options: readonly StopAutocompleteOption[],
-    connections: ReadonlyMap<string, StopConnection>
+    connections: ReadonlyMap<string, StopConnection>,
   ): readonly StopAutocompleteOption[] {
     if (!connections.size) {
       return options;
     }
 
     return options.filter((option) =>
-      option.stopIds.some((id) => connections.has(buildStopConnectionKey(option.consortiumId, id)))
+      option.stopIds.some((id) => connections.has(buildStopConnectionKey(option.consortiumId, id))),
     );
   }
 
@@ -730,7 +729,7 @@ export class RouteSearchFormComponent implements OnChanges {
   }
 
   private loadRecommendedOptions(
-    stops: readonly NearbyStopResult[]
+    stops: readonly NearbyStopResult[],
   ): Observable<readonly StopAutocompleteOption[]> {
     if (!stops.length) {
       return of(EMPTY_OPTIONS);
@@ -738,7 +737,7 @@ export class RouteSearchFormComponent implements OnChanges {
 
     return this.nearbyStopOptions.loadOptions(stops).pipe(
       map((options) => options.map((option) => this.withDistanceLabel(option))),
-      map((options) => this.deduplicateOptions(options))
+      map((options) => this.deduplicateOptions(options)),
     );
   }
 
@@ -752,20 +751,20 @@ export class RouteSearchFormComponent implements OnChanges {
       nucleus: favorite.nucleus,
       nucleusId: favorite.nucleusId,
       consortiumId: favorite.consortiumId,
-      stopIds: favorite.stopIds
+      stopIds: favorite.stopIds,
     } satisfies StopAutocompleteOption;
   }
 
   private categorizeOriginOptions(
     recommended: readonly StopAutocompleteOption[],
     favorites: readonly StopAutocompleteOption[],
-    options: readonly StopAutocompleteOption[]
+    options: readonly StopAutocompleteOption[],
   ): CategorizedOriginOptions {
     if (!recommended.length && !favorites.length) {
       return Object.freeze({
         recommended: EMPTY_OPTIONS,
         favorites: EMPTY_OPTIONS,
-        others: options
+        others: options,
       });
     }
 
@@ -775,25 +774,21 @@ export class RouteSearchFormComponent implements OnChanges {
 
     const resultIds = new Set(options.map((option) => option.id));
     const matchingRecommended = this.deduplicateOptions(
-      recommended.filter((option) => resultIds.has(option.id))
+      recommended.filter((option) => resultIds.has(option.id)),
     );
     const recommendedIds = new Set(matchingRecommended.map((option) => option.id));
     const matchingFavorites = this.deduplicateOptions(
-      favorites.filter(
-        (option) => resultIds.has(option.id) && !recommendedIds.has(option.id)
-      )
+      favorites.filter((option) => resultIds.has(option.id) && !recommendedIds.has(option.id)),
     );
     const favoriteIds = new Set(matchingFavorites.map((option) => option.id));
     const remaining = Object.freeze(
-      options.filter(
-        (option) => !recommendedIds.has(option.id) && !favoriteIds.has(option.id)
-      )
+      options.filter((option) => !recommendedIds.has(option.id) && !favoriteIds.has(option.id)),
     );
 
     return Object.freeze({
       recommended: matchingRecommended,
       favorites: matchingFavorites,
-      others: remaining
+      others: remaining,
     });
   }
 
@@ -804,13 +799,13 @@ export class RouteSearchFormComponent implements OnChanges {
       ...option,
       distanceLabel: {
         translationKey: distance.translationKey,
-        value: distance.value
-      }
+        value: distance.value,
+      },
     };
   }
 
   private deduplicateOptions(
-    options: readonly StopAutocompleteOption[]
+    options: readonly StopAutocompleteOption[],
   ): readonly StopAutocompleteOption[] {
     if (!options.length) {
       return EMPTY_OPTIONS;
@@ -839,7 +834,7 @@ export class RouteSearchFormComponent implements OnChanges {
 
   private excludeOptions(
     options: readonly StopAutocompleteOption[],
-    excluded: readonly StopAutocompleteOption[]
+    excluded: readonly StopAutocompleteOption[],
   ): readonly StopAutocompleteOption[] {
     if (!excluded.length) {
       return options;
@@ -851,7 +846,7 @@ export class RouteSearchFormComponent implements OnChanges {
 
   private toViewOptions(
     options: readonly StopAutocompleteOption[],
-    favoriteIds: ReadonlySet<string>
+    favoriteIds: ReadonlySet<string>,
   ): readonly StopAutocompleteViewOption[] {
     if (!options.length) {
       return EMPTY_VIEW_OPTIONS;
@@ -860,13 +855,13 @@ export class RouteSearchFormComponent implements OnChanges {
     return Object.freeze(
       options.map((option) => ({
         ...option,
-        isFavorite: favoriteIds.has(option.id)
-      }))
+        isFavorite: favoriteIds.has(option.id),
+      })),
     );
   }
 
   private toStopSignaturesFromOptions(
-    options: readonly StopAutocompleteOption[]
+    options: readonly StopAutocompleteOption[],
   ): readonly StopDirectoryStopSignature[] {
     if (!options.length) {
       return EMPTY_STOP_SIGNATURES;
@@ -878,7 +873,7 @@ export class RouteSearchFormComponent implements OnChanges {
       for (const stopId of option.stopIds) {
         const signature: StopDirectoryStopSignature = {
           consortiumId: option.consortiumId,
-          stopId
+          stopId,
         };
         const key = buildStopConnectionKey(signature.consortiumId, signature.stopId);
 
@@ -918,7 +913,7 @@ export class RouteSearchFormComponent implements OnChanges {
 
   private ensureDistinctStops(
     origin: StopAutocompleteOption | null,
-    destination: StopAutocompleteOption | null
+    destination: StopAutocompleteOption | null,
   ): void {
     if (!origin || !destination) {
       return;
@@ -937,14 +932,14 @@ export class RouteSearchFormComponent implements OnChanges {
 
   private areSameStopSignature(
     first: StopDirectoryStopSignature,
-    second: StopDirectoryStopSignature
+    second: StopDirectoryStopSignature,
   ): boolean {
     return first.consortiumId === second.consortiumId && first.stopId === second.stopId;
   }
 
   private areSameStopSignatureList(
     first: readonly StopDirectoryStopSignature[],
-    second: readonly StopDirectoryStopSignature[]
+    second: readonly StopDirectoryStopSignature[],
   ): boolean {
     if (first === second) {
       return true;
@@ -959,7 +954,7 @@ export class RouteSearchFormComponent implements OnChanges {
 
   private areSameStop(
     first: StopAutocompleteOption | null,
-    second: StopAutocompleteOption | null
+    second: StopAutocompleteOption | null,
   ): boolean {
     if (!first && !second) {
       return true;
@@ -988,28 +983,33 @@ export class RouteSearchFormComponent implements OnChanges {
     return value;
   }
 
-  private getPrimaryStopSignature(option: StopAutocompleteOption | null): StopDirectoryStopSignature | null {
+  private getPrimaryStopSignature(
+    option: StopAutocompleteOption | null,
+  ): StopDirectoryStopSignature | null {
     if (!option?.stopIds.length) {
       return null;
     }
 
     return {
       consortiumId: option.consortiumId,
-      stopId: option.stopIds[0]
+      stopId: option.stopIds[0],
     } satisfies StopDirectoryStopSignature;
   }
 
   private toStopSignatures(
-    option: StopAutocompleteOption | null
+    option: StopAutocompleteOption | null,
   ): readonly StopDirectoryStopSignature[] {
     if (!option?.stopIds.length) {
       return EMPTY_STOP_SIGNATURES;
     }
 
-    return option.stopIds.map((stopId) => ({
-      consortiumId: option.consortiumId,
-      stopId
-    } satisfies StopDirectoryStopSignature));
+    return option.stopIds.map(
+      (stopId) =>
+        ({
+          consortiumId: option.consortiumId,
+          stopId,
+        }) satisfies StopDirectoryStopSignature,
+    );
   }
 
   private createMinimumDateValidator(minimum: Date): ValidatorFn {
@@ -1044,7 +1044,7 @@ export class RouteSearchFormComponent implements OnChanges {
       RouteSearchFormComponent.START_OF_DAY.hour,
       RouteSearchFormComponent.START_OF_DAY.minute,
       RouteSearchFormComponent.START_OF_DAY.second,
-      RouteSearchFormComponent.START_OF_DAY.millisecond
+      RouteSearchFormComponent.START_OF_DAY.millisecond,
     );
     return copy;
   }
@@ -1070,14 +1070,16 @@ export class RouteSearchFormComponent implements OnChanges {
       {
         origin: selection.origin,
         destination: selection.destination,
-        date: new Date(selection.queryDate.getTime())
+        date: new Date(selection.queryDate.getTime()),
       },
-      { emitEvent: false }
+      { emitEvent: false },
     );
   }
 
   private buildSelectionIdentifier(selection: RouteSearchSelection): string {
-    return [selection.origin.id, selection.destination.id, selection.queryDate.toISOString()].join('|');
+    return [selection.origin.id, selection.destination.id, selection.queryDate.toISOString()].join(
+      '|',
+    );
   }
 
   private showNoRoutes(): void {
@@ -1108,7 +1110,7 @@ export class RouteSearchFormComponent implements OnChanges {
   }
 
   private loadReachableConnections(
-    signatures: readonly StopDirectoryStopSignature[]
+    signatures: readonly StopDirectoryStopSignature[],
   ): Observable<ReadonlyMap<string, StopConnection>> {
     if (!signatures.length) {
       return of(new Map<string, StopConnection>());

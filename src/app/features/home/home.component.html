@@ -1,8 +1,4 @@
-<section
-  class="home"
-  appLayoutContent
-  [appLayoutContentNavigationKey]="layoutNavigationKey()"
->
+<section class="home" appLayoutContent [appLayoutContentNavigationKey]="layoutNavigationKey()">
   <div class="utility-container">
     <div class="app-layout__body home__body home__stack">
       <header class="home__header app-hero">
@@ -13,22 +9,23 @@
         </div>
       </header>
 
-      <main class="home__main home__stack">
+      <div class="home__main home__stack">
         <section class="home__card home__stack" aria-labelledby="homeCardTitle">
           <div class="home__card-header home__stack">
             <div>
-              <h2 id="homeCardTitle" class="home__card-title">{{ headerTitleKey | translate }}</h2>
-              <p class="home__card-subtitle">{{ heroActionKey | translate }}</p>
+              <h2 id="homeCardTitle" class="home__card-title">{{ searchTitleKey | translate }}</h2>
             </div>
-            <div class="home__tabs" role="tablist">
+            <div class="home__tabs" role="tablist" [attr.aria-label]="headerTitleKey | translate">
               <div
                 *ngFor="let tab of tabs; let index = index"
                 appAccessibleButton
                 #homeTabButton="appAccessibleButton"
                 class="home__tab"
+                [id]="tabButtonId(tab.id)"
                 [appAccessibleButtonRole]="tabRole"
                 [appAccessibleButtonTabIndex]="tabButtonTabIndex(tab.id)"
                 [attr.aria-selected]="isTabActive(tab.id)"
+                [attr.aria-controls]="tabPanelId(tab.id)"
                 (appAccessibleButtonKeydown)="onTabKeydown($event, index)"
                 (appAccessibleButtonActivated)="selectTab(tab.id)"
               >
@@ -37,53 +34,71 @@
             </div>
           </div>
           <div class="home__card-body home__stack">
-            <ng-container [ngSwitch]="activeTab()">
-              <div *ngSwitchCase="'search'" class="home__panel home__panel--search home__stack">
-                <app-route-search-form
-                  [initialSelection]="currentSelection$ | async"
-                  (selectionConfirmed)="onSelectionConfirmed($event)"
-                ></app-route-search-form>
-              </div>
-              <div *ngSwitchCase="'recent'" class="home__panel home__panel--recent home__stack">
+            <div
+              class="home__panel home__panel--search home__stack"
+              role="tabpanel"
+              [id]="tabPanelId('search')"
+              [attr.aria-labelledby]="tabButtonId('search')"
+              [hidden]="!isTabActive('search')"
+            >
+              <app-route-search-form
+                [initialSelection]="currentSelection$ | async"
+                (selectionConfirmed)="onSelectionConfirmed($event)"
+              ></app-route-search-form>
+            </div>
+            <div
+              class="home__panel home__panel--recent home__stack"
+              role="tabpanel"
+              [id]="tabPanelId('recent')"
+              [attr.aria-labelledby]="tabButtonId('recent')"
+              [hidden]="!isTabActive('recent')"
+            >
+              @defer (when activeTab() === 'recent') {
                 <header class="home__panel-header">
                   <div class="home__panel-heading home__stack">
                     <h3 class="home__panel-title">{{ recentStopsTitleKey | translate }}</h3>
                   </div>
-                  <div
+                  <button
                     *ngIf="recentClearActionVisible()"
-                    appAccessibleButton
+                    type="button"
                     class="app-button app-button--ghost home__panel-action"
-                    (appAccessibleButtonActivated)="onClearRecentSearches()"
+                    (click)="onClearRecentSearches()"
                   >
                     {{ recentStopsClearKey | translate }}
-                  </div>
+                  </button>
                 </header>
                 <app-home-recent-searches
                   #recentSearches
                   (itemsStateChange)="onRecentItemsStateChange($event)"
                 ></app-home-recent-searches>
-              </div>
-              <div *ngSwitchCase="'favorites'" class="home__panel home__panel--favorites home__stack">
-                @defer (when activeTab() === 'favorites') {
-                  <app-home-favorites-panel
-                    (openFavorites)="openFavoritesView()"
-                  ></app-home-favorites-panel>
-                } @placeholder {
-                  <div
-                    class="home-recent__empty"
-                    role="status"
-                    aria-live="polite"
-                    aria-busy="true"
-                  >
-                    <span class="app-loading-indicator" aria-hidden="true"></span>
-                    <span class="app-visually-hidden">{{ 'favorites.title' | translate }}…</span>
-                  </div>
-                }
-              </div>
-            </ng-container>
+              } @placeholder {
+                <div class="home__panel-loading" role="status" aria-live="polite" aria-busy="true">
+                  <span class="app-loading-indicator" aria-hidden="true"></span>
+                  <span class="app-visually-hidden">{{ recentStopsTitleKey | translate }}…</span>
+                </div>
+              }
+            </div>
+            <div
+              class="home__panel home__panel--favorites home__stack"
+              role="tabpanel"
+              [id]="tabPanelId('favorites')"
+              [attr.aria-labelledby]="tabButtonId('favorites')"
+              [hidden]="!isTabActive('favorites')"
+            >
+              @defer (when activeTab() === 'favorites') {
+                <app-home-favorites-panel
+                  (openFavorites)="openFavoritesView()"
+                ></app-home-favorites-panel>
+              } @placeholder {
+                <div class="home__panel-loading" role="status" aria-live="polite" aria-busy="true">
+                  <span class="app-loading-indicator" aria-hidden="true"></span>
+                  <span class="app-visually-hidden">{{ 'favorites.title' | translate }}…</span>
+                </div>
+              }
+            </div>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   </div>
 </section>

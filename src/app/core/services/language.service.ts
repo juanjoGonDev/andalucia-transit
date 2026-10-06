@@ -6,13 +6,14 @@ import { LanguageOption } from '@core/interfaces/language-option.interface';
 import { APP_CONFIG_TOKEN } from '@core/tokens/app-config.token';
 import { resolveLanguage } from '@domain/utils/language.util';
 
-const storageAvailable = (): boolean => typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+const storageAvailable = (): boolean =>
+  typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
   private readonly translateService = inject(TranslateService);
   private readonly dateAdapter: DateAdapter<Date> | null = inject(DateAdapter, {
-    optional: true
+    optional: true,
   });
   private readonly config: AppConfig = inject(APP_CONFIG_TOKEN);
   private readonly languageSignal = signal<SupportedLanguage>(APP_CONFIG.locales.default);
@@ -52,6 +53,7 @@ export class LanguageService {
     }
 
     this.updateDateLocale(language);
+    this.updateDocumentLanguage(language);
     this.languageSignal.set(language);
 
     if (persist) {
@@ -60,7 +62,10 @@ export class LanguageService {
   }
 
   private resolvePreferredLanguage(storedLanguage: string | null): SupportedLanguage {
-    if (storedLanguage && this.config.locales.supported.includes(storedLanguage as SupportedLanguage)) {
+    if (
+      storedLanguage &&
+      this.config.locales.supported.includes(storedLanguage as SupportedLanguage)
+    ) {
       return storedLanguage as SupportedLanguage;
     }
 
@@ -102,5 +107,13 @@ export class LanguageService {
     const resolvedLocale = localeMap[language] ?? localeMap[fallbackLanguage];
 
     this.dateAdapter.setLocale(resolvedLocale);
+  }
+
+  private updateDocumentLanguage(language: SupportedLanguage): void {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    document.documentElement.lang = language;
   }
 }

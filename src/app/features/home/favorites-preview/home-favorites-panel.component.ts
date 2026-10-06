@@ -7,24 +7,24 @@ import {
   Output,
   computed,
   inject,
-  signal
+  signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '@core/config';
 import {
   FavoriteCollectionFacade,
-  FavoriteCollectionSnapshot
+  FavoriteCollectionSnapshot,
 } from '@domain/favorites/favorite-collection.facade';
 import {
   HomeFavoritePreviewItem,
-  HomeFavoritesPreviewComponent
+  HomeFavoritesPreviewComponent,
 } from '@features/home/favorites-preview/home-favorites-preview.component';
 
 const EMPTY_FAVORITE_COLLECTION: FavoriteCollectionSnapshot = {
   stops: [],
   lines: [],
-  total: 0
+  total: 0,
 };
 
 @Component({
@@ -32,7 +32,8 @@ const EMPTY_FAVORITE_COLLECTION: FavoriteCollectionSnapshot = {
   standalone: true,
   imports: [CommonModule, TranslateModule, HomeFavoritesPreviewComponent],
   templateUrl: './home-favorites-panel.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrl: './home-favorites-panel.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeFavoritesPanelComponent {
   private readonly favoriteCollection = inject(FavoriteCollectionFacade);
@@ -54,7 +55,7 @@ export class HomeFavoritesPanelComponent {
 
     const items: HomeFavoritePreviewItem[] = [
       ...snapshot.stops.map((favorite) => ({ kind: 'stop' as const, favorite })),
-      ...snapshot.lines.map((favorite) => ({ kind: 'line' as const, favorite }))
+      ...snapshot.lines.map((favorite) => ({ kind: 'line' as const, favorite })),
     ];
     items.sort((left, right) => left.favorite.name.localeCompare(right.favorite.name, 'es-ES'));
     return Object.freeze(items.slice(0, limit));

@@ -1,21 +1,38 @@
-<div
-  appAccessibleButton
-  [ngClass]="bodyClasses"
-  [appAccessibleButtonRole]="computedPrimaryRole"
-  [routerLink]="computedPrimaryCommands"
-  [queryParams]="primaryQueryParams"
-  [appAccessibleButtonPressed]="primaryPressed"
-  [attr.aria-label]="primaryAriaLabel"
-  (appAccessibleButtonActivated)="handlePrimaryActivated()"
->
+<ng-template #primaryContent>
   <ng-content></ng-content>
-</div>
-<div
+</ng-template>
+
+@if (computedPrimaryCommands; as commands) {
+  <a
+    [ngClass]="bodyClasses"
+    [attr.role]="computedPrimaryRole"
+    [routerLink]="commands"
+    [queryParams]="primaryQueryParams"
+    [attr.aria-pressed]="primaryPressed"
+    [attr.aria-label]="primaryAriaLabel"
+    (click)="handlePrimaryActivated()"
+  >
+    <ng-container *ngTemplateOutlet="primaryContent"></ng-container>
+  </a>
+} @else {
+  <button
+    type="button"
+    [ngClass]="bodyClasses"
+    [attr.role]="computedPrimaryRole"
+    [attr.aria-pressed]="primaryPressed"
+    [attr.aria-label]="primaryAriaLabel"
+    (click)="handlePrimaryActivated()"
+  >
+    <ng-container *ngTemplateOutlet="primaryContent"></ng-container>
+  </button>
+}
+
+<button
   *ngIf="removeAriaLabel"
-  appAccessibleButton
+  type="button"
   [ngClass]="removeClasses"
   [attr.aria-label]="removeAriaLabel"
-  (appAccessibleButtonActivated)="handleRemoveActivated($event)"
+  (click)="handleRemoveActivated($event)"
 >
   <span [ngClass]="removeIconClass">{{ removeIconName }}</span>
-</div>
+</button>

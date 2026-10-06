@@ -5,10 +5,9 @@ import {
   EventEmitter,
   HostBinding,
   Input,
-  Output
+  Output,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AccessibleButtonDirective } from '@shared/a11y/accessible-button.directive';
 
 const DEFAULT_REMOVE_ICON_NAME = 'close';
 const MATERIAL_SYMBOLS_OUTLINED_CLASS = 'material-symbols-outlined';
@@ -20,10 +19,10 @@ const INTERACTIVE_CARD_REMOVE_CLASS = 'interactive-card__remove';
 @Component({
   selector: 'app-interactive-card',
   standalone: true,
-  imports: [CommonModule, RouterLink, AccessibleButtonDirective],
+  imports: [CommonModule, RouterLink],
   templateUrl: './interactive-card.component.html',
   styleUrls: ['./interactive-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InteractiveCardComponent {
   @Input() removeAriaLabel: string | null = null;
@@ -88,7 +87,7 @@ export class InteractiveCardComponent {
 
   private mergeClasses(
     classes: readonly string[] | undefined,
-    baseClass: string
+    baseClass: string,
   ): readonly string[] {
     if (!classes || classes.length === 0) {
       return [baseClass];

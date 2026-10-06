@@ -39,7 +39,7 @@ const BASE_REMOVE_CLASS = 'interactive-card__remove';
     >
       <ng-content></ng-content>
     </app-interactive-card>
-  `
+  `,
 })
 class HostCardComponent {
   @Input() cardClasses: readonly string[] = [];
@@ -63,7 +63,7 @@ describe('InteractiveCardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HostCardComponent],
-      providers: [provideRouter([])]
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HostCardComponent);
@@ -72,7 +72,9 @@ describe('InteractiveCardComponent', () => {
   });
 
   function queryInteractiveCard(): HTMLElement {
-    const element = fixture.nativeElement.querySelector(INTERACTIVE_CARD_SELECTOR) as HTMLElement | null;
+    const element = fixture.nativeElement.querySelector(
+      INTERACTIVE_CARD_SELECTOR,
+    ) as HTMLElement | null;
 
     if (!element) {
       throw new Error('Interactive card not found');
@@ -130,7 +132,7 @@ describe('InteractiveCardComponent', () => {
     expect(primary.attributes['aria-label']).toBe(PRIMARY_ARIA_LABEL);
   });
 
-  it('assigns link role when router commands are supplied', () => {
+  it('uses a native link when router commands are supplied', () => {
     host.primaryCommands = ROUTER_COMMAND;
     host.bodyClasses = [BODY_CLASS];
 
@@ -138,7 +140,19 @@ describe('InteractiveCardComponent', () => {
 
     const primary = fixture.debugElement.query(By.css(`.${BODY_CLASS}`));
 
+    expect(primary.nativeElement.tagName).toBe('A');
     expect(primary.attributes['role']).toBe(LINK_ROLE);
+  });
+
+  it('uses a native button for action cards without a route', () => {
+    host.bodyClasses = [BODY_CLASS];
+
+    fixture.detectChanges();
+
+    const primary = fixture.debugElement.query(By.css(`.${BODY_CLASS}`));
+
+    expect(primary.nativeElement.tagName).toBe('BUTTON');
+    expect(primary.nativeElement.type).toBe('button');
   });
 
   it('applies the base classes to the body and remove sections', () => {

@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, ViewChild, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+  inject,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { APP_CONFIG } from '@core/config';
@@ -7,7 +17,7 @@ import { AppLayoutNavigationKey } from '@shared/layout/app-layout-context.token'
 import {
   LINE_DETAIL_BASE_SEGMENT,
   NavigationCommands,
-  buildNavigationCommands
+  buildNavigationCommands,
 } from '@shared/navigation/navigation.util';
 
 interface ShellMenuEntry {
@@ -25,11 +35,14 @@ const ESCAPE_KEY = 'Escape' as const;
   imports: [RouterLink, TranslateModule],
   templateUrl: './app-shell-top-actions.component.html',
   styleUrl: './app-shell-top-actions.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppShellTopActionsComponent {
   @ViewChild('menuTrigger')
   private menuTrigger?: ElementRef<HTMLButtonElement>;
+
+  @ViewChildren('menuItem', { read: ElementRef })
+  private menuItems?: QueryList<ElementRef<HTMLAnchorElement>>;
 
   private readonly layoutContextStore = inject(AppLayoutContextStore);
   private readonly host = inject(ElementRef<HTMLElement>);
@@ -47,33 +60,33 @@ export class AppShellTopActionsComponent {
   protected readonly linesLinkCommands = [...buildNavigationCommands(LINE_DETAIL_BASE_SEGMENT)];
   protected readonly mapLinkCommands = [...buildNavigationCommands(APP_CONFIG.routes.map)];
   protected readonly favoritesLinkCommands = [
-    ...buildNavigationCommands(APP_CONFIG.routes.favorites)
+    ...buildNavigationCommands(APP_CONFIG.routes.favorites),
   ];
   protected readonly entries: readonly ShellMenuEntry[] = Object.freeze([
     {
       labelKey: this.translation.menu.recent,
       icon: 'history',
       navigationKey: APP_CONFIG.routes.homeRecent,
-      commands: buildNavigationCommands(APP_CONFIG.routes.homeRecent)
+      commands: buildNavigationCommands(APP_CONFIG.routes.homeRecent),
     },
     {
       labelKey: this.translation.menu.news,
       icon: 'newspaper',
       navigationKey: APP_CONFIG.routes.news,
-      commands: buildNavigationCommands(APP_CONFIG.routes.news)
+      commands: buildNavigationCommands(APP_CONFIG.routes.news),
     },
     {
       labelKey: this.translation.menu.settings,
       icon: 'settings',
       navigationKey: APP_CONFIG.routes.settings,
-      commands: buildNavigationCommands(APP_CONFIG.routes.settings)
+      commands: buildNavigationCommands(APP_CONFIG.routes.settings),
     },
     {
       labelKey: this.translation.menu.alarms,
       icon: 'notifications',
       navigationKey: APP_CONFIG.routes.alarms,
-      commands: buildNavigationCommands(APP_CONFIG.routes.alarms)
-    }
+      commands: buildNavigationCommands(APP_CONFIG.routes.alarms),
+    },
   ]);
 
   protected isActive(navigationKey: AppLayoutNavigationKey): boolean {
@@ -90,11 +103,18 @@ export class AppShellTopActionsComponent {
 
   protected moreActive(): boolean {
     const activeNavigationKey = this.activeNavigationKey();
-    return this.menuOpen() || this.entries.some((entry) => entry.navigationKey === activeNavigationKey);
+    return (
+      this.menuOpen() || this.entries.some((entry) => entry.navigationKey === activeNavigationKey)
+    );
   }
 
   protected toggleMenu(): void {
-    this.menuOpen.update((open) => !open);
+    const nextOpen = !this.menuOpen();
+    this.menuOpen.set(nextOpen);
+
+    if (nextOpen) {
+      queueMicrotask(() => this.menuItems?.first?.nativeElement.focus());
+    }
   }
 
   protected closeMenu(restoreFocus = false): void {

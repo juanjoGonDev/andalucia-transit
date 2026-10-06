@@ -34,10 +34,7 @@ import {
 } from '@shared/a11y/key-event-matchers';
 import { AppLayoutContentDirective } from '@shared/layout/app-layout-content.directive';
 import { AppLayoutNavigationKey } from '@shared/layout/app-layout-context.token';
-import {
-  NavigationCommands,
-  buildNavigationCommands,
-} from '@shared/navigation/navigation.util';
+import { NavigationCommands, buildNavigationCommands } from '@shared/navigation/navigation.util';
 
 interface HomeTabOption {
   readonly id: HomeTabId;
@@ -105,7 +102,7 @@ export class HomeComponent {
   protected readonly headerTaglineKey = this.translation.header.tagline;
   protected readonly heroEyebrowKey = this.translation.hero.eyebrow;
   protected readonly heroDescriptionKey = this.translation.hero.description;
-  protected readonly heroActionKey = this.translation.hero.action;
+  protected readonly searchTitleKey = this.translation.sections.search.title;
   protected readonly tabs: readonly HomeTabOption[] = [
     { id: 'search', labelKey: this.translation.tabs.search },
     { id: 'recent', labelKey: this.translation.tabs.recent },
@@ -174,6 +171,14 @@ export class HomeComponent {
     return this.activeTab() === tab ? ACTIVE_TAB_INDEX : INACTIVE_TAB_INDEX;
   }
 
+  protected tabButtonId(tab: HomeTabId): string {
+    return `home-tab-${tab}`;
+  }
+
+  protected tabPanelId(tab: HomeTabId): string {
+    return `home-panel-${tab}`;
+  }
+
   protected onTabKeydown(event: KeyboardEvent, index: number): void {
     if (matchesKey(event, ARROW_LEFT_KEY_MATCHER)) {
       event.preventDefault();
@@ -202,7 +207,7 @@ export class HomeComponent {
   private async navigate(
     commands: NavigationCommands,
     trackFocusRestore = true,
-    extras?: NavigationExtras
+    extras?: NavigationExtras,
   ): Promise<void> {
     if (trackFocusRestore && !this.isHomeTabCommand(commands)) {
       this.pendingTabFocusRestore = true;
@@ -220,7 +225,7 @@ export class HomeComponent {
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((event) => {
         const url = event.urlAfterRedirects ?? event.url ?? '';
@@ -257,7 +262,9 @@ export class HomeComponent {
   private syncActiveTabWithRoute(): void {
     const currentUrl = this.router.url;
     const path = this.resolveRoutePath(currentUrl);
-    const queryTab = this.resolveTabFromQueryParam(this.route.snapshot.queryParamMap.get(this.tabQueryParam));
+    const queryTab = this.resolveTabFromQueryParam(
+      this.route.snapshot.queryParamMap.get(this.tabQueryParam),
+    );
     const storedTab = this.homeTabStorage.read();
     const resolvedTab = this.resolvePreferredTab(path, queryTab, storedTab);
 
@@ -291,7 +298,7 @@ export class HomeComponent {
   private resolvePreferredTab(
     path: string,
     queryTab: HomeTabId | null,
-    storedTab: HomeTabId | null
+    storedTab: HomeTabId | null,
   ): HomeTabId {
     if (queryTab) {
       return queryTab;
@@ -302,7 +309,7 @@ export class HomeComponent {
       return storedTab ?? pathTab ?? this.defaultTab;
     }
 
-    return this.isHomeTabRoute(path) ? pathTab : storedTab ?? pathTab ?? this.defaultTab;
+    return this.isHomeTabRoute(path) ? pathTab : (storedTab ?? pathTab ?? this.defaultTab);
   }
 
   private async navigateToTab(tab: HomeTabId, extras?: NavigationExtras): Promise<void> {
@@ -320,7 +327,11 @@ export class HomeComponent {
     };
   }
 
-  private async ensureCanonicalRoute(tab: HomeTabId, path: string, queryTab: HomeTabId | null): Promise<void> {
+  private async ensureCanonicalRoute(
+    tab: HomeTabId,
+    path: string,
+    queryTab: HomeTabId | null,
+  ): Promise<void> {
     const pathTab = this.resolveTabFromPath(path);
     if (pathTab !== tab) {
       await this.navigateToTab(tab, this.buildTabNavigationExtras(tab, true));
@@ -386,6 +397,8 @@ export class HomeComponent {
   }
 
   private isHomeTabCommand(commands: NavigationCommands): boolean {
-    return commands.some((segment) => Boolean(segment && segment !== '/' && this.homeTabRoutes.has(segment)));
+    return commands.some((segment) =>
+      Boolean(segment && segment !== '/' && this.homeTabRoutes.has(segment)),
+    );
   }
 }

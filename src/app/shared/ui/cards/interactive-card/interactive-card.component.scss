@@ -42,13 +42,15 @@
   min-height: 100%;
   padding: var(--interactive-card-padding-block)
     calc(var(--interactive-card-padding-inline) + var(--interactive-card-remove-size))
-    var(--interactive-card-padding-block)
-    var(--interactive-card-padding-inline);
+    var(--interactive-card-padding-block) var(--interactive-card-padding-inline);
   border: none;
   border-radius: inherit;
   background: transparent;
   color: inherit;
+  font: inherit;
   text-align: left;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .interactive-card__body:focus-visible {

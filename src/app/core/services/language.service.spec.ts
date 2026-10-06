@@ -16,19 +16,18 @@ describe('LanguageService', () => {
   let service: LanguageService;
   let dateAdapter: DateAdapter<Date>;
   const defaultLanguage = APP_CONFIG.locales.default;
-  const alternateLanguage = APP_CONFIG.locales.supported.find(
-    (code) => code !== defaultLanguage
-  ) ?? defaultLanguage;
+  const alternateLanguage =
+    APP_CONFIG.locales.supported.find((code) => code !== defaultLanguage) ?? defaultLanguage;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot({
           loader: { provide: TranslateLoader, useClass: EmptyTranslateLoader },
-          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler }
+          compiler: { provide: TranslateCompiler, useClass: TranslateMessageFormatCompiler },
         }),
-        MatNativeDateModule
-      ]
+        MatNativeDateModule,
+      ],
     });
 
     service = TestBed.inject(LanguageService);
@@ -50,5 +49,11 @@ describe('LanguageService', () => {
     service.setLanguage(defaultLanguage);
 
     expect(setLocaleSpy).toHaveBeenCalledWith(APP_CONFIG.locales.dateLocales[defaultLanguage]);
+  });
+
+  it('keeps the document language in sync with the active translation language', () => {
+    service.setLanguage(alternateLanguage);
+
+    expect(document.documentElement.lang).toBe(alternateLanguage);
   });
 });
