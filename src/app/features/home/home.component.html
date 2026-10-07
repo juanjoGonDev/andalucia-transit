@@ -53,29 +53,36 @@
               [attr.aria-labelledby]="tabButtonId('recent')"
               [hidden]="!isTabActive('recent')"
             >
-              @defer (when activeTab() === 'recent') {
-                <header class="home__panel-header">
-                  <div class="home__panel-heading home__stack">
-                    <h3 class="home__panel-title">{{ recentStopsTitleKey | translate }}</h3>
-                  </div>
-                  <button
-                    *ngIf="recentClearActionVisible()"
-                    type="button"
-                    class="app-button app-button--ghost home__panel-action"
-                    (click)="onClearRecentSearches()"
+              @if (isTabActive('recent')) {
+                @defer (when activeTab() === 'recent') {
+                  <header class="home__panel-header">
+                    <div class="home__panel-heading home__stack">
+                      <h3 class="home__panel-title">{{ recentStopsTitleKey | translate }}</h3>
+                    </div>
+                    <button
+                      *ngIf="recentClearActionVisible()"
+                      type="button"
+                      class="app-button app-button--ghost home__panel-action"
+                      (click)="onClearRecentSearches()"
+                    >
+                      {{ recentStopsClearKey | translate }}
+                    </button>
+                  </header>
+                  <app-home-recent-searches
+                    #recentSearches
+                    (itemsStateChange)="onRecentItemsStateChange($event)"
+                  ></app-home-recent-searches>
+                } @placeholder {
+                  <div
+                    class="home__panel-loading"
+                    role="status"
+                    aria-live="polite"
+                    aria-busy="true"
                   >
-                    {{ recentStopsClearKey | translate }}
-                  </button>
-                </header>
-                <app-home-recent-searches
-                  #recentSearches
-                  (itemsStateChange)="onRecentItemsStateChange($event)"
-                ></app-home-recent-searches>
-              } @placeholder {
-                <div class="home__panel-loading" role="status" aria-live="polite" aria-busy="true">
-                  <span class="app-loading-indicator" aria-hidden="true"></span>
-                  <span class="app-visually-hidden">{{ recentStopsTitleKey | translate }}…</span>
-                </div>
+                    <span class="app-loading-indicator" aria-hidden="true"></span>
+                    <span class="app-visually-hidden">{{ recentStopsTitleKey | translate }}…</span>
+                  </div>
+                }
               }
             </div>
             <div
@@ -85,15 +92,22 @@
               [attr.aria-labelledby]="tabButtonId('favorites')"
               [hidden]="!isTabActive('favorites')"
             >
-              @defer (when activeTab() === 'favorites') {
-                <app-home-favorites-panel
-                  (openFavorites)="openFavoritesView()"
-                ></app-home-favorites-panel>
-              } @placeholder {
-                <div class="home__panel-loading" role="status" aria-live="polite" aria-busy="true">
-                  <span class="app-loading-indicator" aria-hidden="true"></span>
-                  <span class="app-visually-hidden">{{ 'favorites.title' | translate }}…</span>
-                </div>
+              @if (isTabActive('favorites')) {
+                @defer (when activeTab() === 'favorites') {
+                  <app-home-favorites-panel
+                    (openFavorites)="openFavoritesView()"
+                  ></app-home-favorites-panel>
+                } @placeholder {
+                  <div
+                    class="home__panel-loading"
+                    role="status"
+                    aria-live="polite"
+                    aria-busy="true"
+                  >
+                    <span class="app-loading-indicator" aria-hidden="true"></span>
+                    <span class="app-visually-hidden">{{ 'favorites.title' | translate }}…</span>
+                  </div>
+                }
               }
             </div>
           </div>
